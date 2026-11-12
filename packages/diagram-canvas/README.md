@@ -285,3 +285,50 @@ to nothing (measured: `npx vitest run --root packages/diagram-canvas
 'tests/**/*.nomatch-zzz.ts'` prints "No test files found, exiting with code 1").
 So this package's test gate cannot go green on an empty set, and needs no file
 floor of its own.
+
+## Row-pack placement (DC-2a)
+
+Spec: `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`. Measured views
+(`layoutMeasured` / `layoutFolded`) take an optional `rowPack` option. When it
+is present — an empty object selects the DS defaults — every level, the root
+and each expanded zone alike, is shelf-packed toward a 16:9 outer aspect
+instead of being stacked in one column:
+
+- `packRows` / `packColumns` (`layout/pack.ts`) fill boxes into shelves in
+  declaration order, score each candidate on its distance to the target aspect
+  (taller than target is penalised more) plus a shelf-slack term, and never
+  reorder siblings. With two boxes or more, the candidate whose every shelf
+  holds a single box is inadmissible.
+- `chooseOrientation` scores both forms per level and keeps the lower total
+  score, so the orientation follows the fold state. The result reports
+  `orientations` per level key (`"root"` or the placement-parent representative
+  occurrence id); a host feeds it back as `previousOrientation`, and a level
+  whose two scores are closer than `orientationHysteresis` keeps its previous
+  orientation.
+- Sibling gaps are the base gap on both axes (`metrics.rowGapInline` /
+  `rowGapBlock`, default 24, tokens `diagramZone.childGapInline` /
+  `childGapBlock`). A gutter widens only where a labelled link joins the two
+  neighbours (or two adjacent shelves), only by the label thickness plus its
+  margins, and never past `metrics.gapInlineMax` / `gapBlockMax` (default 32).
+  The root uses the same gaps and never `rankGap`. A gap hint above the cap
+  refuses as `layout-hint-invalid`; an invalid objective refuses as
+  `row-pack-invalid`.
+- `hints.rootOrder` gives the root reading order; `hints.ordering` keeps
+  giving it per zone.
+
+Without `rowPack`, measured views keep the column placement byte for byte, so
+existing pins are untouched; making row-pack the default for every measured
+view, packing authored `grouping` sub-levels and the scene host are later lots
+of the same spec. Authored `grouping` is ignored by the row-pack path today.
+
+`camera.ts` holds the pure half of the camera contract (spec §5):
+`cameraFit` frames the scene bounds on both axes against the 16:9 fit box
+(`fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`), never above the
+maximum display scale (0.62: readout 100 %, a card renders at about
+285 × 124 CSS px) and holds a fit at the readability floor (0.42) when the
+drawing is larger, reporting `pans`; `clampZoom` and `zoomReadout` complete it.
+No DOM lives here: a scene host passes its measured sizes in.
+
+The acceptance scenes, the §7 metrics helper, the column baseline
+(`baseline.json`) and the row-pack numbers (`after.json`) are under
+`tests/layout/dc2a/`.

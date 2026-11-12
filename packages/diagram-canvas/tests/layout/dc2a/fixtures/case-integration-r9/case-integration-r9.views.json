@@ -1,0 +1,3131 @@
+{
+  "caseId": "case-integration-r9",
+  "semanticDocumentId": "document:case-integration-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 23,
+    "archiRelations": 48,
+    "totalEntitiesWithLegend": 26,
+    "totalRelationsWithLegend": 50,
+    "views": 2
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire des dépôts h2a et engram",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "coordination-skills",
+      "entityId": "entity:coordination-skills",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Coordination",
+      "shortName": null,
+      "purpose": "Guider les échanges",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:979-997"
+      ]
+    },
+    {
+      "id": "engram-memory",
+      "entityId": "entity:engram-memory",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "engram-memory",
+      "shortName": "Mémoire engram",
+      "purpose": "Consulter la mémoire",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: engram · @sentropic/engram",
+      "containment": {
+        "partOf": "external-skills",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1260-1280"
+      ]
+    },
+    {
+      "id": "external-skills",
+      "entityId": "entity:external-skills",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Mémoire externe",
+      "shortName": null,
+      "purpose": "Apporter le contexte",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: engram",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-engram",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1039-1057"
+      ]
+    },
+    {
+      "id": "h2a-run-skill",
+      "entityId": "entity:h2a-run-skill",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "h2a-run",
+      "shortName": null,
+      "purpose": "Lancer les sessions",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-coord",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1080-1099"
+      ]
+    },
+    {
+      "id": "h2a-skill",
+      "entityId": "entity:h2a-skill",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Coordonner les agents",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "coordination-skills",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1061-1079"
+      ]
+    },
+    {
+      "id": "host-components",
+      "entityId": "entity:host-components",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Intégration CLI",
+      "shortName": null,
+      "purpose": "Équiper les agents",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:999-1017"
+      ]
+    },
+    {
+      "id": "host-doctor",
+      "entityId": "entity:host-doctor",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Diagnostic d’installation",
+      "shortName": "Diagnostic",
+      "purpose": "Vérifier l’installation",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "host-components",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1160-1179"
+      ]
+    },
+    {
+      "id": "host-plugin",
+      "entityId": "entity:host-plugin",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Plugins et hooks",
+      "shortName": "Plugins / hooks",
+      "purpose": "Intégrer les hôtes",
+      "kicker": "Composant",
+      "detail": "exécuté par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-host",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1120-1139"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local où h2a équipe les agents et installe les compétences",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "host-scope",
+      "entityId": "entity:host-scope",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Garde de workspace",
+      "shortName": "Garde workspace",
+      "purpose": "Borner les écritures",
+      "kicker": "Composant",
+      "detail": "exécuté par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-host",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1180-1199"
+      ]
+    },
+    {
+      "id": "host-skills",
+      "entityId": "entity:host-skills",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Distribution des skills",
+      "shortName": "Distribution",
+      "purpose": "Équiper les hôtes",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "host-components",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1100-1119"
+      ]
+    },
+    {
+      "id": "host-upgrade",
+      "entityId": "entity:host-upgrade",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Équipement après mise à jour",
+      "shortName": "Mise à jour",
+      "purpose": "Réappliquer l’équipement",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "host-components",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1140-1159"
+      ]
+    },
+    {
+      "id": "pkg-engram",
+      "entityId": "entity:pkg-engram",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/engram",
+      "shortName": null,
+      "purpose": "Paquet livrant la ressource mémoire engram",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: engram",
+      "containment": {
+        "partOf": "external-skills",
+        "managedIn": "repo-engram",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1042"
+      ]
+    },
+    {
+      "id": "pkg-h2a-coord",
+      "entityId": "entity:pkg-h2a-coord",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet livrant les compétences de coordination h2a",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "coordination-skills",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "pkg-h2a-host",
+      "entityId": "entity:pkg-h2a-host",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet livrant les modules d’intégration CLI des hôtes",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "host-components",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "pkg-h2a-reg",
+      "entityId": "entity:pkg-h2a-reg",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet livrant la composition du registre h2a",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "registry-components",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "registry-components",
+      "entityId": "entity:registry-components",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Registre",
+      "shortName": null,
+      "purpose": "Composer les ressources",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1019-1037"
+      ]
+    },
+    {
+      "id": "registry-daemon",
+      "entityId": "entity:registry-daemon",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Raccord au daemon sentropic",
+      "shortName": "Raccord daemon",
+      "purpose": "Joindre le service",
+      "kicker": "Composant",
+      "detail": "exécuté par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-reg",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1220-1239"
+      ]
+    },
+    {
+      "id": "registry-definitions",
+      "entityId": "entity:registry-definitions",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Définitions et descripteurs",
+      "shortName": "Définitions",
+      "purpose": "Composer le registre",
+      "kicker": "Composant",
+      "detail": "exécuté par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-reg",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1200-1219"
+      ]
+    },
+    {
+      "id": "registry-memory",
+      "entityId": "entity:registry-memory",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Fournisseur mémoire",
+      "shortName": "Mémoire",
+      "purpose": "Fournir les ressources",
+      "kicker": "Composant",
+      "detail": "exécuté par: h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a-reg",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1240-1259"
+      ]
+    },
+    {
+      "id": "repo-engram",
+      "entityId": "entity:repo-engram",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "engram",
+      "shortName": null,
+      "purpose": "Dépôt fournissant la compétence externe engram-memory",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1039-1057"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo livrant la coordination, l’intégration CLI et le registre",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-12",
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "ob-repo-engram",
+      "relationId": "relation:ob-repo-engram",
+      "type": "ownedBy",
+      "source": "repo-engram",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "mi-coordination-skills",
+      "relationId": "relation:mi-coordination-skills",
+      "type": "managedIn",
+      "source": "coordination-skills",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-host-components",
+      "relationId": "relation:mi-host-components",
+      "type": "managedIn",
+      "source": "host-components",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-registry-components",
+      "relationId": "relation:mi-registry-components",
+      "type": "managedIn",
+      "source": "registry-components",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-external-skills",
+      "relationId": "relation:mi-external-skills",
+      "type": "managedIn",
+      "source": "external-skills",
+      "target": "repo-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a-coord",
+      "relationId": "relation:mi-pkg-h2a-coord",
+      "type": "managedIn",
+      "source": "pkg-h2a-coord",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a-host",
+      "relationId": "relation:mi-pkg-h2a-host",
+      "type": "managedIn",
+      "source": "pkg-h2a-host",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a-reg",
+      "relationId": "relation:mi-pkg-h2a-reg",
+      "type": "managedIn",
+      "source": "pkg-h2a-reg",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "mi-pkg-engram",
+      "relationId": "relation:mi-pkg-engram",
+      "type": "managedIn",
+      "source": "pkg-engram",
+      "target": "repo-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a-coord",
+      "relationId": "relation:po-pkg-h2a-coord",
+      "type": "partOf",
+      "source": "pkg-h2a-coord",
+      "target": "coordination-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a-host",
+      "relationId": "relation:po-pkg-h2a-host",
+      "type": "partOf",
+      "source": "pkg-h2a-host",
+      "target": "host-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a-reg",
+      "relationId": "relation:po-pkg-h2a-reg",
+      "type": "partOf",
+      "source": "pkg-h2a-reg",
+      "target": "registry-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-pkg-engram",
+      "relationId": "relation:po-pkg-engram",
+      "type": "partOf",
+      "source": "pkg-engram",
+      "target": "external-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "do-coord-reg",
+      "relationId": "relation:do-coord-reg",
+      "type": "dependsOn",
+      "source": "pkg-h2a-coord",
+      "target": "pkg-h2a-reg",
+      "encoding": "arrow",
+      "verb": "dépend de",
+      "label": "dépend de · registre h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "do-coord-host",
+      "relationId": "relation:do-coord-host",
+      "type": "dependsOn",
+      "source": "pkg-h2a-coord",
+      "target": "pkg-h2a-host",
+      "encoding": "arrow",
+      "verb": "dépend de",
+      "label": "dépend de · intégration CLI",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-h2a-skill",
+      "relationId": "relation:po-h2a-skill",
+      "type": "partOf",
+      "source": "h2a-skill",
+      "target": "coordination-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "ro-h2a-skill",
+      "relationId": "relation:ro-h2a-skill",
+      "type": "runsOn",
+      "source": "h2a-skill",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "da-h2a-skill",
+      "relationId": "relation:da-h2a-skill",
+      "type": "deployedAs",
+      "source": "pkg-h2a-coord",
+      "target": "h2a-skill",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · CLI h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-h2a-run-skill",
+      "relationId": "relation:po-h2a-run-skill",
+      "type": "partOf",
+      "source": "h2a-run-skill",
+      "target": "pkg-h2a-coord",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "lb-h2a-run-skill",
+      "relationId": "relation:lb-h2a-run-skill",
+      "type": "loadedBy",
+      "source": "h2a-run-skill",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-host-skills",
+      "relationId": "relation:po-host-skills",
+      "type": "partOf",
+      "source": "host-skills",
+      "target": "host-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "ro-host-skills",
+      "relationId": "relation:ro-host-skills",
+      "type": "runsOn",
+      "source": "host-skills",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "da-host-skills",
+      "relationId": "relation:da-host-skills",
+      "type": "deployedAs",
+      "source": "pkg-h2a-host",
+      "target": "host-skills",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · distribution",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-host-plugin",
+      "relationId": "relation:po-host-plugin",
+      "type": "partOf",
+      "source": "host-plugin",
+      "target": "pkg-h2a-host",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "eb-host-plugin",
+      "relationId": "relation:eb-host-plugin",
+      "type": "executedBy",
+      "source": "host-plugin",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-host-upgrade",
+      "relationId": "relation:po-host-upgrade",
+      "type": "partOf",
+      "source": "host-upgrade",
+      "target": "host-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "ro-host-upgrade",
+      "relationId": "relation:ro-host-upgrade",
+      "type": "runsOn",
+      "source": "host-upgrade",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "da-host-upgrade",
+      "relationId": "relation:da-host-upgrade",
+      "type": "deployedAs",
+      "source": "pkg-h2a-host",
+      "target": "host-upgrade",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · mise à jour",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-host-doctor",
+      "relationId": "relation:po-host-doctor",
+      "type": "partOf",
+      "source": "host-doctor",
+      "target": "host-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "ro-host-doctor",
+      "relationId": "relation:ro-host-doctor",
+      "type": "runsOn",
+      "source": "host-doctor",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "da-host-doctor",
+      "relationId": "relation:da-host-doctor",
+      "type": "deployedAs",
+      "source": "pkg-h2a-host",
+      "target": "host-doctor",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · diagnostic",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-host-scope",
+      "relationId": "relation:po-host-scope",
+      "type": "partOf",
+      "source": "host-scope",
+      "target": "pkg-h2a-host",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "eb-host-scope",
+      "relationId": "relation:eb-host-scope",
+      "type": "executedBy",
+      "source": "host-scope",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-registry-definitions",
+      "relationId": "relation:po-registry-definitions",
+      "type": "partOf",
+      "source": "registry-definitions",
+      "target": "pkg-h2a-reg",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "eb-registry-definitions",
+      "relationId": "relation:eb-registry-definitions",
+      "type": "executedBy",
+      "source": "registry-definitions",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-registry-daemon",
+      "relationId": "relation:po-registry-daemon",
+      "type": "partOf",
+      "source": "registry-daemon",
+      "target": "pkg-h2a-reg",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "eb-registry-daemon",
+      "relationId": "relation:eb-registry-daemon",
+      "type": "executedBy",
+      "source": "registry-daemon",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-registry-memory",
+      "relationId": "relation:po-registry-memory",
+      "type": "partOf",
+      "source": "registry-memory",
+      "target": "pkg-h2a-reg",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "eb-registry-memory",
+      "relationId": "relation:eb-registry-memory",
+      "type": "executedBy",
+      "source": "registry-memory",
+      "target": "h2a-skill",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "po-engram-memory",
+      "relationId": "relation:po-engram-memory",
+      "type": "partOf",
+      "source": "engram-memory",
+      "target": "external-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "ro-engram-memory",
+      "relationId": "relation:ro-engram-memory",
+      "type": "runsOn",
+      "source": "engram-memory",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "da-engram-memory",
+      "relationId": "relation:da-engram-memory",
+      "type": "deployedAs",
+      "source": "pkg-engram",
+      "target": "engram-memory",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · mémoire engram",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+      ]
+    },
+    {
+      "id": "dc-run-h2a",
+      "relationId": "relation:dc-run-h2a",
+      "type": "documents",
+      "source": "h2a-run-skill",
+      "target": "h2a-skill",
+      "encoding": "arrow",
+      "verb": "documente",
+      "label": "documente · traduit l’intention en lancement h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1284-1294"
+      ]
+    },
+    {
+      "id": "in-h2a-dist",
+      "relationId": "relation:in-h2a-dist",
+      "type": "invokes",
+      "source": "h2a-skill",
+      "target": "host-skills",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · documente la distribution",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1295-1306"
+      ]
+    },
+    {
+      "id": "in-upgrade-doctor",
+      "relationId": "relation:in-upgrade-doctor",
+      "type": "invokes",
+      "source": "host-upgrade",
+      "target": "host-doctor",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · fait vérifier l’installation",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1307-1318"
+      ]
+    },
+    {
+      "id": "in-dist-engram",
+      "relationId": "relation:in-dist-engram",
+      "type": "invokes",
+      "source": "host-skills",
+      "target": "engram-memory",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · installe Mémoire engram",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1319-1330"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "coordination-skills",
+          "h2a-skill",
+          "h2a-run-skill",
+          "host-components",
+          "host-skills",
+          "host-plugin",
+          "host-upgrade",
+          "host-doctor",
+          "host-scope",
+          "registry-components",
+          "registry-definitions",
+          "registry-daemon",
+          "registry-memory",
+          "external-skills",
+          "engram-memory"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Tout déplié : 4 groupes (Coordination, Intégration CLI, Registre, Mémoire externe), 11 cartes et 4 liaisons."
+      },
+      "counts": {
+        "elements": 15,
+        "containers": 4,
+        "foldedContainers": 0,
+        "cards": 11,
+        "edges": 4,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "coordination-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Coordination",
+          "purpose": "Guider les échanges",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "h2a-skill",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "coordination-skills",
+          "kicker": "Exécution · CLI",
+          "title": "h2a",
+          "purpose": "Coordonner les agents",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "h2a-run-skill",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "coordination-skills",
+          "kicker": "Artefact · Skill",
+          "title": "h2a-run",
+          "purpose": "Lancer les sessions",
+          "detail": "chargé par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Intégration CLI",
+          "purpose": "Équiper les agents",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-skills",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Distribution",
+          "purpose": "Équiper les hôtes",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-plugin",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Composant",
+          "title": "Plugins / hooks",
+          "purpose": "Intégrer les hôtes",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-upgrade",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Mise à jour",
+          "purpose": "Réappliquer l’équipement",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-doctor",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Diagnostic",
+          "purpose": "Vérifier l’installation",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-scope",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Composant",
+          "title": "Garde workspace",
+          "purpose": "Borner les écritures",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Registre",
+          "purpose": "Composer les ressources",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-definitions",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Définitions",
+          "purpose": "Composer le registre",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-daemon",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Raccord daemon",
+          "purpose": "Joindre le service",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-memory",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Mémoire",
+          "purpose": "Fournir les ressources",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "external-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Mémoire externe",
+          "purpose": "Apporter le contexte",
+          "detail": null,
+          "footer": "repo: engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "engram-memory",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "external-skills",
+          "kicker": "Exécution · CLI",
+          "title": "Mémoire engram",
+          "purpose": "Consulter la mémoire",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: engram · @sentropic/engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-run-h2a",
+          "type": "documents",
+          "source": "h2a-run-skill",
+          "target": "h2a-skill",
+          "verb": "documente",
+          "label": "documente · traduit l’intention en lancement h2a",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-h2a-dist",
+          "type": "invokes",
+          "source": "h2a-skill",
+          "target": "host-skills",
+          "verb": "lance",
+          "label": "lance · documente la distribution",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-upgrade-doctor",
+          "type": "invokes",
+          "source": "host-upgrade",
+          "target": "host-doctor",
+          "verb": "lance",
+          "label": "lance · fait vérifier l’installation",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-dist-engram",
+          "type": "invokes",
+          "source": "host-skills",
+          "target": "engram-memory",
+          "verb": "lance",
+          "label": "lance · installe Mémoire engram",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-integration-r9-unfolded",
+        "semanticDocumentId": "document:case-integration-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-coordination-skills": {
+            "id": "occurrence:o-coordination-skills",
+            "entity": "entity:coordination-skills",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-h2a-skill": {
+            "id": "occurrence:o-h2a-skill",
+            "entity": "entity:h2a-skill",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-coordination-skills"
+          },
+          "occurrence:o-h2a-run-skill": {
+            "id": "occurrence:o-h2a-run-skill",
+            "entity": "entity:h2a-run-skill",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-coordination-skills"
+          },
+          "occurrence:o-host-components": {
+            "id": "occurrence:o-host-components",
+            "entity": "entity:host-components",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-host-skills": {
+            "id": "occurrence:o-host-skills",
+            "entity": "entity:host-skills",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-plugin": {
+            "id": "occurrence:o-host-plugin",
+            "entity": "entity:host-plugin",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-upgrade": {
+            "id": "occurrence:o-host-upgrade",
+            "entity": "entity:host-upgrade",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-doctor": {
+            "id": "occurrence:o-host-doctor",
+            "entity": "entity:host-doctor",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-scope": {
+            "id": "occurrence:o-host-scope",
+            "entity": "entity:host-scope",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-registry-components": {
+            "id": "occurrence:o-registry-components",
+            "entity": "entity:registry-components",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-registry-definitions": {
+            "id": "occurrence:o-registry-definitions",
+            "entity": "entity:registry-definitions",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-registry-daemon": {
+            "id": "occurrence:o-registry-daemon",
+            "entity": "entity:registry-daemon",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-registry-memory": {
+            "id": "occurrence:o-registry-memory",
+            "entity": "entity:registry-memory",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-external-skills": {
+            "id": "occurrence:o-external-skills",
+            "entity": "entity:external-skills",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-engram-memory": {
+            "id": "occurrence:o-engram-memory",
+            "entity": "entity:engram-memory",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-external-skills"
+          },
+          "occurrence:o-legend-integration-r9": {
+            "id": "occurrence:o-legend-integration-r9",
+            "entity": "entity:legend-integration-r9",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.23.o-legend-integration-r9"
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.23.o-legend-integration-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-run-h2a": {
+            "id": "occurrence:e-dc-run-h2a",
+            "relation": "relation:dc-run-h2a",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-h2a-run-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-h2a-skill"
+              }
+            ]
+          },
+          "occurrence:e-in-h2a-dist": {
+            "id": "occurrence:e-in-h2a-dist",
+            "relation": "relation:in-h2a-dist",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-h2a-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-host-skills"
+              }
+            ]
+          },
+          "occurrence:e-in-upgrade-doctor": {
+            "id": "occurrence:e-in-upgrade-doctor",
+            "relation": "relation:in-upgrade-doctor",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-host-upgrade"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-host-doctor"
+              }
+            ]
+          },
+          "occurrence:e-in-dist-engram": {
+            "id": "occurrence:e-in-dist-engram",
+            "relation": "relation:in-dist-engram",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-host-skills"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-engram-memory"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.21.o-coordination-skills": {
+            "id": "grp.21.o-coordination-skills",
+            "occurrence": "occurrence:o-coordination-skills",
+            "collapsed": false
+          },
+          "grp.17.o-host-components": {
+            "id": "grp.17.o-host-components",
+            "occurrence": "occurrence:o-host-components",
+            "collapsed": false
+          },
+          "grp.21.o-registry-components": {
+            "id": "grp.21.o-registry-components",
+            "occurrence": "occurrence:o-registry-components",
+            "collapsed": false
+          },
+          "grp.17.o-external-skills": {
+            "id": "grp.17.o-external-skills",
+            "occurrence": "occurrence:o-external-skills",
+            "collapsed": false
+          },
+          "grp.23.o-legend-integration-r9": {
+            "id": "grp.23.o-legend-integration-r9",
+            "occurrence": "occurrence:o-legend-integration-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-coordination-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Guider les échanges"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-engram-memory": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Mémoire engram",
+                  "footer": "repo: engram · @sentropic/engram",
+                  "body": "Consulter la mémoire",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-external-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: engram",
+                  "subtitle": "Apporter le contexte"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-h2a-run-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Lancer les sessions",
+                  "detail": "chargé par: h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-h2a-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Coordonner les agents",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Équiper les agents"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-doctor": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Diagnostic",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Vérifier l’installation",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-plugin": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Plugins / hooks",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Intégrer les hôtes",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-scope": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Garde workspace",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Borner les écritures",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-skills": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Distribution",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Équiper les hôtes",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-upgrade": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Mise à jour",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Réappliquer l’équipement",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-integration-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Exécution / distribution)"
+                }
+              },
+              "occurrence:o-registry-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Composer les ressources"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-daemon": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Raccord daemon",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Joindre le service",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-definitions": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Définitions",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Composer le registre",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-memory": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Mémoire",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Fournir les ressources",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-integration-r9": {
+                "order": [
+                  "entity:key-accent",
+                  "entity:key-brand"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-integration-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              },
+              {
+                "legendRef": "entity:legend-integration-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "coordination-skills",
+          "h2a-skill",
+          "h2a-run-skill",
+          "host-components",
+          "host-skills",
+          "host-plugin",
+          "host-upgrade",
+          "host-doctor",
+          "host-scope",
+          "registry-components",
+          "registry-definitions",
+          "registry-daemon",
+          "registry-memory",
+          "external-skills",
+          "engram-memory"
+        ],
+        "folds": [
+          "coordination-skills",
+          "host-components",
+          "registry-components",
+          "external-skills"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Tout replié : 4 groupes en boîtes 460 × 200 reliés par 2 synthèses (Coordination → Intégration CLI → Mémoire externe)."
+      },
+      "counts": {
+        "elements": 15,
+        "containers": 4,
+        "foldedContainers": 4,
+        "cards": 11,
+        "edges": 4,
+        "summaryEdges": 2
+      },
+      "cards": [
+        {
+          "id": "coordination-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Coordination",
+          "purpose": "Guider les échanges",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "h2a-skill",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "coordination-skills",
+          "kicker": "Exécution · CLI",
+          "title": "h2a",
+          "purpose": "Coordonner les agents",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "h2a-run-skill",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "coordination-skills",
+          "kicker": "Artefact · Skill",
+          "title": "h2a-run",
+          "purpose": "Lancer les sessions",
+          "detail": "chargé par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Intégration CLI",
+          "purpose": "Équiper les agents",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-skills",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Distribution",
+          "purpose": "Équiper les hôtes",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-plugin",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Composant",
+          "title": "Plugins / hooks",
+          "purpose": "Intégrer les hôtes",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-upgrade",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Mise à jour",
+          "purpose": "Réappliquer l’équipement",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-doctor",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Exécution · CLI",
+          "title": "Diagnostic",
+          "purpose": "Vérifier l’installation",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "host-scope",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "host-components",
+          "kicker": "Composant",
+          "title": "Garde workspace",
+          "purpose": "Borner les écritures",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Registre",
+          "purpose": "Composer les ressources",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-definitions",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Définitions",
+          "purpose": "Composer le registre",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-daemon",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Raccord daemon",
+          "purpose": "Joindre le service",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "registry-memory",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "registry-components",
+          "kicker": "Composant",
+          "title": "Mémoire",
+          "purpose": "Fournir les ressources",
+          "detail": "exécuté par: h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "external-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Mémoire externe",
+          "purpose": "Apporter le contexte",
+          "detail": null,
+          "footer": "repo: engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "engram-memory",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "external-skills",
+          "kicker": "Exécution · CLI",
+          "title": "Mémoire engram",
+          "purpose": "Consulter la mémoire",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: engram · @sentropic/engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-run-h2a",
+          "type": "documents",
+          "source": "h2a-run-skill",
+          "target": "h2a-skill",
+          "verb": "documente",
+          "label": "documente · traduit l’intention en lancement h2a",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-dist-engram",
+          "type": "invokes",
+          "source": "host-components",
+          "target": "external-skills",
+          "verb": "lance",
+          "label": "lance · installe Mémoire engram",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-h2a-dist",
+          "type": "invokes",
+          "source": "coordination-skills",
+          "target": "host-components",
+          "verb": "lance",
+          "label": "lance · documente la distribution",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-upgrade-doctor",
+          "type": "invokes",
+          "source": "host-upgrade",
+          "target": "host-doctor",
+          "verb": "lance",
+          "label": "lance · fait vérifier l’installation",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "coordination-skills",
+          "target": "host-components",
+          "label": "lance · documente la distribution",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "in-h2a-dist"
+          ]
+        },
+        {
+          "id": "summary:s2",
+          "source": "host-components",
+          "target": "external-skills",
+          "label": "lance · installe Mémoire engram",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "in-dist-engram"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-integration-r9-folded",
+        "semanticDocumentId": "document:case-integration-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-coordination-skills": {
+            "id": "occurrence:o-coordination-skills",
+            "entity": "entity:coordination-skills",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-h2a-skill": {
+            "id": "occurrence:o-h2a-skill",
+            "entity": "entity:h2a-skill",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-coordination-skills"
+          },
+          "occurrence:o-h2a-run-skill": {
+            "id": "occurrence:o-h2a-run-skill",
+            "entity": "entity:h2a-run-skill",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-coordination-skills"
+          },
+          "occurrence:o-host-components": {
+            "id": "occurrence:o-host-components",
+            "entity": "entity:host-components",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-host-skills": {
+            "id": "occurrence:o-host-skills",
+            "entity": "entity:host-skills",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-plugin": {
+            "id": "occurrence:o-host-plugin",
+            "entity": "entity:host-plugin",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-upgrade": {
+            "id": "occurrence:o-host-upgrade",
+            "entity": "entity:host-upgrade",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-doctor": {
+            "id": "occurrence:o-host-doctor",
+            "entity": "entity:host-doctor",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-host-scope": {
+            "id": "occurrence:o-host-scope",
+            "entity": "entity:host-scope",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-host-components"
+          },
+          "occurrence:o-registry-components": {
+            "id": "occurrence:o-registry-components",
+            "entity": "entity:registry-components",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-registry-definitions": {
+            "id": "occurrence:o-registry-definitions",
+            "entity": "entity:registry-definitions",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-registry-daemon": {
+            "id": "occurrence:o-registry-daemon",
+            "entity": "entity:registry-daemon",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-registry-memory": {
+            "id": "occurrence:o-registry-memory",
+            "entity": "entity:registry-memory",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.21.o-registry-components"
+          },
+          "occurrence:o-external-skills": {
+            "id": "occurrence:o-external-skills",
+            "entity": "entity:external-skills",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-engram-memory": {
+            "id": "occurrence:o-engram-memory",
+            "entity": "entity:engram-memory",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.17.o-external-skills"
+          },
+          "occurrence:o-legend-integration-r9": {
+            "id": "occurrence:o-legend-integration-r9",
+            "entity": "entity:legend-integration-r9",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.23.o-legend-integration-r9"
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.23.o-legend-integration-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-run-h2a": {
+            "id": "occurrence:e-dc-run-h2a",
+            "relation": "relation:dc-run-h2a",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-h2a-run-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-h2a-skill"
+              }
+            ]
+          },
+          "occurrence:e-in-dist-engram": {
+            "id": "occurrence:e-in-dist-engram",
+            "relation": "relation:in-dist-engram",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-host-components",
+                "semanticTarget": "entity:host-skills",
+                "sourceOccurrence": "occurrence:o-host-skills"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-external-skills",
+                "semanticTarget": "entity:engram-memory",
+                "sourceOccurrence": "occurrence:o-engram-memory"
+              }
+            ]
+          },
+          "occurrence:e-in-h2a-dist": {
+            "id": "occurrence:e-in-h2a-dist",
+            "relation": "relation:in-h2a-dist",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-coordination-skills",
+                "semanticTarget": "entity:h2a-skill",
+                "sourceOccurrence": "occurrence:o-h2a-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-host-components",
+                "semanticTarget": "entity:host-skills",
+                "sourceOccurrence": "occurrence:o-host-skills"
+              }
+            ]
+          },
+          "occurrence:e-in-upgrade-doctor": {
+            "id": "occurrence:e-in-upgrade-doctor",
+            "relation": "relation:in-upgrade-doctor",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-host-upgrade"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-host-doctor"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.21.o-coordination-skills": {
+            "id": "grp.21.o-coordination-skills",
+            "occurrence": "occurrence:o-coordination-skills",
+            "collapsed": true
+          },
+          "grp.17.o-host-components": {
+            "id": "grp.17.o-host-components",
+            "occurrence": "occurrence:o-host-components",
+            "collapsed": true
+          },
+          "grp.21.o-registry-components": {
+            "id": "grp.21.o-registry-components",
+            "occurrence": "occurrence:o-registry-components",
+            "collapsed": true
+          },
+          "grp.17.o-external-skills": {
+            "id": "grp.17.o-external-skills",
+            "occurrence": "occurrence:o-external-skills",
+            "collapsed": true
+          },
+          "grp.23.o-legend-integration-r9": {
+            "id": "grp.23.o-legend-integration-r9",
+            "occurrence": "occurrence:o-legend-integration-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-coordination-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Guider les échanges"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-engram-memory": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Mémoire engram",
+                  "footer": "repo: engram · @sentropic/engram",
+                  "body": "Consulter la mémoire",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-external-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: engram",
+                  "subtitle": "Apporter le contexte"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-h2a-run-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Lancer les sessions",
+                  "detail": "chargé par: h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-h2a-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Coordonner les agents",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Équiper les agents"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-doctor": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Diagnostic",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Vérifier l’installation",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-plugin": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Plugins / hooks",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Intégrer les hôtes",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-scope": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Garde workspace",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Borner les écritures",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-skills": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Distribution",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Équiper les hôtes",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-host-upgrade": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Mise à jour",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Réappliquer l’équipement",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-integration-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Exécution / distribution)"
+                }
+              },
+              "occurrence:o-registry-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Composer les ressources"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-daemon": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Raccord daemon",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Joindre le service",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-definitions": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Définitions",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Composer le registre",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-registry-memory": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Mémoire",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Fournir les ressources",
+                  "detail": "exécuté par: h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-integration-r9": {
+                "order": [
+                  "entity:key-accent",
+                  "entity:key-brand"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-integration-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              },
+              {
+                "legendRef": "entity:legend-integration-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-coordination-skills",
+            "targetOccurrence": "occurrence:o-host-components",
+            "label": "lance · documente la distribution",
+            "relationIds": [
+              "relation:in-h2a-dist"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-in-h2a-dist"
+            ]
+          },
+          "summary:s2": {
+            "id": "summary:s2",
+            "sourceOccurrence": "occurrence:o-host-components",
+            "targetOccurrence": "occurrence:o-external-skills",
+            "label": "lance · installe Mémoire engram",
+            "relationIds": [
+              "relation:in-dist-engram"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-in-dist-engram"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
