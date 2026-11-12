@@ -106,7 +106,7 @@ export type {
   SceneOccurrenceRef,
   ScenePresentation,
   SceneView,
-} from "./diagramSceneModel.js";
+} from "@sentropic/diagram-canvas/diagramSceneModel";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";
@@ -583,3 +583,7 @@ export { default as Dashboard } from "./Dashboard.svelte";
 export type { DashboardProps, DashboardNavItem, DashboardKpi } from "./Dashboard.svelte";
 export { default as Wizard } from "./Wizard.svelte";
 export type { WizardProps, WizardStep } from "./Wizard.svelte";
+
+export { createLayoutCache } from "@sentropic/diagram-canvas";
+export type { LayoutCacheConfig, LayoutCacheStats } from "@sentropic/diagram-canvas";
+export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canvas/diagramSceneModel";
