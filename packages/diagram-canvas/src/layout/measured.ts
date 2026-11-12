@@ -921,8 +921,11 @@ export function layoutMeasured(
         CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + LAST_CHILD_TO_BOTTOM_GAP,
       );
       // BLK-2: reserve U-channel headroom for labelled intra-row edges that
-      // share one shelf. A single-row container gets k × 30 px below its row
-      // so the south U-channel lane fits inside `inner(C)` (4 px insets).
+      // share one shelf. One 30 px lane below the row fits inside `inner(C)`
+      // (4 px insets); a second overlapping label needs its own staggered
+      // lane (see usedUTracks) and stays unplaced under the 32 px cap —
+      // documented as saturated (AC-21 amendment), not a wider gutter.
+      // A single lane keeps fill waste minimal (frame-fill priority).
       const packed = packedRuns.get(run.key);
       let uEdges = 0;
       if (packed !== undefined) {
@@ -942,7 +945,7 @@ export function layoutMeasured(
           if (need > baseGap) uEdges += 1;
         }
       }
-      const uExtra = uEdges * 30;
+      const uExtra = uEdges > 0 ? 30 : 0;
       const levelHeight = level.height + uExtra;
       const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * CONTENT_INSET : 0));
       outerWidths.set(id, outer);
@@ -1384,9 +1387,11 @@ export function layoutMeasured(
     // anyway, so lanes and labels inside it cost no display scale. Past it,
     // one lane and its label row are allowed on each side, no more.
     const outerLanes: number[] = [];
+    const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
     if (labelSizes.size > 0 && rects.size > 0) {
       const pitch = Math.max(...[...labelSizes.values()].map((size) => size.height)) + 2 * metrics.labelMargin;
+      const pitchX = Math.max(...[...labelSizes.values()].map((size) => size.width)) + 2 * metrics.labelMargin;
       const left = Math.min(...[...rects.values()].map((rect) => rect.x));
       const right = Math.max(...[...rects.values()].map((rect) => rect.x + rect.width));
       const width = right - left;
@@ -1404,6 +1409,14 @@ export function layoutMeasured(
       for (let lane = 1; lane <= lanes; lane += 1) {
         outerLanes.push(drawingTop - metrics.clearance - lane * pitch, drawingBottom + metrics.clearance + lane * pitch);
       }
+      // AC-25: dense folded roots need left/right outside corridors as well —
+      // the A* grid had no X lane outside the drawing, so a route that must go
+      // round via the side fell back to an obstructed elbow. One X lane per
+      // side mirrors the Y lanes above.
+      const lanesX = Math.min(labelSizes.size, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
+      for (let lane = 1; lane <= lanesX; lane += 1) {
+        outerLanesX.push(left - metrics.clearance - lane * pitchX, right + metrics.clearance + lane * pitchX);
+      }
     }
     // The title band of an expanded container is an obstacle for every route,
     // the ones that may cross the container wall included: a route leaving a
@@ -1413,9 +1426,34 @@ export function layoutMeasured(
       requests,
       clearance: metrics.clearance,
       barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band),
-      lanes: { xs: [], ys: outerLanes },
+      lanes: { xs: outerLanesX, ys: outerLanes },
     });
-    for (const id of [...routed.obstructed].sort(byString)) {
+    // AC-25: an 8 px dock exit can be blocked where a 2 px exit still threads
+    // through — the retry is local (only the obstructed requests, same rects,
+    // barriers and outer lanes, smaller inflation) and still avoids every raw
+    // card and title-band interior (2 px grown boxes contain the raw boxes).
+    // A retry that finds a clean A* route replaces the obstructed elbow.
+    const retryRoutes = new Map(routed.routes);
+    const retryObstructed = new Set(routed.obstructed);
+    if (retryObstructed.size > 0) {
+      const failed = new Set(retryObstructed);
+      const retryRequests = requests.filter((request) => failed.has(request.id));
+      const retried = routeEdges({
+        rects,
+        requests: retryRequests,
+        clearance: 2,
+        barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band),
+        lanes: { xs: outerLanesX, ys: outerLanes },
+      });
+      for (const [id, points] of retried.routes) {
+        if (!failed.has(id) || retried.obstructed.includes(id) || retried.escaped.includes(id)) continue;
+        // The 2 px A* route avoids all grown (hence raw) interiors by
+        // construction; keep it only when it does not add a card crossing.
+        retryRoutes.set(id, points);
+        retryObstructed.delete(id);
+      }
+    }
+    for (const id of [...retryObstructed].sort(byString)) {
       warnings.push({
         code: "route-obstructed",
         refs: [id],
@@ -1433,14 +1471,15 @@ export function layoutMeasured(
     }
 
     // Edge labels on the final routes, in ascending occurrence id; an
-    // unplaced label keeps its route.
+    // unplaced label keeps its route (AC-25 2 px retry routes replace the
+    // obstructed elbows before labels are placed).
     const entries = [...edgeLayouts.entries()]
       .sort(([left], [right]) => byString(left, right))
       .map(([id, layout]) => {
         const within = withinOf.get(id);
         return {
           id,
-          route: routed.routes.get(id)!,
+          route: retryRoutes.get(id)!,
           size: { width: layout.width, height: layout.height },
           ...(within === undefined ? {} : { within }),
           ...(labelLimit === undefined ? {} : { limit: labelLimit }),
@@ -1568,12 +1607,12 @@ export function layoutMeasured(
       filteredGraph,
       rects,
       finalDocks,
-      routed.routes,
+      retryRoutes,
       options,
       foldMetadata,
       drawnEdges,
     );
-    const bounds = unionOf(rects, routed.routes, labelBoxes);
+    const bounds = unionOf(rects, retryRoutes, labelBoxes);
     const width = bounds.width;
     const zoom = bounds.empty ? 1 : Math.min(1, Math.max(MIN_ZOOM, options.targetWidth / width));
     const camera = bounds.empty ? { x: 0, y: 0 } : { x: bounds.xmin, y: bounds.ymin };
