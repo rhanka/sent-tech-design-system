@@ -1,0 +1,3834 @@
+{
+  "caseId": "case-skills-r9",
+  "semanticDocumentId": "document:case-skills-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 23,
+    "archiRelations": 44,
+    "totalEntitiesWithLegend": 26,
+    "totalRelationsWithLegend": 46,
+    "views": 3
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire des dépôts h2a et sentropic",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "harness-branch",
+      "entityId": "entity:harness-branch",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Contrôle de branche",
+      "shortName": "Branche",
+      "purpose": "Contrôler la branche",
+      "kicker": "Composant",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: sentropic · harness",
+      "containment": {
+        "partOf": "pkg-harness",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:294-313"
+      ]
+    },
+    {
+      "id": "harness-profiles",
+      "entityId": "entity:harness-profiles",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Profils de dépôt",
+      "shortName": "Profils dépôt",
+      "purpose": "Décrire les conventions",
+      "kicker": "Composant",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: sentropic · harness",
+      "containment": {
+        "partOf": "pkg-harness",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:254-273"
+      ]
+    },
+    {
+      "id": "harness-proof",
+      "entityId": "entity:harness-proof",
+      "kind": "store",
+      "form": "jsonl",
+      "container": false,
+      "name": "VerificationRun / WorkEvent",
+      "shortName": "Contrats preuve",
+      "purpose": "Décrire les preuves",
+      "kicker": "Stockage · JSONL",
+      "detail": "lu par: CLI h2a",
+      "footer": "écrit par: plusieurs",
+      "containment": {
+        "partOf": "method-runtime",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:314-334"
+      ]
+    },
+    {
+      "id": "harness-router",
+      "entityId": "entity:harness-router",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "harness",
+      "shortName": "Routeur harnais",
+      "purpose": "Router les actes",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:55-73"
+      ]
+    },
+    {
+      "id": "harness-scope",
+      "entityId": "entity:harness-scope",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Contrôle de périmètre",
+      "shortName": "Périmètre",
+      "purpose": "Contrôler la portée",
+      "kicker": "Composant",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: sentropic · harness",
+      "containment": {
+        "partOf": "pkg-harness",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:274-293"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant le CLI h2a et le harnais",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "method-adopt",
+      "entityId": "entity:method-adopt",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "adopt",
+      "shortName": null,
+      "purpose": "Adopter la méthode",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:214-233"
+      ]
+    },
+    {
+      "id": "method-brainstorm",
+      "entityId": "entity:method-brainstorm",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "brainstorm",
+      "shortName": null,
+      "purpose": "Concevoir la solution",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:94-113"
+      ]
+    },
+    {
+      "id": "method-debug",
+      "entityId": "entity:method-debug",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "debug",
+      "shortName": null,
+      "purpose": "Trouver la cause",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:134-153"
+      ]
+    },
+    {
+      "id": "method-plan",
+      "entityId": "entity:method-plan",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "plan",
+      "shortName": null,
+      "purpose": "Établir les lots",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:114-133"
+      ]
+    },
+    {
+      "id": "method-review",
+      "entityId": "entity:method-review",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "review",
+      "shortName": null,
+      "purpose": "Confronter les avis",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:174-193"
+      ]
+    },
+    {
+      "id": "method-runtime",
+      "entityId": "entity:method-runtime",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Méthode",
+      "shortName": null,
+      "purpose": "Appliquer les conventions",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-sentropic",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:32-51"
+      ]
+    },
+    {
+      "id": "method-security",
+      "entityId": "entity:method-security",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "security",
+      "shortName": null,
+      "purpose": "Traiter la dette",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:194-213"
+      ]
+    },
+    {
+      "id": "method-skills",
+      "entityId": "entity:method-skills",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Skills méthode",
+      "shortName": null,
+      "purpose": "Orienter les actes",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:12-31"
+      ]
+    },
+    {
+      "id": "method-test",
+      "entityId": "entity:method-test",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "test",
+      "shortName": null,
+      "purpose": "Vérifier le changement",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:154-173"
+      ]
+    },
+    {
+      "id": "method-track-report",
+      "entityId": "entity:method-track-report",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "track-report",
+      "shortName": "Rapport Track",
+      "purpose": "Rapporter les faits",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:234-253"
+      ]
+    },
+    {
+      "id": "method-using-harness",
+      "entityId": "entity:method-using-harness",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "using-harness",
+      "shortName": "Socle méthode",
+      "purpose": "Appliquer la méthode",
+      "kicker": "Composant",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "pkg-h2a",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:74-93"
+      ]
+    },
+    {
+      "id": "pkg-h2a",
+      "entityId": "entity:pkg-h2a",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet npm livrant le CLI h2a et les 10 skills méthode",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "method-skills",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4",
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "pkg-harness",
+      "entityId": "entity:pkg-harness",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/harness",
+      "shortName": "harness",
+      "purpose": "Paquet des profils, contrôles et contrats de preuve",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: sentropic",
+      "containment": {
+        "partOf": "method-runtime",
+        "managedIn": "repo-sentropic",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:36-49"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo livrant les skills méthode de la famille harness",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-12",
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "repo-sentropic",
+      "entityId": "entity:repo-sentropic",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "sentropic",
+      "shortName": null,
+      "purpose": "Monorepo livrant le paquet @sentropic/harness",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:46-49"
+      ]
+    },
+    {
+      "id": "rt-h2a",
+      "entityId": "entity:rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": "CLI h2a",
+      "purpose": "Charge les skills méthode et exécute les vérifications",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "method-skills",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "ob-repo-sentropic",
+      "relationId": "relation:ob-repo-sentropic",
+      "type": "ownedBy",
+      "source": "repo-sentropic",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "mi-method-skills",
+      "relationId": "relation:mi-method-skills",
+      "type": "managedIn",
+      "source": "method-skills",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "mi-method-runtime",
+      "relationId": "relation:mi-method-runtime",
+      "type": "managedIn",
+      "source": "method-runtime",
+      "target": "repo-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a",
+      "relationId": "relation:mi-pkg-h2a",
+      "type": "managedIn",
+      "source": "pkg-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "mi-pkg-harness",
+      "relationId": "relation:mi-pkg-harness",
+      "type": "managedIn",
+      "source": "pkg-harness",
+      "target": "repo-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a",
+      "relationId": "relation:po-pkg-h2a",
+      "type": "partOf",
+      "source": "pkg-h2a",
+      "target": "method-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-pkg-harness",
+      "relationId": "relation:po-pkg-harness",
+      "type": "partOf",
+      "source": "pkg-harness",
+      "target": "method-runtime",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-rt-h2a",
+      "relationId": "relation:po-rt-h2a",
+      "type": "partOf",
+      "source": "rt-h2a",
+      "target": "method-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "ro-rt-h2a",
+      "relationId": "relation:ro-rt-h2a",
+      "type": "runsOn",
+      "source": "rt-h2a",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "da-pkg-h2a",
+      "relationId": "relation:da-pkg-h2a",
+      "type": "deployedAs",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "do-h2a-harness",
+      "relationId": "relation:do-h2a-harness",
+      "type": "dependsOn",
+      "source": "pkg-h2a",
+      "target": "pkg-harness",
+      "encoding": "arrow",
+      "verb": "dépend de",
+      "label": "dépend de · bibliothèque harness",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-harness-router",
+      "relationId": "relation:po-harness-router",
+      "type": "partOf",
+      "source": "harness-router",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-brainstorm",
+      "relationId": "relation:po-method-brainstorm",
+      "type": "partOf",
+      "source": "method-brainstorm",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-plan",
+      "relationId": "relation:po-method-plan",
+      "type": "partOf",
+      "source": "method-plan",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-debug",
+      "relationId": "relation:po-method-debug",
+      "type": "partOf",
+      "source": "method-debug",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-test",
+      "relationId": "relation:po-method-test",
+      "type": "partOf",
+      "source": "method-test",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-review",
+      "relationId": "relation:po-method-review",
+      "type": "partOf",
+      "source": "method-review",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-security",
+      "relationId": "relation:po-method-security",
+      "type": "partOf",
+      "source": "method-security",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-adopt",
+      "relationId": "relation:po-method-adopt",
+      "type": "partOf",
+      "source": "method-adopt",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-track-report",
+      "relationId": "relation:po-method-track-report",
+      "type": "partOf",
+      "source": "method-track-report",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-harness-router",
+      "relationId": "relation:lb-harness-router",
+      "type": "loadedBy",
+      "source": "harness-router",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-brainstorm",
+      "relationId": "relation:lb-method-brainstorm",
+      "type": "loadedBy",
+      "source": "method-brainstorm",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-plan",
+      "relationId": "relation:lb-method-plan",
+      "type": "loadedBy",
+      "source": "method-plan",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-debug",
+      "relationId": "relation:lb-method-debug",
+      "type": "loadedBy",
+      "source": "method-debug",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-test",
+      "relationId": "relation:lb-method-test",
+      "type": "loadedBy",
+      "source": "method-test",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-review",
+      "relationId": "relation:lb-method-review",
+      "type": "loadedBy",
+      "source": "method-review",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-security",
+      "relationId": "relation:lb-method-security",
+      "type": "loadedBy",
+      "source": "method-security",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-adopt",
+      "relationId": "relation:lb-method-adopt",
+      "type": "loadedBy",
+      "source": "method-adopt",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "lb-method-track-report",
+      "relationId": "relation:lb-method-track-report",
+      "type": "loadedBy",
+      "source": "method-track-report",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-method-using-harness",
+      "relationId": "relation:po-method-using-harness",
+      "type": "partOf",
+      "source": "method-using-harness",
+      "target": "pkg-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "eb-method-using-harness",
+      "relationId": "relation:eb-method-using-harness",
+      "type": "executedBy",
+      "source": "method-using-harness",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-harness-profiles",
+      "relationId": "relation:po-harness-profiles",
+      "type": "partOf",
+      "source": "harness-profiles",
+      "target": "pkg-harness",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "eb-harness-profiles",
+      "relationId": "relation:eb-harness-profiles",
+      "type": "executedBy",
+      "source": "harness-profiles",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-harness-scope",
+      "relationId": "relation:po-harness-scope",
+      "type": "partOf",
+      "source": "harness-scope",
+      "target": "pkg-harness",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "eb-harness-scope",
+      "relationId": "relation:eb-harness-scope",
+      "type": "executedBy",
+      "source": "harness-scope",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-harness-branch",
+      "relationId": "relation:po-harness-branch",
+      "type": "partOf",
+      "source": "harness-branch",
+      "target": "pkg-harness",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "eb-harness-branch",
+      "relationId": "relation:eb-harness-branch",
+      "type": "executedBy",
+      "source": "harness-branch",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "po-harness-proof",
+      "relationId": "relation:po-harness-proof",
+      "type": "partOf",
+      "source": "harness-proof",
+      "target": "method-runtime",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+      ]
+    },
+    {
+      "id": "ac-read-proof",
+      "relationId": "relation:ac-read-proof",
+      "type": "accesses",
+      "source": "rt-h2a",
+      "target": "harness-proof",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:314-334"
+      ]
+    },
+    {
+      "id": "ac-rt-write-proof",
+      "relationId": "relation:ac-rt-write-proof",
+      "type": "accesses",
+      "source": "rt-h2a",
+      "target": "harness-proof",
+      "encoding": "arrow",
+      "verb": "écrit",
+      "label": "écrit · enregistre les preuves",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:350-361"
+      ]
+    },
+    {
+      "id": "dc-router-socle",
+      "relationId": "relation:dc-router-socle",
+      "type": "documents",
+      "source": "harness-router",
+      "target": "method-using-harness",
+      "encoding": "arrow",
+      "verb": "documente",
+      "label": "documente · charge le socle",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:338-348"
+      ]
+    },
+    {
+      "id": "ac-socle-proof",
+      "relationId": "relation:ac-socle-proof",
+      "type": "accesses",
+      "source": "method-using-harness",
+      "target": "harness-proof",
+      "encoding": "arrow",
+      "verb": "écrit",
+      "label": "écrit · distingue les preuves",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:350-361"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "method-skills",
+          "harness-router",
+          "method-using-harness",
+          "method-brainstorm",
+          "method-plan",
+          "method-debug",
+          "method-test",
+          "method-review",
+          "method-security",
+          "method-adopt",
+          "method-track-report",
+          "method-runtime",
+          "harness-profiles",
+          "harness-scope",
+          "harness-branch",
+          "harness-proof"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Tout déplié : Skills méthode (10 cartes sœurs et 1 liaison interne) et Méthode (4 cartes) avec 1 liaison sortante."
+      },
+      "counts": {
+        "elements": 16,
+        "containers": 2,
+        "foldedContainers": 0,
+        "cards": 14,
+        "edges": 2,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "method-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Skills méthode",
+          "purpose": "Orienter les actes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-router",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Routeur harnais",
+          "purpose": "Router les actes",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-using-harness",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Composant",
+          "title": "Socle méthode",
+          "purpose": "Appliquer la méthode",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-brainstorm",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "brainstorm",
+          "purpose": "Concevoir la solution",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-plan",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "plan",
+          "purpose": "Établir les lots",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-debug",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "debug",
+          "purpose": "Trouver la cause",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-test",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "test",
+          "purpose": "Vérifier le changement",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-review",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "review",
+          "purpose": "Confronter les avis",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-security",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "security",
+          "purpose": "Traiter la dette",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-adopt",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "adopt",
+          "purpose": "Adopter la méthode",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-track-report",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Rapport Track",
+          "purpose": "Rapporter les faits",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-runtime",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Méthode",
+          "purpose": "Appliquer les conventions",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-profiles",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Profils dépôt",
+          "purpose": "Décrire les conventions",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-scope",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Périmètre",
+          "purpose": "Contrôler la portée",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-branch",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Branche",
+          "purpose": "Contrôler la branche",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-proof",
+          "kind": "store",
+          "form": "jsonl",
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Stockage · JSONL",
+          "title": "Contrats preuve",
+          "purpose": "Décrire les preuves",
+          "detail": "lu par: CLI h2a",
+          "footer": "écrit par: plusieurs",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-router-socle",
+          "type": "documents",
+          "source": "harness-router",
+          "target": "method-using-harness",
+          "verb": "documente",
+          "label": "documente · charge le socle",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "ac-socle-proof",
+          "type": "accesses",
+          "source": "method-using-harness",
+          "target": "harness-proof",
+          "verb": "écrit",
+          "label": "écrit · distingue les preuves",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-skills-r9-unfolded",
+        "semanticDocumentId": "document:case-skills-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-method-skills": {
+            "id": "occurrence:o-method-skills",
+            "entity": "entity:method-skills",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-router": {
+            "id": "occurrence:o-harness-router",
+            "entity": "entity:harness-router",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-using-harness": {
+            "id": "occurrence:o-method-using-harness",
+            "entity": "entity:method-using-harness",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-brainstorm": {
+            "id": "occurrence:o-method-brainstorm",
+            "entity": "entity:method-brainstorm",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-plan": {
+            "id": "occurrence:o-method-plan",
+            "entity": "entity:method-plan",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-debug": {
+            "id": "occurrence:o-method-debug",
+            "entity": "entity:method-debug",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-test": {
+            "id": "occurrence:o-method-test",
+            "entity": "entity:method-test",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-review": {
+            "id": "occurrence:o-method-review",
+            "entity": "entity:method-review",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-security": {
+            "id": "occurrence:o-method-security",
+            "entity": "entity:method-security",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-adopt": {
+            "id": "occurrence:o-method-adopt",
+            "entity": "entity:method-adopt",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-track-report": {
+            "id": "occurrence:o-method-track-report",
+            "entity": "entity:method-track-report",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-runtime": {
+            "id": "occurrence:o-method-runtime",
+            "entity": "entity:method-runtime",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-profiles": {
+            "id": "occurrence:o-harness-profiles",
+            "entity": "entity:harness-profiles",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-scope": {
+            "id": "occurrence:o-harness-scope",
+            "entity": "entity:harness-scope",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-branch": {
+            "id": "occurrence:o-harness-branch",
+            "entity": "entity:harness-branch",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-proof": {
+            "id": "occurrence:o-harness-proof",
+            "entity": "entity:harness-proof",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-legend-skills-r9": {
+            "id": "occurrence:o-legend-skills-r9",
+            "entity": "entity:legend-skills-r9",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1000,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-router-socle": {
+            "id": "occurrence:e-dc-router-socle",
+            "relation": "relation:dc-router-socle",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-harness-router"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-method-using-harness"
+              }
+            ]
+          },
+          "occurrence:e-ac-socle-proof": {
+            "id": "occurrence:e-ac-socle-proof",
+            "relation": "relation:ac-socle-proof",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-method-using-harness"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-harness-proof"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.15.o-method-skills": {
+            "id": "grp.15.o-method-skills",
+            "occurrence": "occurrence:o-method-skills",
+            "collapsed": false
+          },
+          "grp.16.o-method-runtime": {
+            "id": "grp.16.o-method-runtime",
+            "occurrence": "occurrence:o-method-runtime",
+            "collapsed": false
+          },
+          "grp.18.o-legend-skills-r9": {
+            "id": "grp.18.o-legend-skills-r9",
+            "occurrence": "occurrence:o-legend-skills-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-harness-branch": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Branche",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la branche",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-profiles": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Profils dépôt",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Décrire les conventions",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-proof": {
+                "form": "card",
+                "text": {
+                  "kicker": "Stockage · JSONL",
+                  "title": "Contrats preuve",
+                  "footer": "écrit par: plusieurs",
+                  "body": "Décrire les preuves",
+                  "detail": "lu par: CLI h2a"
+                },
+                "icon": "db",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-router": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Routeur harnais",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Router les actes",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-harness-scope": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Périmètre",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la portée",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-skills-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Méthode h2a)"
+                }
+              },
+              "occurrence:o-method-adopt": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Adopter la méthode",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-brainstorm": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Concevoir la solution",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-debug": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Trouver la cause",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-plan": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Établir les lots",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-review": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Confronter les avis",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-runtime": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Appliquer les conventions"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-method-security": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Traiter la dette",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Orienter les actes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-test": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Vérifier le changement",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-track-report": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Rapport Track",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Rapporter les faits",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-using-harness": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Socle méthode",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appliquer la méthode",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-skills-r9": {
+                "order": [
+                  "entity:key-accent",
+                  "entity:key-brand"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              },
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "skills-unfolded": {
+      "spec": {
+        "name": "skills-unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "method-skills",
+          "harness-router",
+          "method-using-harness",
+          "method-brainstorm",
+          "method-plan",
+          "method-debug",
+          "method-test",
+          "method-review",
+          "method-security",
+          "method-adopt",
+          "method-track-report",
+          "method-runtime",
+          "harness-profiles",
+          "harness-scope",
+          "harness-branch",
+          "harness-proof"
+        ],
+        "folds": [
+          "method-runtime"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Groupe Skills méthode déplié (10 cartes sœurs, 1 liaison interne « charge le socle ») et 1 liaison sortante vers Méthode replié."
+      },
+      "counts": {
+        "elements": 16,
+        "containers": 2,
+        "foldedContainers": 1,
+        "cards": 14,
+        "edges": 2,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "method-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Skills méthode",
+          "purpose": "Orienter les actes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-router",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Routeur harnais",
+          "purpose": "Router les actes",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-using-harness",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Composant",
+          "title": "Socle méthode",
+          "purpose": "Appliquer la méthode",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-brainstorm",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "brainstorm",
+          "purpose": "Concevoir la solution",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-plan",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "plan",
+          "purpose": "Établir les lots",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-debug",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "debug",
+          "purpose": "Trouver la cause",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-test",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "test",
+          "purpose": "Vérifier le changement",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-review",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "review",
+          "purpose": "Confronter les avis",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-security",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "security",
+          "purpose": "Traiter la dette",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-adopt",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "adopt",
+          "purpose": "Adopter la méthode",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-track-report",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Rapport Track",
+          "purpose": "Rapporter les faits",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-runtime",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Méthode",
+          "purpose": "Appliquer les conventions",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-profiles",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Profils dépôt",
+          "purpose": "Décrire les conventions",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-scope",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Périmètre",
+          "purpose": "Contrôler la portée",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-branch",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Branche",
+          "purpose": "Contrôler la branche",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-proof",
+          "kind": "store",
+          "form": "jsonl",
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Stockage · JSONL",
+          "title": "Contrats preuve",
+          "purpose": "Décrire les preuves",
+          "detail": "lu par: CLI h2a",
+          "footer": "écrit par: plusieurs",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ac-socle-proof",
+          "type": "accesses",
+          "source": "method-using-harness",
+          "target": "method-runtime",
+          "verb": "écrit",
+          "label": "écrit · distingue les preuves",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-router-socle",
+          "type": "documents",
+          "source": "harness-router",
+          "target": "method-using-harness",
+          "verb": "documente",
+          "label": "documente · charge le socle",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "method-using-harness",
+          "target": "method-runtime",
+          "label": "écrit · distingue les preuves",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "ac-socle-proof"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-skills-r9-skills-unfolded",
+        "semanticDocumentId": "document:case-skills-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-method-skills": {
+            "id": "occurrence:o-method-skills",
+            "entity": "entity:method-skills",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-router": {
+            "id": "occurrence:o-harness-router",
+            "entity": "entity:harness-router",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-using-harness": {
+            "id": "occurrence:o-method-using-harness",
+            "entity": "entity:method-using-harness",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-brainstorm": {
+            "id": "occurrence:o-method-brainstorm",
+            "entity": "entity:method-brainstorm",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-plan": {
+            "id": "occurrence:o-method-plan",
+            "entity": "entity:method-plan",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-debug": {
+            "id": "occurrence:o-method-debug",
+            "entity": "entity:method-debug",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-test": {
+            "id": "occurrence:o-method-test",
+            "entity": "entity:method-test",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-review": {
+            "id": "occurrence:o-method-review",
+            "entity": "entity:method-review",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-security": {
+            "id": "occurrence:o-method-security",
+            "entity": "entity:method-security",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-adopt": {
+            "id": "occurrence:o-method-adopt",
+            "entity": "entity:method-adopt",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-track-report": {
+            "id": "occurrence:o-method-track-report",
+            "entity": "entity:method-track-report",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-runtime": {
+            "id": "occurrence:o-method-runtime",
+            "entity": "entity:method-runtime",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-profiles": {
+            "id": "occurrence:o-harness-profiles",
+            "entity": "entity:harness-profiles",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-scope": {
+            "id": "occurrence:o-harness-scope",
+            "entity": "entity:harness-scope",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-branch": {
+            "id": "occurrence:o-harness-branch",
+            "entity": "entity:harness-branch",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-proof": {
+            "id": "occurrence:o-harness-proof",
+            "entity": "entity:harness-proof",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-legend-skills-r9": {
+            "id": "occurrence:o-legend-skills-r9",
+            "entity": "entity:legend-skills-r9",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1000,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ac-socle-proof": {
+            "id": "occurrence:e-ac-socle-proof",
+            "relation": "relation:ac-socle-proof",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-method-using-harness"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-method-runtime",
+                "semanticTarget": "entity:harness-proof",
+                "sourceOccurrence": "occurrence:o-harness-proof"
+              }
+            ]
+          },
+          "occurrence:e-dc-router-socle": {
+            "id": "occurrence:e-dc-router-socle",
+            "relation": "relation:dc-router-socle",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-harness-router"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-method-using-harness"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.15.o-method-skills": {
+            "id": "grp.15.o-method-skills",
+            "occurrence": "occurrence:o-method-skills",
+            "collapsed": false
+          },
+          "grp.16.o-method-runtime": {
+            "id": "grp.16.o-method-runtime",
+            "occurrence": "occurrence:o-method-runtime",
+            "collapsed": true
+          },
+          "grp.18.o-legend-skills-r9": {
+            "id": "grp.18.o-legend-skills-r9",
+            "occurrence": "occurrence:o-legend-skills-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-harness-branch": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Branche",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la branche",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-profiles": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Profils dépôt",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Décrire les conventions",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-proof": {
+                "form": "card",
+                "text": {
+                  "kicker": "Stockage · JSONL",
+                  "title": "Contrats preuve",
+                  "footer": "écrit par: plusieurs",
+                  "body": "Décrire les preuves",
+                  "detail": "lu par: CLI h2a"
+                },
+                "icon": "db",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-router": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Routeur harnais",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Router les actes",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-harness-scope": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Périmètre",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la portée",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-skills-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Méthode h2a)"
+                }
+              },
+              "occurrence:o-method-adopt": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Adopter la méthode",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-brainstorm": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Concevoir la solution",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-debug": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Trouver la cause",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-plan": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Établir les lots",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-review": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Confronter les avis",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-runtime": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Appliquer les conventions"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-method-security": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Traiter la dette",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Orienter les actes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-test": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Vérifier le changement",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-track-report": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Rapport Track",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Rapporter les faits",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-using-harness": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Socle méthode",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appliquer la méthode",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-skills-r9": {
+                "order": [
+                  "entity:key-accent",
+                  "entity:key-brand"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              },
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-method-using-harness",
+            "targetOccurrence": "occurrence:o-method-runtime",
+            "label": "écrit · distingue les preuves",
+            "relationIds": [
+              "relation:ac-socle-proof"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-ac-socle-proof"
+            ]
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "method-skills",
+          "harness-router",
+          "method-using-harness",
+          "method-brainstorm",
+          "method-plan",
+          "method-debug",
+          "method-test",
+          "method-review",
+          "method-security",
+          "method-adopt",
+          "method-track-report",
+          "method-runtime",
+          "harness-profiles",
+          "harness-scope",
+          "harness-branch",
+          "harness-proof"
+        ],
+        "folds": [
+          "method-skills",
+          "method-runtime"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "État replié à 2 groupes (Skills méthode → Méthode) reliés par la synthèse « écrit · distingue les preuves »."
+      },
+      "counts": {
+        "elements": 16,
+        "containers": 2,
+        "foldedContainers": 2,
+        "cards": 14,
+        "edges": 2,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "method-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Skills méthode",
+          "purpose": "Orienter les actes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-router",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Routeur harnais",
+          "purpose": "Router les actes",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-using-harness",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Composant",
+          "title": "Socle méthode",
+          "purpose": "Appliquer la méthode",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-brainstorm",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "brainstorm",
+          "purpose": "Concevoir la solution",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-plan",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "plan",
+          "purpose": "Établir les lots",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-debug",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "debug",
+          "purpose": "Trouver la cause",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-test",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "test",
+          "purpose": "Vérifier le changement",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-review",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "review",
+          "purpose": "Confronter les avis",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-security",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "security",
+          "purpose": "Traiter la dette",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-adopt",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "adopt",
+          "purpose": "Adopter la méthode",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-track-report",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "method-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Rapport Track",
+          "purpose": "Rapporter les faits",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "method-runtime",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Méthode",
+          "purpose": "Appliquer les conventions",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-profiles",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Profils dépôt",
+          "purpose": "Décrire les conventions",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-scope",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Périmètre",
+          "purpose": "Contrôler la portée",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-branch",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Composant",
+          "title": "Branche",
+          "purpose": "Contrôler la branche",
+          "detail": "exécuté par: CLI h2a",
+          "footer": "repo: sentropic · harness",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "harness-proof",
+          "kind": "store",
+          "form": "jsonl",
+          "container": false,
+          "folded": false,
+          "parentId": "method-runtime",
+          "kicker": "Stockage · JSONL",
+          "title": "Contrats preuve",
+          "purpose": "Décrire les preuves",
+          "detail": "lu par: CLI h2a",
+          "footer": "écrit par: plusieurs",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ac-socle-proof",
+          "type": "accesses",
+          "source": "method-skills",
+          "target": "method-runtime",
+          "verb": "écrit",
+          "label": "écrit · distingue les preuves",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-router-socle",
+          "type": "documents",
+          "source": "harness-router",
+          "target": "method-using-harness",
+          "verb": "documente",
+          "label": "documente · charge le socle",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "method-skills",
+          "target": "method-runtime",
+          "label": "écrit · distingue les preuves",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "ac-socle-proof"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-skills-r9-folded",
+        "semanticDocumentId": "document:case-skills-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-method-skills": {
+            "id": "occurrence:o-method-skills",
+            "entity": "entity:method-skills",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-router": {
+            "id": "occurrence:o-harness-router",
+            "entity": "entity:harness-router",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-using-harness": {
+            "id": "occurrence:o-method-using-harness",
+            "entity": "entity:method-using-harness",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-brainstorm": {
+            "id": "occurrence:o-method-brainstorm",
+            "entity": "entity:method-brainstorm",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-plan": {
+            "id": "occurrence:o-method-plan",
+            "entity": "entity:method-plan",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-debug": {
+            "id": "occurrence:o-method-debug",
+            "entity": "entity:method-debug",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-test": {
+            "id": "occurrence:o-method-test",
+            "entity": "entity:method-test",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-review": {
+            "id": "occurrence:o-method-review",
+            "entity": "entity:method-review",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-security": {
+            "id": "occurrence:o-method-security",
+            "entity": "entity:method-security",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-adopt": {
+            "id": "occurrence:o-method-adopt",
+            "entity": "entity:method-adopt",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-track-report": {
+            "id": "occurrence:o-method-track-report",
+            "entity": "entity:method-track-report",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-method-skills"
+          },
+          "occurrence:o-method-runtime": {
+            "id": "occurrence:o-method-runtime",
+            "entity": "entity:method-runtime",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-harness-profiles": {
+            "id": "occurrence:o-harness-profiles",
+            "entity": "entity:harness-profiles",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-scope": {
+            "id": "occurrence:o-harness-scope",
+            "entity": "entity:harness-scope",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-branch": {
+            "id": "occurrence:o-harness-branch",
+            "entity": "entity:harness-branch",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-harness-proof": {
+            "id": "occurrence:o-harness-proof",
+            "entity": "entity:harness-proof",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.16.o-method-runtime"
+          },
+          "occurrence:o-legend-skills-r9": {
+            "id": "occurrence:o-legend-skills-r9",
+            "entity": "entity:legend-skills-r9",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1000,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-legend-skills-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ac-socle-proof": {
+            "id": "occurrence:e-ac-socle-proof",
+            "relation": "relation:ac-socle-proof",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-method-skills",
+                "semanticTarget": "entity:method-using-harness",
+                "sourceOccurrence": "occurrence:o-method-using-harness"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-method-runtime",
+                "semanticTarget": "entity:harness-proof",
+                "sourceOccurrence": "occurrence:o-harness-proof"
+              }
+            ]
+          },
+          "occurrence:e-dc-router-socle": {
+            "id": "occurrence:e-dc-router-socle",
+            "relation": "relation:dc-router-socle",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-harness-router"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-method-using-harness"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.15.o-method-skills": {
+            "id": "grp.15.o-method-skills",
+            "occurrence": "occurrence:o-method-skills",
+            "collapsed": true
+          },
+          "grp.16.o-method-runtime": {
+            "id": "grp.16.o-method-runtime",
+            "occurrence": "occurrence:o-method-runtime",
+            "collapsed": true
+          },
+          "grp.18.o-legend-skills-r9": {
+            "id": "grp.18.o-legend-skills-r9",
+            "occurrence": "occurrence:o-legend-skills-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-harness-branch": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Branche",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la branche",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-profiles": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Profils dépôt",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Décrire les conventions",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-proof": {
+                "form": "card",
+                "text": {
+                  "kicker": "Stockage · JSONL",
+                  "title": "Contrats preuve",
+                  "footer": "écrit par: plusieurs",
+                  "body": "Décrire les preuves",
+                  "detail": "lu par: CLI h2a"
+                },
+                "icon": "db",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-harness-router": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Routeur harnais",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Router les actes",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-harness-scope": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Périmètre",
+                  "footer": "repo: sentropic · harness",
+                  "body": "Contrôler la portée",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-skills-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Méthode h2a)"
+                }
+              },
+              "occurrence:o-method-adopt": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Adopter la méthode",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-brainstorm": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Concevoir la solution",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-debug": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Trouver la cause",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-plan": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Établir les lots",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-review": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Confronter les avis",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-runtime": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Appliquer les conventions"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-method-security": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Traiter la dette",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Orienter les actes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-test": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Vérifier le changement",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-track-report": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Rapport Track",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Rapporter les faits",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-method-using-harness": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Socle méthode",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appliquer la méthode",
+                  "detail": "exécuté par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-skills-r9": {
+                "order": [
+                  "entity:key-accent",
+                  "entity:key-brand"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              },
+              {
+                "legendRef": "entity:legend-skills-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-method-skills",
+            "targetOccurrence": "occurrence:o-method-runtime",
+            "label": "écrit · distingue les preuves",
+            "relationIds": [
+              "relation:ac-socle-proof"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-ac-socle-proof"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

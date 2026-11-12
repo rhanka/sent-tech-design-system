@@ -1,0 +1,2281 @@
+{
+  "documentId": "document:case-skills-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-sentropic": {
+      "id": "entity:act-sentropic",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "org"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équipe propriétaire des dépôts h2a et sentropic"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-h2a": {
+      "id": "entity:repo-h2a",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/h2a"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo livrant les skills méthode de la famille harness"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-12"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-sentropic": {
+      "id": "entity:repo-sentropic",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/sentropic"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo livrant le paquet @sentropic/harness"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:46-49"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-poste": {
+      "id": "entity:host-poste",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Poste de travail"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "workstation"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Poste local exécutant le CLI h2a et le harnais"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-skills": {
+      "id": "entity:method-skills",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Skills méthode"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Orienter les actes"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:12-31"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-runtime": {
+      "id": "entity:method-runtime",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Méthode"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Appliquer les conventions"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:32-51"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-h2a": {
+      "id": "entity:pkg-h2a",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant le CLI h2a et les 10 skills méthode"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-harness": {
+      "id": "entity:pkg-harness",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/harness"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "harness"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.1.0"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet des profils, contrôles et contrats de preuve"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:36-49"
+            }
+          ]
+        }
+      }
+    },
+    "entity:rt-h2a": {
+      "id": "entity:rt-h2a",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "CLI h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Charge les skills méthode et exécute les vérifications"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "entity:harness-router": {
+      "id": "entity:harness-router",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "harness"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Routeur harnais"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Router les actes"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:55-73"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-using-harness": {
+      "id": "entity:method-using-harness",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "using-harness"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Socle méthode"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Appliquer la méthode"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:74-93"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-brainstorm": {
+      "id": "entity:method-brainstorm",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "brainstorm"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Concevoir la solution"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:94-113"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-plan": {
+      "id": "entity:method-plan",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "plan"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Établir les lots"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:114-133"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-debug": {
+      "id": "entity:method-debug",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "debug"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Trouver la cause"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:134-153"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-test": {
+      "id": "entity:method-test",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "test"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Vérifier le changement"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:154-173"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-review": {
+      "id": "entity:method-review",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "review"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Confronter les avis"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:174-193"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-security": {
+      "id": "entity:method-security",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "security"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Traiter la dette"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:194-213"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-adopt": {
+      "id": "entity:method-adopt",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "adopt"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Adopter la méthode"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:214-233"
+            }
+          ]
+        }
+      }
+    },
+    "entity:method-track-report": {
+      "id": "entity:method-track-report",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "track-report"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Rapport Track"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Rapporter les faits"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:234-253"
+            }
+          ]
+        }
+      }
+    },
+    "entity:harness-profiles": {
+      "id": "entity:harness-profiles",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Profils de dépôt"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Profils dépôt"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Décrire les conventions"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:254-273"
+            }
+          ]
+        }
+      }
+    },
+    "entity:harness-scope": {
+      "id": "entity:harness-scope",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Contrôle de périmètre"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Périmètre"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Contrôler la portée"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:274-293"
+            }
+          ]
+        }
+      }
+    },
+    "entity:harness-branch": {
+      "id": "entity:harness-branch",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Contrôle de branche"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Branche"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Contrôler la branche"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:294-313"
+            }
+          ]
+        }
+      }
+    },
+    "entity:harness-proof": {
+      "id": "entity:harness-proof",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "VerificationRun / WorkEvent"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Contrats preuve"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "jsonl"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Décrire les preuves"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:314-334"
+            }
+          ]
+        }
+      }
+    },
+    "entity:legend-skills-r9": {
+      "id": "entity:legend-skills-r9",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Teintes Méthode h2a (r9)"
+        }
+      }
+    },
+    "entity:key-accent": {
+      "id": "entity:key-accent",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Skills méthode (@sentropic/h2a)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        }
+      }
+    },
+    "entity:key-brand": {
+      "id": "entity:key-brand",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Composants de méthode (@sentropic/harness)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ob-repo-h2a": {
+      "id": "relation:ob-repo-h2a",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ob-repo-sentropic": {
+      "id": "relation:ob-repo-sentropic",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-sentropic"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-poste": {
+      "id": "relation:op-poste",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-poste"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-method-skills": {
+      "id": "relation:mi-method-skills",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-method-runtime": {
+      "id": "relation:mi-method-runtime",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-runtime"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-h2a": {
+      "id": "relation:mi-pkg-h2a",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-harness": {
+      "id": "relation:mi-pkg-harness",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-harness"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-h2a": {
+      "id": "relation:po-pkg-h2a",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:method-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-harness": {
+      "id": "relation:po-pkg-harness",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-harness"
+        },
+        {
+          "role": "target",
+          "target": "entity:method-runtime"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-h2a": {
+      "id": "relation:po-rt-h2a",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:method-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-h2a": {
+      "id": "relation:ro-rt-h2a",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-pkg-h2a": {
+      "id": "relation:da-pkg-h2a",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · binaire h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-h2a-harness": {
+      "id": "relation:do-h2a-harness",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-harness"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · bibliothèque harness"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-harness-router": {
+      "id": "relation:po-harness-router",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-router"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-brainstorm": {
+      "id": "relation:po-method-brainstorm",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-brainstorm"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-plan": {
+      "id": "relation:po-method-plan",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-plan"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-debug": {
+      "id": "relation:po-method-debug",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-debug"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-test": {
+      "id": "relation:po-method-test",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-test"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-review": {
+      "id": "relation:po-method-review",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-review"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-security": {
+      "id": "relation:po-method-security",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-security"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-adopt": {
+      "id": "relation:po-method-adopt",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-adopt"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-track-report": {
+      "id": "relation:po-method-track-report",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-track-report"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-harness-router": {
+      "id": "relation:lb-harness-router",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-router"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-brainstorm": {
+      "id": "relation:lb-method-brainstorm",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-brainstorm"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-plan": {
+      "id": "relation:lb-method-plan",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-plan"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-debug": {
+      "id": "relation:lb-method-debug",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-debug"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-test": {
+      "id": "relation:lb-method-test",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-test"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-review": {
+      "id": "relation:lb-method-review",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-review"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-security": {
+      "id": "relation:lb-method-security",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-security"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-adopt": {
+      "id": "relation:lb-method-adopt",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-adopt"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-method-track-report": {
+      "id": "relation:lb-method-track-report",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-track-report"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-method-using-harness": {
+      "id": "relation:po-method-using-harness",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-using-harness"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-method-using-harness": {
+      "id": "relation:eb-method-using-harness",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-using-harness"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-harness-profiles": {
+      "id": "relation:po-harness-profiles",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-profiles"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-harness"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-harness-profiles": {
+      "id": "relation:eb-harness-profiles",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-profiles"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-harness-scope": {
+      "id": "relation:po-harness-scope",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-scope"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-harness"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-harness-scope": {
+      "id": "relation:eb-harness-scope",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-scope"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-harness-branch": {
+      "id": "relation:po-harness-branch",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-branch"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-harness"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-harness-branch": {
+      "id": "relation:eb-harness-branch",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-branch"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-harness-proof": {
+      "id": "relation:po-harness-proof",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-proof"
+        },
+        {
+          "role": "target",
+          "target": "entity:method-runtime"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:2-516"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-read-proof": {
+      "id": "relation:ac-read-proof",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:harness-proof"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:314-334"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-rt-write-proof": {
+      "id": "relation:ac-rt-write-proof",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:harness-proof"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · enregistre les preuves"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:350-361"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-router-socle": {
+      "id": "relation:dc-router-socle",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:harness-router"
+        },
+        {
+          "role": "target",
+          "target": "entity:method-using-harness"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · charge le socle"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:338-348"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-socle-proof": {
+      "id": "relation:ac-socle-proof",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:method-using-harness"
+        },
+        {
+          "role": "target",
+          "target": "entity:harness-proof"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · distingue les preuves"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:350-361"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ct-key-accent": {
+      "id": "relation:ct-key-accent",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-skills-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-accent"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-brand": {
+      "id": "relation:ct-key-brand",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-skills-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-brand"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}

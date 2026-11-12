@@ -1,0 +1,3890 @@
+{
+  "documentId": "document:ajout-preprod",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-ops": {
+      "id": "entity:act-ops",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Équipe Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:188-197"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Opère le cluster et valide la prod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "team"
+        }
+      }
+    },
+    "entity:repo-sentropic": {
+      "id": "entity:repo-sentropic",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:1-19"
+            }
+          ]
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo produit, IdP et manifestes k8s"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/sentropic"
+        }
+      }
+    },
+    "entity:host-ci": {
+      "id": "entity:host-ci",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "GitHub Actions"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:182-189"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:120-126"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "GitHub CI"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Exécute les builds et le CD"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cloud-project"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:host-k8s-prod": {
+      "id": "entity:host-k8s-prod",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Namespace sentropic (prod)"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-12"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "k8s prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Namespace prod sur le cluster OVH"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cluster"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:host-k8s-preprod": {
+      "id": "entity:host-k8s-preprod",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Namespace sentropic-preprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:1-15"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:84-99"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "k8s préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Namespace préprod isolé sur OVH"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cluster"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:sys-ci": {
+      "id": "entity:sys-ci",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Train CI/CD"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:38-55"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Train CI"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Publie les images et promeut en prod"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:pkg-deploy": {
+      "id": "entity:pkg-deploy",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "deploy/k8s"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/kustomization.yaml:1-18"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "k8s"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Base Kustomize et overlays par palier"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "app"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:cmp-repin": {
+      "id": "entity:cmp-repin",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "preprod-repin"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:31-42"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "repin"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Fige les digests de l'overlay préprod"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:art-overlay-prod": {
+      "id": "entity:art-overlay-prod",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "overlays/prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-30"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:1-58"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "ovl-prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Manifestes Kustomize du palier prod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "manifest"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:art-overlay-preprod": {
+      "id": "entity:art-overlay-preprod",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "overlays/preprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:1-42"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod-a4/kustomization.yaml:1-10"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "ovl-préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Manifestes Kustomize du sas préprod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "manifest"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:rt-cd-legacy": {
+      "id": "entity:rt-cd-legacy",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "deploy-k8s direct"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:89-92"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:246-250"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "deploy-k8s"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Déploie main en prod sans sas"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "job"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:rt-cd-preprod": {
+      "id": "entity:rt-cd-preprod",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "deploy-preprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:238-245"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "cd-préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Déploie chaque fusion main en préprod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "job"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:rt-promote-prod": {
+      "id": "entity:rt-promote-prod",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "release-prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:44-48"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:246-250"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "promo-prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Promeut en prod le digest validé"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "job"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:sys-prod": {
+      "id": "entity:sys-prod",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Palier prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:1-58"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Domaine public sentropic.sent-tech.ca"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:pkg-api": {
+      "id": "entity:pkg-api",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic-api"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:3-8"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "api"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Image unique API produit et IdP"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "app"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:cmp-idp-export": {
+      "id": "entity:cmp-idp-export",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "export-prod.sql"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:1-14"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "export-sql"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Exporte les comptes sans session"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:rt-sync-export": {
+      "id": "entity:rt-sync-export",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "idp-export-prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:1-14"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "export G7"
+        },
+        "role": {
+          "kind": "text",
+          "value": "CronJob d'export d'identité prod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "job"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:svc-prod-ui": {
+      "id": "entity:svc-prod-ui",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "UI et API prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:12-36"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "API prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert l'application et l'API produit"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:svc-prod-idp": {
+      "id": "entity:svc-prod-idp",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "IdP prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-36"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:38-70"
+            }
+          ]
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert auth.sent-tech.ca et OIDC"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:api-prod-http": {
+      "id": "entity:api-prod-http",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Hôtes prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:23-69"
+            }
+          ]
+        },
+        "role": {
+          "kind": "text",
+          "value": "Routes publiques prod et IdP"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "http"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:st-prod-db": {
+      "id": "entity:st-prod-db",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Postgres prod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:53-55"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:9-13"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "PG prod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Base primaire du namespace prod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "database"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    },
+    "entity:sys-preprod": {
+      "id": "entity:sys-preprod",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Palier préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:1-30"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:1-64"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sas isolé preprod.sentropic"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:pkg-sync": {
+      "id": "entity:pkg-sync",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "idp-identity-sync"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:1-11"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "sync"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Import SQL et réécriture d'hôtes"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "app"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:cmp-host-map": {
+      "id": "entity:cmp-host-map",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "import-preprod.sql"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-auth-idp-config.yaml:8-32"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "import-sql"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Réécrit les origines OAuth préprod"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:art-host-map": {
+      "id": "entity:art-host-map",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "host-map.csv"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/host-map.csv:1-4"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/client-map.csv:1-2"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "host-map"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Table de réécriture des hôtes"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "manifest"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:rt-sync-import": {
+      "id": "entity:rt-sync-import",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "idp-import-preprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:1-11"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "import G7"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Importe les comptes sans session"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "job"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:svc-preprod-ui": {
+      "id": "entity:svc-preprod-ui",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "UI et API préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:1-37"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:48-88"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "API préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert la préprod et le serveur MCP"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:svc-preprod-idp": {
+      "id": "entity:svc-preprod-idp",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "IdP préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-auth-idp-config.yaml:33-49"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "IdP préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert preprod.auth avec RP ID parent"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:api-preprod-http": {
+      "id": "entity:api-preprod-http",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Hôtes préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:22-64"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "HTTP préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Routes preprod.sentropic et auth"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "http"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:api-preprod-mcp": {
+      "id": "entity:api-preprod-mcp",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "MCP préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:48-103"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "MCP préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Serveur MCP actif sur /api/v1/mcp"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "mcp"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:st-preprod-db": {
+      "id": "entity:st-preprod-db",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Postgres préprod"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:97-99"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-postgres-storageclass.yaml:1-12"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "PG préprod"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Base dédiée sur PVC isolé préprod"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "database"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:legend-preprod": {
+      "id": "entity:legend-preprod",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Paliers de déploiement"
+        }
+      }
+    },
+    "entity:key-ci": {
+      "id": "entity:key-ci",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Train CI/CD et promotion"
+        },
+        "category": {
+          "kind": "text",
+          "value": "train-ci"
+        }
+      }
+    },
+    "entity:key-preprod": {
+      "id": "entity:key-preprod",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sas préprod isolé"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-preprod"
+        }
+      }
+    },
+    "entity:key-prod": {
+      "id": "entity:key-prod",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Palier prod gouverné"
+        },
+        "category": {
+          "kind": "text",
+          "value": "palier-prod"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ow-repo-sentropic": {
+      "id": "relation:ow-repo-sentropic",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-sentropic"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:6-10"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-host-ci": {
+      "id": "relation:op-host-ci",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-ci"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:216-225"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-host-prod": {
+      "id": "relation:op-host-prod",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-k8s-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:6-10"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-host-preprod": {
+      "id": "relation:op-host-preprod",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-k8s-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:93-99"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-ci": {
+      "id": "relation:mi-sys-ci",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-ci"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:236-254"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-deploy": {
+      "id": "relation:po-pkg-deploy",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-deploy"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:12-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-repin": {
+      "id": "relation:po-cmp-repin",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-repin"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-deploy"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:31-35"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-art-prod": {
+      "id": "relation:po-art-prod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-deploy"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-art-preprod": {
+      "id": "relation:po-art-preprod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-deploy"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-legacy": {
+      "id": "relation:po-rt-legacy",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-legacy"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:120-126"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-legacy": {
+      "id": "relation:ro-rt-legacy",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-legacy"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:89-92"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-legacy": {
+      "id": "relation:da-rt-legacy",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-deploy"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-cd-legacy"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:89-92"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · job direct"
+        }
+      }
+    },
+    "relation:dc-art-prod-legacy": {
+      "id": "relation:dc-art-prod-legacy",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-cd-legacy"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-15"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · cible prod"
+        }
+      }
+    },
+    "relation:po-rt-preprod": {
+      "id": "relation:po-rt-preprod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:238-245"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-preprod": {
+      "id": "relation:ro-rt-preprod",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:238-245"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-preprod": {
+      "id": "relation:da-rt-preprod",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-deploy"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-cd-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:238-245"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · CD préprod"
+        }
+      }
+    },
+    "relation:eb-repin": {
+      "id": "relation:eb-repin",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-repin"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-cd-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:31-35"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-art-preprod": {
+      "id": "relation:lb-art-preprod",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-cd-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:88-90"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-art-preprod": {
+      "id": "relation:dc-art-preprod",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:cmp-repin"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:31-42"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · digests figés"
+        }
+      }
+    },
+    "relation:po-rt-promote": {
+      "id": "relation:po-rt-promote",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-promote-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:44-48"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-promote": {
+      "id": "relation:ro-rt-promote",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-promote-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-ci"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:246-250"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-promote": {
+      "id": "relation:da-rt-promote",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-deploy"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-promote-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:246-250"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · promotion prod"
+        }
+      }
+    },
+    "relation:lb-art-prod-promote": {
+      "id": "relation:lb-art-prod-promote",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-promote-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:191-196"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-art-prod-promote": {
+      "id": "relation:dc-art-prod-promote",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-overlay-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-promote-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:191-196"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · promotion prod"
+        }
+      }
+    },
+    "relation:mi-sys-prod": {
+      "id": "relation:mi-sys-prod",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-api": {
+      "id": "relation:po-pkg-api",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-export": {
+      "id": "relation:po-cmp-export",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-idp-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:9-13"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-export": {
+      "id": "relation:po-rt-export",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:1-7"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-export": {
+      "id": "relation:ro-rt-export",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:3"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-export": {
+      "id": "relation:da-rt-export",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-export"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:5-11"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · export G7"
+        }
+      }
+    },
+    "relation:eb-cmp-export": {
+      "id": "relation:eb-cmp-export",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-idp-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-export"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-svc-prod-ui": {
+      "id": "relation:po-svc-prod-ui",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/kustomization.yaml:1-12"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-prod-ui": {
+      "id": "relation:ro-svc-prod-ui",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/kustomization.yaml:1-10"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-prod-ui": {
+      "id": "relation:op-svc-prod-ui",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:191-196"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-svc-prod-ui": {
+      "id": "relation:da-svc-prod-ui",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:svc-prod-ui"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-25"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · service prod"
+        }
+      }
+    },
+    "relation:po-svc-prod-idp": {
+      "id": "relation:po-svc-prod-idp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-prod-idp": {
+      "id": "relation:ro-svc-prod-idp",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:46-70"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-prod-idp": {
+      "id": "relation:op-svc-prod-idp",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-prod": {
+      "id": "relation:po-api-prod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-prod-http"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:23-69"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-prod-ui": {
+      "id": "relation:pa-prod-ui",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-prod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:23-36"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-prod-idp": {
+      "id": "relation:pa-prod-idp",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-prod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/ingress.yaml:56-69"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-st-prod": {
+      "id": "relation:po-st-prod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:st-prod-db"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:53-55"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-prod-ui-w": {
+      "id": "relation:ac-prod-ui-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-prod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:11-12"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · migrations et métier"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-prod-idp-w": {
+      "id": "relation:ac-prod-idp-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-prod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:9-13"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · clés JWKS et sessions"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-prod-ui-r": {
+      "id": "relation:ac-prod-ui-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-prod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-prod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-20"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:ac-prod-export-r": {
+      "id": "relation:ac-prod-export-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-idp-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-prod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/prod/idp-identity-sync/kustomization.yaml:9-14"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:mi-sys-preprod": {
+      "id": "relation:mi-sys-preprod",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:1-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-sync": {
+      "id": "relation:po-pkg-sync",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-sync"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:18-19"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-sync-api": {
+      "id": "relation:do-sync-api",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-sync"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · schéma identité"
+        }
+      }
+    },
+    "relation:po-cmp-host-map": {
+      "id": "relation:po-cmp-host-map",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-host-map"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-sync"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-art-host-map": {
+      "id": "relation:po-art-host-map",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-host-map"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-sync"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-import": {
+      "id": "relation:po-rt-import",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-import"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:1-6"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-import": {
+      "id": "relation:ro-rt-import",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-import"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:3"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-import": {
+      "id": "relation:da-rt-import",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-sync"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-import"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:5-11"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · import G7"
+        }
+      }
+    },
+    "relation:eb-cmp-host-map": {
+      "id": "relation:eb-cmp-host-map",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-host-map"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-import"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-art-host-map": {
+      "id": "relation:lb-art-host-map",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-host-map"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-import"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-art-host-map": {
+      "id": "relation:dc-art-host-map",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-host-map"
+        },
+        {
+          "role": "target",
+          "target": "entity:cmp-host-map"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/host-map.csv:1-4"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · hôtes cibles"
+        }
+      }
+    },
+    "relation:po-svc-preprod-ui": {
+      "id": "relation:po-svc-preprod-ui",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:10-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-preprod-ui": {
+      "id": "relation:ro-svc-preprod-ui",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-preprod-ui": {
+      "id": "relation:op-svc-preprod-ui",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:84-99"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-svc-preprod-ui": {
+      "id": "relation:da-svc-preprod-ui",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:svc-preprod-ui"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:38-42"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · service préprod"
+        }
+      }
+    },
+    "relation:po-svc-preprod-idp": {
+      "id": "relation:po-svc-preprod-idp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:39-64"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-preprod-idp": {
+      "id": "relation:ro-svc-preprod-idp",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-preprod-idp": {
+      "id": "relation:op-svc-preprod-idp",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-ops"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-auth-idp-config.yaml:33-49"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-preprod-http": {
+      "id": "relation:po-api-preprod-http",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-preprod-http"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:22-64"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-preprod-ui": {
+      "id": "relation:pa-preprod-ui",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-preprod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/ingress.yaml:22-37"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-preprod-mcp": {
+      "id": "relation:po-api-preprod-mcp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-preprod-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:48-65"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-preprod-mcp": {
+      "id": "relation:pa-preprod-mcp",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-preprod-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:48-65"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-st-preprod": {
+      "id": "relation:po-st-preprod",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:st-preprod-db"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-preprod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:97-99"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-preprod-import-w": {
+      "id": "relation:ac-preprod-import-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-import"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-preprod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:9-11"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · comptes synchronisés"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-preprod-ui-w": {
+      "id": "relation:ac-preprod-ui-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-preprod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:97-99"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · migrations préprod"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-preprod-idp-w": {
+      "id": "relation:ac-preprod-idp-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-preprod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-auth-idp-config.yaml:33-49"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · clés JWKS préprod"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-preprod-ui-r": {
+      "id": "relation:ac-preprod-ui-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-preprod-ui"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-preprod-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:97-99"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:ca-legacy-prod": {
+      "id": "relation:ca-legacy-prod",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-legacy"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-prod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:258-267"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · smoke post-déploiement"
+        }
+      }
+    },
+    "relation:ca-cd-preprod-http": {
+      "id": "relation:ca-cd-preprod-http",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-preprod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:131-135"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · qualification préprod"
+        }
+      }
+    },
+    "relation:ca-cd-preprod-mcp": {
+      "id": "relation:ca-cd-preprod-mcp",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-preprod-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:48-65"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · recette MCP préprod"
+        }
+      }
+    },
+    "relation:in-cd-promote": {
+      "id": "relation:in-cd-promote",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-cd-preprod"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-promote-prod"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_DEPLOYMENT_PLANE.md:40-48"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · digest qualifié"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "event": {
+          "kind": "text",
+          "value": "digest-qualifie"
+        }
+      }
+    },
+    "relation:ca-promote-prod": {
+      "id": "relation:ca-promote-prod",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-promote-prod"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-prod-http"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:191-196"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · vérification prod"
+        }
+      }
+    },
+    "relation:in-sync-g7": {
+      "id": "relation:in-sync-g7",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-sync-export"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-sync-import"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:25-29"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/kustomization.yaml:1-11"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · synchronisation G7"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "schedule"
+        },
+        "event": {
+          "kind": "text",
+          "value": "g7-identity-sync"
+        }
+      }
+    },
+    "relation:ct-key-ci": {
+      "id": "relation:ct-key-ci",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-preprod"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-ci"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-preprod": {
+      "id": "relation:ct-key-preprod",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-preprod"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-preprod"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-prod": {
+      "id": "relation:ct-key-prod",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-preprod"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-prod"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}

@@ -1786,6 +1786,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       toggleAllocation: "66px",
       toggleBoxSize: "32px",
       foldedHeaderTextWidth: "290px",
+      // DC-2a — root-level sibling gaps of a packed scene (spec
+      // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5): aliases of the zone gaps.
+      rootGapInline: "var(--st-component-diagramZone-childGapInline)",
+      rootGapBlock: "var(--st-component-diagramZone-childGapBlock)",
       proposedDashArray: "4 5",
       fontFamily: "var(--st-font-sans)",
       border: semantic.border.strong,
@@ -1831,11 +1835,29 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       toggleTopInset: "10px",
       footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
       proposedDashArray: "4 5",
+      // DC-2a — row-pack autolayout spacing (spec
+      // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5). Base sibling gaps on both
+      // axes, their hard caps (a gutter widens only for a crossing edge
+      // label, never past the cap) and the 16:9 target aspect of every
+      // packed level. The layout engine receives these as numbers.
+      childGapInline: "24px",
+      childGapBlock: "24px",
+      gapInlineMax: "32px",
+      gapBlockMax: "32px",
+      rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
       rule: semantic.border.subtle
+    },
+    // DC-2a — scene camera and transition (spec §5, §4.3). Readout 100 % is
+    // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
+    // `minReadableScale` is the floor a fit holds before the host pans.
+    diagramScene: {
+      maxDisplayScale: "0.62",
+      minReadableScale: "0.42",
+      transitionDuration: "240ms"
     },
     // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
     // resolve through the semantic feedback-info and surface tokens; no

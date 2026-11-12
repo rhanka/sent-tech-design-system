@@ -1,0 +1,3802 @@
+{
+  "documentId": "document:migration-cluster-mesh",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-owner": {
+      "id": "entity:act-owner",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Équipe Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:5-19"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Autorise la coupure A4 et opère OVH"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "team"
+        }
+      }
+    },
+    "entity:repo-sentropic": {
+      "id": "entity:repo-sentropic",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:128-156"
+            }
+          ]
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo plateforme et cluster-mesh"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/sentropic"
+        }
+      }
+    },
+    "entity:repo-immo": {
+      "id": "entity:repo-immo",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "radar-immobilier"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier package.json:1-14"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "immo"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Application immobilière et hôte MCP"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/radar-immobilier"
+        }
+      }
+    },
+    "entity:host-k8s": {
+      "id": "entity:host-k8s",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Cluster OVH"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:3-10"
+            },
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:247-255"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Cluster"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Exécute les namespaces sentropic et immo"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cluster"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:sys-sentropic-app": {
+      "id": "entity:sys-sentropic-app",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic App"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:300-311"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "App"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Racines HTTP produit et IdP sur k8s"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:pkg-app-api": {
+      "id": "entity:pkg-app-api",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic-api"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:300-311"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "api"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Serveur API produit, IdP et adaptateur"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "app"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:cmp-legacy-routes": {
+      "id": "entity:cmp-legacy-routes",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Montage direct"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:300-304"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "routes-v1"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monte les routes auth et MCP locales"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:cmp-a4-launcher": {
+      "id": "entity:cmp-a4-launcher",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "launch.mjs"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-a4.yaml:13-43"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:84-91"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "launch.mjs"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Vérifie l'anneau HMAC et le jalon A4"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:art-a4-checkpoint": {
+      "id": "entity:art-a4-checkpoint",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "checkpoint.json"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-config.yaml:1-8"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:86-88,121-123"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "jalon A4"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Jalon 0600 de coupure d'identité A4"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "manifest"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:rt-app-api": {
+      "id": "entity:rt-app-api",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Pod API Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:123-128"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Pod API"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Exécute l'API et la transaction A4"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "daemon"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:svc-idp": {
+      "id": "entity:svc-idp",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Service auth-idp"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:207"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-35"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "auth-idp"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Émetteur OIDC et échange RFC 8693"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:api-idp-oauth": {
+      "id": "entity:api-idp-oauth",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "OAuth et RFC 8693"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:178,206-207"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "API OAuth"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Émission OIDC et échange de jetons"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "http"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:st-legacy-users": {
+      "id": "entity:st-legacy-users",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Tables public.users"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "users-v1"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Tables locales supprimées par A4"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "database"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:sys-mesh": {
+      "id": "entity:sys-mesh",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "cluster-mesh"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:270-280"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "mesh"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Plan de contrôle, A4 et Registre MCP"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:pkg-mesh": {
+      "id": "entity:pkg-mesh",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/cluster-mesh"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/baselines/app-cm-w0/baseline.md:195"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:198-206"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "pkg-mesh"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Plugin Hono, registre et RFC 8693"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.22.4"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:pkg-mcp-platform": {
+      "id": "entity:pkg-mcp-platform",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/mcp-platform"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:176,202,209"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "mcp-plat"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Compilateur du registre et pont MCP"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:cmp-mesh-registry": {
+      "id": "entity:cmp-mesh-registry",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "mcp/registry.ts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:173,198,215-220"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "registry.ts"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sélectionne et compile le registre"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:cmp-token-exchange": {
+      "id": "entity:cmp-token-exchange",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "token-exchange.ts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:155,178,206"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "rfc8693.ts"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Échange les jetons RFC 8693"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:svc-identity-a4": {
+      "id": "entity:svc-identity-a4",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Autorité identité A4"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:74,127"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Identité A4"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Gouverne les comptes et budgets A4"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:api-mcp-registry": {
+      "id": "entity:api-mcp-registry",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Registre MCP"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:153,229-235"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Registre MCP"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Porte unique qui route les outils MCP"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "mcp"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:st-control-db": {
+      "id": "entity:st-control-db",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Schéma control CM"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/baselines/app-cm-w0/baseline.md:221,235"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "DB control"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Tables de contrôle, baux et A4"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "database"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:sys-artifacts": {
+      "id": "entity:sys-artifacts",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic.artifacts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:154,203-205"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Artefacts"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Fournisseur MCP d'artefacts et rendu"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:pkg-artifacts": {
+      "id": "entity:pkg-artifacts",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/artifacts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/baselines/app-cm-w0/baseline.md:195"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:224-227"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "artifacts"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Fournisseur et 15 outils artifacts_*"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.2.4"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:cmp-artifacts-provider": {
+      "id": "entity:cmp-artifacts-provider",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "provider-definition.ts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:175,203,239-247"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "provider.ts"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Définit les 15 outils sans collision"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:svc-artifact-content": {
+      "id": "entity:svc-artifact-content",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "artifact-content"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:34-50"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/artifact-content-ingress.yaml:1-28"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "art-content"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert les vues live sur TCP 8791"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:api-artifacts-mcp": {
+      "id": "entity:api-artifacts-mcp",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Outils artifacts_*"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:154,239-247"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "artifacts_*"
+        },
+        "role": {
+          "kind": "text",
+          "value": "15 outils MCP de cycle de vie"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "mcp"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:st-artifacts-s3": {
+      "id": "entity:st-artifacts-s3",
+      "profile": "archi@1",
+      "type": "store",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Bucket objets artefacts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:16-17"
+            },
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/patch-artifacts-mcp-env.yaml:10-25"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Objets S3"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Stockage S3 privé des artefacts"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "object-store"
+        },
+        "writerPolicy": {
+          "kind": "enum",
+          "value": "multi-writer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    },
+    "entity:sys-immo": {
+      "id": "entity:sys-immo",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Immo (radar-immobilier)"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:134,180-185"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Immo"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Premier hôte applicatif du mesh"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:pkg-immo-api": {
+      "id": "entity:pkg-immo-api",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "radar-api"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:247-295"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "radar-api"
+        },
+        "role": {
+          "kind": "text",
+          "value": "API Immo, lecteur et serveur MCP"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "app"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:cmp-immo-host": {
+      "id": "entity:cmp-immo-host",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "content-host.ts"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier api/src/artifacts/content-host.ts:1-30"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:40-44"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "host-immo"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Relaie les vues artifact-content"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:rt-immo-api": {
+      "id": "entity:rt-immo-api",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Pod radar-api"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:40-44"
+            },
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:285-295"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "radar-api"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert Immo et lit les artefacts"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "daemon"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:rt-immo-mcp": {
+      "id": "entity:rt-immo-mcp",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Pod radar-immo-mcp"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:265-275"
+            },
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/patch-artifacts-mcp-env.yaml:1-55"
+            }
+          ]
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "immo-mcp"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Compile le registre MCP côté Immo"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "mcp-server"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:legend-mesh": {
+      "id": "entity:legend-mesh",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Domaines de la migration"
+        }
+      }
+    },
+    "entity:key-app": {
+      "id": "entity:key-app",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Applications Sentropic et Immo"
+        },
+        "category": {
+          "kind": "text",
+          "value": "hotes-app"
+        }
+      }
+    },
+    "entity:key-mesh": {
+      "id": "entity:key-mesh",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plan de contrôle cluster-mesh"
+        },
+        "category": {
+          "kind": "text",
+          "value": "controle-mesh"
+        }
+      }
+    },
+    "entity:key-art": {
+      "id": "entity:key-art",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Fournisseur sentropic.artifacts"
+        },
+        "category": {
+          "kind": "text",
+          "value": "fournisseur-art"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ow-sentropic": {
+      "id": "relation:ow-sentropic",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-sentropic"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-owner"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:134-135"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ow-immo": {
+      "id": "relation:ow-immo",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-immo"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-owner"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:247-260"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-host-k8s": {
+      "id": "relation:op-host-k8s",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-k8s"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-owner"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:6-10"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-app": {
+      "id": "relation:mi-sys-app",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-sentropic-app"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:300-305"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-app-api": {
+      "id": "relation:po-pkg-app-api",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-sentropic-app"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:301-303"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-legacy": {
+      "id": "relation:po-cmp-legacy",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-legacy-routes"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:300-304"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-a4": {
+      "id": "relation:po-cmp-a4",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-a4-launcher"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/a4-runtime/kustomization.yaml:1-9"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-art-a4": {
+      "id": "relation:po-art-a4",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-a4-checkpoint"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-config.yaml:5-7"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-app-api": {
+      "id": "relation:po-rt-app-api",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-sentropic-app"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-25"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-app-api": {
+      "id": "relation:ro-rt-app-api",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-25"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-app-api": {
+      "id": "relation:da-rt-app-api",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/30-api.yaml:1-25"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · pod API"
+        }
+      }
+    },
+    "relation:eb-cmp-legacy": {
+      "id": "relation:eb-cmp-legacy",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-legacy-routes"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:301-304"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-cmp-a4": {
+      "id": "relation:eb-cmp-a4",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-a4-launcher"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-a4.yaml:13-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-art-a4": {
+      "id": "relation:lb-art-a4",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-a4-checkpoint"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-config.yaml:6"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-art-a4": {
+      "id": "relation:dc-art-a4",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:art-a4-checkpoint"
+        },
+        {
+          "role": "target",
+          "target": "entity:cmp-a4-launcher"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:121-127"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · coupure A4"
+        }
+      }
+    },
+    "relation:po-svc-idp": {
+      "id": "relation:po-svc-idp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-sentropic-app"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-idp": {
+      "id": "relation:ro-svc-idp",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:55-75"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-idp": {
+      "id": "relation:op-svc-idp",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-owner"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/base/35-auth-idp.yaml:1-15"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-idp": {
+      "id": "relation:po-api-idp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-idp-oauth"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-sentropic-app"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:207"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-svc-idp": {
+      "id": "relation:pa-svc-idp",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-idp-oauth"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:207"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-st-legacy": {
+      "id": "relation:po-st-legacy",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:st-legacy-users"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-sentropic-app"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-legacy-w1": {
+      "id": "relation:ac-legacy-w1",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-legacy-users"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · identité locale"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-legacy-w2": {
+      "id": "relation:ac-legacy-w2",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-idp"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-legacy-users"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127-133"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · sessions locales"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-legacy-r": {
+      "id": "relation:ac-legacy-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-legacy-routes"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-legacy-users"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "retired"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:mi-sys-mesh": {
+      "id": "relation:mi-sys-mesh",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-mesh"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:198-202"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-mesh": {
+      "id": "relation:po-pkg-mesh",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-mesh"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:198-206"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-mcp-platform": {
+      "id": "relation:po-pkg-mcp-platform",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-mcp-platform"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:202"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-mesh-platform": {
+      "id": "relation:do-mesh-platform",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-mesh"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-mcp-platform"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:220"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · compilateur MCP"
+        }
+      }
+    },
+    "relation:do-app-mesh": {
+      "id": "relation:do-app-mesh",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:301-303"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · plugin Hono"
+        }
+      }
+    },
+    "relation:po-cmp-registry": {
+      "id": "relation:po-cmp-registry",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-mesh-registry"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:198"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-cmp-registry": {
+      "id": "relation:eb-cmp-registry",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-mesh-registry"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-app-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:215-220"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-exchange": {
+      "id": "relation:po-cmp-exchange",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-token-exchange"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:206"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-svc-a4": {
+      "id": "relation:po-svc-a4",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-identity-a4"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-a4": {
+      "id": "relation:ro-svc-a4",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-identity-a4"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/components/a4-wiring/patch-api-a4.yaml:1-43"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-a4": {
+      "id": "relation:op-svc-a4",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-identity-a4"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-registry": {
+      "id": "relation:po-api-registry",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-mcp-registry"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:198-201"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-app-registry": {
+      "id": "relation:pa-app-registry",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-mcp-registry"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/baselines/app-cm-w0/baseline.md:232-234"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-st-control": {
+      "id": "relation:po-st-control",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:st-control-db"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_CENTRAL_CONTROL_PLANE.md:312"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-control-api-w": {
+      "id": "relation:ac-control-api-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-control-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:127"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · migration A4 0015"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-control-a4-w": {
+      "id": "relation:ac-control-a4-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-identity-a4"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-control-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/runbooks/preprod-a4-cutover.md:74,127"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · identités et baux"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-control-api-r": {
+      "id": "relation:ac-control-api-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-control-db"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic docs/baselines/app-cm-w0/baseline.md:235"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:mi-sys-artifacts": {
+      "id": "relation:mi-sys-artifacts",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-artifacts"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:203-205"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-artifacts": {
+      "id": "relation:po-pkg-artifacts",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-artifacts"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:203-205"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-mesh-artifacts": {
+      "id": "relation:do-mesh-artifacts",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-mesh"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:225-226"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · feuille artifacts"
+        }
+      }
+    },
+    "relation:po-cmp-artifacts": {
+      "id": "relation:po-cmp-artifacts",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-artifacts-provider"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:203"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-svc-content": {
+      "id": "relation:po-svc-content",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:34-50"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-content": {
+      "id": "relation:ro-svc-content",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:14-17"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-svc-content": {
+      "id": "relation:op-svc-content",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:45-50"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-svc-content": {
+      "id": "relation:da-svc-content",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-artifacts"
+        },
+        {
+          "role": "target",
+          "target": "entity:svc-artifact-content"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:204-205"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · serveur contenu"
+        }
+      }
+    },
+    "relation:po-api-artifacts": {
+      "id": "relation:po-api-artifacts",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-artifacts-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:239-247"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-content-api": {
+      "id": "relation:pa-content-api",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-artifacts-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:209"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-st-s3": {
+      "id": "relation:po-st-s3",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:st-artifacts-s3"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/kustomization.yaml:16-17"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-content-s3-w": {
+      "id": "relation:ac-content-s3-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-artifacts-s3"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:204-205"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · versions publiées"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ac-content-s3-r": {
+      "id": "relation:ac-content-s3-r",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-artifact-content"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-artifacts-s3"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:205"
+            }
+          ]
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "read"
+        }
+      }
+    },
+    "relation:mi-sys-immo": {
+      "id": "relation:mi-sys-immo",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-immo"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-immo"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier package.json:1-10"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-immo": {
+      "id": "relation:po-pkg-immo",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-immo"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier package.json:7-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-immo-mesh": {
+      "id": "relation:do-immo-mesh",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:169,180-185"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · registre et RFC 8693"
+        }
+      }
+    },
+    "relation:do-immo-artifacts": {
+      "id": "relation:do-immo-artifacts",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-artifacts"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:153-154"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · sentropic.artifacts"
+        }
+      }
+    },
+    "relation:po-cmp-immo-host": {
+      "id": "relation:po-cmp-immo-host",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-immo-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-immo-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier api/src/artifacts/content-host.ts:1-30"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-immo-api": {
+      "id": "relation:po-rt-immo-api",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-immo"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:285-295"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-immo-api": {
+      "id": "relation:ro-rt-immo-api",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:250"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-immo-api": {
+      "id": "relation:da-rt-immo-api",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:285-295"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · pod radar-api"
+        }
+      }
+    },
+    "relation:eb-cmp-immo-host": {
+      "id": "relation:eb-cmp-immo-host",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-immo-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:40-44"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-immo-mcp": {
+      "id": "relation:po-rt-immo-mcp",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-immo"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:265-275"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-immo-mcp": {
+      "id": "relation:ro-rt-immo-mcp",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-k8s"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:250,265-275"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-immo-mcp": {
+      "id": "relation:da-rt-immo-mcp",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/kustomization.yaml:265-275"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · serveur immo-mcp"
+        }
+      }
+    },
+    "relation:eb-cmp-exchange": {
+      "id": "relation:eb-cmp-exchange",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-token-exchange"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:155,206"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-cmp-artifacts": {
+      "id": "relation:eb-cmp-artifacts",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-artifacts-provider"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:153-154,200"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ac-immo-s3-w": {
+      "id": "relation:ac-immo-s3-w",
+      "profile": "archi@1",
+      "type": "accesses",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:st-artifacts-s3"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "radar-immobilier deploy/overlays/preprod/patch-artifacts-mcp-env.yaml:10-25"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "écrit · blobs d'artefacts"
+        },
+        "mode": {
+          "kind": "enum",
+          "value": "write"
+        }
+      }
+    },
+    "relation:ca-immo-idp-legacy": {
+      "id": "relation:ca-immo-idp-legacy",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-idp-oauth"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/idp-identity-sync/client-map.csv:1-2"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · OIDC et JWKS"
+        }
+      }
+    },
+    "relation:ca-immo-mcp-idp": {
+      "id": "relation:ca-immo-mcp-idp",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-idp-oauth"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:155,206-207"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · échange RFC 8693"
+        }
+      }
+    },
+    "relation:ca-immo-registry": {
+      "id": "relation:ca-immo-registry",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-mcp-registry"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:153,235"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · registre compilé"
+        }
+      }
+    },
+    "relation:ca-immo-artifacts": {
+      "id": "relation:ca-immo-artifacts",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-immo-mcp"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-artifacts-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic spec/SPEC_EVOL_CLUSTER_MESH_MCP_REGISTRY_ARTIFACTS.md:154,239-247"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · 15 outils artifacts_*"
+        }
+      }
+    },
+    "relation:ca-app-artifacts": {
+      "id": "relation:ca-app-artifacts",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-artifacts-mcp"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:45-50"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · supervision live"
+        }
+      }
+    },
+    "relation:in-api-immo-handoff": {
+      "id": "relation:in-api-immo-handoff",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-app-api"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-immo-api"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/README.md:36-39"
+            },
+            {
+              "kind": "text",
+              "value": "sentropic deploy/k8s/overlays/preprod/patch-api-config.yaml:137-140"
+            }
+          ]
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · handoff SG4b builder"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "event": {
+          "kind": "text",
+          "value": "sg4b-handoff"
+        }
+      }
+    },
+    "relation:ct-key-app": {
+      "id": "relation:ct-key-app",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-mesh"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-app"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-mesh": {
+      "id": "relation:ct-key-mesh",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-mesh"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-mesh"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-art": {
+      "id": "relation:ct-key-art",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-mesh"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-art"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}

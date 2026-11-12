@@ -1,0 +1,1364 @@
+{
+  "caseId": "case-d",
+  "semanticDocumentId": "document:case-d",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 12,
+    "archiRelations": 20,
+    "totalEntitiesWithLegend": 15,
+    "totalRelationsWithLegend": 22,
+    "views": 2
+  },
+  "elementSummary": [
+    {
+      "id": "act-anthropic",
+      "entityId": "entity:act-anthropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Anthropic",
+      "shortName": null,
+      "purpose": "Éditeur externe de la CLI Claude Code",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:14"
+      ]
+    },
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire du monorepo h2a",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "api-track",
+      "entityId": "entity:api-track",
+      "kind": "api",
+      "form": "mcp",
+      "container": false,
+      "name": "Outils track_*",
+      "shortName": null,
+      "purpose": "Lectures du suivi exposées aux agents",
+      "kicker": "API · MCP",
+      "detail": "fourni par: CLI h2a",
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/src/mcp/server.ts:33-182",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:607-623"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant Claude Code, h2a et Track",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "pkg-h2a",
+      "entityId": "entity:pkg-h2a",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet npm livrant la CLI h2a",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "pkg-track",
+      "entityId": "entity:pkg-track",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/track",
+      "shortName": null,
+      "purpose": "Paquet npm livrant le binaire CLI track",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-track",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-35"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo de h2a et Track",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "rt-claude",
+      "entityId": "entity:rt-claude",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Claude Code",
+      "shortName": null,
+      "purpose": "Session de l’agent sur le poste",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: Anthropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:556-572"
+      ]
+    },
+    {
+      "id": "rt-h2a",
+      "entityId": "entity:rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": "CLI h2a",
+      "purpose": "Sert les outils MCP track_* en lecture seule",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/src/mcp.ts:39-55"
+      ]
+    },
+    {
+      "id": "rt-track",
+      "entityId": "entity:rt-track",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "track",
+      "shortName": "CLI track",
+      "purpose": "Valide le jeton puis écrit le suivi",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "sys-track",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:590-606"
+      ]
+    },
+    {
+      "id": "sys-h2a",
+      "entityId": "entity:sys-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Périmètre du dépôt h2a et de ses systèmes",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "sys-track",
+      "entityId": "entity:sys-track",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Track",
+      "shortName": null,
+      "purpose": "Système distinct du suivi gouverné dans h2a",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:541-555"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "ob-claude",
+      "relationId": "relation:ob-claude",
+      "type": "ownedBy",
+      "source": "rt-claude",
+      "target": "act-anthropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:51"
+      ]
+    },
+    {
+      "id": "mi-sys-h2a",
+      "relationId": "relation:mi-sys-h2a",
+      "type": "managedIn",
+      "source": "sys-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a",
+      "relationId": "relation:po-pkg-h2a",
+      "type": "partOf",
+      "source": "pkg-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-rt-h2a",
+      "relationId": "relation:po-rt-h2a",
+      "type": "partOf",
+      "source": "rt-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "mi-sys-track",
+      "relationId": "relation:mi-sys-track",
+      "type": "managedIn",
+      "source": "sys-track",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:8-12"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a",
+      "relationId": "relation:mi-pkg-h2a",
+      "type": "managedIn",
+      "source": "pkg-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "mi-pkg-track",
+      "relationId": "relation:mi-pkg-track",
+      "type": "managedIn",
+      "source": "pkg-track",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-pkg-track",
+      "relationId": "relation:po-pkg-track",
+      "type": "partOf",
+      "source": "pkg-track",
+      "target": "sys-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-rt-track",
+      "relationId": "relation:po-rt-track",
+      "type": "partOf",
+      "source": "rt-track",
+      "target": "sys-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "po-api-track",
+      "relationId": "relation:po-api-track",
+      "type": "partOf",
+      "source": "api-track",
+      "target": "sys-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/src/mcp/server.ts:33-182"
+      ]
+    },
+    {
+      "id": "ro-claude",
+      "relationId": "relation:ro-claude",
+      "type": "runsOn",
+      "source": "rt-claude",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:76"
+      ]
+    },
+    {
+      "id": "ro-rt-h2a",
+      "relationId": "relation:ro-rt-h2a",
+      "type": "runsOn",
+      "source": "rt-h2a",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "ro-rt-track",
+      "relationId": "relation:ro-rt-track",
+      "type": "runsOn",
+      "source": "rt-track",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "da-h2a",
+      "relationId": "relation:da-h2a",
+      "type": "deployedAs",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "da-track",
+      "relationId": "relation:da-track",
+      "type": "deployedAs",
+      "source": "pkg-track",
+      "target": "rt-track",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire track",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "pa-h2a-track",
+      "relationId": "relation:pa-h2a-track",
+      "type": "providesApi",
+      "source": "rt-h2a",
+      "target": "api-track",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/src/mcp.ts:39-55"
+      ]
+    },
+    {
+      "id": "in-claude-track",
+      "relationId": "relation:in-claude-track",
+      "type": "invokes",
+      "source": "rt-claude",
+      "target": "rt-track",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · écritures du suivi",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:58-66"
+      ]
+    },
+    {
+      "id": "ca-claude-track",
+      "relationId": "relation:ca-claude-track",
+      "type": "consumesApi",
+      "source": "rt-claude",
+      "target": "api-track",
+      "encoding": "arrow",
+      "verb": "appelle",
+      "label": "appelle · outils track_*",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/src/mcp/server.ts:33-182"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "rt-claude",
+          "sys-track",
+          "rt-track",
+          "api-track"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Conteneur Système / Track déplié : expose CLI track et Outils track_* avec les deux liaisons distinctes depuis Claude Code."
+      },
+      "counts": {
+        "elements": 4,
+        "containers": 1,
+        "foldedContainers": 0,
+        "cards": 3,
+        "edges": 2,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "rt-claude",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Exécution · CLI",
+          "title": "Claude Code",
+          "purpose": "Session de l’agent sur le poste",
+          "detail": "sur: Poste de travail",
+          "footer": "propriétaire: Anthropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-track",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Track",
+          "purpose": "Système distinct du suivi gouverné dans h2a",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-track",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Exécution · CLI",
+          "title": "CLI track",
+          "purpose": "Valide le jeton puis écrit le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "api-track",
+          "kind": "api",
+          "form": "mcp",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "API · MCP",
+          "title": "Outils track_*",
+          "purpose": "Lectures du suivi exposées aux agents",
+          "detail": "fourni par: CLI h2a",
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "in-claude-track",
+          "type": "invokes",
+          "source": "rt-claude",
+          "target": "rt-track",
+          "verb": "lance",
+          "label": "lance · écritures du suivi",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "ca-claude-track",
+          "type": "consumesApi",
+          "source": "rt-claude",
+          "target": "api-track",
+          "verb": "appelle",
+          "label": "appelle · outils track_*",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-d-unfolded",
+        "semanticDocumentId": "document:case-d",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-rt-claude": {
+            "id": "occurrence:o-rt-claude",
+            "entity": "entity:rt-claude",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-sys-track": {
+            "id": "occurrence:o-sys-track",
+            "entity": "entity:sys-track",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-track": {
+            "id": "occurrence:o-rt-track",
+            "entity": "entity:rt-track",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-api-track": {
+            "id": "occurrence:o-api-track",
+            "entity": "entity:api-track",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-legend-case-d": {
+            "id": "occurrence:o-legend-case-d",
+            "entity": "entity:legend-case-d",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-d"
+          },
+          "occurrence:o-key-neutral": {
+            "id": "occurrence:o-key-neutral",
+            "entity": "entity:key-neutral",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-d"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-in-claude-track": {
+            "id": "occurrence:e-in-claude-track",
+            "relation": "relation:in-claude-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-claude"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-ca-claude-track": {
+            "id": "occurrence:e-ca-claude-track",
+            "relation": "relation:ca-claude-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-claude"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-api-track"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.11.o-sys-track": {
+            "id": "grp.11.o-sys-track",
+            "occurrence": "occurrence:o-sys-track",
+            "collapsed": false
+          },
+          "grp.15.o-legend-case-d": {
+            "id": "grp.15.o-legend-case-d",
+            "occurrence": "occurrence:o-legend-case-d",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-api-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "API · MCP",
+                  "footer": "repo: h2a",
+                  "body": "Lectures du suivi exposées aux agents",
+                  "detail": "fourni par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-neutral": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-d": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas d)"
+                }
+              },
+              "occurrence:o-rt-claude": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "propriétaire: Anthropic",
+                  "body": "Session de l’agent sur le poste",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-rt-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Valide le jeton puis écrit le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Système distinct du suivi gouverné dans h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-d": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-neutral"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-d",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-d",
+                "category": "neutral",
+                "token": "st-semantic-data-category3"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "rt-claude",
+          "sys-track",
+          "rt-track",
+          "api-track"
+        ],
+        "folds": [
+          "sys-track"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Conteneur Système / Track replié en carte 460 × 200 (repo: h2a) : agrège les deux flèches en lance · appelle · 2 liaisons."
+      },
+      "counts": {
+        "elements": 4,
+        "containers": 1,
+        "foldedContainers": 1,
+        "cards": 3,
+        "edges": 2,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "rt-claude",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Exécution · CLI",
+          "title": "Claude Code",
+          "purpose": "Session de l’agent sur le poste",
+          "detail": "sur: Poste de travail",
+          "footer": "propriétaire: Anthropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-track",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "Track",
+          "purpose": "Système distinct du suivi gouverné dans h2a",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-track",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Exécution · CLI",
+          "title": "CLI track",
+          "purpose": "Valide le jeton puis écrit le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "api-track",
+          "kind": "api",
+          "form": "mcp",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "API · MCP",
+          "title": "Outils track_*",
+          "purpose": "Lectures du suivi exposées aux agents",
+          "detail": "fourni par: CLI h2a",
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ca-claude-track",
+          "type": "consumesApi",
+          "source": "rt-claude",
+          "target": "sys-track",
+          "verb": "appelle",
+          "label": "appelle · outils track_*",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-claude-track",
+          "type": "invokes",
+          "source": "rt-claude",
+          "target": "sys-track",
+          "verb": "lance",
+          "label": "lance · écritures du suivi",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "rt-claude",
+          "target": "sys-track",
+          "label": "lance · appelle · 2 liaisons",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "ca-claude-track",
+            "in-claude-track"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-d-folded",
+        "semanticDocumentId": "document:case-d",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-rt-claude": {
+            "id": "occurrence:o-rt-claude",
+            "entity": "entity:rt-claude",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-sys-track": {
+            "id": "occurrence:o-sys-track",
+            "entity": "entity:sys-track",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-track": {
+            "id": "occurrence:o-rt-track",
+            "entity": "entity:rt-track",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-api-track": {
+            "id": "occurrence:o-api-track",
+            "entity": "entity:api-track",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-legend-case-d": {
+            "id": "occurrence:o-legend-case-d",
+            "entity": "entity:legend-case-d",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-d"
+          },
+          "occurrence:o-key-neutral": {
+            "id": "occurrence:o-key-neutral",
+            "entity": "entity:key-neutral",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-d"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ca-claude-track": {
+            "id": "occurrence:e-ca-claude-track",
+            "relation": "relation:ca-claude-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-claude"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-track",
+                "semanticTarget": "entity:api-track",
+                "sourceOccurrence": "occurrence:o-api-track"
+              }
+            ]
+          },
+          "occurrence:e-in-claude-track": {
+            "id": "occurrence:e-in-claude-track",
+            "relation": "relation:in-claude-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-claude"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-track",
+                "semanticTarget": "entity:rt-track",
+                "sourceOccurrence": "occurrence:o-rt-track"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.11.o-sys-track": {
+            "id": "grp.11.o-sys-track",
+            "occurrence": "occurrence:o-sys-track",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-d": {
+            "id": "grp.15.o-legend-case-d",
+            "occurrence": "occurrence:o-legend-case-d",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-api-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "API · MCP",
+                  "footer": "repo: h2a",
+                  "body": "Lectures du suivi exposées aux agents",
+                  "detail": "fourni par: CLI h2a"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-neutral": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-d": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas d)"
+                }
+              },
+              "occurrence:o-rt-claude": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "propriétaire: Anthropic",
+                  "body": "Session de l’agent sur le poste",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-rt-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Valide le jeton puis écrit le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Système distinct du suivi gouverné dans h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-d": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-neutral"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-d",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-d",
+                "category": "neutral",
+                "token": "st-semantic-data-category3"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-rt-claude",
+            "targetOccurrence": "occurrence:o-sys-track",
+            "label": "lance · appelle · 2 liaisons",
+            "relationIds": [
+              "relation:ca-claude-track",
+              "relation:in-claude-track"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-ca-claude-track",
+              "occurrence:e-in-claude-track"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
