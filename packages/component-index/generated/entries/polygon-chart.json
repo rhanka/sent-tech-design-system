@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PolygonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:9ae67cccc641e50fdfd1f801a9905c865394fa3ec212e047032a35dec30f8f3e",
+  "digest": "sha256:7247da9e3b89d66a37b905f303a344844915f02a04c6bcc29b29e1c0a3cd7055",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkeletonText.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:7e1a7c1e1db5380c420c479b5c392cf2f1e05c2a84234d06e4ab82585dd0dcd4",
+  "digest": "sha256:d672d194798cd6af21d6b2ad27e342cea66767f1d96d96b6ee16b473f1766aba",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [

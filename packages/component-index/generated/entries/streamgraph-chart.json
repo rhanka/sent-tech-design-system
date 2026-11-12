@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StreamgraphChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Streamgraph (themeriver): stacked smoothed areas on a centred \"wiggle\" baseline, for time-series data.",
     "fr": "Streamgraph (themeriver) : aires empilées et lissées sur une ligne de base centrée « wiggle », pour des séries temporelles."
   },
-  "digest": "sha256:7b3ce622875d79e9ea859024751c2adb6bef4f65ab423d7c760c8ce749db272f",
+  "digest": "sha256:9d9b0a3ad73fecd042879fb69913ea8ebb06bcab343c33141e4b0a59db79df93",
   "displayName": "StreamgraphChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NavItem.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
     "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
   },
-  "digest": "sha256:4e208ea6ef443bccdd6bd69a03aad1cbf6425b2b6e0af3527e6171cd24d4bc59",
+  "digest": "sha256:3fe26d6020d7a0e00331d2eb95963a9564d03881aac2ef1999399cc3ed18d8dd",
   "displayName": "NavItem",
   "format": "component-entry/v1",
   "frameworks": [

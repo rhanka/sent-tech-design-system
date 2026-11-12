@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Popper.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Positions a floating panel next to an anchor: flip, shift, arrow.",
     "fr": "Positionne un panneau flottant près d'une ancre : flip, shift, arrow."
   },
-  "digest": "sha256:042d8f9dadba2531ad832b30dea735bb6128874eeb41e4abfa27dfe78a45975e",
+  "digest": "sha256:88cffcba635e98dcaf07222ab1108725a7565303b1340842f3892056c90692d7",
   "displayName": "Popper",
   "format": "component-entry/v1",
   "frameworks": [

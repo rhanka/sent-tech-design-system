@@ -1,8 +1,8 @@
 {
   "componentId": "wind-barb-chart",
   "contractSource": "derived",
-  "digest": "sha256:9fbe69f607e125f9638bb6d39e73ffc4043057456602d049c8189c6edae0c33a",
-  "entryDigest": "sha256:041e00d14744cafb6d3b4bb05ed64f2be7b6b8abcae77755abf0dc9b9834c43b",
+  "digest": "sha256:9d82408679ef92966d2f3ed8c32f7b24fbd5c0396a2993b29b543cdf53bb943a",
+  "entryDigest": "sha256:26794d42117b0fc08eceeba3229e7c9ca715e5ae360b599214b52f317dc1f327",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/WindBarbChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WindBarbChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

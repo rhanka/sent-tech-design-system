@@ -1,8 +1,8 @@
 {
   "componentId": "skip-link",
   "contractSource": "derived",
-  "digest": "sha256:8a0957e9ec26874abae09942fa89ccd82c75995bd4f442b696824c4e20d80166",
-  "entryDigest": "sha256:de2d43e22b8d9b8790bbdb09bf4fc26575a23ac81ddd1df7438c487dd7aff6e9",
+  "digest": "sha256:30b49cf507c7f3e2b8c1486ada3110aeffc8a897ae89161211e01d3fbcfde3c0",
+  "entryDigest": "sha256:95d0e7e7c6ae7663b4d359abfeade8d31ecd5b0992d88b4b8b06afc31e2bd6ed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -35,7 +35,7 @@
         "declarationPath": "packages/components-angular/dist/SkipLink.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SkipLinkProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

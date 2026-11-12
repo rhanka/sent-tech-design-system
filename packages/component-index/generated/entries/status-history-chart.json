@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StatusHistoryChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:6a1c25954eb52f19a0c2ab80de93a02b36de26d1278456e1d9e7795d7dc0b7f9",
+  "digest": "sha256:9b1c5769d80c776926e3c89df0ed9c9656e9ef7153504f9a0da91e4643887afe",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [

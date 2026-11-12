@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:4c7305e121bcc035ac5fc6703d9f363f9bc9ec0c0d8ecfaabe6bf3a329b211f4",
-  "entryDigest": "sha256:c60b7739168c22a69cd9a2a9351b6238527321a018a71343b65a935ce454cad7",
+  "digest": "sha256:f01cf70dee003c9d16f820da90cbe938b36947629d17eeb8b4950ef758a3b96f",
+  "entryDigest": "sha256:b3ffbd99bd934d685e512940a8356566081541927c4b35296332146b6db40fe0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-angular/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ForceGraphProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

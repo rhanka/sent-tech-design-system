@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toggletip.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Click-activated, persistent tooltip.",
     "fr": "Tooltip activable au clic, persistant."
   },
-  "digest": "sha256:87826798839372c7fcc658aa12f9b4408f57d6bff7e4ed6f9ca54a21a0f8dbc7",
+  "digest": "sha256:f53b3c752a56c18b61b753ab7f6b2cac85e8ee0153c5c173d0c03446669f0ca3",
   "displayName": "Toggletip",
   "format": "component-entry/v1",
   "frameworks": [

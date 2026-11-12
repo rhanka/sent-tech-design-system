@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:2a840d50b9036c99824cbaf2212352884beee5c4925e5bdd591572eac062f9ba",
-  "entryDigest": "sha256:c81dab415ea879785506653a9714511bf98d150c1652199c3367afb779588607",
+  "digest": "sha256:1b012a615b0c53a5920209962c89a7a193d1eea8037687268eebc8518d166151",
+  "entryDigest": "sha256:330c371b0813d509f1d4ea5e6891529d0b59f0002cbc04c5ae5e6543787cf282",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-angular/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

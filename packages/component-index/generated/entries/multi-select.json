@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MultiSelect.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:85b0b5d4a9c8b7ff4203f2449925c50fcd579a62946e6c9c4749b7a122f0167a",
+  "digest": "sha256:6f50ea5e09bac3b7a6262a6b9bc884aa4053a9777d2fc288e5632a34fc5f0439",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

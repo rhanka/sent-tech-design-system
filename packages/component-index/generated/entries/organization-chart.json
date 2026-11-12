@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OrganizationChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
     "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
   },
-  "digest": "sha256:f0d95b301ef34617e4020df56d4ec741291688b51b06e88708112cad5f484b96",
+  "digest": "sha256:1dbb700efccd390831b4eb410c45ca9a58056abe3cafab44664349e0adfa35df",
   "displayName": "OrganizationChart",
   "format": "component-entry/v1",
   "frameworks": [

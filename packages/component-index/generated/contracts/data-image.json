@@ -1,8 +1,8 @@
 {
   "componentId": "data-image",
   "contractSource": "derived",
-  "digest": "sha256:e90996089b69793c96d137e07f3364edf8f8fc370b419591a61a9c71b4f2e53f",
-  "entryDigest": "sha256:e3cf98e29d63fd680b0ef420ee86b0bc673d0ae3cbfd5158b0bc0515174c3bf5",
+  "digest": "sha256:524b4fd4ca59d0b2dc8d8be12f3ac3652b6451bb49181a2bbf40989e05f646f3",
+  "entryDigest": "sha256:37b988269a4f2f25c8ff5ad86df45d38952c587823c42486b28f767b2170eec9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/DataImage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DataImageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DatePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Date picker, single or range mode.",
     "fr": "Sélecteur de date, mode simple ou plage."
   },
-  "digest": "sha256:9e67f733b2f2c70a66cc245f951cbed877e32eb105b73670e264902fae0e4053",
+  "digest": "sha256:e802e842d21dd8e07c288bbac78a24d7ae7198a5996ff28ae4cea1c7f7e76fe3",
   "displayName": "DatePicker",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:420e1f64331eb2d4d83577283291bf10063460ec98d5cb47c6fc046173ce048a",
+  "digest": "sha256:24b11b1208b59a2cd69a9f8b95464c7d294abf1b460892492f483eca90e3d76f",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

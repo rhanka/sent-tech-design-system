@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CalendarHeatmapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "GitHub-style calendar grid for visualizing daily activity.",
     "fr": "Grille calendrier GitHub-style pour visualiser l'activité quotidienne."
   },
-  "digest": "sha256:b95f557d7722bcc8f405886ceffae2fdbd404239f54d9d78c2e755d77c6cd3c1",
+  "digest": "sha256:f9e9935e8b9c4b1e33cc5f4bde5c0489f87ff041c6067521eac7c62b44509533",
   "displayName": "CalendarHeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

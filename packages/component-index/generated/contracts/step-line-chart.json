@@ -1,8 +1,8 @@
 {
   "componentId": "step-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:eae93d5651a3d5f317f3cbfe647b4514d911ecb328d1fd05c88e6f5d7710901f",
-  "entryDigest": "sha256:be4099a3ad5ebee7f4f0cc0014eec36f1726e0de7b5cd3a4f37795da0d8c53dc",
+  "digest": "sha256:0ff6b95137b76fef24c5d565ead6c6e9ea9ef5208fb7e8ce034971bc406213ba",
+  "entryDigest": "sha256:aef8d5aa3e0787a414da030b5c0097e5ffb90eba1ed28266b45b9cf366166b28",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -80,7 +80,7 @@
         "declarationPath": "packages/components-angular/dist/StepLineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StepLineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

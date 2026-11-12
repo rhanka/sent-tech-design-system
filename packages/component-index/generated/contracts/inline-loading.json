@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:4e7c6054649554d3287de960b0e9c74ffbca41b655ba0b328385dd022d1f428a",
-  "entryDigest": "sha256:9a723696a7e0f4d37b633591ceb5d1948dd2e2961fad173f1063495d5ad9d7cb",
+  "digest": "sha256:b41618a1ae1819b0b7b891593d8aab09287f5b1790b71f71877c1715bfcdf28d",
+  "entryDigest": "sha256:2a81d41c81a2a03ed4af096b85e3c38a317e47f3f79ce12988a59a42dfab0ce2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/InlineLoading.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InlineLoadingProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

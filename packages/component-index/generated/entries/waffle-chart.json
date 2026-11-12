@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/WaffleChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "N×M cell grid: the share of colored cells encodes each category's proportion.",
     "fr": "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie."
   },
-  "digest": "sha256:562d49748e3cfd5c006a274a690bf66de7bc2a6873f80719410c027351e2f5e0",
+  "digest": "sha256:9af23fa75301bc531729d04a68d19cee214fe7b67b1b2e202baf8370a6c11444",
   "displayName": "WaffleChart",
   "format": "component-entry/v1",
   "frameworks": [

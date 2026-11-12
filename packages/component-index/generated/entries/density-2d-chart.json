@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Density2DChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Binned 2D density on numeric axes: (x,y) points aggregated into cells whose color encodes density.",
     "fr": "Densité 2D binned sur axes numériques : points (x,y) agrégés en cellules dont la couleur encode la densité."
   },
-  "digest": "sha256:ff8628daf2cc9261eec4c99e2c9bfffc8abe5f1bf406427f84a8a17663ee666f",
+  "digest": "sha256:b02a33e9bf47b3dae80fc332c5c470439b620db9a81cc5d71657c5bc49e97e66",
   "displayName": "Density2DChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageToggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Controlled language toggle, as a desktop select or mobile accordion.",
     "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
   },
-  "digest": "sha256:9c08afea7bb57f3fe5996926f9cea41a449ebd1683a392cf11215705ceaebefa",
+  "digest": "sha256:dd57e1956e23149ba915d63c4285bcf14246d016d5f9d9b11086df1d6b2df3f5",
   "displayName": "LanguageToggle",
   "format": "component-entry/v1",
   "frameworks": [

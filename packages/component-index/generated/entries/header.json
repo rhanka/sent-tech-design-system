@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Header.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:b44596b8430d05e0dc050fa2e1338c61fb860664550d52961c40d8ec4480576c",
+  "digest": "sha256:aedbd3311a694556f884d6d100b550390e5ed71f20728a575b9830d2a053a5c1",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

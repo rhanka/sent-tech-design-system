@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MediaContent.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:433c82d807e373ca11375d81988260e0fb36151e04b32c57c5a7ed983b32afe7",
+  "digest": "sha256:9b19d64ae0c96620d6b925decf36286e7945da5ca504cf36399eeeddcb7298d6",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

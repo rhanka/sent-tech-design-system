@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-score-card",
   "contractSource": "derived",
-  "digest": "sha256:bcc06144e99bc210ff9340e6c75ef1a1d0da2594ba12fbec1106f387c88c96c6",
-  "entryDigest": "sha256:bc1f17d11003dda43a95a2f9c120a7ea152afb7a5c74d0d43477291e9660a81f",
+  "digest": "sha256:1fad08d7eb0ce34be22aed455eae49789cd1d73e83bd96ec981ea1784d585130",
+  "entryDigest": "sha256:b3dd98b30571b4b3e8857bd416f71544ab05a63e193e273ec95b36a7488c788d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -56,7 +56,7 @@
         "declarationPath": "packages/components-angular/dist/ScoreCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ScoreCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Form.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:8a1aa7c58f2f547f823ef8be445480ed5995d83e6ca8610994b9085316a3c730",
+  "digest": "sha256:03dfa049c4c741454d267e7fa31a065222cef4278279772ae19913d8adafebec",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

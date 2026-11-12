@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:80633fa2be4bb2f40c02ed2b9d1829b496fac6bd91c136d0f27b56d9f442e37d",
-  "entryDigest": "sha256:12a2fa62c7a069ec13dfde2a19f1af0e974615c6e7b765a9514a3f0e1ff5e18d",
+  "digest": "sha256:1805a2d1e81b37d6b6adfabd0829b9242e7fc97a697d049508ab8a5f947de248",
+  "entryDigest": "sha256:b6f34f42148abca61e9847797985287076e1d883495d4932ffd37458f6f149ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/Radio.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RadioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

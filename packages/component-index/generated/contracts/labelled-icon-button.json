@@ -1,7 +1,7 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:2f438338f680c4099fe5fd646fde978588993fd58c3662e591d3e5ab90ae839c",
+  "digest": "sha256:f2bdf1ec986d1582a0a5bfa5e605101a92c6e58b6917b7430b806b81017712b0",
   "entryDigest": "sha256:20fb3258608d53c58195c19b5f05d190c25d3963256f0cbfcf7a688a0f8d1d11",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/LabelledIconButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

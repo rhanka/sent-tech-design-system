@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:fa3d867eecd971aa14d4beeefc3b6fe8bd3e9bd152424d0679de9f9966cfaa6e",
-  "entryDigest": "sha256:962670d52391ab177e1c4fc8a013dd3e022bf6c9fdc9ae6dc8faededd922d796",
+  "digest": "sha256:b78bc1cff9ce94984cc497ff7e450c873150a1ff31e5b67f2d2d701f8ae1dc75",
+  "entryDigest": "sha256:552bd95583a351d2f5e3e84e7507333f1dfb2515737ed3f034f935a81577c11c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -88,7 +88,7 @@
         "declarationPath": "packages/components-angular/dist/Table.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

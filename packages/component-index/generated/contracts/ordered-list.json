@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:b6aac54dff4a8d7ad296ad585e0833a30228f939177d0c720b4aa294e4e1d902",
-  "entryDigest": "sha256:0132991b5c286fb6e258a659c542a3d4d99651e5c75c3cbf6f48c76d21ad96c6",
+  "digest": "sha256:003331835b34c4b6e9f18fa6509e86b9574e7738afbbe375988bce87f753412b",
+  "entryDigest": "sha256:c04232ddafa8f51925947afa1983f58a4da3a8364f9d8344cc8ed0c3e8fb335b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/OrderedList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OrderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

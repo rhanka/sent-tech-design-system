@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ArcDiagramChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Arc diagram: nodes on an axis, weighted arcs coloured by source.",
     "fr": "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source."
   },
-  "digest": "sha256:fbdee1b939fee252586877ac4763dc58f58a8c76acff80e7fca5af0329f5cd22",
+  "digest": "sha256:c071d0b7c520139e46cdd7239fbcab68da0c2ab83d17d6b022f32fc1f897271e",
   "displayName": "ArcDiagramChart",
   "format": "component-entry/v1",
   "frameworks": [

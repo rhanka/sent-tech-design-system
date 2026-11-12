@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:3cdf5d1047570439db977ef6c937b36af747484c67e310c29af85aab3421d611",
+  "digest": "sha256:8002aa44f9a22290dfecb18ecdc1f0be90615e9044ac3890759d6ffdc89d9076",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UrlSyncProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

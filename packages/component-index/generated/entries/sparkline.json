@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Sparkline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact inline line micro-chart for trends.",
     "fr": "Mini-graphique en ligne, inline, pour tendances compactes."
   },
-  "digest": "sha256:47f9b9d98fcdc6af47b98bdd9d1a036a365d3a61c6a04735b5424720f69b31ec",
+  "digest": "sha256:e7feea86cd343991c2126a6e26c6bc8b49cc09d458d1f5d3fd8d3f87b55e0459",
   "displayName": "Sparkline",
   "format": "component-entry/v1",
   "frameworks": [

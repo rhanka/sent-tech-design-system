@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Table.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:962670d52391ab177e1c4fc8a013dd3e022bf6c9fdc9ae6dc8faededd922d796",
+  "digest": "sha256:552bd95583a351d2f5e3e84e7507333f1dfb2515737ed3f034f935a81577c11c",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

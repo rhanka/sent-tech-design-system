@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:d935e352ca6b43d32f8ff2c36d7064466883e790908e3536f6d4b11197150332",
-  "entryDigest": "sha256:2d4fb291534cdd2fb4d5a02e9867892954acf194477167299bc863d95c38c462",
+  "digest": "sha256:9be59c0c89d9d787f469f7e145117f2ff6d7a4daf5e438c084b4f89a56bf6062",
+  "entryDigest": "sha256:511c341a4b9dfe8f988fcd752dec604cd4ab19f0efd0eeba4af13027d5146d08",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -59,7 +59,7 @@
         "declarationPath": "packages/components-angular/dist/IconButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

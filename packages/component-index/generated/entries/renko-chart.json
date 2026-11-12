@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RenkoChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Renko bricks: from a price series, stacks fixed-size bricks (boxSize) while ignoring regular time.",
     "fr": "Briques Renko : à partir d'une série de prix, empile des briques d'une taille fixe (boxSize) en ignorant le temps régulier."
   },
-  "digest": "sha256:3e3c9b4026715b7219043079f3077029d45fc65f8b308a84dc0ceb9fc070d441",
+  "digest": "sha256:5733cdff4e142e22239f9ea9d2a28afe3d84eee1fda8c2e026468941af242c68",
   "displayName": "RenkoChart",
   "format": "component-entry/v1",
   "frameworks": [

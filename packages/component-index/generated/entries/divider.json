@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Divider.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Horizontal/vertical separator, optionally with a label.",
     "fr": "Séparateur horizontal/vertical, optionnellement avec libellé."
   },
-  "digest": "sha256:98c1cea52c6965eccd07dd12ecea4c9162b9e0191fc331471fe7a33f299e0590",
+  "digest": "sha256:76190a81b8d4f17deb5f10887aee3d605b626b4564c9dfd33f2cfa8fac8aed5f",
   "displayName": "Divider",
   "format": "component-entry/v1",
   "frameworks": [

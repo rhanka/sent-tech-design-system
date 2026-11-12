@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:2383c46fa14c462fceb7a9765bdda53bb0b72db5671e790d48ad8ea817bccbb5",
+  "digest": "sha256:bce1713a66fe7a6387c2c39e107dd79b77d9cf7a73b32bf8aec0134abb317349",
   "entryDigest": "sha256:77cd5dfa7689c0e14bfc3fff94394cb3a1ae8e979d803b3ae15b8932209c2ff8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

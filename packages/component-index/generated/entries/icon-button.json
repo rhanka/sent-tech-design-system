@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/IconButton.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
     "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
   },
-  "digest": "sha256:2d4fb291534cdd2fb4d5a02e9867892954acf194477167299bc863d95c38c462",
+  "digest": "sha256:511c341a4b9dfe8f988fcd752dec604cd4ab19f0efd0eeba4af13027d5146d08",
   "displayName": "IconButton",
   "format": "component-entry/v1",
   "frameworks": [

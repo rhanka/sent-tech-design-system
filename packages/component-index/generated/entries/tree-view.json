@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TreeView.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Tree view: expand/collapse, selection, keyboard navigation (arrows).",
     "fr": "Arborescence : expand/collapse, sélection, navigation clavier (flèches)."
   },
-  "digest": "sha256:bb8e06b909434049545358048d3222a6843ec539c042180efc8fc58cdab6de5d",
+  "digest": "sha256:5941314c70c8d54eb371e69804e9af7019aeef81b8fb8c063bd7de422274ee18",
   "displayName": "TreeView",
   "format": "component-entry/v1",
   "frameworks": [

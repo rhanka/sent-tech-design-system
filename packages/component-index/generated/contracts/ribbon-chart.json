@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:4e0aa6d7504014240d321b9aaaabbf20dbd85c361c302453b91d671943f1e107",
-  "entryDigest": "sha256:3355436a7a32c5458ac861dd73736515f014ebd296b05d4024c4143d6178d742",
+  "digest": "sha256:570c24fdb2a6a28c4c9f676f218e845127fa338fa61afa708c1e6f036cb0abc6",
+  "entryDigest": "sha256:379e592c6d08bb8533926dc3303258b42430400cd101432a7d34cc773ffcb631",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -87,7 +87,7 @@
         "declarationPath": "packages/components-angular/dist/RibbonChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RibbonChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

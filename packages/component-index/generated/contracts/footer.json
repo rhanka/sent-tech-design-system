@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:2daaef9f1ffeecf14213dc7e44a753533e7416c4eca7519c020d84eb0acfd0fd",
-  "entryDigest": "sha256:902d87c0e1e68817581fb9d48fc62b367f7ec9563cb900652bd95335cab9cca7",
+  "digest": "sha256:9c7458a070c61e049620493362e047c9e562322356fa544369657d340d72b4fe",
+  "entryDigest": "sha256:70d2bc120522fb2bf51c95e9ac9e8d07fb6e9bda434f9870d570cc2c1dd9843c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/Footer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FooterProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

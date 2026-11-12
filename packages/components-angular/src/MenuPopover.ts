@@ -1,4 +1,9 @@
 import {
+  afterNextRender,
+  ChangeDetectorRef,
+  ContentChild,
+  inject,
+  Injector,
   Component,
   ElementRef,
   EventEmitter,
@@ -10,6 +15,8 @@ import type { AfterViewInit, OnChanges, OnDestroy, SimpleChanges } from "@angula
 
 import { classNames } from "./classNames.js";
 
+import { injectMenuDependency, MENU_HOST, MENU_HOST_CONTEXT } from "./menu-host.js";
+import type { MenuHost } from "./menu-host.js";
 import { Menu } from "./Menu.js";
 
 import type { MenuActionItem, MenuItem, MenuSelectPath } from "./Menu.js";
@@ -178,6 +185,7 @@ export type MenuPopoverProps = {
   selector: "st-menu-popover",
   standalone: true,
   imports: [Menu],
+  providers: [{ provide: MENU_HOST, useFactory: () => inject(MenuPopover)[MENU_HOST_CONTEXT] }],
   styles: [":host { display: contents; }"],
   template: `
     @if (open) {
@@ -211,8 +219,24 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   static readonly stComponentName = "MenuPopover";
   readonly componentName = "MenuPopover";
 
+  private readonly changeDetector = injectMenuDependency(ChangeDetectorRef);
+  private readonly injector = injectMenuDependency(Injector);
+  @ContentChild(Menu, { descendants: true }) private projectedMenu?: Menu;
+
+  get hasCascade(): boolean {
+    return this.items?.length ? this.treeHasCascade(this.items) : Boolean(this.projectedMenu?.hasCascade);
+  }
+
   private static nextInstanceId = 0;
   readonly rootMenuId = `st-menupopover-${++MenuPopover.nextInstanceId}`;
+  readonly [MENU_HOST_CONTEXT]: MenuHost = {
+    rootMenuId: this.rootMenuId,
+    select: (keyboard, cascade) => {
+      if (!cascade) return;
+      this.close();
+      if (keyboard && cascade) this.trigger?.focus();
+    },
+  };
 
   /** Convenience (not in the Svelte contract): renders a <st-menu> from `items` instead of projected content. */
   @NgInput() items?: MenuItem[];
@@ -254,10 +278,10 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   };
   private readonly onKeyDown = (event: KeyboardEvent) => {
     if ((event as { defaultPrevented?: boolean }).defaultPrevented) return;
-    if (!this.open || !this.closeOnEscape) return;
-    if (event.key === "Escape") {
+    if (!this.open) return;
+    if (event.key === "Escape" && this.closeOnEscape) {
       event.preventDefault();
-      const focus = this.treeHasCascade(this.items);
+      const focus = this.hasCascade;
       this.close();
       if (focus) {
         try {
@@ -268,7 +292,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
       }
       return;
     }
-    if (event.key === "Tab" && this.treeHasCascade(this.items)) {
+    if (event.key === "Tab" && this.hasCascade) {
       // No preventDefault: focus leaves the menu (no trap, AC-32).
       this.close();
     }
@@ -331,6 +355,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   get hostClass(): string {
     return classNames(
       "st-menuPopover",
+      this.hasCascade && "st-menuPopover--hasCascade",
       `st-menuPopover--${menuPopoverEffectivePlacement(this.placement, this.flipped)}`,
       this.alignEnd ? "st-menuPopover--alignEnd" : null,
       this.alignCenter ? "st-menuPopover--alignCenter" : null,
@@ -339,7 +364,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   get panelStyle(): string {
-    return `top: ${this.top}px; left: ${this.left}px;${this.maxHeight ? ` max-height: ${this.maxHeight}px;` : ""}`;
+    return `top: ${this.top}px; left: ${this.left}px;${this.hasCascade && this.maxHeight ? ` --st-menu-root-maxHeight: ${this.maxHeight}px;` : ""}${this.maxHeight ? ` max-height: ${this.maxHeight}px;` : ""}`;
   }
 
   ngAfterViewInit(): void {
@@ -360,12 +385,15 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.open) return;
     if (changes["open"] || changes["trigger"] || changes["placement"] || changes["align"]) {
       // Recompute after Angular renders the panel for the new state.
-      queueMicrotask(() => {
+      const render = () => {
         if (this.open) {
           this.computePosition();
           this.showTopLayer();
+          this.changeDetector?.markForCheck();
         }
-      });
+      };
+      if (this.injector) afterNextRender(render, { injector: this.injector });
+      else queueMicrotask(render);
     }
   }
 
@@ -401,6 +429,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     this.alignEnd = pos.alignEnd;
     this.alignCenter = pos.alignCenter;
     this.flipped = pos.flipped;
+    this.changeDetector?.markForCheck();
   }
 
   /**
@@ -449,6 +478,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.open) return;
     this.hideTopLayer();
     this.open = false;
+    this.changeDetector?.markForCheck();
     this.syncTriggerAriaControls();
     this.openChange.emit(false);
   }

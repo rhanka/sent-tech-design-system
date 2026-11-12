@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Select.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled native select, sm/md/lg sizes.",
     "fr": "Sélecteur natif stylé, tailles sm/md/lg."
   },
-  "digest": "sha256:2f102f1bf08224cc3cf40799a1e0b3631cbb90935660929be4ecf44651e8a635",
+  "digest": "sha256:0132e1e4d8d82bccd8fdb8bb032fea39a6e5a514fe25e6c0551ad44113dd2dac",
   "displayName": "Select",
   "format": "component-entry/v1",
   "frameworks": [

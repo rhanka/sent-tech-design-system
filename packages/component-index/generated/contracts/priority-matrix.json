@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:f4f613119cea455ed28184bf835375da01171ed3b70494f3350f5f8273f87856",
-  "entryDigest": "sha256:a8d5ea9b5e3a251bc70031674dfb01323bfcef96325d0df23c00087e8e6b23ab",
+  "digest": "sha256:90ae85f7117b45837df396ce5b140cc12dfcd5499527a085d3b144dab663998e",
+  "entryDigest": "sha256:31f720d459ff765bc4bfb2c6db5ab265a80c9c290993c0b611b88ffe6ccbff6f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/PriorityMatrix.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PriorityMatrixProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

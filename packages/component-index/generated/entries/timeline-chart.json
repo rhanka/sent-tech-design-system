@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimelineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
     "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
   },
-  "digest": "sha256:5b93670ad4b325f0e9940160ae6df599f925a2b92ac57a22e3370981b59c45b4",
+  "digest": "sha256:b4a0ea9c98ccbfd75999440e8ec2b609419861961491c86d7f6103cc4e7dd9cb",
   "displayName": "TimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

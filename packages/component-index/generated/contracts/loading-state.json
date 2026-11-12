@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:3d5e06aa1daba9a722c304a8fdfc02ee7ed910d09cc9fd0a4a17a14307eed1ad",
-  "entryDigest": "sha256:8b5247836823df1cd8d7335067a424ccf5a4ad309e7224ffa5d977b7d706ebb9",
+  "digest": "sha256:7d914ab7564750615d1f7dfb079cb0b108b61f4735b62eab9c6fd2e600c1d363",
+  "entryDigest": "sha256:3f467c114f20e65e50961243b6729e60a223fe5d2ccdda5db8ebf3c4c9b92d73",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -37,7 +37,7 @@
         "declarationPath": "packages/components-angular/dist/LoadingState.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LoadingStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

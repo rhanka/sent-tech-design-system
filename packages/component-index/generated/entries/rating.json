@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Rating.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:f90836fc0d0593219b073e9fd76786eb7b93263026f6c173bfd89fceadb78759",
+  "digest": "sha256:43c705ae77021586d5e5a3d209ec666b1c784413209c345ddca852288e2b3074",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

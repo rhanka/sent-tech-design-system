@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:b7e7fd8acceb0cc2c21890e4d4920a3bf8edc432d9994f7d5ef2cf239a0e031e",
-  "entryDigest": "sha256:c17c3eacef6efc03d5eca2660c9baafd3d83492dc2952862f0e263482a8bf655",
+  "digest": "sha256:6e98ee30b13fe400944a16ff51383eaf525738de5fd57a169b78aef5846121d6",
+  "entryDigest": "sha256:c8f20a68fb278f0f26622439b59fdc4e1cdacbdb4aef537e7ddde30d34d63859",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/Autosave.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AutosaveProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

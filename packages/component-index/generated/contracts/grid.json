@@ -1,8 +1,8 @@
 {
   "componentId": "grid",
   "contractSource": "derived",
-  "digest": "sha256:fd7eabecd426a287116e221681ab4b8ad2f4f728ba342a00545d8477f521a060",
-  "entryDigest": "sha256:d3eb2645947ed2782e1c8e829a07e590ee9d8465c364d3bce747ffe69547e4ec",
+  "digest": "sha256:0b89dd83fd9b4397b262fbdf7e50edad8beb97b4926a4bacaa372d66c8c68259",
+  "entryDigest": "sha256:a0f006b491b33d1905306c74e450927f0d47581cc8d246e271e0c6f97985e6f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -44,7 +44,7 @@
         "declarationPath": "packages/components-angular/dist/Grid.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "GridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

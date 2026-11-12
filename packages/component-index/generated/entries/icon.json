@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Icon.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:3787e47485422188d15c2f73c465a684d22be876ecd64370c0662fc70e8544e1",
+  "digest": "sha256:763d6d5015c17c18c59f0a270f118379e77c8b4d262026244c7ee06bbb197cb3",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

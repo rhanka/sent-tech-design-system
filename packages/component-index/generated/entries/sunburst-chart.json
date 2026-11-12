@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SunburstChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Radial hierarchy for exploring nested contributions.",
     "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
   },
-  "digest": "sha256:5e6d9ba2e57579edb48c7cbd3d65ea8ba1a2e12424708c29653df42178c2dbd7",
+  "digest": "sha256:b9323c8404b7a23ee68207c2648eb1d99aea32b7a49f3154b60664989ed2ca1a",
   "displayName": "SunburstChart",
   "format": "component-entry/v1",
   "frameworks": [

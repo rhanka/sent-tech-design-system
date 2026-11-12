@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ForceGraph.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip.",
     "fr": "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip."
   },
-  "digest": "sha256:c60b7739168c22a69cd9a2a9351b6238527321a018a71343b65a935ce454cad7",
+  "digest": "sha256:b3ffbd99bd934d685e512940a8356566081541927c4b35296332146b6db40fe0",
   "displayName": "ForceGraph",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toast.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:aa3e630df34c565ebc582ed6daada2c85db862dd06e966e799887415953757c4",
+  "digest": "sha256:20336bb53218320a17354998a8b4c08b48c3e75caf6c7d46e087940eb3c79e48",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [

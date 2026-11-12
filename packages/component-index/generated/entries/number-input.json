@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NumberInput.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Numeric field with increment/decrement.",
     "fr": "Champ numérique avec incrément/décrément."
   },
-  "digest": "sha256:240d167efcbb0cd6dbd50c78dc97273fce0daaaf727847f395174389f9a1c545",
+  "digest": "sha256:1d9b373bf50ff03c8031ca3cc727beae62191e06080ff85fd8b318155d60c35c",
   "displayName": "NumberInput",
   "format": "component-entry/v1",
   "frameworks": [

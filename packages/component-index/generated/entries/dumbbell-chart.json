@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DumbbellChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Per category, a line connecting a low to a high value with a coloured dot at each end (e.g. before/after, min/max).",
     "fr": "Pour chaque catégorie, une ligne reliant une valeur basse à une valeur haute, avec un cercle teinté à chaque extrémité (ex. avant/après, min/max)."
   },
-  "digest": "sha256:53f4344b0395554de5b1c458870c75bce18d2216df13a892cc717eae78618ab6",
+  "digest": "sha256:1ef9ed0f94e9bf44105b0b7de30910991e598c052c3f08ca24e38dbcb125c701",
   "displayName": "DumbbellChart",
   "format": "component-entry/v1",
   "frameworks": [

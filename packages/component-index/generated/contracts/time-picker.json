@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:34847a84e237c42cd15ad75db80431ee42a224f3560d7a0addc7a6941e2ecd2d",
-  "entryDigest": "sha256:55fb2d18346d75f32722d693356617039f8e4e5e45bbc33d023fba20dec4010d",
+  "digest": "sha256:a82b71c508d02a95a33a6ad8a7dff5d685e661dc6f9ca1841845ef1e33b91ccc",
+  "entryDigest": "sha256:ff3628f6eb2ef115b525ccbd38a40641a3f8a74033326393478ff5bed9708765",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -76,7 +76,7 @@
         "declarationPath": "packages/components-angular/dist/TimePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

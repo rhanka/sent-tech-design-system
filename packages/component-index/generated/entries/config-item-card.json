@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ConfigItemCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Configuration item card: name, key, description, provenance badge and provenance-aware actions.",
     "fr": "Carte d'item de configuration : nom, clé, description, badge de provenance et actions selon la provenance."
   },
-  "digest": "sha256:38eeee4dd0b893d57809188f8ecb5f11dcaf6bdcb3aa420ba68a3d615d46af9b",
+  "digest": "sha256:f161f7168f852544cbc337140f85b68e475f80eb87ef992c1bdd1e289205dd2c",
   "displayName": "ConfigItemCard",
   "format": "component-entry/v1",
   "frameworks": [
