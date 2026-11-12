@@ -166,9 +166,14 @@ export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { Menu } from "./Menu.js";
-export type { MenuProps, MenuItem, MenuActionItem, MenuDividerItem, MenuGroupItem } from "./Menu.js";
+export type { MenuProps, MenuItem, MenuActionItem, MenuDividerItem, MenuGroupItem, MenuSubmenuSide } from "./Menu.js";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition,
+} from "./menu-cascade.js";
 export { MenuPopover } from "./MenuPopover.js";
-export type { MenuPopoverProps, MenuPopoverPlacement } from "./MenuPopover.js";
+export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverSubmenuSide } from "./MenuPopover.js";
 export { MenuTriggerButton } from "./MenuTriggerButton.js";
 export type { MenuTriggerButtonProps } from "./MenuTriggerButton.js";
 export { Modal } from "./Modal.js";
@@ -176,7 +181,7 @@ export type { ModalProps } from "./Modal.js";
 export { MultiSelect } from "./MultiSelect.js";
 export type { MultiSelectProps, MultiSelectOption, MultiSelectSize } from "./MultiSelect.js";
 export { OverflowMenu } from "./OverflowMenu.js";
-export type { OverflowMenuProps, OverflowMenuPlacement } from "./OverflowMenu.js";
+export type { OverflowMenuProps, OverflowMenuPlacement, OverflowMenuSubmenuSide } from "./OverflowMenu.js";
 export { Popover } from "./Popover.js";
 export type { PopoverProps, PopoverPlacement } from "./Popover.js";
 export { Table } from "./Table.js";

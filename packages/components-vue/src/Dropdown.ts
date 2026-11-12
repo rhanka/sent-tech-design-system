@@ -72,6 +72,7 @@ export const Dropdown = defineComponent({
       if (target && !hostRef.value?.contains(target) && !listRef.value?.contains(target)) setOpen(false);
     };
     const onKeyDown = (event: KeyboardEvent) => {
+      if (hostRef.value && !document.body.contains(hostRef.value)) return;
       if (event.key === "Escape" && isOpen()) {
         event.preventDefault();
         setOpen(false);
