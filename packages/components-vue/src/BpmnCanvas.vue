@@ -9,6 +9,7 @@ export interface BpmnCanvasProps {
 const props = defineProps<BpmnCanvasProps>();
 const root = shallowRef<HTMLElement>();
 const body = shallowRef<HTMLElement>();
+const hasPayload = shallowRef(false);
 const state = shallowRef<'idle' | 'rendering' | 'rendered' | 'refused'>('idle');
 const diagnostics = shallowRef<readonly Diagnostic[]>([]);
 let firstTerminal!: () => void;
@@ -54,10 +55,11 @@ async function ingest() {
         return;
     diagnostics.value = prepared.diagnostics;
     if (prepared.payload === null) {
+        hasPayload.value = false;
         state.value = 'refused';
         return;
     }
-    state.value = 'rendered';
+    hasPayload.value = true;
     await nextTick();
     const { renderBpmn } = await import('@sentropic/design-system-elements/bpmn-mount');
     if (mine !== ticket || body.value === undefined)
@@ -70,8 +72,10 @@ async function ingest() {
     }, signal);
     if (mine !== ticket)
         cleanup();
-    else
+    else {
         stop = cleanup;
+        state.value = 'rendered';
+    }
 }
 function refresh() {
     const expected = ticket + 1;
@@ -79,12 +83,11 @@ function refresh() {
         if (!mounted || ticket !== expected)
             return;
         state.value = 'refused';
+        hasPayload.value = false;
         diagnostics.value = [{ code: 'engine-load-failed', path: '', message: String(error), severity: 'error', source: 'host' }];
     });
 }
-watch(() => [props.envelope, effectiveHostConfig.value], refresh);
 onMounted(() => {
-    mounted = true;
     const island = document.getElementById('st-host-config');
     try {
         islandHostConfig.value = island ? JSON.parse(island.textContent ?? '') as HostConfig : undefined;
@@ -92,6 +95,8 @@ onMounted(() => {
     catch {
         islandHostConfig.value = undefined;
     }
+    mounted = true;
+    watch(() => [props.envelope, effectiveHostConfig.value], refresh);
     observer = new MutationObserver(records => {
         const island = (node: Node) => node instanceof Element && (node.matches('script[type="application/json"]') || node.closest('script[type="application/json"]') !== null);
         if (records.some(record => island(record.target) || [...record.addedNodes, ...record.removedNodes].some(island)))
@@ -117,7 +122,7 @@ defineExpose({ state, diagnostics, ready });
         </li>
       </ul>
     </div>
-    <div v-else-if="state === 'rendered'" ref="body" class="st-element__body"></div>
+    <div v-else-if="hasPayload" ref="body" class="st-element__body"></div>
     <slot />
   </div>
 </template>
