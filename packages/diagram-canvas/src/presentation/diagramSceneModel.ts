@@ -1,3 +1,6 @@
+import { flowIndex, parentOccurrenceOf, representativeOf, type FlowIndex, type FlowStep } from "@sentropic/diagram-core";
+import type { FlowArrow, FlowBundle, FlowVisibleTarget } from "../layout/flows.js";
+import type { Visible } from "./flowModel.js";
 /**
  * `DiagramSceneFigure` — the pure half of the scene host (DC-2a lot L4,
  * SPEC_EVOL_DC2A §4.3, §5, §6.7, Appendix D).
@@ -24,6 +27,7 @@ import {
   rectUnion,
   relationRoute,
   sceneNodes,
+  sceneEdges,
   type CameraFit,
   type LayoutCacheStats,
   type LayoutHints,
@@ -98,6 +102,8 @@ export interface SceneLayoutInput {
   readonly collapsed: readonly SceneOccurrenceRef[];
   readonly hints?: LayoutHints;
   readonly metrics?: Partial<LayoutMetrics>;
+  readonly flows?: LayoutOptions["flows"];
+  readonly flowTokens?: LayoutOptions["flowTokens"];
   readonly rowPack?: RowPackOptions;
   readonly targetWidth?: number;
   readonly previousOrientation?: SceneOrientations;
@@ -113,6 +119,8 @@ export interface SceneLayoutInput {
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
   const options: LayoutOptions = {
     registry: input.registry,
+    ...(input.flows === undefined ? {} : { flows: input.flows }),
+    ...(input.flowTokens === undefined ? {} : { flowTokens: input.flowTokens }),
     ...(input.bindings === undefined ? {} : { bindings: input.bindings }),
     measureText: (text) => {
       const layout = input.measureLines({
@@ -169,6 +177,10 @@ export interface SceneNodeModel {
 }
 
 export interface SceneEdgeModel {
+  readonly directed: boolean;
+  readonly arrows: readonly FlowArrow[];
+  readonly flow?: FlowStep;
+  readonly bundle?: FlowBundle;
   readonly occurrence: SceneOccurrenceRef;
   readonly points: readonly Vec2[];
 }
@@ -179,7 +191,16 @@ export interface SceneLabelModel {
   readonly box: Rect;
 }
 
+export interface SceneBadgeModel { readonly id: string; readonly occurrence: SceneOccurrenceRef; readonly kind: "step" | "count"; readonly text: string; readonly box: Rect; readonly target: Visible }
 export interface SceneModel {
+  readonly badges: readonly SceneBadgeModel[];
+  readonly flows: FlowIndex;
+  readonly flowTargets: Readonly<Record<string, FlowVisibleTarget>>;
+  readonly nodeTargets: readonly { readonly occurrence: SceneOccurrenceRef; readonly entity: string; readonly anchor: { readonly x: number; readonly y: number } }[];
+  readonly flowRepresentatives: Readonly<Record<string, string>>;
+  readonly flowEnds: Readonly<Record<string, readonly string[]>>;
+  readonly flowAncestors: Readonly<Record<string, readonly string[]>>;
+  readonly flowSummaryLabels: Readonly<Record<string, string>>;
   readonly contentSize: DiagramSceneSize;
   /** Bottom to top, in the scene's paint order. */
   readonly nodes: readonly SceneNodeModel[];
@@ -215,7 +236,7 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "flows">,
 ): SceneModel {
   const view = result.view;
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
@@ -267,15 +288,42 @@ export function resolveScene(
     });
   }
 
+  const allFlows = flowIndex(input.document);
+  const flowTargets = result.flowTargets ?? {};
+  const flows: FlowIndex = {
+    scenarios: allFlows.scenarios.map((scenario) => ({ ...scenario, steps: scenario.steps.filter((step) => flowTargets[step.relation] !== undefined) })),
+    byRelation: Object.fromEntries(Object.entries(allFlows.byRelation).filter(([id]) => flowTargets[id] !== undefined)),
+    byEntity: Object.fromEntries(Object.entries(allFlows.byEntity).map(([id,steps]) => [id,steps.filter((step) => flowTargets[step] !== undefined)])),
+  };
+  const flowAncestors: Record<string,string[]> = {};
+  for (const node of nodes) {
+    const parents: string[] = [];
+    for (let parent = parentOccurrenceOf(view,node.occurrence); parent !== undefined; parent = parentOccurrenceOf(view,parent)) parents.push(parent);
+    flowAncestors[node.occurrence] = parents;
+  }
+  const flowRepresentatives: Record<string,string> = Object.fromEntries(nodes.map((node) => [node.entity,node.occurrence]));
+  for (const occurrence of Object.values(view.entityOccurrences).sort((a,b) => byCodeUnit(a.id,b.id))) {
+    const box = representativeOf(view,collapsed,occurrence.id);
+    if (flowRepresentatives[occurrence.entity] === undefined && nodes.some((node) => node.occurrence === box)) flowRepresentatives[occurrence.entity] = box;
+  }
+  const flowEnds: Record<string,string[]> = {};
+  for (const [id,target] of Object.entries(flowTargets)) {
+    if (target.kind === "internal") { flowEnds[id] = [target.box]; continue; }
+    const occurrence = view.relationOccurrences[target.occurrence];
+    flowEnds[id] = occurrence?.endpoints.map((end) => view.portOccurrences[end.occurrence]?.ownerOccurrence ?? end.occurrence) ?? [];
+  }
+  const visibleEdges = new Set(sceneEdges(frame).map((edge) => edge.occurrence as string));
   const edges: SceneEdgeModel[] = [];
   const entries: { id: string; route: readonly Vec2[]; size: { width: number; height: number } }[] = [];
   const labelLines = new Map<string, readonly string[]>();
   for (const id of Object.keys(view.relationOccurrences).sort(byCodeUnit)) {
     const occurrence = view.relationOccurrences[id]!;
-    if (occurrence.waypoints === undefined) continue;
+    if (occurrence.waypoints === undefined || !visibleEdges.has(id)) continue;
     const points = relationRoute(view, occurrence.id) ?? [];
     if (points.length < 2) continue;
-    edges.push({ occurrence: occurrence.id, points });
+    const flow = flows.byRelation[occurrence.relation];
+    const bundle = result.flowBundles?.find((entry) => entry.carrier === occurrence.id);
+    edges.push({ occurrence: occurrence.id, points, directed: flow !== undefined, arrows: result.arrowBoxes?.[occurrence.id] ?? [], ...(flow === undefined ? {} : { flow }), ...(bundle === undefined ? {} : { bundle }) });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
     const label = edgeLabelOf(input.document, occurrence.relation);
     if (label === undefined) continue;
@@ -301,7 +349,22 @@ export function resolveScene(
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
+  const badges: SceneBadgeModel[] = [];
+  for (const step of flows.scenarios.flatMap((scenario) => scenario.steps)) {
+    const target = flowTargets[step.relation];
+    if (target === undefined || target.kind === "internal" || !target.badge || badges.some((badge) => badge.occurrence === target.occurrence)) continue;
+    const box = result.badgeBoxes?.[target.occurrence];
+    if (box === undefined) continue;
+    const bundle = result.flowBundles?.find((entry) => entry.id === (target.kind === "bundle" ? target.id : ""));
+    const text = bundle === undefined ? step.badge : (input.flows?.countTemplate ?? "{n}").replaceAll("{n}",String(bundle.members.length));
+    badges.push({ id: target.occurrence, occurrence: target.occurrence, kind: bundle === undefined ? "step" : "count", text, box, target: target.kind === "bundle" ? { kind: "bundle", id: target.id } : { kind: "edge", occurrence: target.occurrence } });
+    bounds = bounds === undefined ? box : rectUnion(bounds,box);
+  }
+  for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
+  const nodeTargets = nodes.filter((node) => Object.values(flowEnds).some((ends) => ends.some((id) => id === node.occurrence || (flowAncestors[id] ?? []).includes(node.occurrence)))).map((node) => ({ occurrence: node.occurrence, entity: node.entity, anchor: { x: node.rect.x, y: node.rect.y } }));
   return {
+    badges, flows, flowTargets, nodeTargets, flowEnds, flowRepresentatives, flowAncestors,
+    flowSummaryLabels: Object.fromEntries(Object.entries(view.summaryLabels ?? {}).map(([id,definition]) => [id,definition.label])),
     contentSize: sceneContentSize(result),
     nodes,
     edges,
