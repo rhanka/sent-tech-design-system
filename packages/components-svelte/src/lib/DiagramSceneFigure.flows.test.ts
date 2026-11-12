@@ -20,13 +20,14 @@ function propsFor(count=3,config:Parameters<typeof flowFixture>[1]={}):DiagramSc
 }
 describe("DC-2c A12 shared host cases — Svelte",()=>{
  for(const test of flowHostCases)it(test.id+": "+test.note,async()=>{
-  const props=propsFor(test.count??3,{self:test.internal,scenarios:test.scenarios}),step=vi.fn(),highlight=vi.fn();
-  const view=render(DiagramSceneFigure,{...props,flows:{fanOutMax:test.bundle?1:4},...(test.controlled?{activeStep:test.activeStep??null}:{}),...(test.omitted?{measureLines:(request:Parameters<typeof flowMeasure>[0])=>({...flowMeasure(request),width:request.role==="flow-badge"?50000:flowMeasure(request).width})}:{}),onStepChange:step,onHighlightChange:highlight});
+  const props=propsFor(test.count??3,{self:test.internal,scenarios:test.scenarios,folded:test.folded}),step=vi.fn(),highlight=vi.fn(),select=vi.fn();
+  const view=render(DiagramSceneFigure,{...props,flows:{fanOutMax:test.bundle?1:4},...(test.controlled?{activeStep:test.activeStep??null}:{}),...(test.omitted?{measureLines:(request:Parameters<typeof flowMeasure>[0])=>({...flowMeasure(request),width:request.role==="flow-badge"?50000:flowMeasure(request).width})}:{}),onStepChange:step,onHighlightChange:highlight,onSelect:select});
   await tick();expect(step).not.toHaveBeenCalled();expect(highlight).not.toHaveBeenCalled();
   const viewport=view.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
   const target=(name="viewport"):HTMLElement=>{
    const [kind,index="0"]=name.split(":");const selector=kind==="badge"?"[data-flow-badge]":kind==="node"?"[data-flow-node]":kind==="edge"?"[data-flow-hit]":kind==="card"?"[data-scene-occurrence] .st-diagramCard":undefined;
    if(kind==="field"||kind==="editable"){const field=document.createElement(kind==="field"?"input":"div");if(kind==="editable")field.setAttribute("contenteditable","true");viewport.append(field);return field;}
+   if(kind==="toggle")return view.container.querySelector<HTMLElement>("button[aria-expanded]")!;
    if(selector)return view.container.querySelectorAll<HTMLElement>(selector)[Number(index)]!;
    if(kind==="next"||kind==="previous")return [...view.container.querySelectorAll<HTMLElement>(".st-diagramSceneFigure-flowNavigator button")].find((e)=>e.textContent?.includes(kind==="next"?"Next":"Previous"))!;
    return viewport;
@@ -58,7 +59,7 @@ describe("DC-2c A12 shared host cases — Svelte",()=>{
    if(!test.controlled||test.events.some((e)=>e.type==="prop")){
     const pressed=[...view.container.querySelectorAll<HTMLElement>('[data-flow-badge][aria-pressed="true"]')];
     if(selected===undefined)expect(pressed).toHaveLength(0);
-    else if(!test.internal&&!test.omitted)expect(pressed).toHaveLength(1);
+    else if(!test.internal&&!test.omitted&&view.container.querySelector("[data-flow-badge]"))expect(pressed).toHaveLength(1);
    }
    if(!test.controlled&&expected.selected!==null)expect((step.mock.calls.at(-1)?.[0] as StepChange)?.relation).toBe(expected.selected);
   }
@@ -66,6 +67,9 @@ describe("DC-2c A12 shared host cases — Svelte",()=>{
   if(expected.noHighlight)expect(view.container.querySelector("[data-flow-active]")).toBeNull();
   if(expected.stepCalls!==undefined)expect(step).toHaveBeenCalledTimes(expected.stepCalls);
   if(expected.highlightCalls!==undefined)expect(highlight).toHaveBeenCalledTimes(expected.highlightCalls);
+  if(test.id==="fold-toggle-isolation")expect(select).not.toHaveBeenCalled();
+  if(expected.folded!==undefined)expect(view.container.querySelector("button[aria-expanded]")?.getAttribute("aria-expanded")).toBe(expected.folded?"false":"true");
+  if(expected.tabStop)expect(target(expected.tabStop).getAttribute("tabindex")).toBe("0");
   if(expected.focus)expect(document.activeElement).toBe(target(expected.focus));
   if(expected.badges!==undefined)expect(view.container.querySelectorAll("[data-flow-badge]")).toHaveLength(expected.badges);
   if(expected.live)expect(view.container.querySelector('output[aria-live="polite"].st-diagramSceneFigure-flowDescription')?.textContent).toContain(expected.live);
@@ -91,12 +95,12 @@ describe("DC-2c A12 shared host cases — Svelte",()=>{
   await view.rerender({document:{...props.document,revision:3,relations:{}}});await tick();await tick();expect(document.activeElement).toBe(view.container.querySelector(".st-diagramSceneFigure-viewport"));
  });
  it("runs 200 user changes without layout, scene, cache, timer or RAF work, then stays idle with selection retained",async()=>{
-  const cache=createLayoutCache(),view=render(DiagramSceneFigure,{...propsFor(),layoutCache:cache});await tick();
+  const cache=createLayoutCache(),view=render(DiagramSceneFigure,{...propsFor(3,{scenarios:true}),layoutCache:cache});await tick();
   const layout=vi.spyOn(model,"layoutScene"),resolve=vi.spyOn(model,"resolveScene"),cached=vi.spyOn(cache,"layout"),timeout=vi.spyOn(globalThis,"setTimeout"),interval=vi.spyOn(globalThis,"setInterval"),raf=vi.spyOn(globalThis,"requestAnimationFrame");
   const viewport=view.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!,badges=view.container.querySelectorAll<HTMLElement>("[data-flow-badge]");
   const before=cache.stats();
 
-  for(let i=0;i<200;i++){if(i%4===0)await fireEvent.pointerOver(badges[0]!);else if(i%4===1)badges[1]!.dispatchEvent(new FocusEvent("focusin",{bubbles:true}));else if(i%4===2)await fireEvent.click(badges[0]!);else await fireEvent.keyDown(viewport,{key:"]"});await tick();}
+  for(let i=0;i<200;i++){if(i%5===0)await fireEvent.pointerOver(badges[0]!);else if(i%5===1)badges[1]!.dispatchEvent(new FocusEvent("focusin",{bubbles:true}));else if(i%5===2)await fireEvent.click(badges[0]!);else if(i%5===3)await fireEvent.change(view.container.querySelector("select")!,{target:{value:i%2?"scenario:entity:s1":"scenario:entity:s2"}});else await fireEvent.keyDown(viewport,{key:"]"});await tick();}
   expect(layout).not.toHaveBeenCalled();expect(resolve).not.toHaveBeenCalled();expect(cached).not.toHaveBeenCalled();expect(cache.stats()).toEqual(before);expect(timeout).not.toHaveBeenCalled();expect(interval).not.toHaveBeenCalled();expect(raf).not.toHaveBeenCalled();
   vi.useFakeTimers();await vi.advanceTimersByTimeAsync(60000);await tick();expect(layout).not.toHaveBeenCalled();expect(raf).not.toHaveBeenCalled();vi.useRealTimers();
  });

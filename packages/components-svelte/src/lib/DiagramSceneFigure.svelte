@@ -384,8 +384,12 @@
   }
   function flowClickCapture(event: MouseEvent): void {
     if (flowSteps.length === 0) return;
-    if (event.detail === 0) { suppressFlowClick = false; return; }
-    if (suppressFlowClick) { suppressFlowClick = false; event.stopPropagation(); event.preventDefault(); }
+    if (event.detail === 0) suppressFlowClick = false;
+    if (suppressFlowClick) { suppressFlowClick = false; event.stopPropagation(); event.preventDefault(); return; }
+    const toggle = (event.target as Element).closest("button[aria-expanded]");
+    const occurrence = toggle?.closest<HTMLElement>("[data-scene-occurrence]")?.dataset["sceneOccurrence"];
+    const node = scene?.nodes.find((entry) => entry.occurrence === occurrence);
+    if (node !== undefined) { event.stopPropagation(); toggleFold(node); }
   }
   function selectNode(node: SceneNodeModel, event: { entityId: string }): void {
     if (suppressFlowClick) { suppressFlowClick = false; return; }

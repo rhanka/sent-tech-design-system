@@ -34,3 +34,18 @@ describe("DC-2c A5 shared slots",()=>{
   expect([...result.docks].sort(([,x],[,y])=>x.target.order-y.target.order).map(([id])=>id)).toEqual(ids);
  });
 });
+
+describe("DC-2c A5 four facing and opposite-direction steps",()=>{
+ it("keeps K at both physical ends, avoids crossings and ignores input order",()=>{
+  const edges=["z","y","x","w"].map((id,flowRank)=>({id:("relation:"+id) as never,flowRank,source:{entity:flowRank===3?b:a},target:{entity:flowRank===3?a:b}}));
+  const rects=new Map([[a,{x:0,y:0,width:460,height:200}],[b,{x:800,y:0,width:460,height:200}]]);
+  let previous:unknown;
+  for(const ordered of [edges,[...edges].reverse()]){
+   const current={...graph,edges:ordered};const docks=dockEdges({graph:current,rects,direction:"left-to-right",metrics:DEFAULT_LAYOUT_METRICS,labelSizes:new Map(),fixed:true,flowBadgeSize:28}).docks;
+   for(const entity of [a,b])expect([...docks].sort(([,l],[,r])=>(l.source.entity===entity?l.source:l.target).order-(r.source.entity===entity?r.source:r.target).order).map(([id])=>id)).toEqual(["relation:z","relation:y","relation:x","relation:w"]);
+   const requests=ordered.map((edge)=>{const pair=docks.get(edge.id)!;return{id:edge.id,flowRank:edge.flowRank,flowRun:"pair",pairKey:"pair",passable:new Set<never>(),start:pair.source.point,startExit:pair.source.exit,end:pair.target.point,endExit:pair.target.exit};});
+   const routed=routeEdges({rects,requests,clearance:8});expect(routed.obstructed).toEqual([]);const routes=[...routed.routes.values()];for(let i=0;i<routes.length;i++)for(let j=i+1;j<routes.length;j++)expect(routesConflict(routes[i]!,routes[j]!)).toBe(false);
+   const normalized=[...routed.routes].sort(([l],[r])=>l<r?-1:1);if(previous!==undefined)expect(normalized).toEqual(previous);previous=normalized;
+  }
+ });
+});
