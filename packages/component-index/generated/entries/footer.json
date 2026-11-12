@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Footer.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Application footer: brand, link columns, copyright and legal links.",
     "fr": "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux."
   },
-  "digest": "sha256:902d87c0e1e68817581fb9d48fc62b367f7ec9563cb900652bd95335cab9cca7",
+  "digest": "sha256:b91ea1b6d594ecea2e3c5f2b9e3a6494df8050dc618ba150198c2a5dcb532041",
   "displayName": "Footer",
   "format": "component-entry/v1",
   "frameworks": [

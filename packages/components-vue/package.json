@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.39.0",
+  "version": "0.40.0",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -28,8 +28,8 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/copy-styles.mjs",
-    "check": "tsc -p tsconfig.json --noEmit",
+    "build": "vite build && vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly && node scripts/copy-styles.mjs",
+    "check": "vue-tsc -p tsconfig.json --noEmit",
     "test": "vitest run src"
   },
   "dependencies": {
@@ -46,7 +46,7 @@
     "typescript": "^5.9.3",
     "vite": "^8.0.16",
     "vitest": "^4.1.11",
-    "vue": "^3.5.17",
+    "vue": "3.6.0-rc.15",
     "vue-tsc": "^2.2.12"
   }
 }

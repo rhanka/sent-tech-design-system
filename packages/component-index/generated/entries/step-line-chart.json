@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StepLineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step line chart: the value stays flat until the next threshold.",
     "fr": "Courbe en paliers : la valeur reste stable jusqu'au prochain seuil."
   },
-  "digest": "sha256:be4099a3ad5ebee7f4f0cc0014eec36f1726e0de7b5cd3a4f37795da0d8c53dc",
+  "digest": "sha256:894f311778f433bef104baf1768c4573c221d6b53237b4b2273c5d7f42f31a33",
   "displayName": "StepLineChart",
   "format": "component-entry/v1",
   "frameworks": [

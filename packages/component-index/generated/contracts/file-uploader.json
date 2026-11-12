@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:873dcb7b840a0eae60a0a7345af0973588e6fa9de921844691152a42de847ae1",
-  "entryDigest": "sha256:7835b03ffdac0b39e94418b0b4c27c7dab60cbb31396452b764954f1086ed259",
+  "digest": "sha256:f0fdaa53d04b7c14931c5b4318ae694f40a05a2ca72e3543d511008ada50b33e",
+  "entryDigest": "sha256:6a41ed7d391c3735585f6c2129214f4dba7f96d4fdad7cc0b8e668ba4b2d943a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -557,7 +557,7 @@
         "declarationPath": "packages/components-vue/dist/FileUploader.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

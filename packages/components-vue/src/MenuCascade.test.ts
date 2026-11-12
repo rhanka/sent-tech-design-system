@@ -2,12 +2,13 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, nextTick, ref } from "vue";
+import { defineComponent, h, nextTick, reactive, ref, version } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Menu } from "./Menu.js";
 import type { MenuItem } from "./Menu.js";
 import { MenuPopover } from "./MenuPopover.js";
 import { OverflowMenu } from "./OverflowMenu.js";
+import { Dropdown } from "./Dropdown.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -414,7 +415,9 @@ describe("Menu cascade — hover intent and safe triangle (AC-07, AC-08, AC-25, 
     const wrapper = mountMenu({ items: cascadeItems, onSelect });
     const wrap = buttonByText(wrapper, "Class A").element.closest(".st-menu__itemWrap") as HTMLElement;
     pointer("pointerenter", wrap, 0, 0);
+    expect(vi.getTimerCount()).toBeGreaterThan(0);
     wrapper.unmount();
+    expect(vi.getTimerCount()).toBe(0);
     const idx = mounted.indexOf(wrapper);
     if (idx >= 0) mounted.splice(idx, 1);
     await vi.advanceTimersByTimeAsync(500);
@@ -1472,5 +1475,135 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
     const style = (document.body.querySelector('[data-menu-level="1"]') as HTMLElement).getAttribute("style") ?? "";
     expect(style).toContain("top: -32px");
     expect(style).toContain("left: -52px");
+  });
+});
+
+
+describe("control review regressions", () => {
+  it("keeps cascade state and handlers private to the template", () => {
+    const instance = ref();
+    const wrapper = mount(defineComponent({
+      setup: () => () => h(Menu, { items: cascadeItems, ref: instance }),
+    }));
+    mounted.push(wrapper);
+    expect(instance.value.openPath).toBeUndefined();
+    expect(instance.value.onItemKeyDown).toBeUndefined();
+  });
+  it.each(["splice", "children", "disabled"])("prunes open panels after in-place %s mutation", async (mutation) => {
+    const items = reactive(structuredClone(cascadeItems));
+    const wrapper = mountMenu({ items });
+    await buttonByText(wrapper, "Class A").trigger("click");
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(true);
+    if (mutation === "splice") items.splice(0, 1);
+    else if (mutation === "children") delete (items[0] as any).children;
+    else (items[0] as any).disabled = true;
+    await nextTick();
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(false);
+  });
+
+  it.each(["open", "close"])("cancels pending hover %s on nested mutation", async (kind) => {
+    const items = reactive(structuredClone(cascadeItems));
+    const wrapper = mountMenu({ items });
+    if (kind === "close") {
+      await buttonByText(wrapper, "Class A").trigger("click");
+      await vi.advanceTimersByTimeAsync(20);
+    }
+    const target = kind === "open"
+      ? buttonByText(wrapper, "Class A").element.closest(".st-menu__itemWrap")!
+      : buttonByText(wrapper, "Direct").element;
+    target.dispatchEvent(new PointerEvent("pointerenter", mouseProps()));
+    const clear = vi.spyOn(globalThis, "clearTimeout");
+    (items[0] as any).children[0].label = "Updated reason";
+    await nextTick();
+    expect(clear).toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(300);
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(kind === "close");
+  });
+
+  it.each(["aria-label", "aria-labelledby"])("puts %s on the standalone menu level", (attribute) => {
+    const wrapper = mountMenu({ items: cascadeItems, [attribute]: "actions" });
+    expect(wrapper.find('[role="menu"]').attributes(attribute)).toBe("actions");
+  });
+
+  it.each([MenuPopover, OverflowMenu])("names the items-mode root menu in $name", async (component) => {
+    const wrapper = mount(component, { props: { items: cascadeItems, label: "Row actions", open: true }, attachTo: document.body });
+    mounted.push(wrapper);
+    await nextTick();
+    expect(wrapper.find('[role="menu"]').attributes("aria-label")).toBe("Row actions");
+  });
+
+  it.each([MenuPopover, OverflowMenu])("closes $name inside a shadow root on outside pointer and Escape", async (component) => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    const target = document.createElement("div");
+    shadow.append(target);
+    const wrapper = mount(component, { props: { items: cascadeItems, open: true }, attachTo: target });
+    mounted.push(wrapper);
+    await nextTick();
+    // A composed event from a panel is inside even across the shadow boundary.
+    wrapper.find('[role="menu"]').element.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, composed: true }));
+    expect(wrapper.emitted("update:open")).toBeUndefined();
+    window.dispatchEvent(new PointerEvent("pointerdown"));
+    await nextTick();
+    expect(wrapper.emitted("update:open")).toEqual([[false]]);
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", cancelable: true }));
+    await nextTick();
+    expect(wrapper.emitted("update:open")).toEqual([[false], [false]]);
+  });
+
+  it("closes Dropdown in a shadow root on Escape", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const target = document.createElement("div");
+    host.attachShadow({ mode: "open" }).append(target);
+    const wrapper = mount(Dropdown, { props: { options: [], open: true }, attachTo: target });
+    mounted.push(wrapper);
+    window.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", cancelable: true }));
+    await nextTick();
+    expect(wrapper.emitted("update:open")).toEqual([[false]]);
+  });
+
+  it("cleans external trigger controls on replacement and unmount", async () => {
+    const first = document.createElement("button");
+    const second = document.createElement("button");
+    document.body.append(first, second);
+    const wrapper = mount(MenuPopover, { props: { open: true, trigger: first, items: cascadeItems }, attachTo: document.body });
+    mounted.push(wrapper);
+    const id = first.getAttribute("aria-controls");
+    expect(id).toBeTruthy();
+    await wrapper.setProps({ trigger: second });
+    expect(first.hasAttribute("aria-controls")).toBe(false);
+    expect(second.getAttribute("aria-controls")).toBe(id);
+    wrapper.unmount();
+    mounted.splice(mounted.indexOf(wrapper), 1);
+    expect(second.hasAttribute("aria-controls")).toBe(false);
+  });
+
+  it("keeps exact dense flat OverflowMenu classes and cascade level density", async () => {
+    const wrapper = mount(OverflowMenu, { props: { open: true, dense: true, items: [{ label: "Edit" }] }, attachTo: document.body });
+    mounted.push(wrapper);
+    expect(wrapper.classes()).toEqual(["st-overflowMenu", "st-overflowMenu--dense"]);
+    expect(wrapper.find('.st-menu').classes()).toEqual(["st-menu"]);
+    await wrapper.setProps({ items: cascadeItems });
+    await buttonByText(wrapper, "Class A").trigger("click");
+    expect(wrapper.findAll('.st-menu--dense')).toHaveLength(2);
+  });
+
+  it.each(["Menu", "MenuPopover", "OverflowMenu"])("renders %s from a compiled Composition API template without render helpers", (name) => {
+    const source = readFileSync(join(here, name + ".ts"), "utf8");
+    expect(source).not.toMatch(/\bh\s*\(/);
+    const view = readFileSync(join(here, name + ".vue"), "utf8");
+    expect(view).toContain("<template>");
+    expect(view).toContain('<script setup lang="ts">');
+    expect(view).not.toMatch(/\bh\s*\(/);
+  });
+
+  it("ships the required Vue minor version with matching lock metadata", () => {
+    const manifest = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
+    const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
+    expect(manifest.version).toBe("0.40.0");
+    expect(lock.packages["packages/components-vue"].version).toBe(manifest.version);
+    expect(version).toMatch(/^3\.6\./);
   });
 });

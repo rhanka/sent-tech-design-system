@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:25ea77a50043a7618611bb3f96fa111249678b472c1ba7c2f70fa991abba3530",
-  "entryDigest": "sha256:9140a65004878f9ebf079be602c33dba5034549dcbdc1d95674957d0a8267ca1",
+  "digest": "sha256:b2fd5044a92d7194e777576dbd0344119b062cd4e81546bc2dd52ed1b59df71f",
+  "entryDigest": "sha256:5b8d5a59cf64e511cb4e26b1ec48f216a145fd991969e1e104a5ed69129944f9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1510,7 +1510,7 @@
         "declarationPath": "packages/components-vue/dist/ScatterPlot.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScatterPlotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
