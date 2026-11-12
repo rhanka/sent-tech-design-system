@@ -1,0 +1,2405 @@
+{
+  "documentId": "document:case-integration-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-sentropic": {
+      "id": "entity:act-sentropic",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "org"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équipe propriétaire des dépôts h2a et engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-h2a": {
+      "id": "entity:repo-h2a",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/h2a"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo livrant la coordination, l’intégration CLI et le registre"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-12"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-engram": {
+      "id": "entity:repo-engram",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/engram"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Dépôt fournissant la compétence externe engram-memory"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1039-1057"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-poste": {
+      "id": "entity:host-poste",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Poste de travail"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "workstation"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Poste local où h2a équipe les agents et installe les compétences"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "entity:coordination-skills": {
+      "id": "entity:coordination-skills",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Coordination"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Guider les échanges"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:979-997"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-components": {
+      "id": "entity:host-components",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Intégration CLI"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équiper les agents"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:999-1017"
+            }
+          ]
+        }
+      }
+    },
+    "entity:registry-components": {
+      "id": "entity:registry-components",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Registre"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Composer les ressources"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1019-1037"
+            }
+          ]
+        }
+      }
+    },
+    "entity:external-skills": {
+      "id": "entity:external-skills",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Mémoire externe"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Apporter le contexte"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1039-1057"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-h2a-coord": {
+      "id": "entity:pkg-h2a-coord",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet livrant les compétences de coordination h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-h2a-host": {
+      "id": "entity:pkg-h2a-host",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet livrant les modules d’intégration CLI des hôtes"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-h2a-reg": {
+      "id": "entity:pkg-h2a-reg",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet livrant la composition du registre h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-engram": {
+      "id": "entity:pkg-engram",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.5.0"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet livrant la ressource mémoire engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1042"
+            }
+          ]
+        }
+      }
+    },
+    "entity:h2a-skill": {
+      "id": "entity:h2a-skill",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Coordonner les agents"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1061-1079"
+            }
+          ]
+        }
+      }
+    },
+    "entity:h2a-run-skill": {
+      "id": "entity:h2a-run-skill",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a-run"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Lancer les sessions"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1080-1099"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-skills": {
+      "id": "entity:host-skills",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Distribution des skills"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Distribution"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équiper les hôtes"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1100-1119"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-plugin": {
+      "id": "entity:host-plugin",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plugins et hooks"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Plugins / hooks"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Intégrer les hôtes"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1120-1139"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-upgrade": {
+      "id": "entity:host-upgrade",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Équipement après mise à jour"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Mise à jour"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Réappliquer l’équipement"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1140-1159"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-doctor": {
+      "id": "entity:host-doctor",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Diagnostic d’installation"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Diagnostic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Vérifier l’installation"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1160-1179"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-scope": {
+      "id": "entity:host-scope",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Garde de workspace"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Garde workspace"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Borner les écritures"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1180-1199"
+            }
+          ]
+        }
+      }
+    },
+    "entity:registry-definitions": {
+      "id": "entity:registry-definitions",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Définitions et descripteurs"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Définitions"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Composer le registre"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1200-1219"
+            }
+          ]
+        }
+      }
+    },
+    "entity:registry-daemon": {
+      "id": "entity:registry-daemon",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Raccord au daemon sentropic"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Raccord daemon"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Joindre le service"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1220-1239"
+            }
+          ]
+        }
+      }
+    },
+    "entity:registry-memory": {
+      "id": "entity:registry-memory",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Fournisseur mémoire"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Mémoire"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Fournir les ressources"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1240-1259"
+            }
+          ]
+        }
+      }
+    },
+    "entity:engram-memory": {
+      "id": "entity:engram-memory",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "engram-memory"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Mémoire engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Consulter la mémoire"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1260-1280"
+            }
+          ]
+        }
+      }
+    },
+    "entity:legend-integration-r9": {
+      "id": "entity:legend-integration-r9",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Teintes Exécution / distribution (r9)"
+        }
+      }
+    },
+    "entity:key-accent": {
+      "id": "entity:key-accent",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Coordination, intégration et registre (h2a)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        }
+      }
+    },
+    "entity:key-brand": {
+      "id": "entity:key-brand",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Ressource mémoire externe (engram)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ob-repo-h2a": {
+      "id": "relation:ob-repo-h2a",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ob-repo-engram": {
+      "id": "relation:ob-repo-engram",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-poste": {
+      "id": "relation:op-poste",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-poste"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-coordination-skills": {
+      "id": "relation:mi-coordination-skills",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:coordination-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-host-components": {
+      "id": "relation:mi-host-components",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-components"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-registry-components": {
+      "id": "relation:mi-registry-components",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-components"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-external-skills": {
+      "id": "relation:mi-external-skills",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:external-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-h2a-coord": {
+      "id": "relation:mi-pkg-h2a-coord",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-coord"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-h2a-host": {
+      "id": "relation:mi-pkg-h2a-host",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-h2a-reg": {
+      "id": "relation:mi-pkg-h2a-reg",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-reg"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-engram": {
+      "id": "relation:mi-pkg-engram",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-h2a-coord": {
+      "id": "relation:po-pkg-h2a-coord",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-coord"
+        },
+        {
+          "role": "target",
+          "target": "entity:coordination-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-h2a-host": {
+      "id": "relation:po-pkg-h2a-host",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-h2a-reg": {
+      "id": "relation:po-pkg-h2a-reg",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-reg"
+        },
+        {
+          "role": "target",
+          "target": "entity:registry-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-engram": {
+      "id": "relation:po-pkg-engram",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:external-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-coord-reg": {
+      "id": "relation:do-coord-reg",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-coord"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-reg"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · registre h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-coord-host": {
+      "id": "relation:do-coord-host",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-coord"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-host"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · intégration CLI"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-h2a-skill": {
+      "id": "relation:po-h2a-skill",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:coordination-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-h2a-skill": {
+      "id": "relation:ro-h2a-skill",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-h2a-skill": {
+      "id": "relation:da-h2a-skill",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-coord"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · CLI h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-h2a-run-skill": {
+      "id": "relation:po-h2a-run-skill",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-run-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-coord"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-h2a-run-skill": {
+      "id": "relation:lb-h2a-run-skill",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-run-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-host-skills": {
+      "id": "relation:po-host-skills",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-host-skills": {
+      "id": "relation:ro-host-skills",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-host-skills": {
+      "id": "relation:da-host-skills",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · distribution"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-host-plugin": {
+      "id": "relation:po-host-plugin",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-plugin"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-host"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-host-plugin": {
+      "id": "relation:eb-host-plugin",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-plugin"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-host-upgrade": {
+      "id": "relation:po-host-upgrade",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-upgrade"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-host-upgrade": {
+      "id": "relation:ro-host-upgrade",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-upgrade"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-host-upgrade": {
+      "id": "relation:da-host-upgrade",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-upgrade"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · mise à jour"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-host-doctor": {
+      "id": "relation:po-host-doctor",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-doctor"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-host-doctor": {
+      "id": "relation:ro-host-doctor",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-doctor"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-host-doctor": {
+      "id": "relation:da-host-doctor",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a-host"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-doctor"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · diagnostic"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-host-scope": {
+      "id": "relation:po-host-scope",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-scope"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-host"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-host-scope": {
+      "id": "relation:eb-host-scope",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-scope"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-registry-definitions": {
+      "id": "relation:po-registry-definitions",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-definitions"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-reg"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-registry-definitions": {
+      "id": "relation:eb-registry-definitions",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-definitions"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-registry-daemon": {
+      "id": "relation:po-registry-daemon",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-daemon"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-reg"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-registry-daemon": {
+      "id": "relation:eb-registry-daemon",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-daemon"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-registry-memory": {
+      "id": "relation:po-registry-memory",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-memory"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-h2a-reg"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-registry-memory": {
+      "id": "relation:eb-registry-memory",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:registry-memory"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-engram-memory": {
+      "id": "relation:po-engram-memory",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:engram-memory"
+        },
+        {
+          "role": "target",
+          "target": "entity:external-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-engram-memory": {
+      "id": "relation:ro-engram-memory",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:engram-memory"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-engram-memory": {
+      "id": "relation:da-engram-memory",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:engram-memory"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · mémoire engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:968-1403"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-run-h2a": {
+      "id": "relation:dc-run-h2a",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-run-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:h2a-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · traduit l’intention en lancement h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1284-1294"
+            }
+          ]
+        }
+      }
+    },
+    "relation:in-h2a-dist": {
+      "id": "relation:in-h2a-dist",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:h2a-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · documente la distribution"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1295-1306"
+            }
+          ]
+        }
+      }
+    },
+    "relation:in-upgrade-doctor": {
+      "id": "relation:in-upgrade-doctor",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-upgrade"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-doctor"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · fait vérifier l’installation"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1307-1318"
+            }
+          ]
+        }
+      }
+    },
+    "relation:in-dist-engram": {
+      "id": "relation:in-dist-engram",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:engram-memory"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · installe Mémoire engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:1319-1330"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ct-key-accent": {
+      "id": "relation:ct-key-accent",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-integration-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-accent"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-brand": {
+      "id": "relation:ct-key-brand",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-integration-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-brand"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}
