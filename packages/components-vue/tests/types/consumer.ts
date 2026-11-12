@@ -3,7 +3,8 @@ import type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPa
 import { DiagramIcon } from '@sentropic/design-system-vue/diagram-icons';
 import { renderCardSvg, renderZoneSvg } from '@sentropic/design-system-vue/diagram-render';
 import { BpmnCanvas } from '@sentropic/design-system-vue/bpmn';
-import { DiagramSceneFigure as VaporScene, GraphCanvas as VaporGraph, DiagramZone as VaporZone } from '@sentropic/design-system-vue/vapor';
+import { DiagramSceneFigure as VaporScene, GraphCanvas as VaporGraph, DiagramZone as VaporZone, DiagramCard as VaporCard, ForceGraph as VaporForceGraph, GraphLegend as VaporLegend } from '@sentropic/design-system-vue/vapor';
+import { createVaporApp, createVaporSSRApp, createComponent, defineVaporAsyncComponent, type VaporComponent } from 'vue';
 import type * as Vapor from '@sentropic/design-system-vue/vapor';
 import { DiagramIcon as VaporIcon } from '@sentropic/design-system-vue/vapor/diagram-icons';
 import { BpmnCanvas as VaporBpmn } from '@sentropic/design-system-vue/vapor/bpmn';
@@ -23,3 +24,20 @@ bpmn.ready.then(() => { const state: 'idle' | 'rendering' | 'rendered' | 'refuse
 type ZoneSlots = Assert<Equal<InstanceType<typeof VaporZone>['$slots'], InstanceType<typeof DiagramZone>['$slots']>>;
 type BpmnSlots = Assert<Equal<InstanceType<typeof VaporBpmn>['$slots'], InstanceType<typeof BpmnCanvas>['$slots']>>;
 void [DiagramSceneFigure, GraphCanvas, DiagramIcon, VaporIcon, renderCardSvg, renderZoneSvg];
+
+// Every published Vapor entry must work directly with the Vue 3.6 APIs.
+const vaporComponents = [VaporScene, VaporGraph, VaporZone, VaporCard, VaporForceGraph, VaporLegend, VaporIcon, VaporBpmn] as const satisfies readonly VaporComponent[];
+for (const component of vaporComponents) {
+  createVaporApp(component);
+  createVaporSSRApp(component);
+  createComponent(component);
+}
+defineVaporAsyncComponent(async () => VaporScene);
+defineVaporAsyncComponent(() => import('@sentropic/design-system-vue/vapor/bpmn'));
+type NoVdomInstance = Assert<Equal<'$data' extends keyof InstanceType<typeof VaporScene> ? true : false, false>>;
+type SceneProps = Assert<Equal<InstanceType<typeof VaporScene>['$props'], InstanceType<typeof DiagramSceneFigure>['$props']>>;
+type ZoneEmit = Assert<Equal<InstanceType<typeof VaporZone>['$emit'], InstanceType<typeof DiagramZone>['$emit']>>;
+// @ts-expect-error Exposed methods retain their argument types.
+scene.setZoom('large');
+// @ts-expect-error Required component props must remain required.
+const missingLabel: InstanceType<typeof VaporForceGraph>['$props'] = { nodes: [], edges: [] };

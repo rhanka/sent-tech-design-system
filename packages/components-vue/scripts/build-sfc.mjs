@@ -37,22 +37,33 @@ for (const file of files('src').filter(file => file.endsWith('.vue'))) {
         return `${prefix}${quote}${path.startsWith('.') ? path : './' + path}${quote}`;
       });
     writeFileSync(target, output);
+    if (mode === 'vapor') {
+      const classicPath = relative(dirname(target), join('dist', relative('src', file) + '.js'));
+      const adapterPath = relative(dirname(target), 'dist/vapor/sfc.js');
+      const specifier = path => path.startsWith('.') ? path : './' + path;
+      writeFileSync(target.replace(/\.js$/, '.d.ts'),
+        `import type Classic from '${specifier(classicPath)}';\n`
+        + `import type { VaporSfc } from '${specifier(adapterPath)}';\n`
+        + `declare const component: VaporSfc<typeof Classic>;\nexport default component;\n`
+        + `export type * from '${specifier(classicPath)}';\n`);
+    }
     compiled.push(target);
   }
 }
 const components = ['DiagramCard', 'DiagramZone', 'DiagramSceneFigure', 'ForceGraph', 'GraphLegend', 'GraphCanvas'];
+writeFileSync('dist/vapor/sfc.d.ts', readFileSync(new URL('./vapor-sfc.d.ts', import.meta.url), 'utf8'));
 writeFileSync('dist/vapor/index.js', components.map(name => `export { default as ${name} } from './${name}.vue.js';`).join('\n')
   + "\nexport { useGraphEngine } from '../useGraphEngine.js';\nexport { nodeShapePath, edgeDashArray } from '@sentropic/graph/presentation';\n");
 writeFileSync('dist/vapor/index.d.ts', components.map(name =>
-  `export { default as ${name} } from '../${name}.vue.js';`).join('\n')
+  `export { default as ${name} } from './${name}.vue.js';`).join('\n')
   + "\nexport { useGraphEngine } from '../useGraphEngine.js';\n"
   + "export { nodeShapePath, edgeDashArray } from '../index.js';\n"
   + "export type { DiagramCardProps, DiagramZoneProps, DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, ForceGraphProps, ForceGraphNode, ForceGraphEdge, ForceGraphNodeShape, ForceGraphLegendEntry, ForceGraphTone, ForceGraphEdgeDash, GraphLegendProps, GraphCanvasProps, CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from '../index.js';\n");
 writeFileSync('dist/vapor/diagram-icons/index.js', "export { default, default as DiagramIcon } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
-writeFileSync('dist/vapor/diagram-icons/index.d.ts', "export { default, default as DiagramIcon } from '../../diagram-icons/DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
+writeFileSync('dist/vapor/diagram-icons/index.d.ts', "export { default, default as DiagramIcon } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
 mkdirSync('dist/vapor/bpmn', { recursive: true });
 writeFileSync('dist/vapor/bpmn/index.js', "export { default, default as BpmnCanvas } from '../BpmnCanvas.vue.js';\n");
-writeFileSync('dist/vapor/bpmn/index.d.ts', "export { default, default as BpmnCanvas, type BpmnCanvasProps } from '../../BpmnCanvas.vue.js';\n");
+writeFileSync('dist/vapor/bpmn/index.d.ts', "export { default, default as BpmnCanvas, type BpmnCanvasProps } from '../BpmnCanvas.vue.js';\n");
 // Node ESM and bundlers both resolve these published modules without an SFC loader.
 for (const file of files('dist').filter(file => /\.(?:js|ts)$/.test(file))) {
   const source = readFileSync(file, 'utf8');
