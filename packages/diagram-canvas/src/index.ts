@@ -1,12 +1,12 @@
 /**
  * `@sentropic/diagram-canvas` - the headless scene and its hit test.
  *
- * The package is PRIVATE until its own publication lot: it has no publish
- * workflow and no tag line in `docs/release.md` yet. Since L7b-a that is a
- * standalone state, not a consequence: its only dependency,
- * `@sentropic/diagram-core`, is itself public (`publishConfig.access:
- * "public"`, no `private` flag, tag `diagram-core-v<version>`). See README,
- * "Why this package is private".
+ * The package is PUBLISHABLE since DC-2a (BF-5): the Svelte scene host
+ * `DiagramSceneFigure` in `@sentropic/design-system-svelte` depends on it, and
+ * a published package naming a private one installs broken for every
+ * consumer. Its only dependency, `@sentropic/diagram-core`, is public. The
+ * publish workflow and the tag line in `docs/release.md` are not written yet.
+ * See README, "Publication".
  *
  * No DOM, no renderer, no framework, no design system package. Its ONLY bare
  * import specifier is `@sentropic/diagram-core`, which is the edge

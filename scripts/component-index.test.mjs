@@ -380,7 +380,8 @@ test("K1b: every contract and the contract index validate their v1 schemas", () 
   const validateContract = ajv.compile(contractSchema);
   const validateIndex = ajv.compile(indexSchema);
   const paths = contractPaths();
-  assert.equal(paths.length, 212, `the reviewed population is 212 contracts, found ${paths.length}`);
+  // Reviewed population: 212 contracts, plus diagram-scene-figure from PR #265.
+  assert.equal(paths.length, 213, `the reviewed population is 213 contracts, found ${paths.length}`);
   for (const path of paths) {
     const document = JSON.parse(readFileSync(path, "utf8"));
     assert.equal(
