@@ -78,6 +78,58 @@ optional grid. It is stored here, and deliberately not imported from a renderer
 package: a migration-versioned persisted schema must not be hostage to another
 package's type evolution.
 
+### Endpoint provenance: fold and chain
+
+Endpoints attach a relation role to a drawn occurrence. When the drawing differs
+from its semantic target, exactly one provenance arm supplies the witness:
+
+| Form | Fields beyond `role`, `occurrence` |
+| --- | --- |
+| Plain | None; the occurrence draws the role target directly. |
+| Fold | `semanticTarget` and `sourceOccurrence`; the current fold proves the representative. |
+| Chain | `semanticTarget` and `chainProvenance`; `sourceOccurrence` is absent. |
+
+`chainProvenance` contains a profile-declared `predicateId`, ordered relation
+`hops` from the semantic target to the drawn entity, and aggregate-only `members`.
+Profiles declare `chainPredicates` as serialisable DATA: typed directed steps,
+repeat modes, strict string/boolean attribute constraints, alternatives and
+`unique`, `ordered`, `first-drawn` or `aggregate` selection. Types include resolved
+ancestry in their own profile. Walks see only that profile's semantic entities,
+relations and attributes; the sole view input is whether an occurrence exists
+for an entity. Geometry, groups, collapsed state and filters cannot prove a chain.
+A drawn port is tested through its owner entity.
+
+Walks stop at the first admitted end and close cycles with an iterative branch
+stack. `first-drawn` accepts a completed single-step prefix (the exposer in an
+external-API chain), and a drawn non-admitted intermediate blocks further lifting.
+Aggregates recompute the complete member set, test each member's target and source
+chains, sort by UTF-16 `(sourceId, targetId, relationId)`, and require the smallest
+member as carrier. Any occurrence of the same repo entity is an equivalent end.
+
+`validateView` reports `occurrence-endpoint-mismatch` with one of
+`chain-not-declared`, `chain-hop-mismatch`, `chain-not-proven`, `chain-ambiguous`
+or `chain-aggregation-mismatch` in `details.check`. Candidate lists are in `refs`;
+details remain scalar. Pairing failures retain the fold `provenance-missing`
+template, and dangling witness refs precede chain checks. `validateProfile` uses
+`type-definition-conflict` with `chain-duplicate-id`, `chain-unknown-type`,
+`chain-invalid-direction`, `chain-invalid-repeat` or `chain-members-not-aggregate`;
+functions fail serialisation with `value-not-serialisable`.
+
+Selection owns its cardinality outcome: several distinct ends under `unique`
+give `chain-not-proven` with `cause: "cardinality"`; several drawn ends in the
+chosen `ordered` alternative give `chain-ambiguous`. Semantic cardinality remains
+profile-side; `validateView` never calls `validateDocument`.
+
+Projection, removal repair and replacement inverses carry chain endpoints
+verbatim, including hop/member order, and leave validation to `validateView`.
+Old views keep their canonical bytes. Frozen schemas `@1/@2` refuse chain fields;
+`@3` adds the exclusive pairing forms and resolves by exact pin only, without
+changing the presentation pin. The package includes
+[`schemas/diagram-view-schema-3.json`](schemas/diagram-view-schema-3.json) and its
+[canonical SHA-256](schemas/diagram-view-schema-3.sha256):
+`b415c05197692baa5f74ab35e3150ce58079cf9f06201df5e581d222a8d2c0df`.
+Versions and downstream dependency pins are managed by the release conductor.
+
 ### Commands are transactions
 
 `applyTransaction(state, transaction, { registry })` returns either
@@ -184,6 +236,8 @@ src/refs.ts          the seven nominal reference types, their guards and diagnos
 src/diagnostics.ts   one code per refusal; nothing returns a boolean validity
 src/attributes.ts    typed attribute values and their schemas
 src/profile.ts       profile declarations, registry, and profile self-validation
+src/chain-profile.ts chain predicate DATA declaration checks
+src/chain.ts         indexed document-only chain walks, selection and aggregate witnesses
 src/profiles/        generic@1 (complete), bpmn@1 / archimate@1 / uml@1 (skeletons)
 src/document.ts      SemanticDocument, entities, relations, ports, resources, extensions
 src/view.ts          ViewDocument, the three occurrence kinds, groups, filters, presentation
