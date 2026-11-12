@@ -1,3 +1,4 @@
+import { permuteFlowRuns } from "./flow-order.js";
 /**
  * Docking: which side of its entity each edge end uses, and where on that side.
  *
@@ -126,6 +127,7 @@ function nearestWall(inner: Rect, outer: Rect): PortSide {
 }
 
 interface PendingEnd {
+  readonly slot?: string | undefined;
   readonly edge: RelationRef;
   readonly role: "source" | "target";
   readonly entity: EntityRef;
@@ -157,6 +159,7 @@ export function parallelRelations(graph: LayoutGraph): ReadonlySet<RelationRef> 
 }
 
 export function dockEdges(input: {
+  readonly flowBadgeSize?: number;
   readonly graph: LayoutGraph;
   readonly rects: ReadonlyMap<EntityRef, Rect>;
   readonly direction: FlowDirection;
@@ -195,6 +198,7 @@ export function dockEdges(input: {
     const label = labelSizes.get(edge.id);
     const push = (role: "source" | "target", entity: EntityRef, other: EntityRef, side: PortSide, inner: boolean) =>
       ends.push({
+        slot: edge[role].slot,
         edge: edge.id,
         role,
         entity,
@@ -254,7 +258,7 @@ export function dockEdges(input: {
     const vertical = side === "east" || side === "west";
     // L-R9 takes priority over port sharing: a parallel end never takes the
     // port key, even when it carries a port.
-    const slotKey = (end: PendingEnd) =>
+    const slotKey = (end: PendingEnd) => end.slot !== undefined ? "~" + end.slot :
       end.port !== undefined && !parallel.has(end.edge) ? `~${end.port}` : `${end.edge}#${end.role}`;
     const representative = (members: readonly PendingEnd[]): PendingEnd =>
       [...members].sort(
@@ -272,7 +276,7 @@ export function dockEdges(input: {
     };
     const slots = new Map<string, PendingEnd[]>();
     for (const end of group) (slots.get(slotKey(end)) ?? slots.set(slotKey(end), []).get(slotKey(end))!).push(end);
-    const orderedKeys = [...slots.keys()].sort((left, right) => {
+    const sortedKeys = [...slots.keys()].sort((left, right) => {
       const first = representative(slots.get(left)!);
       const second = representative(slots.get(right)!);
       const a = position(first);
@@ -283,13 +287,24 @@ export function dockEdges(input: {
       if (turns(first) && turns(second) && a > 0) return byString(right, left);
       return byString(left, right);
     });
+    const flowEdge = new Map(graph.edges.filter((edge) => edge.flowRank !== undefined && edge.source.slot === undefined && edge.target.slot === undefined).map((edge) => [edge.id, edge]));
+    const runOf = (key: string): string | undefined => {
+      const members = slots.get(key)!;
+      const end = representative(members);
+      const edge = flowEdge.get(end.edge);
+      return members.length !== 1 || edge === undefined ? undefined : [edge.source.entity, edge.target.entity].sort().join("|") + "|" + String(turns(end));
+    };
+    const orderedKeys = permuteFlowRuns(sortedKeys, runOf, (key) => flowEdge.get(representative(slots.get(key)!).edge)!.flowRank!, (key) => {
+      const end = representative(slots.get(key)!); return turns(end) && position(end) > 0;
+    });
+    const flowRun = sortedKeys.some((key) => runOf(key) !== undefined && sortedKeys.filter((other) => runOf(other) === runOf(key)).length > 1);
     const thickness = group.reduce(
       (widest, end) => (end.label === undefined ? widest : Math.max(widest, vertical ? end.label.height : end.label.width)),
       0,
     );
     const length = vertical ? rect.height : rect.width;
     const count = orderedKeys.length;
-    const wanted = slotSpacingFor(metrics, count >= 2 ? thickness : 0);
+    const wanted = Math.max(slotSpacingFor(metrics, count >= 2 ? thickness : 0), flowRun ? (input.flowBadgeSize ?? 0) + metrics.labelMargin : 0);
     if (fixed === true) {
       const capacity = Math.max(1, Math.floor(length / wanted) + 1);
       const centre = centreOf(rect);

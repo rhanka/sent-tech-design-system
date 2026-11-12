@@ -68,7 +68,7 @@ function utf8ByteLength(text: string): number {
   return bytes;
 }
 
-const roles: readonly TextRole[] = ["kicker", "title", "body", "detail", "footer", "subtitle", "legend-label", "edge-label"];
+const roles: readonly TextRole[] = ["kicker", "title", "body", "detail", "footer", "subtitle", "legend-label", "edge-label", "flow-badge"];
 const cameraTokens = new Set([
   "--st-component-diagramScene-maxDisplayScale", "--st-component-diagramScene-minReadableScale",
   "--st-component-diagramScene-transitionDuration", "--st-foundation-motion-easing",
@@ -83,7 +83,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
   }
   const entries = new Map<string, Entry>();
   const bases = new Map<string, Set<Entry>>();
-  let measurers = new WeakMap<Function, { version: string | undefined; digest: string }>();
+  let measurers = new WeakMap<Function, { version: string | undefined; flows: boolean; digest: string }>();
   // Documents, presentations and views are immutable inputs. Weak keys avoid
   // retaining an input graph after its caller and the bounded entries release it.
   let inputDigests = new WeakMap<object, string>();
@@ -103,16 +103,16 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     return digest;
   }
 
-  function measurerDigest(options: LayoutOptions, measured: boolean): string {
+  function measurerDigest(options: LayoutOptions, measured: boolean, flows: boolean): string {
     const fn = measured ? options.measureLines : options.measureText;
     if (fn === undefined) return "missing";
     const known = measurers.get(fn);
-    if (known !== undefined && known.version === fn.version) return known.digest;
+    if (known !== undefined && known.version === fn.version && known.flows === flows) return known.digest;
     const probe = measured
-      ? roles.map((role) => options.measureLines!({ text: "Mm09 É—", role, availableWidth: 290, allocatedLines: DEFAULT_ALLOCATED_LINES[role], folded: false }))
+      ? roles.filter((role) => flows || role !== "flow-badge").map((role) => options.measureLines!({ text: "Mm09 É—", role, availableWidth: 290, allocatedLines: DEFAULT_ALLOCATED_LINES[role], folded: false }))
       : (["node", "container-title", "edge-label"] as const).map((role) => options.measureText("Mm09 É—", role));
     const digest = digestOf(canonicalise({ version: fn.version, probe }));
-    measurers.set(fn, { version: fn.version, digest });
+    measurers.set(fn, { version: fn.version, flows, digest });
     return digest;
   }
 
@@ -146,7 +146,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
     });
     // Invalid serialisable inputs still reach the engine's normal refusal path.
     if (!input.ok) return undefined;
-    const base = digestOf(input.text) + measurerDigest(options, measured);
+    const base = digestOf(input.text) + measurerDigest(options, measured, Object.values(document.relations).some((r) => r.type === "flow-step"));
     return { base, exact: base + digestOf(canonicalise(options.previousOrientation ?? {})) };
   }
 
