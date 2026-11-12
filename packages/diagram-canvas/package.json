@@ -14,6 +14,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./diagramSceneModel": {
+      "types": "./dist/presentation/diagramSceneModel.d.ts",
+      "import": "./dist/presentation/diagramSceneModel.js"
     }
   },
   "types": "./dist/index.d.ts",
