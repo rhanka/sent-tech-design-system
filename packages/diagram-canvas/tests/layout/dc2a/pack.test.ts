@@ -78,14 +78,28 @@ describe("packRows / packColumns", () => {
     }
   });
 
-  it("P-3: the all-singleton candidate is inadmissible for two boxes or more", () => {
-    // At chrome 0 the 2 × 1 column scores lower than the 1 × 2 row; admissibility, not the score, excludes it.
+  it("P-3/BF-1: no candidate stacks two boxes or more in one single vertical column, in either form", () => {
+    // At chrome 0 the 2 × 1 column scores lower (0.79) than the 1 × 2 row (0.98);
+    // admissibility, not the score, excludes it. A shelf of the rows form is a
+    // row, a shelf of the columns form is a column: the single vertical column
+    // is `rows.length === n` in rows form and `rows.length === 1` in columns form.
     expect(shape(packRows(cards(2), options("root")).rows)).toEqual([2]);
-    expect(shape(packColumns(cards(2), options("root")).rows)).toEqual([2]);
-    for (const count of [2, 3, 5, 12]) {
-      expect(packRows(cards(count), options("root")).rows.length).toBeLessThan(count);
-      expect(packColumns(cards(count), options("root")).rows.length).toBeLessThan(count);
+    expect(shape(packColumns(cards(2), options("root")).rows)).toEqual([1, 1]);
+    for (const chrome of ["root", "zone"] as const) {
+      for (const count of [2, 3, 4, 5, 6, 9, 12]) {
+        const rows = packRows(cards(count), options(chrome));
+        const columns = packColumns(cards(count), options(chrome));
+        expect(rows.rows.length, `rows n=${count} ${chrome}`).toBeLessThan(count);
+        expect(columns.rows.length, `columns n=${count} ${chrome}`).toBeGreaterThan(1);
+        for (const result of [rows, columns]) {
+          const oneColumn = result.positions.every((position) => position.x === result.positions[0]!.x);
+          expect(oneColumn, `n=${count} ${chrome}`).toBe(false);
+        }
+      }
     }
+    // Two equal cards: both forms draw the same 1 × 2 line, so the level reads as rows (O-3).
+    const two = chooseOrientation(cards(2), options("root"), 0.08);
+    expect([two.orientation, two.result.width, two.result.height]).toEqual(["rows", 944, 200]);
   });
 
   it("P-6/P-7: degenerate inputs and top-aligned rows", () => {
@@ -134,14 +148,37 @@ describe("chooseOrientation", () => {
   });
 
   it("O-4/AC-17: inside the band the previous orientation is kept; outside it the lower score wins", () => {
-    const boxes = cards(2);
+    // Three boxes whose two forms score differently: a wide one then two cards.
+    const boxes: PackBox[] = [{ width: 976, height: 320 }, CARD, CARD];
     const free = chooseOrientation(boxes, options("root"), 0);
     const gap = Math.abs(free.scoreRows - free.scoreColumns);
+    expect(gap).toBeGreaterThan(0.01);
     const loser = free.orientation === "rows" ? "columns" : "rows";
     expect(chooseOrientation(boxes, options("root"), gap + 0.01, loser).orientation).toBe(loser);
     expect(chooseOrientation(boxes, options("root"), gap - 0.01, loser).orientation).toBe(free.orientation);
     // Fixed point (O-5): feeding the emitted orientation back changes nothing.
     expect(chooseOrientation(boxes, options("root"), 0.08, free.orientation).orientation).toBe(free.orientation);
+  });
+
+  it("O-3: equivalent forms read as rows whatever the previous orientation — the band damps near-boundary scores only", () => {
+    // Two equal cards: both forms draw the same line, scores equal to the last bit.
+    const two = chooseOrientation(cards(2), options("root"), 0.08, "columns");
+    expect(Math.abs(two.scoreRows - two.scoreColumns)).toBeLessThanOrEqual(1e-9);
+    expect(two.orientation).toBe("rows");
+    // Three equal cards: rows [2, 1] and columns [2, 1] fill the same 944 × 424
+    // box. The scores differ by shelf-slack bookkeeping only (well inside the
+    // band), so a level that was `columns` in another fold state reads rows.
+    for (const chrome of ["root", "zone"] as const) {
+      const rows = packRows(cards(3), options(chrome));
+      const columns = packColumns(cards(3), options(chrome));
+      expect([columns.width, columns.height]).toEqual([rows.width, rows.height]);
+      const gap = Math.abs(rows.score - columns.score);
+      expect(gap).toBeGreaterThan(1e-9);
+      expect(gap).toBeLessThan(0.08);
+      for (const previous of ["columns", "rows", undefined] as const) {
+        expect(chooseOrientation(cards(3), options(chrome), 0.08, previous).orientation).toBe("rows");
+      }
+    }
   });
 });
 
