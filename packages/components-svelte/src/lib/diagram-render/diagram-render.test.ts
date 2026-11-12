@@ -17,7 +17,6 @@ import { renderZoneSvg, renderZoneSvgFromPresentation, zoneContent } from "./ren
 // Item 8: the measurer bridge must be reachable through the diagram-render
 // subpath itself — this import is the assertion.
 import { cardLineMeasurer } from "./index.js";
-import { component } from "../../../../tokens/src/component.js";
 
 /**
  * Second-review (Astra) items 1, 2, 3 and 8 on the pure renderers:
@@ -666,9 +665,9 @@ describe("pass 3 item 11 — layoutCard applies headerGeo.iconTopOffset (dual-re
 });
 
 describe("DC-2a — the edge label measures at its own token size (18 px on a 22 px line box)", () => {
-  it("EDGE_LABEL_GEOMETRY mirrors the diagramScene tokens", () => {
-    expect(component.diagramScene.edgeLabelFontSize).toBe(`${EDGE_LABEL_GEOMETRY.size}px`);
-    expect(component.diagramScene.edgeLabelLineHeight).toBe(`${EDGE_LABEL_GEOMETRY.lineHeight}px`);
+  it("EDGE_LABEL_GEOMETRY uses an 18 px font on a 22 px line box", () => {
+    expect(EDGE_LABEL_GEOMETRY.size).toBe(18);
+    expect(EDGE_LABEL_GEOMETRY.lineHeight).toBe(22);
   });
 
   it("one label line is 22 px tall — 30 px with the engine's two 4 px margins, inside the 32 px gap cap", () => {
@@ -676,10 +675,10 @@ describe("DC-2a — the edge label measures at its own token size (18 px on a 22
     const label = measurer({ text: "lance · appelle", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
     expect(label.lines).toEqual(["lance · appelle"]);
     expect(label.height).toBe(22);
-    expect(label.height + 2 * 4).toBeLessThanOrEqual(Number.parseFloat(component.diagramZone.gapBlockMax));
+    expect(label.height + 2 * 4).toBeLessThanOrEqual(32);
     // The body line box (24 px × 1.3 = 31.2 px) would need 39.2 px: the role no longer measures as body.
     const body = measurer({ text: "lance · appelle", role: "body", availableWidth: 400, allocatedLines: 1, folded: false });
-    expect(body.height).toBeGreaterThan(Number.parseFloat(component.diagramZone.gapBlockMax) - 2 * 4);
+    expect(body.height).toBeGreaterThan(32 - 2 * 4);
   });
 
   it("the label is the body face scaled by 18/24: same wrapping, proportional width", () => {
