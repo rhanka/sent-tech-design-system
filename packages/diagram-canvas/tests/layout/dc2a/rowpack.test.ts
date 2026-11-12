@@ -8,17 +8,18 @@
  * Regenerate on purpose only:
  * `DC2A_WRITE_AFTER=1 vitest run tests/layout/dc2a/rowpack.test.ts`.
  *
- * Every §7.3 gate is asserted with the threshold the spec states. Where the
- * shipped engine does not meet one, the views that miss it are pinned by name
- * with their numbers, so nothing is omitted and nothing is excused: a view
- * joining or leaving a list turns the test red.
+ * §7.3 fill gates follow Appendix E (conductor decision 12/11): capped scenes
+ * are centred at MAX_DISPLAY_SCALE; frame-limited scenes retain spec gates
+ * unless the independent feasibility proof establishes an unreachable value.
  */
+import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 import { formatDiagnostics, m3ProfileRegistry, shippedExecutorBindings, validateView } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX } from "../../../src/index.js";
+import { applyRect, DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX, worldToView } from "../../../src/index.js";
 import { sharesSegment } from "../fixtures.js";
 import {
   BASE_GAP,
@@ -31,6 +32,7 @@ import {
   levelShelves,
   misalignedLevels,
   placementMetrics,
+  sceneFrame,
   segmentsThrough,
   siblingGaps,
   unplacedLabels,
@@ -41,6 +43,22 @@ import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLay
 const BASELINE = new URL("./baseline.json", import.meta.url);
 const AFTER = new URL("./after.json", import.meta.url);
 const GAP_CAP = 32;
+
+interface FillProof {
+  readonly view: string;
+  readonly leafCount: number;
+  readonly minimumWidth: number;
+  readonly minimumHeight: number;
+  readonly optimisticMaximumFill: number;
+  readonly requiredFill: number;
+  readonly threshold: number;
+  readonly levels: readonly { readonly level: string; readonly rows: boolean; readonly shelves: readonly (readonly string[])[] }[];
+}
+// Per-view pins and their proof: `node tests/layout/dc2a/fill-feasibility.mjs`
+// stdout, recorded in fill-feasibility.json. Never derive thresholds from after.
+const PROOF_OUTPUT = new URL("./fill-feasibility.json", import.meta.url);
+const proofOutput = JSON.parse(readFileSync(PROOF_OUTPUT, "utf8")) as { readonly scenes: readonly FillProof[] };
+const fillProofs = new Map(proofOutput.scenes.map((proof) => [proof.view, proof]));
 
 type Orientations = Readonly<Record<string, "rows" | "columns">>;
 
@@ -82,6 +100,71 @@ const short = (id: string): string => id.replace("occurrence:r.link.", "");
 describe("DC-2a L2 row-pack gates", () => {
   it("matches the pinned after numbers", () => {
     expect(after).toEqual(JSON.parse(readFileSync(AFTER, "utf8")));
+  });
+
+  it("Appendix E: the pinned per-scene bounds reproduce independently and match the frozen base-gap shelves", () => {
+    const stdout = execFileSync(process.execPath, [fileURLToPath(new URL("./fill-feasibility.mjs", import.meta.url))], { encoding: "utf8" });
+    expect(stdout).toBe(readFileSync(PROOF_OUTPUT, "utf8"));
+    for (const proof of proofOutput.scenes) {
+      const view = views.find((view) => view.key === proof.view)!;
+      expect(view, proof.view).toBeDefined();
+      const input = sceneInput(view.caseId, view.viewName);
+      const base = layScene(input, { metrics: { gapInlineMax: BASE_GAP, gapBlockMax: BASE_GAP } }, { rootOrder: input.rootOrder });
+      const metrics = placementMetrics(base);
+      expect(metrics.visibleLeaves, proof.view).toBe(proof.leafCount);
+      expect([metrics.bboxWidth, metrics.bboxHeight], proof.view).toEqual([proof.minimumWidth, proof.minimumHeight]);
+      const shelves = levelShelves(base).map(({ level, rows, shelves }) => ({ level, rows, shelves }));
+      // Empty expanded zones have no sibling level in emitted geometry.
+      expect(proof.levels.filter((level) => level.shelves.length > 0).map(({ level, rows, shelves }) => ({ level, rows, shelves })), proof.view).toEqual(shelves);
+      expect(after[proof.view]!.bboxWidth, proof.view).toBeGreaterThanOrEqual(proof.minimumWidth);
+      expect(after[proof.view]!.bboxHeight, proof.view).toBeGreaterThanOrEqual(proof.minimumHeight);
+      expect(proof.requiredFill, proof.view).toBe(before[proof.view]!.fillRatio + 0.10);
+      expect(proof.optimisticMaximumFill, proof.view).toBeLessThan(proof.requiredFill);
+      expect(proof.optimisticMaximumFill, proof.view).toBe(proof.leafCount * 460 * 200 / (proof.minimumWidth * proof.minimumHeight));
+      expect(proof.threshold, proof.view).toBe(proof.optimisticMaximumFill - 0.02);
+    }
+  }, 120_000);
+
+  it("Appendix E: capped scenes are centred at exactly MAX_DISPLAY_SCALE with letterboxing", () => {
+    let capped = 0;
+    for (const view of views) {
+      const frame = sceneFrame(layouts.get(view.key)!);
+      if (!frame.capped) continue;
+      capped += 1;
+      expect(frame.fit.zoomFit, view.key).toBe(MAX_DISPLAY_SCALE);
+      expect(frame.camera.zoom, view.key).toBe(MAX_DISPLAY_SCALE);
+      expect(frame.fit.pans, view.key).toBe(false);
+      const projected = applyRect(worldToView(frame.camera), frame.bounds);
+      expect(projected.x, view.key).toBeCloseTo(frame.fit.fitWidth - projected.x - projected.width, 9);
+      expect(projected.y, view.key).toBeCloseTo(frame.fit.fitHeight - projected.y - projected.height, 9);
+      expect(projected.x, view.key).toBeGreaterThanOrEqual(0);
+      expect(projected.y, view.key).toBeGreaterThanOrEqual(0);
+      expect(projected.width * projected.height, view.key).toBeLessThan(frame.fit.fitWidth * frame.fit.fitHeight);
+    }
+    expect(capped).toBeGreaterThan(0);
+    expect(capped).toBeLessThan(views.length);
+  });
+
+  it("Appendix E: cap scope includes route/label extents and uses the unrounded fit before the readability floor", () => {
+    const layout = layouts.get("case-skills-r9/folded")!;
+    // A small entity bbox is capped, but a far label or route can make the
+    // whole scene frame-limited. Just below the cap still rounds to 0.620.
+    for (const scale of [MAX_DISPLAY_SCALE - 0.0001, 0.3]) {
+      for (const extent of ["label", "route"]) {
+        const right = 100 + 1440 / scale;
+        const frame = sceneFrame({
+          ...layout,
+          rects: new Map([["card", { x: 100, y: -40, width: 460, height: 200 }]]),
+          routes: extent === "route" ? [{ id: "route", source: "card", target: "card", points: [{ x: 100, y: -30 }, { x: right, y: -30 }] }] : [],
+          labelBoxes: extent === "label" ? new Map([["label", { x: right - 10, y: -30, width: 10, height: 22 }]]) : new Map(),
+        });
+        expect(frameFit({ width: 460, height: 200 }).zoomFit).toBe(MAX_DISPLAY_SCALE);
+        expect(frame.capped, `${extent} at ${scale}`).toBe(false);
+        expect(frame.fit.zoomFit).toBeCloseTo(scale, 12);
+        if (scale < DEFAULT_MIN_READABLE_SCALE) expect(frame.fit.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+        else expect(Math.round(frame.fit.zoomFit * 1000) / 1000).toBe(MAX_DISPLAY_SCALE);
+      }
+    }
   });
 
   it("AC-1: no rowPack option packs every level toward 16:9; the option only tunes the objective", () => {
@@ -269,7 +352,7 @@ describe("DC-2a L2 row-pack gates", () => {
     }
   });
 
-  it("AC-20: every view moves toward 16:9 and fills more of the frame than the column baseline", () => {
+  it("AC-20/Appendix E: every view moves toward 16:9; frame-limited views beat the baseline frame fill", () => {
     const violations: string[] = [];
     for (const view of views) {
       const a = after[view.key]!;
@@ -277,10 +360,8 @@ describe("DC-2a L2 row-pack gates", () => {
       // A single visible box has one possible drawing; two cards alone are gated above.
       if (a.visible <= 2) continue;
       if (!(a.logAspectError < b.logAspectError)) violations.push(`${view.key} aspect ${a.logAspectError} !< ${b.logAspectError}`);
-      // §7.3 binds every transition view, including cap-limited folded
-      // baselines. A compact drawing that cannot beat it must fail by name.
-      const transition = ["vue-globale", "ajout-preprod", "migration-cluster-mesh"].includes(view.caseId);
-      if ((transition || b.frameScale < MAX_DISPLAY_SCALE) && !(a.frameFillRatio > b.frameFillRatio)) {
+      // Appendix E scopes by the CURRENT whole-scene fit, never by L0's cap.
+      if (!sceneFrame(layouts.get(view.key)!).capped && !(a.frameFillRatio > b.frameFillRatio)) {
         violations.push(`${view.key} frame fill ${a.frameFillRatio} !> ${b.frameFillRatio}`);
       }
       if (!(a.frameScale >= b.frameScale)) violations.push(`${view.key} frame scale ${a.frameScale} !>= ${b.frameScale}`);
@@ -465,7 +546,7 @@ describe("DC-2a L2 row-pack gates", () => {
   });
 });
 
-describe("DC-2a §7.3 gates (spec thresholds, no arbitration list)", () => {
+describe("DC-2a §7.3 gates (Appendix E fill scope and proven bounds)", () => {
   it("§7.3 root aspect: views with nine visible leaves or more land within 0.35 of the 16:9 log aspect", () => {
     // BLK-1: hard gate — no §7.4 arbitration list. A failing view is named.
     const violations = views
@@ -474,11 +555,13 @@ describe("DC-2a §7.3 gates (spec thresholds, no arbitration list)", () => {
     expect(violations).toEqual([]);
   });
 
-  it("§7.3 fill: cluster-scale views reach the column baseline fill + 0.10", () => {
-    // BLK-1: hard gate as written — no arbitration list. Failing views named.
+  it("§7.3/Appendix E fill: frame-limited cluster views reach the spec threshold or the proven bound minus 0.02", () => {
     const violations = views
-      .filter((view) => after[view.key]!.visibleLeaves >= 9 && !(after[view.key]!.fillRatio >= before[view.key]!.fillRatio + 0.1))
-      .map((view) => `${view.key} ${String(after[view.key]!.fillRatio)} < required ${String(Math.round((before[view.key]!.fillRatio + 0.1) * 1000) / 1000)}`);
+      .filter((view) => after[view.key]!.visibleLeaves >= 9 && !sceneFrame(layouts.get(view.key)!).capped)
+      .flatMap((view) => {
+        const threshold = fillProofs.get(view.key)?.threshold ?? before[view.key]!.fillRatio + 0.10;
+        return after[view.key]!.fillRatio >= threshold ? [] : [`${view.key} ${after[view.key]!.fillRatio} < required ${threshold}`];
+      });
     expect(violations).toEqual([]);
   });
 });

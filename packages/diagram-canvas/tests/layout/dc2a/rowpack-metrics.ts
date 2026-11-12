@@ -30,6 +30,33 @@ export const EDGE_LABEL_FONT_SIZE = DEFAULT_EDGE_LABEL_FONT_SIZE;
 /** The shipped fit over the harness frame: the fit box is exactly 1440 × 810. */
 export const frameFit = (bounds: { readonly width: number; readonly height: number }) =>
   cameraFit({ bounds, viewWidth: FRAME.width, windowHeight: FRAME.height / FIT_WINDOW_HEIGHT_SHARE });
+
+/**
+ * Appendix E scope uses the unrounded fit of the WHOLE scene (BF-7), never
+ * the rounded entity scale or the readability-floored display scale.
+ * The camera is the test harness's centred §5.2/Z-3 projection; host wiring
+ * remains L4. A capped scene keeps the maximum size with equal margins.
+ */
+export function sceneFrame(layout: SceneLayout) {
+  const boxes = [...layout.rects.values(), ...layout.labelBoxes.values()];
+  const points = layout.routes.flatMap((route) => route.points);
+  const x = Math.min(...boxes.map((box) => box.x), ...points.map((point) => point.x));
+  const y = Math.min(...boxes.map((box) => box.y), ...points.map((point) => point.y));
+  const right = Math.max(...boxes.map((box) => box.x + box.width), ...points.map((point) => point.x));
+  const bottom = Math.max(...boxes.map((box) => box.y + box.height), ...points.map((point) => point.y));
+  const bounds = { x, y, width: right - x, height: bottom - y };
+  const fit = frameFit(bounds);
+  return {
+    bounds,
+    fit,
+    capped: fit.zoomFit === MAX_DISPLAY_SCALE,
+    camera: {
+      x: x + bounds.width / 2 - fit.fitWidth / (2 * fit.zoom),
+      y: y + bounds.height / 2 - fit.fitHeight / (2 * fit.zoom),
+      zoom: fit.zoom,
+    },
+  };
+}
 /** Base sibling gap token (24 px) and the tolerance of every gap probe (0.5 px). */
 export const BASE_GAP = 24;
 export const GAP_TOLERANCE = 0.5;
@@ -507,13 +534,7 @@ export function placementMetrics(layout: SceneLayout): PlacementMetrics {
   const leafArea = leaves.reduce((sum, rect) => sum + rect.width * rect.height, 0);
   // §7.2 frame scale: entity bbox. Display scale: scene bounds (DEC-5), floored.
   const frameScale = frameFit(bbox).zoomFit;
-  const points = layout.routes.flatMap((route) => route.points);
-  const labelRects = [...layout.labelBoxes.values()];
-  const sceneLeft = Math.min(xmin, ...points.map((point) => point.x), ...labelRects.map((box) => box.x));
-  const sceneTop = Math.min(ymin, ...points.map((point) => point.y), ...labelRects.map((box) => box.y));
-  const sceneRight = Math.max(xmax, ...points.map((point) => point.x), ...labelRects.map((box) => box.x + box.width));
-  const sceneBottom = Math.max(ymax, ...points.map((point) => point.y), ...labelRects.map((box) => box.y + box.height));
-  const fit = frameFit({ width: sceneRight - sceneLeft, height: sceneBottom - sceneTop });
+  const { fit } = sceneFrame(layout);
   const scale = frameScale;
   const gaps = siblingGaps(layout);
   const widened = gaps.filter((gap) => gap.gap > BASE_GAP + GAP_TOLERANCE);

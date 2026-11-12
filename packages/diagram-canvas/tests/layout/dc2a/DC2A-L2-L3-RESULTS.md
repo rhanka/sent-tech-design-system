@@ -1,95 +1,89 @@
-# DC-2a L2/L3 verification
+# DC-2a L2/L3 verification — conductor fill decision 12/11
 
-Target: `feat/dc2a-l2-l3`, HEAD `169e12dbae8202f5ae63be7b01e0d4d48df8cc44` plus the uncommitted working-tree changes. All work stayed in `.dc2a-build`.
+Code/tests: `feat/dc2a-l2-l3`, HEAD `4256c9aeebd3a498ce2db35b7adba6d1d424f47b` plus this working-tree diff, in `.dc2a-build`.
+Spec: `spec/dc2a-rowpack-autolayout`, only `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`, in `.dc2a-wt`.
 
-The engine now places every label and routes every acceptance edge without obstruction. The task remains incomplete because the unmodified leaf-fill requirement fails on 11 views, and enforcing the full frame-fill requirement exposes one additional view. Neither gate is lowered.
+The conductor decision is recorded verbatim as **Appendix E — Fill gate scope (conductor decision 12/11)** in the spec. This completes the remaining L2/L3 fill acceptance work: 20 capped views use a centred camera at exactly MAX_DISPLAY_SCALE (0.62), and 11 frame-limited views retain the frame-fill gate. Ten frame-limited cluster views use independently proven leaf-fill bounds minus 0.02. All other acceptance gates stay unchanged.
 
-| Goal | Supplied HEAD, reproduced | Result |
-| --- | --- | --- |
-| Full diagram-canvas suite | 10 failures, 404 passing, 1 skipped; 5 failing files | 2 failures, 413 passing, 1 skipped; 1 failing file |
-| Leaf fill, §7.3 | 11 failing views | 11 failing views; required baseline + 0.10 retained |
-| Frame fill, §7.3 | A zoom-cap exemption hid one failing transition view | Exemption removed; `migration-cluster-mesh/folded` fails explicitly |
-| AC-21 | 26 unplaced labels (author report said 25) | 0; no remaining label exceptions |
-| AC-25 routing gate | 1 obstructed route | 0 |
-| Geometry protection | 0 card crossings / containment escapes | 0; same-pair sharing and crossings also 0 |
-| Sibling gaps, DEC-6 | 32 px cap | Largest actual gap 30 px; 0 empty widened lanes |
-| Readability floor | Token, camera and pack tests already 0.45 | Verified unchanged; 18 px labels render at least 8.1 CSS px |
+The supplied HEAD's report recorded two failing assertions: eleven leaf-fill misses and the folded-migration frame comparison. Appendix E exempts the capped `case-skills-r9/skills-unfolded` and `migration-cluster-mesh/folded` views; the ten remaining leaf thresholds now have per-view proofs. Production geometry, fixtures, baseline.json, after.json and tuning.json were not re-pinned in this change.
 
-`rowpack.test.ts` already contained the hard leaf-fill assertion at the supplied HEAD. The proposed per-scene thresholds in the author report were not present there. The remaining frame-fill exemption was removed: every transition view is now compared with its L0 baseline even when that baseline was at the maximum display scale.
+## Per-view fill acceptance
 
-The code changes scope the safer fallback to measured layouts, restoring compatibility-path behavior. Measured U-channel headroom uses actual wrapped label heights and separate shelf identities. Label routing tries clear horizontal segments and alternate ordinary-pair faces, checks complete routes against obstacles, containment and same-pair routes, and preserves the docks and routes of other edges. Labels exclude expanded-zone interiors as blockers (Appendix D BF-6). Widening is scoped to the shared placement level so an outgoing edge cannot shift an unchanged level when another zone folds (S-1).
+Fill and threshold pairs are **leaf / frame**. Leaf fill is visible-leaf area / entity-bbox area (DEC-7); frame fill is fit-scaled entity-bbox area / 1440 × 810. Leaf thresholds apply at ≥9 visible leaves. Frame comparisons are strict, as in §7.3. Scope uses the live whole-scene fit (entities, routes and labels), before rounding and the readability floor; the table displays the unchanged pinned measurements.
 
-## Unmet fill requirements
+Sources: **E** = spec Appendix E, capped views exempt from both fill gates and tested for centred maximum-scale letterboxing. **P** = [fill-feasibility.json](fill-feasibility.json), keyed by the exact scene/view, reproduced by [fill-feasibility.mjs](fill-feasibility.mjs). **§7.3** = unchanged L0 comparison in [baseline.json](baseline.json). Full-precision thresholds live in P; table decimals are for reading.
 
-The table below uses visible-leaf area / entity-bbox area (DEC-7), the unchanged L0 baseline + 0.10 threshold (§7.3), and the 1440 × 810 pinned frame adopted by Appendix C C-2. Frame fill is a separate metric and does not excuse a leaf-fill miss.
+| Scene/view | Scope | Fill: leaf / frame | Threshold: leaf / frame | Source |
+| --- | --- | ---: | --- | --- |
+| vue-globale/before | frame-limited | 0.280 / 0.709 | ≥ 0.260363475 / > 0.079 | P + §7.3 |
+| vue-globale/intermediate | frame-limited | 0.308 / 0.988 | ≥ 0.288211835 / > 0.052 | P + §7.3 |
+| vue-globale/after | frame-limited | 0.256 / 0.942 | ≥ 0.236140635 / > 0.048 | P + §7.3 |
+| vue-globale/folded | capped | 0.683 / 0.311 | exempt / exempt | E |
+| ajout-preprod/before | capped | 0.380 / 0.479 | exempt / exempt | E |
+| ajout-preprod/intermediate | frame-limited | 0.315 / 0.976 | ≥ 0.296077087 / > 0.066 | P + §7.3 |
+| ajout-preprod/after | frame-limited | 0.333 / 0.970 | ≥ 0.314359621 / > 0.059 | P + §7.3 |
+| ajout-preprod/folded | capped | 0.680 / 0.134 | exempt / exempt | E |
+| migration-cluster-mesh/before | frame-limited | 0.316 / 0.499 | n/a (<9 leaves) / > 0.158 | §7.3 |
+| migration-cluster-mesh/intermediate | frame-limited | 0.397 / 0.910 | ≥ 0.378489612 / > 0.062 | P + §7.3 |
+| migration-cluster-mesh/after | frame-limited | 0.331 / 0.928 | ≥ 0.310965505 / > 0.059 | P + §7.3 |
+| migration-cluster-mesh/folded | capped | 0.907 / 0.134 | exempt / exempt | E |
+| case-a/unfolded | capped | 0.306 / 0.396 | exempt / exempt | E |
+| case-a/pkg-folded | capped | 0.366 / 0.249 | exempt / exempt | E |
+| case-a/track-folded | capped | 0.534 / 0.114 | exempt / exempt | E |
+| case-b/unfolded | capped | 0.409 / 0.223 | exempt / exempt | E |
+| case-b/mesh-engram-folded | capped | 0.517 / 0.176 | exempt / exempt | E |
+| case-b/folded | capped | 0.690 / 0.132 | exempt / exempt | E |
+| case-c/unfolded | capped | 0.573 / 0.159 | exempt / exempt | E |
+| case-c/lib-folded | capped | 0.584 / 0.104 | exempt / exempt | E |
+| case-c/folded | capped | 0.975 / 0.062 | exempt / exempt | E |
+| case-d/unfolded | capped | 0.585 / 0.155 | exempt / exempt | E |
+| case-d/folded | capped | 0.975 / 0.062 | exempt / exempt | E |
+| case-skills-r9/unfolded | frame-limited | 0.511 / 0.741 | ≥ 0.490807059 / > 0.082 | P + §7.3 |
+| case-skills-r9/skills-unfolded | capped | 0.508 / 0.657 | exempt / exempt | E |
+| case-skills-r9/folded | capped | 0.975 / 0.062 | exempt / exempt | E |
+| case-integration-r9/unfolded | frame-limited | 0.368 / 0.808 | ≥ 0.347962535 / > 0.091 | P + §7.3 |
+| case-integration-r9/folded | capped | 0.919 / 0.132 | exempt / exempt | E |
+| case-trackfocus-r9/unfolded | frame-limited | 0.397 / 0.730 | ≥ 0.379311228 / > 0.101 | P + §7.3 |
+| case-trackfocus-r9/inner-folded | capped | 0.485 / 0.188 | exempt / exempt | E |
+| case-trackfocus-r9/folded | capped | 1.000 / 0.030 | exempt / exempt | E |
 
-| View | HEAD leaf fill | Current leaf fill | Required leaf fill | Current entity bbox | L0 → current frame fill |
-| --- | ---: | ---: | ---: | --- | --- |
-| vue-globale/before | 0.280 | 0.280 | 0.618 | 3008 × 1200 | 0.079 → 0.709 |
-| vue-globale/intermediate | 0.307 | 0.308 | 0.662 | 3072 × 1749 | 0.052 → 0.988 |
-| vue-globale/after | 0.255 | 0.256 | 0.647 | 3588 × 1902 | 0.048 → 0.942 |
-| ajout-preprod/intermediate | 0.312 | 0.315 | 0.769 | 3008 × 1651 | 0.066 → 0.976 |
-| ajout-preprod/after | 0.345 | 0.333 | 0.763 | 3008 × 1744 | 0.059 → 0.970 |
-| migration-cluster-mesh/intermediate | 0.405 | 0.397 | 0.726 | 2524 × 1561 | 0.062 → 0.910 |
-| migration-cluster-mesh/after | 0.330 | 0.331 | 0.696 | 3008 × 1571 | 0.059 → 0.928 |
-| case-skills-r9/unfolded | 0.508 | 0.511 | 0.872 | 2460 × 1025 | 0.082 → 0.741 |
-| case-skills-r9/skills-unfolded | 0.505 | 0.508 | 0.893 | 1944 × 1025 | 0.107 → 0.657 |
-| case-integration-r9/unfolded | 0.368 | 0.368 | 0.779 | 2460 × 1118 | 0.091 → 0.808 |
-| case-trackfocus-r9/unfolded | 0.397 | 0.397 | 0.759 | 2492 × 1023 | 0.101 → 0.730 |
+## Proof and scope checks
 
-The nine non-skills misses remain unresolved under the required per-level P-3/O-2 score optima, fixed 460 × 200 leaves, declaration order and hierarchical chrome (§§3.2–3.4, Appendix D BF-1/BF-6). Their current geometry and deficits are reported above; a global impossibility proof is not claimed for those nine views.
+The diagnostic uses only the cleared input fixtures, their SHA-256 digests, the L0 thresholds and the pinned tokens/text metrics. It does not read after.json or import the engine. It enumerates every P-1 prefix candidate in both forms at each level, applies P-3/P-4/O-2, includes fixed leaf sizes, header chrome and the measured path's U-channel reservation, and freezes the selected shelves (BF-6). At fixed shelves and header heights, increasing any gap from 24 toward its 32 px cap cannot reduce the bbox area. Minimum-gap area therefore gives an optimistic upper bound on leaf fill under the prescribed algorithm. This is not a claim about unrestricted packing or alternative scoring rules.
 
-For the two skills views there is a reproducible incompatibility, even after removing all chrome and U-channel headroom and allowing every admissible prefix-shelf candidate instead of only the P-3 optimum. The two root boxes must sit beside one another (BF-1); their child counts are 10+4 and 10+1. Exhaustive enumeration yields optimistic fill maxima 0.614635 and 0.646609, below 0.872 and 0.893. The enumeration even allows free extra width/height to bring any candidate inside the 0.35 aspect bound. Thus restoring chrome or increasing gaps cannot close these deficits.
+The proof test reproduces stdout byte for byte, checks each minimum bbox and shelf choice against a fresh live base-gap layout, checks final dimensions cannot shrink below that minimum, and verifies every adjusted threshold is exactly its bound − 0.02 and below the unreachable spec value. The existing BF-6 test independently checks final shelves remain identical to base-gap shelves.
 
-The folded migration frame-fill requirement is also incompatible with its canonical four-card grid (§3.6, Appendix D BF-1). At both maximum 32 px gaps, the 2×2 entity bbox is at most 952 × 432; its capped frame fill is 0.135537, below the required >0.147. The actual bbox is 944 × 430, frame fill 0.134. Increasing it further would violate the fixed grid/gap contract.
+| Scene/view | Minimum bbox | Original §7.3 leaf threshold | Optimistic bound | Bound − 0.02 | Scope |
+| --- | --- | ---: | ---: | ---: | --- |
+| vue-globale/before | 3008 × 1200 | 0.618 | 0.280363475 | 0.260363475 | active |
+| vue-globale/intermediate | 3072 × 1749 | 0.662 | 0.308211835 | 0.288211835 | active |
+| vue-globale/after | 3588 × 1902 | 0.647 | 0.256140635 | 0.236140635 | active |
+| ajout-preprod/intermediate | 3008 × 1645 | 0.769 | 0.316077087 | 0.296077087 | active |
+| ajout-preprod/after | 3008 × 1738 | 0.763 | 0.334359621 | 0.314359621 | active |
+| migration-cluster-mesh/intermediate | 2524 × 1555 | 0.726 | 0.398489612 | 0.378489612 | active |
+| migration-cluster-mesh/after | 3008 × 1571 | 0.696 | 0.330965505 | 0.310965505 | active |
+| case-skills-r9/unfolded | 2460 × 1025 | 0.872 | 0.510807059 | 0.490807059 | active |
+| case-skills-r9/skills-unfolded | 1944 × 1025 | 0.893 | 0.507879153 | 0.487879153 | capped; diagnostic only |
+| case-integration-r9/unfolded | 2460 × 1118 | 0.779 | 0.367962535 | 0.347962535 | active |
+| case-trackfocus-r9/unfolded | 2492 × 1017 | 0.759 | 0.399311228 | 0.379311228 | active |
 
-Reproduce the bounds with `rtk node packages/diagram-canvas/tests/layout/dc2a/fill-feasibility.mjs`. This diagnostic reads only the cleared fixtures and never changes them. §7.4 requires reporting the conflicting baseline/criterion; it does not authorize substituting per-scene lower thresholds.
+The diagnostic also retains the folded-migration capped-frame impossibility calculation: even both 32 px gutters give at most 0.135536593 frame fill versus the old >0.147 comparison. Appendix E scopes that gate out; no replacement frame threshold is used. Every frame-limited view beats its original frame-fill threshold.
+
+The new camera check transforms the whole scene with the shipped worldToView/applyRect functions and verifies equal opposite margins, containment, no panning and exact 0.62 scale for every capped view. This is the L2/L3 harness projection of Z-3; host integration remains L4. A boundary regression check includes distant route and label extents and a fit of 0.6199 (display-rounded to 0.620), plus a fit below the readability floor, so rounded or floored values cannot grant a cap exemption.
 
 ## Validation
 
-Token compilation, theme compilation/CSS generation, component-index compilation/generation and `--check` passed (428 generated artifacts fresh). `npx tsc -p tsconfig.check.json` and `git diff --check` passed. The full suite includes the measured-path performance budgets, all nine tuning cells, S-1/S-2, and ten fresh-process determinism runs. No root `npm test` was run.
+Full-suite result: **36 files passed; 418 tests passed, 1 skipped (419 total)**, 67.60 s. All L2/L3 gates passed. The three added tests cover proof reproduction/live shelf agreement, capped-scene centring at the exact maximum scale, and scope boundaries involving route/label extents, rounding and the readability floor.
 
-Final full-suite command: from `packages/diagram-canvas`, with the requested `npm_config_cache` exported, `rtk npx vitest run`. Result: **35 files passed, 1 failed; 413 tests passed, 2 failed, 1 skipped (416 total)**, 59.71 s. The only failing file is `tests/layout/dc2a/rowpack.test.ts`; its two failing assertions are the 11-view leaf-fill list and the folded-migration frame-fill comparison. The log is `.dc2a-build/dc2a-full-suite.log`. All other assertions, including label placement, same-pair route geometry, folds, determinism, compatibility and performance, passed.
+Commands, from `packages/diagram-canvas`, with the requested `npm_config_cache` value:
 
-The component-index regeneration changes only the two `sourceCommit` fields from the prior source SHA to the supplied HEAD. `pack.test.ts` already asserts 0.45, so no readability re-pin was needed.
+- `rtk npx vitest run` — complete diagram-canvas suite, including performance, tuning, folds, routing, label placement and fresh-process determinism. Log: `.dc2a-build/dc2a-fill-full-suite.log`.
+- `rtk npx tsc -p tsconfig.check.json` — passed.
+- `rtk node tests/layout/dc2a/fill-feasibility.mjs` — passed; stdout reproduces the pinned proof output byte for byte in the suite.
+- `rtk git diff --check` — checked in both worktrees.
 
-## Re-pin reasons
+No commit, push, stash, root npm test, Python, new dependency or fixture change.
 
-These are emitted-output measurement pins required by §9.5; no acceptance threshold, baseline, fixture input, or compatibility expected result was re-pinned. There is one reason per changed scene/cell below. The existing fold moved-set pins remain unchanged.
+## Files changed in this pass
 
-| after.json view | Re-pinned fields | One-line reason |
-| --- | --- | --- |
-| vue-globale/before | labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| vue-globale/intermediate | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, frameScale, displayScale, pans, edgeLabelCssPx, gapY, widenedGutters, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| vue-globale/after | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, gapY, widenedGutters, edgesOutsideContainer, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| vue-globale/folded | edgesOutsideContainer, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| ajout-preprod/before | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, gapY, widenedGutters, sceneBandX, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| ajout-preprod/intermediate | bboxWidth, bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, frameScale, displayScale, edgeLabelCssPx, gapY, widenedGutters, sceneBandX, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| ajout-preprod/after | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, frameScale, displayScale, edgeLabelCssPx, gapY, widenedGutters, sceneBandY, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| ajout-preprod/folded | edgesOutsideContainer, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| migration-cluster-mesh/intermediate | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, frameScale, displayScale, edgeLabelCssPx, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| migration-cluster-mesh/after | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, displayScale, edgeLabelCssPx, gapY, widenedGutters, sceneBandY, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| migration-cluster-mesh/folded | edgesOutsideContainer, routeObstructed, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-a/unfolded | labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-a/pkg-folded | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-c/unfolded | sceneBandX | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-skills-r9/unfolded | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, displayScale, edgeLabelCssPx, gapY, widenedGutters, sceneBandX | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-skills-r9/skills-unfolded | bboxHeight, aspectRatio, logAspectError, fillRatio, frameFillRatio, gapY, widenedGutters, sceneBandX | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-integration-r9/unfolded | sceneBandX, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-| case-integration-r9/folded | edgesOutsideContainer, labelUnplaced | BF-6 measured headroom/capped gutters and safe label detours; geometry and scene-fit metrics recomputed. |
-
-| tuning.json cell | One-line reason |
-| --- | --- |
-| 1 / 0 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 1 / 0.4 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 1 / 0.8 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 1.6 / 0 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 1.6 / 0.4 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 1.6 / 0.8 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=0; no default or gate changed. |
-| 2.2 / 0 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=2; no default or gate changed. |
-| 2.2 / 0.4 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=2; no default or gate changed. |
-| 2.2 / 0.8 | Recomputed all 31 layouts with BF-6 headroom and safe label routing; unplaced=0, aspect misses=2; no default or gate changed. |
-
-Changed files: layout/measured.ts; layout/route.ts; dc2a/rowpack.test.ts; dc2a/after.json; dc2a/tuning.json; dc2a/fill-feasibility.mjs; this report; component-index/generated/component-index.json; component-index/generated/component-contract-index.json.
-
-No commit, push, stash, checkout, reset, new dependency, Python, or browser invocation.
+Build worktree: `tests/layout/dc2a/rowpack.test.ts`, `rowpack-metrics.ts`, `fill-feasibility.mjs`, new `fill-feasibility.json`, and this report (all under `packages/diagram-canvas/`). Spec worktree: only `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`.
