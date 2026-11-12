@@ -9,7 +9,7 @@ import DiagramZone from './DiagramZone.vue';
 import GraphCanvas from './GraphCanvas.vue';
 import BpmnCanvas from './BpmnCanvas.vue';
 import type { SceneDocument, ScenePresentation } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 
 it('should render WebGL and BPMN shells without DOM globals or engine creation', async () => {
   expect(typeof window).toBe('undefined'); expect(typeof ResizeObserver).toBe('undefined');
