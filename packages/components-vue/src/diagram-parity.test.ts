@@ -2,7 +2,7 @@ import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
