@@ -1,7 +1,7 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:8e5a15cc9ecb9497bed5a6f603ff1e6303b2936b41ce4900f8b1bc0416c49704",
+  "digest": "sha256:d4bf06d36b5f88aabdb1ab4ae24e682f8b2723910f9dce02f1a7abb2ce89d9ae",
   "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -433,7 +433,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9e83a99d2cc4dfa56fdfd405de6d57aea560295b87fca3e0a49cf20d966bd2ec",
+        "declarationDigest": "sha256:33e0fa62eb97a86b1cc81bd208e004249ec737a06d7cfe318d113129f5d39caa",
         "declarationPath": "packages/components-vue/dist/TimeSeriesLineChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeSeriesLineChartProps",
