@@ -99,6 +99,73 @@ export interface RouteOutcome {
   readonly escaped: readonly RelationRef[];
 }
 
+/** L-R9 applies to full dock-to-dock routes, including clearance joins. */
+export function routesConflict(left: readonly Vec2[], right: readonly Vec2[]): boolean {
+  return fullSharesSegment(left, right) || left.slice(1).some((point, i) =>
+    right.slice(1).some((other, j) => segmentsCrossTransversal(left[i]!, point, right[j]!, other)),
+  );
+}
+
+/**
+ * BF-6: try horizontal label channels without changing any box or gutter.
+ * Dock joins keep their outward normals. Every full candidate is checked
+ * against raw obstacles, containment and the other routes of its pair.
+ */
+export function labelDetour(input: {
+  readonly request: RouteRequest;
+  readonly shapes: readonly Rect[];
+  readonly earlier: readonly (readonly Vec2[])[];
+  readonly xs: readonly number[];
+  readonly ys: readonly number[];
+  readonly accepts: (points: readonly Vec2[]) => boolean;
+}): readonly Vec2[] | undefined {
+  const { request, shapes, earlier } = input;
+  const step = 2;
+  const s = { x: request.start.x + step * request.startExit.x, y: request.start.y + step * request.startExit.y };
+  const t = { x: request.end.x + step * request.endExit.x, y: request.end.y + step * request.endExit.y };
+  const clear = (points: readonly Vec2[]): boolean => {
+    const within = request.within;
+    if (within !== undefined && points.some((p) => p.x < within.x || p.x > within.x + within.width || p.y < within.y || p.y > within.y + within.height)) return false;
+    for (let i = 1; i < points.length; i += 1) {
+      const a = points[i - 1]!;
+      const b = points[i]!;
+      if (shapes.some((r) => a.y === b.y
+        ? a.y > r.y && a.y < r.y + r.height && Math.max(Math.min(a.x, b.x), r.x) < Math.min(Math.max(a.x, b.x), r.x + r.width)
+        : a.x > r.x && a.x < r.x + r.width && Math.max(Math.min(a.y, b.y), r.y) < Math.min(Math.max(a.y, b.y), r.y + r.height))) return false;
+      if (sharesSamePair(a, b, earlier) || crossesSamePair(a, b, earlier)) return false;
+      // Reject a folded-back leg or a self intersection after simplification.
+      for (let j = 1; j < i - 1; j += 1) {
+        const c = points[j - 1]!;
+        const d = points[j]!;
+        if (fullSharesSegment([a, b], [c, d]) || segmentsCrossTransversal(a, b, c, d)) return false;
+      }
+    }
+    const first = points[1]!;
+    const last = points[points.length - 2]!;
+    return (first.x - request.start.x) * request.startExit.x + (first.y - request.start.y) * request.startExit.y > 0
+      && (last.x - request.end.x) * request.endExit.x + (last.y - request.end.y) * request.endExit.y > 0;
+  };
+  let best: readonly Vec2[] | undefined;
+  let bestLength = Infinity;
+  const tryRoute = (middle: readonly Vec2[]): void => {
+    const points = simplifyRoute([request.start, s, ...middle, t, request.end]);
+    if (best !== undefined && points.length > best.length) return;
+    const length = points.slice(1).reduce((sum, p, i) => sum + Math.abs(p.x - points[i]!.x) + Math.abs(p.y - points[i]!.y), 0);
+    if (best !== undefined && points.length === best.length && length >= bestLength) return;
+    if (!clear(points) || !input.accepts(points)) return;
+    best = points;
+    bestLength = length;
+  };
+  for (const y of input.ys) {
+    tryRoute([{ x: s.x, y }, { x: t.x, y }]);
+    for (const x of input.xs) {
+      tryRoute([{ x, y: s.y }, { x, y }, { x: t.x, y }]);
+      tryRoute([{ x: s.x, y }, { x, y }, { x, y: t.y }]);
+    }
+  }
+  return best;
+}
+
 const OVERLAP_PENALTY = 2;
 const DX = [1, 0, -1, 0] as const;
 const DY = [0, 1, 0, -1] as const;
@@ -354,6 +421,8 @@ export function routeEdges(input: {
    * drawing each take their own lane — and each lane holds its own label.
    */
   readonly lanes?: { readonly xs: readonly number[]; readonly ys: readonly number[] };
+  /** Measured layouts avoid raw interiors even when routing is obstructed. */
+  readonly avoidFallbackInteriors?: boolean;
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
   const entities = [...rects.keys()].sort();
@@ -794,7 +863,9 @@ export function routeEdges(input: {
       // MAJ-2: retry with reduced 2 px inflation is covered by the outer-lane
       // grid (clearance-point lanes); here at least avoid raw interiors.
       obstructed.push(request.id);
-      const elbow = bestFallback(request.start, startPoint, endPoint, request.end, request.startExit);
+      const elbow = input.avoidFallbackInteriors === true
+        ? bestFallback(request.start, startPoint, endPoint, request.end, request.startExit)
+        : elbowFor(startPoint, endPoint, request.startExit);
       const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, full);
       const list = pairFull.get(request.pairKey) ?? [];
@@ -851,7 +922,9 @@ export function routeEdges(input: {
     }
     if (violates) {
       obstructed.push(request.id);
-      const elbow = bestFallback(request.start, startPoint, endPoint, request.end, request.startExit);
+      const elbow = input.avoidFallbackInteriors === true
+        ? bestFallback(request.start, startPoint, endPoint, request.end, request.startExit)
+        : elbowFor(startPoint, endPoint, request.startExit);
       const fallback = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, fallback);
       const list = pairFull.get(request.pairKey) ?? [];
