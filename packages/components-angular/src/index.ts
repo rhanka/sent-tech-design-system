@@ -288,7 +288,13 @@ export type { LinkProps } from "./Link.js";
 export { LoadingState } from "./LoadingState.js";
 export type { LoadingStateVariant, LoadingStateProps } from "./LoadingState.js";
 export { Menu } from "./Menu.js";
-export type { MenuActionItem, MenuDividerItem, MenuGroupItem, MenuItem, MenuProps } from "./Menu.js";
+export type { MenuActionItem, MenuDividerItem, MenuGroupItem, MenuItem, MenuProps, MenuSelectPath, MenuSubmenuSide } from "./Menu.js";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition,
+} from "./menu-cascade.js";
+export type { SubMenuSide, ResolvedSubMenuSide } from "./menu-cascade.js";
 export { MenuPopover } from "./MenuPopover.js";
 export type { MenuPopoverPlacement, MenuPopoverAlign, MenuPopoverProps } from "./MenuPopover.js";
 export { MenuTriggerButton } from "./MenuTriggerButton.js";

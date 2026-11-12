@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:73a98f189bba2dc9b804439b070b5d5f309e85cf1268f70e426c6f1d608a0460",
+  "contractsRevision": "sha256:51c1f02078ce75bc9753e383d3d65c5701dfd75a67f76f929e46c1bc41e0b6b5",
   "counts": {
     "byFramework": {
       "angular": {
@@ -762,7 +762,7 @@
         "vue": "none"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:557832939aa2ad6caa96ccbf36bbdf430e247cdaf139a49c0120df03090e4080",
+      "contractDigest": "sha256:5c0bc3acd5fc88351ef54de20895f3583c94750e38dd2364c4f77be06894ab1e",
       "entryDigest": "sha256:5272330b2cd9e33bb36b27700a5b5d24a15661c896b6c3705b536a5a08c37160",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
@@ -775,7 +775,7 @@
         "vue": "none"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:52b7d6dbc8688a16dfd8d0e87a0acebe5aff24ce5a2911086524c755482a8f73",
+      "contractDigest": "sha256:365d4bab37f8aa9a4d54bcfb9817d5c6e53142fb2d1d2bf17fdc1c39ef0d27ed",
       "entryDigest": "sha256:72cc3379076562916a1c71a373dbff3eb192a6d5f49afc1bdc876a4749e7835e",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
@@ -788,7 +788,7 @@
         "vue": "none"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:db7f16c027f87b6c8ff0dbfbd64ab8591baa635a786c30874e7e30e6ab02fcb5",
+      "contractDigest": "sha256:2383c46fa14c462fceb7a9765bdda53bb0b72db5671e790d48ad8ea817bccbb5",
       "entryDigest": "sha256:77cd5dfa7689c0e14bfc3fff94394cb3a1ae8e979d803b3ae15b8932209c2ff8",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
@@ -1347,7 +1347,7 @@
         "vue": "none"
       },
       "componentId": "labelled-icon-button",
-      "contractDigest": "sha256:556290102ec96a77422d1806b8e5ad460645233bde5600b7a09d5e274c93b1e2",
+      "contractDigest": "sha256:2f438338f680c4099fe5fd646fde978588993fd58c3662e591d3e5ab90ae839c",
       "entryDigest": "sha256:20fb3258608d53c58195c19b5f05d190c25d3963256f0cbfcf7a688a0f8d1d11",
       "path": "contracts/labelled-icon-button.json",
       "producerId": "sentropic-ds"
@@ -1464,8 +1464,8 @@
         "vue": "partial"
       },
       "componentId": "menu",
-      "contractDigest": "sha256:7231245b4c7a3118e1cc5e068c5731693da116c16c692166f7cfa223f81f9ec2",
-      "entryDigest": "sha256:f00e12e04973adbff3f7154feac63e9408de89a4694d2449e5e358388711d614",
+      "contractDigest": "sha256:2d36f48772423d3dc0825c3131b72574498156072996f0a6b290603a8380f519",
+      "entryDigest": "sha256:1dbe9c0ae97faed612a5bd6acf8ca4d20b94fc25be5264a5536cd07fa9ea1642",
       "path": "contracts/menu.json",
       "producerId": "sentropic-ds"
     },
@@ -1477,8 +1477,8 @@
         "vue": "partial"
       },
       "componentId": "menu-popover",
-      "contractDigest": "sha256:cd52cdfe497ecd7d1fb61984521f877b9c21d241755ef3f36b0bc0da04ab1a08",
-      "entryDigest": "sha256:62a7214c8d04a53d6c8f5f5c1a00ad3e4c4ed4dc4f6da16000a6c22fd02b0018",
+      "contractDigest": "sha256:3189e2a7633272f9a90c38ab7bbaf3f2d5818c8b3f9a79ec395918b1765cfb0a",
+      "entryDigest": "sha256:48119324c26cb1b6e90bab54a8a0c25c1724bbbbabeeec8a0b0de915609244f8",
       "path": "contracts/menu-popover.json",
       "producerId": "sentropic-ds"
     },
@@ -1490,8 +1490,8 @@
         "vue": "complete"
       },
       "componentId": "menu-trigger-button",
-      "contractDigest": "sha256:89286739eeadb6dfc9c0f6e2a68fe549d55048be2594e0a4acffda1c9bceca08",
-      "entryDigest": "sha256:ae6664cd3315d8e8fe444a0b828345c5cc276e513c546c335a2c43b88d5db12d",
+      "contractDigest": "sha256:ce4cacdecefd59ad1f40ffa92669525858505e4a661bc46558e2a84bb697be80",
+      "entryDigest": "sha256:68507bc0cde38a62f5cf23aaa73b9d9c73eba333a0dbf947e49944d868b9e95d",
       "path": "contracts/menu-trigger-button.json",
       "producerId": "sentropic-ds"
     },
@@ -1659,8 +1659,8 @@
         "vue": "partial"
       },
       "componentId": "overflow-menu",
-      "contractDigest": "sha256:4efa8084ef55b2bc5326e01b4fd91a1562b1c0d3a73ee7bb922214e968bfb8c2",
-      "entryDigest": "sha256:5c0fbf0c4ed8178cd42e3de303d19a84daa4fb754571c7983dec98081dbb331c",
+      "contractDigest": "sha256:6f97700a90849f060b597e616e6ccf3a3e799454afaf2bb7257d2f11c047e14e",
+      "entryDigest": "sha256:bba9e1b2af7b903ce798c484641a42053b083d9c7a8adbd55d921a850c5afb5d",
       "path": "contracts/overflow-menu.json",
       "producerId": "sentropic-ds"
     },
@@ -2491,7 +2491,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:177bda40472439cd784a235cf3edae8505ffd9628a3beb35d24a9f3876f92e71",
+      "contractDigest": "sha256:a70d275a124c7565000a668a4450a60649f635f7eb8e2b9fb88ef5e82de89180",
       "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2673,7 +2673,7 @@
         "vue": "none"
       },
       "componentId": "url-sync",
-      "contractDigest": "sha256:07c802ae6b6192b533b7f4f5890561da59b69b872fdd54e348925f65d24f934c",
+      "contractDigest": "sha256:3cdf5d1047570439db977ef6c937b36af747484c67e310c29af85aab3421d611",
       "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
       "path": "contracts/url-sync.json",
       "producerId": "sentropic-ds"
@@ -2764,7 +2764,7 @@
         "vue": "complete"
       },
       "componentId": "web-frame",
-      "contractDigest": "sha256:5a783b49bfba1120485f7d5bf76028caab8b912fcdc65106b9aee328adfe3ab7",
+      "contractDigest": "sha256:0a5edc527d57c6081c116210177ade45840fba74553855d2b488cd40b97a7dd3",
       "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
       "path": "contracts/web-frame.json",
       "producerId": "sentropic-ds"
@@ -2824,5 +2824,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "9c8d7ade51cba94bd638627080db02a49a977f36"
+  "sourceCommit": "d9a04d2e00224e5f1e2402a6559ca0b27f08a508"
 }

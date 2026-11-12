@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:4efa8084ef55b2bc5326e01b4fd91a1562b1c0d3a73ee7bb922214e968bfb8c2",
-  "entryDigest": "sha256:5c0fbf0c4ed8178cd42e3de303d19a84daa4fb754571c7983dec98081dbb331c",
+  "digest": "sha256:6f97700a90849f060b597e616e6ccf3a3e799454afaf2bb7257d2f11c047e14e",
+  "entryDigest": "sha256:bba9e1b2af7b903ce798c484641a42053b083d9c7a8adbd55d921a850c5afb5d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -31,6 +31,12 @@
               }
             ]
           }
+        },
+        {
+          "name": "selectPath",
+          "payload": {
+            "$ref": "#/$defs/MenuSelectPath"
+          }
         }
       ],
       "limitations": [
@@ -41,6 +47,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -54,6 +76,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -108,6 +133,25 @@
               "label"
             ],
             "type": "object"
+          },
+          "MenuSelectPath": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
+            ],
+            "type": "object"
           }
         },
         "additionalProperties": false,
@@ -147,6 +191,13 @@
               "bottom-start",
               "bottom-end"
             ]
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "type": "object"
@@ -173,7 +224,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6d512c1fa41abd52f7f1c1fc9b3b242f36cac9c267db07493dfdfcd3da478b3f",
+        "declarationDigest": "sha256:8a20b3b4a9252d1a8d5e43617dbce39661fe9af49329e1b51025628b77d96182",
         "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverflowMenuProps",

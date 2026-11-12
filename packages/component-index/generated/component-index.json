@@ -3021,7 +3021,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f00e12e04973adbff3f7154feac63e9408de89a4694d2449e5e358388711d614",
+      "digest": "sha256:1dbe9c0ae97faed612a5bd6acf8ca4d20b94fc25be5264a5536cd07fa9ea1642",
       "frameworks": [
         "svelte",
         "react",
@@ -3048,7 +3048,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:62a7214c8d04a53d6c8f5f5c1a00ad3e4c4ed4dc4f6da16000a6c22fd02b0018",
+      "digest": "sha256:48119324c26cb1b6e90bab54a8a0c25c1724bbbbabeeec8a0b0de915609244f8",
       "frameworks": [
         "svelte",
         "react",
@@ -3075,7 +3075,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ae6664cd3315d8e8fe444a0b828345c5cc276e513c546c335a2c43b88d5db12d",
+      "digest": "sha256:68507bc0cde38a62f5cf23aaa73b9d9c73eba333a0dbf947e49944d868b9e95d",
       "frameworks": [
         "svelte",
         "react",
@@ -3426,7 +3426,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5c0fbf0c4ed8178cd42e3de303d19a84daa4fb754571c7983dec98081dbb331c",
+      "digest": "sha256:bba9e1b2af7b903ce798c484641a42053b083d9c7a8adbd55d921a850c5afb5d",
       "frameworks": [
         "svelte",
         "react",
@@ -5787,6 +5787,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:e5cd9ee5fece5f8dd39ef62c720e6dddb5e7ef76f8711da3c39b7dbd11ff4c06",
-  "sourceCommit": "9c8d7ade51cba94bd638627080db02a49a977f36"
+  "registryRevision": "sha256:f75c08b199180d7dda4fffeaf9b1e3c27c2a9ed999827049a7b7ac6da42a859e",
+  "sourceCommit": "d9a04d2e00224e5f1e2402a6559ca0b27f08a508"
 }
