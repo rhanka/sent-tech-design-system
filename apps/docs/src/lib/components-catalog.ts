@@ -903,6 +903,16 @@ export const COMPONENTS: ComponentEntry[] = [
     }
   },
   {
+    name: "DiagramSceneFigure",
+    slug: "diagram-scene-figure",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Scène de diagramme : vue mesurée avec disposition automatique en rangées au format 16:9, zoom plafonné à la taille maximale d’affichage, ajustement au cadre et transition de repli.",
+      en: "Diagram scene: measured diagram view with 16:9 row-pack autolayout, zoom capped at the maximum display size, fit to frame and fold transition."
+    }
+  },
+  {
     name: "DiagramZone",
     slug: "diagram-zone",
     status: "documented",

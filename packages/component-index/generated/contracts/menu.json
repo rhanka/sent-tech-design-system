@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:051685fbe4ef6e276da927fb85fab140245159f7c8ec856082228fb0aec06a08",
-  "entryDigest": "sha256:80cbbde9cb263d38d67f00fbf3fb94c962ae3a1c3be2d6fae99dc528933b91b1",
+  "digest": "sha256:7231245b4c7a3118e1cc5e068c5731693da116c16c692166f7cfa223f81f9ec2",
+  "entryDigest": "sha256:f00e12e04973adbff3f7154feac63e9408de89a4694d2449e5e358388711d614",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -334,7 +334,16 @@
         {
           "name": "onselect",
           "payload": {
-            "type": "string"
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/MenuSelectDetail"
+              }
+            ],
+            "type": "array"
           }
         }
       ],
@@ -353,6 +362,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -364,6 +389,9 @@
               },
               "label": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -402,6 +430,25 @@
               "label"
             ],
             "type": "object"
+          },
+          "MenuSelectDetail": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
+            ],
+            "type": "object"
           }
         },
         "additionalProperties": false,
@@ -436,6 +483,13 @@
           },
           "open": {
             "type": "boolean"
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -447,11 +501,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:24637fa7fe33af484f264f5ff97a0e518384d72a75feebf794453cfc91524c61",
+        "declarationDigest": "sha256:91ae1f88c1d3d378de3bbafebd546f527f5f7508b647e826c70a8dd68d546fbb",
         "declarationPath": "packages/components-svelte/dist/Menu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

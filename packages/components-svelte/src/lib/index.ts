@@ -504,9 +504,27 @@ export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
-export type { MenuItem } from "./Menu.svelte";
+export type {
+  MenuItem,
+  MenuActionItem,
+  MenuDividerItem,
+  MenuGroupItem,
+  MenuSubmenuSide,
+  MenuSelectDetail
+} from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
-export type { OverflowMenuItem } from "./OverflowMenu.svelte";
+export type {
+  OverflowMenuItem,
+  OverflowMenuActionItem,
+  OverflowMenuDividerItem,
+  OverflowMenuGroupItem,
+  OverflowMenuSubmenuSide
+} from "./OverflowMenu.svelte";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition
+} from "./menu-cascade.js";
 export type {
   ProgressIndicatorItem,
   ProgressIndicatorStatus
