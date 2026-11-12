@@ -288,47 +288,70 @@ floor of its own.
 
 ## Row-pack placement (DC-2a)
 
-Spec: `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`. Measured views
-(`layoutMeasured` / `layoutFolded`) take an optional `rowPack` option. When it
-is present — an empty object selects the DS defaults — every level, the root
-and each expanded zone alike, is shelf-packed toward a 16:9 outer aspect
-instead of being stacked in one column:
+Spec: `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`. Every measured view
+(`layoutMeasured` / `layoutFolded`) is row-packed: every level, the root and
+each expanded zone alike, is shelf-packed toward a 16:9 outer aspect. The
+optional `rowPack` option only tunes the objective (target aspect, tall bias,
+empty penalty, hysteresis); absent or empty, the DS defaults apply.
 
 - `packRows` / `packColumns` (`layout/pack.ts`) fill boxes into shelves in
   declaration order, score each candidate on its distance to the target aspect
   (taller than target is penalised more) plus a shelf-slack term, and never
-  reorder siblings. With two boxes or more, the candidate whose every shelf
-  holds a single box is inadmissible.
+  reorder siblings. With two boxes or more, the candidate that stacks every
+  box in one single vertical column is inadmissible in both forms.
 - `chooseOrientation` scores both forms per level and keeps the lower total
   score, so the orientation follows the fold state. The result reports
   `orientations` per level key (`"root"` or the placement-parent representative
   occurrence id); a host feeds it back as `previousOrientation`, and a level
   whose two scores are closer than `orientationHysteresis` keeps its previous
   orientation.
+- Authored `hints.grouping` partitions a level before packing: each group is
+  its own sub-level packed in its authored direction — `rows` = horizontal
+  shelves read left to right then down, `columns` = vertical shelves read top
+  to bottom then right — and the ungrouped siblings form one more packed run
+  (orientation key `<level>#rest`). Both directions changed meaning with
+  DC-2a: `rows` used to be one vertical stack and `columns` one horizontal
+  row. `gapAfter` replaces the base gap after its group.
 - Sibling gaps are the base gap on both axes (`metrics.rowGapInline` /
   `rowGapBlock`, default 24, tokens `diagramZone.childGapInline` /
-  `childGapBlock`). A gutter widens only where a labelled link joins the two
-  neighbours (or two adjacent shelves), only by the label thickness plus its
-  margins, and never past `metrics.gapInlineMax` / `gapBlockMax` (default 32).
-  The root uses the same gaps and never `rankGap`. A gap hint above the cap
-  refuses as `layout-hint-invalid`; an invalid objective refuses as
-  `row-pack-invalid`.
+  `childGapBlock`). Placement is two-pass: pass 1 packs at the base gaps,
+  routes and places labels, and its shelves are frozen; later passes widen
+  only the gutters in which a label had no room — by the label thickness plus
+  its two margins, never past `metrics.gapInlineMax` / `gapBlockMax`
+  (default 32) — and release every widened gutter that ends up holding no
+  label. The root uses the same gaps and never `rankGap`. A gap hint (or a
+  `gapAfter`) above the cap refuses as `layout-hint-invalid`; an invalid
+  objective refuses as `row-pack-invalid`.
 - `hints.rootOrder` gives the root reading order; `hints.ordering` keeps
   giving it per zone.
-
-Without `rowPack`, measured views keep the column placement byte for byte, so
-existing pins are untouched; making row-pack the default for every measured
-view, packing authored `grouping` sub-levels and the scene host are later lots
-of the same spec. Authored `grouping` is ignored by the row-pack path today.
+- Routes: an edge whose two ends share an expanded container stays inside the
+  content box of that container (`RouteRequest.within`); the title band of an
+  expanded container is an obstacle for every route. A labelled edge between
+  two side-by-side boxes docks both ends on one same side and runs along the
+  lane under (or over) them, where its label fits.
+- Labels: the result carries `labelBoxes`, the box of every placed edge
+  label by relation occurrence id. A label sits on its route but not
+  necessarily centred on it (`placePackedLabel`); one the capped gutters
+  cannot hold has no box and one `label-unplaced` warning. A host draws labels
+  from `labelBoxes` and unions them into its fit bounds.
+- `layoutFingerprint` (`layout/fingerprint.ts`) is the cache-key digest of a
+  measured call over resolved numbers: fold state, row-pack objective, gaps
+  and caps, previous-orientation map, hints, token numbers, engine version.
+  The package ships no cache.
 
 `camera.ts` holds the pure half of the camera contract (spec §5):
 `cameraFit` frames the scene bounds on both axes against the 16:9 fit box
 (`fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`), never above the
 maximum display scale (0.62: readout 100 %, a card renders at about
-285 × 124 CSS px) and holds a fit at the readability floor (0.42) when the
-drawing is larger, reporting `pans`; `clampZoom` and `zoomReadout` complete it.
-No DOM lives here: a scene host passes its measured sizes in.
+285 × 124 CSS px) and holds a fit at the readability floor (0.45: an 18 px
+edge label renders at 8.1 CSS px) when the drawing is larger, reporting
+`pans`; `clampZoom` and `zoomReadout` complete it. No DOM lives here: a scene
+host passes its measured sizes in.
 
-The acceptance scenes, the §7 metrics helper, the column baseline
-(`baseline.json`) and the row-pack numbers (`after.json`) are under
-`tests/layout/dc2a/`.
+The acceptance scenes, the §7 metrics helper, the column baseline as recorded
+before the placement changed (`baseline.json`), the numbers of the shipped
+engine (`after.json`), the gates it misses by name (`misses.json`), the fold
+stability pins (`stability.json`) and the §7.5 tuning grid (`tuning.json`)
+are under `tests/layout/dc2a/`. Measured-path timings: the three cluster
+scenes (25–32 boxes, 20–23 links) lay out in a median of 112–176 ms, against
+the 1000 ms budget of `tests/layout/performance.test.ts`.

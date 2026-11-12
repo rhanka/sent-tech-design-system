@@ -69,8 +69,11 @@ describe("fixed footprints", () => {
     const box = geometryOf(measured.view, "C");
     expect(box.width).toBeGreaterThanOrEqual(460);
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
-    // 16 top inset + header band + 16 rule gap + two 200-high cards + gap + 16 bottom.
-    expect(box.height).toBe(16 + header.height + 16 + 200 + 200 + 24 + 16);
+    // DC-2a re-pin (AC-2): two children pack on one row, no longer one column.
+    // 16 top inset + header band + 16 rule gap + one row of 200-high cards + 16 bottom;
+    // 16 + 460 + 24 gap + 460 + 16 wide.
+    expect(box.height).toBe(16 + header.height + 16 + 200 + 16);
+    expect(box.width).toBe(16 + 460 + 24 + 460 + 16);
   });
 });
 

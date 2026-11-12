@@ -37,9 +37,7 @@ import {
 
 import {
   layoutDocument,
-  placeEdgeLabels,
   relationRoute,
-  DEFAULT_LAYOUT_METRICS,
   type LayoutHints,
   type LayoutOptions,
   type LayoutWarning,
@@ -190,10 +188,23 @@ export interface SceneInput {
 
 const localOfOccurrence = (occurrence: string): string => occurrence.replace(/^occurrence:o-/, "");
 
-export function sceneInput(caseId: CaseId, viewName: string): SceneInput {
+/**
+ * The layout input of one view. `alsoFolded` folds more containers of that
+ * view than its export does, keeping its edges: the engine then has to hide
+ * the relations internal to a folded container and project the others (#203).
+ */
+export function sceneInput(caseId: CaseId, viewName: string, alsoFolded: readonly string[] = []): SceneInput {
   const view = loadCase(caseId).views[viewName];
   if (view === undefined) throw new Error(`unknown view ${caseId}/${viewName}`);
-  const cards = view.cards;
+  // A fold collapses the container and every container under it, as the
+  // exported folded views do: the projection hides the members of a collapsed group.
+  const under = (card: CaseCard): boolean => {
+    for (let current: CaseCard | undefined = card; current !== undefined; current = view.cards.find((other) => other.id === current!.parentId)) {
+      if (alsoFolded.includes(current.id)) return true;
+    }
+    return false;
+  };
+  const cards = view.cards.map((card) => (card.container && under(card) ? { ...card, folded: true } : card));
   const byId = new Map(cards.map((card) => [card.id, card] as const));
   const entities: Record<string, Entity> = {};
   const relations: Record<string, Relation> = {};
@@ -317,7 +328,7 @@ export interface SceneLayout {
   /** Placement parent (nearest expanded visible ancestor) of each visible card. */
   readonly parentOf: ReadonlyMap<string, string | undefined>;
   readonly routes: readonly { readonly id: string; readonly source: string; readonly target: string; readonly points: readonly Vec2[] }[];
-  /** Label boxes replayed from the emitted view with the same measurer (labels.ts contract). */
+  /** Label boxes emitted by the engine, keyed by relation occurrence id. */
   readonly labelBoxes: ReadonlyMap<string, Rect>;
   /** Text of every labelled route, placed or not, keyed like `labelBoxes`. */
   readonly labelTexts: ReadonlyMap<string, string>;
@@ -364,7 +375,6 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
   }
   const localOf = (occurrence: string): string => occurrence.replace(/^occurrence:e\./, "");
   const routes: { id: string; source: string; target: string; points: readonly Vec2[] }[] = [];
-  const entries: { id: string; route: readonly Vec2[]; size: { width: number; height: number } }[] = [];
   const labelTexts = new Map<string, string>();
   const titleBands = new Map<string, Rect>();
   for (const id of Object.keys(view.relationOccurrences).sort()) {
@@ -375,32 +385,18 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
       localOf(occurrence.endpoints.find((endpoint) => endpoint.role === role)?.occurrence ?? "");
     routes.push({ id, source: end("source"), target: end("target"), points });
     const label = (input.document.relations[occurrence.relation]?.attributes as Record<string, { value?: unknown }>)["label"]?.value;
-    if (typeof label !== "string") continue;
-    labelTexts.set(id, label);
-    const layout = pinnedMeasurer({ text: label, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
-    entries.push({ id, route: points, size: { width: layout.width, height: layout.height } });
+    if (typeof label === "string") labelTexts.set(id, label);
   }
-  // Same blockers as the engine: every entity rectangle plus the title band of
-  // each expanded container (inset 16, measured header height).
-  const blockers: Rect[] = [...rects.values()];
+  // Title band of each expanded container: inset 16, measured header height.
   for (const header of result.measurements?.headers ?? []) {
     const id = localOf(header.occurrence);
     const card = byId.get(id);
     const rect = rects.get(id);
     if (card === undefined || rect === undefined || !card.container || card.folded) continue;
-    const band: Rect = { x: rect.x + 16, y: rect.y + 16, width: rect.width - 32, height: header.height };
-    titleBands.set(id, band);
-    blockers.push(band);
+    titleBands.set(id, { x: rect.x + 16, y: rect.y + 16, width: rect.width - 32, height: header.height });
   }
-  const expanded = new Set(input.visible.filter((id) => byId.get(id)!.container && !byId.get(id)!.folded));
-  // The row-pack path (DC-2a L1) keeps a label inside its own expanded zone:
-  // expanded containers are not label blockers there, only cards and title bands.
-  const rowPacked = (extra as { readonly rowPack?: unknown }).rowPack !== undefined;
-  const shapes = rowPacked ? blockers.filter((_, index) => index >= rects.size || !expanded.has([...rects.keys()][index]!)) : blockers;
-  const labelBoxes = new Map<string, Rect>();
-  for (const [id, choice] of placeEdgeLabels(entries, shapes, DEFAULT_LAYOUT_METRICS.labelMargin)) {
-    if (choice !== undefined) labelBoxes.set(id, choice.box);
-  }
+  // Label boxes are the ones the engine emits (`LayoutResult.labelBoxes`).
+  const labelBoxes = new Map<string, Rect>(Object.entries(result.labelBoxes ?? {}).map(([id, box]) => [id, { ...box }] as const));
   return {
     input,
     view,
@@ -411,6 +407,6 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
     labelBoxes,
     labelTexts,
     titleBands,
-    orientations: (result as { orientations?: Readonly<Record<string, "rows" | "columns">> }).orientations ?? {},
+    orientations: result.orientations ?? {},
   };
 }
