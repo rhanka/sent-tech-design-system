@@ -30,3 +30,6 @@ export * from "./canonical.js";
 export * from "./validate.js";
 export * from "./commands.js";
 export * from "./migrate.js";
+
+export { relationBaseType, relationSchema } from "./relation-types.js";
+export { withFlowTypes, validateFlows, flowIndex, type FlowStep, type FlowScenario, type FlowIndex } from "./flows.js";
