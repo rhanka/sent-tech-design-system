@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SankeyChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Weighted flow diagram between categorical nodes.",
     "fr": "Diagramme de flux pondérés entre nœuds catégoriels."
   },
-  "digest": "sha256:353e76b344976ee7a94602ba718ca97abe4e460e9865eecebc2af811513c4703",
+  "digest": "sha256:b16b6cda1190d9cce2d7c6323916c0e47d3b4c56e4e8cf7e6acf6fe97471c1b3",
   "displayName": "SankeyChart",
   "format": "component-entry/v1",
   "frameworks": [

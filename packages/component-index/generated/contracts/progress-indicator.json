@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:fa0dca97666e2ec36416f9fad842ff2a1fa34d4aed16e87329572c4c838512df",
-  "entryDigest": "sha256:b6fe40da4d402a7892424df64eb2dc7a04a3d1d163612fb070000899271092d4",
+  "digest": "sha256:babfa1c57dc75f5fdbb85f3fe046f2e86b6b65d76ca4c692f3317c32dcf9653e",
+  "entryDigest": "sha256:d85eea20a9fe15489409b571e784defc48cc52d5e0342d291e7a5c0c4f00cb9b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -89,7 +89,7 @@
         "declarationPath": "packages/components-angular/dist/ProgressIndicator.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

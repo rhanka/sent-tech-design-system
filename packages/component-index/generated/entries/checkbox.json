@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Checkbox.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Checkbox with error/disabled states and helper text.",
     "fr": "Case à cocher avec états error/disabled et helper text."
   },
-  "digest": "sha256:70aac958393401f838378f2c1f7e649a7478800d1db5fb5b714a875c4aac4e82",
+  "digest": "sha256:1cb317662ec412c0db76e02e785ce5f5b1d96e89b293969dd878b092557dfaec",
   "displayName": "Checkbox",
   "format": "component-entry/v1",
   "frameworks": [

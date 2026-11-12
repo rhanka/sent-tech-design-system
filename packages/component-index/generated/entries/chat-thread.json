@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChatThread.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Scrollable message list with auto-scroll and empty-state.",
     "fr": "Liste de messages scrollable avec auto-scroll et état vide."
   },
-  "digest": "sha256:81bdabbb11c842eb48804210ded07e93f1df613315fda344d2a605a31b3cd155",
+  "digest": "sha256:4e0df125ff3ed028c12ad65987820b3c99b153fb9bbd9330494fe3778cd49708",
   "displayName": "ChatThread",
   "format": "component-entry/v1",
   "frameworks": [

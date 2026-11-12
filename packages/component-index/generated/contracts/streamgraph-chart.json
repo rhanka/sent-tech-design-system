@@ -1,8 +1,8 @@
 {
   "componentId": "streamgraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:4f5b7cdecf82e8c65bdbe1c8693bf267cd26a2dde270aa50a73063848f5bb520",
-  "entryDigest": "sha256:7b3ce622875d79e9ea859024751c2adb6bef4f65ab423d7c760c8ce749db272f",
+  "digest": "sha256:5bc2095ac2361cf2a8986b45a7851dfb83199e620d8626573a7c060f23ff694d",
+  "entryDigest": "sha256:9d9b0a3ad73fecd042879fb69913ea8ebb06bcab343c33141e4b0a59db79df93",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/StreamgraphChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StreamgraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

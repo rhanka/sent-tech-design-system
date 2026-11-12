@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:7e6f6de71f8eff4b8b6d23442169d82538cea8597a48bcf17552880fb59442fc",
-  "entryDigest": "sha256:bcc258ef3c67901b2c78105bf8e240f52dfb61426f65730f0189e49e0f954bbb",
+  "digest": "sha256:28758b4d1c79e09687ba86f5873c24b5c1b3667c7839b342a1821a493e86baa2",
+  "entryDigest": "sha256:95f5da20962507984fad4a48c0bc1b728260e7308806bd4c332c570ca759652e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/CopyButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CopyButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:dc36c501d032664dfbb52044baac99e236231d4a6b5cf863b095fca206f38660",
-  "entryDigest": "sha256:58626c56999c033106b5ef6b400e3c7d3d1c3d6603c8486774aee03eac1e9460",
+  "digest": "sha256:d8701d0d020910cb99d1eedced136d2fbd25404742c273920e84b3187e1923d6",
+  "entryDigest": "sha256:406017a8251ea6b8596d9e81bba0cd68beee5dcc788bd0c83782fd94ded38e5c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Modal.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ModalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

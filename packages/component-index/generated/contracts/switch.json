@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:e4798c424911a78786e88dd000a82da9a91ecd5eb5ddb0dbdd0e998ff9961505",
-  "entryDigest": "sha256:0bc6fa5228f71b23af471e6c93efc219e8354b109c6536fb29ea2bbc979d377d",
+  "digest": "sha256:eca6c5d64599c83e585394834009e5fae2ce182d28b9ea039229d2679c7f3759",
+  "entryDigest": "sha256:8beb8e775498bc54c7fb6a8e442977dbeca06fd20d9095be5d3abda49171debc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -58,7 +58,7 @@
         "declarationPath": "packages/components-angular/dist/Switch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

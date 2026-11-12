@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StreamingMessage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Assistant bubble with streaming event rendering (deltas, reasoning, tools, permissions).",
     "fr": "Bulle assistant avec affichage d’événements de streaming (deltas, raisonnement, outils, permissions)."
   },
-  "digest": "sha256:9580251d9ab95c4e6545eee32e736183c40bf38fd196eaf142b3013a24d287f4",
+  "digest": "sha256:6ff6ff3a23c92d7ea28f9e31967ad396b0ab4bae491b23fa50dc6bea1b5911b7",
   "displayName": "StreamingMessage",
   "format": "component-entry/v1",
   "frameworks": [

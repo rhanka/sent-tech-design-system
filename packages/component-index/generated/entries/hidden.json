@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Hidden.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:0567dc7e126cefb048d68537af0bf77e3460d11d04568fcb6396fc07bb76496a",
+  "digest": "sha256:1cb9c01ffa1e6c27368f6e287de78433329d692c125811422ce38ce387d30f8f",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:7187bef9357de79c185fe01431c61de1aa4f05a442f67ad2a829f5ebfa4bb5d6",
-  "entryDigest": "sha256:5ce0f4b68cc8c1dce0ca9d3b51e30ae039c69516429f8f93821584110d22e688",
+  "digest": "sha256:876f88ae6a45368e5ebacd1b2ecfe5944d39e107fdf12759f67b301820b40bb7",
+  "entryDigest": "sha256:c5233e4a8f938f47c183defdcf6b743bc4cf44eacc7da0838e365d568a87ad0a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/StructuredList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StructuredListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

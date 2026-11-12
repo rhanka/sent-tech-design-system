@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PointAndFigureChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:e198a93488c167d865f12ad569066970bfa7bcfd6d770c7bf1d350683823319b",
+  "digest": "sha256:2f6dadfec536b2dd40a797b5110f7ba0b6f73d05b1b2cceb4c404c8d9c372b2c",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [

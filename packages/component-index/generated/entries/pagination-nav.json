@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PaginationNav.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:f130dacf2cd939b6ba8b831b1e7e72698614aa24e4cfbc1a1078bdc74b120cac",
+  "digest": "sha256:b95b62c52ea2be26b98b25b7e363a5ac280684564c69acf7c6c7921c7428c968",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

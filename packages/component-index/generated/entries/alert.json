@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Alert.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:78c15d56a847ae0bb9c8cdeda1886e689ff1ba70f02d5b31747e1d785c8c8ecc",
+  "digest": "sha256:5d6b7f42f7bb379f38c158ab7d36351780704333763510dadb10ba5615182668",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

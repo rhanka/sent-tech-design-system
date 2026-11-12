@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RadarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Polar radar chart for comparing series across shared axes.",
     "fr": "Radar polaire pour comparer plusieurs séries sur des axes communs."
   },
-  "digest": "sha256:0b80cd5471be219df1117146e9ec15c133c25f39bc4e0429b10bbc8038570f66",
+  "digest": "sha256:ec8b24b2d5174c5894417119f064a62e274a4baad6127e7cd9b04e99f208ddca",
   "displayName": "RadarChart",
   "format": "component-entry/v1",
   "frameworks": [
