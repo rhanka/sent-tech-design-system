@@ -71,7 +71,7 @@ import {
 } from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
 import { DIAGRAM_PRESENTATION_PROFILE_ID } from "./presentation.js";
-import { validateDiagramPresentation } from "./presentation-validate.js";
+import { validateDiagramPresentation } from "./presentation-relations.js";
 import {
   analyzeSummaries,
   classifyInternalRelations,
