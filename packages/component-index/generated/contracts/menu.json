@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:7231245b4c7a3118e1cc5e068c5731693da116c16c692166f7cfa223f81f9ec2",
-  "entryDigest": "sha256:f00e12e04973adbff3f7154feac63e9408de89a4694d2449e5e358388711d614",
+  "digest": "sha256:2d36f48772423d3dc0825c3131b72574498156072996f0a6b290603a8380f519",
+  "entryDigest": "sha256:1dbe9c0ae97faed612a5bd6acf8ca4d20b94fc25be5264a5536cd07fa9ea1642",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -19,17 +19,13 @@
         {
           "name": "select",
           "payload": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/MenuActionItem"
-              },
-              {
-                "$ref": "#/$defs/MenuDividerItem"
-              },
-              {
-                "$ref": "#/$defs/MenuGroupItem"
-              }
-            ]
+            "$ref": "#/$defs/MenuActionItem"
+          }
+        },
+        {
+          "name": "selectPath",
+          "payload": {
+            "$ref": "#/$defs/MenuSelectPath"
           }
         }
       ],
@@ -41,6 +37,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -54,6 +66,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -108,6 +123,25 @@
               "label"
             ],
             "type": "object"
+          },
+          "MenuSelectPath": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
+            ],
+            "type": "object"
           }
         },
         "additionalProperties": false,
@@ -117,6 +151,9 @@
           },
           "dense": {
             "type": "boolean"
+          },
+          "id": {
+            "type": "string"
           },
           "items": {
             "items": {
@@ -136,6 +173,13 @@
           },
           "role": {
             "type": "string"
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "type": "object"
@@ -162,7 +206,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:fd6dcfd4fa6c22ebbd9cfa141f20e74cd59710cd134079633e2b5b21f3cf88c8",
+        "declarationDigest": "sha256:9094413c3d37128a6e22db0062e5fbe9c200522f70850c48e6e6b5dd1bec5322",
         "declarationPath": "packages/components-angular/dist/Menu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuProps",

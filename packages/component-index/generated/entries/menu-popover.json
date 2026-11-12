@@ -29,7 +29,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:834bcd8150bad440b9e5cb667a60fea162836d430c36d863adf9c72e378a21c0",
+      "digest": "sha256:942b695b11783f33130a215b5a0a8ae2993429f4ddb2e0f491bec2d0425a2dd8",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MenuPopover.ts",
@@ -40,7 +40,7 @@
     "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
     "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
   },
-  "digest": "sha256:62a7214c8d04a53d6c8f5f5c1a00ad3e4c4ed4dc4f6da16000a6c22fd02b0018",
+  "digest": "sha256:48119324c26cb1b6e90bab54a8a0c25c1724bbbbabeeec8a0b0de915609244f8",
   "displayName": "MenuPopover",
   "format": "component-entry/v1",
   "frameworks": [

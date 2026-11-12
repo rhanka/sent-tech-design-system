@@ -12,7 +12,18 @@ import { classNames } from "./classNames.js";
 
 import { Menu } from "./Menu.js";
 
-import type { MenuItem } from "./Menu.js";
+import type { MenuActionItem, MenuItem, MenuSelectPath } from "./Menu.js";
+import type { SubMenuSide } from "./menu-cascade.js";
+
+function popoverItemKind(item: MenuItem): string | undefined {
+  const tagged = item as { type?: string; kind?: string };
+  return tagged.type ?? tagged.kind;
+}
+
+function popoverIsAction(item: MenuItem): item is MenuActionItem {
+  const kind = popoverItemKind(item);
+  return kind === undefined || kind === "item";
+}
 
 export type MenuPopoverPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
 export type MenuPopoverAlign = "start" | "end" | "center";
@@ -160,6 +171,7 @@ export type MenuPopoverProps = {
   class?: string;
   closeOnOutside?: boolean;
   closeOnEscape?: boolean;
+  submenuSide?: SubMenuSide;
 };
 
 @Component({
@@ -180,7 +192,14 @@ export type MenuPopoverProps = {
         [style]="panelStyle"
       >
         @if (items && items.length) {
-          <st-menu [items]="items" role="presentation"></st-menu>
+          <st-menu
+            [items]="items"
+            [id]="rootMenuId"
+            [submenuSide]="submenuSide"
+            [role]="innerRole"
+            (select)="onMenuSelect($event)"
+            (selectPath)="onMenuSelectPath($event)"
+          ></st-menu>
         } @else {
           <ng-content></ng-content>
         }
@@ -191,6 +210,9 @@ export type MenuPopoverProps = {
 export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   static readonly stComponentName = "MenuPopover";
   readonly componentName = "MenuPopover";
+
+  private static nextInstanceId = 0;
+  readonly rootMenuId = `st-menupopover-${++MenuPopover.nextInstanceId}`;
 
   /** Convenience (not in the Svelte contract): renders a <st-menu> from `items` instead of projected content. */
   @NgInput() items?: MenuItem[];
@@ -204,8 +226,11 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   @NgInput("class") classInput?: string;
   @NgInput() closeOnOutside = true;
   @NgInput() closeOnEscape = true;
+  @NgInput() submenuSide: SubMenuSide = "auto";
 
   @Output() readonly openChange = new EventEmitter<boolean>();
+  @Output() readonly select = new EventEmitter<MenuItem>();
+  @Output() readonly selectPath = new EventEmitter<MenuSelectPath>();
 
   @ViewChild("panel") panel?: ElementRef<HTMLDivElement>;
 
@@ -217,21 +242,91 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   flipped = false;
 
   private listenersActive = false;
+  private prevTriggerForAria: HTMLElement | null = null;
   private readonly onScroll = () => this.computePosition();
   private readonly onResize = () => this.computePosition();
   private readonly onPointerDown = (event: PointerEvent) => {
+    if ((event as { defaultPrevented?: boolean }).defaultPrevented) return;
     if (!this.open || !this.closeOnOutside) return;
     if (menuPopoverIsWithin(event, this.panel?.nativeElement)) return;
     if (menuPopoverIsWithin(event, this.trigger)) return;
     this.close();
   };
   private readonly onKeyDown = (event: KeyboardEvent) => {
+    if ((event as { defaultPrevented?: boolean }).defaultPrevented) return;
     if (!this.open || !this.closeOnEscape) return;
     if (event.key === "Escape") {
       event.preventDefault();
+      const focus = this.treeHasCascade(this.items);
+      this.close();
+      if (focus) {
+        try {
+          this.trigger?.focus?.();
+        } catch {
+          // No DOM in Node tests.
+        }
+      }
+      return;
+    }
+    if (event.key === "Tab" && this.treeHasCascade(this.items)) {
+      // No preventDefault: focus leaves the menu (no trap, AC-32).
       this.close();
     }
   };
+
+  treeHasCascade(list: MenuItem[] | undefined): boolean {
+    if (!list) return false;
+    for (const item of list) {
+      if (!popoverIsAction(item)) continue;
+      const children = (item as MenuActionItem).children;
+      if (Array.isArray(children) && children.length > 0) return true;
+      if (Array.isArray(children) && this.treeHasCascade(children)) return true;
+    }
+    return false;
+  }
+
+  get innerRole(): string {
+    return this.items && this.treeHasCascade(this.items) ? "menu" : "presentation";
+  }
+
+  onMenuSelect(item: MenuItem): void {
+    this.close();
+    this.select.emit(item);
+  }
+
+  onMenuSelectPath(payload: MenuSelectPath): void {
+    this.close();
+    this.selectPath.emit(payload);
+  }
+
+  syncTriggerAriaControls(): void {
+    const trigger = this.trigger as (HTMLElement & { setAttribute?: (name: string, value: string) => void; removeAttribute?: (name: string) => void }) | null;
+    const prev = this.prevTriggerForAria as (HTMLElement & { removeAttribute?: (name: string) => void }) | null;
+    if (prev && prev !== this.trigger) {
+      try {
+        prev.removeAttribute?.("aria-controls");
+      } catch {
+        // No DOM in Node tests.
+      }
+    }
+    if (!this.open || !trigger) {
+      if (trigger && prev === trigger) {
+        try {
+          trigger.removeAttribute?.("aria-controls");
+        } catch {
+          // No DOM in Node tests.
+        }
+      }
+      this.prevTriggerForAria = this.trigger ?? null;
+      return;
+    }
+    try {
+      trigger.setAttribute?.("aria-controls", this.rootMenuId);
+    } catch {
+      // No DOM in Node tests (trigger fakes without setAttribute).
+    }
+    this.prevTriggerForAria = this.trigger;
+  }
 
   get hostClass(): string {
     return classNames(
@@ -249,6 +344,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
 
   ngAfterViewInit(): void {
     this.registerWindowListeners();
+    this.syncTriggerAriaControls();
     if (this.open) {
       this.computePosition();
       this.showTopLayer();
@@ -256,6 +352,10 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    // Root-id ownership (§2.2, D10): set `aria-controls` on the external
+    // trigger while open, remove on close. Runs in Node tests too (trigger
+    // fakes without setAttribute are guarded).
+    this.syncTriggerAriaControls();
     if (typeof window === "undefined") return;
     if (!this.open) return;
     if (changes["open"] || changes["trigger"] || changes["placement"] || changes["align"]) {
@@ -271,6 +371,14 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.unregisterWindowListeners();
+    // Release the external trigger attribute on teardown.
+    try {
+      const trigger = this.trigger as (HTMLElement & { removeAttribute?: (name: string) => void }) | null;
+      trigger?.removeAttribute?.("aria-controls");
+    } catch {
+      // No DOM in Node tests.
+    }
+    this.prevTriggerForAria = null;
   }
 
   computePosition(): void {
@@ -341,6 +449,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     if (!this.open) return;
     this.hideTopLayer();
     this.open = false;
+    this.syncTriggerAriaControls();
     this.openChange.emit(false);
   }
 
