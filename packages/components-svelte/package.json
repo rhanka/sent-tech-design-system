@@ -57,7 +57,8 @@
     "!dist/**/diagram-zone-corpus.js",
     "!dist/**/diagram-zone-corpus.d.ts",
     "!dist/**/diagram-zone-corpus.d.ts.map",
-    "!dist/**/DiagramSceneFigure.test-support.*"
+    "!dist/**/DiagramSceneFigure.test-support.*",
+    "!dist/flow-fixtures/**"
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
