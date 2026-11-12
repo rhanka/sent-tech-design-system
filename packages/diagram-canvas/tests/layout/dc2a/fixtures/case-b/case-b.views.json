@@ -1,0 +1,1995 @@
+{
+  "caseId": "case-b",
+  "semanticDocumentId": "document:case-b",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 14,
+    "archiRelations": 22,
+    "totalEntitiesWithLegend": 17,
+    "totalRelationsWithLegend": 24,
+    "views": 3
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire des dépôts h2a, sentropic et engram",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "api-memoire",
+      "entityId": "entity:api-memoire",
+      "kind": "api",
+      "form": "mcp",
+      "container": false,
+      "name": "Accès mémoire",
+      "shortName": null,
+      "purpose": "Relaie les lectures et propositions",
+      "kicker": "API · MCP",
+      "detail": "fourni par: engram live (cible)",
+      "footer": "repo: sentropic (cible)",
+      "containment": {
+        "partOf": "sys-mesh",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:347-363"
+      ]
+    },
+    {
+      "id": "host-cluster",
+      "entityId": "entity:host-cluster",
+      "kind": "host",
+      "form": "cluster",
+      "container": true,
+      "name": "Cluster",
+      "shortName": null,
+      "purpose": "Cluster hébergeant le service engram live",
+      "kicker": "Hôte · Cluster",
+      "detail": null,
+      "footer": "opéré par: cluster-mesh (cible)",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:41"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant la CLI h2a",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "pkg-engram",
+      "entityId": "entity:pkg-engram",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/engram",
+      "shortName": null,
+      "purpose": "Paquet npm livrant le service engram live",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: engram (cible)",
+      "containment": {
+        "partOf": "sys-engram",
+        "managedIn": "repo-engram",
+        "runsOn": null
+      },
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "pkg-h2a",
+      "entityId": "entity:pkg-h2a",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet npm livrant la CLI h2a",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "repo-engram",
+      "entityId": "entity:repo-engram",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "engram",
+      "shortName": null,
+      "purpose": "Dépôt du système mémoire gouverné engram",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo de la CLI h2a",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "repo-sentropic",
+      "entityId": "entity:repo-sentropic",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "sentropic",
+      "shortName": null,
+      "purpose": "Dépôt du plan de contrôle cluster-mesh",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sentropic:packages/cluster-mesh/package.json:2-11"
+      ]
+    },
+    {
+      "id": "rt-h2a",
+      "entityId": "entity:rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": "CLI h2a",
+      "purpose": "Appelle l’accès mémoire depuis le poste",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:330-346"
+      ]
+    },
+    {
+      "id": "svc-engram-live",
+      "entityId": "entity:svc-engram-live",
+      "kind": "service",
+      "form": null,
+      "container": false,
+      "name": "engram live",
+      "shortName": null,
+      "purpose": "Sert et écrit la mémoire gouvernée",
+      "kicker": "Service",
+      "detail": "sur: Cluster (cible)",
+      "footer": "opéré par: cluster-mesh (cible)",
+      "containment": {
+        "partOf": "sys-engram",
+        "managedIn": null,
+        "runsOn": "host-cluster"
+      },
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:364-380"
+      ]
+    },
+    {
+      "id": "sys-engram",
+      "entityId": "entity:sys-engram",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "engram",
+      "shortName": null,
+      "purpose": "Mémoire gouvernée du suivi",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: engram",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-engram",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:315-328"
+      ]
+    },
+    {
+      "id": "sys-h2a",
+      "entityId": "entity:sys-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Coordination des sessions d’agents",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:286-300"
+      ]
+    },
+    {
+      "id": "sys-mesh",
+      "entityId": "entity:sys-mesh",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "cluster-mesh",
+      "shortName": null,
+      "purpose": "Relie le poste à la mémoire engram",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-sentropic",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:301-314"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "ob-repo-sentropic",
+      "relationId": "relation:ob-repo-sentropic",
+      "type": "ownedBy",
+      "source": "repo-sentropic",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sentropic:packages/cluster-mesh/package.json:2-11"
+      ]
+    },
+    {
+      "id": "ob-repo-engram",
+      "relationId": "relation:ob-repo-engram",
+      "type": "ownedBy",
+      "source": "repo-engram",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "op-cluster",
+      "relationId": "relation:op-cluster",
+      "type": "operatedBy",
+      "source": "host-cluster",
+      "target": "sys-mesh",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:56"
+      ]
+    },
+    {
+      "id": "mi-sys-h2a",
+      "relationId": "relation:mi-sys-h2a",
+      "type": "managedIn",
+      "source": "sys-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:16-20"
+      ]
+    },
+    {
+      "id": "mi-sys-mesh",
+      "relationId": "relation:mi-sys-mesh",
+      "type": "managedIn",
+      "source": "sys-mesh",
+      "target": "repo-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sentropic:packages/cluster-mesh/package.json:7-11"
+      ]
+    },
+    {
+      "id": "mi-sys-engram",
+      "relationId": "relation:mi-sys-engram",
+      "type": "managedIn",
+      "source": "sys-engram",
+      "target": "repo-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a",
+      "relationId": "relation:mi-pkg-h2a",
+      "type": "managedIn",
+      "source": "pkg-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "mi-pkg-engram",
+      "relationId": "relation:mi-pkg-engram",
+      "type": "managedIn",
+      "source": "pkg-engram",
+      "target": "repo-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a",
+      "relationId": "relation:po-pkg-h2a",
+      "type": "partOf",
+      "source": "pkg-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-pkg-engram",
+      "relationId": "relation:po-pkg-engram",
+      "type": "partOf",
+      "source": "pkg-engram",
+      "target": "sys-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "po-rt-h2a",
+      "relationId": "relation:po-rt-h2a",
+      "type": "partOf",
+      "source": "rt-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "po-api-memoire",
+      "relationId": "relation:po-api-memoire",
+      "type": "partOf",
+      "source": "api-memoire",
+      "target": "sys-mesh",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:35"
+      ]
+    },
+    {
+      "id": "po-svc-live",
+      "relationId": "relation:po-svc-live",
+      "type": "partOf",
+      "source": "svc-engram-live",
+      "target": "sys-engram",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:71"
+      ]
+    },
+    {
+      "id": "ro-rt-h2a",
+      "relationId": "relation:ro-rt-h2a",
+      "type": "runsOn",
+      "source": "rt-h2a",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "ro-svc-live",
+      "relationId": "relation:ro-svc-live",
+      "type": "runsOn",
+      "source": "svc-engram-live",
+      "target": "host-cluster",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:78"
+      ]
+    },
+    {
+      "id": "da-h2a",
+      "relationId": "relation:da-h2a",
+      "type": "deployedAs",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "da-live",
+      "relationId": "relation:da-live",
+      "type": "deployedAs",
+      "source": "pkg-engram",
+      "target": "svc-engram-live",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · service résident",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "graphify:package.json:1-5"
+      ]
+    },
+    {
+      "id": "pa-live-memoire",
+      "relationId": "relation:pa-live-memoire",
+      "type": "providesApi",
+      "source": "svc-engram-live",
+      "target": "api-memoire",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:36"
+      ]
+    },
+    {
+      "id": "op-live-mesh",
+      "relationId": "relation:op-live-mesh",
+      "type": "operatedBy",
+      "source": "svc-engram-live",
+      "target": "sys-mesh",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:54"
+      ]
+    },
+    {
+      "id": "ca-h2a-memoire",
+      "relationId": "relation:ca-h2a-memoire",
+      "type": "consumesApi",
+      "source": "rt-h2a",
+      "target": "api-memoire",
+      "encoding": "arrow",
+      "verb": "appelle",
+      "label": "appelle · propositions et questions",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "proposed",
+      "today": false,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:37"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-mesh",
+          "api-memoire",
+          "sys-engram",
+          "svc-engram-live"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Les trois zones systèmes (h2a, cluster-mesh, engram) sont dépliées et distinguent fournisseur d'API et opérateur de service."
+      },
+      "counts": {
+        "elements": 6,
+        "containers": 3,
+        "foldedContainers": 0,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Coordination des sessions d’agents",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Appelle l’accès mémoire depuis le poste",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-mesh",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "cluster-mesh",
+          "purpose": "Relie le poste à la mémoire engram",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "api-memoire",
+          "kind": "api",
+          "form": "mcp",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-mesh",
+          "kicker": "API · MCP",
+          "title": "Accès mémoire (cible)",
+          "purpose": "Relaie les lectures et propositions",
+          "detail": "fourni par: engram live (cible)",
+          "footer": "repo: sentropic (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        },
+        {
+          "id": "sys-engram",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "engram",
+          "purpose": "Mémoire gouvernée du suivi",
+          "detail": null,
+          "footer": "repo: engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "svc-engram-live",
+          "kind": "service",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "sys-engram",
+          "kicker": "Service",
+          "title": "engram live (cible)",
+          "purpose": "Sert et écrit la mémoire gouvernée",
+          "detail": "sur: Cluster (cible)",
+          "footer": "opéré par: cluster-mesh (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ca-h2a-memoire",
+          "type": "consumesApi",
+          "source": "rt-h2a",
+          "target": "api-memoire",
+          "verb": "appelle",
+          "label": "appelle · propositions et questions",
+          "strokeStyle": "dashed",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "proposed",
+          "today": false,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-b-unfolded",
+        "semanticDocumentId": "document:case-b",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-mesh": {
+            "id": "occurrence:o-sys-mesh",
+            "entity": "entity:sys-mesh",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-api-memoire": {
+            "id": "occurrence:o-api-memoire",
+            "entity": "entity:api-memoire",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.10.o-sys-mesh"
+          },
+          "occurrence:o-sys-engram": {
+            "id": "occurrence:o-sys-engram",
+            "entity": "entity:sys-engram",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-svc-engram-live": {
+            "id": "occurrence:o-svc-engram-live",
+            "entity": "entity:svc-engram-live",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.12.o-sys-engram"
+          },
+          "occurrence:o-legend-case-b": {
+            "id": "occurrence:o-legend-case-b",
+            "entity": "entity:legend-case-b",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ca-h2a-memoire": {
+            "id": "occurrence:e-ca-h2a-memoire",
+            "relation": "relation:ca-h2a-memoire",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-api-memoire"
+              }
+            ],
+            "strokeStyle": "dashed"
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": false
+          },
+          "grp.10.o-sys-mesh": {
+            "id": "grp.10.o-sys-mesh",
+            "occurrence": "occurrence:o-sys-mesh",
+            "collapsed": false
+          },
+          "grp.12.o-sys-engram": {
+            "id": "grp.12.o-sys-engram",
+            "occurrence": "occurrence:o-sys-engram",
+            "collapsed": false
+          },
+          "grp.15.o-legend-case-b": {
+            "id": "grp.15.o-legend-case-b",
+            "occurrence": "occurrence:o-legend-case-b",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-api-memoire": {
+                "form": "card",
+                "text": {
+                  "kicker": "API · MCP",
+                  "title": "Accès mémoire (cible)",
+                  "footer": "repo: sentropic (cible)",
+                  "body": "Relaie les lectures et propositions",
+                  "detail": "fourni par: engram live (cible)"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-b": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas b)"
+                }
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appelle l’accès mémoire depuis le poste",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-svc-engram-live": {
+                "form": "card",
+                "text": {
+                  "kicker": "Service",
+                  "title": "engram live (cible)",
+                  "footer": "opéré par: cluster-mesh (cible)",
+                  "body": "Sert et écrit la mémoire gouvernée",
+                  "detail": "sur: Cluster (cible)"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-engram": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: engram",
+                  "subtitle": "Mémoire gouvernée du suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Coordination des sessions d’agents"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-mesh": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Relie le poste à la mémoire engram"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-b": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "mesh-engram-folded": {
+      "spec": {
+        "name": "mesh-engram-folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-mesh",
+          "api-memoire",
+          "sys-engram",
+          "svc-engram-live"
+        ],
+        "folds": [
+          "sys-mesh",
+          "sys-engram"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Les conteneurs cluster-mesh et engram sont repliés en cartes 460 × 200 ; l'appel de CLI h2a est agrégé sur cluster-mesh."
+      },
+      "counts": {
+        "elements": 6,
+        "containers": 3,
+        "foldedContainers": 2,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Coordination des sessions d’agents",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Appelle l’accès mémoire depuis le poste",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-mesh",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "cluster-mesh",
+          "purpose": "Relie le poste à la mémoire engram",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "api-memoire",
+          "kind": "api",
+          "form": "mcp",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-mesh",
+          "kicker": "API · MCP",
+          "title": "Accès mémoire (cible)",
+          "purpose": "Relaie les lectures et propositions",
+          "detail": "fourni par: engram live (cible)",
+          "footer": "repo: sentropic (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        },
+        {
+          "id": "sys-engram",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "engram",
+          "purpose": "Mémoire gouvernée du suivi",
+          "detail": null,
+          "footer": "repo: engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "svc-engram-live",
+          "kind": "service",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "sys-engram",
+          "kicker": "Service",
+          "title": "engram live (cible)",
+          "purpose": "Sert et écrit la mémoire gouvernée",
+          "detail": "sur: Cluster (cible)",
+          "footer": "opéré par: cluster-mesh (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ca-h2a-memoire",
+          "type": "consumesApi",
+          "source": "rt-h2a",
+          "target": "sys-mesh",
+          "verb": "appelle",
+          "label": "appelle · propositions et questions",
+          "strokeStyle": "dashed",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "proposed",
+          "today": false,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "rt-h2a",
+          "target": "sys-mesh",
+          "label": "appelle · propositions et questions",
+          "strokeStyle": "dashed",
+          "relationIds": [
+            "ca-h2a-memoire"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-b-mesh-engram-folded",
+        "semanticDocumentId": "document:case-b",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-mesh": {
+            "id": "occurrence:o-sys-mesh",
+            "entity": "entity:sys-mesh",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-api-memoire": {
+            "id": "occurrence:o-api-memoire",
+            "entity": "entity:api-memoire",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.10.o-sys-mesh"
+          },
+          "occurrence:o-sys-engram": {
+            "id": "occurrence:o-sys-engram",
+            "entity": "entity:sys-engram",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-svc-engram-live": {
+            "id": "occurrence:o-svc-engram-live",
+            "entity": "entity:svc-engram-live",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.12.o-sys-engram"
+          },
+          "occurrence:o-legend-case-b": {
+            "id": "occurrence:o-legend-case-b",
+            "entity": "entity:legend-case-b",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ca-h2a-memoire": {
+            "id": "occurrence:e-ca-h2a-memoire",
+            "relation": "relation:ca-h2a-memoire",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-mesh",
+                "semanticTarget": "entity:api-memoire",
+                "sourceOccurrence": "occurrence:o-api-memoire"
+              }
+            ],
+            "strokeStyle": "dashed"
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": false
+          },
+          "grp.10.o-sys-mesh": {
+            "id": "grp.10.o-sys-mesh",
+            "occurrence": "occurrence:o-sys-mesh",
+            "collapsed": true
+          },
+          "grp.12.o-sys-engram": {
+            "id": "grp.12.o-sys-engram",
+            "occurrence": "occurrence:o-sys-engram",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-b": {
+            "id": "grp.15.o-legend-case-b",
+            "occurrence": "occurrence:o-legend-case-b",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-api-memoire": {
+                "form": "card",
+                "text": {
+                  "kicker": "API · MCP",
+                  "title": "Accès mémoire (cible)",
+                  "footer": "repo: sentropic (cible)",
+                  "body": "Relaie les lectures et propositions",
+                  "detail": "fourni par: engram live (cible)"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-b": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas b)"
+                }
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appelle l’accès mémoire depuis le poste",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-svc-engram-live": {
+                "form": "card",
+                "text": {
+                  "kicker": "Service",
+                  "title": "engram live (cible)",
+                  "footer": "opéré par: cluster-mesh (cible)",
+                  "body": "Sert et écrit la mémoire gouvernée",
+                  "detail": "sur: Cluster (cible)"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-engram": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: engram",
+                  "subtitle": "Mémoire gouvernée du suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Coordination des sessions d’agents"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-mesh": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Relie le poste à la mémoire engram"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-b": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-rt-h2a",
+            "targetOccurrence": "occurrence:o-sys-mesh",
+            "label": "appelle · propositions et questions",
+            "relationIds": [
+              "relation:ca-h2a-memoire"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-ca-h2a-memoire"
+            ],
+            "strokeStyle": "dashed"
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-mesh",
+          "api-memoire",
+          "sys-engram",
+          "svc-engram-live"
+        ],
+        "folds": [
+          "sys-h2a",
+          "sys-mesh",
+          "sys-engram"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Les trois systèmes sont repliés en cartes 460 × 200 ; seule la liaison cible en tirets h2a → cluster-mesh subsiste."
+      },
+      "counts": {
+        "elements": 6,
+        "containers": 3,
+        "foldedContainers": 3,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Coordination des sessions d’agents",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Appelle l’accès mémoire depuis le poste",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-mesh",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "cluster-mesh",
+          "purpose": "Relie le poste à la mémoire engram",
+          "detail": null,
+          "footer": "repo: sentropic",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "api-memoire",
+          "kind": "api",
+          "form": "mcp",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-mesh",
+          "kicker": "API · MCP",
+          "title": "Accès mémoire (cible)",
+          "purpose": "Relaie les lectures et propositions",
+          "detail": "fourni par: engram live (cible)",
+          "footer": "repo: sentropic (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        },
+        {
+          "id": "sys-engram",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "engram",
+          "purpose": "Mémoire gouvernée du suivi",
+          "detail": null,
+          "footer": "repo: engram",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "svc-engram-live",
+          "kind": "service",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "sys-engram",
+          "kicker": "Service",
+          "title": "engram live (cible)",
+          "purpose": "Sert et écrit la mémoire gouvernée",
+          "detail": "sur: Cluster (cible)",
+          "footer": "opéré par: cluster-mesh (cible)",
+          "lifecycle": "proposed",
+          "today": false,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "ca-h2a-memoire",
+          "type": "consumesApi",
+          "source": "sys-h2a",
+          "target": "sys-mesh",
+          "verb": "appelle",
+          "label": "appelle · propositions et questions",
+          "strokeStyle": "dashed",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "proposed",
+          "today": false,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "sys-h2a",
+          "target": "sys-mesh",
+          "label": "appelle · propositions et questions",
+          "strokeStyle": "dashed",
+          "relationIds": [
+            "ca-h2a-memoire"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-b-folded",
+        "semanticDocumentId": "document:case-b",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-mesh": {
+            "id": "occurrence:o-sys-mesh",
+            "entity": "entity:sys-mesh",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-api-memoire": {
+            "id": "occurrence:o-api-memoire",
+            "entity": "entity:api-memoire",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.10.o-sys-mesh"
+          },
+          "occurrence:o-sys-engram": {
+            "id": "occurrence:o-sys-engram",
+            "entity": "entity:sys-engram",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-svc-engram-live": {
+            "id": "occurrence:o-svc-engram-live",
+            "entity": "entity:svc-engram-live",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.12.o-sys-engram"
+          },
+          "occurrence:o-legend-case-b": {
+            "id": "occurrence:o-legend-case-b",
+            "entity": "entity:legend-case-b",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-b"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-ca-h2a-memoire": {
+            "id": "occurrence:e-ca-h2a-memoire",
+            "relation": "relation:ca-h2a-memoire",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-sys-h2a",
+                "semanticTarget": "entity:rt-h2a",
+                "sourceOccurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-mesh",
+                "semanticTarget": "entity:api-memoire",
+                "sourceOccurrence": "occurrence:o-api-memoire"
+              }
+            ],
+            "strokeStyle": "dashed"
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": true
+          },
+          "grp.10.o-sys-mesh": {
+            "id": "grp.10.o-sys-mesh",
+            "occurrence": "occurrence:o-sys-mesh",
+            "collapsed": true
+          },
+          "grp.12.o-sys-engram": {
+            "id": "grp.12.o-sys-engram",
+            "occurrence": "occurrence:o-sys-engram",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-b": {
+            "id": "grp.15.o-legend-case-b",
+            "occurrence": "occurrence:o-legend-case-b",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-api-memoire": {
+                "form": "card",
+                "text": {
+                  "kicker": "API · MCP",
+                  "title": "Accès mémoire (cible)",
+                  "footer": "repo: sentropic (cible)",
+                  "body": "Relaie les lectures et propositions",
+                  "detail": "fourni par: engram live (cible)"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-b": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas b)"
+                }
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Appelle l’accès mémoire depuis le poste",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-svc-engram-live": {
+                "form": "card",
+                "text": {
+                  "kicker": "Service",
+                  "title": "engram live (cible)",
+                  "footer": "opéré par: cluster-mesh (cible)",
+                  "body": "Sert et écrit la mémoire gouvernée",
+                  "detail": "sur: Cluster (cible)"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-engram": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: engram",
+                  "subtitle": "Mémoire gouvernée du suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Coordination des sessions d’agents"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-mesh": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: sentropic",
+                  "subtitle": "Relie le poste à la mémoire engram"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-b": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-b",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-sys-h2a",
+            "targetOccurrence": "occurrence:o-sys-mesh",
+            "label": "appelle · propositions et questions",
+            "relationIds": [
+              "relation:ca-h2a-memoire"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-ca-h2a-memoire"
+            ],
+            "strokeStyle": "dashed"
+          }
+        }
+      }
+    }
+  }
+}
