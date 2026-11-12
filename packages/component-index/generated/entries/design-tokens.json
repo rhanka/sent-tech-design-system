@@ -18,28 +18,28 @@
     },
     {
       "channel": "tokens",
-      "digest": "sha256:8360782c2e071f842cf0bb00cd7d742a3d7d63651c61461fe73dd379296eb9f4",
+      "digest": "sha256:21037491ac5612a15fca8e93e234e50a51cfa2898d6e693a5eb28a1606f89f45",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/component.ts",
       "version": "0.12.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:75b88c3751fd68ae2f54a81b81b35a01e3eb04eed8078b65f8559b34be5dae06",
+      "digest": "sha256:5ef8fc2eba30db1cd3b50abaaea7af95786584ceb249d7a3222c8ecb7d11df3f",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/sent-tech.css",
       "version": "0.12.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:2474c226471b757091608104340aac21c80974221d9b3109fe465aec3489bb60",
+      "digest": "sha256:68ed368877fa542be486fbe66008c66c352e25968c0241cc9b4d930fc6518049",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/forge.css",
       "version": "0.12.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:8ab068ff488a70d4ae5f10cd1fc0c4a30fe97a412b1a03bdf5ef8067c640eacd",
+      "digest": "sha256:07b14262b95d4abb9f59e9306680cfb3d594236258d117dfe4b4017aee5d9f9a",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/entropic.css",
       "version": "0.12.0"
@@ -49,7 +49,7 @@
     "en": "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens.",
     "fr": "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens."
   },
-  "digest": "sha256:10b678b1676c74f6c87932efb85e2fb3bc627c54797641830a6c65c8ebf3cc17",
+  "digest": "sha256:88199a534904f56b61b41b299e0bed5d03a1771087a4bfdb8f3dcf7ab315210e",
   "displayName": "DesignTokens",
   "format": "component-entry/v1",
   "frameworks": [],

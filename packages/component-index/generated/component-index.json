@@ -1554,7 +1554,7 @@
       "deliveryChannels": [
         "tokens"
       ],
-      "digest": "sha256:10b678b1676c74f6c87932efb85e2fb3bc627c54797641830a6c65c8ebf3cc17",
+      "digest": "sha256:88199a534904f56b61b41b299e0bed5d03a1771087a4bfdb8f3dcf7ab315210e",
       "frameworks": [],
       "parity": {
         "angular": "no-counterpart",
@@ -5763,6 +5763,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:9fdc157b6f2ef25ee964d3e1432b6dfbf857f95e294732d596ba6cf7710f5f1e",
-  "sourceCommit": "4884aa10148d584fed31f62a7ca03b8a1d8b18af"
+  "registryRevision": "sha256:7c4388389677243de8e9656aa6bdfa40930be0cfb6dcb6b2b346f03f9b1198ea",
+  "sourceCommit": "8df209737dbc22be4f9f5db476d20754cea0f0fb"
 }
