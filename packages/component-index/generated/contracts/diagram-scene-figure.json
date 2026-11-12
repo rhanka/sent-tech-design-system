@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:c8e4c9c0621bcfb50de66205f04668d9226ba69d1f07698e2ff6cb9d4e5334cb",
+  "digest": "sha256:0f96e8e384bdf75e707dea36bd94d202f025edea1d2335a7b45decdc5a16a635",
   "entryDigest": "sha256:face966bb8218d969ef8ee2e23ae17150eaedb3b766bcdbab4f8f4760c3df227",
   "format": "component-contract/v1",
   "frameworks": {
@@ -39,7 +39,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/DiagramSceneFigure.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramSceneFigureProps",

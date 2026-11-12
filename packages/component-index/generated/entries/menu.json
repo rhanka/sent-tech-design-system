@@ -13,7 +13,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:fb75b0f5f8a42283bb4c59045b435b84ab57417d02bcda5cb67412e53036a018",
+      "digest": "sha256:a781843404cfec83598a727e6449cdd16927e23c51aee9e0c489cbe63ba97159",
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Menu.tsx",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:46cb383576446ce66574b5567f32df94fcaa8db0e7fdf14a850fc94dae2f84af",
+  "digest": "sha256:76cf998c717e0f796eb00f791eb3f8e1e81ead9d2f127edf8b19edf855e5e8bc",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [
