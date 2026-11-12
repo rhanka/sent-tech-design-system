@@ -1,7 +1,7 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:c7a945e26fa836a84c4000ab5a1524b7c5e807028d7b0eada5eb58ef66a7a97b",
+  "digest": "sha256:d1b2e9d4f3806ee09482a21fb2b8dd28181bf7d11654d6925ae61b52a741296e",
   "entryDigest": "sha256:cc08d22e2007a0f9eaf36c782db0c34d45bb56a389fff90ded5f312ca62dfbe0",
   "format": "component-contract/v1",
   "frameworks": {
@@ -188,19 +188,19 @@
       "dropped": [
         {
           "kind": "node",
-          "name": "ActionItem.icon",
+          "name": "MenuActionItem.icon",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "node",
-          "name": "ActionItem.label",
+          "name": "MenuActionItem.label",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "function",
-          "name": "ActionItem.onClick",
+          "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
         },
@@ -217,19 +217,62 @@
           "sourceType": "ReactNode"
         }
       ],
-      "events": [],
+      "events": [
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": false,
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "type": "array"
+          }
+        }
+      ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "passthrough": {
         "base": "React.HTMLAttributes<HTMLDivElement>",
-        "omitted": []
+        "omitted": [
+          "onSelect"
+        ]
       },
       "props": {
         "$defs": {
-          "ActionItem": {
+          "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -238,6 +281,9 @@
               },
               "id": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -274,7 +320,7 @@
               },
               "items": {
                 "items": {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 "type": "array"
               },
@@ -297,7 +343,7 @@
             "items": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 {
                   "$ref": "#/$defs/MenuDividerItem"
@@ -319,6 +365,14 @@
               "bottom-start",
               "bottom-end"
             ]
+          },
+          "submenuSide": {
+            "description": "Forwarded to the inner `Menu`.",
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -329,7 +383,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",

@@ -1,7 +1,7 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:20726dde8d43eddc645c28b7bc8da554741e1cfb98c2b1d37ca8ec95d064af0d",
+  "digest": "sha256:0e9f34c12305743b6f99e1961c8da87eebd836d6b6657b9244472229eaf0036a",
   "entryDigest": "sha256:6c5f6f89ed7bf31010d9046ac85549fc8505bac5f35e915e56dd457274f6ce9e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -118,7 +118,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AlertProps",
