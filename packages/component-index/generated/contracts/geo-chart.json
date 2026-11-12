@@ -1,8 +1,8 @@
 {
   "componentId": "geo-chart",
   "contractSource": "derived",
-  "digest": "sha256:4366dc3babce1e3e71df3dbf6f410a2a72a2867142cd6290a8ef8271600e7662",
-  "entryDigest": "sha256:290a9d83df449d55ea79e78817b654a4dcd49f01df2724b0b9b994df64bc770e",
+  "digest": "sha256:01b21c4538920593139c363e6c04d0b8e8ec37c51bb54510f6530eebeddca274",
+  "entryDigest": "sha256:fc9adeacdceb784a43e100bd763da7d77509ce57a0e39ff0c8bbd20f631b950b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1869,7 +1869,7 @@
         "declarationPath": "packages/components-svelte/dist/GeoChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GeoChartProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],

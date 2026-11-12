@@ -1,5 +1,6 @@
 <script lang="ts" module>
   import type { Component } from "svelte";
+  import type { SubMenuSide } from "./menu-cascade.js";
 
   export type OverflowMenuIconProps = {
     size?: number | string;
@@ -10,6 +11,8 @@
 
   export type OverflowMenuIcon = Component<OverflowMenuIconProps> | string;
 
+  export type OverflowMenuSubmenuSide = SubMenuSide;
+
   export interface OverflowMenuActionItem {
     kind?: "item";
     value: string;
@@ -18,6 +21,8 @@
     danger?: boolean;
     icon?: OverflowMenuIcon;
     onclick?: () => void;
+    children?: OverflowMenuItem[];
+    selected?: boolean;
   }
 
   export interface OverflowMenuDividerItem {
@@ -33,12 +38,17 @@
     | OverflowMenuActionItem
     | OverflowMenuDividerItem
     | OverflowMenuGroupItem;
+
+  let overflowMenuInstanceCounter = 0;
 </script>
 
 <script lang="ts">
   import { Ellipsis } from "@lucide/svelte";
+  import { setContext, tick } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
-  import { tick } from "svelte";
+  import Menu from "./Menu.svelte";
+  import type { MenuItem, MenuSelectDetail } from "./Menu.svelte";
+  import { MENU_HOST_CONTEXT, type MenuHostContext } from "./menu-cascade.js";
 
   type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "class" | "onselect"> & {
     items: OverflowMenuItem[];
@@ -48,7 +58,8 @@
     class?: string;
     triggerLabel?: string;
     dense?: boolean;
-    onselect?: (value: string) => void;
+    submenuSide?: OverflowMenuSubmenuSide;
+    onselect?: (value: string, detail?: MenuSelectDetail) => void;
   };
 
   let {
@@ -59,17 +70,21 @@
     class: className,
     triggerLabel = "More actions",
     dense = false,
+    submenuSide = "auto",
     onselect,
     ...rest
   }: OverflowMenuProps = $props();
 
+  const rootMenuId = `st-overflowmenu-${++overflowMenuInstanceCounter}`;
+
   let host: HTMLDivElement | undefined = $state();
-  let list: HTMLUListElement | undefined = $state();
+  let trigger: HTMLButtonElement | undefined = $state();
 
   // Cap viewport-aware (aligné sur MenuPopover) : sans ça, une longue liste
   // (~12+ items) déborde du viewport en mobile <768px sans scroll. On borne la
   // hauteur du panneau à l'espace réellement disponible sous (ou au-dessus, en
-  // placement `top`) le déclencheur, et `overflow-y:auto` (CSS) rend scrollable.
+  // placement `top`) le déclencheur ; le Menu interne scrolle via
+  // `--st-menu-maxHeight`.
   let maxHeight = $state(0);
   const VIEWPORT_GAP = 4;
   const VIEWPORT_MARGIN = 8;
@@ -97,31 +112,61 @@
     };
   });
 
-  function getFocusableItems(): HTMLButtonElement[] {
-    return Array.from(
-      list?.querySelectorAll<HTMLButtonElement>('[role="menuitem"]:not(:disabled)') ?? []
+  function treeHasCascade(list: OverflowMenuItem[]): boolean {
+    for (const item of list) {
+      if (
+        (item.kind === undefined || item.kind === "item") &&
+        Array.isArray((item as OverflowMenuActionItem).children) &&
+        ((item as OverflowMenuActionItem).children?.length ?? 0) > 0
+      ) {
+        return true;
+      }
+      const children = (item as OverflowMenuActionItem).children;
+      if (Array.isArray(children) && treeHasCascade(children)) return true;
+    }
+    return false;
+  }
+
+  function findByValue(list: OverflowMenuItem[], value: string): OverflowMenuActionItem | undefined {
+    for (const item of list) {
+      if (item.kind !== undefined && item.kind !== "item") continue;
+      const action = item as OverflowMenuActionItem;
+      if (action.value === value) return action;
+      if (Array.isArray(action.children)) {
+        const found = findByValue(action.children, value);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+
+  function requestClose(options: { focusTrigger: boolean }) {
+    open = false;
+    if (options.focusTrigger) {
+      trigger?.focus();
+    }
+  }
+
+  // The inner Menu reads `overflowClasses` instead of a public prop (AC-37,
+  // B1). Esc focus return is gated on `treeHasCascade(items)` below (§3.6).
+  const hostContext: MenuHostContext = {
+    rootMenuId,
+    requestClose,
+    overflowClasses: true
+  };
+  setContext(MENU_HOST_CONTEXT, hostContext);
+
+  function focusFirstMenuItem() {
+    const first = host?.querySelector<HTMLButtonElement>(
+      '[role="menuitem"]:not(:disabled)'
     );
-  }
-
-  function moveIndex(index: number, size: number, step: number) {
-    if (size <= 0) return 0;
-    return ((index + step) % size + size) % size;
-  }
-
-  function focusAt(index: number) {
-    const focusable = getFocusableItems();
-    if (!focusable.length) return;
-    const target = moveIndex(index, focusable.length, 0);
-    focusable.forEach((button, idx) => {
-      button.tabIndex = idx === target ? 0 : -1;
-    });
-    focusable[target]?.focus();
+    first?.focus();
   }
 
   function openAndFocus() {
     open = true;
     tick().then(() => {
-      focusAt(0);
+      focusFirstMenuItem();
     });
   }
 
@@ -147,67 +192,71 @@
     open = false;
   }
 
-  function selectItem(item: OverflowMenuActionItem) {
-    if (item.disabled) return;
-    item.onclick?.();
-    onselect?.(item.value);
+  function panelPositionStyle(): string {
+    // The inner Menu owns the surface; the host only pins the panel box.
+    const offset = "calc(100% + var(--st-spacing-1, 0.25rem))";
+    let position: string;
+    if (placement === "bottom-start") {
+      position = `position: absolute; left: 0; top: ${offset};`;
+    } else if (placement === "top-end") {
+      position = `position: absolute; right: 0; bottom: ${offset};`;
+    } else if (placement === "top-start") {
+      position = `position: absolute; left: 0; bottom: ${offset};`;
+    } else {
+      position = `position: absolute; right: 0; top: ${offset};`;
+    }
+    const cap = maxHeight ? ` --st-menu-maxHeight: ${maxHeight}px;` : "";
+    return `${position} z-index: var(--st-component-popover-zIndex, 80);${cap}`;
+  }
+
+  function handleMenuSelect(value: string, detail?: MenuSelectDetail) {
+    const cascade = treeHasCascade(items);
+    // Leaf `onclick` still precedes `select`; parent activation never reaches
+    // here (the Menu opens the sub-menu instead). The Menu passes its item
+    // reference through, so `detail.item` is this host's own object.
+    const source = detail?.item
+      ? (detail.item as unknown as OverflowMenuActionItem)
+      : findByValue(items, value);
+    source?.onclick?.();
+    if (cascade) {
+      onselect?.(value, detail);
+    } else {
+      // Flat menus keep the legacy single-argument call (AC-01).
+      onselect?.(value);
+    }
     close();
   }
 
-  function isAction(item: OverflowMenuItem): item is OverflowMenuActionItem {
-    return item.kind === undefined || item.kind === "item";
-  }
-
   function onWindowKeydown(event: KeyboardEvent) {
+    // A nested menu level already consumed this key (D4).
+    if (event.defaultPrevented) return;
     if (event.key === "Escape" && open) {
       event.preventDefault();
-      close();
+      // Keyboard closes return focus to the trigger for cascade menus only;
+      // flat menus keep their previous behaviour (§3.6, AC-01).
+      requestClose({ focusTrigger: treeHasCascade(items) });
     }
   }
 
-  function onWindowPointerDown(event: MouseEvent) {
+  function onWindowPointerDown(event: PointerEvent) {
+    if (event.defaultPrevented) return;
     if (!open) return;
+    const composed = event as PointerEvent & { composedPath?: () => EventTarget[] };
+    const path = typeof composed.composedPath === "function" ? composed.composedPath() : [];
     const target = event.target as Node | null;
-    if (host && target && !host.contains(target)) close();
+    const inside =
+      host !== undefined &&
+      (path.length > 0 ? path.includes(host) : Boolean(target && host.contains(target)));
+    if (!inside) close();
   }
 
   function onTriggerKeyDown(event: KeyboardEvent) {
     if (!["ArrowDown", "Enter", " "].includes(event.key)) return;
     event.preventDefault();
     if (open) {
-      focusAt(0);
+      focusFirstMenuItem();
     } else {
       openAndFocus();
-    }
-  }
-
-  function onItemKeyDown(event: KeyboardEvent, item: OverflowMenuActionItem) {
-    const focusable = getFocusableItems();
-    const current = focusable.indexOf(event.currentTarget as HTMLButtonElement);
-    if (event.key === "ArrowDown") {
-      event.preventDefault();
-      focusAt(current + 1);
-      return;
-    }
-    if (event.key === "ArrowUp") {
-      event.preventDefault();
-      focusAt(current - 1);
-      return;
-    }
-    if (event.key === "Home") {
-      event.preventDefault();
-      focusAt(0);
-      return;
-    }
-    if (event.key === "End") {
-      event.preventDefault();
-      focusAt(focusable.length - 1);
-      return;
-    }
-    if (item.disabled) return;
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      selectItem(item);
     }
   }
 </script>
@@ -217,9 +266,11 @@
 <div {...rest} bind:this={host} class={classes()}>
   <button
     type="button"
+    bind:this={trigger}
     class="st-overflowMenu__trigger"
     aria-haspopup="menu"
     aria-expanded={open ? "true" : "false"}
+    aria-controls={open ? rootMenuId : undefined}
     aria-label={triggerLabel}
     onclick={toggle}
     onkeydown={onTriggerKeyDown}
@@ -227,47 +278,15 @@
     <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
   </button>
   {#if open}
-    <ul
-      bind:this={list}
-      class="st-overflowMenu__list"
-      role="menu"
-      aria-label={label}
-      style={maxHeight ? `max-height: ${maxHeight}px` : undefined}
-    >
-      {#each items as item, index (index)}
-        {#if isAction(item)}
-          {@const Icon = item.icon}
-          <li role="none" class="st-overflowMenu__listItem">
-            <button
-              type="button"
-              class="st-overflowMenu__item"
-              class:st-overflowMenu__item--danger={item.danger}
-              role="menuitem"
-              aria-disabled={item.disabled ? "true" : undefined}
-              disabled={item.disabled}
-              tabindex={-1}
-              onclick={() => selectItem(item)}
-              onkeydown={(event) => onItemKeyDown(event, item)}
-            >
-              {#if Icon}
-                <span class="st-overflowMenu__itemIcon" aria-hidden="true">
-                  {#if typeof Icon === "string"}
-                    {Icon}
-                  {:else}
-                    <Icon size={16} strokeWidth={2} />
-                  {/if}
-                </span>
-              {/if}
-              <span class="st-overflowMenu__itemLabel">{item.label}</span>
-            </button>
-          </li>
-        {:else if item.kind === "divider"}
-          <li role="separator" aria-hidden="true" class="st-overflowMenu__divider"></li>
-        {:else}
-          <li role="presentation" class="st-overflowMenu__group">{item.label}</li>
-        {/if}
-      {/each}
-    </ul>
+    <Menu
+      items={items as unknown as MenuItem[]}
+      label={label}
+      submenuSide={submenuSide}
+      dense={dense}
+      id={rootMenuId}
+      style={panelPositionStyle()}
+      onselect={handleMenuSelect}
+    />
   {/if}
 </div>
 
@@ -308,7 +327,11 @@
     background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
   }
 
-  .st-overflowMenu__list {
+  /* Flat list/item visual (AC-37, D6): restored origin/main rules. Flat rows
+     render inside the child Menu (D5), so these selectors are global —
+     component scoping cannot reach child-rendered elements. Cascade panels
+     keep their `.st-menu*` styling, scoped to the cascade marker. */
+  :global(.st-overflowMenu__list) {
     background: var(--st-component-menu-background, var(--st-semantic-surface-raised));
     border: 1px solid var(--st-component-menu-border, var(--st-semantic-border-subtle));
     border-radius: var(--st-component-menu-radius, 0.375rem);
@@ -327,32 +350,32 @@
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
-  .st-overflowMenu--bottom-end .st-overflowMenu__list {
+  :global(.st-overflowMenu--bottom-end .st-overflowMenu__list) {
     right: 0;
     top: calc(100% + var(--st-spacing-1, 0.25rem));
   }
 
-  .st-overflowMenu--bottom-start .st-overflowMenu__list {
+  :global(.st-overflowMenu--bottom-start .st-overflowMenu__list) {
     left: 0;
     top: calc(100% + var(--st-spacing-1, 0.25rem));
   }
 
-  .st-overflowMenu--top-end .st-overflowMenu__list {
+  :global(.st-overflowMenu--top-end .st-overflowMenu__list) {
     bottom: calc(100% + var(--st-spacing-1, 0.25rem));
     right: 0;
   }
 
-  .st-overflowMenu--top-start .st-overflowMenu__list {
+  :global(.st-overflowMenu--top-start .st-overflowMenu__list) {
     bottom: calc(100% + var(--st-spacing-1, 0.25rem));
     left: 0;
   }
 
-  .st-overflowMenu__listItem {
+  :global(.st-overflowMenu__listItem) {
     margin: 0;
     padding: 0;
   }
 
-  .st-overflowMenu__item {
+  :global(.st-overflowMenu__item) {
     align-items: center;
     background: transparent;
     border: 0;
@@ -367,27 +390,56 @@
     width: 100%;
   }
 
-  .st-overflowMenu--dense .st-overflowMenu__item {
+  :global(.st-overflowMenu--dense .st-overflowMenu__item) {
     padding: 0.3rem 0.6rem;
   }
 
-  .st-overflowMenu__item:hover:not(:disabled),
-  .st-overflowMenu__item:focus-visible {
+  :global(.st-overflowMenu__item:hover:not(:disabled)) {
     background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
     outline: none;
   }
 
-  .st-overflowMenu__item:disabled {
+  :global(.st-overflowMenu__item:focus-visible) {
+    background: var(--st-component-control-hoverBackground, var(--st-semantic-surface-subtle));
+    outline: none;
+  }
+
+  :global(.st-overflowMenu__item:disabled) {
     color: var(--st-component-menu-disabledText, var(--st-semantic-text-muted));
     cursor: not-allowed;
   }
 
-  .st-overflowMenu__item--danger {
+  /* Selected flat row: existing selectableRow tokens, same no-color-mix
+     fallback strategy as Menu (M6). */
+  :global(.st-overflowMenu__item--selected) {
+    background: var(
+      --st-component-selectableRow-selectedBackground,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
+    );
+    color: var(
+      --st-component-selectableRow-selectedText,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 78%, black)
+    );
+  }
+
+  @supports not (color: color-mix(in oklch, red, blue)) {
+    :global(.st-overflowMenu__item--selected) {
+      background: var(
+        --st-component-selectableRow-selectedBackground,
+        var(--st-semantic-surface-subtle, #eef2ff)
+      );
+      color: var(
+        --st-component-selectableRow-selectedText,
+        var(--st-semantic-text-primary, #0f172a)
+      );
+    }
+  }
+
+  :global(.st-overflowMenu__item--danger) {
     color: var(--st-component-overflowMenu-dangerText, var(--st-semantic-feedback-error));
   }
 
-  .st-overflowMenu__item--danger:hover:not(:disabled),
-  .st-overflowMenu__item--danger:focus-visible {
+  :global(.st-overflowMenu__item--danger:hover:not(:disabled)) {
     background: var(
       --st-component-overflowMenu-dangerHoverBackground,
       var(--st-semantic-feedback-error)
@@ -395,28 +447,36 @@
     color: var(--st-component-overflowMenu-dangerHoverText, var(--st-semantic-action-primaryText));
   }
 
-  .st-overflowMenu__itemIcon {
+  :global(.st-overflowMenu__item--danger:focus-visible) {
+    background: var(
+      --st-component-overflowMenu-dangerHoverBackground,
+      var(--st-semantic-feedback-error)
+    );
+    color: var(--st-component-overflowMenu-dangerHoverText, var(--st-semantic-action-primaryText));
+  }
+
+  :global(.st-overflowMenu__itemIcon) {
     align-items: center;
     display: inline-flex;
     flex: 0 0 auto;
     justify-content: center;
   }
 
-  .st-overflowMenu__itemLabel {
+  :global(.st-overflowMenu__itemLabel) {
     flex: 1 1 auto;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .st-overflowMenu__divider {
+  :global(.st-overflowMenu__divider) {
     background: var(--st-component-menu-border, var(--st-semantic-border-subtle));
     height: 1px;
     list-style: none;
     margin: 0.25rem 0;
   }
 
-  .st-overflowMenu__group {
+  :global(.st-overflowMenu__group) {
     color: var(--st-component-menu-groupText, var(--st-semantic-text-muted));
     font-size: 0.72rem;
     font-weight: 650;

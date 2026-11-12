@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:b5aaaff4f6c7de5d09c52b00f2aae37af317f0b15991f3916acc15d3b58d4b82",
-  "entryDigest": "sha256:26a83448ec69f5097bf96fce007e666d261717c81338a7934fe8c1a4b9bfbac6",
+  "digest": "sha256:4efa8084ef55b2bc5326e01b4fd91a1562b1c0d3a73ee7bb922214e968bfb8c2",
+  "entryDigest": "sha256:5c0fbf0c4ed8178cd42e3de303d19a84daa4fb754571c7983dec98081dbb331c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -346,6 +346,12 @@
       "dropped": [
         {
           "kind": "function",
+          "name": "MenuActionItem.icon",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "Component<MenuIconProps, {}, string>"
+        },
+        {
+          "kind": "function",
           "name": "OverflowMenuActionItem.icon",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "Component<OverflowMenuIconProps, {}, string>"
@@ -361,7 +367,16 @@
         {
           "name": "onselect",
           "payload": {
-            "type": "string"
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/MenuSelectDetail"
+              }
+            ],
+            "type": "array"
           }
         }
       ],
@@ -377,9 +392,25 @@
       },
       "props": {
         "$defs": {
-          "OverflowMenuActionItem": {
+          "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -391,6 +422,100 @@
               },
               "label": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "label",
+              "value"
+            ],
+            "type": "object"
+          },
+          "MenuDividerItem": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "divider"
+              }
+            },
+            "required": [
+              "kind"
+            ],
+            "type": "object"
+          },
+          "MenuGroupItem": {
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "const": "group"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "label"
+            ],
+            "type": "object"
+          },
+          "MenuSelectDetail": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
+            ],
+            "type": "object"
+          },
+          "OverflowMenuActionItem": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/OverflowMenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/OverflowMenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/OverflowMenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "danger": {
+                "type": "boolean"
+              },
+              "disabled": {
+                "type": "boolean"
+              },
+              "kind": {
+                "const": "item"
+              },
+              "label": {
+                "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -469,6 +594,13 @@
               "top-end"
             ]
           },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
+          },
           "triggerLabel": {
             "type": "string"
           }
@@ -481,11 +613,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f8a9f29b23133df20334f706afe0132418143701e0f367ffb6e8d5b73f73008c",
+        "declarationDigest": "sha256:c9c50332ecad302da0f77da4853ef3183c4100b4e0d8663de82b85a787498b13",
         "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverflowMenuProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "partial",
       "unresolved": [],
