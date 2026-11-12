@@ -5,6 +5,7 @@ import inlineFixture from "./fixtures/dossier-diagram.json";
 import inputsFixture from "./fixtures/dossier-inputs.json";
 import ganttContract from "../../component-index/generated/contracts/gantt-chart.json";
 import { renderDossier } from "../src/element/dom/engines/focus-renderer.js";
+import { renderGantt } from "../src/element/dom/engines/gantt.js";
 import { normalizeDiagram, validateGanttProps } from "../src/element/dom/diagram-components.js";
 import { createElementRuntime } from "../src/element/dom/element-runtime.svelte.js";
 import { renderDossierAction } from "../src/element/dom/render-action.js";
@@ -239,6 +240,39 @@ describe("diagram-by-reference lifecycle and fallback (B2–B6, B9, B11–B15)",
     expect(node.querySelectorAll("[data-st-completion-criterion]")).toHaveLength(2);
     expect(node.querySelector("[data-st-inputs] code")?.textContent).toBe("local-notes");
     expect(DOSSIER_CSS).toContain("@media print");
+  });
+});
+
+describe("Gantt marker domain", () => {
+  it.each([
+    ["above the task", 0, 4, 8, 1],
+    ["below the task", 0, 4, -4, 0],
+    ["at the positive finite extreme", 0, 1, Number.MAX_VALUE, 1],
+    ["at the negative finite extreme", 0, 1, -Number.MAX_VALUE, 0],
+    ["between opposite finite task extremes", -Number.MAX_VALUE, Number.MAX_VALUE, 0, 0.5],
+    ["opposite a positive extreme task", Number.MAX_VALUE / 2, Number.MAX_VALUE, -Number.MAX_VALUE, 0],
+    ["with no tasks", undefined, undefined, Number.MAX_VALUE, 1],
+  ] as const)("should keep a marker %s visible with finite coordinates", (_name, start, end, marker, fraction) => {
+    for (const width of [640, Number.MAX_VALUE]) {
+      const props = { data: start === undefined ? [] : [{ task: "Prototype", start, end }], label: "Roadmap", marker, width };
+      expect(validateGanttProps(props)).toBe(true);
+      const node = document.createElement("div");
+      renderGantt(node, props, "Prototype roadmap");
+      const line = node.querySelector("svg line")!;
+      const coordinate = Number(line.getAttribute("x1"));
+      expect(Number.isFinite(coordinate)).toBe(true);
+      expect(coordinate / width).toBeCloseTo(fraction);
+      expect(line.getAttribute("x2")).toBe(line.getAttribute("x1"));
+      for (const shape of node.querySelectorAll("svg rect, svg line")) {
+        for (const name of ["x", "x1", "x2", "width"]) {
+          if (!shape.hasAttribute(name)) continue;
+          const value = Number(shape.getAttribute(name));
+          expect(Number.isFinite(value)).toBe(true);
+          expect(value).toBeGreaterThanOrEqual(0);
+          expect(value).toBeLessThanOrEqual(width);
+        }
+      }
+    }
   });
 });
 

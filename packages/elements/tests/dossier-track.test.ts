@@ -34,8 +34,12 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import { renderHtml } from "@sentropic/focus";
-import { validateDecisionDossierDocument as realFocusValidate } from "@sentropic/focus/validate";
-import { renderMarkdown } from "../src/element/markdown/minimal-markdown.js";
+import {
+  DecisionDossierValidationError,
+  validateDecisionDossierDocument as realFocusValidate,
+  validateDecisionDossierForPresentation,
+} from "@sentropic/focus/validate";
+import legacyPresentation from "./fixtures/dossier-track-presentation.json";
 import { renderDossier } from "../src/element/dom/engines/focus-renderer.js";
 import { dispatchIntent, type IntentDetail } from "../src/element/dom/intents.js";
 import {
@@ -125,6 +129,16 @@ describe("Task 7 pilot document: DecisionDossierDocument validation (pinned focu
   it("passes validateDecisionDossierDocument with no issues", () => {
     const result = realFocusValidate(trackDoc());
     expect(result.ok).toBe(true);
+  });
+
+  it("retains the legacy presentation oracle when the owner's strict readability gate refuses the pilot", () => {
+    expect(legacyPresentation.focusVersion).toBe("0.5.0");
+    expect(legacyPresentation.fixtureSha256).toBe(PROVENANCE.sha256);
+    expect(validateDecisionDossierForPresentation(trackDoc(), { profile: "legacy" }).ok).toBe(true);
+    expect(validateDecisionDossierForPresentation(trackDoc()).ok).toBe(false);
+    expect(() => renderHtml(trackDoc() as never, {
+      renderMarkdown: (text) => text, sanitizeHtml: (html) => html,
+    })).toThrow(DecisionDossierValidationError);
   });
 
   it("passes the element envelope validation with no error diagnostic", () => {
@@ -305,11 +319,10 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
   });
 
   it("groups each optionSet under its question, matching the owner section order (criterion 2 parity)", () => {
-    // L6c parity: the owner `renderHtml` runs `preparePresentation`, which
-    // pairs each question with its linked optionSets (`questionId`); the DS
-    // renderer applies the same grouping. The published Track projection
-    // emits prose, 24 questions, 24 optionSets, outcome — grouped on both
-    // sides after the fix.
+    // Frozen output of the published Focus 0.5.0 renderer: Focus 0.6.0's
+    // stricter presentation gate refuses this unchanged legacy fixture.
+    // The grouping, labels and recommendation oracle remain independent
+    // of the DS implementation rather than dropping the parity assertions.
     const document_ = trackDoc();
     const sections = document_.sections as Record<string, unknown>[];
     expect(sections.map((s) => String(s.kind))).toEqual([
@@ -318,33 +331,7 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
       ...Array.from({ length: 24 }, () => "optionSet"),
       "outcome",
     ]);
-    const ownerHtml = renderHtml(document_ as never, {
-      renderMarkdown: (markdown: string) => renderMarkdown(markdown),
-      sanitizeHtml: (html: string) => html,
-    });
-    const ownerContainer = document.createElement("div");
-    ownerContainer.innerHTML = ownerHtml;
-    const article = ownerContainer.querySelector("article");
-    expect(article).not.toBeNull();
-    const ownerKinds = Array.from(article!.querySelectorAll(":scope > section, :scope > header, :scope > figure"))
-      .map((el) => el.className)
-      .filter(
-        (cls) =>
-          !cls.includes("focus-header") &&
-          !cls.includes("focus-readability") &&
-          !cls.includes("focus-affordances"),
-      )
-      .map((cls) =>
-        cls.includes("focus-question")
-          ? "question"
-          : cls.includes("focus-optionset")
-            ? "optionSet"
-            : cls.includes("focus-outcome")
-              ? "outcome"
-              : cls.includes("focus-amendment-trace")
-                ? "amendmentTrace"
-                : "prose",
-      );
+    const ownerKinds = legacyPresentation.kinds;
     const sets = sections.filter((s) => s.kind === "optionSet");
     const questions = sections.filter((s) => s.kind === "question");
     // Every set is linked to its question: neither side drops anything.
@@ -388,14 +375,12 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
         expectedIds,
       );
       // Content agrees on both sides.
-      const ownerLabels = Array.from(article!.querySelectorAll(".focus-option strong")).map((el: Element) =>
-        norm(el.textContent),
-      );
+      const ownerLabels = legacyPresentation.optionLabels;
       expect(ownerLabels).toEqual(
         sets.flatMap((s) => (s.options as Record<string, unknown>[]).map((o) => norm(o.label as string))),
       );
       const outcome = sections.find((s) => s.kind === "outcome") as Record<string, unknown>;
-      expect(norm(article!.querySelector(".focus-outcome p")?.textContent)).toBe(norm(outcome.statement as string));
+      expect(legacyPresentation.outcome).toBe(norm(outcome.statement as string));
       expect(norm(target.querySelector(".st-dossier__outcomeText")?.textContent)).toBe(norm(outcome.statement as string));
     } finally {
       cleanup(stop, target);
@@ -406,15 +391,7 @@ describe("Task 7 pilot render: F-R0–F-R7 hold on the real 24-question dossier"
     // Owner rule (`preparePresentation`): the recommended option label is
     // prefixed with an em dash unless the answer already starts with it.
     const document_ = trackDoc();
-    const ownerHtml = renderHtml(document_ as never, {
-      renderMarkdown: (markdown: string) => renderMarkdown(markdown),
-      sanitizeHtml: (html: string) => html,
-    });
-    const ownerContainer = document.createElement("div");
-    ownerContainer.innerHTML = ownerHtml;
-    const ownerPrecos = Array.from(ownerContainer.querySelectorAll(".focus-preco")).map((el) =>
-      norm(el.textContent).replace(/^préco:\s*/, ""),
-    );
+    const ownerPrecos = legacyPresentation.recommendations;
     expect(ownerPrecos.length).toBe(24);
     const { target, stop } = renderTrack();
     try {

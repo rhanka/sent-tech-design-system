@@ -129,6 +129,11 @@ no `source`, `syntax` or `scene`. Prose and question sections can also carry
 `inputs: [{ ref, kind, label? }]` and `completionCriterion`; these display as
 text. See [acceptance and integration status](docs/diagram-reference-acceptance.md).
 
+This checkout installs Focus 0.6.0 from the owner build archive pinned in
+the root lockfile; [archive provenance](vendor/README.md) records its source
+and digests. Focus 0.6.0 must be published on npm before Elements 0.3.0 is
+published, so consumers can resolve the exact dependency in its manifest.
+
 ```js
 // Adapt a host export without a DS dependency on its storage client.
 const exportsByRef = new Map([
@@ -218,7 +223,7 @@ pinned — never a range, never `latest` (the version segment is bumped with
 each release):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
 ```
 
 Load the entry with its integrity hash (the sha384 from
@@ -226,7 +231,7 @@ Load the entry with its integrity hash (the sha384 from
 
 ```html
 <script type="module"
-  src="https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/elements.js"
+  src="https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/elements.js"
   integrity="sha384-<hash from dist/browser/sri.json>"
   crossorigin="anonymous"></script>
 ```

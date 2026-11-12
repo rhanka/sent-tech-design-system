@@ -18,10 +18,12 @@ export function renderGantt(node: HTMLElement, props: Record<string, unknown>, a
   label.textContent = props.label as string;
   svg.append(label);
   // Normalize before subtracting so even opposite finite extremes stay finite.
-  const magnitude = Math.max(1, ...tasks.flatMap((task) => [Math.abs(task.start), Math.abs(task.end)]),
-    typeof props.marker === "number" ? Math.abs(props.marker) : 0);
-  const min = Math.min(0, ...tasks.flatMap((task) => [task.start / magnitude, task.end / magnitude]));
-  const max = Math.max(1 / magnitude, ...tasks.flatMap((task) => [task.start / magnitude, task.end / magnitude]));
+  const values = [...tasks.flatMap((task) => [task.start, task.end]),
+    ...(typeof props.marker === "number" ? [props.marker] : [])];
+  const magnitude = Math.max(1, ...values.map(Math.abs));
+  const normalized = values.map((value) => value / magnitude);
+  const min = Math.min(0, ...normalized);
+  const max = Math.max(1 / magnitude, ...normalized);
   const x = (value: number) => ((value / magnitude - min) / (max - min || 1)) * width;
   const list = document.createElement("ul");
   list.className = "st-dossier__diagramData";
