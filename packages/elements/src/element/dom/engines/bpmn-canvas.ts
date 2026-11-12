@@ -42,7 +42,9 @@ export async function renderBpmn(
   node: HTMLElement,
   payload: Extract<ElementPayload, { kind: "bpmn" }>,
   noteDiagnostic: (diagnostic: Diagnostic) => void,
+  signal?: AbortSignal,
 ): Promise<() => void> {
+  if (signal?.aborted) return () => {};
   const controller = new AbortController();
   const handle = createBpmnCanvas(node, {
     xml: payload.xml,
@@ -53,11 +55,24 @@ export async function renderBpmn(
     ...(payload.watermark !== undefined ? { watermark: payload.watermark } : {}),
     onDiagnostic: (found) => noteDiagnostic(asDiagnostic(found)),
   });
-  await handle.ready;
-  // Warnings that predate the callback (import-time) still surface once.
-  for (const found of handle.getDiagnostics()) noteDiagnostic(asDiagnostic(found));
-  return () => {
+  let stopped = false;
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    signal?.removeEventListener("abort", stop);
     controller.abort();
     handle.destroy();
   };
+  signal?.addEventListener("abort", stop, { once: true });
+  if (signal?.aborted) stop();
+  try {
+    await handle.ready;
+  } catch (error) {
+    stop();
+    throw error;
+  }
+  if (signal?.aborted) return stop;
+  // Warnings that predate the callback (import-time) still surface once.
+  for (const found of handle.getDiagnostics()) noteDiagnostic(asDiagnostic(found));
+  return stop;
 }

@@ -16,3 +16,4 @@ export {
 } from "./contracts/index.js";
 export type { ContractModule } from "./contracts/index.js";
 export * from "./validate/index.js";
+export type { DiagramResolutionContext, ResolvedDiagram, DiagramEnvelopeRoot, DiagramResolver } from "./types/diagram.js";

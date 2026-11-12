@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@sentropic/bpmn-canvas": "0.3.0",
-    "@sentropic/focus": "0.5.0",
+    "@sentropic/focus": "0.6.0-rc.1",
     "ajv": "8.20.0",
     "dompurify": "3.4.17",
     "svelte": "5.55.7"

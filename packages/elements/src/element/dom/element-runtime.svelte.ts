@@ -19,6 +19,7 @@ import type { Diagnostic } from "../../validate/index.js";
 import { engineLoadFailed } from "../../validate/diagnostics.js";
 import { normalizeEnvelopeInput } from "../../validate/envelope.js";
 import { getValidator, registerPort, type EngineChunkName } from "./validator.js";
+import type { DiagramResolver } from "../../types/diagram.js";
 
 /** The wrapper states a host can observe. */
 export type ElementState = "idle" | "rendering" | "rendered" | "refused";
@@ -36,6 +37,8 @@ export type ElementPayload =
 
 /** The hostConfig shape the elements read (§6.5). */
 export interface HostConfig {
+  /** JS object channel only; never part of the JSON envelope or island. */
+  readonly diagramResolver?: DiagramResolver;
   readonly theme?: unknown;
   readonly colorScheme?: unknown;
   readonly locale?: unknown;

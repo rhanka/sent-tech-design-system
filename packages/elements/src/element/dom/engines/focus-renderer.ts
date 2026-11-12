@@ -22,6 +22,20 @@ import { renderMarkdown } from "../../markdown/minimal-markdown.js";
 import { createFocusPort } from "../../../ports/focus.js";
 import type { SemanticPort } from "../../../ports/types.js";
 import { adoptDossierSheet, FOLD_THRESHOLD_CHARS } from "./dossier-styles.js";
+import { diagramFigure, type DiagramFigure } from "../diagram-reference.js";
+import type { DiagramResolver } from "../../../types/diagram.js";
+import type { Diagnostic } from "../../../validate/diagnostics.js";
+
+export interface DossierRenderOptions {
+  readonly diagramResolver?: DiagramResolver | undefined;
+  readonly onDiagramDiagnostic?: ((diagnostic: Diagnostic) => void) | undefined;
+}
+
+export type DossierRenderHandle = (() => void) & {
+  setDiagramResolver(resolver: DiagramResolver | undefined): void;
+};
+
+const activeRenders = new WeakMap<HTMLElement, () => void>();
 
 /** The §4.3 semantic port: the pinned focus validator is the authority. */
 export const port: SemanticPort = createFocusPort(validateDecisionDossierDocument);
@@ -105,6 +119,26 @@ function text(tag: string, className: string, text: string): HTMLElement {
   node.className = className;
   node.textContent = text;
   return node;
+}
+
+function sectionDetails(wrap: HTMLElement, section: Record<string, unknown>): void {
+  if (Array.isArray(section.inputs)) {
+    const inputs = document.createElement("ul");
+    inputs.setAttribute("data-st-inputs", "");
+    for (const input of section.inputs as Record<string, unknown>[]) {
+      const item = document.createElement("li");
+      item.append(text("span", "st-dossier__inputLabel", field(input.label) ?? field(input.ref) ?? ""),
+        document.createTextNode(" "), text("code", "st-dossier__inputRef", field(input.ref) ?? ""));
+      inputs.append(item);
+    }
+    wrap.append(inputs);
+  }
+  const criterion = field(section.completionCriterion);
+  if (criterion !== undefined) {
+    const block = text("p", "st-dossier__completionCriterion", `Completion criterion: ${criterion}`);
+    block.setAttribute("data-st-completion-criterion", "");
+    wrap.append(block);
+  }
 }
 
 /** True when the interactions disable choosing this option (L2 gate). */
@@ -303,7 +337,9 @@ function sectionNode(
 ): HTMLElement {
   const kind = field(section.kind) ?? "";
   if (kind === "prose") {
-    return markdownBlock(field(section.markdown) ?? "");
+    const block = markdownBlock(field(section.markdown) ?? "");
+    sectionDetails(block, section);
+    return block;
   }
   if (kind === "question") {
     const wrap = document.createElement("div");
@@ -328,6 +364,7 @@ function sectionNode(
     if (recommendedAnswer !== undefined) {
       wrap.append(text("p", "st-dossier__questionReco", displayRecommendedAnswer(section, face.sections) ?? recommendedAnswer));
     }
+    sectionDetails(wrap, section);
     return wrap;
   }
   if (kind === "optionSet") {
@@ -409,7 +446,10 @@ export function renderDossier(
   node: HTMLElement,
   document_: unknown,
   dispatch: DossierDispatch,
-): () => void {
+  options: DossierRenderOptions = {},
+): DossierRenderHandle {
+  activeRenders.get(node)?.();
+  const diagrams: DiagramFigure[] = [];
   const doc = (document_ ?? {}) as Record<string, unknown>;
   const sections = Array.isArray(doc.sections) ? doc.sections : [];
   const interactions = Array.isArray(doc.interactions) ? doc.interactions : [];
@@ -444,9 +484,18 @@ export function renderDossier(
   }
   const setWraps: HTMLElement[] = [];
   const emittedSets = new Set<Record<string, unknown>>();
-  for (const section of sections) {
+  for (const [sectionIndex, section] of sections.entries()) {
     if (typeof section !== "object" || section === null) continue;
     const record = section as Record<string, unknown>;
+    if (record.kind === "diagram" && typeof record.sourceRef === "string") {
+      const diagram = diagramFigure(record.sourceRef, {
+        diagramId: field(record.id) ?? "", targetRef: field(record.targetRef) ?? "",
+        documentRef: field(doc.ref) ?? "", renderComponent: field(record.renderComponent) ?? "", alt: field(record.alt) ?? "",
+      }, sectionIndex, options.onDiagramDiagnostic);
+      diagrams.push(diagram);
+      article.append(diagram.element);
+      continue;
+    }
     if (record.kind === "optionSet") {
       // Deferred when linked to a question; an orphan renders at its position.
       const linkId = field(record.questionId);
@@ -568,10 +617,24 @@ export function renderDossier(
   node.addEventListener("click", onFold);
   node.replaceChildren(article);
 
-  return () => {
+  let destroyed = false;
+  const destroy = () => {
+    if (destroyed) return;
+    destroyed = true;
+    for (const diagram of diagrams) diagram.destroy();
     node.removeEventListener("click", onClick);
     node.removeEventListener("keydown", onKeyDown);
     node.removeEventListener("click", onFold);
-    node.replaceChildren();
+    if (activeRenders.get(node) === destroy) {
+      activeRenders.delete(node);
+      node.replaceChildren();
+    }
   };
+  activeRenders.set(node, destroy);
+  for (const diagram of diagrams) diagram.resolve(options.diagramResolver);
+  return Object.assign(destroy, {
+    setDiagramResolver(resolver: DiagramResolver | undefined) {
+      for (const diagram of diagrams) diagram.resolve(resolver);
+    },
+  });
 }
