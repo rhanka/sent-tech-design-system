@@ -1,3 +1,7 @@
+import { relationBaseType } from "@sentropic/diagram-core";
+import { validateFlows } from "@sentropic/diagram-core";
+import { relationVerdict } from "../visibility.js";
+import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -254,6 +258,20 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  const first = layoutMeasuredPass(document, options, sourceView, new Set());
+  if (first.status !== "laid-out" || first.flowTargets === undefined) return first;
+  const forced = new Set<string>();
+  const failed = new Set(first.warnings.filter((w) => w.code === "route-obstructed" || w.code === "badge-unplaced").flatMap((w) => w.refs));
+  const plan = planFlows(document, first.view, options.registry, options, new Set());
+  for (const [key, members] of plan.groups) {
+    if (members.length >= 2 && !first.flowBundles?.some((b) => b.id === key) && members.some((m) => failed.has(m.occurrence))) forced.add(key);
+  }
+  if (forced.size === 0) return first;
+  const repaired = layoutMeasuredPass(document, options, sourceView, forced);
+  return repaired.status === "laid-out" ? { ...repaired, flowRepairPasses: 1 } : repaired;
+}
+
+function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, sourceView: ViewDocument | undefined, forced: ReadonlySet<string>): LayoutResult {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
     return {
       status: "refused",
@@ -267,6 +285,7 @@ export function layoutMeasured(
       diagnostics: [],
     };
   }
+  if (sourceView !== undefined && Object.values(sourceView.entityOccurrences).some((occurrence) => document.entities[occurrence.entity]?.type === "flow-scenario")) return { status: "refused", refusals: [{ code: "document-invalid", path: "sourceView.entityOccurrences", message: "flow scenarios have no view occurrence" }], diagnostics: [] };
   const presentation = options.presentation;
   if (presentation === undefined) {
     return {
@@ -291,7 +310,7 @@ export function layoutMeasured(
   const measure = options.measureLines;
   const validationOptions =
     options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
-  const diagnostics = validateDocument(document, validationOptions);
+  const diagnostics = [...validateDocument(document, validationOptions), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",
@@ -446,6 +465,15 @@ export function layoutMeasured(
       projected = retained;
     }
   }
+  const flowOccurrences = new Set<string>();
+  for (const occurrence of Object.values(projected.relationOccurrences)) {
+    if (document.relations[occurrence.relation]?.type !== "flow-step") continue;
+    if (flowOccurrences.has(occurrence.relation)) return { status: "refused", refusals: [{ code: "document-invalid", path: "sourceView.relationOccurrences", message: "one flow step must have at most one occurrence per view" }], diagnostics: [] };
+    flowOccurrences.add(occurrence.relation);
+  }
+  const flowPlan = planFlows(document, projected, options.registry, options, forced);
+  const hasFlows = flowOccurrences.size > 0;
+  const flowTokens = { ...DEFAULT_FLOW_TOKENS, ...options.flowTokens };
   const entityToOccurrences = new Map<EntityRef, OccurrenceRef[]>();
   for (const occurrence of Object.values(projected.entityOccurrences)) {
     const list = entityToOccurrences.get(occurrence.entity) ?? [];
@@ -661,34 +689,51 @@ export function layoutMeasured(
   for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) =>
     byString(left.id, right.id),
   )) {
-    if (document.relations[occurrence.relation]?.type !== "link") continue;
+    const semantic = document.relations[occurrence.relation];
+    const owner = semantic === undefined ? undefined : options.registry.get(semantic.profile);
+    if (semantic === undefined || owner === undefined || relationBaseType(document, owner, semantic) !== "link" || !relationVerdict(projected, semantic, document).visible) continue;
     const sourceEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "source");
     const targetEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "target");
     if (sourceEnd === undefined || targetEnd === undefined) continue;
     const source = resolveDrawnEnd(sourceEnd.occurrence);
     const target = resolveDrawnEnd(targetEnd.occurrence);
     if (source === undefined || target === undefined) continue;
+    if (flowPlan.suppressed.has(occurrence.id)) continue;
     drawnEdges.push({ occurrence: occurrence.id, relation: occurrence.relation, source, target });
   }
+  const portClaims = new Map<string, number>();
+  if (hasFlows) for (const edge of drawnEdges) for (const end of projected.relationOccurrences[edge.occurrence]!.endpoints) {
+    if (projected.portOccurrences[end.occurrence] !== undefined) portClaims.set(end.occurrence, (portClaims.get(end.occurrence) ?? 0) + 1);
+  }
+  const slotOf = (edge: DrawnEdge, role: string): string | undefined => {
+    const occurrence = projected.relationOccurrences[edge.occurrence]!.endpoints.find((end) => end.role === role)?.occurrence;
+    return occurrence !== undefined && (portClaims.get(occurrence) ?? 0) > 1 ? occurrence : undefined;
+  };
+  const flowRunRanks = new Map([...flowPlan.ranks].filter(([id]) => {
+    const edge = drawnEdges.find((candidate) => candidate.occurrence === id);
+    return edge !== undefined && slotOf(edge,"source") === undefined && slotOf(edge,"target") === undefined;
+  }));
   const filteredGraph: LayoutGraph = {
     nodes: new Map([...graph.nodes].filter(([id]) => visible(id))),
     roots: graph.roots.filter(visible),
     edges: drawnEdges.map((edge) => ({
+      ...(flowRunRanks.has(edge.occurrence) ? { flowRank: flowRunRanks.get(edge.occurrence)! } : {}),
       id: edge.occurrence as unknown as RelationRef,
       source:
         edge.source.port === undefined
           ? { entity: edge.source.entity }
-          : { entity: edge.source.entity, port: edge.source.port },
+          : { entity: edge.source.entity, port: edge.source.port, ...(slotOf(edge,"source") === undefined ? {} : { slot: slotOf(edge,"source")! }) },
       target:
         edge.target.port === undefined
           ? { entity: edge.target.entity }
-          : { entity: edge.target.entity, port: edge.target.port },
+          : { entity: edge.target.entity, port: edge.target.port, ...(slotOf(edge,"target") === undefined ? {} : { slot: slotOf(edge,"target")! }) },
     })),
   };
   // Edge labels, measured once: keyed by the projected relation occurrence id.
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
   for (const edge of drawnEdges) {
+    if (flowPlan.bundles.some((bundle) => bundle.carrier === edge.occurrence)) continue;
     const label = edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const layout = measure({
@@ -701,6 +746,15 @@ export function layoutMeasured(
     const occurrenceId = edge.occurrence as unknown as RelationRef;
     edgeLayouts.set(occurrenceId, layout);
     labelSizes.set(occurrenceId, { width: layout.width, height: layout.height });
+  }
+  const routeSizes = new Map(labelSizes);
+  for (const member of flowPlan.members) {
+    if (flowPlan.suppressed.has(member.occurrence)) continue;
+    const bundle = flowPlan.bundles.find((b) => b.carrier === member.occurrence);
+    const text = bundle === undefined ? member.step.badge : (options.flows?.countTemplate ?? "{n}").replaceAll("{n}",String(bundle.members.length));
+    const badge = measure({ text, role: "flow-badge", availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false });
+    const old = routeSizes.get(member.occurrence as unknown as RelationRef);
+    routeSizes.set(member.occurrence as unknown as RelationRef, { width: Math.max(old?.width ?? 0, flowTokens.flowBadgeSize, badge.width + 2 * flowTokens.flowBadgePaddingX), height: Math.max(old?.height ?? 0, flowTokens.flowBadgeSize) });
   }
   // A route may cross the boundaries of its own occurrence-group ancestors
   // (L-R8): the chain is read from the projected view, never from the
@@ -1178,7 +1232,7 @@ export function layoutMeasured(
     const usedUTracks = new Map<string, number>();
     for (const edge of [...drawnEdges].sort((left, right) => byString(left.occurrence, right.occurrence))) {
       const id = edge.occurrence as unknown as RelationRef;
-      const size = labelSizes.get(id);
+      const size = routeSizes.get(id);
       const source = edge.source.entity;
       const target = edge.target.entity;
       if (size === undefined || source === target) continue;
@@ -1310,6 +1364,7 @@ export function layoutMeasured(
     // declared spacing: a label sits in a lane, not at its dock, so a side
     // does not spread its slots by the label width.
     const docked = dockEdges({
+      ...(hasFlows ? { flowBadgeSize: flowTokens.flowBadgeSize } : {}),
       graph: filteredGraph,
       rects,
       direction: "top-to-bottom",
@@ -1363,6 +1418,7 @@ export function layoutMeasured(
       ]);
       const within = withinOf.get(occurrenceId);
       return {
+        ...(flowRunRanks.has(edge.occurrence) ? { flowRank: flowRunRanks.get(edge.occurrence)!, flowRun: [edge.source.entity, edge.target.entity].sort().join("|") + "|" + String(sideOverrides.get(occurrenceId)?.turn === true) } : {}),
         id: occurrenceId,
         pairKey: [edge.source.entity, edge.target.entity].sort().join("|"),
         start: pair.source.point,
@@ -1385,9 +1441,10 @@ export function layoutMeasured(
     const outerLanes: number[] = [];
     const outerLanesX: number[] = [];
     let labelLimit: Rect | undefined;
-    if (labelSizes.size > 0 && rects.size > 0) {
-      const pitch = Math.max(...[...labelSizes.values()].map((size) => size.height)) + 2 * metrics.labelMargin;
-      const pitchX = Math.max(...[...labelSizes.values()].map((size) => size.width)) + 2 * metrics.labelMargin;
+    const markSizes = [...routeSizes.values()];
+    if (markSizes.length > 0 && rects.size > 0) {
+      const pitch = Math.max(...markSizes.map((size) => size.height)) + 2 * metrics.labelMargin;
+      const pitchX = Math.max(...markSizes.map((size) => size.width)) + 2 * metrics.labelMargin;
       const left = Math.min(...[...rects.values()].map((rect) => rect.x));
       const right = Math.max(...[...rects.values()].map((rect) => rect.x + rect.width));
       const width = right - left;
@@ -1401,7 +1458,7 @@ export function layoutMeasured(
         width: width + 2 * (spareX + metrics.clearance + pitchX),
         height: height + 2 * (spareY + allowance),
       };
-      const lanes = Math.min(labelSizes.size, OUTER_LANES, 1 + Math.floor(spareY / pitch));
+      const lanes = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareY / pitch));
       for (let lane = 1; lane <= lanes; lane += 1) {
         outerLanes.push(drawingTop - metrics.clearance - lane * pitch, drawingBottom + metrics.clearance + lane * pitch);
       }
@@ -1409,7 +1466,7 @@ export function layoutMeasured(
       // the A* grid had no X lane outside the drawing, so a route that must go
       // round via the side fell back to an obstructed elbow. One X lane per
       // side mirrors the Y lanes above.
-      const lanesX = Math.min(labelSizes.size, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
+      const lanesX = Math.min(markSizes.length, OUTER_LANES, 1 + Math.floor(spareX / pitchX));
       for (let lane = 1; lane <= lanesX; lane += 1) {
         outerLanesX.push(left - metrics.clearance - lane * pitchX, right + metrics.clearance + lane * pitchX);
       }
@@ -1479,12 +1536,25 @@ export function layoutMeasured(
           ...(labelLimit === undefined ? {} : { limit: labelLimit }),
         };
       });
+    const frameWalls = zoneShapes.flatMap(([,rect]) => [
+      { x: rect.x, y: rect.y, width: rect.width, height: metrics.labelMargin },
+      { x: rect.x, y: rect.y + rect.height - metrics.labelMargin, width: rect.width, height: metrics.labelMargin },
+      { x: rect.x, y: rect.y, width: metrics.labelMargin, height: rect.height },
+      { x: rect.x + rect.width - metrics.labelMargin, y: rect.y, width: metrics.labelMargin, height: rect.height },
+    ]);
+    const marks = placeFlowMarks({ plan: flowPlan, routes: retryRoutes, shapes: [...fixedShapes,...frameWalls], within: withinOf, ...(labelLimit === undefined ? {} : { limit: labelLimit }), measure, options, margin: metrics.labelMargin });
+    warnings.push(...marks.warnings);
     const labelBoxes = new Map<RelationRef, Rect>();
-    const taken: Rect[] = [];
+    const taken: Rect[] = [...marks.taken];
     const unplaced: typeof entries = [];
     for (const entry of entries) {
       const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
       let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
+      if (flowPlan.ranks.has(entry.id)) {
+        if (choice === undefined) unplaced.push(entry);
+        else { labelBoxes.set(entry.id, choice.box); taken.push(choice.box); }
+        continue;
+      }
       const probeMargin = probeMarginOf(entry.size.height);
       // Prefer the existing bridge in a capped, label-bearing gutter to an
       // exterior detour. Pass 2 will supply its measured transverse margin.
@@ -1694,7 +1764,7 @@ export function layoutMeasured(
       foldMetadata,
       drawnEdges,
     );
-    const bounds = unionOf(rects, retryRoutes, labelBoxes);
+    const bounds = unionOf(rects, retryRoutes, new Map([...labelBoxes, ...Object.entries(marks.badges).map(([id,box]) => [id as RelationRef,box] as const), ...Object.entries(marks.arrows).flatMap(([id,arrows]) => arrows.map((arrow,i) => [(id + String(i)) as RelationRef,arrow.box] as const))]));
     const width = bounds.width;
     const zoom = bounds.empty ? 1 : Math.min(1, Math.max(MIN_ZOOM, options.targetWidth / width));
     const camera = bounds.empty ? { x: 0, y: 0 } : { x: bounds.xmin, y: bounds.ymin };
@@ -1716,6 +1786,7 @@ export function layoutMeasured(
     };
     const result: LayoutResult = {
       status: "laid-out",
+      ...(hasFlows ? { badgeBoxes: marks.badges, arrowBoxes: marks.arrows, flowBundles: flowPlan.bundles, flowTargets: marks.targets, flowRepairPasses: 0 as const } : {}),
       view,
       fit: {
         direction: "top-to-bottom",
@@ -1858,7 +1929,8 @@ function buildMeasuredView(
         .map((point) => ({ x: clean(point.x), y: clean(point.y) }));
       relationOccurrences[occurrence.id] = { ...occurrence, waypoints };
     } else {
-      relationOccurrences[occurrence.id] = { ...occurrence };
+      const { waypoints: _oldRoute, ...retained } = occurrence;
+      relationOccurrences[occurrence.id] = document.relations[occurrence.relation]?.type === "flow-step" ? retained : { ...occurrence };
     }
   }
   // Ports keep their projected identities: every drawn end landing on a
@@ -1944,6 +2016,7 @@ function readMeasuredGraph(
   const kinds = new Map<EntityRef, LayoutNode["kind"]>();
   for (const key of Object.keys(document.entities).sort(byString)) {
     const entity = document.entities[key]!;
+    if (entity.type === "flow-scenario") continue;
     const profile = registry.get(entity.profile as never);
     if (profile === undefined) {
       refusals.push({
@@ -1992,11 +2065,13 @@ function readMeasuredGraph(
   const edges: LayoutEdge[] = [];
   for (const key of Object.keys(document.relations).sort(byString)) {
     const relation = document.relations[key]!;
+    const owner = registry.get(relation.profile);
+    const baseType = owner === undefined ? relation.type : relationBaseType(document, owner, relation);
     if (
       (relation.profile !== "generic@1" && relation.profile !== "generic@2") ||
-      (relation.type !== "contains" && relation.type !== "link")
+      (baseType !== "contains" && baseType !== "link")
     ) {
-      if (relation.type === "contains" || relation.type === "link") {
+      if (baseType === "contains" || baseType === "link") {
         refusals.push({
           code: "entity-profile-unsupported",
           path: `relations.${key}.profile`,
@@ -2014,7 +2089,7 @@ function readMeasuredGraph(
       continue;
     }
     const role = (name: string) => relation.endpoints.find((endpoint) => endpoint.role === name)?.target;
-    if (relation.type === "contains") {
+    if (baseType === "contains") {
       const parent = role("parent") as EntityRef | undefined;
       const child = role("child") as EntityRef | undefined;
       if (parent !== undefined && child !== undefined) parentOf.set(child, parent);
