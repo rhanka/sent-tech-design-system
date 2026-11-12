@@ -1,8 +1,8 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:7a62a59311881f721e41b05646a83e7768034416cd8ba1e80b09eede80d9dc8b",
-  "entryDigest": "sha256:b6769608e43c188494d8c4ad00ecc231f648dfe745a088f1f9d308c407b9ba2a",
+  "digest": "sha256:a4171cd6a1c733659f32b0871437a1a097452c5e98831e776e32957e67a128c3",
+  "entryDigest": "sha256:e198a93488c167d865f12ad569066970bfa7bcfd6d770c7bf1d350683823319b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/PointAndFigureChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
