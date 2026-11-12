@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Highlight.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:bdb240b92a176b13d22f43a89766b66f4b71dcda9f7fada9a7196e5ef2ddad59",
+  "digest": "sha256:141dd21e67aa378595a5f7625e6adf2fffe315a435197ac96554c007bf9c1bbb",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

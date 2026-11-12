@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:420e1f64331eb2d4d83577283291bf10063460ec98d5cb47c6fc046173ce048a",
+  "digest": "sha256:e1710f8463e575db2ebaa146688dfc6a3656bc8dd9ab587b826352a336cdcb4b",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [
