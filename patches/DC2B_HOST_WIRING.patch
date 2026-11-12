@@ -1,0 +1,282 @@
+--- a/packages/components-svelte/src/lib/DiagramSceneFigure.svelte
++++ b/packages/components-svelte/src/lib/DiagramSceneFigure.svelte
+@@ -3,6 +3,8 @@
+   import { Minus, Plus } from "@lucide/svelte";
+   import {
+     clampZoom,
++    createLayoutCache,
++    type LayoutCache,
+     FIT_ASPECT,
+     zoomReadout,
+     type LayoutHints,
+@@ -27,6 +29,8 @@
+   } from "./diagramCardModel.js";
+   import {
+     collapsedOccurrencesOf,
++    sceneContentSize,
++    type DiagramSceneSize,
+     DEFAULT_SCENE_TARGET_WIDTH,
+     displayedRects,
+     layoutScene,
+@@ -49,7 +53,7 @@
+     type SceneOrientations,
+     type ScenePresentation,
+     type SceneView,
+-  } from "./diagramSceneModel.js";
++  } from "@sentropic/diagram-canvas/diagramSceneModel";
+ 
+   /**
+    * `DiagramSceneFigure` — the generic scene host (DC-2a lot L4,
+@@ -148,6 +152,9 @@
+     /** One call per layout pass, with the engine result (warnings, refusals, orientations). */
+     onLayout?: (result: LayoutResult) => void;
+     onCameraChange?: (camera: DiagramSceneCamera) => void;
++    layoutCache?: LayoutCache;
++    contentSize?: DiagramSceneSize;
++    onSizeChange?: (size: DiagramSceneSize) => void;
+   }
+ 
+   const DEFAULT_LABELS: DiagramSceneFigureLabels = {
+@@ -190,8 +197,14 @@
+     onSelect,
+     onLayout,
+     onCameraChange,
++    layoutCache,
++    contentSize = $bindable({ width: 0, height: 0 }),
++    onSizeChange,
+   }: DiagramSceneFigureProps = $props();
+ 
++  const ownedCache = createLayoutCache();
++  let publishedSize: DiagramSceneSize | undefined;
++
+   const strings = $derived({ ...DEFAULT_LABELS, ...labels });
+ 
+   /* ── fold state and layout ─────────────────────────────────────── */
+@@ -214,6 +227,7 @@
+       previousOrientation = undefined;
+     }
+     const result = layoutScene({
++      cache: layoutCache ?? ownedCache,
+       document: semanticDocument,
+       ...(view === undefined ? {} : { view }),
+       registry,
+@@ -250,6 +264,14 @@
+     untrack(() => onLayout?.(result));
+   });
+ 
++  $effect(() => {
++    const size = sceneContentSize(layoutResult);
++    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
++    publishedSize = size;
++    contentSize = size;
++    untrack(() => onSizeChange?.(size));
++  });
++
+   /* ── measured frame and tokens (client only) ───────────────────── */
+ 
+   let frameEl = $state<HTMLElement>();
+@@ -542,7 +564,12 @@
+     shown = displayed;
+   });
+ 
+-  $effect(() => stopFrames);
++  $effect(() => () => {
++    stopFrames();
++    touches.clear();
++    pinch = undefined;
++    ownedCache.dispose();
++  });
+ 
+   /* ── drawing ───────────────────────────────────────────────────── */
+ 
+--- a/packages/components-vue/src/DiagramSceneFigure.vue
++++ b/packages/components-vue/src/DiagramSceneFigure.vue
+@@ -1,15 +1,18 @@
+ <script setup lang="ts">
+ defineOptions({ name: 'DiagramSceneFigure' });
+ import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
+-import { clampZoom, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
++import { createLayoutCache, clampZoom, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+ import DiagramCard from './DiagramCard.vue';
+ import DiagramZone from './DiagramZone.vue';
+ import DiagramControlGlyph from './DiagramControlGlyph.vue';
+ import { cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
+-import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
++import { sceneContentSize, type DiagramSceneSize, collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+ import type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
+ const props = defineProps<DiagramSceneFigureProps>();
++const ownedCache = createLayoutCache();
+ const emit = defineEmits<{
++    sizeChange: [size: DiagramSceneSize];
++    "update:contentSize": [size: DiagramSceneSize];
+     foldChange: [
+         collapsed: SceneCollapsedOccurrences,
+         change: {
+@@ -47,6 +50,7 @@
+         previousOrientation = undefined;
+     }
+     const result = layoutScene({
++        cache: props.layoutCache ?? ownedCache,
+         document: props.document, registry: props.registry, presentation: props.presentation,
+         measureLines: measureLines.value, collapsed: collapsedNow.value,
+         ...(props.view === undefined ? {} : { view: props.view }),
+@@ -66,6 +70,16 @@
+         document: props.document, presentation: props.presentation, measureLines: measureLines.value,
+         ...(props.metrics === undefined ? {} : { metrics: props.metrics }),
+     }) : undefined);
++onMounted(() => {
++    let published: DiagramSceneSize | undefined;
++    watch(() => sceneContentSize(layoutResult.value), size => {
++        if (published?.width === size.width && published?.height === size.height) return;
++        published = size;
++        props.onSizeChange?.(size);
++        emit("sizeChange", size);
++        emit("update:contentSize", size);
++    }, { immediate: true });
++});
+ const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));
+ onMounted(() => {
+     watch(layoutResult, result => emit('layout', result), { immediate: true });
+@@ -274,10 +288,13 @@
+ });
+ onUnmounted(() => {
+     stopFrames();
++    touches.clear();
++    pinch = undefined;
+     observer?.disconnect();
+     window.removeEventListener('resize', measureFrame);
+     mountedViewport?.removeEventListener('wheel', onWheel);
+     mountedViewport = undefined;
++    ownedCache.dispose();
+ });
+ function rectOf(node: SceneNodeModel) { return displayed.value.get(node.occurrence) ?? node.rect; }
+ function nodeStyle(node: SceneNodeModel) {
+--- a/packages/components-vue/src/DiagramSceneFigure.types.ts
++++ b/packages/components-vue/src/DiagramSceneFigure.types.ts
+@@ -1,6 +1,6 @@
+-import type { LayoutHints, LayoutMetrics, LayoutOptions, LayoutResult, LineMeasurer, RowPackOptions } from '@sentropic/diagram-canvas';
++import type { LayoutCache, LayoutHints, LayoutMetrics, LayoutOptions, LayoutResult, LineMeasurer, RowPackOptions } from '@sentropic/diagram-canvas';
+ import type { CardLineMeasure, DiagramGlyphPaths } from './diagramCardModel.js';
+-import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
++import type { DiagramSceneSize, SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
+ /** Named array boundary keeps emitted declarations within the public canvas layer. */
+ export interface SceneCollapsedOccurrences extends ReadonlyArray<SceneOccurrenceRef> {}
+   export interface DiagramSceneFigureLabels {
+@@ -65,5 +65,8 @@
+     /** One call per layout pass, with the engine result (warnings, refusals, orientations). */
+     onLayout?: (result: LayoutResult) => void;
+     onCameraChange?: (camera: DiagramSceneCamera) => void;
++    layoutCache?: LayoutCache;
++    contentSize?: DiagramSceneSize;
++    onSizeChange?: (size: DiagramSceneSize) => void;
+   }
+ 
+--- a/packages/diagram-canvas/src/presentation/diagramCardModel.ts
++++ b/packages/diagram-canvas/src/presentation/diagramCardModel.ts
+@@ -567,10 +567,12 @@
+  * emitted line, `height` the line count at the role's line box, and
+  * `overflow` reports a too-wide line or a line-count overflow.
+  */
++export const DEFAULT_CARD_MEASURER_VERSION = "pinned-kit-1px";
++
+ export function cardLineMeasurer(
+   measure: CardLineMeasure = defaultCardMeasure,
+-): (request: CardMeasureRequest) => CardLineLayout {
+-  return (request) => {
++): ((request: CardMeasureRequest) => CardLineLayout) & { readonly version?: string } {
++  const measureLines = (request: CardMeasureRequest): CardLineLayout => {
+     const role: "kicker" | "title" | "body" | "footer" =
+       request.role === "kicker" || request.role === "title" || request.role === "footer"
+         ? request.role
+@@ -595,6 +597,7 @@
+       overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
+     };
+   };
++  return Object.assign(measureLines, { version: DEFAULT_CARD_MEASURER_VERSION });
+ }
+ 
+ export interface LaidOutLine {
+--- a/packages/components-svelte/src/lib/DiagramSceneFigure.test.ts
++++ b/packages/components-svelte/src/lib/DiagramSceneFigure.test.ts
+@@ -1,6 +1,7 @@
+ import { readFileSync } from "node:fs";
+ import { fireEvent, render } from "@testing-library/svelte";
+ import { tick } from "svelte";
++import * as canvas from "@sentropic/diagram-canvas";
+ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+ import {
+   DEFAULT_MAX_DISPLAY_SCALE,
+@@ -38,7 +39,7 @@
+   type SceneLaidOut,
+   type SceneOccurrenceRef,
+   type ScenePresentation,
+-} from "./diagramSceneModel.js";
++} from "@sentropic/diagram-canvas/diagramSceneModel";
+ 
+ /* ── scene fixtures ──────────────────────────────────────────────── */
+ 
+@@ -1090,3 +1091,64 @@
+   });
+ });
+ 
++
++
++describe("DC-2b cache and content size", () => {
++  it("publishes only actual size changes and performs no layout during 120 pan + 120 zoom steps and resize", async () => {
++    reducedMotion = true;
++    const cache = canvas.createLayoutCache();
++    const dispose = vi.spyOn(cache, "dispose");
++    const size = vi.fn();
++    const view = mount(WIDE, { layoutCache: cache, onSizeChange: size });
++    await tick();
++    expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });
++    size.mockClear();
++    const before = cache.stats(), measurements = view.counting.mock.calls.length;
++    const times: number[] = [];
++    for (let step = 0; step < 120; step++) {
++      const start = performance.now();
++      view.viewport.scrollLeft += 1;
++      view.viewport.scrollTop += 2;
++      await fireEvent.scroll(view.viewport);
++      await fireEvent.wheel(view.viewport, { ctrlKey: true, deltaY: step % 2 === 0 ? -10 : 10 });
++      times.push(performance.now() - start);
++    }
++    setWindow(1024, 768);
++    await fireEvent(window, new Event("resize"));
++    await tick();
++    expect(cache.stats()).toEqual(before);
++    expect(view.counting).toHaveBeenCalledTimes(measurements);
++    expect(size).not.toHaveBeenCalled();
++    expect(times.sort((a, b) => a - b)[113]).toBeLessThanOrEqual(16.7);
++    await fireEvent.click(view.toggle("a"));
++    await tick();
++    expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });
++    expect(size).toHaveBeenCalledTimes(1);
++    view.unmount();
++    expect(dispose).not.toHaveBeenCalled();
++    cache.dispose();
++  });
++
++  it("disposes the owned cache and removes listeners through the registered elements", async () => {
++    const cache = canvas.createLayoutCache();
++    vi.spyOn(canvas, "createLayoutCache").mockReturnValue(cache);
++    const targets = new Set<Element>();
++    class FakeObserver {
++      observe(element: Element) { targets.add(element); }
++      disconnect() { targets.clear(); }
++    }
++    vi.stubGlobal("ResizeObserver", FakeObserver);
++    const add = vi.spyOn(EventTarget.prototype, "addEventListener");
++    const remove = vi.spyOn(EventTarget.prototype, "removeEventListener");
++    const view = mount(WIDE);
++    await tick();
++    expect(cache.stats().entries).toBe(1);
++    const wheel = add.mock.calls.findIndex(([type], index) => type === "wheel" && add.mock.contexts[index] === view.viewport);
++    expect(wheel).toBeGreaterThanOrEqual(0);
++    view.unmount();
++    expect(cache.stats().entries).toBe(0);
++    expect(targets.size).toBe(0);
++    expect(remove.mock.calls.some(([type, handler], index) => type === "wheel" && handler === add.mock.calls[wheel]![1] && remove.mock.contexts[index] === view.viewport)).toBe(true);
++    vi.unstubAllGlobals();
++  });
++});

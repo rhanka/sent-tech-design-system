@@ -337,7 +337,7 @@ empty penalty, hysteresis); absent or empty, the DS defaults apply.
 - `layoutFingerprint` (`layout/fingerprint.ts`) is the cache-key digest of a
   measured call over resolved numbers: fold state, row-pack objective, gaps
   and caps, previous-orientation map, hints, token numbers, engine version.
-  The package ships no cache.
+  `createLayoutCache` wraps the complete call using this fingerprint (DC-2b).
 
 `camera.ts` holds the pure half of the camera contract (spec §5):
 `cameraFit` frames the scene bounds on both axes against the 16:9 fit box
@@ -355,3 +355,68 @@ stability pins (`stability.json`) and the §7.5 tuning grid (`tuning.json`)
 are under `tests/layout/dc2a/`. Measured-path timings: the three cluster
 scenes (25–32 boxes, 20–23 links) lay out in a median of 112–176 ms, against
 the 1000 ms budget of `tests/layout/performance.test.ts`.
+
+## DC-2b performance
+
+`createLayoutCache()` is an opt-in, framework-neutral wrapper over the complete
+layout and routing pipeline. Each host owns one instance, or receives a cache
+from its caller. Defaults are **32 entries** and **16 MiB** of estimated UTF-8
+view, measurement and label-box bytes, with LRU eviction. Refusals and oversized
+results are returned without retention. `has()` leaves counters and recency
+unchanged; `clear()` releases entries; idempotent `dispose()` permanently disables
+hits and insertion. Statistics remain cumulative after either operation.
+
+Keys consume the DC-2a fingerprint and include target width, compatibility
+metrics, document/presentation/source-view content, profile declarations and
+bindings, and a version plus role probe of the injected measurer. Effective
+folds are sorted and deduplicated. Compatible previous-orientation fixed points
+reuse the original entry; a genuine hysteresis flip misses. Orientation aliases
+are bounded too. Camera and motion tokens are excluded; layout tokens invalidate.
+Documents, views, presentations and profile declarations must remain immutable:
+their content digests use per-instance weak keys. Replace a measurer reference
+or update its optional `version` when its metrics change. Production hits return
+the original result by reference; `verifyImmutability: true` additionally checks
+the stored view on every hit and throws on caller mutation.
+
+The `@sentropic/diagram-canvas/diagramSceneModel` subpath exports the shared
+presentation model. `layoutScene({ cache, ...input })` uses that same seam for
+both hosts; `resolveScene` reads emitted label boxes and measured label lines
+without repeating placement or measurement. `sceneContentSize(result)` and
+`SceneModel.contentSize` expose the union size at zoom 1 (zero when absent,
+refused or empty). Camera fit, zoom and placement remain pure calculations over
+the current scene, including on container resize. No scene frames are retained
+per fold state, and the engine creates no background work or rendering resources.
+
+Measured in Vitest/Node 22.22.1 on 2026-11-12, with the existing 10 s timeout:
+
+| Gate | Witness/test | Measured | Bound |
+| --- | --- | --- | --- |
+| AC-P1 stress heap | `cache-performance.test.ts`, 240 complete fold/unfold cycles after two warm-up cycles | 0.016 MiB | ≤ 5 MiB |
+| AC-P1 idle heap | Same, 60 s virtual time + 500 ms real drain | −0.001 MiB | ≤ 1 MiB |
+| AC-P2 idle | `diagramSceneModel.test.ts`, 60 s virtual + 1 s real drain; source guard | 0 timer/frame/observer/worker/layout calls | 0 |
+| AC-P3 revisit | `vue-globale/after`, 240 hits | 0.087 ms p95; 2 entries, 91,807 bytes | ≤ 5 ms; ≤ 32 / 16 MiB |
+| AC-P3 capacity | `cache.test.ts`, two passes over 32 states, then a separate 40-state sequence | 32 hits / 0 evictions; 8 oldest evicted for 40 states | 32 retained states |
+| AC-P4 model camera | 120 pan + 120 zoom steps and resize | 0.025 ms p95; 0 cache/scene/measurement calls | ≤ 16.7 ms; 0 calls |
+| AC-P5 engine disposal | Ten create/fold/dispose cycles per sample | 0.206 MiB; 0 retained entries/bytes | ≤ 2 MiB |
+| AC-P6 shared size | Refused, empty and laid-out results | Exact `fit.width` × `fit.height`, or 0 × 0 | Exact equality |
+| M3 engine/model | 600 actions, including 240 stress toggles | Worst 184.849 ms | < 1800 ms |
+
+Heap numbers use V8 forced GC before each reading, an event-loop turn between
+two collections, and median-of-three samples. The ten-cycle disposal samples
+are separate tests so each fits the unchanged timeout. Cold cache calls have
+median/worst **205.924/282.276 ms** on `vue-globale/after`, and
+**72.540/110.523 ms** on `largeDocumentSpec()`; neither reaches the 900 ms worker
+follow-up trigger. These are engine/model measurements; host integration gates
+are listed in [the host handoff](../../patches/DC2B_HOST_WIRING.md).
+
+Reproduce from `packages/diagram-canvas`:
+
+```sh
+rtk npx vitest run --maxWorkers=1
+rtk npx tsc -p tsconfig.check.json
+rtk npm run build
+```
+
+For printed measurements, use `rtk proxy node ../../node_modules/vitest/vitest.mjs
+run tests/layout/cache-performance.test.ts tests/presentation/diagramSceneModel.test.ts
+--disableConsoleIntercept --reporter=verbose --maxWorkers=1` (one shell command).
