@@ -1,7 +1,7 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:b185045d56bba5554c73ef1b3dd3f97d4338efa0c77b2ee7c96f67b6738f8cd3",
+  "digest": "sha256:263a9b3932472985df6f26af8b9c05388c01acac3a84f396e417925a4881a0e8",
   "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -410,11 +410,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7a94fba17844ec71767896b7d59fb213467cf86a37b9c4063051f6efe89e3f45",
+        "declarationDigest": "sha256:35c5ee36726f0fe179345189e9d59039701be6349ed5b30d282c7d21eeb88895",
         "declarationPath": "packages/components-svelte/dist/TimeSeriesLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "none",
       "unresolved": [],
