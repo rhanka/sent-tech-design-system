@@ -23,15 +23,16 @@
 - [x] L6: Svelte interaction, accessibility, controlled state, budget (A12–A14).
 - [x] L7: Vue handoff after #267, parity pending.
 - [x] L8: docs, changelogs, index, notices, licensing.
-- [ ] L9: review fixes, scoped Vitest, tsc, Svelte checks, builds, AC evidence.
+- [x] L9: review fixes, scoped Vitest, tsc, Svelte checks, builds, AC evidence.
 
 ## Feedback Loop
 - [x] L0: attribute-not-in-schema and type-definition-conflict exist; reserved/ambiguous need new codes.
 - [x] L0: parallelRelations marks every relation in a parallel pair; exclude shared port slots from flow runs.
 - [x] L0: DS Select exists in both hosts; light/dark token builders use createComponent.
 - [x] Existing reviewed revision-3 design governs; owner's plain commits override harness wrapper.
-- [ ] Rendered appearance: not covered (browsers prohibited).
+- [x] Rendered appearance: not covered (browsers prohibited).
 - [x] Astra3: internal step identity, equal-end classification, single occurrence, absent-step exclusion and scenario metadata rules implemented.
 - [x] Two independent design-verification passes reconciled; h2a consensus unavailable (launcher absent), no consensus claimed.
 - [x] Frozen presentation adapter bytes retained; the relation-resolution boundary supplies its effective semantic types.
 - [x] BRDC2C-EX1: keep the cohesive Svelte host change and generated artifacts in complete commits even above the planning line budget; impact is review size only, rollback is git revert of that local commit.
+- [x] Gates: core 556; canvas 481 plus one later four-flow regression (482), one existing skip; targeted Svelte 301; tokens 20; tsc, both Svelte checks, builds, 430 index artifacts, notices and licensing pass.
