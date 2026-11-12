@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:52b7d6dbc8688a16dfd8d0e87a0acebe5aff24ce5a2911086524c755482a8f73",
+  "digest": "sha256:c0cce9077d51883248fffbe7f148d02ba891901cd7d958b6ffb09b037977a856",
   "entryDigest": "sha256:72cc3379076562916a1c71a373dbff3eb192a6d5f49afc1bdc876a4749e7835e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -5059,6 +5059,61 @@
             ],
             "type": "object"
           },
+          "ChainProvenance": {
+            "additionalProperties": false,
+            "properties": {
+              "hops": {
+                "description": "Semantic relation refs in walk order from semanticTarget to the drawn entity.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@11828": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@11828",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "members": {
+                "description": "Aggregate only: complete carrier set in fixed source/target/relation order.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@11828": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@11828",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "predicateId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "hops",
+              "predicateId"
+            ],
+            "type": "object"
+          },
           "Diagnostic": {
             "additionalProperties": false,
             "properties": {
@@ -6944,6 +6999,10 @@
           "RelationOccurrenceEndpoint": {
             "additionalProperties": false,
             "properties": {
+              "chainProvenance": {
+                "$ref": "#/$defs/ChainProvenance",
+                "description": "Document-proven chain: requires semanticTarget and excludes sourceOccurrence."
+              },
               "occurrence": {
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
@@ -7020,11 +7079,11 @@
                     "type": "object"
                   }
                 ],
-                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (folded\nprojection, §4.4.2). A RelationRef is permitted only where the semantic\nrole admits relation targets."
+                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (fold or chain\nprovenance). A RelationRef is permitted only where the semantic\nrole admits relation targets."
               },
               "sourceOccurrence": {
                 "additionalProperties": false,
-                "description": "The original endpoint occurrence in the retained source view. Present iff\n`semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).",
+                "description": "The original endpoint occurrence in the retained source view. Present iff\nfold provenance is used; mutually exclusive with `chainProvenance`.",
                 "properties": {
                   "__@refBrand@11828": {
                     "const": "occurrence"
