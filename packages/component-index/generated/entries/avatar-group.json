@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AvatarGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Overlapping avatar stack with a “+N” overflow token.",
     "fr": "Pile d'avatars avec recouvrement et jeton de débordement « +N »."
   },
-  "digest": "sha256:9b5fe73b7e274065214114d89b5d4f3ecc4aae7045f38275f1271e394ef41a68",
+  "digest": "sha256:820a8aa3e9b78029fa9074510bba9a68cf2e70ca9f4442f999d0eb6e1bcf8985",
   "displayName": "AvatarGroup",
   "format": "component-entry/v1",
   "frameworks": [

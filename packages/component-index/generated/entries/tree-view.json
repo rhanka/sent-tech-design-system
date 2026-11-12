@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TreeView.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tree view: expand/collapse, selection, keyboard navigation (arrows).",
     "fr": "Arborescence : expand/collapse, sélection, navigation clavier (flèches)."
   },
-  "digest": "sha256:259a48ddf3969ab2147a2b72d611a1488d8a52754f9236f3dea662a7edbeb4d4",
+  "digest": "sha256:c41771bf3256ff0fe2d652ad06a82e2c899c4ecf4297fb6564576cb2c57e9d5c",
   "displayName": "TreeView",
   "format": "component-entry/v1",
   "frameworks": [

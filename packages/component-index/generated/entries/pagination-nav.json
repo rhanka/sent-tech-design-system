@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PaginationNav.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:d9a1ca06e2fd42e623a635402c1960e77f68074c2366dcd47a51ee4889ade990",
+  "digest": "sha256:d83278c632ee5964e6e3d3bcc4c52af3638060604999e6430b06b8d0145c24be",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

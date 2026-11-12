@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:bbfdbcddaed2ac2e203d00d8f5bf2db323365e64ce113b24b4c76cfeac6df72d",
-  "entryDigest": "sha256:366de3f68d8d29086c35ece98d23878096ebf0827577fd81b1eca7641a9dd81a",
+  "digest": "sha256:73aab8472ac1d9ba0489dc4aa4837a40f86ee1986881bd070ea9f04d40214ae2",
+  "entryDigest": "sha256:f3f02830cb0704f3c58effd1dae8f8b139f255dcec5b1791353dc72b84d98494",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -102,7 +102,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmptyStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

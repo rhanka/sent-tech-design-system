@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:9a696fb99d7b82d62171575238c4c6415de37b348f51dd02d695a4e149c3014a",
-  "entryDigest": "sha256:d2967b9c8cc875d5d1ffec66a37cef2f35a6c6a5b48bb7cc83c64495e5d773a1",
+  "digest": "sha256:5ebb7f16ad5e676222dda96b5a382d884365d477c4386efd1b33690455fab4a1",
+  "entryDigest": "sha256:a1c36a61e70a1141d07867286833d3142652052dc0b5e955bb3729c85938d576",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -174,7 +174,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppHeaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DashboardGrid.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Analytics tile canvas positioned by grid coordinates, with accessible edit mode.",
     "fr": "Canvas de tuiles analytiques positionnées par grille, avec mode édition accessible."
   },
-  "digest": "sha256:eac10bd9b53d33404532462544fa1ea4130836da29a4fcee4dc63da103ea0f09",
+  "digest": "sha256:6b9d41e6c950bc0305ff05c9fee8633cbced54fcc9e370b1fb7e2f821d02a56d",
   "displayName": "DashboardGrid",
   "format": "component-entry/v1",
   "frameworks": [

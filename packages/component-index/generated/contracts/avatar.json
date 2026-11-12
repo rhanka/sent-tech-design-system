@@ -1,8 +1,8 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:6e2691d6818f6e498b4bea57132d94d152215120d38088a5ff013b5df932218f",
-  "entryDigest": "sha256:5f5bf03ba8acfae31164a801e765abf711cffde8c5670ce127d5040480bf19d7",
+  "digest": "sha256:3cbd5814b6c661246046685f3619db8f9880a328da4bde48f1074fda61b90e99",
+  "entryDigest": "sha256:3ee10207c36cdc3f2f448695e20c33ee888313cc5f105709c6a8f108120e37f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -140,7 +140,7 @@
         "declarationPath": "packages/components-react/dist/Avatar.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AvatarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

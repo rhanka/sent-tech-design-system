@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:1e2f5dee2ff4baf3b1d8f5908a3573eda22a6b0381a0988fac4e80dac7ce4435",
-  "entryDigest": "sha256:ea3cfd90cb6d4447f79e750f46d165e03edd80cb720048434924ac8d08ed07d2",
+  "digest": "sha256:8b87840fdbeae8df3f341119a9c987402c9e690f6fd9c293c3e8488479eed24e",
+  "entryDigest": "sha256:4a99a2582f9bbe70dc4f9699749f063a335696f2f73e60d5499d115304a5f176",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -166,7 +166,7 @@
         "declarationPath": "packages/components-react/dist/Stepper.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StepperProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

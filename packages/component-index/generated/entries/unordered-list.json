@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/UnorderedList.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bulleted unordered list, with nesting.",
     "fr": "Liste à puces, avec imbrication."
   },
-  "digest": "sha256:39b728db3b8317118ae1c6cdecf5189842eaec8ab57cfdb9f3a95e7a890730dd",
+  "digest": "sha256:e222cf17ec1c8439cae9f6ce28d3d8eb6066c6aa2d021d96a67dcbeac8c38d01",
   "displayName": "UnorderedList",
   "format": "component-entry/v1",
   "frameworks": [

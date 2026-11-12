@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:c56199dc54eaf4772a8f6a0ca90227c62ab6b74660fca934541e8f7149982354",
-  "entryDigest": "sha256:cbada2e5a8702ba9a1848d5dff7572a730005a205b2567ecf982ded357bd0422",
+  "digest": "sha256:3596c1bc5cef46cfca92d62457c6fc7859e1d76741882a3d926ca2d18b70e5d5",
+  "entryDigest": "sha256:2449eae14bc48b59a23a9ff3460660b187b75ff47730d6709b1806a51e612e85",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -127,7 +127,7 @@
         "declarationPath": "packages/components-react/dist/Button.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:197c357fcfd1132bef3e4a11aac4efce85fc8040050cb1d2203bd03b7efb7b14",
-  "entryDigest": "sha256:2179b965d7e1f4729f2e542e6aaec745a32faf6bde9ec7845838cd7edf11d27c",
+  "digest": "sha256:8da413847a9fdc88aa217b2891f00a6d46474e162e491516a8a9ccb3cd762fc2",
+  "entryDigest": "sha256:718449e56de52a156a1ecaf1124fa2582b75e83d0c07a2d7f206447699a8fa7e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -120,7 +120,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggletipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

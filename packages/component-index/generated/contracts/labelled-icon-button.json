@@ -1,7 +1,7 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:e9c7f04a6138b8150d18bf8a7fbda173e1e2edc947a7b1e9dfb4a0585507cb03",
+  "digest": "sha256:210d170c42b995a51b766aeb094c1a6da8648e72fcc6a0dbf2ddb7afd3b2a53d",
   "entryDigest": "sha256:668c7b38dff43b8920baaddc13325227805563ba639f277c71a072397e5e5692",
   "format": "component-contract/v1",
   "frameworks": {
@@ -43,7 +43,7 @@
         "declarationPath": "packages/components-react/dist/LabelledIconButton.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

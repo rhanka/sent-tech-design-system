@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:ee250487759a304598b6222cfcd5ba509d8366f7fe361107f78a2d7f4005294c",
-  "entryDigest": "sha256:af4189574ba53f4a74dd00f188fb3d13f1ea779eec8ed5526c26b0a2dce751b0",
+  "digest": "sha256:dc78a678991acb20891a0048faf3c345adb4cc3bc76878569d2a874b6e1e23d5",
+  "entryDigest": "sha256:f8bbbfa2411bed25592c9d5444c8e00889deca90a6074fa7577fd910ec240215",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

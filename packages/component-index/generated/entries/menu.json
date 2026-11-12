@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Menu.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:76cf998c717e0f796eb00f791eb3f8e1e81ead9d2f127edf8b19edf855e5e8bc",
+  "digest": "sha256:c4bbd614ca69c5ebbf0c1ee4e94763e21051b6a2dca385018f4dec7321ae1bd2",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

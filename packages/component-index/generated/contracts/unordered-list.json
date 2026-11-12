@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:2b8a9329c2a2035b1633564c1b41d3b8f42c4f49a56aea22efb5e837ab8e664b",
-  "entryDigest": "sha256:39b728db3b8317118ae1c6cdecf5189842eaec8ab57cfdb9f3a95e7a890730dd",
+  "digest": "sha256:00f0af2d42ac2ee10dc46acd95717b0675bdc95b0e9027a2e4aa04d1b70dd82b",
+  "entryDigest": "sha256:e222cf17ec1c8439cae9f6ce28d3d8eb6066c6aa2d021d96a67dcbeac8c38d01",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -121,7 +121,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

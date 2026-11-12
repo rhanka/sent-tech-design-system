@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PointAndFigureChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:8d4ad8fb41511b6356000d70bbec40a7f58705ebe0829ea6056ad11034bdb0ad",
+  "digest": "sha256:08e9dd9c80d745ae0da566d7f385814c1dfda31782b9564f7165274e44996066",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [
