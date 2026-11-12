@@ -13,7 +13,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:faa995554b646b3e83626c9afba9f7e8dec5cadb43b6f1c953b15bbc4d434ffc",
+      "digest": "sha256:772c524346d2f8e6a91e64dcf44e88185544a12d179b3a345d86f9ef5bc04340",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramCard.vue",
@@ -24,7 +24,7 @@
     "en": "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit.",
     "fr": "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn."
   },
-  "digest": "sha256:d0652ec8bea1171a0cd6cd6f78a89c9009c4ad7ed9cfc1f44f745fcf6bbb7e9a",
+  "digest": "sha256:b88eda6b5d05896373d5c0b6792daa2eb72792141cb72caca40ec45d51b3b8bc",
   "displayName": "DiagramCard",
   "format": "component-entry/v1",
   "frameworks": [

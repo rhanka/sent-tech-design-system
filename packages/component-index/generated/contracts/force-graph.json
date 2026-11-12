@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:bb8032ca162de50449dcfe6dae609edf1525148eea441d024d189541fd386a15",
-  "entryDigest": "sha256:ab96d461d57b17aada41ac90972809965fdff9f889bfa1a0cd67a836fd6a08db",
+  "digest": "sha256:410e43b12c5404b36615cc5e1a7c0e6faa767af191f83fb077ee1c1b087b217e",
+  "entryDigest": "sha256:3bf6c46f2bec4a665eb70d0841b6dda8b44f93d5e709711ccbfdea4bb9305186",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1359,6 +1359,7 @@
         },
         "required": [
           "edges",
+          "label",
           "nodes"
         ],
         "type": "object"
@@ -1366,7 +1367,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d46e111c24462a95f5e4e96f139ebc77e4efec2292ca6a59e29ac88ca967992f",
+        "declarationDigest": "sha256:c1c5b40381c0d164f90bb683ea5a0eda38acdf12baaa6f30409fa146c1cfd1b3",
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",

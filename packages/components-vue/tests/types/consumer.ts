@@ -1,0 +1,25 @@
+import { DiagramSceneFigure, GraphCanvas, DiagramZone } from '@sentropic/design-system-vue';
+import type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView, ForceGraphProps } from '@sentropic/design-system-vue';
+import { DiagramIcon } from '@sentropic/design-system-vue/diagram-icons';
+import { renderCardSvg, renderZoneSvg } from '@sentropic/design-system-vue/diagram-render';
+import { BpmnCanvas } from '@sentropic/design-system-vue/bpmn';
+import { DiagramSceneFigure as VaporScene, GraphCanvas as VaporGraph, DiagramZone as VaporZone } from '@sentropic/design-system-vue/vapor';
+import type * as Vapor from '@sentropic/design-system-vue/vapor';
+import { DiagramIcon as VaporIcon } from '@sentropic/design-system-vue/vapor/diagram-icons';
+import { BpmnCanvas as VaporBpmn } from '@sentropic/design-system-vue/vapor/bpmn';
+
+type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
+type Assert<T extends true> = T;
+type Contracts = [CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView];
+type VaporContracts = [Vapor.CardDiagnostic, Vapor.CardLineMeasure, Vapor.DiagramCardToggle, Vapor.DiagramGlyphPaths, Vapor.DiagramZoneToggle, Vapor.ZoneDiagnostic, Vapor.ZoneChildSpec, Vapor.SceneDocument, Vapor.SceneOccurrenceRef, Vapor.ScenePresentation, Vapor.SceneView];
+type Parity = Assert<Equal<Contracts, VaporContracts>>;
+type LabelRequired = Assert<Equal<{} extends Pick<ForceGraphProps, 'label'> ? true : false, false>>;
+declare const scene: InstanceType<typeof VaporScene>;
+scene.setZoom(1); scene.getCamera(); scene.fitToFrame();
+declare const graph: InstanceType<typeof VaporGraph>;
+graph.invalidateGraph();
+declare const bpmn: InstanceType<typeof VaporBpmn>;
+bpmn.ready.then(() => { const state: 'idle' | 'rendering' | 'rendered' | 'refused' = bpmn.state; return [state, bpmn.diagnostics]; });
+type ZoneSlots = Assert<Equal<InstanceType<typeof VaporZone>['$slots'], InstanceType<typeof DiagramZone>['$slots']>>;
+type BpmnSlots = Assert<Equal<InstanceType<typeof VaporBpmn>['$slots'], InstanceType<typeof BpmnCanvas>['$slots']>>;
+void [DiagramSceneFigure, GraphCanvas, DiagramIcon, VaporIcon, renderCardSvg, renderZoneSvg];
