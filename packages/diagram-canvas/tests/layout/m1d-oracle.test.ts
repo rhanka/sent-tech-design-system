@@ -1901,9 +1901,15 @@ describe('oracle ordering A2-A4', () => {
       if (result.status !== 'laid-out') return;
       expect(result.view.presentation.diagram).toEqual(presentation);
       expect(formatDiagnostics(validateView(result.view, document, { registry: m3ProfileRegistry, bindings: shippedExecutorBindings }))).toBe('');
+      // DC-2a re-pin (AC-1, AC-4): a level is packed shelves, no longer one
+      // column, so the frozen list is the reading order of the level in its
+      // emitted orientation — rows: left to right then top to bottom;
+      // columns: top to bottom then left to right. A legend stays a list.
       for (const [parent, list] of Object.entries(ordering)) {
-        const ys = list.map(child => geometryOf(result.view, child.slice('entity:'.length)).y);
-        for (let i=1;i<ys.length;i++) expect(ys[i]).toBeGreaterThan(ys[i-1]);
+        const rows = result.orientations?.['occurrence:e.'+parent.slice('entity:'.length)] !== 'columns';
+        const at = (child) => geometryOf(result.view, child.slice('entity:'.length));
+        const read = [...list].sort((left, right) => rows ? at(left).y - at(right).y || at(left).x - at(right).x : at(left).x - at(right).x || at(left).y - at(right).y);
+        expect(read, parent).toEqual(list);
       }
     });
   }

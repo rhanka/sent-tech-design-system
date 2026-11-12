@@ -24,10 +24,12 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
   it("sizes an expanded container to unwrapped header + 2 × CONTENT_INSET + TOGGLE_ALLOCATION", () => {
     expect(TOGGLE_ALLOCATION).toBe(66);
     const document = asGeneric2Document(buildMeasuredDocument());
-    // 59 characters at 8 px/char = 472 px unwrapped; with the insets and
-    // the toggle reservation the header-driven width (570) beats the
-    // child-driven one (460 + 2 × 16 = 492), so the width is header-driven.
-    const title = Array.from({ length: 12 }, () => "word").join(" ");
+    // DC-2a re-pin (AC-2): the two children pack on one row, so the
+    // child-driven width is 460 + 24 + 460 + 2 × 16 = 976, no longer 492.
+    // The title is lengthened to stay header-driven: 119 characters at
+    // 8 px/char = 952 px unwrapped; with the insets and the toggle
+    // reservation the header-driven width (1050) beats 976.
+    const title = Array.from({ length: 24 }, () => "word").join(" ");
     const presentation = makePresentation({
       forms: { C: "container", a: "card", b: "card", lone: "card" },
       texts: {
