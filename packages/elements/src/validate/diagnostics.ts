@@ -4,7 +4,7 @@
  * (not into the component's own schema), so a host can always locate the
  * offending value without knowing which layer produced the diagnostic.
  *
- * The ten codes are exactly the §4.5 list — nothing else may appear:
+ * The ten envelope codes are exactly the §4.5 list:
  *
  *   unknown-component        the envelope's root targets no catalogued entry
  *   component-unavailable    the entry is a placeholder (x-sentropic.status)
@@ -20,6 +20,9 @@
  * `watermark-refused` is listed so the §4.5 set stays closed; engine
  * warnings surface under their own engine code, and this is the one the
  * spec names.
+ * Diagram resolution also uses this engine-warning allowance: `diagram-*`
+ * warnings have source `host` and a section pointer. They do not extend the
+ * closed envelope code set and never refuse a structurally valid dossier.
  */
 
 /** The closed set of §4.5 codes. */
