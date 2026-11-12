@@ -1,12 +1,15 @@
-# DC-2b host handoff after review
+# DC-2b host wiring: Svelte integrated, Vue pending
 
-The engine changes live on feat/dc2b-performance. The hosts are absent on this
-base, so DC2B_HOST_WIRING.patch delivers the integration against the Svelte
-PR #265 and feat/diagram-vue sources. All materialisation, tests and builds were
-performed inside .dc2b-build; other checkouts supplied read-only source and
-already-installed integration dependencies. Temporary source overlays are removed
-before handoff. No browser, root test campaign, dependency installation, commit,
-push or stash was used.
+The engine and permanent Svelte integration live on feat/dc2b-performance.
+PR #265 is merged through origin/main in 9c8d7ade. The Svelte portion of the
+original patch is applied in packages/components-svelte and removed from the
+remaining patch. See [DC2B_SVELTE_INTEGRATION.md](DC2B_SVELTE_INTEGRATION.md) for
+current validation and mounted-host measurements.
+
+DC2B_HOST_WIRING.patch now contains only the pending Vue integration and its
+shared card-measurer prerequisite from feat/diagram-vue. The review findings and
+composite measurements below describe the earlier, temporary integration run;
+they are retained as historical evidence, not current Vue validation.
 
 ## Review corrections
 
@@ -24,26 +27,27 @@ orientation maps. An unrestricted alias Set would weaken that bound.
 
 ## Patch contents and application
 
-The 16 patch files cover both figures, Vue props, both public barrels, the Vapor
-export generator, Vue's published-types gate and consumer fixture, Svelte's test
-configuration/package-file exclusion, both mounted suites, shared test support,
-the Svelte binding fixture, the Vapor runtime regression and the shared card
-measurer version tag. Test support is excluded from the published Svelte package.
+The remaining nine patch files cover the Vue figure, props, public barrel,
+Vapor export generator, published-types gate and consumer fixture, mounted suite,
+Vapor runtime regression and shared card-measurer version tag. The shared mounted
+test support and Svelte binding fixture are now real Svelte source files; test
+support is excluded from the published Svelte package.
 
-After integrating this engine, PR #265 and feat/diagram-vue:
+After integrating feat/diagram-vue and reconciling its shared model with the
+existing engine API (retain the DC-2b cache):
 
 ```sh
 rtk git apply --check patches/DC2B_HOST_WIRING.patch
 rtk git apply patches/DC2B_HOST_WIRING.patch
 ```
 
-The patch was applied to a fresh local composite of its reference base files;
-all 16 resulting files matched the tested sources byte for byte. Keep this
+The original patch was applied to a fresh local composite of its reference base
+files; all 16 resulting files matched the tested sources byte for byte. Keep this
 branch's diagramSceneModel implementation and its manifest subpath when
 reconciling the Vue branch's independently introduced shared model. The host
 patch expects the integration branch's other canvas/graph/elements exports.
 
-## Verification and measured thresholds
+## Prior composite verification and measured thresholds
 
 Verified on 2026-11-12 using Node/jsdom only, with existing timeouts unchanged.
 
@@ -81,10 +85,9 @@ capture flag); framework template handlers belong to detached nodes. Vue tests
 explicitly clear viewportEl before unmount and still require wheel removal.
 Negative heap deltas mean that collection returned memory.
 
-Mounted AC-P1's separate 240-cycle/idle retained-heap campaign on each complete
-framework remains a conductor integration acceptance check. The completed
-cache + projection measurement and mounted ten-cycle AC-P5 measurement are
-reported separately from that campaign. No browser run is implied.
+Mounted AC-P1 was deferred in that composite run. The Svelte 240-cycle/idle
+retained-heap campaign is now completed in the integration report; the Vue
+campaign remains pending its diagram-library branch. No browser run is implied.
 
 ## Reproduction
 
