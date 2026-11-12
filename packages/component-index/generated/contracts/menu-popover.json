@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:cd52cdfe497ecd7d1fb61984521f877b9c21d241755ef3f36b0bc0da04ab1a08",
-  "entryDigest": "sha256:62a7214c8d04a53d6c8f5f5c1a00ad3e4c4ed4dc4f6da16000a6c22fd02b0018",
+  "digest": "sha256:8e8fd9d5ca89822dda1eef0397f8bdca56fc7c53a8f8071a842d2d0e32d830c9",
+  "entryDigest": "sha256:0e0bf0248a74e295e6052474a0760dd899043d2c335232e20c1917cea07ec14a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -479,7 +479,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuPopover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
