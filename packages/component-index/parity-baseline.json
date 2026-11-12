@@ -1371,6 +1371,7 @@
       "UtilityPanel",
       "Wizard",
       "composeAbsolute",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1378,8 +1379,10 @@
       "identityInitial",
       "nodeShapePath",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolveRelative",
-      "splitAbsolute"
+      "splitAbsolute",
+      "toContainingBlockPosition"
     ],
     "react": [
       "AppShell",
