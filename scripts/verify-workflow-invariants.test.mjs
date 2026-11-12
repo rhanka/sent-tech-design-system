@@ -181,7 +181,7 @@ test("every workflow under .github/workflows is structurally readable", () => {
 
 test("the guard actually sees the known publish workflows", () => {
   const files = publishWorkflowFiles();
-  for (const expected of ["npm-publish.yml", "svelte-publish.yml", "dataviz-publish.yml"]) {
+  for (const expected of ["npm-publish.yml", "svelte-publish.yml", "dataviz-publish.yml", "diagram-canvas-publish.yml"]) {
     assert.ok(files.includes(expected), `expected ${expected} among the inspected publish workflows`);
   }
 });
@@ -270,6 +270,14 @@ const DECLARED_TOKEN_BOOTSTRAPS = {
     // workflow — the day @sentropic/diagram-core has a first successful
     // `npm publish`. Measured E404 (never published) on 2026-11-03.
     removeWhen: "@sentropic/diagram-core has had a first successful npm publish",
+  },
+  "diagram-canvas-publish.yml": {
+    // Remove this entry — and the bootstrap step/secret it names in the
+    // workflow — the day @sentropic/diagram-canvas has a first successful
+    // `npm publish`. Never published by this repository: the manifest was
+    // `private: true` until DC-2a L4 (2026-11-11); registry state unverified
+    // from that lot (docs/release.md).
+    removeWhen: "@sentropic/diagram-canvas has had a first successful npm publish",
   },
 };
 
@@ -474,7 +482,12 @@ test("the AC-L7a tarball guard runs in a built CI job and pack-smoke shards cove
     `elements-publish.yml must run the tarball guard in both verify and publish jobs (found ${runs.length}) — the verify job is the only one that runs on workflow_dispatch`,
   );
   const planner = readFileSync(join(scriptsDir, "ci-affected-workspaces.mjs"), "utf8");
-  for (const name of ["@sentropic/design-system-elements", "@sentropic/design-system-rich-text", "@sentropic/diagram-core"]) {
+  for (const name of [
+    "@sentropic/design-system-elements",
+    "@sentropic/design-system-rich-text",
+    "@sentropic/diagram-core",
+    "@sentropic/diagram-canvas",
+  ]) {
     assert.ok(
       planner.includes(`"${name}"`),
       `scripts/ci-affected-workspaces.mjs must list ${name} in smokePackWorkspaces — otherwise its shards never run a pack-smoke task`,

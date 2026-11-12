@@ -41,11 +41,11 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 16 packages listed below are covered by the tarball-shape and
+// - Only the 17 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
 //   untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 21
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 22
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
@@ -285,6 +285,14 @@ const packages = [
     absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {
+    name: "@sentropic/diagram-canvas",
+    // DC-2a BF-5: the headless scene, camera and layout engine, publishable
+    // because design-system-svelte depends on it. Same tarball promise as
+    // diagram-core: entry points present, no maps, no build stamp.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/camera.js", "dist/layout/index.js"],
+    absentPatterns: ["\\.map$", "\\.srchash$"],
+  },
+  {
     name: "@sentropic/graph",
     // GD-M2-PROCESSING: the DOM-free computation subpath ships alongside the
     // root entry; both are required in the tarball.
@@ -379,7 +387,16 @@ const deepVerify = {
     // unpublished), so the install must resolve it to the local tarball -
     // the registry has no such version yet (ETARGET otherwise). themes'
     // own closure pulls tokens in the same walk.
-    closure: ["@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-themes"],
+    //
+    // DC-2a BF-5: @sentropic/diagram-canvas (the scene host's layout engine and
+    // camera) joins for the same reason at an as-yet unpublished 0.1.0; its
+    // own closure pulls diagram-core in the same walk.
+    closure: [
+      "@sentropic/graph",
+      "@sentropic/design-system-rich-text",
+      "@sentropic/design-system-themes",
+      "@sentropic/diagram-canvas",
+    ],
     peers: [
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
@@ -455,6 +472,8 @@ const deepVerify = {
   // a single-package shard still deep-verifies against real code.
   "@sentropic/graph": { closure: [], peers: [] },
   "@sentropic/diagram-core": { closure: [], peers: [] },
+  // DC-2a BF-5: one local dependency, resolved from the workspace tarball.
+  "@sentropic/diagram-canvas": { closure: ["@sentropic/diagram-core"], peers: [] },
   "@sentropic/dataviz-core": { closure: [], peers: [] },
   "@sentropic/dataviz-svelte": {
     // Compiling .svelte source never resolves the component's own imports
