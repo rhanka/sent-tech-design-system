@@ -20,4 +20,7 @@
 ## Feedback Loop
 - [x] Use package-scoped Vitest commands throughout; retain existing timeouts.
 - [x] Missing hosts: conductor applies the separate host patch after integrating PR #265 and feat/diagram-vue.
-- [x] Mounted-host memory/idle/lifecycle and Vue runtime gates are explicitly assigned in patches/DC2B_HOST_WIRING.md.
+- [x] Review BF-1/BF-2/BF-3/BF-4 corrected with failing-first regressions; NB-1 extends the heap workload through scene projection.
+- [x] Mounted-host idle/camera/binding/lifecycle gates run in Node/jsdom for Svelte and Vue; the published Vapor size regression also passes.
+- [x] Host published types and builds checked on a temporary composite inside this worktree; integration prerequisites reused read-only.
+- [x] Remaining mounted-host AC-P1 stress/idle heap campaign is distinguished from the completed canvas/model gate in patches/DC2B_HOST_WIRING.md.

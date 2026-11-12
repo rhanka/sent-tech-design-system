@@ -21,6 +21,9 @@ export interface LayoutCacheOptions {
   readonly verifyImmutability?: boolean;
 }
 
+/** Public configuration name shared by framework host entrypoints. */
+export type LayoutCacheConfig = LayoutCacheOptions;
+
 export interface LayoutCacheStats {
   readonly entries: number;
   readonly bytes: number;
@@ -136,7 +139,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       fingerprint, targetWidth: options.targetWidth,
       // The fingerprint already resolves row gaps and routing metrics. These
       // remaining compatibility metrics also affect the returned view bytes.
-      metrics: Object.fromEntries((["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap"] as const).map((name) => [name, metrics[name]])),
+      metrics: Object.fromEntries((["nodePaddingX", "nodePaddingY", "nodeMinWidth", "nodeMinHeight", "containerPadding", "titlePaddingY", "rankGap"] as const).map((name) => [name, name === "rankGap" ? options.hints?.rankGap ?? metrics.rankGap : metrics[name]])),
       pathKind: measured ? "measured" : "compatibility",
       documentDigest, presentationDigest, sourceViewDigest, registry,
       bindings: options.bindings === undefined ? "" : inputDigest(options.bindings),

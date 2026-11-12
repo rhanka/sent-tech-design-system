@@ -7,6 +7,7 @@ import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { createLayoutCache, layoutDocument, type LayoutOptions, type LayoutResult } from "../../src/index.js";
 import { buildDocument, largeDocumentSpec, measure } from "./fixtures.js";
 import { pinnedMeasurer, sceneInput } from "./dc2a/scenes.js";
+import * as presentation from "../../src/presentation/diagramSceneModel.js";
 
 v8.setFlagsFromString("--expose_gc");
 const forceGc = vm.runInNewContext("gc") as () => void;
@@ -27,7 +28,7 @@ const options: LayoutOptions = {
 const zone = Object.entries(input.presentation.entities).find(([id, value]) => id === "occurrence:e.pkg-h2a" && value.form === "container" && !input.collapsed.includes(occurrenceRef(id.replace(/^occurrence:/, ""))));
 if (zone === undefined) throw new Error("reference scene needs an expanded zone");
 const folded = [...input.collapsed, zone[0] as NonNullable<LayoutOptions["collapsed"]>[number]];
-afterEach(() => vi.useRealTimers());
+afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); });
 const disposalDeltas: number[] = [];
 afterAll(() => {
   if (disposalDeltas.length === 3) console.info(`DC-2b AC-P5 engine disposal V8 median-of-3: ${mib(median(disposalDeltas))} MiB <= 2 MiB`);
@@ -83,13 +84,21 @@ describe("DC-2b measured performance", () => {
   });
 
   it("should retain <= 5 MiB after 240 fold/unfold cycles and <= 1 MiB over 60 s idle (median of 3)", async () => {
+    const projection = vi.spyOn(presentation, "resolveScene");
+    let projections = 0;
     const growth: number[] = [], idleGrowth: number[] = [];
     for (let sample = 0; sample < 3; sample++) {
       const cache = createLayoutCache();
       let previous: Extract<LayoutResult, { status: "laid-out" }>["orientations"];
       const toggle = (closed: boolean): void => {
         const result = cache.layout(input.document, { ...options, ...(closed ? { collapsed: folded } : {}), ...(previous === undefined ? {} : { previousOrientation: previous }) });
-        if (result.status === "laid-out") previous = result.orientations;
+        if (result.status === "laid-out") {
+          previous = result.orientations;
+          presentation.resolveScene(result, { document: input.document, presentation: input.presentation, measureLines: pinnedMeasurer });
+          projections += projection.mock.calls.length;
+          // The measurement harness must not itself retain projected scenes.
+          projection.mockClear();
+        }
       };
       for (let warm = 0; warm < 2; warm++) { toggle(true); toggle(false); }
       const baseline = await retainedHeap();
@@ -113,6 +122,8 @@ describe("DC-2b measured performance", () => {
     console.info(`DC-2b AC-P1 V8 median-of-3: 240 fold/unfold cycles ${mib(median(growth))} MiB <= 5 MiB; 60 s virtual + 500 ms real idle ${mib(median(idleGrowth))} MiB <= 1 MiB; samples ${growth.map(mib).join(", ")} / ${idleGrowth.map(mib).join(", ")}`);
     expect(median(growth)).toBeLessThanOrEqual(5 * 1024 * 1024);
     expect(median(idleGrowth)).toBeLessThanOrEqual(1024 * 1024);
+    expect(projections).toBe(3 * (4 + 240 * 2));
+    projection.mockRestore();
   });
 
   it.each([1, 2, 3])("should release the cache across ten create/fold/dispose cycles within 2 MiB (sample %i)", async () => {
