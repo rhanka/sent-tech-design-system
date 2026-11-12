@@ -208,6 +208,48 @@ export function packColumns(boxes: readonly PackBox[], options: PackOptions): Pa
   return pack(boxes, options, "columns");
 }
 
+export interface SeatedShelves {
+  readonly positions: readonly { readonly x: number; readonly y: number }[];
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Seat boxes on given shelves (BF-6: shelf membership is decided once, at the
+ * base gaps, and never re-wrapped). Each gutter takes its own gap: `alongGap`
+ * is the gap after the box at `slot` of `shelf`, `acrossGap` the gap after
+ * `shelf`. With one along gap per slot index on every shelf, boxes of equal
+ * size keep their column starts aligned.
+ */
+export function seatShelves(
+  boxes: readonly PackBox[],
+  shelves: readonly (readonly number[])[],
+  orientation: PackOrientation,
+  alongGap: (shelf: number, slot: number) => number,
+  acrossGap: (shelf: number) => number,
+): SeatedShelves {
+  const rows = orientation === "rows";
+  const positions: { x: number; y: number }[] = new Array<{ x: number; y: number }>(boxes.length);
+  let crossCursor = 0;
+  let main = 0;
+  let cross = 0;
+  shelves.forEach((shelf, shelfIndex) => {
+    let alongCursor = 0;
+    let thickness = 0;
+    shelf.forEach((boxIndex, slot) => {
+      const box = boxes[boxIndex]!;
+      positions[boxIndex] = rows ? { x: alongCursor, y: crossCursor } : { x: crossCursor, y: alongCursor };
+      const length = rows ? box.width : box.height;
+      main = Math.max(main, alongCursor + length);
+      alongCursor += length + (slot + 1 < shelf.length ? alongGap(shelfIndex, slot) : 0);
+      thickness = Math.max(thickness, rows ? box.height : box.width);
+    });
+    cross = crossCursor + thickness;
+    crossCursor += thickness + (shelfIndex + 1 < shelves.length ? acrossGap(shelfIndex) : 0);
+  });
+  return { positions, width: rows ? main : cross, height: rows ? cross : main };
+}
+
 export interface OrientationChoice {
   readonly orientation: PackOrientation;
   readonly result: PackResult;

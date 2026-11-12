@@ -83,11 +83,20 @@ export interface RouteRequest {
   readonly endExit: Vec2;
   /** Entities that are not obstacles for this edge (L-R8). */
   readonly passable: ReadonlySet<EntityRef>;
+  /**
+   * The route stays inside this rectangle (DC-2a BF-3: the content box of the
+   * expanded container both ends share). When no admissible route exists
+   * inside it, the search runs once more without it and the relation is
+   * reported in `RouteOutcome.escaped`.
+   */
+  readonly within?: Rect;
 }
 
 export interface RouteOutcome {
   readonly routes: ReadonlyMap<RelationRef, readonly Vec2[]>;
   readonly obstructed: readonly RelationRef[];
+  /** Relations routed outside their `within` rectangle because no route exists inside it. */
+  readonly escaped: readonly RelationRef[];
 }
 
 const OVERLAP_PENALTY = 2;
@@ -338,6 +347,13 @@ export function routeEdges(input: {
    * its own ancestor, never the title drawn inside it).
    */
   readonly barriers?: readonly Rect[];
+  /**
+   * Extra grid lines, beside the ones the obstacles give. The row-pack path
+   * passes horizontal lanes outside the drawing, one label pitch apart, so
+   * routes that would otherwise share the single clearance line round the
+   * drawing each take their own lane — and each lane holds its own label.
+   */
+  readonly lanes?: { readonly xs: readonly number[]; readonly ys: readonly number[] };
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
   const entities = [...rects.keys()].sort();
@@ -374,6 +390,8 @@ export function routeEdges(input: {
       yValues.push(point.y);
     }
   }
+  for (const x of input.lanes?.xs ?? []) xValues.push(x);
+  for (const y of input.lanes?.ys ?? []) yValues.push(y);
   const xs = [...new Set(xValues)].sort((a, b) => a - b);
   const ys = [...new Set(yValues)].sort((a, b) => a - b);
   const xIndex = new Map(xs.map((value, index) => [value, index]));
@@ -498,6 +516,7 @@ export function routeEdges(input: {
 
   const routes = new Map<RelationRef, readonly Vec2[]>();
   const obstructed: RelationRef[] = [];
+  const escaped: RelationRef[] = [];
 
   const elbowFor = (startPoint: Vec2, endPoint: Vec2, startExit: Vec2): Vec2[] => {
     if (startPoint.x === endPoint.x || startPoint.y === endPoint.y) return [];
@@ -505,14 +524,30 @@ export function routeEdges(input: {
   };
 
   for (const request of [...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
-    generation += 1;
-    heap.clear();
+    let goalParent = -1;
     let pairId = pairIds.get(request.pairKey);
     if (pairId === undefined) {
       pairId = pairIds.size;
       pairIds.set(request.pairKey, pairId);
     }
     const pid = pairId;
+    const earlier: readonly (readonly Vec2[])[] = pairFull.get(request.pairKey) ?? [];
+    const hasSamePair = earlier.length > 0;
+    const startPoint = clearancePoint(request.start, request.startExit);
+    const endPoint = clearancePoint(request.end, request.endExit);
+    // BF-3: first inside the containment rectangle, then — only when nothing
+    // is admissible there — without it.
+    const clamps: (Rect | undefined)[] = request.within === undefined ? [undefined] : [request.within, undefined];
+    let terminalObstructed = false;
+    for (const clamp of clamps) {
+    if (goalParent >= 0 || terminalObstructed) break;
+    if (clamp === undefined && request.within !== undefined) escaped.push(request.id);
+    const insideClamp = (x: number, y: number): boolean =>
+      clamp === undefined ||
+      (x >= clamp.x && x <= clamp.x + clamp.width && y >= clamp.y && y <= clamp.y + clamp.height);
+    if (!insideClamp(startPoint.x, startPoint.y) || !insideClamp(endPoint.x, endPoint.y)) continue;
+    generation += 1;
+    heap.clear();
     const excluded = obstacles.filter((o) => request.passable.has(o.id));
     const excludedEmpty = excluded.length === 0;
     const blockedH = (i: number, j: number) => {
@@ -530,8 +565,6 @@ export function routeEdges(input: {
     const isBlockedH = excludedEmpty ? blockedHFast : blockedH;
     const isBlockedV = excludedEmpty ? blockedVFast : blockedV;
 
-    const startPoint = clearancePoint(request.start, request.startExit);
-    const endPoint = clearancePoint(request.end, request.endExit);
     const si = xIndex.get(startPoint.x)!;
     const sj = yIndex.get(startPoint.y)!;
     const ti = xIndex.get(endPoint.x)!;
@@ -539,9 +572,6 @@ export function routeEdges(input: {
     const startHeading = headingOf(request.startExit);
     const arrival = headingOf({ x: -request.endExit.x, y: -request.endExit.y });
     const goalState = nStates; // virtual
-
-    const earlier: readonly (readonly Vec2[])[] = pairFull.get(request.pairKey) ?? [];
-    const hasSamePair = earlier.length > 0;
 
     // The two dock-to-clearance joins are fixed by docking: when either
     // already shares a segment with — or transversally crosses — an earlier
@@ -553,15 +583,8 @@ export function routeEdges(input: {
         sharesSamePair(endPoint, request.end, earlier) ||
         crossesSamePair(endPoint, request.end, earlier));
     if (terminalBlocked) {
-      obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
-      const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
-      routes.set(request.id, full);
-      const list = pairFull.get(request.pairKey) ?? [];
-      list.push(full);
-      pairFull.set(request.pairKey, list);
-      reserveGridPath([startPoint, ...elbow, endPoint], pid);
-      continue;
+      terminalObstructed = true;
+      break;
     }
 
     // Pair heuristic `(t, |dx| + |dy|)`: an admissible lower bound on each
@@ -581,7 +604,6 @@ export function routeEdges(input: {
     heap.push(heuristicB(si, sj, startHeading), heuristicL(si, sj), startState);
     let goalBends = Number.POSITIVE_INFINITY;
     let goalLen = Number.POSITIVE_INFINITY;
-    let goalParent = -1;
 
     while (heap.size > 0) {
       const state = heap.pop();
@@ -637,6 +659,7 @@ export function routeEdges(input: {
         const ni = i + DX[nh]!;
         const nj = j + DY[nh]!;
         if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) continue;
+        if (clamp !== undefined && !insideClamp(xs[ni]!, ys[nj]!)) continue;
         let unit: number;
         let length: number;
         if (nh % 2 === 0) {
@@ -697,6 +720,8 @@ export function routeEdges(input: {
         parent[next] = state;
         heap.push(nb + heuristicB(ni, nj, nh), nl + heuristicL(ni, nj), next);
       }
+    }
+
     }
 
     if (goalParent < 0) {
@@ -774,5 +799,5 @@ export function routeEdges(input: {
     pairFull.set(request.pairKey, list);
   }
 
-  return { routes, obstructed };
+  return { routes, obstructed, escaped };
 }

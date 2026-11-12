@@ -286,7 +286,10 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     const containerTitle = "Container with a fairly long title that definitely wraps differently at full and toggle widths";
     // Header measurements only: width probes use a far larger allocation.
     const titleCalls = measurer.calls.filter((call) => call.role === "title" && call.availableWidth < 10000);
-    const containerCall = titleCalls.find((call) => call.text === containerTitle)!;
+    // DC-2a re-pin: the header is first measured at the header-driven floor
+    // width, then at the final width once the children are packed on a row
+    // (wider than the floor): the emitted measurement is the last call.
+    const containerCall = titleCalls.filter((call) => call.text === containerTitle).at(-1)!;
     const leafCall = titleCalls.find((call) => call.text.startsWith("Alpha with"))!;
     // The container renders a fold control, the leaf does not: the
     // container title is measured at its own inner width minus the toggle

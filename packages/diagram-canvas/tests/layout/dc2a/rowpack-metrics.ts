@@ -90,6 +90,12 @@ export interface PlacementMetrics {
   readonly sceneBandY: number;
   /** Routes leaving the rectangle of the lowest expanded container shared by their two ends. */
   readonly edgesOutsideContainer: number;
+  /**
+   * BF-3 / AC-26: edges whose two visible ends share an expanded ancestor C and
+   * whose route or placed label box leaves `inner(C)` — the content box of C,
+   * inside its insets and under its title band.
+   */
+  readonly edgeContainerEscapes: number;
   /** Route segments running through the title band of an expanded container. */
   readonly titleBandCrossings: number;
   /** Route segments running through the inside of a card or collapsed box. */
@@ -211,6 +217,9 @@ export function levelShelves(layout: SceneLayout): LevelShelves[] {
     }
     const out: SiblingGap[] = [];
     const orderedShelves: string[][] = [];
+    // Along gutters, by slot index: when the gutters after slot `k` of every
+    // shelf line up they are one lane of the level, crossed or labelled as one.
+    const alongLanes = new Map<number, { readonly gutter: Rect; readonly gap: number }[]>();
     const alongAxis = rows ? "x" : "y";
     const acrossAxis = rows ? "y" : "x";
     shelves.forEach((shelf, index) => {
@@ -222,6 +231,7 @@ export function levelShelves(layout: SceneLayout): LevelShelves[] {
         const b = layout.rects.get(after)!;
         const band: [number, number] = [shelf.start, Math.min(across(a)[1], across(b)[1])];
         const gutter = gutterOf([along(a)[1], along(b)[0]], band);
+        (alongLanes.get(slot) ?? alongLanes.set(slot, []).get(slot)!).push({ gutter, gap: out.length });
         out.push({ level, axis: alongAxis, before, after, gap: round(along(b)[0] - along(a)[1]), crossed: crossed(gutter), labelled: labelled(gutter) });
       });
       const next = shelves[index + 1];
@@ -239,6 +249,13 @@ export function levelShelves(layout: SceneLayout): LevelShelves[] {
         labelled: labelled(gutter),
       });
     });
+    for (const lane of alongLanes.values()) {
+      const start = (gutter: Rect): number => (rows ? gutter.x : gutter.y);
+      if (lane.length < 2 || !lane.every(({ gutter }) => Math.abs(start(gutter) - start(lane[0]!.gutter)) <= GAP_TOLERANCE)) continue;
+      const anyCrossed = lane.some(({ gap }) => out[gap]!.crossed);
+      const anyLabelled = lane.some(({ gap }) => out[gap]!.labelled);
+      for (const { gap } of lane) out[gap] = { ...out[gap]!, crossed: anyCrossed, labelled: anyLabelled };
+    }
     result.push({ level, rows, shelves: orderedShelves, gaps: out });
   }
   return result;
@@ -264,11 +281,20 @@ export function misalignedLevels(layout: SceneLayout): string[] {
         return sum;
       });
     });
+    // Only shelves whose boxes before slot `index` have the same sizes line
+    // up there: they are compared with one another, never with a shelf of
+    // other sizes (there is no column to keep between unequal boxes).
+    const prefix = level.shelves.map((shelf) => shelf.map((_, index) => shelf.slice(0, index).map((id) => String(size(id))).join("|")));
     const longest = Math.max(0, ...gutters.map((shelf) => shelf.length));
     let aligned = true;
     for (let index = 1; index < longest && aligned; index += 1) {
-      const sums = gutters.filter((shelf) => shelf.length > index).map((shelf) => shelf[index]!);
-      aligned = Math.max(...sums) - Math.min(...sums) <= GAP_TOLERANCE;
+      const groups = new Map<string, number[]>();
+      gutters.forEach((shelf, shelfIndex) => {
+        if (shelf.length <= index) return;
+        const key = prefix[shelfIndex]![index]!;
+        (groups.get(key) ?? groups.set(key, []).get(key)!).push(shelf[index]!);
+      });
+      for (const sums of groups.values()) aligned &&= Math.max(...sums) - Math.min(...sums) <= GAP_TOLERANCE;
     }
     if (!aligned) out.push(level.level);
   }
@@ -333,6 +359,59 @@ export function foldStability(before: SceneLayout, after: SceneLayout): FoldStab
     mean: round(displacements.length === 0 ? 0 : displacements.reduce((sum, value) => sum + value, 0) / displacements.length),
     moved,
   };
+}
+
+/** `inner(C)`: the content box of an expanded container — inset 16 on every side, under the title band and its 16 px rule gap. */
+export function innerBox(layout: SceneLayout, container: string): Rect | undefined {
+  const rect = layout.rects.get(container);
+  const band = layout.titleBands.get(container);
+  if (rect === undefined || band === undefined) return undefined;
+  const top = band.y + band.height + 16;
+  return { x: rect.x + 16, y: top, width: rect.width - 32, height: rect.y + rect.height - 16 - top };
+}
+
+/** BF-3: the edges that leave the content box of the lowest expanded container their two ends share, by route id. */
+export function containerEscapes(layout: SceneLayout): string[] {
+  const ancestorsOf = (id: string): string[] => {
+    const chain: string[] = [];
+    for (let parent = layout.parentOf.get(id); parent !== undefined; parent = layout.parentOf.get(parent)) chain.push(parent);
+    return chain;
+  };
+  const out: string[] = [];
+  for (const route of layout.routes) {
+    const targetChain = new Set(ancestorsOf(route.target));
+    const shared = ancestorsOf(route.source).find((ancestor) => targetChain.has(ancestor));
+    const inner = shared === undefined ? undefined : innerBox(layout, shared);
+    if (inner === undefined) continue;
+    const outside = (x: number, y: number): boolean =>
+      x < inner.x - GAP_TOLERANCE ||
+      x > inner.x + inner.width + GAP_TOLERANCE ||
+      y < inner.y - GAP_TOLERANCE ||
+      y > inner.y + inner.height + GAP_TOLERANCE;
+    const label = layout.labelBoxes.get(route.id);
+    if (
+      route.points.some((point) => outside(point.x, point.y)) ||
+      (label !== undefined && (outside(label.x, label.y) || outside(label.x + label.width, label.y + label.height)))
+    ) {
+      out.push(route.id);
+    }
+  }
+  return out;
+}
+
+/** Labelled routes with no label box, each with the expanded container its two ends share (BF-3 confines the label to it). */
+export function unplacedLabels(layout: SceneLayout): { readonly id: string; readonly container: string | undefined }[] {
+  const ancestorsOf = (id: string): string[] => {
+    const chain: string[] = [];
+    for (let parent = layout.parentOf.get(id); parent !== undefined; parent = layout.parentOf.get(parent)) chain.push(parent);
+    return chain;
+  };
+  return layout.routes
+    .filter((route) => layout.labelTexts.has(route.id) && !layout.labelBoxes.has(route.id))
+    .map((route) => {
+      const targetChain = new Set(ancestorsOf(route.target));
+      return { id: route.id, container: ancestorsOf(route.source).find((ancestor) => targetChain.has(ancestor)) };
+    });
 }
 
 /** Clip a box to a bounding box; `undefined` when nothing of it is left inside. */
@@ -435,6 +514,7 @@ export function placementMetrics(layout: SceneLayout): PlacementMetrics {
     sceneBandX: sceneBand(banded, "x"),
     sceneBandY: sceneBand(banded, "y"),
     edgesOutsideContainer,
+    edgeContainerEscapes: containerEscapes(layout).length,
     titleBandCrossings: segmentsThrough(layout, [...layout.titleBands.values()]).length,
     edgeCardCrossings: segmentsThrough(layout, leaves).length,
     routeObstructed: layout.warnings.filter((warning) => warning.code === "route-obstructed").length,

@@ -1,0 +1,68 @@
+{
+  "panningViews": [
+    "vue-globale/after 0.45"
+  ],
+  "aspectOver035": [
+    "vue-globale/before 0.388"
+  ],
+  "fillUnderBaselinePlus010": [
+    "vue-globale/before 0.518 → 0.294",
+    "vue-globale/intermediate 0.562 → 0.318",
+    "vue-globale/after 0.547 → 0.314",
+    "ajout-preprod/intermediate 0.669 → 0.328",
+    "ajout-preprod/after 0.663 → 0.363",
+    "migration-cluster-mesh/intermediate 0.626 → 0.421",
+    "migration-cluster-mesh/after 0.596 → 0.325",
+    "case-skills-r9/unfolded 0.772 → 0.523",
+    "case-skills-r9/skills-unfolded 0.793 → 0.52",
+    "case-integration-r9/unfolded 0.679 → 0.368",
+    "case-trackfocus-r9/unfolded 0.659 → 0.397"
+  ],
+  "foldedLabelLosses": [],
+  "routesThroughCards": [],
+  "obstructedRoutes": [
+    "vue-globale/folded do-h2a-ds-svelte",
+    "ajout-preprod/folded in-sync-g7",
+    "migration-cluster-mesh/folded ca-immo-mcp-idp",
+    "migration-cluster-mesh/folded in-api-immo-handoff"
+  ],
+  "unplacedLabels": {
+    "confinedToZone": [
+      "vue-globale/before da-rt-engram (in sys-engram)",
+      "vue-globale/intermediate do-mesh-artifacts (in sys-sentropic)",
+      "vue-globale/intermediate do-svelte-core (in sys-ds)",
+      "vue-globale/after dc-skill-focus (in pkg-h2a)",
+      "vue-globale/after do-mesh-artifacts (in sys-sentropic)",
+      "vue-globale/after do-svelte-core (in sys-ds)",
+      "ajout-preprod/before ac-prod-ui-w (in sys-prod)",
+      "ajout-preprod/before da-rt-legacy (in sys-ci)",
+      "ajout-preprod/before da-svc-prod-ui (in sys-prod)",
+      "ajout-preprod/before dc-art-prod-legacy (in sys-ci)",
+      "ajout-preprod/intermediate dc-art-host-map (in pkg-sync)",
+      "ajout-preprod/after dc-art-host-map (in pkg-sync)",
+      "migration-cluster-mesh/before da-rt-immo-api (in sys-immo)",
+      "migration-cluster-mesh/after dc-art-a4 (in pkg-app-api)",
+      "case-a/unfolded da-track (in sys-track)",
+      "case-a/unfolded dc-skill-track (in sys-track)",
+      "case-a/unfolded in-h2a-track (in sys-h2a)",
+      "case-a/pkg-folded da-track (in sys-track)",
+      "case-a/pkg-folded dc-skill-track (in sys-track)",
+      "case-a/pkg-folded in-h2a-track (in sys-h2a)",
+      "case-a/track-folded in-h2a-track (in sys-h2a)",
+      "case-integration-r9/unfolded dc-run-h2a (in coordination-skills)"
+    ],
+    "laneFull": [
+      "vue-globale/before in-codex-h2a",
+      "vue-globale/folded in-claude-h2a",
+      "vue-globale/folded in-claude-track",
+      "ajout-preprod/folded do-sync-api",
+      "ajout-preprod/folded in-sync-g7",
+      "migration-cluster-mesh/folded ca-immo-mcp-idp",
+      "migration-cluster-mesh/folded ca-immo-registry",
+      "migration-cluster-mesh/folded do-app-mesh",
+      "migration-cluster-mesh/folded do-immo-mesh",
+      "migration-cluster-mesh/folded do-mesh-artifacts",
+      "migration-cluster-mesh/folded in-api-immo-handoff"
+    ]
+  }
+}
