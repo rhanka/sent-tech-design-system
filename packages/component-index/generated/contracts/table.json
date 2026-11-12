@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:fa3d867eecd971aa14d4beeefc3b6fe8bd3e9bd152424d0679de9f9966cfaa6e",
-  "entryDigest": "sha256:962670d52391ab177e1c4fc8a013dd3e022bf6c9fdc9ae6dc8faededd922d796",
+  "digest": "sha256:c6f98f1b18d91b773b86583219200a2cee0bf298477e8fe918a34a72ee0fadc9",
+  "entryDigest": "sha256:2da4ff52767a8b508aa0570bd7db7b8b58fa4275feafbc19182d902a5480c3db",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -369,7 +369,7 @@
         "declarationPath": "packages/components-vue/dist/Table.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

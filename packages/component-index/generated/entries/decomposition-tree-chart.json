@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DecompositionTreeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hierarchical decomposition tree: a total measure broken down level by level into columns of bars linked to their parent.",
     "fr": "Arbre de décomposition hiérarchique : une mesure totale éclatée niveau par niveau en colonnes de barres reliées au parent."
   },
-  "digest": "sha256:cc1746cbe05d805251e42eac2f575478ddd2ad243f812e67baf8915b642525e1",
+  "digest": "sha256:4104ac88e2ba5bccf0e71a35e3cc57091a17e1637fb97ec08c9f51dcc497ea73",
   "displayName": "DecompositionTreeChart",
   "format": "component-entry/v1",
   "frameworks": [

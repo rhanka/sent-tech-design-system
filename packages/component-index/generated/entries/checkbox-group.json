@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CheckboxGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Set of checkboxes with a legend and multiple values.",
     "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
   },
-  "digest": "sha256:1e38a75e1e4479982d8538264b752752ff60563ae70db632fb2d73dfff688d77",
+  "digest": "sha256:8e4819b2ae153b8e7b883006bf75d11f10c42cd62d83b91566f8e1ee2db5684b",
   "displayName": "CheckboxGroup",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:fe89a1f6f36c6c7b401ada614f07adfa13003f5465e775d84fa89b49736409d3",
-  "entryDigest": "sha256:8f22f06cb29edc1ea350029d5199ae133022c335518ada4fc26b0cb6e6ace90f",
+  "digest": "sha256:b0c70792eedbed52e636319540a8cd22915218e7d8f820309c7f4e0384176ea8",
+  "entryDigest": "sha256:3e5eecc32da910e68bf0b8ca35705fd4643b56b11ead54ff94bcb292473b868e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-vue/dist/Overline.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

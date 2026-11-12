@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:a918b4367cae9df20eb0cf66b39f11396792ec50fff774f712751fec2dfe7fbd",
-  "entryDigest": "sha256:6c2f325b27063651e8cd3cc5e250235b21ff35d203578897966c95d7addb5263",
+  "digest": "sha256:48a5910132260535ea602ae036dfb320f9e4c48e7ecef549bff7c58b2bd46739",
+  "entryDigest": "sha256:4fb2a4f4f3b082fd6de358745d786d913c22fbedeb96cfb14d72afefe1a516ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -701,11 +701,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5cdcb4ac5858130bdb47aef5eaf5be08ac6f2e18a2fee9dd9f0b59a26d797027",
+        "declarationDigest": "sha256:cd15895d30651503523a23e762a10a1b51062d3dde13608c80e9c81ddfc12640",
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

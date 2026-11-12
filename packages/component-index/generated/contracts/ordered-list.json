@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:b6aac54dff4a8d7ad296ad585e0833a30228f939177d0c720b4aa294e4e1d902",
-  "entryDigest": "sha256:0132991b5c286fb6e258a659c542a3d4d99651e5c75c3cbf6f48c76d21ad96c6",
+  "digest": "sha256:2759ff11a4b39ec67768d980fa0fae9fde03b1a0d1dba974f7bfa71860e6d823",
+  "entryDigest": "sha256:f265aff3b1588f1d7d6e969846aa6bca8f70eac6ab9ece32d7e327c0bced3c26",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -251,7 +251,7 @@
         "declarationPath": "packages/components-vue/dist/OrderedList.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

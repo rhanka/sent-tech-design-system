@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Pagination.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Page navigation with current page.",
     "fr": "Navigation de pages avec page courante."
   },
-  "digest": "sha256:49a7674adc8ab8e8ed448006a58307f8e6e2ad5f1d0f53bef814f6c61fda22f7",
+  "digest": "sha256:d2fd189f9526407fcf32b1707bf29d49b3eca5af0ea6dc2fbc155474cf98264d",
   "displayName": "Pagination",
   "format": "component-entry/v1",
   "frameworks": [

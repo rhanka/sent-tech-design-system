@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:799f12fb60b975ad4d97c8f86731e541f4b5faea0223209901f8ff6a59f1db54",
+  "digest": "sha256:f70474f23de22f333806f6c88324eb119362f9b4d026a4ca62fa9ec2346e96d6",
   "entryDigest": "sha256:72cc3379076562916a1c71a373dbff3eb192a6d5f49afc1bdc876a4749e7835e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -4843,7 +4843,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@11828": {
+                    "__@refBrand@11926": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -4852,7 +4852,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@11828",
+                    "__@refBrand@11926",
                     "length"
                   ],
                   "type": "object"
@@ -4868,7 +4868,7 @@
                   "occurrence": {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "occurrence"
                       },
                       "length": {
@@ -4877,7 +4877,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -5034,7 +5034,7 @@
               "legendRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "entity"
                   },
                   "length": {
@@ -5043,7 +5043,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5506,7 +5506,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "entity"
                   },
                   "length": {
@@ -5515,7 +5515,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5543,7 +5543,7 @@
               "entity": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "entity"
                   },
                   "length": {
@@ -5552,7 +5552,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5567,7 +5567,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -5576,7 +5576,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5599,7 +5599,7 @@
               "categoryRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "entity"
                   },
                   "length": {
@@ -5608,7 +5608,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5713,7 +5713,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -5722,7 +5722,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -5807,7 +5807,7 @@
                     {
                       "additionalProperties": false,
                       "properties": {
-                        "__@refBrand@11828": {
+                        "__@refBrand@11926": {
                           "const": "entity"
                         },
                         "length": {
@@ -5816,7 +5816,7 @@
                         }
                       },
                       "required": [
-                        "__@refBrand@11828",
+                        "__@refBrand@11926",
                         "length"
                       ],
                       "type": "object"
@@ -5863,7 +5863,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@11828": {
+                    "__@refBrand@11926": {
                       "const": "entity"
                     },
                     "length": {
@@ -5872,7 +5872,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@11828",
+                    "__@refBrand@11926",
                     "length"
                   ],
                   "type": "object"
@@ -6009,7 +6009,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@11828": {
+                    "__@refBrand@11926": {
                       "const": "entity"
                     },
                     "length": {
@@ -6018,7 +6018,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@11828",
+                    "__@refBrand@11926",
                     "length"
                   ],
                   "type": "object"
@@ -6076,7 +6076,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -6085,7 +6085,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6139,7 +6139,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -6148,7 +6148,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6159,7 +6159,7 @@
               "ownerOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -6168,7 +6168,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6176,7 +6176,7 @@
               "port": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "port"
                   },
                   "length": {
@@ -6185,7 +6185,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6343,7 +6343,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@11828": {
+                          "__@refBrand@11926": {
                             "const": "entity"
                           },
                           "length": {
@@ -6352,7 +6352,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@11828",
+                          "__@refBrand@11926",
                           "length"
                         ],
                         "type": "object"
@@ -6373,7 +6373,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@11828": {
+                          "__@refBrand@11926": {
                             "const": "relation"
                           },
                           "length": {
@@ -6382,7 +6382,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@11828",
+                          "__@refBrand@11926",
                           "length"
                         ],
                         "type": "object"
@@ -6403,7 +6403,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@11828": {
+                          "__@refBrand@11926": {
                             "const": "port"
                           },
                           "length": {
@@ -6412,7 +6412,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@11828",
+                          "__@refBrand@11926",
                           "length"
                         ],
                         "type": "object"
@@ -6776,7 +6776,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "relation"
                   },
                   "length": {
@@ -6785,7 +6785,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6818,7 +6818,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "entity"
                       },
                       "length": {
@@ -6827,7 +6827,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -6835,7 +6835,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "relation"
                       },
                       "length": {
@@ -6844,7 +6844,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -6852,7 +6852,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "port"
                       },
                       "length": {
@@ -6861,7 +6861,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -6888,7 +6888,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -6897,7 +6897,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6905,7 +6905,7 @@
               "relation": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "relation"
                   },
                   "length": {
@@ -6914,7 +6914,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6948,7 +6948,7 @@
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -6957,7 +6957,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -6971,7 +6971,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "entity"
                       },
                       "length": {
@@ -6980,7 +6980,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -6988,7 +6988,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "relation"
                       },
                       "length": {
@@ -6997,7 +6997,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -7005,7 +7005,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@11828": {
+                      "__@refBrand@11926": {
                         "const": "port"
                       },
                       "length": {
@@ -7014,7 +7014,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@11828",
+                      "__@refBrand@11926",
                       "length"
                     ],
                     "type": "object"
@@ -7026,7 +7026,7 @@
                 "additionalProperties": false,
                 "description": "The original endpoint occurrence in the retained source view. Present iff\n`semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).",
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -7035,7 +7035,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7059,7 +7059,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "resource"
                   },
                   "length": {
@@ -7068,7 +7068,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7136,7 +7136,7 @@
               "documentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "document"
                   },
                   "length": {
@@ -7145,7 +7145,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7463,7 +7463,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "port"
                   },
                   "length": {
@@ -7472,7 +7472,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7483,7 +7483,7 @@
               "owner": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "entity"
                   },
                   "length": {
@@ -7492,7 +7492,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7524,7 +7524,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -7533,7 +7533,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7820,7 +7820,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@11828": {
+                    "__@refBrand@11926": {
                       "const": "relation"
                     },
                     "length": {
@@ -7829,7 +7829,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@11828",
+                    "__@refBrand@11926",
                     "length"
                   ],
                   "type": "object"
@@ -7841,7 +7841,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@11828": {
+                    "__@refBrand@11926": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -7850,7 +7850,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@11828",
+                    "__@refBrand@11926",
                     "length"
                   ],
                   "type": "object"
@@ -7860,7 +7860,7 @@
               "sourceOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -7869,7 +7869,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -7884,7 +7884,7 @@
               "targetOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -7893,7 +7893,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -8385,7 +8385,7 @@
               "semanticDocumentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "document"
                   },
                   "length": {
@@ -8394,7 +8394,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -8410,7 +8410,7 @@
               "viewId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "view"
                   },
                   "length": {
@@ -8419,7 +8419,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -8454,7 +8454,7 @@
                 "additionalProperties": false,
                 "description": "The entity occurrence this group folds (M3 §4.1.1). Present on every fold\ngroup in a completed-profile view. Membership is still derived through\n`EntityOccurrence.group`, never stored here.",
                 "properties": {
-                  "__@refBrand@11828": {
+                  "__@refBrand@11926": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -8463,7 +8463,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@11828",
+                  "__@refBrand@11926",
                   "length"
                 ],
                 "type": "object"
@@ -8485,7 +8485,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@11828": {
+                "__@refBrand@11926": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -8494,7 +8494,7 @@
                 }
               },
               "required": [
-                "__@refBrand@11828",
+                "__@refBrand@11926",
                 "length"
               ],
               "type": "object"
@@ -8512,7 +8512,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@11828": {
+                "__@refBrand@11926": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -8521,7 +8521,7 @@
                 }
               },
               "required": [
-                "__@refBrand@11828",
+                "__@refBrand@11926",
                 "length"
               ],
               "type": "object"
@@ -8727,7 +8727,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

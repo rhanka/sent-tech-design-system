@@ -1,8 +1,8 @@
 {
   "componentId": "packed-bubbles-chart",
   "contractSource": "derived",
-  "digest": "sha256:133ce9017bd23875f8eaa58d6f2122c15b7a63fb0616c9c6ebc750164ff109f1",
-  "entryDigest": "sha256:a02b0f4be5d51afab63ab33b84d2a10bbe1b366499d6a104ad49136e3f2807e5",
+  "digest": "sha256:47f5e203ac06de59a2706b8ab0f2329dbea0e0e8c91cfbb4308004fbad2b632e",
+  "entryDigest": "sha256:5f131de310556763a1517ef57aa8b7cceb64bf21ac98b99fde0cf744a4c97f15",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -316,7 +316,7 @@
         "declarationPath": "packages/components-vue/dist/PackedBubblesChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

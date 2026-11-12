@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ColorScaleBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels.",
     "fr": "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max."
   },
-  "digest": "sha256:0846c011a8422fab579901cfef464e37083216e571e2de957bccae613e0a7ee4",
+  "digest": "sha256:09500faf707e8012b5e130529f3f2449d0ae3a995f41e4496b8b9cd27b703bea",
   "displayName": "ColorScaleBar",
   "format": "component-entry/v1",
   "frameworks": [

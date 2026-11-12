@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ItemChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length.",
     "fr": "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc."
   },
-  "digest": "sha256:5308f6ceab2ad19884c2c7cfafb5d66ca4be1dfb2afbe14cfb0d361e7ce08f23",
+  "digest": "sha256:c2103abd8726e50acec4667754332a6d145d071bb3e7edbffc33e162b8fee77c",
   "displayName": "ItemChart",
   "format": "component-entry/v1",
   "frameworks": [

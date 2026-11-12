@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:fb275ea9d5788182371ff0f5f68660445deab0f748ad4743d72600ea892ae900",
+  "digest": "sha256:c6baef9ac78a33cb0d7a561913e000b29a40b0f948bd8f296d835c977818f8cd",
   "entryDigest": "sha256:77cd5dfa7689c0e14bfc3fff94394cb3a1ae8e979d803b3ae15b8932209c2ff8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -265,7 +265,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

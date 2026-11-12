@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tag.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:1ebd06942275a37b1b587d16d258c163d58f397964a2a871d6774f73b3585faf",
+  "digest": "sha256:ff7da83fe9dc20eba494c5c6c8a9b1b1fcefb2bf66b3c1accdc2216fe77bf590",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:38fbac0a0c6dd903f133ea69afd931541462d68ec2c3d6f4c07efcbfa1e5f961",
-  "entryDigest": "sha256:c657771ccab933c36d2223fe8d42cb4af6dcf3557e1ceab39683843d7ec67b7e",
+  "digest": "sha256:640b687020efb4f04643a7ff54a4264882894c233d157a535af21f6140cb3388",
+  "entryDigest": "sha256:e90fe84bc4f439e3d8efcd5b97476d865e36356c81b6c8fe2acda341da1e9d3c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -375,7 +375,7 @@
         "declarationPath": "packages/components-vue/dist/Slider.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SliderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ArcDiagramChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Arc diagram: nodes on an axis, weighted arcs coloured by source.",
     "fr": "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source."
   },
-  "digest": "sha256:fbdee1b939fee252586877ac4763dc58f58a8c76acff80e7fca5af0329f5cd22",
+  "digest": "sha256:cb469d92c419bdd47dbfb684ed5d4e5f37d074eff0ddcc39b2f8ea8ef9673d7f",
   "displayName": "ArcDiagramChart",
   "format": "component-entry/v1",
   "frameworks": [

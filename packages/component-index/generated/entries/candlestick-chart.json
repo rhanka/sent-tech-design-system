@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CandlestickChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "OHLC candlestick chart for financial price data.",
     "fr": "Bougies OHLC pour visualiser les cours financiers."
   },
-  "digest": "sha256:474acd5ba56352a3631e4916e05666ba42e03885e23979102a0a7e59b8be3f69",
+  "digest": "sha256:ebe5c7948609cece13072a2a968d6bf2298348a921f83540e26b7e1ba038ede1",
   "displayName": "CandlestickChart",
   "format": "component-entry/v1",
   "frameworks": [

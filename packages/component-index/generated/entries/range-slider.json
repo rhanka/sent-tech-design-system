@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RangeSlider.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Two-handle slider for selecting a value range.",
     "fr": "Curseur à deux poignées pour sélectionner une plage de valeurs."
   },
-  "digest": "sha256:939d560d838bdc035bffe36cbc1525a7f6ca75921401e5b1645541c0087dce48",
+  "digest": "sha256:de9ab5e7c82353b7ad2857ea3f73a93fd148f4c175df26d8db1c4f8ef5d90472",
   "displayName": "RangeSlider",
   "format": "component-entry/v1",
   "frameworks": [

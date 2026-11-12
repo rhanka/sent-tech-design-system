@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:4c7305e121bcc035ac5fc6703d9f363f9bc9ec0c0d8ecfaabe6bf3a329b211f4",
-  "entryDigest": "sha256:c60b7739168c22a69cd9a2a9351b6238527321a018a71343b65a935ce454cad7",
+  "digest": "sha256:2e61a1f7e2ecad91634104ef9104db4b09d3716dd98ec3419b6cda2182330361",
+  "entryDigest": "sha256:261667e57da8a5553c6b35328393817d8300997faa799751738b0153ab27c4c7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1042,6 +1042,15 @@
       ],
       "events": [
         {
+          "name": "edgeHover"
+        },
+        {
+          "name": "mergeComplete"
+        },
+        {
+          "name": "nodeHover"
+        },
+        {
           "name": "onEdgeHover",
           "payload": {
             "$ref": "#/$defs/ForceGraphEdge"
@@ -1094,6 +1103,12 @@
           "payload": {
             "type": "string"
           }
+        },
+        {
+          "name": "openEntity"
+        },
+        {
+          "name": "select"
         }
       ],
       "limitations": [
@@ -1367,11 +1382,22 @@
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"edgeHover\": payload not in declaration",
+        "emit \"mergeComplete\": payload not in declaration",
+        "emit \"nodeHover\": payload not in declaration",
+        "emit \"openEntity\": payload not in declaration",
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"edgeHover\" and prop \"onEdgeHover\" both listed verbatim",
+        "event pair: emits \"mergeComplete\" and prop \"onMergeComplete\" both listed verbatim",
+        "event pair: emits \"nodeHover\" and prop \"onNodeHover\" both listed verbatim",
+        "event pair: emits \"openEntity\" and prop \"onOpenEntity\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

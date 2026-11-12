@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Table.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:962670d52391ab177e1c4fc8a013dd3e022bf6c9fdc9ae6dc8faededd922d796",
+  "digest": "sha256:2da4ff52767a8b508aa0570bd7db7b8b58fa4275feafbc19182d902a5480c3db",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

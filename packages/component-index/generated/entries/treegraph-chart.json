@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TreegraphChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically.",
     "fr": "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement."
   },
-  "digest": "sha256:398464477d99939d3a477b03e2cfde915bcd9b2a991b825961cee45a0c8a09b8",
+  "digest": "sha256:bf2a6baa8185036374b1dd53723d356ff4b4a76368b7340d9a24f43a994594b8",
   "displayName": "TreegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

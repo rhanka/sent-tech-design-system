@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Icon.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:3787e47485422188d15c2f73c465a684d22be876ecd64370c0662fc70e8544e1",
+  "digest": "sha256:b58a49bb7bbd923465fbf9916a7268d8e3e828f816fbe841788a3422f9881ef0",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [
