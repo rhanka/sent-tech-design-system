@@ -1,10 +1,12 @@
-import { defineComponent, h, nextTick, onUnmounted, ref, watch } from "vue";
+import { defineComponent, h, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { classNames } from "./classNames.js";
 import { Menu } from "./Menu.js";
-import type { MenuItem } from "./Menu.js";
+import type { MenuActionItem, MenuItem } from "./Menu.js";
+import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
 export type MenuPopoverPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
 export type MenuPopoverAlign = "start" | "end" | "center";
+export type MenuPopoverSubmenuSide = SubMenuSide;
 
 export type MenuPopoverProps = {
   items?: MenuItem[];
@@ -18,6 +20,7 @@ export type MenuPopoverProps = {
   class?: string;
   closeOnOutside?: boolean;
   closeOnEscape?: boolean;
+  submenuSide?: SubMenuSide;
 };
 
 export type { MenuItem };
@@ -29,6 +32,8 @@ const MENU_POPOVER_VIEWPORT_MARGIN = 8;
 // Height floor: below this threshold we keep a usable scrollable window
 // rather than a crushed menu (rare case of a trigger glued to the edge).
 const MENU_POPOVER_MIN_HEIGHT = 160;
+
+let menuPopoverInstanceCounter = 0;
 
 function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
   if (!node) return false;
@@ -49,6 +54,17 @@ function effectivePlacement(placement: MenuPopoverPlacement, flipped: boolean): 
   return "bottom-end";
 }
 
+function treeHasCascade(list: MenuItem[]): boolean {
+  for (const item of list) {
+    const tagged = item as { type?: string; kind?: string; children?: MenuItem[]; items?: MenuItem[] };
+    const kind = tagged.type ?? tagged.kind;
+    if (Array.isArray(tagged.children) && tagged.children.length > 0) return true;
+    if (Array.isArray(tagged.children) && treeHasCascade(tagged.children)) return true;
+    if (kind === "group" && Array.isArray(tagged.items) && treeHasCascade(tagged.items)) return true;
+  }
+  return false;
+}
+
 export const MenuPopover = defineComponent({
   name: "MenuPopover",
   props: {
@@ -61,11 +77,32 @@ export const MenuPopover = defineComponent({
     class: { type: String, default: undefined },
     closeOnOutside: { type: Boolean, default: true },
     closeOnEscape: { type: Boolean, default: true },
+    submenuSide: { type: String as () => SubMenuSide, default: "auto" },
   },
-  emits: ["update:open"],
+  emits: ["update:open", "select"],
   setup(props, { emit, slots, attrs }) {
+    const rootMenuId = `st-menupopover-${++menuPopoverInstanceCounter}`;
     const localOpen = ref(props.open ?? false);
     const panelRef = ref<HTMLElement | null>(null);
+    // Reported by the inner Menu via setHasCascade (and reset when items lose
+    // their cascade): Esc returns focus to the trigger for cascade menus
+    // only, flat menus keep their previous behaviour (§3.6, AC-01).
+    const hasCascade = ref(false);
+
+    function requestClose(options: { focusTrigger: boolean }) {
+      setOpen(false);
+      if (options.focusTrigger) {
+        props.trigger?.focus();
+      }
+    }
+
+    provide(MENU_HOST_KEY, {
+      rootMenuId,
+      requestClose,
+      setHasCascade: (value: boolean) => {
+        hasCascade.value = value;
+      },
+    });
 
     const top = ref(0);
     const left = ref(0);
@@ -82,6 +119,19 @@ export const MenuPopover = defineComponent({
       if (props.open === undefined) localOpen.value = value;
       emit("update:open", value);
     };
+
+    function handleMenuSelect(item: MenuActionItem, path?: string[]) {
+      // Relay: first argument unchanged, path second for cascade leaves.
+      // Flat menus keep the legacy single-argument call (AC-01).
+      if (path !== undefined) {
+        emit("select", item, path);
+      } else {
+        emit("select", item);
+      }
+      // Cascade close is owned by the inner Menu via requestClose (focus
+      // depends on modality); flat leaves do not auto-close here (parity
+      // with the Svelte fixture where the consumer closes).
+    }
 
     function computePosition() {
       const trigger = props.trigger;
@@ -207,6 +257,46 @@ export const MenuPopover = defineComponent({
       stopCloseHandlers = null;
     };
 
+    // The host generates the root menu id and sets `aria-controls` on its
+    // trigger, including an external trigger element passed as prop (§2.2, D10).
+    watch(
+      [() => isOpen(), () => props.trigger],
+      ([openNow]) => {
+        const trigger = props.trigger;
+        if (!trigger) return;
+        if (!openNow) {
+          trigger.removeAttribute("aria-controls");
+          return;
+        }
+        trigger.setAttribute("aria-controls", rootMenuId);
+        const owned = trigger;
+        return () => owned.removeAttribute("aria-controls");
+      },
+      { immediate: true },
+    );
+
+    // When items change while open, the cascade flag must stay fresh so
+    // Esc focus-return follows the current tree (AC-01/M5 parity).
+    watch(
+      () => props.items,
+      (items) => {
+        // If items lose/gain cascade externally (slot mode without inner
+        // Menu reporting yet), keep a host-side fallback fresh. The inner
+        // Menu reports via setHasCascade when it is present; this fallback
+        // covers the transition before that report and keeps the flag
+        // non-stale when the inner Menu unmounts.
+        if (items && items.length > 0) {
+          // Only overwrite when the inner Menu has not reported recently:
+          // the inner Menu's immediate watch runs first, so this runs after.
+          // We keep the reported value if it disagrees with a stale tree by
+          // preferring the fresh computation here (same tree, same result).
+          hasCascade.value = treeHasCascade(items);
+        } else {
+          hasCascade.value = false;
+        }
+      },
+    );
+
     watch(
       () => isOpen(),
       (openNow) => {
@@ -237,16 +327,26 @@ export const MenuPopover = defineComponent({
         };
 
         const onPointerDown = (event: PointerEvent) => {
+          // Detached instances (tests mounting without attachTo) never
+          // own the global close and must not block attached hosts.
+          if (panelRef.value && !document.body.contains(panelRef.value)) return;
+          // A nested menu level already consumed this event (D4).
+          if (event.defaultPrevented) return;
           if (!props.closeOnOutside) return;
           if (menuPopoverIsWithin(event, panelRef.value)) return;
           if (menuPopoverIsWithin(event, props.trigger)) return;
           setOpen(false);
         };
         const onKeyDown = (event: KeyboardEvent) => {
+          if (panelRef.value && !document.body.contains(panelRef.value)) return;
+          // A nested menu level already consumed this key (D4).
+          if (event.defaultPrevented) return;
           if (!props.closeOnEscape) return;
           if (event.key === "Escape") {
             event.preventDefault();
-            setOpen(false);
+            // Keyboard closes return focus to the trigger for cascade menus
+            // only, flat menus keep their previous behaviour (§3.6, AC-01).
+            requestClose({ focusTrigger: hasCascade.value });
           }
         };
         window.addEventListener("pointerdown", onPointerDown);
@@ -262,10 +362,16 @@ export const MenuPopover = defineComponent({
     onUnmounted(teardown);
 
     return () => {
+      const cascade = hasCascade.value || treeHasCascade(props.items ?? []);
+      void cascade;
       if (!isOpen()) return null;
 
       const style: Record<string, string> = { top: `${top.value}px`, left: `${left.value}px` };
       if (maxHeight.value) style.maxHeight = `${maxHeight.value}px`;
+
+      const hasItems = props.items && props.items.length > 0;
+      const itemsCascade = hasItems ? treeHasCascade(props.items) : false;
+      const innerRole = hasItems && itemsCascade ? "menu" : "presentation";
 
       return h(
         "div",
@@ -285,7 +391,14 @@ export const MenuPopover = defineComponent({
           ),
           style,
         },
-        props.items && props.items.length ? h(Menu, { items: props.items, role: "presentation" }) : slots.default?.(),
+        hasItems
+          ? h(Menu, {
+              items: props.items,
+              role: innerRole,
+              submenuSide: props.submenuSide,
+              onSelect: handleMenuSelect,
+            })
+          : slots.default?.(),
       );
     };
   },
