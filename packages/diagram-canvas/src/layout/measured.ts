@@ -246,8 +246,8 @@ const HEADER_ROUNDS = 6;
 const LANE_TOLERANCE = 0.5;
 /** Lanes offered to routes on each side outside the drawing, at most. */
 const OUTER_LANES = 6;
-/** Rounds in which the set of widened gutters may still grow (BF-6); afterwards it only shrinks. */
-const WIDEN_ROUNDS = 3;
+/** MAJ-1: at most one widening round after pass 1 (BF-6); afterwards the set only shrinks. */
+const WIDEN_ROUNDS = 1;
 
 export function layoutMeasured(
   document: SemanticDocument,
@@ -920,11 +920,35 @@ export function layoutMeasured(
         2 * CONTENT_INSET,
         CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + LAST_CHILD_TO_BOTTOM_GAP,
       );
+      // BLK-2: reserve U-channel headroom for labelled intra-row edges that
+      // share one shelf. A single-row container gets k × 30 px below its row
+      // so the south U-channel lane fits inside `inner(C)` (4 px insets).
+      const packed = packedRuns.get(run.key);
+      let uEdges = 0;
+      if (packed !== undefined) {
+        const zone = runHasZone(run);
+        const baseGap = packed.rows ? (zone ? rowGaps.zoneX : rowGaps.cardX) : (zone ? rowGaps.zoneY : rowGaps.cardY);
+        for (const edge of drawnEdges) {
+          if (placementParentOf(edge.source.entity) !== id || placementParentOf(edge.target.entity) !== id) continue;
+          const labelSize = labelSizes.get(edge.occurrence as unknown as RelationRef);
+          if (labelSize === undefined) continue;
+          const si = ordered.indexOf(edge.source.entity);
+          const ti = ordered.indexOf(edge.target.entity);
+          if (si < 0 || ti < 0) continue;
+          const sameShelf = packed.shelves.some((shelf) => shelf.includes(si) && shelf.includes(ti));
+          if (!sameShelf) continue;
+          const need =
+            (packed.rows ? labelSize.width : labelSize.height) + 2 * metrics.labelMargin;
+          if (need > baseGap) uEdges += 1;
+        }
+      }
+      const uExtra = uEdges * 30;
+      const levelHeight = level.height + uExtra;
       const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * CONTENT_INSET : 0));
       outerWidths.set(id, outer);
       const size = {
         width: outer,
-        height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + level.height + LAST_CHILD_TO_BOTTOM_GAP,
+        height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + levelHeight + LAST_CHILD_TO_BOTTOM_GAP,
       };
       packedSizes.set(id, size);
       return size;
@@ -1116,17 +1140,17 @@ export function layoutMeasured(
       ]);
     }
     const shapesOf = (id: RelationRef): readonly Rect[] => shapesByEdge.get(id) ?? fixedShapes;
-    /** BF-3 `inner(C)`: the content box of an expanded container, inside its insets and under its title band. */
+    /** BF-3 `inner(C)`: the routable interior of an expanded container (BLK-3). */
     const innerOf = (container: EntityRef): Rect | undefined => {
       const rect = rects.get(container);
       const band = titleBands.get(container);
       if (rect === undefined || band === undefined) return undefined;
-      const top = band.y + band.height + RULE_TO_FIRST_CHILD_GAP;
+      const top = band.y + band.height + 4;
       return {
-        x: rect.x + CONTENT_INSET,
+        x: rect.x + 4,
         y: top,
-        width: rect.width - 2 * CONTENT_INSET,
-        height: rect.y + rect.height - LAST_CHILD_TO_BOTTOM_GAP - top,
+        width: Math.max(0, rect.width - 8),
+        height: Math.max(0, rect.y + rect.height - top - 4),
       };
     };
     const withinOf = new Map<RelationRef, Rect>();
@@ -1141,16 +1165,18 @@ export function layoutMeasured(
     const probeMarginOf = (height: number): number =>
       Math.min(metrics.labelMargin, (Math.min(rowGaps.cardY, rowGaps.zoneY) - height) / 2);
 
-    // BF-6 U-channel: a labelled edge between two side-by-side boxes has only
-    // a short bridge across a capped gutter, where no label fits. Both ends
-    // then dock on one same side — south when the lane under the boxes is
-    // free, else north — so the route runs along that lane and the label sits
-    // on it. Edges of one same pair alternate sides. Without a free lane the
+    // BF-6 U-channel (BLK-2): a labelled edge between two side-by-side boxes has
+    // only a short bridge across a capped gutter, where no label fits — and a
+    // stacked pair has only a short vertical bridge. Both ends then dock on
+    // one same side so the route runs along that lane and the label sits on
+    // it. Multiple labelled edges on one row step to parallel lanes
+    // (usedUTracks), staggered by one label pitch. Without a free lane the
     // edge keeps its bridge and its label is reported unplaced.
     const drawingTop = Math.min(0, ...[...rects.values()].map((rect) => rect.y));
     const drawingBottom = Math.max(0, ...[...rects.values()].map((rect) => rect.y + rect.height));
     const sideOverrides = new Map<RelationRef, { readonly source: PortSide; readonly target: PortSide; readonly turn: boolean }>();
     const labelledPairs = new Map<string, number>();
+    const usedUTracks = new Map<string, number>();
     for (const edge of [...drawnEdges].sort((left, right) => byString(left.occurrence, right.occurrence))) {
       const id = edge.occurrence as unknown as RelationRef;
       const size = labelSizes.get(id);
@@ -1162,24 +1188,44 @@ export function layoutMeasured(
       const b = rects.get(target)!;
       const bridge = Math.max(b.x - (a.x + a.width), a.x - (b.x + b.width));
       const sideBySide = a.y < b.y + b.height && b.y < a.y + a.height && bridge >= 0;
-      if (!sideBySide) continue;
-      // A straight bridge long enough for the label, across a band nothing stands in, keeps its docks.
-      const band: Rect = {
-        x: Math.min(a.x + a.width, b.x + b.width),
-        y: Math.max(a.y, b.y),
-        width: bridge,
-        height: Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y),
-      };
-      if (bridge >= size.width + 2 * metrics.labelMargin && !shapesOf(id).some((shape) => rectsIntersect(shape, band))) continue;
-      const probe = probeMarginOf(size.height);
+      const vBridge = Math.max(b.y - (a.y + a.height), a.y - (b.y + b.height));
+      const stacked = !sideBySide && a.x < b.x + b.width && b.x < a.x + a.width && vBridge >= 0;
+      if (!sideBySide && !stacked) continue;
+      if (sideBySide) {
+        // A straight bridge long enough for the label, across a band nothing stands in, keeps its docks.
+        const band: Rect = {
+          x: Math.min(a.x + a.width, b.x + b.width),
+          y: Math.max(a.y, b.y),
+          width: bridge,
+          height: Math.min(a.y + a.height, b.y + b.height) - Math.max(a.y, b.y),
+        };
+        if (bridge >= size.width + 2 * metrics.labelMargin && !shapesOf(id).some((shape) => rectsIntersect(shape, band))) continue;
+      } else {
+        const band: Rect = {
+          x: Math.max(a.x, b.x),
+          y: Math.min(a.y + a.height, b.y + b.height),
+          width: Math.min(a.x + a.width, b.x + b.width) - Math.max(a.x, b.x),
+          height: vBridge,
+        };
+        if (vBridge >= size.height + 2 * metrics.labelMargin && !shapesOf(id).some((shape) => rectsIntersect(shape, band))) continue;
+      }
+      const probe = probeMarginOf(sideBySide ? size.height : size.width);
       if (probe < 0) continue;
       const pairKey = [source, target].sort().join("|");
       const nth = labelledPairs.get(pairKey) ?? 0;
       labelledPairs.set(pairKey, nth + 1);
       const within = withinOf.get(id);
-      const depth = size.height + 2 * probe;
-      const laneFree = (side: "south" | "north"): boolean => {
-        const top = side === "south" ? Math.max(a.y + a.height, b.y + b.height) : Math.min(a.y, b.y) - depth;
+      // BLK-2: parallel U-channels on one row step to staggered lanes.
+      const containerKey =
+        placementParentOf(source) !== undefined && placementParentOf(source) === placementParentOf(target)
+          ? placementParentOf(source)!
+          : "root";
+      const used = usedUTracks.get(containerKey) ?? 0;
+      const depth = (sideBySide ? size.height : size.width) + 2 * probe;
+      const pitch = depth + 2 * metrics.labelMargin;
+      const laneFreeRow = (side: "south" | "north", attempt: number): boolean => {
+        const base = side === "south" ? Math.max(a.y + a.height, b.y + b.height) : Math.min(a.y, b.y) - depth;
+        const top = side === "south" ? base + attempt * pitch : base - attempt * pitch;
         const centres = [a.x + a.width / 2, b.x + b.width / 2];
         const lane: Rect = { x: Math.min(...centres), y: top, width: Math.abs(centres[0]! - centres[1]!), height: depth };
         if (
@@ -1191,7 +1237,6 @@ export function layoutMeasured(
         ) {
           return false;
         }
-        // The two legs, from each box to the lane (boxes of unequal height).
         const legs: Rect[] = [a, b].map((rect) =>
           side === "south"
             ? { x: rect.x + rect.width / 2 - 1, y: rect.y + rect.height, width: 2, height: top - (rect.y + rect.height) }
@@ -1199,26 +1244,67 @@ export function layoutMeasured(
         );
         return ![lane, ...legs.filter((leg) => leg.height > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
       };
-      // The lane outside the drawing comes first: it is free space, where the
-      // lane between two shelves is shared with every edge crossing it.
+      const laneFreeCol = (side: "east" | "west", attempt: number): boolean => {
+        const base = side === "east" ? Math.max(a.x + a.width, b.x + b.width) : Math.min(a.x, b.x) - depth;
+        const left = side === "east" ? base + attempt * pitch : base - attempt * pitch;
+        const centres = [a.y + a.height / 2, b.y + b.height / 2];
+        const lane: Rect = { x: left, y: Math.min(...centres), width: depth, height: Math.abs(centres[0]! - centres[1]!) };
+        if (
+          within !== undefined &&
+          (lane.x < within.x ||
+            lane.y < within.y ||
+            lane.x + lane.width > within.x + within.width ||
+            lane.y + lane.height > within.y + within.height)
+        ) {
+          return false;
+        }
+        const legs: Rect[] = [a, b].map((rect) =>
+          side === "east"
+            ? { x: rect.x + rect.width, y: rect.y + rect.height / 2 - 1, width: left - (rect.x + rect.width), height: 2 }
+            : { x: left + depth, y: rect.y + rect.height / 2 - 1, width: rect.x - (left + depth), height: 2 },
+        );
+        return ![lane, ...legs.filter((leg) => leg.width > 0)].some((zone) => shapesOf(id).some((shape) => rectsIntersect(shape, zone)));
+      };
       const outside: "south" | "north" | undefined =
-        within !== undefined
+        within !== undefined || !sideBySide
           ? undefined
           : Math.min(a.y, b.y) <= drawingTop
             ? "north"
             : Math.max(a.y + a.height, b.y + b.height) >= drawingBottom
               ? "south"
               : undefined;
-      const preference: readonly ("south" | "north")[] =
-        outside === undefined
-          ? nth % 2 === 0
-            ? ["south", "north"]
-            : ["north", "south"]
-          : nth % 2 === 0
-            ? [outside, outside === "south" ? "north" : "south"]
-            : [outside === "south" ? "north" : "south", outside];
-      const side = preference.find(laneFree);
-      if (side !== undefined) sideOverrides.set(id, { source: side, target: side, turn: true });
+      let placed = false;
+      if (sideBySide) {
+        const preference: readonly ("south" | "north")[] =
+          outside === undefined
+            ? nth % 2 === 0
+              ? ["south", "north"]
+              : ["north", "south"]
+            : nth % 2 === 0
+              ? [outside, outside === "south" ? "north" : "south"]
+              : [outside === "south" ? "north" : "south", outside];
+        for (const side of preference) {
+          for (let attempt = used; attempt < used + 3 && !placed; attempt += 1) {
+            if (laneFreeRow(side, attempt)) {
+              sideOverrides.set(id, { source: side, target: side, turn: true });
+              usedUTracks.set(containerKey, attempt + 1);
+              placed = true;
+            }
+          }
+          if (placed) break;
+        }
+      } else {
+        for (const side of ["east", "west"] as const) {
+          for (let attempt = used; attempt < used + 3 && !placed; attempt += 1) {
+            if (laneFreeCol(side, attempt)) {
+              sideOverrides.set(id, { source: side, target: side, turn: true });
+              usedUTracks.set(containerKey, attempt + 1);
+              placed = true;
+            }
+          }
+          if (placed) break;
+        }
+      }
     }
 
     // Dock and route against fixed boxes (§4.6.4/§4.6.5). Slots keep the
@@ -1266,6 +1352,12 @@ export function layoutMeasured(
       const targetRole = occurrence.endpoints.find((endpoint) => endpoint.role === "target")!;
       const occurrenceId = edge.occurrence as unknown as RelationRef;
       const pair = finalDocks.get(occurrenceId)!;
+      // BLK-3: containment is enforced by the `within` clamp (4 px insets) +
+      // escaped warnings below. Ancestors stay passable so the interior of the
+      // shared container remains routable; the clamp prevents exiting it.
+      // (Excluding the shared container itself from `passable` blocks its
+      // whole grown box, leaving no route inside `within` — evidenced by
+      // 0→93 escapes — so it is not done here.)
       const passable = new Set<EntityRef>([
         ...projectedAncestorsOf(sourceRole.occurrence),
         ...projectedAncestorsOf(targetRole.occurrence),
@@ -1328,6 +1420,15 @@ export function layoutMeasured(
         code: "route-obstructed",
         refs: [id],
         message: `no orthogonal route around the obstacles was found for ${id}; an elbow is drawn instead`,
+      });
+    }
+    // BLK-3: an escape means the clamped route failed and the router fell back
+    // to unclamped global routing — a containment failure, never silent.
+    for (const id of [...routed.escaped].sort(byString)) {
+      warnings.push({
+        code: "route-obstructed",
+        refs: [id],
+        message: `route of ${id} leaves the content box of its shared container; no route inside it was found`,
       });
     }
 

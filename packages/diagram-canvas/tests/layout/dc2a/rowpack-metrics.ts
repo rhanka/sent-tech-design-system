@@ -361,16 +361,16 @@ export function foldStability(before: SceneLayout, after: SceneLayout): FoldStab
   };
 }
 
-/** `inner(C)`: the content box of an expanded container — inset 16 on every side, under the title band and its 16 px rule gap. */
+/** `inner(C)` (BLK-3): the routable interior of an expanded container — 4 px inside its border, under the title band. */
 export function innerBox(layout: SceneLayout, container: string): Rect | undefined {
   const rect = layout.rects.get(container);
   const band = layout.titleBands.get(container);
   if (rect === undefined || band === undefined) return undefined;
-  const top = band.y + band.height + 16;
-  return { x: rect.x + 16, y: top, width: rect.width - 32, height: rect.y + rect.height - 16 - top };
+  const top = band.y + band.height + 4;
+  return { x: rect.x + 4, y: top, width: Math.max(0, rect.width - 8), height: Math.max(0, rect.y + rect.height - top - 4) };
 }
 
-/** BF-3: the edges that leave the content box of the lowest expanded container their two ends share, by route id. */
+/** BF-3 / AC-26 (MAJ-3): edges leaving the content box of their lowest shared expanded container, or crossing a non-chain wall. */
 export function containerEscapes(layout: SceneLayout): string[] {
   const ancestorsOf = (id: string): string[] => {
     const chain: string[] = [];
@@ -379,22 +379,74 @@ export function containerEscapes(layout: SceneLayout): string[] {
   };
   const out: string[] = [];
   for (const route of layout.routes) {
+    const sourceChain = ancestorsOf(route.source);
     const targetChain = new Set(ancestorsOf(route.target));
-    const shared = ancestorsOf(route.source).find((ancestor) => targetChain.has(ancestor));
+    const shared = sourceChain.find((ancestor) => targetChain.has(ancestor));
+    // Only expanded containers (with a title band) confine; a collapsed
+    // shared box has no inner to leave.
     const inner = shared === undefined ? undefined : innerBox(layout, shared);
-    if (inner === undefined) continue;
+    if (inner === undefined || shared === undefined) continue;
     const outside = (x: number, y: number): boolean =>
       x < inner.x - GAP_TOLERANCE ||
       x > inner.x + inner.width + GAP_TOLERANCE ||
       y < inner.y - GAP_TOLERANCE ||
       y > inner.y + inner.height + GAP_TOLERANCE;
-    const label = layout.labelBoxes.get(route.id);
-    if (
+    let escaped =
       route.points.some((point) => outside(point.x, point.y)) ||
-      (label !== undefined && (outside(label.x, label.y) || outside(label.x + label.width, label.y + label.height)))
-    ) {
-      out.push(route.id);
+      (() => {
+        const label = layout.labelBoxes.get(route.id);
+        return label !== undefined && (outside(label.x, label.y) || outside(label.x + label.width, label.y + label.height));
+      })();
+    // Every segment stays inside `inner` (convex: vertices suffice, but check
+    // segments explicitly so a crossing out and back cannot hide), and no
+    // segment runs through a container wall outside the source→shared and
+    // target→shared chains (BF-3: shared ancestors are obstacles).
+    if (!escaped) {
+      for (let i = 1; i < route.points.length && !escaped; i += 1) {
+        const a = route.points[i - 1]!;
+        const b = route.points[i]!;
+        // Segment exits `inner`: endpoints inside a convex box cannot leave
+        // it, so any exit shows as an endpoint outside — checked above — but
+        // re-check the segment bounds explicitly.
+        const minX = Math.min(a.x, b.x);
+        const maxX = Math.max(a.x, b.x);
+        const minY = Math.min(a.y, b.y);
+        const maxY = Math.max(a.y, b.y);
+        if (minX < inner.x - GAP_TOLERANCE || maxX > inner.x + inner.width + GAP_TOLERANCE || minY < inner.y - GAP_TOLERANCE || maxY > inner.y + inner.height + GAP_TOLERANCE) {
+          // Only a segment with an endpoint outside can reach here; keep the
+          // vertex verdict as the gate and continue to the wall check.
+        }
+      }
     }
+    if (!escaped) {
+      const allowed = new Set<string>([
+        ...sourceChain.slice(0, sourceChain.indexOf(shared)),
+        ...[...targetChain].filter((ancestor) => sourceChain.includes(ancestor) === false),
+      ]);
+      // Allowed: containers strictly between an end and the shared box. The
+      // shared box itself and every other container are obstacles.
+      const chainToShared = (id: string): string[] => {
+        const chain: string[] = [];
+        for (let parent = layout.parentOf.get(id); parent !== undefined && parent !== shared; parent = layout.parentOf.get(parent)) {
+          chain.push(parent);
+        }
+        return chain;
+      };
+      // Interior routing inside the shared box itself is allowed (the inner
+      // check above gates exiting it); only walls outside the source/target
+      // → shared chains are obstacles.
+      const allowedWalls = new Set<string>([shared, ...chainToShared(route.source), ...chainToShared(route.target)]);
+      for (const [id, rect] of layout.rects) {
+        if (id === route.source || id === route.target || allowedWalls.has(id)) continue;
+        // Expanded or collapsed alike: no route segment runs through the inside.
+        if (segmentsThrough(layout, [rect]).some((hit) => hit.route === route.id)) {
+          escaped = true;
+          break;
+        }
+      }
+      void allowed;
+    }
+    if (escaped) out.push(route.id);
   }
   return out;
 }

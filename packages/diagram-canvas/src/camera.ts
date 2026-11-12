@@ -13,9 +13,9 @@
 export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
 /**
  * Readability floor of the fit: below it a fit stops shrinking and the host
- * pans. 0.45 is the smallest two-decimal scale at which the edge label — the
- * smallest text of a scene — still renders at the §5.3 minimum:
- * 18 × 0.45 = 8.1 CSS px (0.42 gives 7.56).
+ * pans. 0.45 is the smallest two-decimal scale holding both the 18 px edge
+ * label (BF-2, the binding constraint: 18 × 0.45 = 8.1 CSS px ≥ 8 CSS px
+ * floor; 0.42 gives 7.56) and the 22 px kicker (22 × 0.45 = 9.9 CSS px).
  */
 export const DEFAULT_MIN_READABLE_SCALE = 0.45;
 /** World font size of an edge label, px (token `diagramScene.edgeLabelFontSize`). */

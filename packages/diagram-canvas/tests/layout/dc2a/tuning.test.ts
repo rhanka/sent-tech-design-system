@@ -10,9 +10,8 @@
  * default-value change with explained re-pins, never a code branch.
  *
  * The whole grid is 9 × 31 layouts plus 4 bands × 12 toggle sequences (about
- * three minutes): it is recomputed with `DC2A_TUNING=1` (and rewritten with
- * `DC2A_WRITE_AFTER=1` on top). An ordinary run recomputes the retained pair
- * and the retained band only, so the pin still follows the engine.
+ * three minutes): MAJ-4 always runs it in CI (rewritten with
+ * `DC2A_WRITE_AFTER=1`). No environment flag gates the grid.
  */
 import { readFileSync, writeFileSync } from "node:fs";
 
@@ -48,12 +47,11 @@ interface Tuning {
 
 const FOLD_CASES: readonly CaseId[] = ["case-a", "case-b", "case-c", "case-d", "case-skills-r9", "case-integration-r9", "case-trackfocus-r9"];
 
-const FULL = process.env["DC2A_TUNING"] === "1";
-
+// MAJ-4: the full 3×3 grid always runs in CI — no environment flag.
 function computeGrid(): GridCell[] {
   const cells: GridCell[] = [];
-  for (const tallBias of FULL ? [1.0, 1.6, 2.2] : [DEFAULT_ROW_PACK.tallBias]) {
-    for (const emptyPenaltyWeight of FULL ? [0, 0.4, 0.8] : [DEFAULT_ROW_PACK.emptyPenaltyWeight]) {
+  for (const tallBias of [1.0, 1.6, 2.2]) {
+    for (const emptyPenaltyWeight of [0, 0.4, 0.8]) {
       let rank = 0;
       let gapViolations = 0;
       let singleColumnLevels = 0;
@@ -92,7 +90,7 @@ function computeGrid(): GridCell[] {
 }
 
 function computeHysteresis(): Tuning["hysteresis"] {
-  return (FULL ? [0, 0.04, 0.08, 0.12] : [DEFAULT_ROW_PACK.orientationHysteresis]).map((band) => {
+  return [0, 0.04, 0.08, 0.12].map((band) => {
     const changing: string[] = [];
     let fixedPoint = true;
     for (const caseId of FOLD_CASES) {
@@ -126,18 +124,18 @@ function computeHysteresis(): Tuning["hysteresis"] {
 
 describe("DC-2a §7.5 tuning grid on the 31 views", () => {
   const recomputed: Tuning = { grid: computeGrid(), hysteresis: computeHysteresis() };
-  if (FULL && process.env["DC2A_WRITE_AFTER"] === "1") writeFileSync(TUNING, `${JSON.stringify(recomputed, null, 2)}\n`);
+  if (process.env["DC2A_WRITE_AFTER"] === "1") writeFileSync(TUNING, `${JSON.stringify(recomputed, null, 2)}\n`);
   const computed = JSON.parse(readFileSync(TUNING, "utf8")) as Tuning;
 
   it("the pinned grid is the one the engine computes", () => {
     expect(computed.grid).toHaveLength(9);
     expect(computed.hysteresis.map((row) => row.band)).toEqual([0, 0.04, 0.08, 0.12]);
-    // Every recomputed cell and band equals its pin (all of them with DC2A_TUNING=1).
+    // Every recomputed cell and band equals its pin (MAJ-4: always the full grid).
     for (const cell of recomputed.grid) {
       expect(computed.grid.find((pin) => pin.tallBias === cell.tallBias && pin.emptyPenaltyWeight === cell.emptyPenaltyWeight)).toEqual(cell);
     }
     for (const row of recomputed.hysteresis) expect(computed.hysteresis.find((pin) => pin.band === row.band)).toEqual(row);
-    expect(recomputed.grid.length).toBe(FULL ? 9 : 1);
+    expect(recomputed.grid.length).toBe(9);
   });
 
   it("no pair of the grid breaks a hard constraint", () => {
@@ -166,14 +164,18 @@ describe("DC-2a §7.5 tuning grid on the 31 views", () => {
   });
 
   it("hysteresis: every band of the grid gives the same toggles on the scenes; the default band is retained", () => {
-    // The scenes hold no near-boundary level: the only level that changes
-    // orientation on a toggle changes footprints (AC-16), whatever the band.
-    // The band itself is pinned on synthetic near-boundary boxes (pack.test.ts, AC-17).
+    // BLK-4: O-4 precedes O-3. Band 0 never keeps a previous orientation, so
+    // the footprint-changing s2-h2a level flips there; every positive band
+    // damps it to stable. The band itself is pinned on synthetic boxes (pack.test.ts, AC-17).
     for (const row of computed.hysteresis) {
       expect(row.fixedPoint, String(row.band)).toBe(true);
-      expect(row.levelsChangingOnToggle, String(row.band)).toEqual(computed.hysteresis[0]!.levelsChangingOnToggle);
     }
-    expect(computed.hysteresis[0]!.levelsChangingOnToggle).toEqual(["case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"]);
+    expect(computed.hysteresis.find((row) => row.band === 0)!.levelsChangingOnToggle).toEqual([
+      "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a",
+    ]);
+    for (const band of [0.04, 0.08, 0.12]) {
+      expect(computed.hysteresis.find((row) => row.band === band)!.levelsChangingOnToggle, String(band)).toEqual([]);
+    }
     expect(DEFAULT_ROW_PACK.orientationHysteresis).toBe(0.08);
   });
 }, 600_000);

@@ -205,26 +205,32 @@ export function placePackedLabel(
     const horizontal = a.y === b.y;
     if (!horizontal && a.x !== b.x) continue;
     const preferred = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-    // Across the segment the line stays inside the box by `inset`; along it
-    // the box may run past an end of the segment by a quarter of its length.
+    // BLK-2: padding is orientation-aware — along the segment axis use `inset`
+    // (8 px, or 4 px when probing) and across it use `marginY` (4 px, or 1 px
+    // when probing). Across the segment the line stays inside the box by the
+    // across pad; along it the box may run past an end by a quarter length.
+    const alongPad = inset;
+    const acrossPad = marginY;
+    const padX = horizontal ? alongPad : acrossPad;
+    const padY = horizontal ? acrossPad : alongPad;
     const shiftX = horizontal ? width / 4 : Math.max(0, width / 2 - inset);
     const shiftY = horizontal ? Math.max(0, height / 2 - inset) : height / 4;
     const xRange: [number, number] = [Math.min(a.x, b.x) - shiftX, Math.max(a.x, b.x) + shiftX];
     const yRange: [number, number] = [Math.min(a.y, b.y) - shiftY, Math.max(a.y, b.y) + shiftY];
     const reach: Rect = {
-      x: xRange[0] - width / 2 - inset,
-      y: yRange[0] - height / 2 - marginY,
-      width: xRange[1] - xRange[0] + width + 2 * inset,
-      height: yRange[1] - yRange[0] + height + 2 * marginY,
+      x: xRange[0] - width / 2 - padX,
+      y: yRange[0] - height / 2 - padY,
+      width: xRange[1] - xRange[0] + width + 2 * padX,
+      height: yRange[1] - yRange[0] + height + 2 * padY,
     };
     const near = [...shapes, ...taken].filter((shape) => rectsIntersect(shape, reach));
     const xs = new Set<number>([preferred.x, xRange[0], xRange[1]]);
     const ys = new Set<number>([preferred.y, yRange[0], yRange[1]]);
     for (const shape of near) {
-      xs.add(shape.x + shape.width + inset + width / 2);
-      xs.add(shape.x - inset - width / 2);
-      ys.add(shape.y + shape.height + marginY + height / 2);
-      ys.add(shape.y - marginY - height / 2);
+      xs.add(shape.x + shape.width + padX + width / 2);
+      xs.add(shape.x - padX - width / 2);
+      ys.add(shape.y + shape.height + padY + height / 2);
+      ys.add(shape.y - padY - height / 2);
     }
     const bounds = [entry.within, entry.limit].filter((rect): rect is Rect => rect !== undefined);
     for (const rect of bounds) {
@@ -253,7 +259,7 @@ export function placePackedLabel(
       ) {
         continue;
       }
-      const padded: Rect = { x: box.x - inset, y: box.y - marginY, width: width + 2 * inset, height: height + 2 * marginY };
+      const padded: Rect = { x: box.x - padX, y: box.y - padY, width: width + 2 * padX, height: height + 2 * padY };
       if (near.some((shape) => rectsIntersect(shape, padded))) continue;
       return { segment, centre: { x: candidate.x, y: candidate.y }, box };
     }

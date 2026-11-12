@@ -119,23 +119,17 @@
     },
     {
       "band": 0.04,
-      "levelsChangingOnToggle": [
-        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
-      ],
+      "levelsChangingOnToggle": [],
       "fixedPoint": true
     },
     {
       "band": 0.08,
-      "levelsChangingOnToggle": [
-        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
-      ],
+      "levelsChangingOnToggle": [],
       "fixedPoint": true
     },
     {
       "band": 0.12,
-      "levelsChangingOnToggle": [
-        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
-      ],
+      "levelsChangingOnToggle": [],
       "fixedPoint": true
     }
   ]
