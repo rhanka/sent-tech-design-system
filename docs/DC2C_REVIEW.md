@@ -27,6 +27,7 @@ No h2a consensus verdict is claimed.
 | 2 | Selected child node is cleared by folding | Shared entity-to-visible-box map retains logical selection; flow-review test |
 | 2 | Ordinary links bypass inherited relation filters | Filter drawing and scene edges consistently; mixed filtered-view regression |
 | 2 | Retained authored scenarios still render | Refuse authored scenario occurrences; flow-review test |
+| Final case table | Fold toggle bubbles through the zone selection handler | Host capture handles flow toggles once; shared fold-toggle-isolation case retains the step and emits no onSelect |
 
 Astra3 was read when it appeared. Both blocking findings are addressed:
 selected internal relation identity survives on its box, including same-box
