@@ -472,6 +472,12 @@
       "vue": "missing",
       "angular": "missing"
     },
+    "diagram-scene-figure": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "missing",
+      "angular": "missing"
+    },
     "diagram-zone": {
       "svelte": "source-of-truth",
       "react": "missing",
@@ -1323,6 +1329,16 @@
         "angular": "missing"
       },
       "reason": "DC-1 atomic diagram card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+    },
+    {
+      "componentId": "diagram-scene-figure",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "missing",
+        "angular": "missing"
+      },
+      "reason": "DC2a L4 diagram scene host (lot feat/dc2a-l4-host): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/angular counterparts are outside this lot and the Vue port lands in a later PR."
     },
     {
       "componentId": "diagram-zone",

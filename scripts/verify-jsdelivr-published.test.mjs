@@ -22,6 +22,7 @@ const SCRIPT = new URL("./verify-jsdelivr-published.mjs", import.meta.url).pathn
 const PACKAGE = "@sentropic/design-system-elements";
 const VERSION = "0.2.0";
 const DIAGRAM_PACKAGE = "@sentropic/diagram-core";
+const CANVAS_PACKAGE = "@sentropic/diagram-canvas";
 const DIAGRAM_VERSION = "0.1.0";
 
 function sha384Integrity(bytes) {
@@ -142,17 +143,17 @@ function runScript(baseUrl, { packageName = PACKAGE, version = VERSION, env = {}
   });
 }
 
-function diagramCoreTree({ packageVersion = DIAGRAM_VERSION, dropFile = null } = {}) {
+function diagramCoreTree({ packageVersion = DIAGRAM_VERSION, dropFile = null, packageName = DIAGRAM_PACKAGE } = {}) {
   const indexJs = Buffer.from("export const diagram = 1;\n");
   const indexDts = Buffer.from("export declare const diagram: number;\n");
   const bodies = { "dist/index.js": indexJs };
   if (dropFile !== "dist/index.d.ts") bodies["dist/index.d.ts"] = indexDts;
-  return { packageJson: { name: DIAGRAM_PACKAGE, version: packageVersion }, bodies };
+  return { packageJson: { name: packageName, version: packageVersion }, bodies };
 }
 
 function startDiagramCoreFixture(tree) {
   const routes = new Map();
-  const prefix = `/npm/${DIAGRAM_PACKAGE}@${DIAGRAM_VERSION}`;
+  const prefix = `/npm/${tree.packageJson.name}@${DIAGRAM_VERSION}`;
   routes.set(`${prefix}/package.json`, {
     status: 200,
     contentType: "application/json",
@@ -273,6 +274,34 @@ test("diagram-core matching fixture passes", async (t) => {
   closeServer(t, server);
   const result = await runDiagramCore(baseUrl);
   assert.equal(result.status, 0, `expected exit 0, got ${result.status}: ${result.stderr}`);
+});
+
+// @sentropic/diagram-canvas shares the dist-only leg: without it the script
+// falls through to the elements leg and demands an sri.json the package never
+// ships, so its post-publish-check would fail after a successful publish.
+test("diagram-canvas matching fixture passes on the dist-only leg", async (t) => {
+  const { server, baseUrl } = await startDiagramCoreFixture(diagramCoreTree({ packageName: CANVAS_PACKAGE }));
+  closeServer(t, server);
+  const result = await runScript(baseUrl, {
+    packageName: CANVAS_PACKAGE,
+    version: DIAGRAM_VERSION,
+    env: { SKIP_NPM_VIEW: "1" },
+  });
+  assert.equal(result.status, 0, `expected exit 0, got ${result.status}: ${result.stderr}`);
+});
+
+test("diagram-canvas missing dist file (404) fails", async (t) => {
+  const { server, baseUrl } = await startDiagramCoreFixture(
+    diagramCoreTree({ packageName: CANVAS_PACKAGE, dropFile: "dist/index.d.ts" }),
+  );
+  closeServer(t, server);
+  const result = await runScript(baseUrl, {
+    packageName: CANVAS_PACKAGE,
+    version: DIAGRAM_VERSION,
+    env: { SKIP_NPM_VIEW: "1" },
+  });
+  assert.notEqual(result.status, 0, "expected a non-zero exit for a 404 dist file");
+  assert.match(String(result.stderr), /404/, "the failure names the missing dist file");
 });
 
 test("diagram-core package.json version mismatch fails", async (t) => {
