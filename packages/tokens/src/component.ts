@@ -1753,14 +1753,15 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // per-tone accent/fill resolution arrives with the L-R17 tone tokens
     // (DC-2); `tone` is carried as a `data-tone` attribute until then.
     diagramErd: {
+      fontFamily: "var(--st-font-mono)",
       "width": "460px",
       "headerHeight": "64px",
       "rowHeight": "32px",
       "lineHeight": "24px",
       "padding": "12px",
-      "keyWidth": "40px",
-      "nameWidth": "178px",
-      "typeWidth": "178px",
+      "keyWidth": "56px",
+      "nameWidth": "170px",
+      "typeWidth": "170px",
       "fontSize": "18px",
       "titleFontSize": "24px",
       "markerLength": "24px",

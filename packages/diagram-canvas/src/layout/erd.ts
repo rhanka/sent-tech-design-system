@@ -49,6 +49,7 @@ export function layoutErd(document: SemanticDocument, options: LayoutOptions, so
     return { entity, side: rectOther.x + rectOther.width / 2 < rect.x + rect.width / 2 ? 'west' as const : 'east' as const, target: end.target, role, relation: r.id };
   }));
   const requests: RouteRequest[] = [], selfRoutes = new Map<string, readonly Vec2[]>();
+  const selfCountByEntity = new Map<EntityRef, number>();
   for (const relation of relations) {
     const occurrence = Object.values(source?.relationOccurrences ?? {}).find(o => o.relation === relation.id)?.id ?? occurrenceRef(relation.id.slice(9));
     const points: Vec2[] = [], exits: Vec2[] = [], eps: RelationOccurrenceEndpoint[] = [];
@@ -65,11 +66,19 @@ export function layoutErd(document: SemanticDocument, options: LayoutOptions, so
     relationOccurrences[occurrence] = { id: occurrence, relation: relation.id, endpoints: eps };
     const pair = ends.filter(e => e.relation === relation.id).map(e => e.entity);
     if (pair[0] === pair[1]) {
-      const rect = rects.get(pair[0]!)!, lane = rect.x + rect.width + T.markerLength + T.markerGap * (relations.indexOf(relation) + 1);
-      selfRoutes.set(relation.id, [points[0]!, { x: lane, y: points[0]!.y }, { x: lane, y: points[1]!.y }, points[1]!]);
+      const entity = pair[0]!, selfIndex = (selfCountByEntity.get(entity) ?? 0) + 1;
+      selfCountByEntity.set(entity, selfIndex);
+      const rect = rects.get(entity)!, lane = rect.x + rect.width + T.markerLength + T.markerGap * selfIndex * 2;
+      const start = points[0]!, end = points[1]!;
+      selfRoutes.set(relation.id, start.y === end.y
+        ? [start, { x: lane, y: start.y }, { x: lane, y: start.y + T.rowHeight }, { x: lane + T.markerGap, y: start.y + T.rowHeight }, { x: lane + T.markerGap, y: end.y }, end]
+        : [start, { x: lane, y: start.y }, { x: lane, y: end.y }, end]);
     }
     else
-      requests.push({ id: relation.id, pairKey: [...pair].sort().join('|'), start: points[0]!, end: points[1]!, startExit: exits[0]!, endExit: exits[1]!, passable: new Set() });
+      // FK edges may converge on one PK row or have opposite row order. Reserve each
+      // independently: overlap stays penalized, while the entity-pair crossing ban
+      // (which assumes freely ordered header docks) does not apply to fixed rows.
+      requests.push({ id: relation.id, pairKey: relation.id, start: points[0]!, end: points[1]!, startExit: exits[0]!, endExit: exits[1]!, passable: new Set() });
   }
   const routed = routeEdges({ rects, requests, clearance: T.markerLength + T.markerGap });
   const warnings: LayoutWarning[] = routed.obstructed.map(id => ({ code: 'route-obstructed', refs: [id], message: 'Dense ERD routing uses an elbow fallback' }));

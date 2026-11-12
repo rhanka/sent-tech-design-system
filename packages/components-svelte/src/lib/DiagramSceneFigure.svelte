@@ -682,8 +682,8 @@
                 style={`left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${entering(node) ? `;opacity:${eased}` : ""}`}
               >
                 {#if node.kind === "erd" && node.erd}
-                  <button class="st-diagramErd-toggle" type="button" aria-label={node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)} aria-expanded={!node.collapsed} style={`position:absolute;inset:0 0 auto;height:${node.erd.headerHeight}px;width:100%;background:transparent;border:0;color:transparent`} onclick={() => toggleFold(node)}>{node.erd.title}</button>
-                  <div class="st-diagramErd-svg" style="height:100%;width:100%">{@html renderErdCardSvg(node.erd)}</div>
+                  <button class="st-diagramErd-toggle" type="button" aria-label={node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)} aria-expanded={!node.collapsed} style={`--st-erd-header-height: ${node.erd.headerHeight}px`} onclick={() => toggleFold(node)}>{node.erd.title}</button>
+                  <div class="st-diagramErd-svg">{@html renderErdCardSvg(node.erd)}</div>
                 {:else if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
@@ -720,6 +720,9 @@
 </figure>
 
 <style>
+  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
+  .st-diagramErd-svg { height: 100%; width: 100%; }
+
   .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
   .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
   .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
@@ -727,33 +730,33 @@
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
     display: grid;
-    gap: var(--st-spacing-2, 0.5rem);
+    gap: var(--st-spacing-2);
     grid-template-columns: minmax(0, 1fr) auto;
     margin: 0;
     min-width: 0;
   }
   .st-diagramSceneFigure--compact {
-    gap: var(--st-spacing-1, 0.25rem);
+    gap: var(--st-spacing-1);
   }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
     grid-column: 1;
-    font-weight: 600;
+    font-weight: var(--st-component-button-anatomy-typography-weight);
   }
   .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
   }
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
-    gap: var(--st-spacing-1, 0.25rem);
+    gap: var(--st-spacing-1);
     grid-column: 2;
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
     font-variant-numeric: tabular-nums;
-    min-width: 4ch;
+    min-width: var(--st-component-diagramScene-readoutMinWidth);
     text-align: center;
   }
   .st-diagramSceneFigure-frame {
@@ -771,7 +774,7 @@
     width: 100%;
   }
   .st-diagramSceneFigure-viewport:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
+    box-shadow: inset 0 0 0 var(--st-component-diagramCard-borderWidth) var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
     outline: none;
   }
   .st-diagramSceneFigure-extent {
@@ -793,26 +796,26 @@
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
-    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    font-family: var(--st-component-diagramCard-fontFamily);
+    font-size: var(--st-component-diagramCard-bodyFontSize);
     height: 100%;
-    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+    line-height: var(--st-component-diagramCard-bodyLineHeight);
     width: 100%;
   }
   .st-diagramSceneFigure-edges {
-    height: 1px;
+    height: var(--st-component-diagramCard-ruleHeight);
     left: 0;
     overflow: visible;
     pointer-events: none;
     position: absolute;
     top: 0;
-    width: 1px;
+    width: var(--st-component-diagramCard-ruleHeight);
   }
   .st-diagramSceneFigure-edge {
     fill: none;
     stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
+    stroke-width: var(--st-component-diagramZone-borderWidth);
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edgeLabel {
@@ -820,10 +823,10 @@
     color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
+    font-family: var(--st-component-diagramCard-fontFamily);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize);
     justify-content: center;
-    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+    line-height: var(--st-component-diagramCard-bodyLineHeight);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;

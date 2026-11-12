@@ -40,7 +40,10 @@ describe('erd@1 scene conversion and validation', () => {
         const target = relations[index]!;
         expect(target.attributes.fromCardinality).toEqual({ kind: 'enum', value: source.from.cardinality });
         expect(target.attributes.toCardinality).toEqual({ kind: 'enum', value: source.to.cardinality });
-        if (source.from.cardinality.endsWith('n') && source.to.cardinality.endsWith('n'))
+        const materialized = scene.classes.some(c => c.fields.some(f =>
+          (c.name === source.from.class && f.fk?.class === source.to.class) ||
+          (c.name === source.to.class && f.fk?.class === source.from.class)));
+        if (!materialized)
           expect(target.endpoints.every(e => e.target.startsWith('entity:'))).toBe(true);
       });
       expect(canonicalise(document)).toBe(canonicalise(convertEngramErdScene(scene).document));
@@ -68,5 +71,44 @@ describe('erd@1 scene conversion and validation', () => {
       if (r.attributes.name?.kind === 'text' && r.attributes.name.value === 'operatedBy' && r.endpoints[0]!.target.startsWith('port:')) {
         expect(document.ports[r.endpoints[0]!.target]!.name).toMatch(/^operatedBy/);
       }
+  });
+  it('should retain declaration order when relation IDs are sorted', () => {
+    for (const scene of scenes) {
+      const { document } = convertEngramErdScene(scene);
+      expect(Object.values(document.relations).sort((a, b) => a.id < b.id ? -1 : 1).map(r => r.attributes.name))
+        .toEqual(scene.relations.map(r => ({ kind: 'text', value: r.name })));
+    }
+  });
+  it('should anchor materialized many-to-many and reverse relationships to their FK and PK rows', () => {
+    let manyCount = 0, reverseCount = 0;
+    for (const scene of scenes) {
+      const { document } = convertEngramErdScene(scene);
+      scene.relations.forEach((r, index) => {
+        const forward = scene.classes.find(c => c.name === r.from.class)!.fields.filter(f => f.fk?.class === r.to.class);
+        const reverse = scene.classes.find(c => c.name === r.to.class)!.fields.filter(f => f.fk?.class === r.from.class);
+        if (!forward.length && !reverse.length) return;
+        const relation = Object.values(document.relations)[index]!;
+        const from = document.ports[relation.endpoints.find(e => e.role === 'from')!.target];
+        const to = document.ports[relation.endpoints.find(e => e.role === 'to')!.target];
+        expect(from, r.name).toBeDefined();
+        expect(to, r.name).toBeDefined();
+        if (forward.length) expect(from!.attributes.fk).toEqual({ kind: 'reference', value: to!.id });
+        else {
+          expect(to!.attributes.fk).toEqual({ kind: 'reference', value: from!.id });
+          reverseCount++;
+        }
+        if (r.from.cardinality.endsWith('n') && r.to.cardinality.endsWith('n')) manyCount++;
+      });
+    }
+    expect(manyCount).toBe(18);
+    expect(reverseCount).toBe(5);
+  });
+  it('should keep endpoint direction when the target entity holds the materializing FK', () => {
+    const { document } = convertEngramErdScene(scenes[4]!);
+    const relation = Object.values(document.relations).find(r => r.attributes.name?.kind === 'text' && r.attributes.name.value === 'invokesMcpTool')!;
+    const from = document.ports[relation.endpoints.find(e => e.role === 'from')!.target];
+    const to = document.ports[relation.endpoints.find(e => e.role === 'to')!.target];
+    expect(from?.name).toBe('skillId');
+    expect(to?.attributes.fk).toEqual({ kind: 'reference', value: from?.id });
   });
 });

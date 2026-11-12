@@ -101,4 +101,87 @@ describe('ERD measured layout and SVG', () => {
     for (const [key, value] of Object.entries(ERD_GEOMETRY))
       expect(block).toContain('"' + key + '": "' + value + 'px"');
   });
+  it('should keep self loops inside their entity gutter regardless of the scene relation count', () => {
+    const data = convertEngramErdScene(scenes[2]!);
+    const result = layoutMeasured(data.document, { ...options, presentation: data.presentation }, data.view);
+    expect(result.status).toBe('laid-out');
+    if (result.status !== 'laid-out') return;
+    for (const occurrence of Object.values(result.view.relationOccurrences)) {
+      const relation = data.document.relations[occurrence.relation]!;
+      const owners = relation.endpoints.map(e => data.document.ports[e.target]?.owner ?? e.target);
+      if (owners[0] !== owners[1]) continue;
+      const rect = Object.values(result.view.entityOccurrences).find(e => e.entity === owners[0])!.geometry;
+      const route = relationRoute(result.view, occurrence.id)!;
+      expect(Math.max(...route.map(p => p.x)) - rect.x - rect.width).toBeLessThan(ERD_GEOMETRY.gapInline / 2);
+      expect(Math.max(...route.map(p => p.y)) - Math.min(...route.map(p => p.y))).toBeGreaterThan(0);
+    }
+  });
+  it('should preserve coincident row anchors while giving self loops a visible vertical span', () => {
+    const input: EngramErdScene = { id: 'self', container: 'schema', classes: [{ name: 'self', fields: [{ name: 'id', type: 'uuid', pk: true, fk: { class: 'self', field: 'id' }, nullable: false }] }], relations: [{ name: 'self', roleLabel: '', from: { class: 'self', cardinality: '1' }, to: { class: 'self', cardinality: '1' } }] };
+    const data = convertEngramErdScene(input);
+    const result = layoutMeasured(data.document, { ...options, presentation: data.presentation }, data.view);
+    expect(result.status).toBe('laid-out');
+    if (result.status !== 'laid-out') return;
+    const occurrence = Object.values(result.view.relationOccurrences)[0]!;
+    const route = relationRoute(result.view, occurrence.id)!;
+    expect(route[0]).toEqual(route.at(-1));
+    expect(Math.max(...route.map(p => p.y)) - Math.min(...route.map(p => p.y))).toBeGreaterThanOrEqual(ERD_GEOMETRY.rowHeight);
+    for (let i = 1; i < route.length; i++) expect(route[i]!.x === route[i - 1]!.x || route[i]!.y === route[i - 1]!.y).toBe(true);
+  });
+  it('should wrap titles at their rendered size and keep the combined key clear of the field name', () => {
+    const name = 'i'.repeat(45);
+    const data = convertEngramErdScene({ id: 'wide', container: 'schema', classes: [{ name, fields: [{ name: 'id', type: 'uuid', pk: true, fk: { class: name, field: 'id' }, nullable: false }] }], relations: [] });
+    const card = measureErdCard(data.document, Object.values(data.document.entities)[0]!.id, false, request => ({ ...options.measureLines(request), width: request.text.length * ERD_GEOMETRY.fontSize * 0.6 }));
+    expect(card.titleLines.join('')).toBe(name);
+    for (const line of card.titleLines) expect(line.length * ERD_GEOMETRY.titleFontSize * 0.6).toBeLessThanOrEqual(card.width - 2 * ERD_GEOMETRY.padding - ERD_GEOMETRY.titleFontSize);
+  });
+  it('should reserve enough room for the combined primary and foreign key label', () => {
+    expect('PK/FK'.length * ERD_GEOMETRY.fontSize * 0.6).toBeLessThanOrEqual(ERD_GEOMETRY.keyWidth);
+  });
+  it('should use component typography and stroke tokens in card and marker SVG', () => {
+    const data = convertEngramErdScene(scenes[0]!);
+    const svg = renderErdCardSvg(measureErdCard(data.document, Object.values(data.document.entities)[0]!.id));
+    expect(svg).toContain('var(--st-component-diagramErd-fontFamily)');
+    expect(svg).toContain('var(--st-component-diagramErd-fontSize)');
+    expect(svg).toContain('var(--st-component-diagramErd-titleFontSize)');
+    expect(svg).toContain('var(--st-component-diagramErd-strokeWidth)');
+    expect(renderErdMarkerSvg('1', { x: 0, y: 0 }, { x: 1, y: 0 })).toContain('var(--st-component-diagramErd-strokeWidth)');
+    const tokens = readFileSync(new URL('../../tokens/src/component.ts', import.meta.url), 'utf8');
+    expect(tokens.slice(tokens.indexOf('    diagramErd:'), tokens.indexOf('    diagramCard:'))).toContain('fontFamily: "var(--st-font-mono)"');
+  });
+  it('should expose relationship names without role labels', () => {
+    const data = convertEngramErdScene(scenes[0]!);
+    const relation = Object.values(data.document.relations)[0]!;
+    const document = { ...data.document, relations: { [relation.id]: { ...relation, attributes: { ...relation.attributes, name: { kind: 'text' as const, value: '<named>' }, label: { kind: 'text' as const, value: '' }, fromRole: { kind: 'text' as const, value: '' }, toRole: { kind: 'text' as const, value: '' } } } } };
+    expect(renderErdTable(document)).toContain('&lt;named&gt;');
+  });
+  it('should show the current fold affordance', () => {
+    const { document } = convertEngramErdScene(scenes[0]!);
+    const entity = Object.values(document.entities)[0]!.id;
+    expect(renderErdCardSvg(measureErdCard(document, entity))).toMatch(/data-erd-fold-indicator[^>]*>−<\/text>/);
+    expect(renderErdCardSvg(measureErdCard(document, entity, true))).toMatch(/data-erd-fold-indicator[^>]*>\+<\/text>/);
+  });
+  it('should route shared PK corridors without fallbacks or card intersections in all acceptance scenes', () => {
+    for (const source of scenes) {
+      const data = convertEngramErdScene(source);
+      const result = layoutMeasured(data.document, { ...options, presentation: data.presentation }, data.view);
+      expect(result.status).toBe('laid-out');
+      if (result.status !== 'laid-out') continue;
+      expect(result.warnings.filter(w => w.code === 'route-obstructed'), source.id).toEqual([]);
+      for (const occurrence of Object.values(result.view.relationOccurrences)) {
+        const route = relationRoute(result.view, occurrence.id)!;
+        for (let i = 1; i < route.length; i++) {
+          const a = route[i - 1]!, b = route[i]!;
+          expect(a.x === b.x || a.y === b.y).toBe(true);
+          for (const node of Object.values(result.view.entityOccurrences)) {
+            const r = node.geometry;
+            const intersects = a.x === b.x
+              ? a.x > r.x && a.x < r.x + r.width && Math.max(a.y, b.y) > r.y && Math.min(a.y, b.y) < r.y + r.height
+              : a.y > r.y && a.y < r.y + r.height && Math.max(a.x, b.x) > r.x && Math.min(a.x, b.x) < r.x + r.width;
+            expect(intersects, source.id + ' ' + occurrence.relation).toBe(false);
+          }
+        }
+      }
+    }
+  });
 });
