@@ -1,0 +1,36 @@
+import{describe,expect,it}from"vitest";
+import{DEFAULT_LAYOUT_METRICS,parallelRelations}from"../../src/index.js";
+import{dockEdges}from"../../src/layout/dock.js";
+import{routeEdges,routesConflict}from"../../src/layout/route.js";
+import type{LayoutGraph}from"../../src/layout/graph.js";
+const a="entity:a" as never,b="entity:b" as never;
+const ids=["relation:a","relation:m","relation:z"] as const;
+const graph:LayoutGraph={nodes:new Map(),roots:[a,b],edges:ids.map((id,i)=>({id:id as never,source:{entity:a},target:{entity:b},...(i===1?{}:{flowRank:i===0?1:0})}))};
+describe("DC-2c A5 docking and routing permutations",()=>{
+ it("keeps a mixed link slot fixed and puts reversed ids into flow order on facing sides",()=>{
+  const rects=new Map([[a,{x:0,y:0,width:460,height:200}],[b,{x:800,y:0,width:460,height:200}]]);
+  const docked=dockEdges({graph,rects,direction:"left-to-right",metrics:DEFAULT_LAYOUT_METRICS,labelSizes:new Map(),fixed:true,flowBadgeSize:28});
+  for(const role of ["source","target"]as const)expect([...docked.docks].sort(([,x],[,y])=>x[role].order-y[role].order).map(([id])=>id)).toEqual(["relation:z","relation:m","relation:a"]);
+  const requests=graph.edges.map((edge)=>{const pair=docked.docks.get(edge.id)!;return{id:edge.id,pairKey:"pair",passable:new Set<never>(),start:pair.source.point,startExit:pair.source.exit,end:pair.target.point,endExit:pair.target.exit,...(edge.flowRank===undefined?{}:{flowRank:edge.flowRank,flowRun:"pair"})};});
+  const routed=routeEdges({rects,requests,clearance:8});expect(routed.obstructed).toEqual([]);
+  const routes=[...routed.routes.values()];for(let i=0;i<routes.length;i++)for(let j=i+1;j<routes.length;j++)expect(routesConflict(routes[i]!,routes[j]!)).toBe(false);
+  expect([...parallelRelations(graph)]).toEqual(ids);
+ });
+ for(const position of [800,-800])it("preserves existing U-channel reversal at other-end x="+position,()=>{
+  const rects=new Map([[a,{x:0,y:0,width:460,height:200}],[b,{x:position,y:0,width:460,height:200}]]);
+  const sideOverrides=new Map(ids.map((id)=>[id as never,{source:"south" as const,target:"south" as const,turn:true}]));
+  const result=dockEdges({graph,rects,direction:"left-to-right",metrics:DEFAULT_LAYOUT_METRICS,labelSizes:new Map(),fixed:true,sideOverrides,flowBadgeSize:28});
+  const source=[...result.docks].sort(([,x],[,y])=>x.source.order-y.source.order).map(([id])=>id);
+  expect(source).toEqual(position>0?["relation:a","relation:m","relation:z"]:["relation:z","relation:m","relation:a"]);
+ });
+});
+
+describe("DC-2c A5 shared slots",()=>{
+ it("does not permute steps sharing an authored port slot",()=>{
+  const shared={...graph,edges:graph.edges.map((edge)=>({...edge,source:{entity:a,port:"port:p" as never,slot:"occurrence:port"}}))};
+  const rects=new Map([[a,{x:0,y:0,width:460,height:200}],[b,{x:800,y:0,width:460,height:200}]]);
+  const result=dockEdges({graph:shared,rects,direction:"left-to-right",metrics:DEFAULT_LAYOUT_METRICS,labelSizes:new Map(),fixed:true,flowBadgeSize:28});
+  expect(new Set([...result.docks.values()].map((dock)=>dock.source.order)).size).toBe(1);
+  expect([...result.docks].sort(([,x],[,y])=>x.target.order-y.target.order).map(([id])=>id)).toEqual(ids);
+ });
+});

@@ -58,6 +58,7 @@ import {
   localIdOf,
   occurrenceRef,
   validateDocument,
+  validateFlows,
   viewRef,
   type Diagnostic,
   type EntityOccurrence,
@@ -1037,7 +1038,7 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
       pans: width * zoom > target,
       phone,
     },
-    warnings: drawing.warnings,
+    warnings: [...drawing.warnings, ...Object.values(document.relations).filter((r) => r.type === "flow-step").map((r) => ({ code: "flow-layout-unsupported" as const, refs: [r.id], message: "numbered marks require measured layout; laid out as link" }))],
   };
 }
 
