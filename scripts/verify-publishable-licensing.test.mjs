@@ -81,12 +81,12 @@ function setLicenseField(absDir, value) {
   writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
 }
 
-test("every publishable workspace is licensed, and the count is 21", () => {
+test("every publishable workspace is licensed, and the count is 22", () => {
   const publishable = publishableWorkspaces(root);
   assert.equal(
     publishable.length,
-    21,
-    "The repository publishes 21 packages. If that changed on purpose, change this number " +
+    22,
+    "The repository publishes 22 packages. If that changed on purpose, change this number " +
       "in the same commit - and make sure the new package is licensed.",
   );
   for (const { dir, manifest } of publishable) {

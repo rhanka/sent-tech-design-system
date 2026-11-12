@@ -18,6 +18,7 @@ const smokePackWorkspaces = new Set([
   "@sentropic/design-system-rich-text",
   "@sentropic/design-system-elements",
   "@sentropic/diagram-core",
+  "@sentropic/diagram-canvas",
   "@sentropic/dataviz-core",
   "@sentropic/dataviz-svelte",
   "@sentropic/dataviz-react",

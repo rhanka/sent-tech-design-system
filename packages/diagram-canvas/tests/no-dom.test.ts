@@ -12,7 +12,7 @@
  *   3. THE SOURCE. Every module reachable from the barrel is read and its import
  *      specifiers checked against the one allowed bare name.
  *   4. THE MANIFEST. The promises the repository's layering guard and its
- *      licensing gate rely on: private-until-its-own-lot, one dependency,
+ *      licensing gate rely on: publishable (DC-2a BF-5), one dependency,
  *      that dependency pinned exact and public.
  */
 import { readFileSync, readdirSync } from "node:fs";
@@ -154,23 +154,26 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
     readonly name: string;
     readonly version: string;
     readonly private?: boolean;
+    readonly publishConfig?: { readonly access?: string };
+    readonly files?: readonly string[];
     readonly dependencies?: Readonly<Record<string, string>>;
     readonly devDependencies?: Readonly<Record<string, string>>;
     readonly peerDependencies?: Readonly<Record<string, string>>;
     readonly optionalDependencies?: Readonly<Record<string, string>>;
   };
 
-  it("stays private until its own publication lot, while its dependency is public", () => {
+  it("is publishable, like the public dependency it names (DC-2a BF-5)", () => {
     expect(manifest.name).toBe("@sentropic/diagram-canvas");
     expect(manifest.version).toBe("0.1.0");
-    // Since L7b-a `@sentropic/diagram-core` is public (`publishConfig.access:
-    // "public"`, no `private` flag, tag `diagram-core-v<version>`), so the old
-    // reason — "a PUBLISHED package naming it installs broken for everyone" —
-    // no longer applies to this edge. This flag stays for the new reason:
-    // `diagram-canvas` itself has no publication lot yet (no publish workflow,
-    // no tag line in `docs/release.md`). The publishable count is pinned by
+    // DC-2a BF-5: `@sentropic/design-system-svelte` depends on this package for
+    // the scene host (`DiagramSceneFigure`), and a PUBLISHED package naming a
+    // private one installs broken for everyone. The manifest therefore drops
+    // the `private` flag and ships `dist` only, with the same `files` shape
+    // as `@sentropic/diagram-core`. The publishable count is pinned by
     // `scripts/verify-publishable-licensing.test.mjs`, not restated here.
-    expect(manifest.private).toBe(true);
+    expect(manifest.private).toBeUndefined();
+    expect(manifest.publishConfig?.access).toBe("public");
+    expect(manifest.files).toEqual(["dist", "!dist/**/*.map", "!dist/.srchash"]);
   });
 
   it("declares exactly one dependency, and no dependency of any other kind", () => {

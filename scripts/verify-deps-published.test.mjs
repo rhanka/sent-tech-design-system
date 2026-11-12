@@ -20,6 +20,26 @@ const svelteManifest = JSON.parse(
 );
 const npmWorkflow = readFileSync(new URL("../.github/workflows/npm-publish.yml", import.meta.url), "utf8");
 const svelteWorkflow = readFileSync(new URL("../.github/workflows/svelte-publish.yml", import.meta.url), "utf8");
+const canvasWorkflow = readFileSync(
+  new URL("../.github/workflows/diagram-canvas-publish.yml", import.meta.url),
+  "utf8",
+);
+const canvasManifest = JSON.parse(
+  readFileSync(new URL("../packages/diagram-canvas/package.json", import.meta.url), "utf8"),
+);
+
+// The `publish:` job body of a workflow, as lines.
+function publishJobLines(workflowText, label) {
+  const lines = workflowText.split("\n");
+  const publishAt = lines.findIndex((l) => /^ {2}publish:\s*$/.test(l));
+  assert.ok(publishAt >= 0, `${label} must have a publish job`);
+  const job = [];
+  for (let i = publishAt + 1; i < lines.length; i++) {
+    if (/^ {2}[A-Za-z0-9_-]+:\s*$/.test(lines[i])) break;
+    job.push(lines[i]);
+  }
+  return job;
+}
 
 const PINNED_SHA = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*@[0-9a-f]{40}$/;
 
@@ -30,6 +50,9 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
   assert.equal(byName.get("@sentropic/graph"), "0.3.0");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
+  // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
+  // must stay an exact pin — a range would drop out of the gate in silence.
+  assert.equal(byName.get("@sentropic/diagram-canvas"), canvasManifest.version);
   // sorted, and ranges/tags are ignored (only exact versions are gated)
   const names = deps.map((d) => d.name);
   assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
@@ -61,6 +84,27 @@ test("main fails closed on the reviewer's case: themes 0.12.0 not yet on npm", (
   const view = (name, version) => registry.get(`${name}@${version}`) ?? null;
   const code = main(["--workspace", "packages/components-svelte"], view);
   assert.equal(code, 1, "the gate must refuse to publish while themes@0.12.0 is missing");
+});
+
+// DC-2a L4 release order: diagram-canvas → tokens (if changed) → svelte. With
+// every other pin present, the svelte gate still refuses while the exact
+// diagram-canvas version the manifest names is absent from the registry.
+test("main fails closed while @sentropic/diagram-canvas is not yet on npm", () => {
+  const view = (name, version) => (name === "@sentropic/diagram-canvas" ? null : version);
+  const code = main(["--workspace", "packages/components-svelte"], view);
+  assert.equal(code, 1, "the gate must refuse to publish svelte while diagram-canvas is missing");
+});
+
+// Same gate one step up the chain: diagram-canvas pins diagram-core exactly.
+test("the diagram-canvas gate fails closed while @sentropic/diagram-core is not yet on npm, and is never vacuous", () => {
+  const deps = collectSentropicDeps(canvasManifest);
+  assert.deepEqual(
+    deps.map((d) => d.name),
+    ["@sentropic/diagram-core"],
+    "diagram-canvas must pin @sentropic/diagram-core exactly — an empty set makes the gate exit 1 on every tag",
+  );
+  assert.equal(main(["--workspace", "packages/diagram-canvas"], () => null), 1);
+  assert.equal(main(["--workspace", "packages/diagram-canvas"], (name, version) => version), 0);
 });
 
 test("main passes when every pinned @sentropic/* version is on npm", () => {
@@ -97,19 +141,23 @@ test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v 
 });
 
 test("svelte-publish.yml runs the fail-closed dep gate after checkout and before npm publish", () => {
-  const lines = svelteWorkflow.split("\n");
-  const publishAt = lines.findIndex((l) => /^ {2}publish:\s*$/.test(l));
-  assert.ok(publishAt >= 0, "svelte-publish.yml must have a publish job");
-  const job = [];
-  for (let i = publishAt + 1; i < lines.length; i++) {
-    if (/^ {2}[A-Za-z0-9_-]+:\s*$/.test(lines[i])) break;
-    job.push(lines[i]);
-  }
-  const jobText = job.join("\n");
+  const job = publishJobLines(svelteWorkflow, "svelte-publish.yml");
   const checkoutAt = job.findIndex((l) => /actions\/checkout@/.test(l));
   const gateAt = job.findIndex((l) => /node scripts\/verify-deps-published\.mjs/.test(l));
   const publishStepAt = job.findIndex((l) => /npm publish --workspace/.test(l));
   assert.ok(checkoutAt >= 0, "publish job must check out the repository (the gate reads scripts/)");
   assert.ok(gateAt > checkoutAt, "dep gate must run after checkout");
+  assert.ok(publishStepAt > gateAt, "dep gate must run before npm publish — fail closed");
+});
+
+test("diagram-canvas-publish.yml runs the fail-closed dep gate on its own manifest after checkout and before npm publish", () => {
+  const job = publishJobLines(canvasWorkflow, "diagram-canvas-publish.yml");
+  const checkoutAt = job.findIndex((l) => /actions\/checkout@/.test(l));
+  const gateAt = job.findIndex((l) =>
+    /node scripts\/verify-deps-published\.mjs --workspace packages\/diagram-canvas\s*$/.test(l),
+  );
+  const publishStepAt = job.findIndex((l) => /npm publish --workspace @sentropic\/diagram-canvas/.test(l));
+  assert.ok(checkoutAt >= 0, "publish job must check out the repository (the gate reads scripts/)");
+  assert.ok(gateAt > checkoutAt, "dep gate must run after checkout, on packages/diagram-canvas");
   assert.ok(publishStepAt > gateAt, "dep gate must run before npm publish — fail closed");
 });
