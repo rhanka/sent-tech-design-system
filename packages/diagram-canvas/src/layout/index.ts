@@ -16,7 +16,7 @@ export {
   type SegmentResidual,
 } from "./engine.js";
 export { layoutFolded, layoutMeasured } from "./measured.js";
-export { createLayoutCache, type LayoutCache, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
 export {
   digestOf,
   LAYOUT_ENGINE_VERSION,
