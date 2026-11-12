@@ -1,0 +1,1237 @@
+{
+  "documentId": "document:case-b",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-sentropic": {
+      "id": "entity:act-sentropic",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "org"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équipe propriétaire des dépôts h2a, sentropic et engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-h2a": {
+      "id": "entity:repo-h2a",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/h2a"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo de la CLI h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-sentropic": {
+      "id": "entity:repo-sentropic",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/sentropic"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Dépôt du plan de contrôle cluster-mesh"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic:packages/cluster-mesh/package.json:2-11"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-engram": {
+      "id": "entity:repo-engram",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/engram"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Dépôt du système mémoire gouverné engram"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-h2a": {
+      "id": "entity:pkg-h2a",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant la CLI h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-engram": {
+      "id": "entity:pkg-engram",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.23.1"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant le service engram live"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-poste": {
+      "id": "entity:host-poste",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Poste de travail"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "workstation"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Poste local exécutant la CLI h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-cluster": {
+      "id": "entity:host-cluster",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Cluster"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cluster"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Cluster hébergeant le service engram live"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:41"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-h2a": {
+      "id": "entity:sys-h2a",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Coordination des sessions d’agents"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:286-300"
+            }
+          ]
+        }
+      }
+    },
+    "entity:rt-h2a": {
+      "id": "entity:rt-h2a",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "CLI h2a"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Appelle l’accès mémoire depuis le poste"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:330-346"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-mesh": {
+      "id": "entity:sys-mesh",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "cluster-mesh"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Relie le poste à la mémoire engram"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:301-314"
+            }
+          ]
+        }
+      }
+    },
+    "entity:api-memoire": {
+      "id": "entity:api-memoire",
+      "profile": "archi@1",
+      "type": "api",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Accès mémoire"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "mcp"
+        },
+        "access": {
+          "kind": "enum",
+          "value": "read-write"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Relaie les lectures et propositions"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:347-363"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-engram": {
+      "id": "entity:sys-engram",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "engram"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Mémoire gouvernée du suivi"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:315-328"
+            }
+          ]
+        }
+      }
+    },
+    "entity:svc-engram-live": {
+      "id": "entity:svc-engram-live",
+      "profile": "archi@1",
+      "type": "service",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "engram live"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Sert et écrit la mémoire gouvernée"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:364-380"
+            }
+          ]
+        }
+      }
+    },
+    "entity:legend-case-b": {
+      "id": "entity:legend-case-b",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Teintes du cas (b)"
+        }
+      }
+    },
+    "entity:key-brand": {
+      "id": "entity:key-brand",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Mémoire gouvernée et plan cluster (engram, cluster-mesh)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        }
+      }
+    },
+    "entity:key-accent": {
+      "id": "entity:key-accent",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Session d'agent sur le poste (h2a)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ob-repo-h2a": {
+      "id": "relation:ob-repo-h2a",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ob-repo-sentropic": {
+      "id": "relation:ob-repo-sentropic",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-sentropic"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic:packages/cluster-mesh/package.json:2-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ob-repo-engram": {
+      "id": "relation:ob-repo-engram",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-poste": {
+      "id": "relation:op-poste",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-poste"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-cluster": {
+      "id": "relation:op-cluster",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-cluster"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:56"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-h2a": {
+      "id": "relation:mi-sys-h2a",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:16-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-mesh": {
+      "id": "relation:mi-sys-mesh",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-mesh"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sentropic:packages/cluster-mesh/package.json:7-11"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-engram": {
+      "id": "relation:mi-sys-engram",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-h2a": {
+      "id": "relation:mi-pkg-h2a",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-engram": {
+      "id": "relation:mi-pkg-engram",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-h2a": {
+      "id": "relation:po-pkg-h2a",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-engram": {
+      "id": "relation:po-pkg-engram",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-h2a": {
+      "id": "relation:po-rt-h2a",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-api-memoire": {
+      "id": "relation:po-api-memoire",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:api-memoire"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:35"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-svc-live": {
+      "id": "relation:po-svc-live",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-engram-live"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-engram"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:71"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-h2a": {
+      "id": "relation:ro-rt-h2a",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-svc-live": {
+      "id": "relation:ro-svc-live",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-engram-live"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-cluster"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:78"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-h2a": {
+      "id": "relation:da-h2a",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · binaire h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-live": {
+      "id": "relation:da-live",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-engram"
+        },
+        {
+          "role": "target",
+          "target": "entity:svc-engram-live"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · service résident"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "graphify:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:pa-live-memoire": {
+      "id": "relation:pa-live-memoire",
+      "profile": "archi@1",
+      "type": "providesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-engram-live"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-memoire"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:36"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-live-mesh": {
+      "id": "relation:op-live-mesh",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:svc-engram-live"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-mesh"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-card-semantics/joint-evidence/joint-fixtures.mjs:54"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ca-h2a-memoire": {
+      "id": "relation:ca-h2a-memoire",
+      "profile": "archi@1",
+      "type": "consumesApi",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:api-memoire"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "proposed"
+        },
+        "label": {
+          "kind": "text",
+          "value": "appelle · propositions et questions"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/memory-dossier/kit/architecture-r9/joint-fixtures.mjs:37"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ct-key-brand": {
+      "id": "relation:ct-key-brand",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-case-b"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-brand"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-accent": {
+      "id": "relation:ct-key-accent",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-case-b"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-accent"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}

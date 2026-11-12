@@ -1,0 +1,1137 @@
+{
+  "documentId": "document:case-c",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-sentropic": {
+      "id": "entity:act-sentropic",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "org"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équipe propriétaire des dépôts design-system et h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-ds": {
+      "id": "entity:repo-ds",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "design-system"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/sent-tech-design-system"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Dépôt du Design System et de diagram-core"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-h2a": {
+      "id": "entity:repo-h2a",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/h2a"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo de h2a et du moteur Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-poste": {
+      "id": "entity:host-poste",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Poste de travail"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "workstation"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Poste local exécutant le moteur Focus renderer"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-ds": {
+      "id": "entity:sys-ds",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "design-system"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Système de design fournissant diagram-core et le rendu SVG"
+        },
+        "category": {
+          "kind": "text",
+          "value": "neutral"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-h2a": {
+      "id": "entity:sys-h2a",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Harnais d'orchestration hébergeant le sous-système Focus"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-focus": {
+      "id": "entity:pkg-focus",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.5.0"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant le moteur Focus renderer"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-diagram-core": {
+      "id": "entity:pkg-diagram-core",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/diagram-core"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "diagram-core"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.1.0"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Validation et rendu SVG de cartes DS"
+        },
+        "category": {
+          "kind": "text",
+          "value": "neutral"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/diagram-core/package.json:1-25"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:418-431"
+            }
+          ]
+        }
+      }
+    },
+    "entity:cmp-project-view": {
+      "id": "entity:cmp-project-view",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "projectView"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Projette les replis et valide la scène"
+        },
+        "category": {
+          "kind": "text",
+          "value": "neutral"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/diagram-core/src/fold.ts:248"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:448-463"
+            }
+          ]
+        }
+      }
+    },
+    "entity:cmp-render-card": {
+      "id": "entity:cmp-render-card",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "renderCardSvg"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Produit le SVG des cartes 460×200"
+        },
+        "category": {
+          "kind": "text",
+          "value": "neutral"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/components-svelte/src/lib/components/diagram/diagramCardModel.ts:1"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:464-479"
+            }
+          ]
+        }
+      }
+    },
+    "entity:sys-focus": {
+      "id": "entity:sys-focus",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Vérification et rendu des dossiers"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:432-445"
+            }
+          ]
+        }
+      }
+    },
+    "entity:rt-focus": {
+      "id": "entity:rt-focus",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Focus renderer"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Vérifie les épingles et rend le dossier"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:480-495"
+            }
+          ]
+        }
+      }
+    },
+    "entity:legend-case-c": {
+      "id": "entity:legend-case-c",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Teintes du cas (c)"
+        }
+      }
+    },
+    "entity:key-neutral": {
+      "id": "entity:key-neutral",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Socle Design System (diagram-core)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "neutral"
+        }
+      }
+    },
+    "entity:key-accent": {
+      "id": "entity:key-accent",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Moteur de rendu de dossiers (Focus / h2a)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ob-repo-ds": {
+      "id": "relation:ob-repo-ds",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-ds"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ob-repo-h2a": {
+      "id": "relation:ob-repo-h2a",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-poste": {
+      "id": "relation:op-poste",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-poste"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-ds": {
+      "id": "relation:mi-sys-ds",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-ds"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-ds"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-h2a": {
+      "id": "relation:mi-sys-h2a",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-sys-focus": {
+      "id": "relation:mi-sys-focus",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-focus": {
+      "id": "relation:mi-pkg-focus",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-dc": {
+      "id": "relation:mi-pkg-dc",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-diagram-core"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-ds"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/diagram-core/package.json:1-25"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-sys-focus": {
+      "id": "relation:po-sys-focus",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:sys-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-focus": {
+      "id": "relation:po-pkg-focus",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-dc": {
+      "id": "relation:po-pkg-dc",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-diagram-core"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-ds"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/diagram-core/package.json:1-25"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-pv": {
+      "id": "relation:po-cmp-pv",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-project-view"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-diagram-core"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "sent-tech-design-system:packages/diagram-core/src/fold.ts:248"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-cmp-rc": {
+      "id": "relation:po-cmp-rc",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-render-card"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-diagram-core"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ds-r8.js:9-16"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-focus": {
+      "id": "relation:po-rt-focus",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:sys-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-focus": {
+      "id": "relation:ro-rt-focus",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-focus": {
+      "id": "relation:da-focus",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · moteur Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:do-focus-dc": {
+      "id": "relation:do-focus-dc",
+      "profile": "archi@1",
+      "type": "dependsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-diagram-core"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "dépend de · projection et rendu"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:1-20"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-pv-focus": {
+      "id": "relation:eb-pv-focus",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-project-view"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:448-463"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-rc-focus": {
+      "id": "relation:eb-rc-focus",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:cmp-render-card"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:464-479"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-dc-focus": {
+      "id": "relation:eb-dc-focus",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-diagram-core"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "exécuté par · moteur de rendu Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:498-515"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ct-key-neutral": {
+      "id": "relation:ct-key-neutral",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-case-c"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-neutral"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-accent": {
+      "id": "relation:ct-key-accent",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-case-c"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-accent"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}
