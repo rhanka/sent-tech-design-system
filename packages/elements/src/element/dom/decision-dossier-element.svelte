@@ -15,8 +15,11 @@
   import { envelopeIslandInput, readHostConfigIsland } from "./input.js";
   import { renderDossierAction } from "./render-action.js";
   import ErrorPanel from "./error-panel.svelte";
+  import type { DiagramResolver } from "../../types/diagram.js";
 
-  let { envelope, hostConfig }: { envelope?: unknown; hostConfig?: HostConfig } = $props();
+  let { envelope, hostConfig, diagramResolver }: {
+    envelope?: unknown; hostConfig?: HostConfig; diagramResolver?: DiagramResolver;
+  } = $props();
 
   const runtime = createElementRuntime("DecisionDossier");
 
@@ -34,7 +37,7 @@
 
   $effect(() => {
     if (effectiveEnvelope === undefined && !islandsScanned) return;
-    void runtime.ingest(effectiveEnvelope, effectiveHostConfig);
+    void runtime.ingest(effectiveEnvelope, undefined);
   });
 </script>
 
@@ -48,7 +51,7 @@
   {#if runtime.state === "refused"}
     <ErrorPanel diagnostics={runtime.diagnostics} />
   {:else if runtime.payload?.kind === "dossier"}
-    <div class="st-element__body" use:renderDossierAction={{ runtime }}></div>
+    <div class="st-element__body" use:renderDossierAction={{ runtime, payload: runtime.state === "rendered" ? runtime.payload : null, diagramResolver: diagramResolver ?? hostConfig?.diagramResolver }}></div>
   {/if}
 </div>
 
