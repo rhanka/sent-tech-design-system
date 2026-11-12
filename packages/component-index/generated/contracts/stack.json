@@ -1,8 +1,8 @@
 {
   "componentId": "stack",
   "contractSource": "derived",
-  "digest": "sha256:351d6a955ea837bc0982cf6c6a10335ff45c424f46e17dba75ed984aa16608b8",
-  "entryDigest": "sha256:bc53998d88c48d002acb91d594208da78e13dfe69b4101a96400861894108cb9",
+  "digest": "sha256:be81a69788743096c3f0eb8caef7634a9f31c7bc5b325be1682301794e5e78b4",
+  "entryDigest": "sha256:b479e747850ddb18ffab3fe580d3279e470464a3d5d6a0a4f72e0323c01c2cf4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -118,7 +118,7 @@
         "declarationPath": "packages/components-react/dist/Stack.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

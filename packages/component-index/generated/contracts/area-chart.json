@@ -1,8 +1,8 @@
 {
   "componentId": "area-chart",
   "contractSource": "derived",
-  "digest": "sha256:5efb7a79729d6262fc4e768f508f4ceb66177418fa52952493c8ab88f7942fff",
-  "entryDigest": "sha256:f88a658cf97b1049bdb272f8229c62b6081a005e6abbe315a94d1eee71eaf206",
+  "digest": "sha256:5dcb80a16830f2978801da2179ebcbf84f31a46f4c02e14bcceaeb12673c5aa8",
+  "entryDigest": "sha256:fd5f5ccf7197bc31af0b28128e6e06076583d05b51c226598ec637a98fdc5561",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -670,7 +670,7 @@
         "declarationPath": "packages/components-react/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AreaChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

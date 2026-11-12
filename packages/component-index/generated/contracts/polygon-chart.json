@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:a9c16f2e548542d2051fd4a5120f9b3b13bb28e9344a9b8cc63a780a00428cdc",
-  "entryDigest": "sha256:560795a04486d1ec7079f5d77352d5bd0a04f71dad4f14daa9f77ac49c2aacee",
+  "digest": "sha256:05d172f82ecc7e9ed74b5d838cf1569eaba9f838755cd153d666cef915262922",
+  "entryDigest": "sha256:3bb43d7fb6518d0c2bc6923f68958c6da77f5e30b747e91eb838d379c6943e62",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/PolygonChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PolygonChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AreaRangeChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Filled band between a low and a high series along an X axis (e.g. daily temperature range, stock min/max).",
     "fr": "Bande remplie entre une série basse et une série haute le long d'un axe X (ex. fourchette de température jour par jour, min/max boursier)."
   },
-  "digest": "sha256:abd1a4e7472ea160a5f6145cd569c7cb0eb0bbccc7cd61e863dfd3e23146d0d9",
+  "digest": "sha256:945be0b592dab52239c3a80ab923b3454618d1b13aec876499e46d894f81640c",
   "displayName": "AreaRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

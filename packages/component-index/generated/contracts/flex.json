@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:772a081cbb5b3115d3dc84e0472857b2d13e41ea174b604c89f221ce1af96401",
-  "entryDigest": "sha256:2849480d3c20f8f70f0feb0d9f7e37e6459226afe588463ab7d1a8ddeff321dc",
+  "digest": "sha256:61aa1db484d39e96fc5879b61f38098e0b0f857e6d2f501e25247be95f1cdff7",
+  "entryDigest": "sha256:ccdb16a74f16f99e8638997ec8af83c15e5c98a719ac30190671b59717d11eec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -146,7 +146,7 @@
         "declarationPath": "packages/components-react/dist/Flex.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FlexProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

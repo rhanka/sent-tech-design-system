@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:99262e25532c4d72e5d67cc90faa0e536f90825cd2e632d528e9a9d3e5b3dded",
-  "entryDigest": "sha256:8f56c4858843bd978118838f462e2a44e6e7473ee4979507267b75429db1c5db",
+  "digest": "sha256:e77d26133db08eee46d616bb60f1ff1beeb753ed256aee588b7d43df8b7417bd",
+  "entryDigest": "sha256:512c9048288b76f917ab7f237f28ebf06a7ecb5fde3414785b1a242a2afa0813",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
