@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:1f4e98d3a29fafd5cc4ad8d4f8c8d6967bc3fde077447bf6b7811842992e1d95",
-  "entryDigest": "sha256:3b051ca73bb1389fc2263388d05ff9ce0e0890906c530653d548188b48d96fbf",
+  "digest": "sha256:77e341fb6914dec743cd59b4e1108f6224eff942580b9e64f52c94347b63fc8d",
+  "entryDigest": "sha256:0ea932b23749fd6b63a7f615e441cc6456f518d0b71cd4981f9598164321d78c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -202,7 +202,7 @@
         "declarationPath": "packages/components-svelte/dist/Drawer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
