@@ -4,10 +4,10 @@
 - [x] Deliver the DC-2b engine and separate host integration patch, with the owner thresholds unchanged.
 
 ## Scope / Guardrails
-- [x] Work only in this worktree; no commit, push, stash, browser, Python or dependency addition.
+- [x] Work only in this worktree; owner now authorizes merge and wiring commits; no push, stash, browser, Python or dependency addition.
 - [x] Allowed: diagram-canvas cache, presentation model, tests and README; Svelte measurer version; conductor host patch and evidence.
 - [x] Forbidden: placement, docking, routing bodies, confidential fixtures, environment and key files, root test command.
-- [x] Conditional: host source absent from main is delivered as a separate patch against the existing host worktrees.
+- [x] Svelte host source is now merged from main and wired permanently; Vue integration remains a separate patch.
 
 ## Lots
 - [x] L0: install dependencies, verify fingerprint seam and reference scenes; hosts and shared model absent on this base.
@@ -24,3 +24,13 @@
 - [x] Mounted-host idle/camera/binding/lifecycle gates run in Node/jsdom for Svelte and Vue; the published Vapor size regression also passes.
 - [x] Host published types and builds checked on a temporary composite inside this worktree; integration prerequisites reused read-only.
 - [x] Remaining mounted-host AC-P1 stress/idle heap campaign is distinguished from the completed canvas/model gate in patches/DC2B_HOST_WIRING.md.
+
+## Svelte integration after PR #265
+- [x] Fetch and merge origin/main; no manual conflicts; retain engine/main APIs and DC-2b cache.
+- [x] Apply Svelte wiring, binding fixture, mounted contract, package exclusions and public exports; retain only Vue-related patch sections.
+- [x] npm ci with the owner-specified cache; all eight requested package builds pass.
+- [x] Canvas: 39 suites, 449 passed / 1 skipped. Targeted Svelte host + SSR: 46 passed; both svelte-check configurations pass.
+- [x] Mounted AC-P1: 240 complete fold/unfold cycles, three samples, reduced motion; median 1.903 MiB <= 5 MiB and idle -0.175 MiB <= 1 MiB. Animated idle activity is tested separately.
+- [x] Mounted camera: 2.458 ms p95 <= 16.7 ms; AC-P5 worst sample 0.171 MiB <= 2 MiB; no retained host resources.
+- [x] Component-index generation/check pass (430 fresh artifacts); notices and licensing pass (22 publishable packages).
+- [x] Detailed scope, measurements and reproduction: patches/DC2B_SVELTE_INTEGRATION.md.
