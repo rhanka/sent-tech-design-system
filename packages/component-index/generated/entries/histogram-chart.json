@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/HistogramChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Histogram for explicit or generated distribution bins.",
     "fr": "Histogramme pour afficher des classes explicites ou générées."
   },
-  "digest": "sha256:5d866c164f3a6738cff591550c20cd0a66e965ec2493f03e26c871d12dcda261",
+  "digest": "sha256:763d5e3c7c90286e1dd82c725541f378774120fb0722d79612d3aa2eb383767a",
   "displayName": "HistogramChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Col.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:642fc6d1edf962c2b21c6432640d26211980a94d70211b4165a3eb5016c1b1aa",
+  "digest": "sha256:6e1b50a83bdd30f8a9cbdbdf54378a691d095979df206c18cd386be43cf175d4",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

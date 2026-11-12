@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TileMapChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
     "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
   },
-  "digest": "sha256:7a6e638cd88f914f75f707d0cc8ea80931e5a24057b389528e28df7f31acf4ec",
+  "digest": "sha256:d093229953fb0bf11a71ffaca5192a67fef4464726230fb98e1c5658dd7c8c9f",
   "displayName": "TileMapChart",
   "format": "component-entry/v1",
   "frameworks": [

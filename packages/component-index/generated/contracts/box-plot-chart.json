@@ -1,8 +1,8 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:1fc4be94859a4b8887a38bde42bab3810aa3fa845268147d99b6044bd9bf6825",
-  "entryDigest": "sha256:4054d2e4477c1021eb4353d2583c5ef1d0c67eecc5f7c4a3170b56fdfe51b370",
+  "digest": "sha256:d937b01a3de64c00e633c2330c39fd772176264c795cc14018da1e76ac372e00",
+  "entryDigest": "sha256:3a4b0b379cbe3ef23314204ff48c2bde92ed3f67b70de1630bcd01d2f6d7184c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -201,7 +201,7 @@
         "declarationPath": "packages/components-react/dist/BoxPlotChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BoxPlotChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

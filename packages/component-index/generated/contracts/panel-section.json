@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:a0f6a637d6149c3026aea9b33510a7b7b4ec858d25f24d248ecfbb72f3143d05",
-  "entryDigest": "sha256:8c24a22208fcc58858fbb1a70145648c4cb1c9f7509c4c4cd264b0b6ea3e5978",
+  "digest": "sha256:fc459eea7926f8c0f477b05b092310b17c8aea78f6ffb475a3a89c1f3e0d3845",
+  "entryDigest": "sha256:5dd9e63992b5238fbbc5c661787fa1a5d2866e74c11d4b33b5c281df8a3384eb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/PanelSection.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PanelSectionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

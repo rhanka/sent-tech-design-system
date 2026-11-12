@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ConfigItemCard.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Configuration item card: name, key, description, provenance badge and provenance-aware actions.",
     "fr": "Carte d'item de configuration : nom, clé, description, badge de provenance et actions selon la provenance."
   },
-  "digest": "sha256:7220a03c99a1be6fd747b64da83d28f7dd21913c53b3902acb5f02efdba298cc",
+  "digest": "sha256:a303b4c2299b268810d81807c2aab2d074a5e80842c7f7453f285f74933d473b",
   "displayName": "ConfigItemCard",
   "format": "component-entry/v1",
   "frameworks": [

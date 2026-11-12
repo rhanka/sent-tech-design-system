@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:4a5a3975c11bb5e6c8f308c8578119573edca17b64019c3052e395c47d4f3793",
-  "entryDigest": "sha256:e82688009cd4c9080488873d5138389e1eecfa791d8179936bc6c4952034c231",
+  "digest": "sha256:b98656a07a9c796109d91ac070732e2ce0c0656ed477df0f1d3fa8c7caf4b03b",
+  "entryDigest": "sha256:6c0e61cc3ddf381ae6e61ac52cc01d110f47bed9f5610987de9e879e0d805708",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

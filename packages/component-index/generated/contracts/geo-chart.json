@@ -1,8 +1,8 @@
 {
   "componentId": "geo-chart",
   "contractSource": "derived",
-  "digest": "sha256:ddaa7921a869cbab1d0eae2b70b6f9e1a1a2d2bf11398033badb111729a1b0c0",
-  "entryDigest": "sha256:f1e05ca6aadd657f9beebbeb216f6d90be00f44f1ad37633ac13826547f3c304",
+  "digest": "sha256:c687beab2016ea585e7290a3e0e2e0473c2af7ded9e7f8d6b409094f86104058",
+  "entryDigest": "sha256:c5e7643840c51095e8c72361d65523778c0e27986ba96d875745645c1935faec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1246,7 +1246,7 @@
         "declarationPath": "packages/components-react/dist/GeoChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "GeoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
