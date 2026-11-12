@@ -108,8 +108,11 @@ jobs:
           node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-svelte,@sentropic/diagram-canvas
       # Fail closed (lot DC-1, review item 7): every exact @sentropic/* version
       # the svelte manifest pins (themes 0.12.0, rich-text 0.1.0, graph 0.3.0,
-      # theme-dsfr 0.2.2) must already exist on the npm registry before this
-      # package ships — a local-tarball smoke cannot catch an unresolvable pin.
+      # theme-dsfr 0.2.2, diagram-canvas 0.1.0) must already exist on the npm
+      # registry before this package ships — a local-tarball smoke cannot catch
+      # an unresolvable pin. Release order (docs/release.md): diagram-core →
+      # diagram-canvas (tag `diagram-canvas-v<version>`,
+      # diagram-canvas-publish.yml) → tokens/themes if changed → svelte.
       - name: Verify pinned @sentropic dependencies are on npm (fail closed)
         run: node scripts/verify-deps-published.mjs --workspace packages/components-svelte
       - name: Publish Svelte package

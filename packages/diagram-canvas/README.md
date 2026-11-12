@@ -22,10 +22,12 @@ declares: a published package that names a private dependency installs broken
 for every consumer, the failure `pack:smoke` caught once in this repository
 (see the header of `scripts/verify-layering.test.mjs` on PR #65).
 
-Not written yet: the publish workflow and the tag line in `docs/release.md`.
-Until `@sentropic/diagram-canvas@0.1.0` is on the registry, the fail-closed
-step of `svelte-publish.yml` (`scripts/verify-deps-published.mjs`) refuses to
-publish the Svelte package, by design.
+It is published through `.github/workflows/diagram-canvas-publish.yml` on tags
+`diagram-canvas-v<version>` (CI only; release order in `docs/release.md`:
+diagram-core → diagram-canvas → tokens if changed → svelte). Until
+`@sentropic/diagram-canvas@0.1.0` is on the registry, the fail-closed step of
+`svelte-publish.yml` (`scripts/verify-deps-published.mjs`) refuses to publish
+the Svelte package, by design.
 
 Its only dependency, `@sentropic/diagram-core`, is public and pinned exact.
 Inside the workspace it resolves by link, which `package-lock.json` records as
