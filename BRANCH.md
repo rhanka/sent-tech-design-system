@@ -15,7 +15,7 @@
 
 ## Lots
 - [x] L0: relation readers, diagnostic codes, parallel slots, Select, token modes.
-- [ ] L1: relation refinement through validation, folds, layouts, summaries and scenes.
+- [x] L1: relation refinement through validation, folds, layouts, summaries and scenes.
 - [ ] L2: flow definitions, validation, index, mapping fixtures and facts.
 - [ ] L3: tokens and contrast gates.
 - [ ] L4: flow runs, bundles, arrows, badges, repair, cache (A5–A10).
