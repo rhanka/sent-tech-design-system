@@ -434,8 +434,15 @@ export function containerEscapes(layout: SceneLayout): string[] {
       };
       // Interior routing inside the shared box itself is allowed (the inner
       // check above gates exiting it); only walls outside the source/target
-      // → shared chains are obstacles.
-      const allowedWalls = new Set<string>([shared, ...chainToShared(route.source), ...chainToShared(route.target)]);
+      // → shared chains are obstacles. Ancestors above the shared box contain
+      // it: a route inside `inner(shared)` is necessarily inside them without
+      // crossing their walls, so they are allowed (boundary crossings, not
+      // interior containment, gate the wall check).
+      const aboveShared: string[] = [];
+      for (let parent = layout.parentOf.get(shared); parent !== undefined; parent = layout.parentOf.get(parent)) {
+        aboveShared.push(parent);
+      }
+      const allowedWalls = new Set<string>([shared, ...chainToShared(route.source), ...chainToShared(route.target), ...aboveShared]);
       for (const [id, rect] of layout.rects) {
         if (id === route.source || id === route.target || allowedWalls.has(id)) continue;
         // Expanded or collapsed alike: no route segment runs through the inside.
