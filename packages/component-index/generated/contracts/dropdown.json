@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:b1a6eda97b0554380fdb177dc068e44090fcf27c5f272e080a954e066e6b689a",
-  "entryDigest": "sha256:d838636917d22b57a3da231c35084bd5f6bd7d13c7d175321efc9543df82624e",
+  "digest": "sha256:bc1a4d5c657bb561dbfe43101c02c0db415d2dfbb1c8d8cb8f33ddaf15f29b2c",
+  "entryDigest": "sha256:b4f181000501da233e1be3881cf4e5e428d43ad838896029c55f475e90de1f75",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/Dropdown.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DropdownProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

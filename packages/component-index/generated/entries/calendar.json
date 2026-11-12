@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Calendar.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Monthly calendar: single date or range, with min/max bounds.",
     "fr": "Calendrier mensuel : date unique ou plage, bornes min/max."
   },
-  "digest": "sha256:2a7a21ee5f23cdc2d6c0be3e874b3401a0df61b81ecd9466754b3e08116345c4",
+  "digest": "sha256:4521784b91440bffd0a34fb93646d336c43b82f4047e34a9457a6a5d31d04c26",
   "displayName": "Calendar",
   "format": "component-entry/v1",
   "frameworks": [

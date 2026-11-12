@@ -1,8 +1,8 @@
 {
   "componentId": "bullet-chart",
   "contractSource": "derived",
-  "digest": "sha256:a50b89fc0a2616c52064244958ff6c8c902e5c84db765f9b5ec8df13b5380ba4",
-  "entryDigest": "sha256:df2d1d48d5607c7d9eac13b81065d67c213318b321c0977f1ef0ad6d5374eec3",
+  "digest": "sha256:ec7a13f2cd9771294657fce725895714ecfea423c2de38f84af08e6685858297",
+  "entryDigest": "sha256:53a488528b77f96710bd61e8cd50882c42532f050d9a6b551eb4b61da619a0d9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/BulletChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BulletChartProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
