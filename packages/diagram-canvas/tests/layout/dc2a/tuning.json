@@ -1,0 +1,142 @@
+{
+  "grid": [
+    {
+      "tallBias": 1,
+      "emptyPenaltyWeight": 0,
+      "rank": 13.565,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 30,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.586,
+      "meanFrameFill": 0.417
+    },
+    {
+      "tallBias": 1,
+      "emptyPenaltyWeight": 0.4,
+      "rank": 12.929,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 33,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.586,
+      "meanFrameFill": 0.413
+    },
+    {
+      "tallBias": 1,
+      "emptyPenaltyWeight": 0.8,
+      "rank": 12.929,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 33,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.586,
+      "meanFrameFill": 0.413
+    },
+    {
+      "tallBias": 1.6,
+      "emptyPenaltyWeight": 0,
+      "rank": 13.904,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 35,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.581,
+      "meanFrameFill": 0.411
+    },
+    {
+      "tallBias": 1.6,
+      "emptyPenaltyWeight": 0.4,
+      "rank": 13.54,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 33,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.584,
+      "meanFrameFill": 0.416
+    },
+    {
+      "tallBias": 1.6,
+      "emptyPenaltyWeight": 0.8,
+      "rank": 13.481,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 1,
+      "labelUnplaced": 36,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.586,
+      "meanFrameFill": 0.415
+    },
+    {
+      "tallBias": 2.2,
+      "emptyPenaltyWeight": 0,
+      "rank": 15.2,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 3,
+      "labelUnplaced": 33,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.576,
+      "meanFrameFill": 0.399
+    },
+    {
+      "tallBias": 2.2,
+      "emptyPenaltyWeight": 0.4,
+      "rank": 15.195,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 3,
+      "labelUnplaced": 33,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.576,
+      "meanFrameFill": 0.398
+    },
+    {
+      "tallBias": 2.2,
+      "emptyPenaltyWeight": 0.8,
+      "rank": 14.777,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 3,
+      "labelUnplaced": 36,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.58,
+      "meanFrameFill": 0.403
+    }
+  ],
+  "hysteresis": [
+    {
+      "band": 0,
+      "levelsChangingOnToggle": [
+        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
+      ],
+      "fixedPoint": true
+    },
+    {
+      "band": 0.04,
+      "levelsChangingOnToggle": [
+        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
+      ],
+      "fixedPoint": true
+    },
+    {
+      "band": 0.08,
+      "levelsChangingOnToggle": [
+        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
+      ],
+      "fixedPoint": true
+    },
+    {
+      "band": 0.12,
+      "levelsChangingOnToggle": [
+        "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
+      ],
+      "fixedPoint": true
+    }
+  ]
+}
