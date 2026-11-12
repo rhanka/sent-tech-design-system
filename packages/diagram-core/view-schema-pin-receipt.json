@@ -37,8 +37,8 @@
     "note": "Files that implement validation of summaryLabels, with sha256 of their bytes at receipt time.",
     "files": {
       "packages/diagram-core/src/view.ts": "c1270cbcb4b8cc87e5511d67165ad66636a3ac56173a56537949ab9d8787af32",
-      "packages/diagram-core/src/fold.ts": "143c0be91a4cf1ad2263b5f0df729e6014462ee2a4a405999ff215a1282c1272",
-      "packages/diagram-core/src/validate.ts": "0cdbd62ab1ae65a2fc4f876f25f38df4435d4a2a08ea3574265c2679238b2a46"
+      "packages/diagram-core/src/fold.ts": "76de11412a5a8cfd3baae2459ce816b1d0f61daed9c08b1a5d0fcd8c71e6fd15",
+      "packages/diagram-core/src/validate.ts": "c3c7ebbaf69522f14aad7554268b5e7867c142017cedd3cdb2b096d4380dc5ac"
     }
   },
   "presentation": {

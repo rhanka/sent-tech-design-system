@@ -1,3 +1,4 @@
+import { layoutErd } from "./erd.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6).
  *
@@ -244,6 +245,7 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
   return layoutMeasuredPass(document, options, sourceView, new Set());
 }
 
