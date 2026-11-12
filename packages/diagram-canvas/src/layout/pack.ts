@@ -260,16 +260,12 @@ export interface OrientationChoice {
 /**
  * O-1–O-4: score both forms on the total P-3 score and keep the lower one.
  *
- * Equivalent forms read as `rows`, previous orientation or not: equal scores
- * (within `PACK_SCORE_EPSILON`), or two fills of one same outer box (three
- * equal cards: `[2, 1]` either way, 944 × 424). Same box means same aspect
- * and same empty area, so neither form is closer to the target; what is left
- * of the score gap is shelf-slack bookkeeping, not a near-boundary choice.
- * The band has nothing to damp there, and a level must not stay `columns`
- * only because another fold state was.
- *
- * Otherwise a previous orientation is kept while the two scores are closer
- * than `hysteresis`. A level of zero or one box is `rows`.
+ * O-4 precedes O-3 (SPEC §4.2): while the two scores sit inside the hysteresis
+ * band the previous orientation is kept, even when both forms fill one same
+ * outer box (three equal cards: `[2, 1]` either way, 944 × 424). The remaining
+ * gap is shelf-slack bookkeeping, still a near-boundary choice the band damps.
+ * Only exact ties (within `PACK_SCORE_EPSILON`) read as `rows` regardless of
+ * the previous orientation. A level of zero or one box is `rows`.
  */
 export function chooseOrientation(
   boxes: readonly PackBox[],
@@ -282,11 +278,8 @@ export function chooseOrientation(
   const columns = packColumns(boxes, options);
   const gap = Math.abs(rows.score - columns.score);
   let orientation: PackOrientation;
-  const sameBox =
-    Math.abs(rows.width - columns.width) <= PACK_FILL_TOLERANCE &&
-    Math.abs(rows.height - columns.height) <= PACK_FILL_TOLERANCE;
-  if (gap <= PACK_SCORE_EPSILON || sameBox) orientation = "rows";
-  else if (previous !== undefined && gap < hysteresis) orientation = previous;
+  if (previous !== undefined && gap < hysteresis) orientation = previous;
+  else if (gap <= PACK_SCORE_EPSILON) orientation = "rows";
   else orientation = rows.score < columns.score ? "rows" : "columns";
   return {
     orientation,
