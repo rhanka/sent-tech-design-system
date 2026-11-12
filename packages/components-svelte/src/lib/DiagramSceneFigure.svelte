@@ -18,6 +18,9 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
+  import Select from "./Select.svelte";
+  import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
+  import { INITIAL_FLOW_STATE, DEFAULT_FLOW_STRINGS, visibleOf, effectiveTarget, highlightOf, flowStateOf, reduce, describeTarget, announce, flowHitSize, stepChange, stepsOf, type FlowState, type FlowAction, type Visible, type StepChange, type EffectiveTarget, type FlowStrings } from "@sentropic/diagram-canvas/flowModel";
   import {
     cardLineMeasurer,
     defaultCardMeasure,
@@ -91,6 +94,14 @@
    * nominal 16:9 box.
    */
   export interface DiagramSceneFigureLabels {
+    navigator: string;
+    step: string;
+    scenario: string;
+    count: string;
+    node: string;
+    previous: string;
+    next: string;
+    allScenarios: string;
     /** Accessible name of the camera control group. */
     controls: string;
     zoomIn: string;
@@ -117,6 +128,14 @@
   }
 
   export interface DiagramSceneFigureProps {
+    flows?: { fanOutMax?: number };
+    scenario?: string | null;
+    defaultScenario?: string;
+    activeStep?: string | null;
+    defaultActiveStep?: string;
+    onStepChange?: (change: StepChange | null) => void;
+    onScenarioChange?: (scenario: string | null) => void;
+    onHighlightChange?: (target: EffectiveTarget | null) => void;
     document: SceneDocument;
     /** Retained source view (occurrences, fold groups). Optional: the engine synthesises one. */
     view?: SceneView;
@@ -158,6 +177,7 @@
   }
 
   const DEFAULT_LABELS: DiagramSceneFigureLabels = {
+    ...DEFAULT_FLOW_STRINGS,
     controls: "Zoom",
     zoomIn: "Zoom in",
     zoomOut: "Zoom out",
@@ -200,12 +220,22 @@
     layoutCache,
     contentSize = $bindable({ width: 0, height: 0 }),
     onSizeChange,
+    flows,
+    scenario,
+    defaultScenario,
+    activeStep,
+    defaultActiveStep,
+    onStepChange,
+    onScenarioChange,
+    onHighlightChange,
   }: DiagramSceneFigureProps = $props();
 
   const ownedCache = createLayoutCache();
   let publishedSize: DiagramSceneSize | undefined;
 
   const strings = $derived({ ...DEFAULT_LABELS, ...labels });
+  const flowOptions = $derived({ ...flows, countTemplate: strings.count });
+  let flowTokens = $state.raw<FlowTokens>(DEFAULT_FLOW_TOKENS);
 
   /* ── fold state and layout ─────────────────────────────────────── */
 
@@ -231,6 +261,8 @@
       document: semanticDocument,
       ...(view === undefined ? {} : { view }),
       registry,
+      flows: flowOptions,
+      flowTokens,
       ...(bindings === undefined ? {} : { bindings }),
       presentation,
       measureLines: lineMeasurer,
@@ -253,11 +285,155 @@
           document: semanticDocument,
           presentation,
           measureLines: lineMeasurer,
+          flows: flowOptions,
           ...(metrics === undefined ? {} : { metrics }),
         })
       : undefined,
   );
   const sceneRects = $derived<ReadonlyMap<string, Rect>>(scene === undefined ? new Map() : rectsOf(scene));
+
+  /* Logical flow state never participates in layout or scene resolution. */
+  let flowLocal = $state.raw<FlowState>(untrack(() => ({ ...INITIAL_FLOW_STATE,
+    selection: defaultActiveStep === undefined ? null : { kind: "step", relation: defaultActiveStep },
+    ...(defaultScenario === undefined ? {} : { scenario: defaultScenario }),
+  })));
+  const flowState = $derived.by<FlowState>(() => {
+    const { scenario: _localScenario, ...rest } = flowLocal;
+    const filter = scenario === undefined ? flowLocal.scenario : scenario ?? undefined;
+    return { ...rest,
+      selection: activeStep === undefined ? flowLocal.selection : activeStep === null ? null : { kind: "step", relation: activeStep },
+      ...(filter === undefined ? {} : { scenario: filter }),
+    };
+  });
+  const flowHighlight = $derived(scene === undefined ? undefined : highlightOf(scene, flowState));
+  const flowEffective = $derived(scene === undefined ? null : effectiveTarget(scene, flowState));
+  const flowSteps = $derived(scene === undefined ? [] : stepsOf(scene));
+  let flowAnnouncement = $state("");
+  let badgeCursor = $state<string>();
+  let nodeCursor = $state<string>();
+  const selectedVisible = $derived(scene === undefined ? null : visibleOf(scene, flowState.selection));
+  const selectedBadge = $derived(scene?.badges.find((badge) => JSON.stringify(badge.target) === JSON.stringify(selectedVisible))?.id);
+  const badgeTab = $derived(scene?.badges.some((b) => b.id === badgeCursor) ? badgeCursor : selectedBadge ?? scene?.badges[0]?.id);
+  const nodeTab = $derived(scene?.nodeTargets.some((n) => n.occurrence === nodeCursor) ? nodeCursor : selectedVisible?.kind === "box" && scene?.nodeTargets.some((n) => n.occurrence === selectedVisible.occurrence) ? selectedVisible.occurrence : scene?.nodeTargets[0]?.occurrence);
+  const stateOf = (id: string) => flowHighlight === undefined ? undefined : flowStateOf(flowHighlight, id);
+  const descriptionId = (group: string, id: string) => `${hostId}-${group}-${encodeURIComponent(id)}`;
+  const hostId = $props.id();
+  const flowDescription = (target: Visible) => scene === undefined ? "" : describeTarget(scene, target, strings as FlowStrings);
+  const boxTarget = (occurrence: string): Visible => ({ kind: "box", occurrence });
+  function dispatchFlow(action: FlowAction): void {
+    if (scene === undefined || flowSteps.length === 0) return;
+    const before = flowEffective;
+    const change = reduce(scene, flowState, action);
+    let next = change.state;
+    if (activeStep !== undefined && change.emit.includes("step")) next = { ...next, selection: flowState.selection };
+    if (scenario !== undefined && change.emit.includes("scenario")) {
+      const { scenario: _nextFilter, ...rest } = next;
+      next = { ...rest, ...(flowState.scenario === undefined ? {} : { scenario: flowState.scenario }) };
+    }
+    flowLocal = next;
+    if (change.emit.includes("step")) onStepChange?.(stepChange(scene, change.state.selection));
+    if (change.emit.includes("scenario")) onScenarioChange?.(change.state.scenario ?? null);
+    const displayed = effectiveTarget(scene, next);
+    if (JSON.stringify(displayed) !== JSON.stringify(before)) onHighlightChange?.(displayed);
+    if (["next", "previous", "first", "last"].includes(action.type)) flowAnnouncement = announce(scene, change.state, strings);
+    if (change.emit.includes("step") && activeStep === undefined) {
+      badgeCursor = undefined; nodeCursor = undefined;
+
+    }
+  }
+  function scrollFlowSelection(): void {
+    if (scene === undefined || viewportEl === undefined) return;
+    const target = visibleOf(scene, flowState.selection);
+    const occurrence = target?.kind === "bundle" ? scene.edges.find((e) => e.bundle?.id === target.id)?.occurrence : target?.occurrence;
+    const points = scene.edges.find((edge) => edge.occurrence === occurrence)?.points;
+    const routeBox = points === undefined || points.length === 0 ? undefined : { x: Math.min(...points.map((p) => p.x)), y: Math.min(...points.map((p) => p.y)), width: Math.max(...points.map((p) => p.x)) - Math.min(...points.map((p) => p.x)), height: Math.max(...points.map((p) => p.y)) - Math.min(...points.map((p) => p.y)) };
+    const box = scene.badges.find((b) => b.occurrence === occurrence)?.box ?? scene.nodes.find((n) => n.occurrence === occurrence)?.rect ?? routeBox;
+    if (box === undefined) return;
+    const left = box.x * zoom + placement.translateX, top = box.y * zoom + placement.translateY;
+    if (left < viewportEl.scrollLeft) viewportEl.scrollLeft = left;
+    else if (left + box.width * zoom > viewportEl.scrollLeft + viewportEl.clientWidth) viewportEl.scrollLeft = left + box.width * zoom - viewportEl.clientWidth;
+    if (top < viewportEl.scrollTop) viewportEl.scrollTop = top;
+    else if (top + box.height * zoom > viewportEl.scrollTop + viewportEl.clientHeight) viewportEl.scrollTop = top + box.height * zoom - viewportEl.clientHeight;
+  }
+  function targetAt(element: EventTarget | null): Visible | null {
+    if (!(element instanceof Element) || scene === undefined) return null;
+    const target = element.closest<HTMLElement>("[data-flow-badge],[data-flow-node],[data-flow-hit],[data-scene-occurrence]");
+    if (target === null) return null;
+    const badge = target.dataset["flowBadge"];
+    if (badge !== undefined) return scene.badges.find((b) => b.id === badge)?.target ?? null;
+    const edge = scene.edges.find((e) => e.occurrence === target.dataset["flowHit"]);
+    if (edge !== undefined) return edge.bundle === undefined ? { kind: "edge", occurrence: edge.occurrence } : { kind: "bundle", id: edge.bundle.id };
+    const node = target.dataset["flowNode"] ?? target.dataset["sceneOccurrence"];
+    return node !== undefined && scene.nodeTargets.some((n) => n.occurrence === node) ? boxTarget(node) : null;
+  }
+  function flowPointer(event: PointerEvent, leaving: boolean): void {
+    dispatchFlow({ type: "hover", target: targetAt(leaving ? event.relatedTarget : event.target) });
+  }
+  function flowFocus(event: FocusEvent, leaving: boolean): void {
+    dispatchFlow({ type: "focus", target: targetAt(leaving ? event.relatedTarget : event.target) });
+  }
+  function flowClick(event: MouseEvent): void {
+    if (suppressFlowClick) { suppressFlowClick = false; return; }
+    const element = event.target as Element;
+    if (element.closest("button[aria-expanded],input,select,textarea,a,[contenteditable=true]")) return;
+    const target = targetAt(event.target);
+    if (target !== null) {
+      // Cards/zones dispatch through their existing onSelect callback below.
+      if (element.closest("[data-flow-badge],[data-flow-node],[data-flow-hit]")) dispatchFlow({ type: "activate", target });
+    } else if (!element.closest("button")) dispatchFlow({ type: "escape" });
+  }
+  function flowClickCapture(event: MouseEvent): void {
+    if (flowSteps.length === 0) return;
+    if (event.detail === 0) { suppressFlowClick = false; return; }
+    if (suppressFlowClick) { suppressFlowClick = false; event.stopPropagation(); event.preventDefault(); }
+  }
+  function selectNode(node: SceneNodeModel, event: { entityId: string }): void {
+    if (suppressFlowClick) { suppressFlowClick = false; return; }
+    dispatchFlow({ type: "activate", target: boxTarget(node.occurrence) });
+    onSelect?.(event);
+  }
+  function roveFlow(event: KeyboardEvent): boolean {
+    const target = event.target as HTMLElement;
+    const group = target.dataset["flowBadge"] !== undefined ? "flowBadge" : target.dataset["flowNode"] !== undefined ? "flowNode" : undefined;
+    if (group === undefined || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return false;
+    const candidates = [...(viewportEl?.querySelectorAll<HTMLElement>(group === "flowBadge" ? "[data-flow-badge]" : "[data-flow-node]") ?? [])];
+    const current = candidates.indexOf(target);
+    const index = event.key === "Home" ? 0 : event.key === "End" ? candidates.length - 1 : Math.max(0, Math.min(candidates.length - 1, current + (["ArrowLeft", "ArrowUp"].includes(event.key) ? -1 : 1)));
+    const next = candidates[index];
+    if (next !== undefined) { if (group === "flowBadge") badgeCursor = next.dataset[group]; else nodeCursor = next.dataset[group]; next.focus(); }
+    event.preventDefault(); return true;
+  }
+  let scrollIdentity: string | undefined;
+  $effect(() => {
+    const identity = JSON.stringify([flowState.selection,selectedVisible]);
+    if (scrollIdentity !== undefined && scrollIdentity !== identity) {
+      badgeCursor = undefined; nodeCursor = undefined;
+      void tick().then(scrollFlowSelection);
+    }
+    scrollIdentity = identity;
+  });
+  let previousFlowScene: SceneModel | undefined;
+  let removedSelection: string | undefined;
+  $effect.pre(() => {
+    const current = scene;
+    untrack(() => {
+      if (current === undefined) return;
+      if (previousFlowScene !== undefined && previousFlowScene !== current) {
+        const focused = viewportEl?.ownerDocument.activeElement as HTMLElement | null;
+        const group = focused?.hasAttribute("data-flow-badge") ? "[data-flow-badge]" : focused?.hasAttribute("data-flow-node") ? "[data-flow-node]" : undefined;
+        if (group !== undefined) void tick().then(() => { if (focused !== null && !focused.isConnected) (viewportEl?.querySelector<HTMLElement>(`${group}[tabindex="0"]`) ?? viewportEl)?.focus({ preventScroll: true }); });
+        const before = flowState;
+        const repaired = reduce(current, before, { type: "repair" });
+        flowLocal = { ...repaired.state, selection: activeStep === undefined ? repaired.state.selection : before.selection };
+        if (before.selection?.kind === "step" && repaired.state.selection === null && removedSelection !== before.selection.relation) {
+          removedSelection = before.selection.relation;
+          if (activeStep === undefined) flowLocal = repaired.state;
+          onStepChange?.(null);
+        } else if (repaired.state.selection !== null) removedSelection = undefined;
+      }
+      previousFlowScene = current;
+    });
+  });
 
   $effect(() => {
     const result = layoutResult;
@@ -295,6 +471,13 @@
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
+    const nextTokens = { ...DEFAULT_FLOW_TOKENS };
+    for (const name of Object.keys(nextTokens) as (keyof FlowTokens)[]) {
+      const value = tokenValue(`--st-component-diagramScene-${name}`);
+      if (name === "flowArrowPath") { if (value?.trim()) nextTokens.flowArrowPath = value.trim(); }
+      else { const number = parseScale(value); if (number !== undefined) (nextTokens as unknown as Record<string, number>)[name] = number; }
+    }
+    if (JSON.stringify(nextTokens) !== JSON.stringify(flowTokens)) flowTokens = nextTokens;
     maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE));
     minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
   }
@@ -443,7 +626,11 @@
     const target = event.target as HTMLElement | null;
     if (target !== null && target !== event.currentTarget) {
       const tag = target.tagName;
-      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable) return;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable || target.closest("[contenteditable]")) return;
+    }
+    if (!event.shiftKey && roveFlow(event)) return;
+    if (!event.shiftKey && flowSteps.length > 0 && ["]", "[", "Escape"].includes(event.key)) {
+      dispatchFlow({ type: event.key === "]" ? "next" : event.key === "[" ? "previous" : "escape" }); event.preventDefault(); return;
     }
     if (event.key === "+" || event.key === "=") zoomIn();
     else if (event.key === "-" || event.key === "_") zoomOut();
@@ -470,17 +657,22 @@
   // Two-finger pinch on a touch screen.
   const touches = new Map<number, { x: number; y: number }>();
   let pinch: { distance: number; zoom: number } | undefined;
+  let touchOrigin: { x: number; y: number } | undefined;
+  let suppressFlowClick = false;
   const touchDistance = (): number => {
     const [first, second] = [...touches.values()];
     return first === undefined || second === undefined ? 0 : Math.hypot(first.x - second.x, first.y - second.y);
   };
   function onPointerDown(event: PointerEvent): void {
+    suppressFlowClick = false;
     if (event.pointerType !== "touch") return;
+    touchOrigin = { x: event.clientX, y: event.clientY };
     touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
     pinch = touches.size === 2 ? { distance: touchDistance(), zoom } : undefined;
   }
   function onPointerMove(event: PointerEvent): void {
     if (!touches.has(event.pointerId)) return;
+    if (touchOrigin !== undefined && (event.clientX !== touchOrigin.x || event.clientY !== touchOrigin.y)) suppressFlowClick = true;
     touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
     if (pinch === undefined || pinch.distance <= 0) return;
     event.preventDefault();
@@ -618,7 +810,7 @@
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
   const viewportStyle = $derived(
-    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom}`,
+    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -647,6 +839,20 @@
     </IconButton>
     <Button size="sm" variant="secondary" onclick={fitToFrame}>{strings.fit}</Button>
   </div>
+  {#if flowSteps.length > 0}
+    <div class="st-diagramSceneFigure-flowNavigator" role="group" aria-label={strings.navigator}>
+      <Button size="sm" variant="secondary" onclick={() => dispatchFlow({ type: "previous" })}>{strings.previous}</Button>
+      <output aria-label={strings.step}>{scene === undefined ? "" : announce(scene, flowState, strings)}</output>
+      <Button size="sm" variant="secondary" onclick={() => dispatchFlow({ type: "next" })}>{strings.next}</Button>
+      {#if scene !== undefined && scene.flows.scenarios.length >= 2}
+        <Select label={strings.scenario} value={flowState.scenario === undefined ? "all" : `scenario:${flowState.scenario}`} onchange={(event) => { const value = event.currentTarget.value; dispatchFlow(value === "all" ? { type: "scenario" } : { type: "scenario", id: value.slice("scenario:".length) }); }}>
+          <option value="all">{strings.allScenarios}</option>
+          {#each scene.flows.scenarios as entry (entry.id)}<option value={`scenario:${entry.id}`}>{entry.label || strings.scenario}</option>{/each}
+        </Select>
+      {/if}
+      <output class="st-diagramSceneFigure-flowDescription" aria-live="polite">{flowAnnouncement}</output>
+    </div>
+  {/if}
   <div class="st-diagramSceneFigure-frame" bind:this={frameEl}>
     <!-- m5: a refused layout draws visible text, not only the data attribute. -->
     {#if layoutResult.status === "refused"}
@@ -664,7 +870,7 @@
       role="group"
       tabindex="0"
       aria-label={strings.viewport}
-      aria-keyshortcuts="+ - 0"
+      aria-keyshortcuts={flowSteps.length > 0 ? "+ - 0 [ ] Escape" : "+ - 0"}
       aria-busy={animating}
       data-pans={placement.overflowX || placement.overflowY ? "true" : "false"}
       style={viewportStyle}
@@ -673,12 +879,18 @@
       onpointermove={onPointerMove}
       onpointerup={onPointerEnd}
       onpointercancel={onPointerEnd}
+      onpointerover={(event) => flowPointer(event, false)}
+      onpointerout={(event) => flowPointer(event, true)}
+      onfocusin={(event) => flowFocus(event, false)}
+      onfocusout={(event) => flowFocus(event, true)}
+      onclick={flowClick}
+      onclickcapture={flowClickCapture}
     >
       <div
         class="st-diagramSceneFigure-extent"
         style={`width:${placement.contentWidth}px;height:${placement.contentHeight}px`}
       >
-        <div class="st-diagramSceneFigure-world" style={worldStyle}>
+        <div class="st-diagramSceneFigure-world" style={worldStyle} data-flow-active={flowHighlight !== undefined && (flowHighlight.primary.size > 0 || flowHighlight.dimmed.size > 0) ? "true" : undefined}>
           {#if scene !== undefined}
             <!-- m4: edges paint before nodes, labels last; edges and labels
                  fade in with the transition (T-1) while the boxes move. -->
@@ -688,7 +900,13 @@
               style={animating ? `opacity:${eased}` : undefined}
             >
               {#each scene.edges as edge (edge.occurrence)}
-                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
+                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {#if edge.directed}
+                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
+                  {#each edge.arrows as arrow, index (index)}
+                    <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
+                  {/each}
+                {/if}
               {/each}
             </svg>
             {#each scene.nodes as node (node.occurrence)}
@@ -697,22 +915,31 @@
                 class="st-diagramSceneFigure-node"
                 data-scene-occurrence={node.occurrence}
                 data-scene-kind={node.kind}
+                data-flow-state={stateOf(node.occurrence)}
                 style={`left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${entering(node) ? `;opacity:${eased}` : ""}`}
               >
                 {#if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
-                    <DiagramCard {...cardProps} {measure} {onSelect} />
+                    <DiagramCard {...cardProps} {measure} onSelect={(event) => selectNode(node, event)} />
                   {/if}
                 {:else if node.kind === "zone"}
                   {@const zoneProps = zonePropsOf(node, rect)}
                   {#if zoneProps !== undefined}
-                    <DiagramZone {...zoneProps} {measure} {onSelect} onToggle={() => toggleFold(node)} />
+                    <DiagramZone {...zoneProps} {measure} onSelect={(event) => selectNode(node, event)} onToggle={() => toggleFold(node)} />
                   {/if}
                 {:else}
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
                 {/if}
               </div>
+            {/each}
+            {#each scene.badges as badge (badge.id)}
+              <button type="button" class="st-diagramSceneFigure-flowBadge" data-flow-badge={badge.id} data-flow-state={stateOf(badge.occurrence)} aria-pressed={JSON.stringify(selectedVisible) === JSON.stringify(badge.target)} aria-describedby={descriptionId("badge", badge.id)} tabindex={badgeTab === badge.id ? 0 : -1} style={`left:${badge.box.x}px;top:${badge.box.y}px;width:${badge.box.width}px;height:${badge.box.height}px`}>{badge.text}</button>
+              <span class="st-diagramSceneFigure-flowDescription" id={descriptionId("badge", badge.id)}>{flowDescription(badge.target)}</span>
+            {/each}
+            {#each scene.nodeTargets as target (target.occurrence)}
+              <button type="button" class="st-diagramSceneFigure-flowNode" data-flow-node={target.occurrence} data-flow-state={stateOf(target.occurrence)} aria-label={flowDescription(boxTarget(target.occurrence))} aria-pressed={selectedVisible?.kind === "box" && selectedVisible.occurrence === target.occurrence} aria-describedby={descriptionId("node", target.occurrence)} tabindex={nodeTab === target.occurrence ? 0 : -1} style={`left:${target.anchor.x}px;top:${target.anchor.y}px`}>{strings.node}</button>
+              <span class="st-diagramSceneFigure-flowDescription" id={descriptionId("node", target.occurrence)}>{flowDescription(boxTarget(target.occurrence))}</span>
             {/each}
             {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
               <div
@@ -733,6 +960,23 @@
 </figure>
 
 <style>
+  .st-diagramSceneFigure-flowNavigator { display: flex; align-items: center; gap: var(--st-spacing-2); grid-column: 1 / -1; }
+  .st-diagramSceneFigure-flowHit { fill: none; stroke: var(--st-component-diagramScene-flowHitStroke); stroke-width: var(--st-component-diagramScene-flowHitWidth); pointer-events: stroke; cursor: pointer; }
+  .st-diagramSceneFigure-edge[data-flow-step] { stroke: var(--st-component-diagramScene-flowStroke); stroke-width: var(--st-component-diagramScene-flowStrokeWidth); }
+  .st-diagramSceneFigure-flowArrow { fill: var(--st-component-diagramScene-flowStroke); }
+  .st-diagramSceneFigure-flowBadge, .st-diagramSceneFigure-flowNode { position: absolute; box-sizing: border-box; color: var(--st-component-diagramScene-flowBadgeText); background: var(--st-component-diagramScene-flowBadgeBackground); border: var(--st-component-diagramScene-flowStrokeWidth) solid var(--st-component-diagramScene-flowBadgeBorder); border-radius: var(--st-component-diagramScene-flowBadgeRadius); font-family: var(--st-component-diagramCard-fontFamily); font-size: var(--st-component-diagramScene-flowBadgeFontSize); line-height: var(--st-component-diagramScene-flowBadgeLineHeight); padding: 0; cursor: pointer; }
+  .st-diagramSceneFigure-flowBadge::before { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 100%; min-height: 100%; width: var(--st-diagramSceneFigure-flowHit); height: var(--st-diagramSceneFigure-flowHit); }
+  .st-diagramSceneFigure-flowNode { opacity: var(--st-component-diagramScene-flowHiddenOpacity); pointer-events: none; min-width: var(--st-diagramSceneFigure-flowHit); min-height: var(--st-diagramSceneFigure-flowHit); }
+  .st-diagramSceneFigure-flowNode:focus-visible { pointer-events: auto; }
+  .st-diagramSceneFigure-flowDescription { position: absolute; clip-path: inset(50%); width: 0; height: 0; overflow: hidden; }
+  [data-flow-active] [data-flow-state="dim"] { opacity: var(--st-component-diagramScene-flowDimOpacity); }
+  .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke: var(--st-component-diagramScene-flowPrimaryStroke); stroke-width: var(--st-component-diagramScene-flowPrimaryStrokeWidth); }
+  .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke: var(--st-component-diagramScene-flowStroke); stroke-width: var(--st-component-diagramScene-flowRelatedStrokeWidth); }
+  .st-diagramSceneFigure-flowArrow[data-flow-state="primary"] { fill: var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-node[data-flow-state="primary"] { outline: var(--st-component-diagramScene-flowOutlineWidth) solid var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-flowBadge[aria-pressed="true"] { color: var(--st-component-diagramScene-flowBadgeBackground); background: var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-flowNode:not(:focus-visible) { opacity: var(--st-component-diagramScene-flowHiddenOpacity); }
+  .st-diagramSceneFigure-flowBadge:focus-visible, .st-diagramSceneFigure-flowNode:focus-visible { opacity: var(--st-component-diagramScene-flowFullOpacity); outline: var(--st-component-diagramScene-flowOutlineWidth) solid var(--st-component-diagramScene-flowFocusOutline); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
