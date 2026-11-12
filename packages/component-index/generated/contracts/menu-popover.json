@@ -1,7 +1,7 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:8e8fd9d5ca89822dda1eef0397f8bdca56fc7c53a8f8071a842d2d0e32d830c9",
+  "digest": "sha256:e9d82756337ba5856d5d0070a3b91b24833ef4dd2df3e1219dfe5348bf208125",
   "entryDigest": "sha256:0e0bf0248a74e295e6052474a0760dd899043d2c335232e20c1917cea07ec14a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -209,19 +209,19 @@
       "dropped": [
         {
           "kind": "node",
-          "name": "ActionItem.icon",
+          "name": "MenuActionItem.icon",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "node",
-          "name": "ActionItem.label",
+          "name": "MenuActionItem.label",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "function",
-          "name": "ActionItem.onClick",
+          "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
         },
@@ -238,6 +238,24 @@
           "payload": {
             "type": "boolean"
           }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": false,
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -246,14 +264,31 @@
       "passthrough": {
         "base": "React.HTMLAttributes<HTMLDivElement>",
         "omitted": [
-          "className"
+          "className",
+          "onSelect"
         ]
       },
       "props": {
         "$defs": {
-          "ActionItem": {
+          "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -262,6 +297,9 @@
               },
               "id": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -298,7 +336,7 @@
               },
               "items": {
                 "items": {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 "type": "array"
               },
@@ -338,7 +376,7 @@
             "items": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 {
                   "$ref": "#/$defs/MenuDividerItem"
@@ -366,6 +404,14 @@
               "bottom-end"
             ]
           },
+          "submenuSide": {
+            "description": "Forwarded to the inner `Menu` in `items` mode.",
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
+          },
           "trigger": {
             "anyOf": [
               {},
@@ -388,7 +434,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuPopoverProps",

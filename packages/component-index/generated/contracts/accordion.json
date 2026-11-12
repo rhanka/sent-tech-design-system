@@ -1,7 +1,7 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:6a3aa436321a1e48c7c6605e8faa245b19daab267a8edcd1b9dc70d4a7b062ca",
+  "digest": "sha256:0dec4493c9f606f52024bb4123de1062de83a064400803ded9cd38ec408138f6",
   "entryDigest": "sha256:906c12d165b4e1cc7b536ba4550c40cb096a8d606b58ec419694fa468236ad49",
   "format": "component-contract/v1",
   "frameworks": {
@@ -219,7 +219,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AccordionProps",

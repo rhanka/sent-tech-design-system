@@ -1,7 +1,7 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:d4db2b3cd2fcd9a3f6d47735ce7b0569720c3173e50422f5b65b6b674fce5af1",
+  "digest": "sha256:1820b26ead9bf22c372d606a6c5a02dc3d364b62ca45f9e06a5a02683429e871",
   "entryDigest": "sha256:85e823d3d74e094ea85bd80bf6a98476c8517b5c1bb5810a4284f402b9a2fb0e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -90,7 +90,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SkeletonTextProps",

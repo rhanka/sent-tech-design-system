@@ -1,7 +1,7 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:3d9054d18d62f1f87573aeefef7d463777e46dd011906800462ecc8794856861",
+  "digest": "sha256:8e96d63e3cc31f092ef8add119fbcf66a1b77b1783cb26a452b4d75708ccc559",
   "entryDigest": "sha256:a583617e38cfac64281eae84d544f7200b82edde8770f72b22df9a6631998973",
   "format": "component-contract/v1",
   "frameworks": {
@@ -104,7 +104,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CopyButtonProps",

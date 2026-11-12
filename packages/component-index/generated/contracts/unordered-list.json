@@ -1,7 +1,7 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:53e1662c65d17ca58459e0f6bfccc9b15bf1432432be03a074580ab62c962777",
+  "digest": "sha256:2b8a9329c2a2035b1633564c1b41d3b8f42c4f49a56aea22efb5e837ab8e664b",
   "entryDigest": "sha256:39b728db3b8317118ae1c6cdecf5189842eaec8ab57cfdb9f3a95e7a890730dd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -117,7 +117,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UnorderedListProps",

@@ -1,7 +1,7 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:5e5c76c47a28f37ce54d28bf99f17bf45c6a99e9ce2cbf6722d5f68da5c9c76c",
+  "digest": "sha256:370d65d3d43925e25ab4e881f5fe04dcbb28c9305902d5cb42986ce161032a5a",
   "entryDigest": "sha256:49f0e946066fb4a4f4b6aa8df7e4c2d368de6074eb7dba394c1a0017719037be",
   "format": "component-contract/v1",
   "frameworks": {
@@ -137,7 +137,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggleProps",

@@ -1,7 +1,7 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:1a924cca51db29366cd4509af3508f8f61ac7f368cd9b0ddd2ab84f2607c0faa",
+  "digest": "sha256:9ce4e36909df47035e6ffc3c097358a389294ce82e142ae4adf05546bc9294d1",
   "entryDigest": "sha256:ab75e44394638692e76db327adcb2e5592196f08e9b51256a5957d6016423bf3",
   "format": "component-contract/v1",
   "frameworks": {
@@ -171,7 +171,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatThreadProps",
