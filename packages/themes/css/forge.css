@@ -806,8 +806,11 @@
   --st-component-diagramZone-secondaryText: #475569;
   --st-component-diagramZone-rule: #e2e8f0;
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.42;
+  --st-component-diagramScene-minReadableScale: 0.45;
   --st-component-diagramScene-transitionDuration: 240ms;
+  --st-component-diagramScene-edgeLabelFontSize: 18px;
+  --st-component-diagramScene-readoutMinWidth: 4ch;
+  --st-component-bpmnCanvas-minHeight: 120px;
   --st-component-diagramIcon-viewBox: 0 0 64 64;
   --st-component-diagramIcon-basePath: M8 53L32 44L56 53L32 62Z;
   --st-component-diagramIcon-faceStrokeWidth: 1.5;
@@ -1626,8 +1629,11 @@
   --st-component-diagramZone-secondaryText: oklch(78% 0.012 250);
   --st-component-diagramZone-rule: oklch(28% 0.014 250);
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.42;
+  --st-component-diagramScene-minReadableScale: 0.45;
   --st-component-diagramScene-transitionDuration: 240ms;
+  --st-component-diagramScene-edgeLabelFontSize: 18px;
+  --st-component-diagramScene-readoutMinWidth: 4ch;
+  --st-component-bpmnCanvas-minHeight: 120px;
   --st-component-diagramIcon-viewBox: 0 0 64 64;
   --st-component-diagramIcon-basePath: M8 53L32 44L56 53L32 62Z;
   --st-component-diagramIcon-faceStrokeWidth: 1.5;
@@ -2446,8 +2452,11 @@
   --st-component-diagramZone-secondaryText: oklch(78% 0.012 250);
   --st-component-diagramZone-rule: oklch(28% 0.014 250);
   --st-component-diagramScene-maxDisplayScale: 0.62;
-  --st-component-diagramScene-minReadableScale: 0.42;
+  --st-component-diagramScene-minReadableScale: 0.45;
   --st-component-diagramScene-transitionDuration: 240ms;
+  --st-component-diagramScene-edgeLabelFontSize: 18px;
+  --st-component-diagramScene-readoutMinWidth: 4ch;
+  --st-component-bpmnCanvas-minHeight: 120px;
   --st-component-diagramIcon-viewBox: 0 0 64 64;
   --st-component-diagramIcon-basePath: M8 53L32 44L56 53L32 62Z;
   --st-component-diagramIcon-faceStrokeWidth: 1.5;

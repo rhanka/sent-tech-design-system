@@ -1554,7 +1554,7 @@
       "deliveryChannels": [
         "tokens"
       ],
-      "digest": "sha256:88199a534904f56b61b41b299e0bed5d03a1771087a4bfdb8f3dcf7ab315210e",
+      "digest": "sha256:62ce1537b10db36a194f7b51255a06f09199355f979fe91ae9d6989b3423543e",
       "frameworks": [],
       "parity": {
         "angular": "no-counterpart",
@@ -1575,15 +1575,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:95f27fd498f62af5f06a563e0ede3f9b844e448efbe3b117e6c1f57d5acbb49c",
+      "digest": "sha256:d0652ec8bea1171a0cd6cd6f78a89c9009c4ad7ed9cfc1f44f745fcf6bbb7e9a",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-card.json",
       "producerId": "sentropic-ds",
@@ -1599,15 +1600,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c0e018b8c4061ce7e652891b8f374748b60b480b4e76b67fc71ac8e9b384f0a6",
+      "digest": "sha256:62827922dccc3b7587f4f66edf7c590c37ca448b3d31bb8c8057db4bf097c2f1",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-zone.json",
       "producerId": "sentropic-ds",
@@ -2136,7 +2138,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:280cc67ac6225ab57e922c57ae70c56d8d39617a6e128b51c4207dc05f6611fe",
+      "digest": "sha256:ab96d461d57b17aada41ac90972809965fdff9f889bfa1a0cd67a836fd6a08db",
       "frameworks": [
         "svelte",
         "react",
@@ -5763,6 +5765,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:7c4388389677243de8e9656aa6bdfa40930be0cfb6dcb6b2b346f03f9b1198ea",
-  "sourceCommit": "26620e84ca26a62c3c6f1f2b2d07668c2bfd08e5"
+  "registryRevision": "sha256:5820e51b8843d2ceb2c68260d1ddce770812c5cbb38f47d7eae4b9854baa337a",
+  "sourceCommit": "ed01855bc75f0442a8ca0b4f07def3ed602bd98f"
 }

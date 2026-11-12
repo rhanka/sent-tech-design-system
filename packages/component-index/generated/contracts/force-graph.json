@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:c8d140dc9feef3f008d9e45fef2c54384a6aec0f7af078894e1eab5c5c7d1f8b",
-  "entryDigest": "sha256:280cc67ac6225ab57e922c57ae70c56d8d39617a6e128b51c4207dc05f6611fe",
+  "digest": "sha256:bb8032ca162de50449dcfe6dae609edf1525148eea441d024d189541fd386a15",
+  "entryDigest": "sha256:ab96d461d57b17aada41ac90972809965fdff9f889bfa1a0cd67a836fd6a08db",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -996,7 +996,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:01dd4b6c6826dc5b58add2e2e593fdbb8331b6d7612eb3ab96835f00841274f0",
+        "declarationDigest": "sha256:731de79bba7765d66a6b4283c6faaa7dc17604710eb5613a8a1a83be92caa6b0",
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
@@ -1300,6 +1300,9 @@
             },
             "type": "array"
           },
+          "legendLabel": {
+            "type": "string"
+          },
           "mergePair": {
             "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
@@ -1363,7 +1366,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4fe13417fdc41bb12f5ed7239d805563f3bee45d82e59910150b125fc7302de4",
+        "declarationDigest": "sha256:d46e111c24462a95f5e4e96f139ebc77e4efec2292ca6a59e29ac88ca967992f",
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",
