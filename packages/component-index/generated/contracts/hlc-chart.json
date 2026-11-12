@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:358fcd296123dd3d13027fa33f3e8bca68e8b325af2f217c7b3184af61f78fc3",
-  "entryDigest": "sha256:c7ed3b289da4bb19f7d0030afd0b04fd4074e70937a060220ccf92a4db2c0235",
+  "digest": "sha256:8b0990895cd65b790c5ed1929f5ca0353696dac3240e936c2839d9039ed6fd8b",
+  "entryDigest": "sha256:82d325af2bad68550209d62332b3f3b400d1326caba1f03935fdc5eead172793",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-svelte/dist/HLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
