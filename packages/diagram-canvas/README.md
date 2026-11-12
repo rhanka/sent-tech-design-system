@@ -11,26 +11,27 @@ primitives of §7; the layout engine (SPEC_EVOL_DS_JSON_RENDER_STANDARD §10.5,
 L8) was added after it. What it deliberately leaves out is listed
 under *What is not covered yet*, with the lot that owns each item.
 
-## Why this package is private
+## Publication
 
-`"private": true` here is a standalone state, not a preference: this package
-has no publication lot yet (no publish workflow, no tag line in
-`docs/release.md`).
+The manifest is publishable since DC-2a (SPEC_EVOL_DC2A Appendix D, BF-5): no
+`private` flag, `publishConfig.access: "public"`, and `files` shipping `dist`
+without maps or the build stamp — the same shape as `@sentropic/diagram-core`.
+The reason is the edge `@sentropic/design-system-svelte → @sentropic/diagram-canvas`
+(the scene host `DiagramSceneFigure`), which `docs/graph-dataviz-architecture-dag.json`
+declares: a published package that names a private dependency installs broken
+for every consumer, the failure `pack:smoke` caught once in this repository
+(see the header of `scripts/verify-layering.test.mjs` on PR #65).
 
-Since L7b-a its only dependency, `@sentropic/diagram-core`, is itself public
-(`publishConfig.access: "public"`, no `private` flag, tag
-`diagram-core-v<version>` in `diagram-core-publish.yml`). The old reason for
-this flag therefore no longer holds: a published package that names an
-*unpublished* dependency installs broken for every consumer, and `pack:smoke`
-caught that exact failure once in this repository (see the header of
-`scripts/verify-layering.test.mjs` on PR #65) — but `diagram-core` is no
-longer unpublished.
+Not written yet: the publish workflow and the tag line in `docs/release.md`.
+Until `@sentropic/diagram-canvas@0.1.0` is on the registry, the fail-closed
+step of `svelte-publish.yml` (`scripts/verify-deps-published.mjs`) refuses to
+publish the Svelte package, by design.
 
-Inside the workspace the dependency resolves by link, which `package-lock.json`
-records as `"resolved": "packages/diagram-core", "link": true` — no registry URL.
-The publishable package count is pinned by
-`scripts/verify-publishable-licensing.test.mjs` (21 since L7b-a, with
-`diagram-core` counted and `diagram-canvas` not); it is not restated here.
+Its only dependency, `@sentropic/diagram-core`, is public and pinned exact.
+Inside the workspace it resolves by link, which `package-lock.json` records as
+`"resolved": "packages/diagram-core", "link": true` — no registry URL. The
+publishable package count is pinned by
+`scripts/verify-publishable-licensing.test.mjs`; it is not restated here.
 
 ## The three contracts this slice fixes
 

@@ -8,7 +8,7 @@
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 16 packages
+//                                 this run (a subset of the 17 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
@@ -565,6 +565,33 @@ async function verifyDatavizAngular() {
   assertModuleExports("@sentropic/dataviz-angular", mod, minExportCounts["@sentropic/dataviz-angular"] ?? 0);
 }
 
+// DC-2a BF-5: the headless scene/camera/layout package. The public entry loads
+// from the installed tarball (its one dependency resolved beside it) and the
+// camera contract answers: a 460 x 200 card in a 1280 px figure caps at the
+// maximum display scale, readout 100 %.
+async function verifyDiagramCanvas() {
+  const mod = await import("@sentropic/diagram-canvas");
+  for (const name of ["cameraFit", "zoomReadout", "layoutMeasured", "buildScene"]) {
+    if (typeof mod[name] !== "function") {
+      fail("@sentropic/diagram-canvas", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  let readout;
+  try {
+    const fit = mod.cameraFit({ bounds: { width: 460, height: 200 }, viewWidth: 1280, windowHeight: 720 });
+    readout = mod.zoomReadout(fit.zoom, fit.maxZoom);
+  } catch (error) {
+    fail("@sentropic/diagram-canvas", "cameraFit threw: " + String(error && error.message ? error.message : error));
+    return;
+  }
+  if (readout !== 100) {
+    fail("@sentropic/diagram-canvas", "a single card did not fit at readout 100: " + String(readout));
+    return;
+  }
+  console.log("OK @sentropic/diagram-canvas: camera + layout + scene import verified");
+}
+
 const verifiers = {
   "@sentropic/design-system-tokens": verifyTokens,
   "@sentropic/design-system-themes": verifyThemes,
@@ -575,6 +602,7 @@ const verifiers = {
   "@sentropic/design-system-angular": verifyAngular,
   "@sentropic/graph": verifyGraph,
   "@sentropic/diagram-core": verifyDiagramCore,
+  "@sentropic/diagram-canvas": verifyDiagramCanvas,
   "@sentropic/design-system-rich-text": verifyRichText,
   "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,
