@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:cf97ac0ab46ee2ada3ff86f274513a8fc772c3f0e7238bce86a4f44a35cfc03c",
-  "entryDigest": "sha256:7c8f22909a03a0be1c9702b712812a4b03b124ec7ef5692faf9259b23e01010a",
+  "digest": "sha256:88c6f77856bdef420fd9247ee366e2c308a051c070181fcb93b5fd201910a4b1",
+  "entryDigest": "sha256:b5f9fe87751323cca88395ea819a8c5d1323da21a63e9d6f3b57be025d3e8852",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TextareaProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
