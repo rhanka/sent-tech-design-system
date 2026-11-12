@@ -1,0 +1,2211 @@
+{
+  "caseId": "case-a",
+  "semanticDocumentId": "document:case-a",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 11,
+    "archiRelations": 22,
+    "totalEntitiesWithLegend": 14,
+    "totalRelationsWithLegend": 24,
+    "views": 3
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire du monorepo h2a",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "art-skill",
+      "entityId": "entity:art-skill",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "track-operation",
+      "shortName": null,
+      "purpose": "Règles d’usage des écritures Track",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "pkg-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:58-66",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:142-157"
+      ]
+    },
+    {
+      "id": "cmp-control",
+      "entityId": "entity:cmp-control",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Contrôle",
+      "shortName": "Contrôle Track",
+      "purpose": "Vérifie le jeton et journalise la mutation",
+      "kicker": "Composant",
+      "detail": "exécuté par: CLI track",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "pkg-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/src/events/store.ts:39",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:126-141"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant les CLI h2a et track",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "pkg-h2a",
+      "entityId": "entity:pkg-h2a",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/h2a",
+      "shortName": null,
+      "purpose": "Paquet npm livrant le binaire CLI h2a",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4",
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "pkg-track",
+      "entityId": "entity:pkg-track",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/track",
+      "shortName": null,
+      "purpose": "Code JS du suivi et binaire track",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-track",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-35",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:94-107"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo de h2a, Track et Focus",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-12",
+        "h2a:packages/track/package.json:8-12"
+      ]
+    },
+    {
+      "id": "rt-h2a",
+      "entityId": "entity:rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": "CLI h2a",
+      "purpose": "Sert le MCP et les hooks de session",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:110-125"
+      ]
+    },
+    {
+      "id": "rt-track",
+      "entityId": "entity:rt-track",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "track",
+      "shortName": "CLI track",
+      "purpose": "Valide le jeton puis écrit le suivi",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "sys-track",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:158-173"
+      ]
+    },
+    {
+      "id": "sys-h2a",
+      "entityId": "entity:sys-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Périmètre du dépôt h2a et de ses systèmes",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:66-79"
+      ]
+    },
+    {
+      "id": "sys-track",
+      "entityId": "entity:sys-track",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Track",
+      "shortName": null,
+      "purpose": "Système distinct du suivi gouverné dans h2a",
+      "kicker": "Système · h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:80-93"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "mi-sys-h2a",
+      "relationId": "relation:mi-sys-h2a",
+      "type": "managedIn",
+      "source": "sys-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:16-20"
+      ]
+    },
+    {
+      "id": "mi-sys-track",
+      "relationId": "relation:mi-sys-track",
+      "type": "managedIn",
+      "source": "sys-track",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:8-12"
+      ]
+    },
+    {
+      "id": "mi-pkg-h2a",
+      "relationId": "relation:mi-pkg-h2a",
+      "type": "managedIn",
+      "source": "pkg-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "mi-pkg-track",
+      "relationId": "relation:mi-pkg-track",
+      "type": "managedIn",
+      "source": "pkg-track",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-pkg-h2a",
+      "relationId": "relation:po-pkg-h2a",
+      "type": "partOf",
+      "source": "pkg-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-sys-track",
+      "relationId": "relation:po-sys-track",
+      "type": "partOf",
+      "source": "sys-track",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:80-93"
+      ]
+    },
+    {
+      "id": "po-pkg-track",
+      "relationId": "relation:po-pkg-track",
+      "type": "partOf",
+      "source": "pkg-track",
+      "target": "sys-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4"
+      ]
+    },
+    {
+      "id": "po-rt-h2a",
+      "relationId": "relation:po-rt-h2a",
+      "type": "partOf",
+      "source": "rt-h2a",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "po-cmp-control",
+      "relationId": "relation:po-cmp-control",
+      "type": "partOf",
+      "source": "cmp-control",
+      "target": "pkg-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/src/events/store.ts:39"
+      ]
+    },
+    {
+      "id": "po-art-skill",
+      "relationId": "relation:po-art-skill",
+      "type": "partOf",
+      "source": "art-skill",
+      "target": "pkg-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:1-20"
+      ]
+    },
+    {
+      "id": "po-rt-track",
+      "relationId": "relation:po-rt-track",
+      "type": "partOf",
+      "source": "rt-track",
+      "target": "sys-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "ro-rt-h2a",
+      "relationId": "relation:ro-rt-h2a",
+      "type": "runsOn",
+      "source": "rt-h2a",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "ro-rt-track",
+      "relationId": "relation:ro-rt-track",
+      "type": "runsOn",
+      "source": "rt-track",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "da-h2a",
+      "relationId": "relation:da-h2a",
+      "type": "deployedAs",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "da-track",
+      "relationId": "relation:da-track",
+      "type": "deployedAs",
+      "source": "pkg-track",
+      "target": "rt-track",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · binaire track",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/package.json:33"
+      ]
+    },
+    {
+      "id": "do-h2a-track",
+      "relationId": "relation:do-h2a-track",
+      "type": "dependsOn",
+      "source": "pkg-h2a",
+      "target": "pkg-track",
+      "encoding": "arrow",
+      "verb": "dépend de",
+      "label": "dépend de · bibliothèque track",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:55"
+      ]
+    },
+    {
+      "id": "eb-control",
+      "relationId": "relation:eb-control",
+      "type": "executedBy",
+      "source": "cmp-control",
+      "target": "rt-track",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/src/events/store.ts:39"
+      ]
+    },
+    {
+      "id": "lb-skill-h2a",
+      "relationId": "relation:lb-skill-h2a",
+      "type": "loadedBy",
+      "source": "art-skill",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:58-66"
+      ]
+    },
+    {
+      "id": "dc-skill-track",
+      "relationId": "relation:dc-skill-track",
+      "type": "documents",
+      "source": "art-skill",
+      "target": "rt-track",
+      "encoding": "arrow",
+      "verb": "documente",
+      "label": "documente · écritures via CLI",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:58-66"
+      ]
+    },
+    {
+      "id": "in-h2a-track",
+      "relationId": "relation:in-h2a-track",
+      "type": "invokes",
+      "source": "rt-h2a",
+      "target": "rt-track",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · écritures contrôlées",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/track/skills/track-operation/SKILL.md:58-66"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-track",
+          "pkg-track",
+          "cmp-control",
+          "art-skill",
+          "rt-track"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Tout déplié : la zone h2a contient CLI h2a et le système Track, qui sépare le paquet @sentropic/track de l'exécution CLI track."
+      },
+      "counts": {
+        "elements": 7,
+        "containers": 3,
+        "foldedContainers": 0,
+        "cards": 4,
+        "edges": 3,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Périmètre du dépôt h2a et de ses systèmes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Sert le MCP et les hooks de session",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-track",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Système distinct du suivi gouverné dans h2a",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "pkg-track",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Paquet · Lib",
+          "title": "@sentropic/track",
+          "purpose": "Code JS du suivi et binaire track",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-control",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Composant",
+          "title": "Contrôle Track",
+          "purpose": "Vérifie le jeton et journalise la mutation",
+          "detail": "exécuté par: CLI track",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "art-skill",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Artefact · Skill",
+          "title": "track-operation",
+          "purpose": "Règles d’usage des écritures Track",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-track",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Exécution · CLI",
+          "title": "CLI track",
+          "purpose": "Valide le jeton puis écrit le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "da-track",
+          "type": "deployedAs",
+          "source": "pkg-track",
+          "target": "rt-track",
+          "verb": "déployé comme",
+          "label": "déployé comme · binaire track",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-skill-track",
+          "type": "documents",
+          "source": "art-skill",
+          "target": "rt-track",
+          "verb": "documente",
+          "label": "documente · écritures via CLI",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-h2a-track",
+          "type": "invokes",
+          "source": "rt-h2a",
+          "target": "rt-track",
+          "verb": "lance",
+          "label": "lance · écritures contrôlées",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-a-unfolded",
+        "semanticDocumentId": "document:case-a",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-track": {
+            "id": "occurrence:o-sys-track",
+            "entity": "entity:sys-track",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-pkg-track": {
+            "id": "occurrence:o-pkg-track",
+            "entity": "entity:pkg-track",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-cmp-control": {
+            "id": "occurrence:o-cmp-control",
+            "entity": "entity:cmp-control",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-art-skill": {
+            "id": "occurrence:o-art-skill",
+            "entity": "entity:art-skill",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-rt-track": {
+            "id": "occurrence:o-rt-track",
+            "entity": "entity:rt-track",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-legend-case-a": {
+            "id": "occurrence:o-legend-case-a",
+            "entity": "entity:legend-case-a",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-da-track": {
+            "id": "occurrence:e-da-track",
+            "relation": "relation:da-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-track"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-dc-skill-track": {
+            "id": "occurrence:e-dc-skill-track",
+            "relation": "relation:dc-skill-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-art-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-in-h2a-track": {
+            "id": "occurrence:e-in-h2a-track",
+            "relation": "relation:in-h2a-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": false
+          },
+          "grp.11.o-sys-track": {
+            "id": "grp.11.o-sys-track",
+            "occurrence": "occurrence:o-sys-track",
+            "collapsed": false
+          },
+          "grp.11.o-pkg-track": {
+            "id": "grp.11.o-pkg-track",
+            "occurrence": "occurrence:o-pkg-track",
+            "collapsed": false
+          },
+          "grp.15.o-legend-case-a": {
+            "id": "grp.15.o-legend-case-a",
+            "occurrence": "occurrence:o-legend-case-a",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-art-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Règles d’usage des écritures Track",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-cmp-control": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Contrôle Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Vérifie le jeton et journalise la mutation",
+                  "detail": "exécuté par: CLI track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-a": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas a)"
+                }
+              },
+              "occurrence:o-pkg-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "footer": "repo: h2a",
+                  "subtitle": "Code JS du suivi et binaire track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Sert le MCP et les hooks de session",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-rt-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Valide le jeton puis écrit le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Périmètre du dépôt h2a et de ses systèmes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Système distinct du suivi gouverné dans h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-a": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "pkg-folded": {
+      "spec": {
+        "name": "pkg-folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-track",
+          "pkg-track",
+          "cmp-control",
+          "art-skill",
+          "rt-track"
+        ],
+        "folds": [
+          "pkg-track"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Paquet @sentropic/track replié en carte 460 × 200 dans Track : masque Contrôle Track et track-operation et agrège ses liaisons vers CLI track."
+      },
+      "counts": {
+        "elements": 7,
+        "containers": 3,
+        "foldedContainers": 1,
+        "cards": 4,
+        "edges": 3,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Périmètre du dépôt h2a et de ses systèmes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Sert le MCP et les hooks de session",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-track",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Système distinct du suivi gouverné dans h2a",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "pkg-track",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": true,
+          "parentId": "sys-track",
+          "kicker": "Paquet · Lib",
+          "title": "@sentropic/track",
+          "purpose": "Code JS du suivi et binaire track",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-control",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Composant",
+          "title": "Contrôle Track",
+          "purpose": "Vérifie le jeton et journalise la mutation",
+          "detail": "exécuté par: CLI track",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "art-skill",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Artefact · Skill",
+          "title": "track-operation",
+          "purpose": "Règles d’usage des écritures Track",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-track",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Exécution · CLI",
+          "title": "CLI track",
+          "purpose": "Valide le jeton puis écrit le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "da-track",
+          "type": "deployedAs",
+          "source": "pkg-track",
+          "target": "rt-track",
+          "verb": "déployé comme",
+          "label": "déployé comme · binaire track",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-skill-track",
+          "type": "documents",
+          "source": "pkg-track",
+          "target": "rt-track",
+          "verb": "documente",
+          "label": "documente · écritures via CLI",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-h2a-track",
+          "type": "invokes",
+          "source": "rt-h2a",
+          "target": "rt-track",
+          "verb": "lance",
+          "label": "lance · écritures contrôlées",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "pkg-track",
+          "target": "rt-track",
+          "label": "déployé comme · documente · 2 liaisons",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "da-track",
+            "dc-skill-track"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-a-pkg-folded",
+        "semanticDocumentId": "document:case-a",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-track": {
+            "id": "occurrence:o-sys-track",
+            "entity": "entity:sys-track",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-pkg-track": {
+            "id": "occurrence:o-pkg-track",
+            "entity": "entity:pkg-track",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-cmp-control": {
+            "id": "occurrence:o-cmp-control",
+            "entity": "entity:cmp-control",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-art-skill": {
+            "id": "occurrence:o-art-skill",
+            "entity": "entity:art-skill",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-rt-track": {
+            "id": "occurrence:o-rt-track",
+            "entity": "entity:rt-track",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-legend-case-a": {
+            "id": "occurrence:o-legend-case-a",
+            "entity": "entity:legend-case-a",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-da-track": {
+            "id": "occurrence:e-da-track",
+            "relation": "relation:da-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-track"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-dc-skill-track": {
+            "id": "occurrence:e-dc-skill-track",
+            "relation": "relation:dc-skill-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-track",
+                "semanticTarget": "entity:art-skill",
+                "sourceOccurrence": "occurrence:o-art-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-in-h2a-track": {
+            "id": "occurrence:e-in-h2a-track",
+            "relation": "relation:in-h2a-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": false
+          },
+          "grp.11.o-sys-track": {
+            "id": "grp.11.o-sys-track",
+            "occurrence": "occurrence:o-sys-track",
+            "collapsed": false
+          },
+          "grp.11.o-pkg-track": {
+            "id": "grp.11.o-pkg-track",
+            "occurrence": "occurrence:o-pkg-track",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-a": {
+            "id": "grp.15.o-legend-case-a",
+            "occurrence": "occurrence:o-legend-case-a",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-art-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Règles d’usage des écritures Track",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-cmp-control": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Contrôle Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Vérifie le jeton et journalise la mutation",
+                  "detail": "exécuté par: CLI track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-a": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas a)"
+                }
+              },
+              "occurrence:o-pkg-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "footer": "repo: h2a",
+                  "subtitle": "Code JS du suivi et binaire track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Sert le MCP et les hooks de session",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-rt-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Valide le jeton puis écrit le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Périmètre du dépôt h2a et de ses systèmes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Système distinct du suivi gouverné dans h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-a": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-pkg-track",
+            "targetOccurrence": "occurrence:o-rt-track",
+            "label": "déployé comme · documente · 2 liaisons",
+            "relationIds": [
+              "relation:da-track",
+              "relation:dc-skill-track"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-da-track",
+              "occurrence:e-dc-skill-track"
+            ]
+          }
+        }
+      }
+    },
+    "track-folded": {
+      "spec": {
+        "name": "track-folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "sys-h2a",
+          "rt-h2a",
+          "sys-track",
+          "pkg-track",
+          "cmp-control",
+          "art-skill",
+          "rt-track"
+        ],
+        "folds": [
+          "sys-track",
+          "pkg-track"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Système Track replié en carte 460 × 200 dans la zone h2a : résume Track par son pied repo: h2a et sa liaison agrégée depuis CLI h2a."
+      },
+      "counts": {
+        "elements": 7,
+        "containers": 3,
+        "foldedContainers": 2,
+        "cards": 4,
+        "edges": 3,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "sys-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Périmètre du dépôt h2a et de ses systèmes",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-h2a",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-h2a",
+          "kicker": "Exécution · CLI",
+          "title": "CLI h2a",
+          "purpose": "Sert le MCP et les hooks de session",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-track",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "sys-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Système distinct du suivi gouverné dans h2a",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "pkg-track",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": true,
+          "parentId": "sys-track",
+          "kicker": "Paquet · Lib",
+          "title": "@sentropic/track",
+          "purpose": "Code JS du suivi et binaire track",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-control",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Composant",
+          "title": "Contrôle Track",
+          "purpose": "Vérifie le jeton et journalise la mutation",
+          "detail": "exécuté par: CLI track",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "art-skill",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-track",
+          "kicker": "Artefact · Skill",
+          "title": "track-operation",
+          "purpose": "Règles d’usage des écritures Track",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-track",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-track",
+          "kicker": "Exécution · CLI",
+          "title": "CLI track",
+          "purpose": "Valide le jeton puis écrit le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "da-track",
+          "type": "deployedAs",
+          "source": "pkg-track",
+          "target": "rt-track",
+          "verb": "déployé comme",
+          "label": "déployé comme · binaire track",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-skill-track",
+          "type": "documents",
+          "source": "art-skill",
+          "target": "rt-track",
+          "verb": "documente",
+          "label": "documente · écritures via CLI",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-h2a-track",
+          "type": "invokes",
+          "source": "rt-h2a",
+          "target": "sys-track",
+          "verb": "lance",
+          "label": "lance · écritures contrôlées",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "rt-h2a",
+          "target": "sys-track",
+          "label": "lance · écritures contrôlées",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "in-h2a-track"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-a-track-folded",
+        "semanticDocumentId": "document:case-a",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-sys-h2a": {
+            "id": "occurrence:o-sys-h2a",
+            "entity": "entity:sys-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-h2a": {
+            "id": "occurrence:o-rt-h2a",
+            "entity": "entity:rt-h2a",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-sys-track": {
+            "id": "occurrence:o-sys-track",
+            "entity": "entity:sys-track",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.9.o-sys-h2a"
+          },
+          "occurrence:o-pkg-track": {
+            "id": "occurrence:o-pkg-track",
+            "entity": "entity:pkg-track",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-cmp-control": {
+            "id": "occurrence:o-cmp-control",
+            "entity": "entity:cmp-control",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-art-skill": {
+            "id": "occurrence:o-art-skill",
+            "entity": "entity:art-skill",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-pkg-track"
+          },
+          "occurrence:o-rt-track": {
+            "id": "occurrence:o-rt-track",
+            "entity": "entity:rt-track",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-track"
+          },
+          "occurrence:o-legend-case-a": {
+            "id": "occurrence:o-legend-case-a",
+            "entity": "entity:legend-case-a",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-a"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-da-track": {
+            "id": "occurrence:e-da-track",
+            "relation": "relation:da-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-track"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-dc-skill-track": {
+            "id": "occurrence:e-dc-skill-track",
+            "relation": "relation:dc-skill-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-art-skill"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-track"
+              }
+            ]
+          },
+          "occurrence:e-in-h2a-track": {
+            "id": "occurrence:e-in-h2a-track",
+            "relation": "relation:in-h2a-track",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-rt-h2a"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-track",
+                "semanticTarget": "entity:rt-track",
+                "sourceOccurrence": "occurrence:o-rt-track"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.9.o-sys-h2a": {
+            "id": "grp.9.o-sys-h2a",
+            "occurrence": "occurrence:o-sys-h2a",
+            "collapsed": false
+          },
+          "grp.11.o-sys-track": {
+            "id": "grp.11.o-sys-track",
+            "occurrence": "occurrence:o-sys-track",
+            "collapsed": true
+          },
+          "grp.11.o-pkg-track": {
+            "id": "grp.11.o-pkg-track",
+            "occurrence": "occurrence:o-pkg-track",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-a": {
+            "id": "grp.15.o-legend-case-a",
+            "occurrence": "occurrence:o-legend-case-a",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-art-skill": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Règles d’usage des écritures Track",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-cmp-control": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Contrôle Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Vérifie le jeton et journalise la mutation",
+                  "detail": "exécuté par: CLI track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-a": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas a)"
+                }
+              },
+              "occurrence:o-pkg-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "footer": "repo: h2a",
+                  "subtitle": "Code JS du suivi et binaire track"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-rt-h2a": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI h2a",
+                  "footer": "repo: h2a · @sentropic/h2a",
+                  "body": "Sert le MCP et les hooks de session",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-rt-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "CLI track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Valide le jeton puis écrit le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-sys-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Périmètre du dépôt h2a et de ses systèmes"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-track": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Système distinct du suivi gouverné dans h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-a": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-case-a",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-rt-h2a",
+            "targetOccurrence": "occurrence:o-sys-track",
+            "label": "lance · écritures contrôlées",
+            "relationIds": [
+              "relation:in-h2a-track"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-in-h2a-track"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

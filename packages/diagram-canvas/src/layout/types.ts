@@ -77,6 +77,75 @@ export interface LayoutMetrics {
   readonly clearance: number;
   /** Free space kept around an edge label (L-R10). */
   readonly labelMargin: number;
+  /**
+   * DC-2a row-pack base sibling gaps (tokens `diagramZone.childGapInline` /
+   * `childGapBlock`, root aliases `diagramCard.rootGapInline` / `rootGapBlock`)
+   * and their hard caps (`diagramZone.gapInlineMax` / `gapBlockMax`). Read by
+   * the row-pack path only; token values arrive here as numbers.
+   */
+  readonly rowGapInline?: number;
+  readonly rowGapBlock?: number;
+  readonly gapInlineMax?: number;
+  readonly gapBlockMax?: number;
+}
+
+/**
+ * DC-2a row-pack objective (SPEC_EVOL_DC2A §6.1). Every field is optional;
+ * {@link DEFAULT_ROW_PACK} mirrors the DS tokens and retained defaults.
+ */
+export interface RowPackOptions {
+  /** Target outer aspect of every packed level, chrome included (token `diagramZone.rowPackTargetAspect`). */
+  readonly targetAspect?: number;
+  readonly tallBias?: number;
+  readonly emptyPenaltyWeight?: number;
+  /** O-4 band, in total-score units. */
+  readonly orientationHysteresis?: number;
+}
+
+export type ResolvedRowPack = Required<RowPackOptions>;
+
+export const DEFAULT_ROW_PACK: ResolvedRowPack = {
+  targetAspect: 1.78,
+  tallBias: 1.6,
+  emptyPenaltyWeight: 0.4,
+  orientationHysteresis: 0.08,
+};
+
+/** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
+export const DEFAULT_ROW_GAP = 24;
+export const DEFAULT_ROW_GAP_MAX = 32;
+
+/** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
+export type LevelOrientation = "rows" | "columns";
+
+/** Level key of the root level in orientation records (§4.1). */
+export const ROOT_LEVEL_KEY = "root";
+
+/** One place where row-pack defaults resolve (§6.1), so cache keys see numbers only. */
+export function resolveRowPack(options: RowPackOptions | undefined): ResolvedRowPack {
+  return {
+    targetAspect: options?.targetAspect ?? DEFAULT_ROW_PACK.targetAspect,
+    tallBias: options?.tallBias ?? DEFAULT_ROW_PACK.tallBias,
+    emptyPenaltyWeight: options?.emptyPenaltyWeight ?? DEFAULT_ROW_PACK.emptyPenaltyWeight,
+    orientationHysteresis: options?.orientationHysteresis ?? DEFAULT_ROW_PACK.orientationHysteresis,
+  };
+}
+
+/** `row-pack-invalid` when an objective number is non-finite, non-positive (aspect) or negative. */
+export function validateRowPack(resolved: ResolvedRowPack): LayoutRefusal[] {
+  const refusals: LayoutRefusal[] = [];
+  const refuse = (field: keyof ResolvedRowPack, rule: string): void => {
+    refusals.push({
+      code: "row-pack-invalid",
+      path: "rowPack",
+      message: `rowPack.${field} ${rule}, got ${String(resolved[field])}`,
+    });
+  };
+  if (!Number.isFinite(resolved.targetAspect) || resolved.targetAspect <= 0) refuse("targetAspect", "is a positive finite number");
+  for (const field of ["tallBias", "emptyPenaltyWeight", "orientationHysteresis"] as const) {
+    if (!Number.isFinite(resolved[field]) || resolved[field] < 0) refuse(field, "is a non-negative finite number");
+  }
+  return refusals;
 }
 
 export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
@@ -129,6 +198,21 @@ export interface LayoutOptions {
   /** The view reference of the produced view. Defaults to `view:layout`. */
   readonly viewId?: ViewRef;
   readonly metrics?: Partial<LayoutMetrics>;
+  /**
+   * DC-2a row-pack placement for measured views (SPEC_EVOL_DC2A §3–§4). When
+   * present (an empty object selects the DS defaults) every level — the root
+   * and each expanded zone — is shelf-packed toward the target aspect, with a
+   * per-level orientation derived from the fold state and token gaps capped on
+   * both axes. When absent, measured views keep the column placement, byte for
+   * byte. Ignored by the compatibility path.
+   */
+  readonly rowPack?: RowPackOptions;
+  /**
+   * Orientation last emitted per level key (`"root"` or the placement-parent
+   * representative occurrence id, §4.1). Host-held; inside the hysteresis band
+   * the previous orientation of a level is kept (O-4).
+   */
+  readonly previousOrientation?: Readonly<Record<string, LevelOrientation>>;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -172,7 +256,8 @@ export type LayoutRefusalCode =
   | "relation-type-unsupported"
   | "layout-hint-invalid"
   | "measure-lines-missing"
-  | "stretch-unstable";
+  | "stretch-unstable"
+  | "row-pack-invalid";
 
 export interface LayoutRefusal {
   readonly code: LayoutRefusalCode;
@@ -192,6 +277,11 @@ export type LayoutResult =
        * views only; the compatibility path carries no `measurements` key.
        */
       readonly measurements?: import("./measure.js").LayoutMeasurements;
+      /**
+       * Orientation chosen per packed level (§4.1, §6.1). Present on row-packed
+       * measured views only; the host feeds it back as `previousOrientation`.
+       */
+      readonly orientations?: Readonly<Record<string, LevelOrientation>>;
     }
   | {
       readonly status: "refused";

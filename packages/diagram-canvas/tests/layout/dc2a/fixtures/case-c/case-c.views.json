@@ -1,0 +1,1753 @@
+{
+  "caseId": "case-c",
+  "semanticDocumentId": "document:case-c",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 12,
+    "archiRelations": 20,
+    "totalEntitiesWithLegend": 15,
+    "totalRelationsWithLegend": 22,
+    "views": 3
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire des dépôts design-system et h2a",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:package.json:1-5"
+      ]
+    },
+    {
+      "id": "cmp-project-view",
+      "entityId": "entity:cmp-project-view",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "projectView",
+      "shortName": null,
+      "purpose": "Projette les replis et valide la scène",
+      "kicker": "Composant",
+      "detail": "exécuté par: Focus renderer",
+      "footer": "repo: design-system · diagram-core",
+      "containment": {
+        "partOf": "pkg-diagram-core",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:packages/diagram-core/src/fold.ts:248",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:448-463"
+      ]
+    },
+    {
+      "id": "cmp-render-card",
+      "entityId": "entity:cmp-render-card",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "renderCardSvg",
+      "shortName": null,
+      "purpose": "Produit le SVG des cartes 460×200",
+      "kicker": "Composant",
+      "detail": "exécuté par: Focus renderer",
+      "footer": "repo: design-system · diagram-core",
+      "containment": {
+        "partOf": "pkg-diagram-core",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:packages/components-svelte/src/lib/components/diagram/diagramCardModel.ts:1",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:464-479"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant le moteur Focus renderer",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "pkg-diagram-core",
+      "entityId": "entity:pkg-diagram-core",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/diagram-core",
+      "shortName": "diagram-core",
+      "purpose": "Validation et rendu SVG de cartes DS",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: design-system",
+      "containment": {
+        "partOf": "sys-ds",
+        "managedIn": "repo-ds",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:packages/diagram-core/package.json:1-25",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:418-431"
+      ]
+    },
+    {
+      "id": "pkg-focus",
+      "entityId": "entity:pkg-focus",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/focus",
+      "shortName": null,
+      "purpose": "Paquet npm livrant le moteur Focus renderer",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-focus",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "repo-ds",
+      "entityId": "entity:repo-ds",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "design-system",
+      "shortName": null,
+      "purpose": "Dépôt du Design System et de diagram-core",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:package.json:1-5"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo de h2a et du moteur Focus",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "rt-focus",
+      "entityId": "entity:rt-focus",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "focus",
+      "shortName": "Focus renderer",
+      "purpose": "Vérifie les épingles et rend le dossier",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "sys-focus",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:480-495"
+      ]
+    },
+    {
+      "id": "sys-ds",
+      "entityId": "entity:sys-ds",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "design-system",
+      "shortName": null,
+      "purpose": "Système de design fournissant diagram-core et le rendu SVG",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: design-system",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-ds",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "sent-tech-design-system:package.json:1-5"
+      ]
+    },
+    {
+      "id": "sys-focus",
+      "entityId": "entity:sys-focus",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Focus",
+      "shortName": null,
+      "purpose": "Vérification et rendu des dossiers",
+      "kicker": "Système · h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "sys-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20",
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:432-445"
+      ]
+    },
+    {
+      "id": "sys-h2a",
+      "entityId": "entity:sys-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Harnais d'orchestration hébergeant le sous-système Focus",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-ds",
+      "relationId": "relation:ob-repo-ds",
+      "type": "ownedBy",
+      "source": "repo-ds",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sent-tech-design-system:package.json:1-5"
+      ]
+    },
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "mi-sys-ds",
+      "relationId": "relation:mi-sys-ds",
+      "type": "managedIn",
+      "source": "sys-ds",
+      "target": "repo-ds",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sent-tech-design-system:package.json:1-5"
+      ]
+    },
+    {
+      "id": "mi-sys-h2a",
+      "relationId": "relation:mi-sys-h2a",
+      "type": "managedIn",
+      "source": "sys-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "mi-sys-focus",
+      "relationId": "relation:mi-sys-focus",
+      "type": "managedIn",
+      "source": "sys-focus",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "mi-pkg-focus",
+      "relationId": "relation:mi-pkg-focus",
+      "type": "managedIn",
+      "source": "pkg-focus",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "mi-pkg-dc",
+      "relationId": "relation:mi-pkg-dc",
+      "type": "managedIn",
+      "source": "pkg-diagram-core",
+      "target": "repo-ds",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sent-tech-design-system:packages/diagram-core/package.json:1-25"
+      ]
+    },
+    {
+      "id": "po-sys-focus",
+      "relationId": "relation:po-sys-focus",
+      "type": "partOf",
+      "source": "sys-focus",
+      "target": "sys-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "po-pkg-focus",
+      "relationId": "relation:po-pkg-focus",
+      "type": "partOf",
+      "source": "pkg-focus",
+      "target": "sys-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "po-pkg-dc",
+      "relationId": "relation:po-pkg-dc",
+      "type": "partOf",
+      "source": "pkg-diagram-core",
+      "target": "sys-ds",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sent-tech-design-system:packages/diagram-core/package.json:1-25"
+      ]
+    },
+    {
+      "id": "po-cmp-pv",
+      "relationId": "relation:po-cmp-pv",
+      "type": "partOf",
+      "source": "cmp-project-view",
+      "target": "pkg-diagram-core",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "sent-tech-design-system:packages/diagram-core/src/fold.ts:248"
+      ]
+    },
+    {
+      "id": "po-cmp-rc",
+      "relationId": "relation:po-cmp-rc",
+      "type": "partOf",
+      "source": "cmp-render-card",
+      "target": "pkg-diagram-core",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ds-r8.js:9-16"
+      ]
+    },
+    {
+      "id": "po-rt-focus",
+      "relationId": "relation:po-rt-focus",
+      "type": "partOf",
+      "source": "rt-focus",
+      "target": "sys-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "ro-rt-focus",
+      "relationId": "relation:ro-rt-focus",
+      "type": "runsOn",
+      "source": "rt-focus",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "da-focus",
+      "relationId": "relation:da-focus",
+      "type": "deployedAs",
+      "source": "pkg-focus",
+      "target": "rt-focus",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · moteur Focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "do-focus-dc",
+      "relationId": "relation:do-focus-dc",
+      "type": "dependsOn",
+      "source": "pkg-focus",
+      "target": "pkg-diagram-core",
+      "encoding": "arrow",
+      "verb": "dépend de",
+      "label": "dépend de · projection et rendu",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:1-20"
+      ]
+    },
+    {
+      "id": "eb-pv-focus",
+      "relationId": "relation:eb-pv-focus",
+      "type": "executedBy",
+      "source": "cmp-project-view",
+      "target": "rt-focus",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:448-463"
+      ]
+    },
+    {
+      "id": "eb-rc-focus",
+      "relationId": "relation:eb-rc-focus",
+      "type": "executedBy",
+      "source": "cmp-render-card",
+      "target": "rt-focus",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:464-479"
+      ]
+    },
+    {
+      "id": "eb-dc-focus",
+      "relationId": "relation:eb-dc-focus",
+      "type": "executedBy",
+      "source": "pkg-diagram-core",
+      "target": "rt-focus",
+      "encoding": "arrow",
+      "verb": "exécuté par",
+      "label": "exécuté par · moteur de rendu Focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/archi-cards-dossier/src/ui-data.json:498-515"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "pkg-diagram-core",
+          "cmp-project-view",
+          "cmp-render-card",
+          "sys-focus",
+          "rt-focus"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Les deux conteneurs (diagram-core et Focus) sont ouverts : projectView et renderCardSvg restent logés dans leur paquet."
+      },
+      "counts": {
+        "elements": 5,
+        "containers": 2,
+        "foldedContainers": 0,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "pkg-diagram-core",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Paquet · Lib",
+          "title": "diagram-core",
+          "purpose": "Validation et rendu SVG de cartes DS",
+          "detail": null,
+          "footer": "repo: design-system",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-project-view",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "projectView",
+          "purpose": "Projette les replis et valide la scène",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-render-card",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "renderCardSvg",
+          "purpose": "Produit le SVG des cartes 460×200",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-focus",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système · h2a",
+          "title": "Focus",
+          "purpose": "Vérification et rendu des dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-focus",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-focus",
+          "kicker": "Exécution · CLI",
+          "title": "Focus renderer",
+          "purpose": "Vérifie les épingles et rend le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "eb-dc-focus",
+          "type": "executedBy",
+          "source": "pkg-diagram-core",
+          "target": "rt-focus",
+          "verb": "exécuté par",
+          "label": "exécuté par · moteur de rendu Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-c-unfolded",
+        "semanticDocumentId": "document:case-c",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-pkg-diagram-core": {
+            "id": "occurrence:o-pkg-diagram-core",
+            "entity": "entity:pkg-diagram-core",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-cmp-project-view": {
+            "id": "occurrence:o-cmp-project-view",
+            "entity": "entity:cmp-project-view",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-cmp-render-card": {
+            "id": "occurrence:o-cmp-render-card",
+            "entity": "entity:cmp-render-card",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-sys-focus": {
+            "id": "occurrence:o-sys-focus",
+            "entity": "entity:sys-focus",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-focus": {
+            "id": "occurrence:o-rt-focus",
+            "entity": "entity:rt-focus",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-focus"
+          },
+          "occurrence:o-legend-case-c": {
+            "id": "occurrence:o-legend-case-c",
+            "entity": "entity:legend-case-c",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-neutral": {
+            "id": "occurrence:o-key-neutral",
+            "entity": "entity:key-neutral",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-eb-dc-focus": {
+            "id": "occurrence:e-eb-dc-focus",
+            "relation": "relation:eb-dc-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-diagram-core"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-focus"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.18.o-pkg-diagram-core": {
+            "id": "grp.18.o-pkg-diagram-core",
+            "occurrence": "occurrence:o-pkg-diagram-core",
+            "collapsed": false
+          },
+          "grp.11.o-sys-focus": {
+            "id": "grp.11.o-sys-focus",
+            "occurrence": "occurrence:o-sys-focus",
+            "collapsed": false
+          },
+          "grp.15.o-legend-case-c": {
+            "id": "grp.15.o-legend-case-c",
+            "occurrence": "occurrence:o-legend-case-c",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-cmp-project-view": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Projette les replis et valide la scène",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-cmp-render-card": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Produit le SVG des cartes 460×200",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-neutral": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-c": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas c)"
+                }
+              },
+              "occurrence:o-pkg-diagram-core": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "title": "diagram-core",
+                  "footer": "repo: design-system",
+                  "subtitle": "Validation et rendu SVG de cartes DS"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-rt-focus": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Focus renderer",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Vérifie les épingles et rend le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-focus": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Vérification et rendu des dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-c": {
+                "order": [
+                  "entity:key-neutral",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "neutral",
+                "token": "st-semantic-data-category3"
+              },
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "lib-folded": {
+      "spec": {
+        "name": "lib-folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "pkg-diagram-core",
+          "cmp-project-view",
+          "cmp-render-card",
+          "sys-focus",
+          "rt-focus"
+        ],
+        "folds": [
+          "pkg-diagram-core"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Le paquet diagram-core est replié en carte 460 × 200 (repo: design-system) face à Focus renderer ouvert."
+      },
+      "counts": {
+        "elements": 5,
+        "containers": 2,
+        "foldedContainers": 1,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "pkg-diagram-core",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Paquet · Lib",
+          "title": "diagram-core",
+          "purpose": "Validation et rendu SVG de cartes DS",
+          "detail": null,
+          "footer": "repo: design-system",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-project-view",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "projectView",
+          "purpose": "Projette les replis et valide la scène",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-render-card",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "renderCardSvg",
+          "purpose": "Produit le SVG des cartes 460×200",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-focus",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système · h2a",
+          "title": "Focus",
+          "purpose": "Vérification et rendu des dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-focus",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-focus",
+          "kicker": "Exécution · CLI",
+          "title": "Focus renderer",
+          "purpose": "Vérifie les épingles et rend le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "eb-dc-focus",
+          "type": "executedBy",
+          "source": "pkg-diagram-core",
+          "target": "rt-focus",
+          "verb": "exécuté par",
+          "label": "exécuté par · moteur de rendu Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-c-lib-folded",
+        "semanticDocumentId": "document:case-c",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-pkg-diagram-core": {
+            "id": "occurrence:o-pkg-diagram-core",
+            "entity": "entity:pkg-diagram-core",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-cmp-project-view": {
+            "id": "occurrence:o-cmp-project-view",
+            "entity": "entity:cmp-project-view",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-cmp-render-card": {
+            "id": "occurrence:o-cmp-render-card",
+            "entity": "entity:cmp-render-card",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-sys-focus": {
+            "id": "occurrence:o-sys-focus",
+            "entity": "entity:sys-focus",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-focus": {
+            "id": "occurrence:o-rt-focus",
+            "entity": "entity:rt-focus",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-focus"
+          },
+          "occurrence:o-legend-case-c": {
+            "id": "occurrence:o-legend-case-c",
+            "entity": "entity:legend-case-c",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-neutral": {
+            "id": "occurrence:o-key-neutral",
+            "entity": "entity:key-neutral",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-eb-dc-focus": {
+            "id": "occurrence:e-eb-dc-focus",
+            "relation": "relation:eb-dc-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-diagram-core"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-rt-focus"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.18.o-pkg-diagram-core": {
+            "id": "grp.18.o-pkg-diagram-core",
+            "occurrence": "occurrence:o-pkg-diagram-core",
+            "collapsed": true
+          },
+          "grp.11.o-sys-focus": {
+            "id": "grp.11.o-sys-focus",
+            "occurrence": "occurrence:o-sys-focus",
+            "collapsed": false
+          },
+          "grp.15.o-legend-case-c": {
+            "id": "grp.15.o-legend-case-c",
+            "occurrence": "occurrence:o-legend-case-c",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-cmp-project-view": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Projette les replis et valide la scène",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-cmp-render-card": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Produit le SVG des cartes 460×200",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-neutral": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-c": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas c)"
+                }
+              },
+              "occurrence:o-pkg-diagram-core": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "title": "diagram-core",
+                  "footer": "repo: design-system",
+                  "subtitle": "Validation et rendu SVG de cartes DS"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-rt-focus": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Focus renderer",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Vérifie les épingles et rend le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-focus": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Vérification et rendu des dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-c": {
+                "order": [
+                  "entity:key-neutral",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "neutral",
+                "token": "st-semantic-data-category3"
+              },
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "pkg-diagram-core",
+          "cmp-project-view",
+          "cmp-render-card",
+          "sys-focus",
+          "rt-focus"
+        ],
+        "folds": [
+          "pkg-diagram-core",
+          "sys-focus"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Les deux conteneurs (diagram-core et Focus) sont repliés en cartes 460 × 200 et reliés par leur flèche agrégée."
+      },
+      "counts": {
+        "elements": 5,
+        "containers": 2,
+        "foldedContainers": 2,
+        "cards": 3,
+        "edges": 1,
+        "summaryEdges": 1
+      },
+      "cards": [
+        {
+          "id": "pkg-diagram-core",
+          "kind": "package",
+          "form": "library",
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Paquet · Lib",
+          "title": "diagram-core",
+          "purpose": "Validation et rendu SVG de cartes DS",
+          "detail": null,
+          "footer": "repo: design-system",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-project-view",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "projectView",
+          "purpose": "Projette les replis et valide la scène",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "cmp-render-card",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "pkg-diagram-core",
+          "kicker": "Composant",
+          "title": "renderCardSvg",
+          "purpose": "Produit le SVG des cartes 460×200",
+          "detail": "exécuté par: Focus renderer",
+          "footer": "repo: design-system · diagram-core",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "sys-focus",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système · h2a",
+          "title": "Focus",
+          "purpose": "Vérification et rendu des dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "rt-focus",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "sys-focus",
+          "kicker": "Exécution · CLI",
+          "title": "Focus renderer",
+          "purpose": "Vérifie les épingles et rend le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "eb-dc-focus",
+          "type": "executedBy",
+          "source": "pkg-diagram-core",
+          "target": "sys-focus",
+          "verb": "exécuté par",
+          "label": "exécuté par · moteur de rendu Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "pkg-diagram-core",
+          "target": "sys-focus",
+          "label": "exécuté par · moteur de rendu Focus",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "eb-dc-focus"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-c-folded",
+        "semanticDocumentId": "document:case-c",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-pkg-diagram-core": {
+            "id": "occurrence:o-pkg-diagram-core",
+            "entity": "entity:pkg-diagram-core",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-cmp-project-view": {
+            "id": "occurrence:o-cmp-project-view",
+            "entity": "entity:cmp-project-view",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-cmp-render-card": {
+            "id": "occurrence:o-cmp-render-card",
+            "entity": "entity:cmp-render-card",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-pkg-diagram-core"
+          },
+          "occurrence:o-sys-focus": {
+            "id": "occurrence:o-sys-focus",
+            "entity": "entity:sys-focus",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-rt-focus": {
+            "id": "occurrence:o-rt-focus",
+            "entity": "entity:rt-focus",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.11.o-sys-focus"
+          },
+          "occurrence:o-legend-case-c": {
+            "id": "occurrence:o-legend-case-c",
+            "entity": "entity:legend-case-c",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-neutral": {
+            "id": "occurrence:o-key-neutral",
+            "entity": "entity:key-neutral",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.15.o-legend-case-c"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-eb-dc-focus": {
+            "id": "occurrence:e-eb-dc-focus",
+            "relation": "relation:eb-dc-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-pkg-diagram-core"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-sys-focus",
+                "semanticTarget": "entity:rt-focus",
+                "sourceOccurrence": "occurrence:o-rt-focus"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.18.o-pkg-diagram-core": {
+            "id": "grp.18.o-pkg-diagram-core",
+            "occurrence": "occurrence:o-pkg-diagram-core",
+            "collapsed": true
+          },
+          "grp.11.o-sys-focus": {
+            "id": "grp.11.o-sys-focus",
+            "occurrence": "occurrence:o-sys-focus",
+            "collapsed": true
+          },
+          "grp.15.o-legend-case-c": {
+            "id": "grp.15.o-legend-case-c",
+            "occurrence": "occurrence:o-legend-case-c",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-cmp-project-view": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Projette les replis et valide la scène",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-cmp-render-card": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: design-system · diagram-core",
+                  "body": "Produit le SVG des cartes 460×200",
+                  "detail": "exécuté par: Focus renderer"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-neutral": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-case-c": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (cas c)"
+                }
+              },
+              "occurrence:o-pkg-diagram-core": {
+                "form": "container",
+                "text": {
+                  "kicker": "Paquet · Lib",
+                  "title": "diagram-core",
+                  "footer": "repo: design-system",
+                  "subtitle": "Validation et rendu SVG de cartes DS"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-neutral"
+              },
+              "occurrence:o-rt-focus": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Focus renderer",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Vérifie les épingles et rend le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-sys-focus": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Vérification et rendu des dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-case-c": {
+                "order": [
+                  "entity:key-neutral",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "neutral",
+                "token": "st-semantic-data-category3"
+              },
+              {
+                "legendRef": "entity:legend-case-c",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-pkg-diagram-core",
+            "targetOccurrence": "occurrence:o-sys-focus",
+            "label": "exécuté par · moteur de rendu Focus",
+            "relationIds": [
+              "relation:eb-dc-focus"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-eb-dc-focus"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

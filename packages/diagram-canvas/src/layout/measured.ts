@@ -65,8 +65,10 @@ import {
   headerAvailableWidth,
   headerOverflows,
   innerWidthOf,
+  LAST_CHILD_TO_BOTTOM_GAP,
   LEGEND_KEY_HEIGHT,
   measureHeader,
+  RULE_TO_FIRST_CHILD_GAP,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -79,17 +81,25 @@ import {
   type MeasureRequest,
   type SlotMeasurement,
 } from "./measure.js";
+import { chooseOrientation, type PackBox } from "./pack.js";
 import { routeEdges } from "./route.js";
 import type { Rect, Vec2 } from "../transform.js";
 import { evaluateVisibility } from "../visibility.js";
 import {
   DEFAULT_LAYOUT_METRICS,
+  DEFAULT_ROW_GAP,
+  DEFAULT_ROW_GAP_MAX,
   MIN_ZOOM,
   PHONE_MAX_WIDTH,
+  resolveRowPack,
+  ROOT_LEVEL_KEY,
+  validateRowPack,
   type LayoutMetrics,
   type LayoutOptions,
+  type LayoutRefusal,
   type LayoutResult,
   type LayoutWarning,
+  type LevelOrientation,
   type TextRole,
 } from "./types.js";
 
@@ -234,6 +244,21 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  return layoutMeasuredPass(document, options, sourceView, new Set());
+}
+
+/**
+ * One measured layout pass. `deniedGutters` is the row-pack feedback of §3.5:
+ * a gutter widened for a labelled link that the final routes and label boxes
+ * do not cross is denied and the layout recomputed, so no lane is ever kept
+ * where no edge passes. The set only grows, so the recomputation terminates.
+ */
+function layoutMeasuredPass(
+  document: SemanticDocument,
+  options: LayoutOptions,
+  sourceView: ViewDocument | undefined,
+  deniedGutters: ReadonlySet<string>,
+): LayoutResult {
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
     return {
       status: "refused",
@@ -286,6 +311,36 @@ export function layoutMeasured(
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
   const globalStretch = hints.stretch ?? false;
+  // DC-2a row-pack (SPEC_EVOL_DC2A §3–§4): selected by `options.rowPack`.
+  // Absent, every statement below keeps the column placement byte for byte.
+  const rowPack = options.rowPack === undefined ? undefined : resolveRowPack(options.rowPack);
+  const rowGaps = {
+    cardX: hints.cardGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
+    cardY: hints.cardGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
+    zoneX: hints.zoneGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
+    zoneY: hints.zoneGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
+    maxX: metrics.gapInlineMax ?? DEFAULT_ROW_GAP_MAX,
+    maxY: metrics.gapBlockMax ?? DEFAULT_ROW_GAP_MAX,
+  };
+  if (rowPack !== undefined) {
+    const refusals: LayoutRefusal[] = [...validateRowPack(rowPack)];
+    // §3.7: a sibling-gap override above the axis cap refuses; it is never silently capped.
+    for (const [field, value, cap] of [
+      ["cardGapX", rowGaps.cardX, rowGaps.maxX],
+      ["zoneGapX", rowGaps.zoneX, rowGaps.maxX],
+      ["cardGapY", rowGaps.cardY, rowGaps.maxY],
+      ["zoneGapY", rowGaps.zoneY, rowGaps.maxY],
+    ] as const) {
+      if (!Number.isFinite(value) || value < 0 || value > cap) {
+        refusals.push({
+          code: "layout-hint-invalid",
+          path: `hints.${field}`,
+          message: `the row-pack sibling gap ${field} is within [0, ${String(cap)}] (axis cap), got ${String(value)}`,
+        });
+      }
+    }
+    if (refusals.length > 0) return { status: "refused", refusals, diagnostics: [] };
+  }
   const warnings: LayoutWarning[] = [];
   const overflows: MeasurementOverflow[] = [];
   const warnOverflow = (overflow: MeasurementOverflow, zone: boolean): void => {
@@ -476,6 +531,23 @@ export function layoutMeasured(
     parentOf: new Map([...graph.nodes.values()].map((node) => [node.id, node.parent] as const)),
   });
   if (hintRefusals.length > 0) return { status: "refused", refusals: hintRefusals, diagnostics: [] };
+  if (rowPack !== undefined) {
+    // §6.4: `rootOrder` lists roots only, each once; anything else refuses.
+    const seenRoots = new Set<EntityRef>();
+    const rootRefusals: LayoutRefusal[] = [];
+    for (const member of hints.rootOrder ?? []) {
+      if (!graph.roots.includes(member) || seenRoots.has(member)) {
+        rootRefusals.push({
+          code: "layout-hint-invalid",
+          path: "hints.rootOrder",
+          message: `${member} is not a root entity listed once in hints.rootOrder`,
+          refs: [member],
+        });
+      }
+      seenRoots.add(member);
+    }
+    if (rootRefusals.length > 0) return { status: "refused", refusals: rootRefusals, diagnostics: [] };
+  }
 
   const childOrder = (parent: EntityRef, children: readonly EntityRef[]): EntityRef[] => {
     const live = children.filter(visible);
@@ -655,9 +727,9 @@ export function layoutMeasured(
   };
   const rootOrder = resolveOrder(
     [...graph.nodes.keys()].filter((id) => visible(id) && placementParentOf(id) === undefined).sort(byString),
-    undefined,
+    rowPack === undefined ? undefined : hints.rootOrder,
   );
-  for (const root of rootOrder) computeWidth(root);
+  if (rowPack === undefined) for (const root of rootOrder) computeWidth(root);
   const effectiveOf = (group: LayoutGroup, parentEffective: boolean): boolean =>
     effectiveStretch(group.stretch, parentEffective);
   // Deepest covering group for one member (global-based); undefined when uncovered.
@@ -792,7 +864,9 @@ export function layoutMeasured(
     .filter((node) => isStretchedBox(node.id) && visible(node.id))
     .sort((left, right) => right.depth - left.depth || byString(left.id, right.id));
   const stretchGuard = graph.nodes.size * graph.nodes.size + 1;
-  let stretchChanged = true;
+  // The row-pack path sizes every level in one bottom-up pass (below) and
+  // applies stretch per level before packing; the worklist is the column path's.
+  let stretchChanged = rowPack === undefined;
   let stretchPasses = 0;
   while (stretchChanged) {
     if (stretchPasses >= stretchGuard) {
@@ -821,6 +895,236 @@ export function layoutMeasured(
   // Step 3 — headers before any child placement; folded and expanded forms
   // are distinct inputs.
   const headers = new Map<EntityRef, HeaderMeasurement>();
+
+  // DC-2a row-pack sizing (§3.3): one function for the root and every expanded
+  // zone. `sizeBox` runs twice — a probe before Step 3 that fixes the outer
+  // widths the headers are measured at, then the final pass on the measured
+  // header heights — so header measurement stays one deterministic sweep.
+  interface PackedLevel {
+    readonly children: readonly EntityRef[];
+    readonly positions: readonly { readonly x: number; readonly y: number }[];
+    readonly width: number;
+    readonly height: number;
+  }
+  const packedLevels = new Map<string, PackedLevel>();
+  const packedSizes = new Map<EntityRef, { width: number; height: number }>();
+  const orientationRecord = new Map<string, LevelOrientation>();
+  // Gutters widened for a labelled link, by gutter id; checked against the
+  // final routes and label boxes after routing (§3.5: no lane without an edge).
+  const widenedGutters = new Map<
+    string,
+    { readonly rows: boolean; readonly along: boolean; readonly before: readonly EntityRef[]; readonly after: readonly EntityRef[] }
+  >();
+  const levelKeyOf =(parent: EntityRef | undefined): string =>
+    parent === undefined ? ROOT_LEVEL_KEY : representativeOf(parent);
+  // Labelled links the projected view draws, by the entities of their two
+  // ends: the input of the edge-aware gutters (§3.5).
+  const labelledPairs: { readonly source: EntityRef; readonly target: EntityRef; readonly width: number; readonly height: number }[] = [];
+  if (rowPack !== undefined) {
+    const endEntity = (occurrence: OccurrenceRef): EntityRef | undefined => {
+      if (!visibleOccurrences.has(occurrence)) return undefined;
+      const entity = projected.entityOccurrences[occurrence]?.entity;
+      if (entity !== undefined) return entity;
+      const owner = projected.portOccurrences[occurrence]?.ownerOccurrence;
+      return owner !== undefined && visibleOccurrences.has(owner) ? projected.entityOccurrences[owner]?.entity : undefined;
+    };
+    for (const occurrence of Object.values(projected.relationOccurrences).sort((left, right) => byString(left.id, right.id))) {
+      if (document.relations[occurrence.relation]?.type !== "link") continue;
+      const label = edgeLabelOf(document, occurrence.relation);
+      const sourceEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "source");
+      const targetEnd = occurrence.endpoints.find((endpoint) => endpoint.role === "target");
+      if (label === undefined || sourceEnd === undefined || targetEnd === undefined) continue;
+      const source = endEntity(sourceEnd.occurrence);
+      const target = endEntity(targetEnd.occurrence);
+      if (source === undefined || target === undefined) continue;
+      const layout = measure({
+        text: label,
+        role: "edge-label",
+        availableWidth: EDGE_LABEL_WIDTH,
+        allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
+        folded: false,
+      });
+      labelledPairs.push({ source, target, width: layout.width, height: layout.height });
+    }
+  }
+  const packLevel = (
+    parent: EntityRef | undefined,
+    children: readonly EntityRef[],
+    sizes: readonly PackBox[],
+    chromeWidth: number,
+    chromeHeight: number,
+  ): PackedLevel => {
+    const resolved = rowPack!;
+    const zone = children.some((child) => isStretchedBox(child));
+    const baseX = zone ? rowGaps.zoneX : rowGaps.cardX;
+    const baseY = zone ? rowGaps.zoneY : rowGaps.cardY;
+    const key = levelKeyOf(parent);
+    const choice = chooseOrientation(
+      sizes,
+      {
+        targetAspect: resolved.targetAspect,
+        gapX: baseX,
+        gapY: baseY,
+        chromeWidth,
+        chromeHeight,
+        tallBias: resolved.tallBias,
+        emptyPenaltyWeight: resolved.emptyPenaltyWeight,
+      },
+      resolved.orientationHysteresis,
+      options.previousOrientation?.[key],
+    );
+    if (children.length > 0) orientationRecord.set(key, choice.orientation);
+    // Edge-aware gutters (§3.5): a gutter between two adjacent siblings (or
+    // two adjacent shelves) widens only when a labelled link joins them, only
+    // by the label thickness across the gutter plus its margins, and never
+    // past the axis cap. A gutter no link crosses keeps the base token gap.
+    const index = new Map(children.map((child, slot) => [child, slot] as const));
+    const slotOf = (entity: EntityRef): number | undefined => {
+      for (let current: EntityRef | undefined = entity; current !== undefined; current = placementParentOf(current)) {
+        const slot = index.get(current);
+        if (slot !== undefined) return slot;
+      }
+      return undefined;
+    };
+    const rows = choice.orientation === "rows";
+    const shelves = choice.result.rows;
+    const shelfOf = new Map<number, number>();
+    shelves.forEach((shelf, shelfIndex) => shelf.forEach((slot) => shelfOf.set(slot, shelfIndex)));
+    const alongExtra = new Map<number, number>();
+    const acrossExtra = new Map<number, number>();
+    const alongBase = rows ? baseX : baseY;
+    const alongMax = rows ? rowGaps.maxX : rowGaps.maxY;
+    const acrossBase = rows ? baseY : baseX;
+    const acrossMax = rows ? rowGaps.maxY : rowGaps.maxX;
+    for (const pair of labelledPairs) {
+      const a = slotOf(pair.source);
+      const b = slotOf(pair.target);
+      if (a === undefined || b === undefined || a === b) continue;
+      const first = Math.min(a, b);
+      const second = Math.max(a, b);
+      const shelfA = shelfOf.get(first)!;
+      const shelfB = shelfOf.get(second)!;
+      if (shelfA === shelfB && second === first + 1) {
+        // Neighbours on one shelf: the link crosses the gutter along the shelf.
+        if (deniedGutters.has(`${key}|along|${String(first)}`)) continue;
+        const thickness = (rows ? pair.width : pair.height) + 2 * metrics.labelMargin;
+        const extra = Math.min(Math.max(alongBase, thickness), alongMax) - alongBase;
+        alongExtra.set(first, Math.max(alongExtra.get(first) ?? 0, extra));
+      } else if (shelfB === shelfA + 1) {
+        // Adjacent shelves: the link crosses the gutter between them.
+        if (deniedGutters.has(`${key}|across|${String(shelfA)}`)) continue;
+        const thickness = (rows ? pair.height : pair.width) + 2 * metrics.labelMargin;
+        const extra = Math.min(Math.max(acrossBase, thickness), acrossMax) - acrossBase;
+        acrossExtra.set(shelfA, Math.max(acrossExtra.get(shelfA) ?? 0, extra));
+      }
+    }
+    for (const [slot, extra] of alongExtra) {
+      if (extra > 0) {
+        widenedGutters.set(`${key}|along|${String(slot)}`, { rows, along: true, before: [children[slot]!], after: [children[slot + 1]!] });
+      }
+    }
+    for (const [shelfIndex, extra] of acrossExtra) {
+      if (extra > 0) {
+        widenedGutters.set(`${key}|across|${String(shelfIndex)}`, {
+          rows,
+          along: false,
+          before: shelves[shelfIndex]!.map((slot) => children[slot]!),
+          after: shelves[shelfIndex + 1]!.map((slot) => children[slot]!),
+        });
+      }
+    }
+    const positions = choice.result.positions.map((position) => ({ x: position.x, y: position.y }));
+    let acrossShift = 0;
+    shelves.forEach((shelf, shelfIndex) => {
+      let alongShift = 0;
+      for (const slot of shelf) {
+        const position = positions[slot]!;
+        positions[slot] = rows
+          ? { x: position.x + alongShift, y: position.y + acrossShift }
+          : { x: position.x + acrossShift, y: position.y + alongShift };
+        alongShift += alongExtra.get(slot) ?? 0;
+      }
+      acrossShift += acrossExtra.get(shelfIndex) ?? 0;
+    });
+    let width = 0;
+    let height = 0;
+    positions.forEach((position, slot) => {
+      width = Math.max(width, position.x + sizes[slot]!.width);
+      height = Math.max(height, position.y + sizes[slot]!.height);
+    });
+    const level: PackedLevel = { children, positions, width, height };
+    packedLevels.set(key, level);
+    return level;
+  };
+  const stretchLevel = (children: readonly EntityRef[], sizes: { width: number; height: number }[], enabled: boolean): void => {
+    // §3.7: stretch runs before packing, on the measured widths.
+    if (!enabled) return;
+    let widest = 0;
+    children.forEach((child, slot) => {
+      if (isStretchedBox(child)) widest = Math.max(widest, sizes[slot]!.width);
+    });
+    children.forEach((child, slot) => {
+      if (!isStretchedBox(child)) return;
+      sizes[slot] = { width: widest, height: sizes[slot]!.height };
+      outerWidths.set(child, widest);
+      packedSizes.set(child, sizes[slot]!);
+    });
+  };
+  const probeHeaderHeight = (id: EntityRef, outer: number): number =>
+    measureHeader(
+      {
+        entity: id,
+        occurrence: representativeOf(id),
+        effectiveType: "",
+        folded: false,
+        toggle: true,
+        slots: slotTexts(document, presentation, representativeOf(id), id),
+        availableWidth: innerWidthOf(outer),
+        allocatedLines: { ...DEFAULT_ALLOCATED_LINES },
+      },
+      measure,
+    ).height;
+  const sizeBox = (id: EntityRef, final: boolean): { width: number; height: number } => {
+    const kind = kinds.get(id)!;
+    if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
+      outerWidths.set(id, FIXED_CARD_WIDTH);
+      return { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT };
+    }
+    if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
+    const headerDriven = unwrappedHeaderWidth(id) + 2 * CONTENT_INSET + TOGGLE_ALLOCATION;
+    const ordered = childOrder(id, placedChildrenOf(id));
+    if (kind === "legend-expanded") {
+      // A legend stays a single-column list of keys (DLR-341): exempt from packing.
+      const outer = Math.max(FIXED_CARD_WIDTH, headerDriven, outerWidths.get(id) ?? 0);
+      outerWidths.set(id, outer);
+      const headerHeight = final ? headers.get(id)!.height : probeHeaderHeight(id, outer);
+      const keys = ordered.length * LEGEND_KEY_HEIGHT + Math.max(0, ordered.length - 1) * gaps.cardGapY;
+      const size = { width: outer, height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + keys + LAST_CHILD_TO_BOTTOM_GAP };
+      packedSizes.set(id, size);
+      return size;
+    }
+    const sizes = ordered.map((child) => sizeBox(child, final));
+    stretchLevel(ordered, sizes, levelStretchOf(ordered, contextStretchOf(id)));
+    const floor = Math.max(FIXED_CARD_WIDTH, headerDriven, outerWidths.get(id) ?? 0);
+    const headerHeight = final ? headers.get(id)!.height : probeHeaderHeight(id, floor);
+    const level = packLevel(
+      id,
+      ordered,
+      sizes,
+      2 * CONTENT_INSET,
+      CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + LAST_CHILD_TO_BOTTOM_GAP,
+    );
+    const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * CONTENT_INSET : 0));
+    outerWidths.set(id, outer);
+    const size = {
+      width: outer,
+      height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + level.height + LAST_CHILD_TO_BOTTOM_GAP,
+    };
+    packedSizes.set(id, size);
+    return size;
+  };
+  if (rowPack !== undefined) for (const root of rootOrder) sizeBox(root, false);
+
   const lineHeightOf = (role: TextRole): number =>
     measure({ text: "Mg", role, availableWidth: 1000, allocatedLines: 1, folded: false }).height;
   for (const id of [...graph.nodes.keys()].sort(byString)) {
@@ -984,17 +1288,47 @@ export function layoutMeasured(
     rootWidth = Math.max(rootWidth, width);
     previousRootGapAfter = gapAfter;
   };
-  for (const group of rootGroups) {
+  for (const group of rowPack === undefined ? rootGroups : []) {
     if (!firstRoot) rootY += previousRootGapAfter ?? gaps.rankGap;
     firstRoot = false;
     const size = placeGroupItems(group, 0, rootY, globalStretch);
     seatRoot(size.height, size.width, group.gapAfter);
   }
-  for (const root of ungroupedRoots) {
+  for (const root of rowPack === undefined ? ungroupedRoots : []) {
     if (!firstRoot) rootY += previousRootGapAfter ?? gaps.rankGap;
     firstRoot = false;
     const box = placeOne(root, 0, rootY, contextStretchOf(root));
     seatRoot(box.height, box.width, undefined);
+  }
+  if (rowPack !== undefined) {
+    // DC-2a placement: final sizes on the measured headers, then every level
+    // is seated at its packed positions. The root is one more level with zero
+    // chrome and the same token gaps — never `rankGap` (§3.5).
+    orientationRecord.clear();
+    widenedGutters.clear();
+    const rootSizes = rootOrder.map((root) => sizeBox(root, true));
+    stretchLevel(rootOrder, rootSizes, globalStretch);
+    const rootLevel = packLevel(undefined, rootOrder, rootSizes, 0, 0);
+    const seatLevel = (level: PackedLevel, originX: number, originY: number): void => {
+      level.children.forEach((child, slot) => {
+        const position = level.positions[slot]!;
+        seatBox(child, originX + position.x, originY + position.y);
+      });
+    };
+    const seatBox = (id: EntityRef, x: number, y: number): void => {
+      if (kinds.get(id) !== "container-expanded") {
+        // Fixed cards, collapsed boxes and legends keep their own placement.
+        placeOne(id, x, y, contextStretchOf(id));
+        return;
+      }
+      const size = packedSizes.get(id)!;
+      const header = headers.get(id)!;
+      rects.set(id, { x, y, width: size.width, height: size.height });
+      titleBands.set(id, { x: x + CONTENT_INSET, y: y + CONTENT_INSET, width: innerWidthOf(size.width), height: header.height });
+      const level = packedLevels.get(levelKeyOf(id));
+      if (level !== undefined) seatLevel(level, x + CONTENT_INSET, y + CONTENT_INSET + header.height + RULE_TO_FIRST_CHILD_GAP);
+    };
+    seatLevel(rootLevel, 0, 0);
   }
 
   // Step 5 — bodies and labels through the same measurer.
@@ -1214,7 +1548,12 @@ export function layoutMeasured(
   }
 
   // Edge labels on the final routes; unplaced labels keep their route.
-  const blockers: Rect[] = [...rects.values(), ...titleBands.values()];
+  // Row-pack keeps a label inside its own expanded zone: there the zone
+  // rectangle is not a blocker, only cards, collapsed boxes and title bands.
+  const blockers: Rect[] =
+    rowPack === undefined
+      ? [...rects.values(), ...titleBands.values()]
+      : [...[...rects].filter(([id]) => !isStretchedBox(id)).map(([, rect]) => rect), ...titleBands.values()];
   const entries = [...edgeLayouts.entries()]
     .sort(([left], [right]) => byString(left, right))
     .map(([id, layout]) => ({ id, route: routed.routes.get(id)!, size: { width: layout.width, height: layout.height } }));
@@ -1226,6 +1565,54 @@ export function layoutMeasured(
       continue;
     }
     labelBoxes.set(id as RelationRef, choice.box);
+  }
+
+  // §3.5 feedback: a widened gutter the final routes and label boxes do not
+  // cross is an empty lane. It is denied and the layout recomputed from the
+  // same inputs; the denied set only grows, so this ends.
+  if (rowPack !== undefined && widenedGutters.size > 0) {
+    const uncrossed: string[] = [];
+    for (const [id, gutter] of [...widenedGutters].sort(([left], [right]) => byString(left, right))) {
+      const boxesOf = (ids: readonly EntityRef[]): Rect[] => ids.map((entity) => rects.get(entity)).filter((rect): rect is Rect => rect !== undefined);
+      const before = boxesOf(gutter.before);
+      const after = boxesOf(gutter.after);
+      if (before.length === 0 || after.length === 0) continue;
+      const horizontalGutter = gutter.rows !== gutter.along;
+      // The strip between the two groups: across their facing edges, over their shared extent.
+      const lo = Math.max(...before.map((rect) => (horizontalGutter ? rect.y + rect.height : rect.x + rect.width)));
+      const hi = Math.min(...after.map((rect) => (horizontalGutter ? rect.y : rect.x)));
+      const all = [...before, ...after];
+      const from = gutter.along
+        ? Math.max(...all.map((rect) => (horizontalGutter ? rect.x : rect.y)))
+        : Math.min(...all.map((rect) => (horizontalGutter ? rect.x : rect.y)));
+      const to = gutter.along
+        ? Math.min(...all.map((rect) => (horizontalGutter ? rect.x + rect.width : rect.y + rect.height)))
+        : Math.max(...all.map((rect) => (horizontalGutter ? rect.x + rect.width : rect.y + rect.height)));
+      const strip: Rect = horizontalGutter
+        ? { x: from, y: lo, width: to - from, height: hi - lo }
+        : { x: lo, y: from, width: hi - lo, height: to - from };
+      const touches = (box: Rect): boolean =>
+        box.x <= strip.x + strip.width &&
+        strip.x <= box.x + box.width &&
+        box.y <= strip.y + strip.height &&
+        strip.y <= box.y + box.height;
+      const crossed =
+        [...routed.routes.values()].some((route) =>
+          route.slice(1).some((point, index) => {
+            const start = route[index]!;
+            return touches({
+              x: Math.min(start.x, point.x),
+              y: Math.min(start.y, point.y),
+              width: Math.abs(point.x - start.x),
+              height: Math.abs(point.y - start.y),
+            });
+          }),
+        ) || [...labelBoxes.values()].some(touches);
+      if (!crossed) uncrossed.push(id);
+    }
+    if (uncrossed.length > 0) {
+      return layoutMeasuredPass(document, options, sourceView, new Set([...deniedGutters, ...uncrossed]));
+    }
   }
 
   // Step 7 — emit the view plus measurements.
@@ -1272,6 +1659,13 @@ export function layoutMeasured(
     },
     warnings,
     measurements,
+    ...(rowPack === undefined
+      ? {}
+      : {
+          orientations: Object.fromEntries(
+            [...orientationRecord].sort(([left], [right]) => byString(left, right)),
+          ) as Readonly<Record<string, LevelOrientation>>,
+        }),
   };
 }
 
