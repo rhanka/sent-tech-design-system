@@ -331,20 +331,29 @@ export function routeEdges(input: {
   readonly rects: ReadonlyMap<EntityRef, Rect>;
   readonly requests: readonly RouteRequest[];
   readonly clearance: number;
+  /**
+   * Rectangles no route may cross, whatever its ends: they belong to no
+   * entity, so no request can list them as passable. The row-pack path passes
+   * the title band of every expanded container (a route may cross the wall of
+   * its own ancestor, never the title drawn inside it).
+   */
+  readonly barriers?: readonly Rect[];
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
   const entities = [...rects.keys()].sort();
 
-  const grown = entities.map((id) => {
-    const rect = rects.get(id)!;
-    return {
-      id,
-      left: rect.x - clearance,
-      right: rect.x + rect.width + clearance,
-      top: rect.y - clearance,
-      bottom: rect.y + rect.height + clearance,
-    };
+  const grow = (id: EntityRef, rect: Rect) => ({
+    id,
+    left: rect.x - clearance,
+    right: rect.x + rect.width + clearance,
+    top: rect.y - clearance,
+    bottom: rect.y + rect.height + clearance,
   });
+  const grown = [
+    ...entities.map((id) => grow(id, rects.get(id)!)),
+    // Synthetic ids: never an entity reference, hence never in `passable`.
+    ...(input.barriers ?? []).map((rect, index) => grow(`barrier:${String(index)}` as EntityRef, rect)),
+  ];
 
   const withChannels = (values: number[]): number[] => {
     const sorted = [...new Set(values)].sort((a, b) => a - b);

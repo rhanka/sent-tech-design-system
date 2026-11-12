@@ -990,6 +990,8 @@ function layoutMeasuredPass(
     const shelves = choice.result.rows;
     const shelfOf = new Map<number, number>();
     shelves.forEach((shelf, shelfIndex) => shelf.forEach((slot) => shelfOf.set(slot, shelfIndex)));
+    /** Along-shelf widening asked for the gutter after a slot, before the column rule below. */
+    const alongRequest = new Map<number, number>();
     const alongExtra = new Map<number, number>();
     const acrossExtra = new Map<number, number>();
     const alongBase = rows ? baseX : baseY;
@@ -1008,15 +1010,33 @@ function layoutMeasuredPass(
         // Neighbours on one shelf: the link crosses the gutter along the shelf.
         if (deniedGutters.has(`${key}|along|${String(first)}`)) continue;
         const thickness = (rows ? pair.width : pair.height) + 2 * metrics.labelMargin;
-        const extra = Math.min(Math.max(alongBase, thickness), alongMax) - alongBase;
-        alongExtra.set(first, Math.max(alongExtra.get(first) ?? 0, extra));
+        // A label thicker than the cap sits in no gutter of an allowed width:
+        // widening for it would only reserve an empty lane.
+        if (thickness > alongMax) continue;
+        const extra = Math.max(alongBase, thickness) - alongBase;
+        alongRequest.set(first, Math.max(alongRequest.get(first) ?? 0, extra));
       } else if (shelfB === shelfA + 1) {
         // Adjacent shelves: the link crosses the gutter between them.
         if (deniedGutters.has(`${key}|across|${String(shelfA)}`)) continue;
         const thickness = (rows ? pair.height : pair.width) + 2 * metrics.labelMargin;
-        const extra = Math.min(Math.max(acrossBase, thickness), acrossMax) - acrossBase;
+        if (thickness > acrossMax) continue;
+        const extra = Math.max(acrossBase, thickness) - acrossBase;
         acrossExtra.set(shelfA, Math.max(acrossExtra.get(shelfA) ?? 0, extra));
       }
+    }
+    // Column alignment: the boxes at one index of every shelf share one start
+    // edge, so the gutter after index `g` is one column gutter of the level.
+    // It widens only when every shelf that has it asks for it — each for its
+    // own labelled link — and then by the same amount on every shelf. A
+    // request a single shelf makes would shift that shelf alone against the
+    // others, so it is dropped: the label is reported, the grid stays aligned.
+    const longest = Math.max(0, ...shelves.map((shelf) => shelf.length));
+    for (let gutter = 0; gutter + 1 < longest; gutter += 1) {
+      const sharing = shelves.filter((shelf) => shelf.length >= gutter + 2);
+      const requests = sharing.map((shelf) => alongRequest.get(shelf[gutter]!) ?? 0);
+      if (requests.some((extra) => extra <= 0)) continue;
+      const extra = Math.max(...requests);
+      for (const shelf of sharing) alongExtra.set(shelf[gutter]!, extra);
     }
     for (const [slot, extra] of alongExtra) {
       if (extra > 0) {
@@ -1538,7 +1558,17 @@ function layoutMeasuredPass(
       passable,
     };
   });
-  const routed = routeEdges({ rects, requests, clearance: metrics.clearance });
+  // Row-pack: the title band of an expanded container is an obstacle for every
+  // route, the ones that may cross the container wall included. A route
+  // leaving a zone goes round its title, never through it.
+  const routed = routeEdges({
+    rects,
+    requests,
+    clearance: metrics.clearance,
+    ...(rowPack === undefined
+      ? {}
+      : { barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band) }),
+  });
   for (const id of [...routed.obstructed].sort(byString)) {
     warnings.push({
       code: "route-obstructed",
@@ -1567,9 +1597,10 @@ function layoutMeasuredPass(
     labelBoxes.set(id as RelationRef, choice.box);
   }
 
-  // §3.5 feedback: a widened gutter the final routes and label boxes do not
-  // cross is an empty lane. It is denied and the layout recomputed from the
-  // same inputs; the denied set only grows, so this ends.
+  // §3.5 feedback: a gutter is widened to hold a label. A widened gutter in
+  // which no placed label box sits is an empty lane — a bare route needs no
+  // more than the base gap (two clearances). It is denied and the layout
+  // recomputed from the same inputs; the denied set only grows, so this ends.
   if (rowPack !== undefined && widenedGutters.size > 0) {
     const uncrossed: string[] = [];
     for (const [id, gutter] of [...widenedGutters].sort(([left], [right]) => byString(left, right))) {
@@ -1591,24 +1622,12 @@ function layoutMeasuredPass(
       const strip: Rect = horizontalGutter
         ? { x: from, y: lo, width: to - from, height: hi - lo }
         : { x: lo, y: from, width: hi - lo, height: to - from };
-      const touches = (box: Rect): boolean =>
-        box.x <= strip.x + strip.width &&
-        strip.x <= box.x + box.width &&
-        box.y <= strip.y + strip.height &&
-        strip.y <= box.y + box.height;
-      const crossed =
-        [...routed.routes.values()].some((route) =>
-          route.slice(1).some((point, index) => {
-            const start = route[index]!;
-            return touches({
-              x: Math.min(start.x, point.x),
-              y: Math.min(start.y, point.y),
-              width: Math.abs(point.x - start.x),
-              height: Math.abs(point.y - start.y),
-            });
-          }),
-        ) || [...labelBoxes.values()].some(touches);
-      if (!crossed) uncrossed.push(id);
+      const holds = (box: Rect): boolean =>
+        box.x < strip.x + strip.width &&
+        strip.x < box.x + box.width &&
+        box.y < strip.y + strip.height &&
+        strip.y < box.y + box.height;
+      if (![...labelBoxes.values()].some(holds)) uncrossed.push(id);
     }
     if (uncrossed.length > 0) {
       return layoutMeasuredPass(document, options, sourceView, new Set([...deniedGutters, ...uncrossed]));

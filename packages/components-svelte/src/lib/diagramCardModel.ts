@@ -68,6 +68,14 @@ export const CARD_GEOMETRY = {
   allocatedLines: { kicker: 1, title: 2, body: 2, footer: 1 },
 } as const;
 
+/**
+ * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
+ * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
+ * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
+ * gap cap; at the 0.45 readability floor it renders at 8.1 CSS px.
+ */
+export const EDGE_LABEL_GEOMETRY = { size: 18, weight: 400, lineHeight: 22 } as const;
+
 /** Line box height for a size at 1.3, on the 1/64 px grid. */
 export function lineBoxHeight(size: number): number {
   return Math.floor(size * 1.3 * 64) / 64;
@@ -556,10 +564,15 @@ export interface CardLineLayout {
  * pairing `diagram-canvas` with these renderers passes `cardLineMeasurer()`
  * straight as the injected `LineMeasurer` — no adapter, no role cast.
  * Every canvas role maps onto the card role with the same font size
- * (subtitle, detail, legend-label and edge-label measure as body),
- * `width` is the widest emitted line, `height` the line count at the
- * role's line box, and `overflow` reports a too-wide line or a line-count
- * overflow.
+ * (subtitle, detail and legend-label measure as body), `width` is the
+ * widest emitted line, `height` the line count at the role's line box, and
+ * `overflow` reports a too-wide line or a line-count overflow.
+ *
+ * The edge label has its own size (`EDGE_LABEL_GEOMETRY`, 18 px on 22 px):
+ * it is the body face scaled by 18/24. The injected measure only knows the
+ * four card roles, so the label is wrapped as body text in a width scaled up
+ * by 24/18 and its line widths are scaled back down — advances are linear in
+ * the font size, so this is the 18 px measurement.
  */
 export function cardLineMeasurer(
   measure: CardLineMeasure = defaultCardMeasure,
@@ -569,6 +582,17 @@ export function cardLineMeasurer(
       request.role === "kicker" || request.role === "title" || request.role === "footer"
         ? request.role
         : "body";
+    if (request.role === "edge-label") {
+      const scale = EDGE_LABEL_GEOMETRY.size / CARD_GEOMETRY.body.size;
+      const label = measure(request.text, "body", request.availableWidth / scale, request.allocatedLines);
+      return {
+        lines: label.lines,
+        width:
+          label.lineWidths === undefined ? request.availableWidth : Math.max(0, ...label.lineWidths) * scale,
+        height: label.lines.length * EDGE_LABEL_GEOMETRY.lineHeight,
+        overflow: label.tooWide || label.lines.length > request.allocatedLines,
+      };
+    }
     const measured = measure(request.text, role, request.availableWidth, request.allocatedLines);
     const size =
       role === "kicker"
