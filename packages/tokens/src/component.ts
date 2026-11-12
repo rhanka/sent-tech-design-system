@@ -1854,14 +1854,17 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // DC-2a — scene camera and transition (spec §5, §4.3). Readout 100 % is
     // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
     // `minReadableScale` is the floor a fit holds before the host pans.
-    // Re-pin 2026-11-12 (M1/BF-6): 0.45 keeps an 18px edge label readable
-    // at fit (18 × 0.45 = 8.1 ≥ 8 CSS px); 0.42 gave 7.6 < 8.
+    // The edge label is the smallest text of a scene: 18 px on a 22 px line
+    // box, so one line plus its two 4 px margins (30 px) fits the 32 px gap
+    // cap, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
+    // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
     diagramScene: {
       maxDisplayScale: "0.62",
       minReadableScale: "0.45",
       transitionDuration: "240ms",
       edgeLabelFontSize: "18px",
-      readoutMinWidth: "4ch"
+      readoutMinWidth: "4ch",
+      edgeLabelLineHeight: "22px"
     },
     // Existing BPMN element host footprint, shared by framework bindings.
     bpmnCanvas: { minHeight: "120px" },
