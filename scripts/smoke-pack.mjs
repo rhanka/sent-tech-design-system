@@ -59,8 +59,8 @@ import { collectViolations as collectLicensingViolations } from "./verify-publis
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const tmp = mkdtempSync(join(tmpdir(), "sent-tech-pack-"));
-const npmCache = join(tmp, "npm-cache");
-mkdirSync(npmCache);
+const npmCache = process.env.npm_config_cache ?? join(tmp, "npm-cache");
+mkdirSync(npmCache, { recursive: true });
 
 function readJson(relPath) {
   return JSON.parse(readFileSync(join(root, relPath), "utf8"));
@@ -269,6 +269,11 @@ const packages = [
   {
     name: "@sentropic/design-system-vue",
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles()]; },
+    extraRequiredFiles: [
+      "dist/vapor/sfc.d.ts",
+      ...["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn"]
+        .flatMap((subpath) => [`dist/${subpath}/index.js`, `dist/${subpath}/index.d.ts`]),
+    ],
   },
   {
     name: "@sentropic/design-system-angular",
@@ -434,7 +439,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph"],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
@@ -760,6 +765,31 @@ try {
       deepTargets.map((pkg) => pkg.name),
     );
     run("node", [verifyPath], { cwd: installDir });
+
+    // The primary Vue surface must install with its pinned prerelease peer and
+    // type-check the packed declarations, without workspace resolution or casts.
+    if (deepTargets.some((pkg) => pkg.name === "@sentropic/design-system-vue")) {
+      // Include the optional elements peer because the fixture checks BPMN too.
+      // Keep this consumer independent of other shards selected in a full run.
+      const consumerNames = new Set(["@sentropic/design-system-vue", "@sentropic/design-system-elements"]);
+      for (const name of consumerNames) {
+        for (const dependency of deepVerify[name]?.closure ?? []) consumerNames.add(dependency);
+      }
+      const consumerTarballs = [...consumerNames].map((name) => {
+        const pkg = packages.find((candidate) => candidate.name === name);
+        assert(pkg, `Vue consumer dependency ${name} is not a smoke-pack package`);
+        return ensureTarball(pkg);
+      });
+      const strictDir = installProject(
+        consumerTarballs,
+        new Map([["vue", vueManifest.devDependencies.vue], ["typescript", rootManifest.devDependencies.typescript]]),
+        { strict: true, dirName: "install-vue-strict" },
+      );
+      cpSync(join(root, "packages/components-vue/tests/types/consumer.ts"), join(strictDir, "consumer.ts"));
+      cpSync(join(root, "scripts/smoke-pack-vue-consumer.mjs"), join(strictDir, "check.mjs"));
+      run("node", ["check.mjs"], { cwd: strictDir });
+      console.log("OK Vue strict peer install and packed Vapor consumer types");
+    }
   }
 
   // RT-1 strict consumer: when this run installed BOTH editor tarballs (full
