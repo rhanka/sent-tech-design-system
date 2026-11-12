@@ -1,36 +1,32 @@
-# DC-2b — diagram performance
+# Endpoint provenance
 
 ## Objective
-- [x] Deliver the DC-2b engine and separate host integration patch, with the owner thresholds unchanged.
+- [x] Implement endpoint provenance AC-01–51 from SPEC_EVOL_DIAGRAM_CORE_ENDPOINT_PROVENANCE.md with confirmed D-1–D-9.
 
 ## Scope / Guardrails
-- [x] Work only in this worktree; owner now authorizes merge and wiring commits; no push, stash, browser, Python or dependency addition.
-- [x] Allowed: diagram-canvas cache, presentation model, tests and README; Svelte measurer version; conductor host patch and evidence.
-- [x] Forbidden: placement, docking, routing bodies, confidential fixtures, environment and key files, root test command.
-- [x] Svelte host source is now merged from main and wired permanently; Vue integration remains a separate patch.
+- [x] Work only in this worktree on feat/endpoint-provenance; retain package versions and dependency pins.
+- [x] Install once with the prescribed npm cache; no browser, root test command, Python, stash, push, confidential fixtures, environment or credential files.
+
+## Branch Scope Boundaries
+- [x] Allowed: diagram-core types, evaluator, schema @3 text/digest, tests, README and verification receipts; generated component-index/notices only when required.
+- [x] Forbidden: unrelated packages, routing/rendering, semantic cardinality enforcement, @1/@2 schema changes, version bumps, tags and publishing.
+- [x] Conditional: diagram-canvas verification and lockfile inspection; no dependency changes unless directly necessary.
 
 ## Lots
-- [x] L0: install dependencies, verify fingerprint seam and reference scenes; hosts and shared model absent on this base.
-- [x] L1: bounded instance cache and optional measurer versions; gate: compiler and no-DOM guard.
-- [x] L2: cache correctness, fixed-point revisits, LRU and V8 memory/latency tests; gate: scoped Node Vitest.
-- [x] L3: shared model, content size, label fast path and separate host patch; gate: model tests and patch applicability.
-- [x] L4: README with measured evidence and host handoff.
-- [x] L5: package Vitest, diagram-canvas type check, diagram-canvas and Svelte builds; inspect every diff hunk.
+- [x] L1: profile/view DATA types, five declaration checks, schema @3 text and digest; profiles and schema conformance tests, tsc gate.
+- [x] L2: indexed document-only iterative chain walks, pairing and single-chain selection; endpoint-provenance AC-01–11,15–17,21–27,36–47,50 gate.
+- [x] L3: registry membership, entity-scoped repo, sorted carrier set; endpoint-provenance AC-12–14,28–32,51 gate.
+- [x] L4: verbatim chain carriage in all projection/stripping branches and replacement inverses; folded-view/commands AC-48–49 gate.
+- [x] L5: old bytes and fold regressions AC-18–19; all diagram-core and diagram-canvas Vitest, tsc and builds gate.
+- [x] L6: scoped README, AC-to-test evidence, component-index generate/check, notices and licensing; inspect diff and commit without push.
 
 ## Feedback Loop
-- [x] Use package-scoped Vitest commands throughout; retain existing timeouts.
-- [x] Missing hosts: conductor applies the separate host patch after integrating PR #265 and feat/diagram-vue.
-- [x] Review BF-1/BF-2/BF-3/BF-4 corrected with failing-first regressions; NB-1 extends the heap workload through scene projection.
-- [x] Mounted-host idle/camera/binding/lifecycle gates run in Node/jsdom for Svelte and Vue; the published Vapor size regression also passes.
-- [x] Host published types and builds checked on a temporary composite inside this worktree; integration prerequisites reused read-only.
-- [x] Remaining mounted-host AC-P1 stress/idle heap campaign is distinguished from the completed canvas/model gate in patches/DC2B_HOST_WIRING.md.
-
-## Svelte integration after PR #265
-- [x] Fetch and merge origin/main; no manual conflicts; retain engine/main APIs and DC-2b cache.
-- [x] Apply Svelte wiring, binding fixture, mounted contract, package exclusions and public exports; retain only Vue-related patch sections.
-- [x] npm ci with the owner-specified cache; all eight requested package builds pass.
-- [x] Canvas: 39 suites, 449 passed / 1 skipped. Targeted Svelte host + SSR: 46 passed; both svelte-check configurations pass.
-- [x] Mounted AC-P1: 240 complete fold/unfold cycles, three samples, reduced motion; median 1.903 MiB <= 5 MiB and idle -0.175 MiB <= 1 MiB. Animated idle activity is tested separately.
-- [x] Mounted camera: 2.458 ms p95 <= 16.7 ms; AC-P5 worst sample 0.171 MiB <= 2 MiB; no retained host resources.
-- [x] Component-index generation/check pass (430 fresh artifacts); notices and licensing pass (22 publishable packages).
-- [x] Detailed scope, measurements and reproduction: patches/DC2B_SVELTE_INTEGRATION.md.
+- [x] Baseline d9a04d2e equals origin/main; referenced helpers, provenance dispatch, projection and inverse seams verified.
+- [x] npm ci --no-audit --no-fund completed once; existing Node engine/deprecation warnings recorded in command evidence.
+- [x] Spec decisions confirmed by owner; normative predicate ids appear only in test DATA.
+- [x] Source audit and diagnostic/selection regressions complete; strict schema compilation, exact canonical schema text and package inclusion verified.
+- [x] Final core: 639/639 tests; canvas: 449 passed, one existing skip; package tsc/builds, 430 index artifacts, notices and 22-package licensing pass.
+- [x] Index generation initially needed declaration builds; five prerequisites and eight component/dataviz workspace builds completed, then generate/check passed.
+- [x] Schema guard receipt refreshed for current source hashes; @1/@2 schema bytes, presentation pin, package versions and lockfile unchanged.
+- [x] Independent consensus selection failed: exact author model/effort unavailable and no h2a_run MCP tool exposed; no peer verdict claimed. Evidence records this limitation.
+- [x] Track sidecar import remains with the conductor under the concurrent-worktree single-writer rule; this BRANCH.md is the mergeable source artifact.
