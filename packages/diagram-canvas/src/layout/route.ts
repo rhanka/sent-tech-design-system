@@ -1,3 +1,4 @@
+import { permuteFlowRuns } from "./flow-order.js";
 /**
  * Orthogonal routing between docked ends, around obstacles.
  *
@@ -73,6 +74,8 @@ import type { EntityRef, RelationRef } from "@sentropic/diagram-core";
 import type { Rect, Vec2 } from "../transform.js";
 
 export interface RouteRequest {
+  readonly flowRank?: number;
+  readonly flowRun?: string;
   readonly id: RelationRef;
   /** The two entities, sorted and joined: equal for parallel edges (L-R9). */
   readonly pairKey: string;
@@ -658,7 +661,7 @@ export function routeEdges(input: {
     return best;
   };
 
-  for (const request of [...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
+  for (const request of permuteFlowRuns([...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0)), (request) => request.flowRun, (request) => request.flowRank!)) {
     let goalParent = -1;
     let pairId = pairIds.get(request.pairKey);
     if (pairId === undefined) {
