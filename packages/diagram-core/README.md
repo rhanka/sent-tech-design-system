@@ -211,3 +211,10 @@ reference types are not interchangeable with one `@ts-expect-error` per
 illegitimate assignment (42 ordered pairs). Those assertions only mean something
 if a compiler reads them. Remove the brand from `Ref<K>` and `check` reports 42
 × TS2578 ("Unused '@ts-expect-error' directive") — measured, not assumed.
+
+## Numbered flows (DC-2c.1)
+
+`withFlowTypes`, `validateFlows` and `flowIndex` provide authored flow relations
+and scenarios. Relation refinements resolve through `relationBaseType` and
+`relationSchema`, preserving inherited roles and constraints. See
+[the authoring contract and mapping examples](../../docs/DC2C_NUMBERED_FLOWS.md).
