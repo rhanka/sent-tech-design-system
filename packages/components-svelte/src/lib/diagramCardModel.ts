@@ -40,6 +40,13 @@ export const CARD_GEOMETRY = {
   /** Header row → body block. */
   gap: 6,
   body: { size: 24, weight: 400, lineHeight: 1.3 },
+  /**
+   * Edge-label text (BF-6): 18px so one line plus margins fits the 32px
+   * gutter cap (22 + 2 × 4 = 30 ≤ 32). Mirrors the
+   * `diagramScene.edgeLabelFontSize` / `edgeLabelLineHeight` tokens;
+   * additive, frozen card sizes unchanged.
+   */
+  edgeLabel: { size: 18, weight: 400, lineHeight: 22 / 18 },
   /** Accent-bar left edge → first body glyph. */
   bodyInsetFromBar: 14,
   ruleHeight: 1,

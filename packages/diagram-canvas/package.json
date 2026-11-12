@@ -1,8 +1,15 @@
 {
   "name": "@sentropic/diagram-canvas",
   "version": "0.1.0",
-  "private": true,
   "description": "Headless scene and hit testing over a diagram view: one world -> view -> CSS pixel -> device pixel transform, deterministic paint order, filter evaluation with reported exclusions. No DOM, no renderer, no framework.",
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist",
+    "!dist/**/*.map",
+    "!dist/.srchash"
+  ],
   "type": "module",
   "license": "MIT",
   "repository": {
