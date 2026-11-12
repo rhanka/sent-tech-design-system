@@ -1,0 +1,3907 @@
+{
+  "caseId": "case-trackfocus-r9",
+  "semanticDocumentId": "document:case-trackfocus-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "liftedEdgeProvenance": "none",
+  "counts": {
+    "archiElements": 21,
+    "archiRelations": 46,
+    "totalEntitiesWithLegend": 24,
+    "totalRelationsWithLegend": 48,
+    "views": 3
+  },
+  "elementSummary": [
+    {
+      "id": "act-sentropic",
+      "entityId": "entity:act-sentropic",
+      "kind": "actor",
+      "form": "org",
+      "container": false,
+      "name": "Sentropic",
+      "shortName": null,
+      "purpose": "Équipe propriétaire du monorepo h2a",
+      "kicker": "Acteur · Organisation",
+      "detail": null,
+      "footer": null,
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "focus-components",
+      "entityId": "entity:focus-components",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Document / rendu",
+      "shortName": null,
+      "purpose": "Produire les dossiers",
+      "kicker": "Système · h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "s2-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:589-607"
+      ]
+    },
+    {
+      "id": "focus-editing",
+      "entityId": "entity:focus-editing",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Édition et réconciliation",
+      "shortName": "Édition",
+      "purpose": "Réconcilier les retours",
+      "kicker": "Composant",
+      "detail": "exécuté par: focus",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "pkg-focus",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:751-770"
+      ]
+    },
+    {
+      "id": "focus-model",
+      "entityId": "entity:focus-model",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Modèle du dossier",
+      "shortName": "Modèle dossier",
+      "purpose": "Structurer le document",
+      "kicker": "Composant",
+      "detail": "exécuté par: focus",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "pkg-focus",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:710-729"
+      ]
+    },
+    {
+      "id": "focus-registry",
+      "entityId": "entity:focus-registry",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Définitions de registre",
+      "shortName": "Registre Focus",
+      "purpose": "Déclarer les ressources",
+      "kicker": "Composant",
+      "detail": "exécuté par: focus",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "pkg-focus",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:813-832"
+      ]
+    },
+    {
+      "id": "focus-render",
+      "entityId": "entity:focus-render",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Rendus HTML / Markdown / terminal",
+      "shortName": "Rendus",
+      "purpose": "Présenter le dossier",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "focus-components",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:771-792"
+      ]
+    },
+    {
+      "id": "focus-skill",
+      "entityId": "entity:focus-skill",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Skill Focus",
+      "shortName": null,
+      "purpose": "Guider les dossiers",
+      "kicker": "Système · h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "s2-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:569-587"
+      ]
+    },
+    {
+      "id": "focus-skill-leaf",
+      "entityId": "entity:focus-skill-leaf",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "focus",
+      "shortName": null,
+      "purpose": "Produire les dossiers",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "focus-skill",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:690-709"
+      ]
+    },
+    {
+      "id": "focus-track",
+      "entityId": "entity:focus-track",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "name": "Raccord Track",
+      "shortName": null,
+      "purpose": "Relier les décisions",
+      "kicker": "Composant",
+      "detail": "exécuté par: focus",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "pkg-focus",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:793-812"
+      ]
+    },
+    {
+      "id": "focus-validation",
+      "entityId": "entity:focus-validation",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "Validation et lisibilité",
+      "shortName": "Validation",
+      "purpose": "Contrôler le dossier",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/focus",
+      "containment": {
+        "partOf": "focus-components",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:730-750"
+      ]
+    },
+    {
+      "id": "host-poste",
+      "entityId": "entity:host-poste",
+      "kind": "host",
+      "form": "workstation",
+      "container": true,
+      "name": "Poste de travail",
+      "shortName": null,
+      "purpose": "Poste local exécutant les opérations Track et Focus",
+      "kicker": "Hôte · Poste",
+      "detail": null,
+      "footer": "opéré par: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "pkg-focus",
+      "entityId": "entity:pkg-focus",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/focus",
+      "shortName": null,
+      "purpose": "Paquet npm livrant la compétence et les composants Focus",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "focus-components",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/focus/package.json:2-4"
+      ]
+    },
+    {
+      "id": "pkg-track",
+      "entityId": "entity:pkg-track",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "name": "@sentropic/track",
+      "shortName": null,
+      "purpose": "Paquet npm livrant les compétences et le CLI Track",
+      "kicker": "Paquet · Lib",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "track-skills",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/track/package.json:2-4"
+      ]
+    },
+    {
+      "id": "repo-h2a",
+      "entityId": "entity:repo-h2a",
+      "kind": "repo",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Monorepo livrant Track et Focus comme systèmes distincts",
+      "kicker": "Repo",
+      "detail": null,
+      "footer": "propriétaire: Sentropic",
+      "containment": {
+        "partOf": null,
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:package.json:1-12",
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "rt-h2a",
+      "entityId": "entity:rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "h2a",
+      "shortName": "CLI h2a",
+      "purpose": "Charge les compétences Track et Focus en session",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "s2-h2a",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:packages/h2a/package.json:44-46"
+      ]
+    },
+    {
+      "id": "s2-h2a",
+      "entityId": "entity:s2-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "h2a",
+      "shortName": null,
+      "purpose": "Suivi et dossiers",
+      "kicker": "Système",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": null,
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:528-546"
+      ]
+    },
+    {
+      "id": "track-branch-lifecycle",
+      "entityId": "entity:track-branch-lifecycle",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "branch-lifecycle",
+      "shortName": "Cycle de branche",
+      "purpose": "Clore une branche",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "pkg-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:610-629"
+      ]
+    },
+    {
+      "id": "track-present-decision",
+      "entityId": "entity:track-present-decision",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "present-decision",
+      "shortName": "Dossier décision",
+      "purpose": "Présenter les choix",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "pkg-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:630-649"
+      ]
+    },
+    {
+      "id": "track-propose-workpackages",
+      "entityId": "entity:track-propose-workpackages",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "name": "propose-workpackages",
+      "shortName": "Workpackages",
+      "purpose": "Structurer le suivi",
+      "kicker": "Artefact · Skill",
+      "detail": "chargé par: CLI h2a",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "pkg-track",
+        "managedIn": null,
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:650-669"
+      ]
+    },
+    {
+      "id": "track-skills",
+      "entityId": "entity:track-skills",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "name": "Track",
+      "shortName": null,
+      "purpose": "Piloter le suivi",
+      "kicker": "Système · h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "containment": {
+        "partOf": "s2-h2a",
+        "managedIn": "repo-h2a",
+        "runsOn": null
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:548-567"
+      ]
+    },
+    {
+      "id": "track-track-operation",
+      "entityId": "entity:track-track-operation",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "name": "track-operation",
+      "shortName": "Opérations Track",
+      "purpose": "Opérer le suivi",
+      "kicker": "Exécution · CLI",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/track",
+      "containment": {
+        "partOf": "track-skills",
+        "managedIn": null,
+        "runsOn": "host-poste"
+      },
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:670-689"
+      ]
+    }
+  ],
+  "relationSummary": [
+    {
+      "id": "ob-repo-h2a",
+      "relationId": "relation:ob-repo-h2a",
+      "type": "ownedBy",
+      "source": "repo-h2a",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:package.json:1-5"
+      ]
+    },
+    {
+      "id": "op-poste",
+      "relationId": "relation:op-poste",
+      "type": "operatedBy",
+      "source": "host-poste",
+      "target": "act-sentropic",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "mi-s2-h2a",
+      "relationId": "relation:mi-s2-h2a",
+      "type": "managedIn",
+      "source": "s2-h2a",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "mi-track-skills",
+      "relationId": "relation:mi-track-skills",
+      "type": "managedIn",
+      "source": "track-skills",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "mi-focus-skill",
+      "relationId": "relation:mi-focus-skill",
+      "type": "managedIn",
+      "source": "focus-skill",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "mi-focus-components",
+      "relationId": "relation:mi-focus-components",
+      "type": "managedIn",
+      "source": "focus-components",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "mi-pkg-track",
+      "relationId": "relation:mi-pkg-track",
+      "type": "managedIn",
+      "source": "pkg-track",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "mi-pkg-focus",
+      "relationId": "relation:mi-pkg-focus",
+      "type": "managedIn",
+      "source": "pkg-focus",
+      "target": "repo-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-track-skills",
+      "relationId": "relation:po-track-skills",
+      "type": "partOf",
+      "source": "track-skills",
+      "target": "s2-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-skill",
+      "relationId": "relation:po-focus-skill",
+      "type": "partOf",
+      "source": "focus-skill",
+      "target": "s2-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-components",
+      "relationId": "relation:po-focus-components",
+      "type": "partOf",
+      "source": "focus-components",
+      "target": "s2-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-pkg-track",
+      "relationId": "relation:po-pkg-track",
+      "type": "partOf",
+      "source": "pkg-track",
+      "target": "track-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-pkg-focus",
+      "relationId": "relation:po-pkg-focus",
+      "type": "partOf",
+      "source": "pkg-focus",
+      "target": "focus-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-rt-h2a",
+      "relationId": "relation:po-rt-h2a",
+      "type": "partOf",
+      "source": "rt-h2a",
+      "target": "s2-h2a",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "ro-rt-h2a",
+      "relationId": "relation:ro-rt-h2a",
+      "type": "runsOn",
+      "source": "rt-h2a",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:README.md:62"
+      ]
+    },
+    {
+      "id": "da-rt-h2a",
+      "relationId": "relation:da-rt-h2a",
+      "type": "deployedAs",
+      "source": "pkg-track",
+      "target": "rt-h2a",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · session h2a",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-track-branch-lifecycle",
+      "relationId": "relation:po-track-branch-lifecycle",
+      "type": "partOf",
+      "source": "track-branch-lifecycle",
+      "target": "pkg-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "lb-track-branch-lifecycle",
+      "relationId": "relation:lb-track-branch-lifecycle",
+      "type": "loadedBy",
+      "source": "track-branch-lifecycle",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-track-present-decision",
+      "relationId": "relation:po-track-present-decision",
+      "type": "partOf",
+      "source": "track-present-decision",
+      "target": "pkg-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "lb-track-present-decision",
+      "relationId": "relation:lb-track-present-decision",
+      "type": "loadedBy",
+      "source": "track-present-decision",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-track-propose-workpackages",
+      "relationId": "relation:po-track-propose-workpackages",
+      "type": "partOf",
+      "source": "track-propose-workpackages",
+      "target": "pkg-track",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "lb-track-propose-workpackages",
+      "relationId": "relation:lb-track-propose-workpackages",
+      "type": "loadedBy",
+      "source": "track-propose-workpackages",
+      "target": "rt-h2a",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-track-track-operation",
+      "relationId": "relation:po-track-track-operation",
+      "type": "partOf",
+      "source": "track-track-operation",
+      "target": "track-skills",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "ro-track-track-operation",
+      "relationId": "relation:ro-track-track-operation",
+      "type": "runsOn",
+      "source": "track-track-operation",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "da-track-track-operation",
+      "relationId": "relation:da-track-track-operation",
+      "type": "deployedAs",
+      "source": "pkg-track",
+      "target": "track-track-operation",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · opérations Track",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-skill-leaf",
+      "relationId": "relation:po-focus-skill-leaf",
+      "type": "partOf",
+      "source": "focus-skill-leaf",
+      "target": "focus-skill",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "ro-focus-skill-leaf",
+      "relationId": "relation:ro-focus-skill-leaf",
+      "type": "runsOn",
+      "source": "focus-skill-leaf",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "da-focus-skill-leaf",
+      "relationId": "relation:da-focus-skill-leaf",
+      "type": "deployedAs",
+      "source": "pkg-focus",
+      "target": "focus-skill-leaf",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · CLI focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-model",
+      "relationId": "relation:po-focus-model",
+      "type": "partOf",
+      "source": "focus-model",
+      "target": "pkg-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "eb-focus-model",
+      "relationId": "relation:eb-focus-model",
+      "type": "executedBy",
+      "source": "focus-model",
+      "target": "focus-skill-leaf",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-validation",
+      "relationId": "relation:po-focus-validation",
+      "type": "partOf",
+      "source": "focus-validation",
+      "target": "focus-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "ro-focus-validation",
+      "relationId": "relation:ro-focus-validation",
+      "type": "runsOn",
+      "source": "focus-validation",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "da-focus-validation",
+      "relationId": "relation:da-focus-validation",
+      "type": "deployedAs",
+      "source": "pkg-focus",
+      "target": "focus-validation",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · validation Focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-editing",
+      "relationId": "relation:po-focus-editing",
+      "type": "partOf",
+      "source": "focus-editing",
+      "target": "pkg-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "eb-focus-editing",
+      "relationId": "relation:eb-focus-editing",
+      "type": "executedBy",
+      "source": "focus-editing",
+      "target": "focus-skill-leaf",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-render",
+      "relationId": "relation:po-focus-render",
+      "type": "partOf",
+      "source": "focus-render",
+      "target": "focus-components",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "ro-focus-render",
+      "relationId": "relation:ro-focus-render",
+      "type": "runsOn",
+      "source": "focus-render",
+      "target": "host-poste",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "da-focus-render",
+      "relationId": "relation:da-focus-render",
+      "type": "deployedAs",
+      "source": "pkg-focus",
+      "target": "focus-render",
+      "encoding": "arrow",
+      "verb": "déployé comme",
+      "label": "déployé comme · rendus Focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-track",
+      "relationId": "relation:po-focus-track",
+      "type": "partOf",
+      "source": "focus-track",
+      "target": "pkg-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "eb-focus-track",
+      "relationId": "relation:eb-focus-track",
+      "type": "executedBy",
+      "source": "focus-track",
+      "target": "focus-skill-leaf",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "po-focus-registry",
+      "relationId": "relation:po-focus-registry",
+      "type": "partOf",
+      "source": "focus-registry",
+      "target": "pkg-focus",
+      "encoding": "structure",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "eb-focus-registry",
+      "relationId": "relation:eb-focus-registry",
+      "type": "executedBy",
+      "source": "focus-registry",
+      "target": "focus-skill-leaf",
+      "encoding": "detail",
+      "verb": null,
+      "label": null,
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+      ]
+    },
+    {
+      "id": "dc-present-focus",
+      "relationId": "relation:dc-present-focus",
+      "type": "documents",
+      "source": "track-present-decision",
+      "target": "focus-skill-leaf",
+      "encoding": "arrow",
+      "verb": "documente",
+      "label": "documente · présente via Focus",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:836-847"
+      ]
+    },
+    {
+      "id": "in-focus-val",
+      "relationId": "relation:in-focus-val",
+      "type": "invokes",
+      "source": "focus-skill-leaf",
+      "target": "focus-validation",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · valide le dossier",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:849-860"
+      ]
+    },
+    {
+      "id": "in-focus-ren",
+      "relationId": "relation:in-focus-ren",
+      "type": "invokes",
+      "source": "focus-skill-leaf",
+      "target": "focus-render",
+      "encoding": "arrow",
+      "verb": "lance",
+      "label": "lance · rend le dossier",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:862-873"
+      ]
+    },
+    {
+      "id": "dc-branch-op",
+      "relationId": "relation:dc-branch-op",
+      "type": "documents",
+      "source": "track-branch-lifecycle",
+      "target": "track-track-operation",
+      "encoding": "arrow",
+      "verb": "documente",
+      "label": "documente · suit les événements",
+      "liftedEdgeProvenance": "none",
+      "lifecycle": "current",
+      "today": true,
+      "inTarget": true,
+      "evidence": [
+        "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:875-888"
+      ]
+    }
+  ],
+  "views": {
+    "unfolded": {
+      "spec": {
+        "name": "unfolded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "s2-h2a",
+          "track-skills",
+          "track-branch-lifecycle",
+          "track-present-decision",
+          "track-propose-workpackages",
+          "track-track-operation",
+          "focus-skill",
+          "focus-skill-leaf",
+          "focus-components",
+          "focus-model",
+          "focus-validation",
+          "focus-editing",
+          "focus-render",
+          "focus-track",
+          "focus-registry"
+        ],
+        "folds": [],
+        "liftedEdgeProvenance": "none",
+        "description": "Tout déplié : le conteneur h2a contient Track (4 cartes), Skill Focus (1 carte) et Document / rendu (6 cartes) avec 4 liaisons."
+      },
+      "counts": {
+        "elements": 15,
+        "containers": 4,
+        "foldedContainers": 0,
+        "cards": 11,
+        "edges": 4,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "s2-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Suivi et dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Piloter le suivi",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-branch-lifecycle",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Cycle de branche",
+          "purpose": "Clore une branche",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-present-decision",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Dossier décision",
+          "purpose": "Présenter les choix",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-propose-workpackages",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Workpackages",
+          "purpose": "Structurer le suivi",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-track-operation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Exécution · CLI",
+          "title": "Opérations Track",
+          "purpose": "Opérer le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Skill Focus",
+          "purpose": "Guider les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill-leaf",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-skill",
+          "kicker": "Exécution · CLI",
+          "title": "focus",
+          "purpose": "Produire les dossiers",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Document / rendu",
+          "purpose": "Produire les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-model",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Modèle dossier",
+          "purpose": "Structurer le document",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-validation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Validation",
+          "purpose": "Contrôler le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-editing",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Édition",
+          "purpose": "Réconcilier les retours",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-render",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Rendus",
+          "purpose": "Présenter le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-track",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Raccord Track",
+          "purpose": "Relier les décisions",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-registry",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Registre Focus",
+          "purpose": "Déclarer les ressources",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-present-focus",
+          "type": "documents",
+          "source": "track-present-decision",
+          "target": "focus-skill-leaf",
+          "verb": "documente",
+          "label": "documente · présente via Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-val",
+          "type": "invokes",
+          "source": "focus-skill-leaf",
+          "target": "focus-validation",
+          "verb": "lance",
+          "label": "lance · valide le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-ren",
+          "type": "invokes",
+          "source": "focus-skill-leaf",
+          "target": "focus-render",
+          "verb": "lance",
+          "label": "lance · rend le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-branch-op",
+          "type": "documents",
+          "source": "track-branch-lifecycle",
+          "target": "track-track-operation",
+          "verb": "documente",
+          "label": "documente · suit les événements",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-trackfocus-r9-unfolded",
+        "semanticDocumentId": "document:case-trackfocus-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-s2-h2a": {
+            "id": "occurrence:o-s2-h2a",
+            "entity": "entity:s2-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-track-skills": {
+            "id": "occurrence:o-track-skills",
+            "entity": "entity:track-skills",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-track-branch-lifecycle": {
+            "id": "occurrence:o-track-branch-lifecycle",
+            "entity": "entity:track-branch-lifecycle",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-present-decision": {
+            "id": "occurrence:o-track-present-decision",
+            "entity": "entity:track-present-decision",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-propose-workpackages": {
+            "id": "occurrence:o-track-propose-workpackages",
+            "entity": "entity:track-propose-workpackages",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-track-operation": {
+            "id": "occurrence:o-track-track-operation",
+            "entity": "entity:track-track-operation",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-focus-skill": {
+            "id": "occurrence:o-focus-skill",
+            "entity": "entity:focus-skill",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-skill-leaf": {
+            "id": "occurrence:o-focus-skill-leaf",
+            "entity": "entity:focus-skill-leaf",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.13.o-focus-skill"
+          },
+          "occurrence:o-focus-components": {
+            "id": "occurrence:o-focus-components",
+            "entity": "entity:focus-components",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-model": {
+            "id": "occurrence:o-focus-model",
+            "entity": "entity:focus-model",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-validation": {
+            "id": "occurrence:o-focus-validation",
+            "entity": "entity:focus-validation",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-editing": {
+            "id": "occurrence:o-focus-editing",
+            "entity": "entity:focus-editing",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-render": {
+            "id": "occurrence:o-focus-render",
+            "entity": "entity:focus-render",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-track": {
+            "id": "occurrence:o-focus-track",
+            "entity": "entity:focus-track",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-registry": {
+            "id": "occurrence:o-focus-registry",
+            "entity": "entity:focus-registry",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-legend-trackfocus-r9": {
+            "id": "occurrence:o-legend-trackfocus-r9",
+            "entity": "entity:legend-trackfocus-r9",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-present-focus": {
+            "id": "occurrence:e-dc-present-focus",
+            "relation": "relation:dc-present-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-present-decision"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-val": {
+            "id": "occurrence:e-in-focus-val",
+            "relation": "relation:in-focus-val",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-validation"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-ren": {
+            "id": "occurrence:e-in-focus-ren",
+            "relation": "relation:in-focus-ren",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-render"
+              }
+            ]
+          },
+          "occurrence:e-dc-branch-op": {
+            "id": "occurrence:e-dc-branch-op",
+            "relation": "relation:dc-branch-op",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-branch-lifecycle"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-track-track-operation"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.8.o-s2-h2a": {
+            "id": "grp.8.o-s2-h2a",
+            "occurrence": "occurrence:o-s2-h2a",
+            "collapsed": false
+          },
+          "grp.14.o-track-skills": {
+            "id": "grp.14.o-track-skills",
+            "occurrence": "occurrence:o-track-skills",
+            "collapsed": false
+          },
+          "grp.13.o-focus-skill": {
+            "id": "grp.13.o-focus-skill",
+            "occurrence": "occurrence:o-focus-skill",
+            "collapsed": false
+          },
+          "grp.18.o-focus-components": {
+            "id": "grp.18.o-focus-components",
+            "occurrence": "occurrence:o-focus-components",
+            "collapsed": false
+          },
+          "grp.22.o-legend-trackfocus-r9": {
+            "id": "grp.22.o-legend-trackfocus-r9",
+            "occurrence": "occurrence:o-legend-trackfocus-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-focus-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Produire les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-editing": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Édition",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Réconcilier les retours",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-model": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Modèle dossier",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Structurer le document",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-registry": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Registre Focus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Déclarer les ressources",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-render": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Rendus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Présenter le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Guider les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill-leaf": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Produire les dossiers",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Relier les décisions",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-validation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Validation",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Contrôler le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-trackfocus-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Track / Focus)"
+                }
+              },
+              "occurrence:o-s2-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Suivi et dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-track-branch-lifecycle": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Cycle de branche",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Clore une branche",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-present-decision": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Dossier décision",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Présenter les choix",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-propose-workpackages": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Workpackages",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Structurer le suivi",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Piloter le suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-track-operation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Opérations Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Opérer le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-trackfocus-r9": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "inner-folded": {
+      "spec": {
+        "name": "inner-folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "s2-h2a",
+          "track-skills",
+          "track-branch-lifecycle",
+          "track-present-decision",
+          "track-propose-workpackages",
+          "track-track-operation",
+          "focus-skill",
+          "focus-skill-leaf",
+          "focus-components",
+          "focus-model",
+          "focus-validation",
+          "focus-editing",
+          "focus-render",
+          "focus-track",
+          "focus-registry"
+        ],
+        "folds": [
+          "track-skills",
+          "focus-skill",
+          "focus-components"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Sous-groupes repliés dans h2a : Track → Skill Focus → Document / rendu (synthèse « lance · 2 liaisons »)."
+      },
+      "counts": {
+        "elements": 15,
+        "containers": 4,
+        "foldedContainers": 3,
+        "cards": 11,
+        "edges": 4,
+        "summaryEdges": 2
+      },
+      "cards": [
+        {
+          "id": "s2-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": false,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Suivi et dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Piloter le suivi",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-branch-lifecycle",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Cycle de branche",
+          "purpose": "Clore une branche",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-present-decision",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Dossier décision",
+          "purpose": "Présenter les choix",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-propose-workpackages",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Workpackages",
+          "purpose": "Structurer le suivi",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-track-operation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Exécution · CLI",
+          "title": "Opérations Track",
+          "purpose": "Opérer le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Skill Focus",
+          "purpose": "Guider les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill-leaf",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-skill",
+          "kicker": "Exécution · CLI",
+          "title": "focus",
+          "purpose": "Produire les dossiers",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Document / rendu",
+          "purpose": "Produire les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-model",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Modèle dossier",
+          "purpose": "Structurer le document",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-validation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Validation",
+          "purpose": "Contrôler le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-editing",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Édition",
+          "purpose": "Réconcilier les retours",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-render",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Rendus",
+          "purpose": "Présenter le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-track",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Raccord Track",
+          "purpose": "Relier les décisions",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-registry",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Registre Focus",
+          "purpose": "Déclarer les ressources",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-branch-op",
+          "type": "documents",
+          "source": "track-branch-lifecycle",
+          "target": "track-track-operation",
+          "verb": "documente",
+          "label": "documente · suit les événements",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-present-focus",
+          "type": "documents",
+          "source": "track-skills",
+          "target": "focus-skill",
+          "verb": "documente",
+          "label": "documente · présente via Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-ren",
+          "type": "invokes",
+          "source": "focus-skill",
+          "target": "focus-components",
+          "verb": "lance",
+          "label": "lance · rend le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-val",
+          "type": "invokes",
+          "source": "focus-skill",
+          "target": "focus-components",
+          "verb": "lance",
+          "label": "lance · valide le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [
+        {
+          "id": "summary:s1",
+          "source": "focus-skill",
+          "target": "focus-components",
+          "label": "lance · 2 liaisons",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "in-focus-ren",
+            "in-focus-val"
+          ]
+        },
+        {
+          "id": "summary:s2",
+          "source": "track-skills",
+          "target": "focus-skill",
+          "label": "documente · présente via Focus",
+          "strokeStyle": "solid",
+          "relationIds": [
+            "dc-present-focus"
+          ]
+        }
+      ],
+      "view": {
+        "viewId": "view:case-trackfocus-r9-inner-folded",
+        "semanticDocumentId": "document:case-trackfocus-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-s2-h2a": {
+            "id": "occurrence:o-s2-h2a",
+            "entity": "entity:s2-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-track-skills": {
+            "id": "occurrence:o-track-skills",
+            "entity": "entity:track-skills",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-track-branch-lifecycle": {
+            "id": "occurrence:o-track-branch-lifecycle",
+            "entity": "entity:track-branch-lifecycle",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-present-decision": {
+            "id": "occurrence:o-track-present-decision",
+            "entity": "entity:track-present-decision",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-propose-workpackages": {
+            "id": "occurrence:o-track-propose-workpackages",
+            "entity": "entity:track-propose-workpackages",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-track-operation": {
+            "id": "occurrence:o-track-track-operation",
+            "entity": "entity:track-track-operation",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-focus-skill": {
+            "id": "occurrence:o-focus-skill",
+            "entity": "entity:focus-skill",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-skill-leaf": {
+            "id": "occurrence:o-focus-skill-leaf",
+            "entity": "entity:focus-skill-leaf",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.13.o-focus-skill"
+          },
+          "occurrence:o-focus-components": {
+            "id": "occurrence:o-focus-components",
+            "entity": "entity:focus-components",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-model": {
+            "id": "occurrence:o-focus-model",
+            "entity": "entity:focus-model",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-validation": {
+            "id": "occurrence:o-focus-validation",
+            "entity": "entity:focus-validation",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-editing": {
+            "id": "occurrence:o-focus-editing",
+            "entity": "entity:focus-editing",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-render": {
+            "id": "occurrence:o-focus-render",
+            "entity": "entity:focus-render",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-track": {
+            "id": "occurrence:o-focus-track",
+            "entity": "entity:focus-track",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-registry": {
+            "id": "occurrence:o-focus-registry",
+            "entity": "entity:focus-registry",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-legend-trackfocus-r9": {
+            "id": "occurrence:o-legend-trackfocus-r9",
+            "entity": "entity:legend-trackfocus-r9",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-branch-op": {
+            "id": "occurrence:e-dc-branch-op",
+            "relation": "relation:dc-branch-op",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-branch-lifecycle"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-track-track-operation"
+              }
+            ]
+          },
+          "occurrence:e-dc-present-focus": {
+            "id": "occurrence:e-dc-present-focus",
+            "relation": "relation:dc-present-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-skills",
+                "semanticTarget": "entity:track-present-decision",
+                "sourceOccurrence": "occurrence:o-track-present-decision"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-skill",
+                "semanticTarget": "entity:focus-skill-leaf",
+                "sourceOccurrence": "occurrence:o-focus-skill-leaf"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-ren": {
+            "id": "occurrence:e-in-focus-ren",
+            "relation": "relation:in-focus-ren",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill",
+                "semanticTarget": "entity:focus-skill-leaf",
+                "sourceOccurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-components",
+                "semanticTarget": "entity:focus-render",
+                "sourceOccurrence": "occurrence:o-focus-render"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-val": {
+            "id": "occurrence:e-in-focus-val",
+            "relation": "relation:in-focus-val",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill",
+                "semanticTarget": "entity:focus-skill-leaf",
+                "sourceOccurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-components",
+                "semanticTarget": "entity:focus-validation",
+                "sourceOccurrence": "occurrence:o-focus-validation"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.8.o-s2-h2a": {
+            "id": "grp.8.o-s2-h2a",
+            "occurrence": "occurrence:o-s2-h2a",
+            "collapsed": false
+          },
+          "grp.14.o-track-skills": {
+            "id": "grp.14.o-track-skills",
+            "occurrence": "occurrence:o-track-skills",
+            "collapsed": true
+          },
+          "grp.13.o-focus-skill": {
+            "id": "grp.13.o-focus-skill",
+            "occurrence": "occurrence:o-focus-skill",
+            "collapsed": true
+          },
+          "grp.18.o-focus-components": {
+            "id": "grp.18.o-focus-components",
+            "occurrence": "occurrence:o-focus-components",
+            "collapsed": true
+          },
+          "grp.22.o-legend-trackfocus-r9": {
+            "id": "grp.22.o-legend-trackfocus-r9",
+            "occurrence": "occurrence:o-legend-trackfocus-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-focus-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Produire les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-editing": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Édition",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Réconcilier les retours",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-model": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Modèle dossier",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Structurer le document",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-registry": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Registre Focus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Déclarer les ressources",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-render": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Rendus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Présenter le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Guider les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill-leaf": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Produire les dossiers",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Relier les décisions",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-validation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Validation",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Contrôler le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-trackfocus-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Track / Focus)"
+                }
+              },
+              "occurrence:o-s2-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Suivi et dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-track-branch-lifecycle": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Cycle de branche",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Clore une branche",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-present-decision": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Dossier décision",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Présenter les choix",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-propose-workpackages": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Workpackages",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Structurer le suivi",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Piloter le suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-track-operation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Opérations Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Opérer le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-trackfocus-r9": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        },
+        "summaryLabels": {
+          "summary:s1": {
+            "id": "summary:s1",
+            "sourceOccurrence": "occurrence:o-focus-skill",
+            "targetOccurrence": "occurrence:o-focus-components",
+            "label": "lance · 2 liaisons",
+            "relationIds": [
+              "relation:in-focus-ren",
+              "relation:in-focus-val"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-in-focus-ren",
+              "occurrence:e-in-focus-val"
+            ]
+          },
+          "summary:s2": {
+            "id": "summary:s2",
+            "sourceOccurrence": "occurrence:o-track-skills",
+            "targetOccurrence": "occurrence:o-focus-skill",
+            "label": "documente · présente via Focus",
+            "relationIds": [
+              "relation:dc-present-focus"
+            ],
+            "relationOccurrences": [
+              "occurrence:e-dc-present-focus"
+            ]
+          }
+        }
+      }
+    },
+    "folded": {
+      "spec": {
+        "name": "folded",
+        "activeHierarchy": "archi-composition",
+        "draw": [
+          "s2-h2a",
+          "track-skills",
+          "track-branch-lifecycle",
+          "track-present-decision",
+          "track-propose-workpackages",
+          "track-track-operation",
+          "focus-skill",
+          "focus-skill-leaf",
+          "focus-components",
+          "focus-model",
+          "focus-validation",
+          "focus-editing",
+          "focus-render",
+          "focus-track",
+          "focus-registry"
+        ],
+        "folds": [
+          "s2-h2a",
+          "track-skills",
+          "focus-skill",
+          "focus-components"
+        ],
+        "liftedEdgeProvenance": "none",
+        "description": "Conteneur racine h2a replié en carte 460 × 200 avec le pied repo: h2a."
+      },
+      "counts": {
+        "elements": 15,
+        "containers": 4,
+        "foldedContainers": 4,
+        "cards": 11,
+        "edges": 4,
+        "summaryEdges": 0
+      },
+      "cards": [
+        {
+          "id": "s2-h2a",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": null,
+          "kicker": "Système",
+          "title": "h2a",
+          "purpose": "Suivi et dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-skills",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Track",
+          "purpose": "Piloter le suivi",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-branch-lifecycle",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Cycle de branche",
+          "purpose": "Clore une branche",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-present-decision",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Dossier décision",
+          "purpose": "Présenter les choix",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-propose-workpackages",
+          "kind": "artifact",
+          "form": "skill",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Artefact · Skill",
+          "title": "Workpackages",
+          "purpose": "Structurer le suivi",
+          "detail": "chargé par: CLI h2a",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "track-track-operation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "track-skills",
+          "kicker": "Exécution · CLI",
+          "title": "Opérations Track",
+          "purpose": "Opérer le suivi",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/track",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Skill Focus",
+          "purpose": "Guider les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-skill-leaf",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-skill",
+          "kicker": "Exécution · CLI",
+          "title": "focus",
+          "purpose": "Produire les dossiers",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-components",
+          "kind": "system",
+          "form": null,
+          "container": true,
+          "folded": true,
+          "parentId": "s2-h2a",
+          "kicker": "Système · h2a",
+          "title": "Document / rendu",
+          "purpose": "Produire les dossiers",
+          "detail": null,
+          "footer": "repo: h2a",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-model",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Modèle dossier",
+          "purpose": "Structurer le document",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-validation",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Validation",
+          "purpose": "Contrôler le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-editing",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Édition",
+          "purpose": "Réconcilier les retours",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-render",
+          "kind": "runtime",
+          "form": "cli",
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Exécution · CLI",
+          "title": "Rendus",
+          "purpose": "Présenter le dossier",
+          "detail": "sur: Poste de travail",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-track",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Raccord Track",
+          "purpose": "Relier les décisions",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        },
+        {
+          "id": "focus-registry",
+          "kind": "component",
+          "form": null,
+          "container": false,
+          "folded": false,
+          "parentId": "focus-components",
+          "kicker": "Composant",
+          "title": "Registre Focus",
+          "purpose": "Déclarer les ressources",
+          "detail": "exécuté par: focus",
+          "footer": "repo: h2a · @sentropic/focus",
+          "lifecycle": "current",
+          "today": true,
+          "target": true
+        }
+      ],
+      "edges": [
+        {
+          "id": "dc-branch-op",
+          "type": "documents",
+          "source": "track-branch-lifecycle",
+          "target": "track-track-operation",
+          "verb": "documente",
+          "label": "documente · suit les événements",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "dc-present-focus",
+          "type": "documents",
+          "source": "track-present-decision",
+          "target": "focus-skill-leaf",
+          "verb": "documente",
+          "label": "documente · présente via Focus",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-ren",
+          "type": "invokes",
+          "source": "focus-skill-leaf",
+          "target": "focus-render",
+          "verb": "lance",
+          "label": "lance · rend le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        },
+        {
+          "id": "in-focus-val",
+          "type": "invokes",
+          "source": "focus-skill-leaf",
+          "target": "focus-validation",
+          "verb": "lance",
+          "label": "lance · valide le dossier",
+          "strokeStyle": "solid",
+          "liftedEdgeProvenance": "none",
+          "lifecycle": "current",
+          "today": true,
+          "inTarget": true
+        }
+      ],
+      "summaries": [],
+      "view": {
+        "viewId": "view:case-trackfocus-r9-folded",
+        "semanticDocumentId": "document:case-trackfocus-r9",
+        "revision": 0,
+        "entityOccurrences": {
+          "occurrence:o-s2-h2a": {
+            "id": "occurrence:o-s2-h2a",
+            "entity": "entity:s2-h2a",
+            "geometry": {
+              "x": 0,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-track-skills": {
+            "id": "occurrence:o-track-skills",
+            "entity": "entity:track-skills",
+            "geometry": {
+              "x": 500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-track-branch-lifecycle": {
+            "id": "occurrence:o-track-branch-lifecycle",
+            "entity": "entity:track-branch-lifecycle",
+            "geometry": {
+              "x": 1000,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-present-decision": {
+            "id": "occurrence:o-track-present-decision",
+            "entity": "entity:track-present-decision",
+            "geometry": {
+              "x": 1500,
+              "y": 0,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-propose-workpackages": {
+            "id": "occurrence:o-track-propose-workpackages",
+            "entity": "entity:track-propose-workpackages",
+            "geometry": {
+              "x": 0,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-track-track-operation": {
+            "id": "occurrence:o-track-track-operation",
+            "entity": "entity:track-track-operation",
+            "geometry": {
+              "x": 500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.14.o-track-skills"
+          },
+          "occurrence:o-focus-skill": {
+            "id": "occurrence:o-focus-skill",
+            "entity": "entity:focus-skill",
+            "geometry": {
+              "x": 1000,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-skill-leaf": {
+            "id": "occurrence:o-focus-skill-leaf",
+            "entity": "entity:focus-skill-leaf",
+            "geometry": {
+              "x": 1500,
+              "y": 260,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.13.o-focus-skill"
+          },
+          "occurrence:o-focus-components": {
+            "id": "occurrence:o-focus-components",
+            "entity": "entity:focus-components",
+            "geometry": {
+              "x": 0,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.8.o-s2-h2a"
+          },
+          "occurrence:o-focus-model": {
+            "id": "occurrence:o-focus-model",
+            "entity": "entity:focus-model",
+            "geometry": {
+              "x": 500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-validation": {
+            "id": "occurrence:o-focus-validation",
+            "entity": "entity:focus-validation",
+            "geometry": {
+              "x": 1000,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-editing": {
+            "id": "occurrence:o-focus-editing",
+            "entity": "entity:focus-editing",
+            "geometry": {
+              "x": 1500,
+              "y": 520,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-render": {
+            "id": "occurrence:o-focus-render",
+            "entity": "entity:focus-render",
+            "geometry": {
+              "x": 0,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-track": {
+            "id": "occurrence:o-focus-track",
+            "entity": "entity:focus-track",
+            "geometry": {
+              "x": 500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-focus-registry": {
+            "id": "occurrence:o-focus-registry",
+            "entity": "entity:focus-registry",
+            "geometry": {
+              "x": 1000,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.18.o-focus-components"
+          },
+          "occurrence:o-legend-trackfocus-r9": {
+            "id": "occurrence:o-legend-trackfocus-r9",
+            "entity": "entity:legend-trackfocus-r9",
+            "geometry": {
+              "x": 1500,
+              "y": 780,
+              "width": 460,
+              "height": 200
+            }
+          },
+          "occurrence:o-key-brand": {
+            "id": "occurrence:o-key-brand",
+            "entity": "entity:key-brand",
+            "geometry": {
+              "x": 0,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          },
+          "occurrence:o-key-accent": {
+            "id": "occurrence:o-key-accent",
+            "entity": "entity:key-accent",
+            "geometry": {
+              "x": 500,
+              "y": 1040,
+              "width": 460,
+              "height": 200
+            },
+            "group": "grp.22.o-legend-trackfocus-r9"
+          }
+        },
+        "relationOccurrences": {
+          "occurrence:e-dc-branch-op": {
+            "id": "occurrence:e-dc-branch-op",
+            "relation": "relation:dc-branch-op",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-branch-lifecycle"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-track-track-operation"
+              }
+            ]
+          },
+          "occurrence:e-dc-present-focus": {
+            "id": "occurrence:e-dc-present-focus",
+            "relation": "relation:dc-present-focus",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-track-present-decision"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-ren": {
+            "id": "occurrence:e-in-focus-ren",
+            "relation": "relation:in-focus-ren",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-render"
+              }
+            ]
+          },
+          "occurrence:e-in-focus-val": {
+            "id": "occurrence:e-in-focus-val",
+            "relation": "relation:in-focus-val",
+            "endpoints": [
+              {
+                "role": "source",
+                "occurrence": "occurrence:o-focus-skill-leaf"
+              },
+              {
+                "role": "target",
+                "occurrence": "occurrence:o-focus-validation"
+              }
+            ]
+          }
+        },
+        "portOccurrences": {},
+        "groups": {
+          "grp.8.o-s2-h2a": {
+            "id": "grp.8.o-s2-h2a",
+            "occurrence": "occurrence:o-s2-h2a",
+            "collapsed": true
+          },
+          "grp.14.o-track-skills": {
+            "id": "grp.14.o-track-skills",
+            "occurrence": "occurrence:o-track-skills",
+            "collapsed": true
+          },
+          "grp.13.o-focus-skill": {
+            "id": "grp.13.o-focus-skill",
+            "occurrence": "occurrence:o-focus-skill",
+            "collapsed": true
+          },
+          "grp.18.o-focus-components": {
+            "id": "grp.18.o-focus-components",
+            "occurrence": "occurrence:o-focus-components",
+            "collapsed": true
+          },
+          "grp.22.o-legend-trackfocus-r9": {
+            "id": "grp.22.o-legend-trackfocus-r9",
+            "occurrence": "occurrence:o-legend-trackfocus-r9",
+            "collapsed": false
+          }
+        },
+        "filters": [],
+        "presentation": {
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "zoom": 1
+          },
+          "diagram": {
+            "contractPin": {
+              "id": "diagram-presentation",
+              "version": "1",
+              "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+            },
+            "entities": {
+              "occurrence:o-focus-components": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Produire les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-editing": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Édition",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Réconcilier les retours",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-model": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Modèle dossier",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Structurer le document",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-registry": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "title": "Registre Focus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Déclarer les ressources",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-render": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Rendus",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Présenter le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Guider les dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-skill-leaf": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Produire les dossiers",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-track": {
+                "form": "card",
+                "text": {
+                  "kicker": "Composant",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Relier les décisions",
+                  "detail": "exécuté par: focus"
+                },
+                "icon": "link",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-focus-validation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Validation",
+                  "footer": "repo: h2a · @sentropic/focus",
+                  "body": "Contrôler le dossier",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-key-accent": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-key-brand": {
+                "form": "legend-key",
+                "text": {}
+              },
+              "occurrence:o-legend-trackfocus-r9": {
+                "form": "legend",
+                "text": {
+                  "title": "Domaines (Track / Focus)"
+                }
+              },
+              "occurrence:o-s2-h2a": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système",
+                  "footer": "repo: h2a",
+                  "subtitle": "Suivi et dossiers"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-accent"
+              },
+              "occurrence:o-track-branch-lifecycle": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Cycle de branche",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Clore une branche",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-present-decision": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Dossier décision",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Présenter les choix",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-propose-workpackages": {
+                "form": "card",
+                "text": {
+                  "kicker": "Artefact · Skill",
+                  "title": "Workpackages",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Structurer le suivi",
+                  "detail": "chargé par: CLI h2a"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-skills": {
+                "form": "container",
+                "text": {
+                  "kicker": "Système · h2a",
+                  "footer": "repo: h2a",
+                  "subtitle": "Piloter le suivi"
+                },
+                "icon": "window",
+                "categoryRef": "entity:key-brand"
+              },
+              "occurrence:o-track-track-operation": {
+                "form": "card",
+                "text": {
+                  "kicker": "Exécution · CLI",
+                  "title": "Opérations Track",
+                  "footer": "repo: h2a · @sentropic/track",
+                  "body": "Opérer le suivi",
+                  "detail": "sur: Poste de travail"
+                },
+                "icon": "server",
+                "categoryRef": "entity:key-brand"
+              }
+            },
+            "legends": {
+              "occurrence:o-legend-trackfocus-r9": {
+                "order": [
+                  "entity:key-brand",
+                  "entity:key-accent"
+                ]
+              }
+            },
+            "categoryTokens": [
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "brand",
+                "token": "st-semantic-data-category1"
+              },
+              {
+                "legendRef": "entity:legend-trackfocus-r9",
+                "category": "accent",
+                "token": "st-semantic-data-category2"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}

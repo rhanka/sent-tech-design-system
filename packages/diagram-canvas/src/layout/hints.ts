@@ -19,6 +19,11 @@ export interface LayoutGroup {
 
 export interface LayoutHints {
   readonly ordering?: Readonly<Record<EntityRef, readonly EntityRef[]>>;
+  /**
+   * Declaration order of the root level (DC-2a §6.4), read by the row-pack
+   * path: listed roots first, unlisted visible roots after in UTF-16 order.
+   */
+  readonly rootOrder?: readonly EntityRef[];
   readonly grouping?: readonly LayoutGroup[];
   readonly stretch?: boolean;
   readonly cardGapX?: number;
