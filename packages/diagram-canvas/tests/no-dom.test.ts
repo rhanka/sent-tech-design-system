@@ -93,6 +93,15 @@ describe("no DOM, no framework, one declared dependency in the source", () => {
     expect(files.length).toBeGreaterThanOrEqual(6);
   });
 
+  it("introduces no background work, listeners, observers or workers", () => {
+    const offenders: string[] = [];
+    for (const file of files) {
+      const code = readFileSync(file, "utf8").replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|\s)\/\/.*$/gm, "$1");
+      if (/\b(setTimeout|setInterval|requestAnimationFrame|addEventListener|ResizeObserver|MutationObserver|Worker)\s*\(/.test(code)) offenders.push(file);
+    }
+    expect(offenders).toEqual([]);
+  });
+
   it("imports nothing but its own relative modules and @sentropic/diagram-core", () => {
     const offenders: string[] = [];
     for (const file of files) {

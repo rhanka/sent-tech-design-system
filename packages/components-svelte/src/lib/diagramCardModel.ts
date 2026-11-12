@@ -559,6 +559,8 @@ export interface CardLineLayout {
   readonly overflow: boolean;
 }
 
+export const DEFAULT_CARD_MEASURER_VERSION = "pinned-kit-1px";
+
 /**
  * Bridge from the card measurer to the canvas `LineMeasurer` shape: a host
  * pairing `diagram-canvas` with these renderers passes `cardLineMeasurer()`
@@ -576,8 +578,8 @@ export interface CardLineLayout {
  */
 export function cardLineMeasurer(
   measure: CardLineMeasure = defaultCardMeasure,
-): (request: CardMeasureRequest) => CardLineLayout {
-  return (request) => {
+): ((request: CardMeasureRequest) => CardLineLayout) & { readonly version?: string } {
+  const measureLines = (request: CardMeasureRequest): CardLineLayout => {
     const role: "kicker" | "title" | "body" | "footer" =
       request.role === "kicker" || request.role === "title" || request.role === "footer"
         ? request.role
@@ -611,6 +613,7 @@ export function cardLineMeasurer(
       overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
     };
   };
+  return Object.assign(measureLines, { version: DEFAULT_CARD_MEASURER_VERSION });
 }
 
 export interface LaidOutLine {
