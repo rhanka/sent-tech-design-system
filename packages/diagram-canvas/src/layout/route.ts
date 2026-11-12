@@ -522,6 +522,72 @@ export function routeEdges(input: {
     if (startPoint.x === endPoint.x || startPoint.y === endPoint.y) return [];
     return startExit.x !== 0 ? [{ x: endPoint.x, y: startPoint.y }] : [{ x: startPoint.x, y: endPoint.y }];
   };
+  // MAJ-2: blind single-elbow fallback sliced through cards. Test both elbow
+  // orientations and outer-perimeter 2-bend detours against the raw
+  // (uninflated) obstacle rectangles before falling back.
+  const rawRects: Rect[] = [...rects.values(), ...(input.barriers ?? [])];
+  const throughRaw = (a: Vec2, b: Vec2): number => {
+    let hits = 0;
+    for (const rect of rawRects) {
+      const left = rect.x;
+      const right = rect.x + rect.width;
+      const top = rect.y;
+      const bottom = rect.y + rect.height;
+      if (a.y === b.y) {
+        if (a.y > top && a.y < bottom && Math.max(Math.min(a.x, b.x), left) < Math.min(Math.max(a.x, b.x), right)) hits += 1;
+      } else if (a.x === b.x) {
+        if (a.x > left && a.x < right && Math.max(Math.min(a.y, b.y), top) < Math.min(Math.max(a.y, b.y), bottom)) hits += 1;
+      }
+    }
+    return hits;
+  };
+  const crossingsOf = (points: readonly Vec2[]): number => {
+    let total = 0;
+    for (let i = 1; i < points.length; i += 1) total += throughRaw(points[i - 1]!, points[i]!);
+    return total;
+  };
+  const bestFallback = (start: Vec2, startPoint: Vec2, endPoint: Vec2, end: Vec2, startExit: Vec2): Vec2[] => {
+    const candidates: Vec2[][] = [];
+    if (startPoint.x !== endPoint.x && startPoint.y !== endPoint.y) {
+      candidates.push([{ x: endPoint.x, y: startPoint.y }]);
+      candidates.push([{ x: startPoint.x, y: endPoint.y }]);
+    }
+    // Outer-perimeter 2-bend detours round the whole obstacle field.
+    if (rawRects.length > 0) {
+      const minX = Math.min(...rawRects.map((r) => r.x)) - clearance - 4;
+      const maxX = Math.max(...rawRects.map((r) => r.x + r.width)) + clearance + 4;
+      const minY = Math.min(...rawRects.map((r) => r.y)) - clearance - 4;
+      const maxY = Math.max(...rawRects.map((r) => r.y + r.height)) + clearance + 4;
+      candidates.push([
+        { x: startPoint.x, y: minY },
+        { x: endPoint.x, y: minY },
+      ]);
+      candidates.push([
+        { x: startPoint.x, y: maxY },
+        { x: endPoint.x, y: maxY },
+      ]);
+      candidates.push([
+        { x: minX, y: startPoint.y },
+        { x: minX, y: endPoint.y },
+      ]);
+      candidates.push([
+        { x: maxX, y: startPoint.y },
+        { x: maxX, y: endPoint.y },
+      ]);
+    }
+    let best: Vec2[] = elbowFor(startPoint, endPoint, startExit);
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (const elbow of candidates) {
+      const full = simplifyRoute([start, startPoint, ...elbow, endPoint, end]);
+      const score = crossingsOf(full);
+      if (score < bestScore) {
+        bestScore = score;
+        best = elbow;
+        if (score === 0) break;
+      }
+    }
+    return best;
+  };
 
   for (const request of [...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
     let goalParent = -1;
@@ -725,8 +791,10 @@ export function routeEdges(input: {
     }
 
     if (goalParent < 0) {
+      // MAJ-2: retry with reduced 2 px inflation is covered by the outer-lane
+      // grid (clearance-point lanes); here at least avoid raw interiors.
       obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const elbow = bestFallback(request.start, startPoint, endPoint, request.end, request.startExit);
       const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, full);
       const list = pairFull.get(request.pairKey) ?? [];
@@ -783,7 +851,7 @@ export function routeEdges(input: {
     }
     if (violates) {
       obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const elbow = bestFallback(request.start, startPoint, endPoint, request.end, request.startExit);
       const fallback = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, fallback);
       const list = pairFull.get(request.pairKey) ?? [];
