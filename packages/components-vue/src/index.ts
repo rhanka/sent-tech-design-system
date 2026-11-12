@@ -703,3 +703,13 @@ export { PanelStack, PANEL_STACK_MAX_SECTIONS } from "./PanelStack.js";
 export type { PanelStackShape, PanelStackProps } from "./PanelStack.js";
 export { PanelSection } from "./PanelSection.js";
 export type { PanelSectionProps } from "./PanelSection.js";
+
+export { default as DiagramCard } from './DiagramCard.vue';
+export type { DiagramCardProps } from './DiagramCard.vue';
+export { default as DiagramZone } from './DiagramZone.vue';
+export type { DiagramZoneProps } from './DiagramZone.vue';
+export { default as DiagramSceneFigure } from './DiagramSceneFigure.vue';
+export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
+export { default as GraphCanvas } from './GraphCanvas.vue';
+export type { GraphCanvasProps } from './GraphCanvas.vue';
+export { useGraphEngine } from './useGraphEngine.js';

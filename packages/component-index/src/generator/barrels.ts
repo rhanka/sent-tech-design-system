@@ -164,7 +164,7 @@ export function parseBarrelFile(
 /** Resolve a relative module specifier to an existing file (null if none). */
 export function resolveModuleFile(fromDir: string, specifier: string): string | null {
   const direct = join(fromDir, specifier);
-  if (specifier.endsWith(".svelte") || specifier.endsWith(".ts") || specifier.endsWith(".tsx")) {
+  if (specifier.endsWith(".svelte") || specifier.endsWith(".vue") || specifier.endsWith(".ts") || specifier.endsWith(".tsx")) {
     return existsSync(direct) ? direct : null;
   }
   const stem = specifier.endsWith(".js") ? specifier.slice(0, -3) : specifier;

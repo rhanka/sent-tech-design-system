@@ -418,8 +418,7 @@
     "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial"
    },
    "angular": {
     "status": "none",
@@ -435,8 +434,7 @@
     "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial"
    },
    "angular": {
     "status": "none",

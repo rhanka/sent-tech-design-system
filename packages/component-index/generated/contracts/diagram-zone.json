@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:c00387dc966a5c8c49a26dbed48f4f07329e090acb33b20cb92c9347c818c38f",
-  "entryDigest": "sha256:c0e018b8c4061ce7e652891b8f374748b60b480b4e76b67fc71ac8e9b384f0a6",
+  "digest": "sha256:bfabaec7efbfed024478f9221d56a49b33bd5c49832a085f0de01a0b1a07bfb4",
+  "entryDigest": "sha256:62827922dccc3b7587f4f66edf7c590c37ca448b3d31bb8c8057db4bf097c2f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,26 +252,217 @@
     },
     "vue": {
       "bindable": [],
-      "dropped": [],
-      "events": [],
-      "limitations": [
-        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "measure",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CardLineMeasure"
+        },
+        {
+          "kind": "function",
+          "name": "onDiagnostic",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(diagnostic: ZoneDiagnostic) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: { entityId: string; }) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: { entityId: string; collapsed: boolean; }) => void"
+        }
       ],
-      "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "events": [
+        {
+          "name": "onDiagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onToggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "DiagramGlyphPaths": {
+            "additionalProperties": false,
+            "properties": {
+              "darkLine": {
+                "const": true
+              },
+              "face": {
+                "type": "string"
+              },
+              "line": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "face"
+            ],
+            "type": "object"
+          },
+          "ZoneDiagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "allocatedPx": {
+                "type": "number"
+              },
+              "code": {
+                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.",
+                "enum": [
+                  "card-overflow",
+                  "card-icon-unknown",
+                  "zone-overflow",
+                  "zone-icon-unknown"
+                ]
+              },
+              "entityId": {
+                "type": "string"
+              },
+              "neededPx": {
+                "type": "number"
+              },
+              "slot": {
+                "type": "string"
+              },
+              "text": {
+                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "type": "string"
+              }
+            },
+            "required": [
+              "allocatedPx",
+              "code",
+              "entityId",
+              "neededPx",
+              "slot"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "description": "Owner variant: `\"center\"` centres every text slot, both states.",
+            "enum": [
+              "center",
+              "left"
+            ]
+          },
+          "collapsed": {
+            "type": "boolean"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "footer": {
+            "description": "Zone footer, both states (§6.1): folding never changes the footer —\ncollapsed it pins the card rule, expanded it pins at the frame bottom.",
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "iconGlyph": {
+            "$ref": "#/$defs/DiagramGlyphPaths"
+          },
+          "kicker": {
+            "type": "string"
+          },
+          "proposed": {
+            "description": "Neutral status prop: dashed border in both states, independent of tint.",
+            "type": "boolean"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "tone": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "x": {
+            "description": "Occurrence box supplied by the host layout (§6.1: the component paints\naround the box it is given). Collapsed, the box is the frozen\n460 × 200 card; expanded, `width`/`height` size the frame.",
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "collapsed",
+          "entityId",
+          "title"
+        ],
+        "type": "object"
+      },
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:0deb5b75ad8366a1ca6df1031e98c843addf589a80c9cb4c98929fe4951681f0",
-        "declarationPath": "packages/components-vue/dist/DiagramZone.d.ts",
+        "declarationDigest": "sha256:12553aa576fab139d77f402122fbc6d5f35925a08879e8cf10ccd1fe2e90bcad",
+        "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
         "version": "0.39.0"
       },
-      "status": "none",
+      "status": "partial",
       "unresolved": [],
-      "warnings": [
-        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
-      ]
+      "warnings": []
     }
   },
   "producerId": "sentropic-ds"
