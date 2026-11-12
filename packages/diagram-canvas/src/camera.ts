@@ -11,8 +11,19 @@
 
 /** Display scale at readout 100 % (Z-5): a 460 × 200 card renders at ≈ 285 × 124 CSS px. */
 export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
-/** Readability floor of the fit: below it a fit stops shrinking and the host pans. */
-export const DEFAULT_MIN_READABLE_SCALE = 0.42;
+/**
+ * Readability floor of the fit: below it a fit stops shrinking and the host
+ * pans. 0.45 is the smallest two-decimal scale at which the edge label — the
+ * smallest text of a scene — still renders at the §5.3 minimum:
+ * 18 × 0.45 = 8.1 CSS px (0.42 gives 7.56).
+ */
+export const DEFAULT_MIN_READABLE_SCALE = 0.45;
+/** World font size of an edge label, px (token `diagramScene.edgeLabelFontSize`). */
+export const DEFAULT_EDGE_LABEL_FONT_SIZE = 18;
+/** World line box of an edge label, px (token `diagramScene.edgeLabelLineHeight`). */
+export const DEFAULT_EDGE_LABEL_LINE_HEIGHT = 22;
+/** §5.3: an edge label never renders below this height at a fit, CSS px. */
+export const MIN_EDGE_LABEL_CSS_PX = 8;
 /** Share of the window height a figure may take (§5.1 fit box). */
 export const FIT_WINDOW_HEIGHT_SHARE = 0.85;
 /** Fit box aspect (§5.1): 16:9. */
@@ -66,6 +77,11 @@ export function cameraFit(input: CameraFitInput): CameraFit {
 /** Z-1/Z-7: any requested zoom lands inside `[minZoom, maxZoom]` of the current fit. */
 export function clampZoom(zoom: number, fit: Pick<CameraFit, "minZoom" | "maxZoom">): number {
   return Math.min(fit.maxZoom, Math.max(fit.minZoom, zoom));
+}
+
+/** §5.3: rendered edge-label font size at a zoom, CSS px. */
+export function edgeLabelCssPx(zoom: number, fontSize: number = DEFAULT_EDGE_LABEL_FONT_SIZE): number {
+  return fontSize * zoom;
 }
 
 /** Z-5: percentage readout, 100 % = the maximum display scale. */

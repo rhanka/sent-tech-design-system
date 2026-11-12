@@ -134,6 +134,9 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
   const gapAcross = rows ? options.gapY : options.gapX;
 
   let best: { shelves: Shelves; score: number; width: number } | undefined;
+  // Degenerate boxes (zero sizes and zero gaps) can leave the single column as
+  // the only fill: it is then kept rather than leaving the level unplaced.
+  let fallback: Shelves | undefined;
   const seen = new Set<string>();
   let prefix = 0;
   for (let index = 0; index < count; index += 1) {
@@ -142,9 +145,15 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
     const key = shelves.shelves.map((shelf) => shelf.length).join(",");
     if (seen.has(key)) continue;
     seen.add(key);
-    // P-3 admissibility (DEC-1): with two boxes or more, the candidate whose
-    // every shelf holds a single box is removed before scoring.
-    if (count >= 2 && shelves.shelves.length === count) continue;
+    // P-3 admissibility (DEC-1, BF-1): with two boxes or more, the candidate
+    // that stacks every box in one single vertical column is removed before
+    // scoring, in both forms. A shelf is a row in rows form — the column is
+    // the candidate of `count` one-box shelves — and a column in columns form
+    // — the column is the candidate of one shelf.
+    if (count >= 2 && (rows ? shelves.shelves.length === count : shelves.shelves.length === 1)) {
+      fallback ??= shelves;
+      continue;
+    }
     const width = rows ? shelves.main : shelves.cross;
     const height = rows ? shelves.cross : shelves.main;
     const score = count === 1 ? 0 : packScore(width, height, shelves.slack, options);
@@ -158,7 +167,13 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
       best = { shelves, score, width };
     }
   }
-  const chosen = best!.shelves;
+  if (best === undefined) {
+    const shelves = fallback!;
+    const width = rows ? shelves.main : shelves.cross;
+    const height = rows ? shelves.cross : shelves.main;
+    best = { shelves, score: packScore(width, height, shelves.slack, options), width };
+  }
+  const chosen = best.shelves;
   const positions: PackPosition[] = new Array<PackPosition>(count);
   let crossCursor = 0;
   chosen.shelves.forEach((shelf, shelfIndex) => {
@@ -179,7 +194,7 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
     height: rows ? chosen.cross : chosen.main,
     rows: chosen.shelves,
     positions,
-    score: best!.score,
+    score: best.score,
   };
 }
 
@@ -201,9 +216,18 @@ export interface OrientationChoice {
 }
 
 /**
- * O-1–O-4: score both forms on the total P-3 score and keep the lower one;
- * equal scores keep `rows`; a previous orientation is kept while the two
- * scores are closer than `hysteresis`. A level of zero or one box is `rows`.
+ * O-1–O-4: score both forms on the total P-3 score and keep the lower one.
+ *
+ * Equivalent forms read as `rows`, previous orientation or not: equal scores
+ * (within `PACK_SCORE_EPSILON`), or two fills of one same outer box (three
+ * equal cards: `[2, 1]` either way, 944 × 424). Same box means same aspect
+ * and same empty area, so neither form is closer to the target; what is left
+ * of the score gap is shelf-slack bookkeeping, not a near-boundary choice.
+ * The band has nothing to damp there, and a level must not stay `columns`
+ * only because another fold state was.
+ *
+ * Otherwise a previous orientation is kept while the two scores are closer
+ * than `hysteresis`. A level of zero or one box is `rows`.
  */
 export function chooseOrientation(
   boxes: readonly PackBox[],
@@ -216,8 +240,11 @@ export function chooseOrientation(
   const columns = packColumns(boxes, options);
   const gap = Math.abs(rows.score - columns.score);
   let orientation: PackOrientation;
-  if (previous !== undefined && gap < hysteresis) orientation = previous;
-  else if (gap <= PACK_SCORE_EPSILON) orientation = "rows";
+  const sameBox =
+    Math.abs(rows.width - columns.width) <= PACK_FILL_TOLERANCE &&
+    Math.abs(rows.height - columns.height) <= PACK_FILL_TOLERANCE;
+  if (gap <= PACK_SCORE_EPSILON || sameBox) orientation = "rows";
+  else if (previous !== undefined && gap < hysteresis) orientation = previous;
   else orientation = rows.score < columns.score ? "rows" : "columns";
   return {
     orientation,
