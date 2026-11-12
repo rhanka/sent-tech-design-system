@@ -2,6 +2,7 @@
   import { tick, untrack } from "svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import {
+    renderErdCardSvg, renderErdTable,
     clampZoom,
     FIT_ASPECT,
     zoomReadout,
@@ -587,6 +588,8 @@
     return projected.kind === "zone" ? projected.props : undefined;
   };
 
+  const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
+
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
@@ -663,6 +666,12 @@
               {#each scene.edges as edge (edge.occurrence)}
                 <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
               {/each}
+              {#each scene.edges as edge (edge.occurrence)}
+                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
+              {/each}
+              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
+                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+              {/each}
             </svg>
             {#each scene.nodes as node (node.occurrence)}
               {@const rect = rectOf(node)}
@@ -672,7 +681,10 @@
                 data-scene-kind={node.kind}
                 style={`left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${entering(node) ? `;opacity:${eased}` : ""}`}
               >
-                {#if node.kind === "card"}
+                {#if node.kind === "erd" && node.erd}
+                  <button class="st-diagramErd-toggle" type="button" aria-label={node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)} aria-expanded={!node.collapsed} style={`position:absolute;inset:0 0 auto;height:${node.erd.headerHeight}px;width:100%;background:transparent;border:0;color:transparent`} onclick={() => toggleFold(node)}>{node.erd.title}</button>
+                  <div class="st-diagramErd-svg" style="height:100%;width:100%">{@html renderErdCardSvg(node.erd)}</div>
+                {:else if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
                     <DiagramCard {...cardProps} {measure} {onSelect} />
@@ -691,6 +703,7 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                data-erd-label={edgeLabel.erd || undefined}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
               >
                 {#each edgeLabel.lines as line, lineIndex (lineIndex)}
@@ -703,9 +716,13 @@
       </div>
     </div>
   </div>
+  {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
 </figure>
 
 <style>
+  .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
+  .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
+  .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
