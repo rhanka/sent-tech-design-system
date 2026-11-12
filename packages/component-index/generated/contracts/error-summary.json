@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:a746f28e1b9919aa7d54faa543ef6ea7b4b0f526bdd2ed6cd08686f18c8543ad",
-  "entryDigest": "sha256:0ab681335b2626f077278fe3cda004b83d635cfbb8ce94af23254fe029a6bb50",
+  "digest": "sha256:4323842677880663ab7c304b8e6bddb9afdff4c2a86680e68d47100c0ca047bc",
+  "entryDigest": "sha256:d27cfc6c44f4874af04e2916ab64127f26d088676cf270cdbd868345b2337c1f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorSummary.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorSummaryProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

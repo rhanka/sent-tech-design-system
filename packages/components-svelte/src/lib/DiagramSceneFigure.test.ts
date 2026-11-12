@@ -25,7 +25,7 @@ import {
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
-import { cardLineMeasurer, lineBoxHeight } from "./diagramCardModel.js";
+import { cardLineMeasurer } from "./diagramCardModel.js";
 import {
   layoutScene,
   parseDurationMs,
@@ -455,10 +455,11 @@ describe("DiagramSceneFigure camera", () => {
     }
   });
 
-  it("BF-7 the fit bbox is the scene bounds united with the placed label boxes, replayed as the engine placed them", async () => {
+  it("BF-7 the fit bbox is the scene bounds united with the engine's emitted label boxes", async () => {
     const { result, model } = modelOf(LABELLED);
     expect(result.warnings.filter((warning) => warning.code === "label-unplaced")).toEqual([]);
     expect(model.labels.map((entry) => entry.lines)).toEqual([["ok"]]);
+    expect(Object.fromEntries(model.labels.map((entry) => [entry.occurrence, entry.box]))).toEqual(result.labelBoxes);
     const bounds = model.bounds!;
     const inside = (box: Rect): void => {
       expect(box.x).toBeGreaterThanOrEqual(bounds.x);
@@ -469,11 +470,12 @@ describe("DiagramSceneFigure camera", () => {
     for (const node of model.nodes) inside(node.rect);
     for (const entry of model.labels) inside(entry.box);
     for (const edge of model.edges) for (const point of edge.points) inside({ ...point, width: 0, height: 0 });
-    // The replay never draws a label the engine reported unplaced, in any fold state.
+    // The host never draws a label the engine reported unplaced, in any fold state.
     for (const folds of [[], ["a"], ["a", "b"]]) {
       const folded = modelOf(WIDE, folds);
       const unplaced = folded.result.warnings.filter((warning) => warning.code === "label-unplaced").length;
       expect(folded.model.labels.length).toBe(1 - unplaced);
+      expect(Object.fromEntries(folded.model.labels.map((entry) => [entry.occurrence, entry.box]))).toEqual(folded.result.labelBoxes);
     }
     // The figure draws the label at its box and fits that same bbox.
     const view = mount(LABELLED);
@@ -709,25 +711,24 @@ describe("DiagramSceneFigure transition", () => {
     const after = modelOf(WIDE, ["a"]).model;
     const rectIn = (model: typeof before, id: string): Rect =>
       model.nodes.find((node) => node.occurrence === occurrence(id))!.rect;
-    // `c` is a root card that the fold of `a` moves.
-    expect(rectIn(before, "c")).not.toEqual(rectIn(after, "c"));
-    expectRect(view.rectOf("c"), rectIn(before, "c"));
+    // The folded zone changes size even when the frozen shelves keep sibling positions.
+    expect(rectIn(before, "a")).not.toEqual(rectIn(after, "a"));
+    expectRect(view.rectOf("a"), rectIn(before, "a"));
 
     await fireEvent.click(view.toggle("a"));
     await tick();
     expect(view.viewport.getAttribute("aria-busy")).toBe("true");
     // First frame: still the previous rectangles, never a jump.
-    expectRect(view.rectOf("c"), rectIn(before, "c"));
     expectRect(view.rectOf("a"), rectIn(before, "a"));
 
     await vi.advanceTimersByTimeAsync(120);
     await tick();
     const elapsed = 120 / 240;
     // Frames tick every 16 ms: the last one before 120 ms is at 112 ms.
-    const shown = view.rectOf("c");
-    const low = mid(rectIn(before, "c"), rectIn(after, "c"), 96 / 240);
-    const high = mid(rectIn(before, "c"), rectIn(after, "c"), elapsed);
-    for (const key of ["x", "y"] as const) {
+    const shown = view.rectOf("a");
+    const low = mid(rectIn(before, "a"), rectIn(after, "a"), 96 / 240);
+    const high = mid(rectIn(before, "a"), rectIn(after, "a"), elapsed);
+    for (const key of ["x", "y", "width", "height"] as const) {
       expect(shown[key]).toBeGreaterThanOrEqual(Math.min(low[key], high[key]) - 1e-6);
       expect(shown[key]).toBeLessThanOrEqual(Math.max(low[key], high[key]) + 1e-6);
     }
@@ -788,13 +789,13 @@ describe("DiagramSceneFigure transition", () => {
     await tick();
     await vi.advanceTimersByTimeAsync(120);
     await tick();
-    const displayed = view.rectOf("c");
-    expect(displayed).not.toEqual(rectIn("c"));
+    const displayed = view.rectOf("a");
+    expect(displayed).not.toEqual(rectIn("a"));
 
     // Unfold again mid-way: the start is what was on screen, not a stale target.
     await fireEvent.click(view.toggle("a"));
     await tick();
-    expectRect(view.rectOf("c"), displayed);
+    expectRect(view.rectOf("a"), displayed);
     expect(view.viewport.getAttribute("aria-busy")).toBe("true");
     // A full token duration from the retarget, then the unfolded layout exactly.
     await vi.advanceTimersByTimeAsync(200);
@@ -906,7 +907,8 @@ describe("M1 production edge labels (BF-6) and readability floor", () => {
 
   it("edge-label measures at the 18px token line box, fitting the 32px cap", () => {
     expect(tokenSource()).toContain('edgeLabelFontSize: "18px"');
-    expect(edgeSample("ok").height).toBeCloseTo(lineBoxHeight(18), 6);
+    expect(tokenSource()).toContain('edgeLabelLineHeight: "22px"');
+    expect(edgeSample("ok").height).toBe(22);
     expect(edgeSample("ok").height + 2 * 4).toBeLessThanOrEqual(32);
     expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(8);
   });

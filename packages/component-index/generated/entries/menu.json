@@ -5,11 +5,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:24d1a1d6a549c97038fb303c255772b22abcd6edf38070aa9b4406535203b405",
+      "digest": "sha256:df48e888a67688f9d6fc2183f724b57ba3e182653565320d71d8520b4eb58354",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Menu.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:80cbbde9cb263d38d67f00fbf3fb94c962ae3a1c3be2d6fae99dc528933b91b1",
+  "digest": "sha256:f00e12e04973adbff3f7154feac63e9408de89a4694d2449e5e358388711d614",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

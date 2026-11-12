@@ -1,6 +1,12 @@
+<script lang="ts" module>
+  let menuPopoverInstanceCounter = 0;
+</script>
+
 <script lang="ts">
+  import { setContext } from "svelte";
   import type { Snippet } from "svelte";
   import type { HTMLAttributes } from "svelte/elements";
+  import { MENU_HOST_CONTEXT, type MenuHostContext } from "./menu-cascade.js";
 
   type MenuPopoverProps = Omit<HTMLAttributes<HTMLDivElement>, "class"> & {
     open?: boolean;
@@ -26,6 +32,28 @@
     children,
     ...rest
   }: MenuPopoverProps = $props();
+
+  const rootMenuId = `st-menupopover-${++menuPopoverInstanceCounter}`;
+
+  function requestClose(options: { focusTrigger: boolean }) {
+    open = false;
+    if (options.focusTrigger) {
+      trigger?.focus();
+    }
+  }
+
+  // Reported by the inner Menu via setHasCascade (and reset when items lose
+  // their cascade): Esc returns focus to the trigger for cascade menus
+  // only, flat menus keep their previous behaviour (§3.6, AC-01).
+  let hasCascade = $state(false);
+  const hostContext: MenuHostContext = {
+    rootMenuId,
+    requestClose,
+    setHasCascade: (value: boolean) => {
+      hasCascade = value;
+    }
+  };
+  setContext(MENU_HOST_CONTEXT, hostContext);
 
   let panel: HTMLDivElement | undefined = $state();
   let top = $state(0);
@@ -157,8 +185,9 @@
     computePosition();
     showTopLayer();
     // Re-measure once the panel is laid out (size known for flip/clamp).
+    let raf = 0;
     if (typeof requestAnimationFrame === "function") {
-      requestAnimationFrame(() => {
+      raf = requestAnimationFrame(() => {
         if (open) computePosition();
       });
     }
@@ -169,6 +198,9 @@
     return () => {
       window.removeEventListener("scroll", onScroll, true);
       window.removeEventListener("resize", onResize);
+      if (raf !== 0 && typeof cancelAnimationFrame === "function") {
+        cancelAnimationFrame(raf);
+      }
       hideTopLayer();
     };
   });
@@ -183,7 +215,20 @@
     return Boolean(target && node.contains(target));
   }
 
+  // The host generates the root menu id and sets `aria-controls` on its
+  // trigger, including an external trigger element passed as prop (§2.2, D10).
+  $effect(() => {
+    if (!open || !trigger) return;
+    trigger.setAttribute("aria-controls", rootMenuId);
+    const owned = trigger;
+    return () => {
+      owned.removeAttribute("aria-controls");
+    };
+  });
+
   function onWindowPointerDown(event: PointerEvent) {
+    // A nested menu level already consumed this event (D4).
+    if (event.defaultPrevented) return;
     if (!open || !closeOnOutside) return;
     if (isWithin(event, panel)) return;
     if (isWithin(event, trigger)) return;
@@ -191,10 +236,14 @@
   }
 
   function onWindowKeyDown(event: KeyboardEvent) {
+    // A nested menu level already consumed this key (D4).
+    if (event.defaultPrevented) return;
     if (!open || !closeOnEscape) return;
     if (event.key === "Escape") {
       event.preventDefault();
-      open = false;
+      // Keyboard closes return focus to the trigger for cascade menus only
+      // (the inner Menu reports and resets `hasCascade`, §3.6).
+      requestClose({ focusTrigger: hasCascade });
     }
   }
 

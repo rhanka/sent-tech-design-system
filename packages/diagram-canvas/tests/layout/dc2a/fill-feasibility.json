@@ -1,0 +1,1274 @@
+{
+  "method": "P-1/P-3/P-4/O-2 at base gaps; BF-6 frozen shelves; fixed chrome and U-channel reservation; bound minus 0.02",
+  "scenes": [
+    {
+      "view": "vue-globale/before",
+      "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
+      "leafCount": 11,
+      "minimumWidth": 3008,
+      "minimumHeight": 1200,
+      "optimisticMaximumFill": 0.280363475177305,
+      "levels": [
+        {
+          "level": "pkg-ds-core",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-svelte",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-card-render"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-engram",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-archi-guardian"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-h2a",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-focus"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-track",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-control"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "rt-claude",
+              "rt-codex",
+              "sys-h2a",
+              "sys-track"
+            ],
+            [
+              "sys-engram",
+              "sys-ds"
+            ]
+          ],
+          "candidates": 10,
+          "score": 0.39340076867758833
+        },
+        {
+          "level": "sys-ds",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-ds-core",
+              "pkg-ds-svelte"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.23879113230725607
+        },
+        {
+          "level": "sys-engram",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-engram",
+              "rt-engram-cli"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.23879113230725607
+        },
+        {
+          "level": "sys-h2a",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-h2a",
+              "rt-h2a"
+            ],
+            [
+              "api-h2a"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.34639010976838175
+        },
+        {
+          "level": "sys-track",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-track",
+              "rt-track"
+            ],
+            [
+              "st-events"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.34639010976838175
+        }
+      ],
+      "requiredFill": 0.618,
+      "threshold": 0.26036347517730496
+    },
+    {
+      "view": "vue-globale/intermediate",
+      "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
+      "leafCount": 18,
+      "minimumWidth": 3072,
+      "minimumHeight": 1749,
+      "optimisticMaximumFill": 0.3082118353344768,
+      "levels": [
+        {
+          "level": "pkg-artifacts",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-canvas",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-dc2a"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-core",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-svelte",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-card-render"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-h2a",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-focus"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-mesh",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "root",
+          "rows": false,
+          "shelves": [
+            [
+              "rt-claude",
+              "rt-codex",
+              "sys-h2a",
+              "sys-track"
+            ],
+            [
+              "sys-sentropic",
+              "sys-engram"
+            ],
+            [
+              "sys-ds"
+            ]
+          ],
+          "candidates": 12,
+          "score": 0.1427298895532712
+        },
+        {
+          "level": "sys-ds",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-ds-core",
+              "pkg-ds-canvas"
+            ],
+            [
+              "pkg-ds-svelte"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.08479466365331534
+        },
+        {
+          "level": "sys-engram",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-engram",
+              "rt-engram-cli"
+            ],
+            [
+              "svc-engram-live",
+              "api-memory"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.0024004196871174263
+        },
+        {
+          "level": "sys-h2a",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-h2a",
+              "rt-h2a"
+            ],
+            [
+              "svc-h2a-mcp",
+              "api-h2a"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.2738633617838461
+        },
+        {
+          "level": "sys-sentropic",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-mesh",
+              "pkg-artifacts",
+              "svc-memory-access"
+            ],
+            [
+              "svc-artifacts",
+              "api-mcp-registry"
+            ]
+          ],
+          "candidates": 8,
+          "score": 0.21645125331254486
+        },
+        {
+          "level": "sys-track",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-track",
+              "rt-track"
+            ],
+            [
+              "st-events"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        }
+      ],
+      "requiredFill": 0.662,
+      "threshold": 0.2882118353344768
+    },
+    {
+      "view": "vue-globale/after",
+      "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
+      "leafCount": 19,
+      "minimumWidth": 3588,
+      "minimumHeight": 1902,
+      "optimisticMaximumFill": 0.2561406346895306,
+      "levels": [
+        {
+          "level": "pkg-artifacts",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-canvas",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-dc2a"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-core",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-ds-svelte",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-card-render"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-engram",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-archi-guardian"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-h2a",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-focus",
+              "art-skill-archi"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "pkg-mesh",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-track",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-control"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "root",
+          "rows": false,
+          "shelves": [
+            [
+              "rt-claude",
+              "rt-codex",
+              "sys-h2a",
+              "sys-track"
+            ],
+            [
+              "sys-sentropic",
+              "sys-engram"
+            ],
+            [
+              "sys-ds"
+            ]
+          ],
+          "candidates": 12,
+          "score": 0.1656410840260889
+        },
+        {
+          "level": "sys-ds",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-ds-core",
+              "pkg-ds-canvas"
+            ],
+            [
+              "pkg-ds-svelte"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.08479466365331534
+        },
+        {
+          "level": "sys-engram",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-engram",
+              "rt-engram-cli"
+            ],
+            [
+              "svc-engram-live",
+              "api-memory"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.2738633617838461
+        },
+        {
+          "level": "sys-h2a",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-h2a",
+              "rt-h2a"
+            ],
+            [
+              "svc-h2a-mcp",
+              "api-h2a"
+            ]
+          ],
+          "candidates": 7,
+          "score": 0.21359709143506317
+        },
+        {
+          "level": "sys-sentropic",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-mesh",
+              "pkg-artifacts",
+              "svc-memory-access"
+            ],
+            [
+              "svc-artifacts",
+              "api-mcp-registry"
+            ]
+          ],
+          "candidates": 8,
+          "score": 0.21645125331254486
+        },
+        {
+          "level": "sys-track",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-track",
+              "rt-track"
+            ],
+            [
+              "st-events"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.34639010976838175
+        }
+      ],
+      "requiredFill": 0.647,
+      "threshold": 0.2361406346895306
+    },
+    {
+      "view": "ajout-preprod/intermediate",
+      "fixtureSha256": "4863a45f3637d9f3089daf849e56e25e4fe01a91a0540b2f7ee5811c9e06c3dc",
+      "leafCount": 17,
+      "minimumWidth": 3008,
+      "minimumHeight": 1645,
+      "optimisticMaximumFill": 0.3160770872405096,
+      "levels": [
+        {
+          "level": "pkg-deploy",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-repin",
+              "art-overlay-prod"
+            ],
+            [
+              "art-overlay-preprod"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        },
+        {
+          "level": "pkg-sync",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-host-map",
+              "art-host-map"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "sys-ci",
+              "sys-preprod"
+            ],
+            [
+              "sys-prod"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.10663419717694789
+        },
+        {
+          "level": "sys-ci",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-deploy",
+              "rt-cd-preprod"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.22398170407470075
+        },
+        {
+          "level": "sys-preprod",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-sync",
+              "rt-sync-import",
+              "svc-preprod-ui"
+            ],
+            [
+              "svc-preprod-idp",
+              "api-preprod-http",
+              "st-preprod-db"
+            ]
+          ],
+          "candidates": 11,
+          "score": 0.1799968972060387
+        },
+        {
+          "level": "sys-prod",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-api",
+              "rt-sync-export",
+              "svc-prod-ui"
+            ],
+            [
+              "svc-prod-idp",
+              "api-prod-http",
+              "st-prod-db"
+            ]
+          ],
+          "candidates": 10,
+          "score": 0.40512954797640716
+        }
+      ],
+      "requiredFill": 0.769,
+      "threshold": 0.2960770872405096
+    },
+    {
+      "view": "ajout-preprod/after",
+      "fixtureSha256": "4863a45f3637d9f3089daf849e56e25e4fe01a91a0540b2f7ee5811c9e06c3dc",
+      "leafCount": 19,
+      "minimumWidth": 3008,
+      "minimumHeight": 1738,
+      "optimisticMaximumFill": 0.33435962098768457,
+      "levels": [
+        {
+          "level": "pkg-api",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-idp-export"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-deploy",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-repin",
+              "art-overlay-prod"
+            ],
+            [
+              "art-overlay-preprod"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        },
+        {
+          "level": "pkg-sync",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-host-map",
+              "art-host-map"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "sys-ci",
+              "sys-preprod"
+            ],
+            [
+              "sys-prod"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.1330714170375053
+        },
+        {
+          "level": "sys-ci",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-deploy",
+              "rt-cd-preprod"
+            ],
+            [
+              "rt-promote-prod"
+            ]
+          ],
+          "candidates": 5,
+          "score": 0.1741835909951893
+        },
+        {
+          "level": "sys-preprod",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-sync",
+              "rt-sync-import"
+            ],
+            [
+              "svc-preprod-ui",
+              "svc-preprod-idp",
+              "api-preprod-http"
+            ],
+            [
+              "api-preprod-mcp",
+              "st-preprod-db"
+            ]
+          ],
+          "candidates": 13,
+          "score": 0.19341163563232094
+        },
+        {
+          "level": "sys-prod",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-api",
+              "rt-sync-export",
+              "svc-prod-ui"
+            ],
+            [
+              "svc-prod-idp",
+              "api-prod-http",
+              "st-prod-db"
+            ]
+          ],
+          "candidates": 10,
+          "score": 0.22718723361315457
+        }
+      ],
+      "requiredFill": 0.763,
+      "threshold": 0.31435962098768455
+    },
+    {
+      "view": "migration-cluster-mesh/intermediate",
+      "fixtureSha256": "4a317a819804c7f11a5a7d21e3694ac5f28ca3d877980d1ccf3c00979befcad9",
+      "leafCount": 17,
+      "minimumWidth": 2524,
+      "minimumHeight": 1555,
+      "optimisticMaximumFill": 0.3984896122624732,
+      "levels": [
+        {
+          "level": "pkg-app-api",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-legacy-routes",
+              "cmp-a4-launcher"
+            ],
+            [
+              "art-a4-checkpoint"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        },
+        {
+          "level": "pkg-immo-api",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-mesh",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-mesh-registry"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "sys-sentropic-app",
+              "sys-mesh"
+            ],
+            [
+              "sys-artifacts",
+              "sys-immo"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.17981561843526472
+        },
+        {
+          "level": "sys-artifacts",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-artifacts",
+              "svc-artifact-content"
+            ],
+            [
+              "api-artifacts-mcp",
+              "st-artifacts-s3"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.0024004196871174263
+        },
+        {
+          "level": "sys-immo",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-immo-api",
+              "rt-immo-api"
+            ],
+            [
+              "rt-immo-mcp"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        },
+        {
+          "level": "sys-mesh",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-mesh",
+              "svc-identity-a4"
+            ],
+            [
+              "api-mcp-registry",
+              "st-control-db"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.2738633617838461
+        },
+        {
+          "level": "sys-sentropic-app",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-app-api",
+              "rt-app-api"
+            ],
+            [
+              "svc-idp",
+              "api-idp-oauth",
+              "st-legacy-users"
+            ]
+          ],
+          "candidates": 9,
+          "score": 0.10538839528778207
+        }
+      ],
+      "requiredFill": 0.726,
+      "threshold": 0.3784896122624732
+    },
+    {
+      "view": "migration-cluster-mesh/after",
+      "fixtureSha256": "4a317a819804c7f11a5a7d21e3694ac5f28ca3d877980d1ccf3c00979befcad9",
+      "leafCount": 17,
+      "minimumWidth": 3008,
+      "minimumHeight": 1571,
+      "optimisticMaximumFill": 0.3309655050990696,
+      "levels": [
+        {
+          "level": "pkg-app-api",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-a4-launcher",
+              "art-a4-checkpoint"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "pkg-artifacts",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-artifacts-provider"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-immo-api",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-immo-host"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "pkg-mcp-platform",
+          "rows": true,
+          "shelves": [],
+          "candidates": 0,
+          "score": 0
+        },
+        {
+          "level": "pkg-mesh",
+          "rows": true,
+          "shelves": [
+            [
+              "cmp-mesh-registry",
+              "cmp-token-exchange"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "sys-sentropic-app",
+              "sys-mesh"
+            ],
+            [
+              "sys-artifacts",
+              "sys-immo"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.13030575060605648
+        },
+        {
+          "level": "sys-artifacts",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-artifacts",
+              "svc-artifact-content"
+            ],
+            [
+              "api-artifacts-mcp",
+              "st-artifacts-s3"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.2738633617838461
+        },
+        {
+          "level": "sys-immo",
+          "rows": true,
+          "shelves": [
+            [
+              "pkg-immo-api",
+              "rt-immo-api"
+            ],
+            [
+              "rt-immo-mcp"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.34639010976838175
+        },
+        {
+          "level": "sys-mesh",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-mesh",
+              "pkg-mcp-platform",
+              "svc-identity-a4"
+            ],
+            [
+              "api-mcp-registry",
+              "st-control-db"
+            ]
+          ],
+          "candidates": 9,
+          "score": 0.0746511533868477
+        },
+        {
+          "level": "sys-sentropic-app",
+          "rows": false,
+          "shelves": [
+            [
+              "pkg-app-api",
+              "rt-app-api"
+            ],
+            [
+              "svc-idp",
+              "api-idp-oauth"
+            ]
+          ],
+          "candidates": 7,
+          "score": 0.21359709143506317
+        }
+      ],
+      "requiredFill": 0.696,
+      "threshold": 0.31096550509906956
+    },
+    {
+      "view": "case-skills-r9/unfolded",
+      "fixtureSha256": "a0cb2dff39a9a9fe4b52c1dc85eed837316bbd02e9e0fc28ce2423e3bef73994",
+      "leafCount": 14,
+      "minimumWidth": 2460,
+      "minimumHeight": 1025,
+      "optimisticMaximumFill": 0.5108070592901051,
+      "levels": [
+        {
+          "level": "method-runtime",
+          "rows": true,
+          "shelves": [
+            [
+              "harness-profiles",
+              "harness-scope"
+            ],
+            [
+              "harness-branch",
+              "harness-proof"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.0024004196871174263
+        },
+        {
+          "level": "method-skills",
+          "rows": true,
+          "shelves": [
+            [
+              "harness-router",
+              "method-using-harness",
+              "method-brainstorm"
+            ],
+            [
+              "method-plan",
+              "method-debug",
+              "method-test"
+            ],
+            [
+              "method-review",
+              "method-security",
+              "method-adopt"
+            ],
+            [
+              "method-track-report"
+            ]
+          ],
+          "candidates": 18,
+          "score": 0.3712530324364542
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "method-skills",
+              "method-runtime"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.2988553730499061
+        }
+      ],
+      "requiredFill": 0.872,
+      "threshold": 0.49080705929010504
+    },
+    {
+      "view": "case-skills-r9/skills-unfolded",
+      "fixtureSha256": "a0cb2dff39a9a9fe4b52c1dc85eed837316bbd02e9e0fc28ce2423e3bef73994",
+      "leafCount": 11,
+      "minimumWidth": 1944,
+      "minimumHeight": 1025,
+      "optimisticMaximumFill": 0.5078791528656027,
+      "levels": [
+        {
+          "level": "method-skills",
+          "rows": true,
+          "shelves": [
+            [
+              "harness-router",
+              "method-using-harness",
+              "method-brainstorm"
+            ],
+            [
+              "method-plan",
+              "method-debug",
+              "method-test"
+            ],
+            [
+              "method-review",
+              "method-security",
+              "method-adopt"
+            ],
+            [
+              "method-track-report"
+            ]
+          ],
+          "candidates": 18,
+          "score": 0.3712530324364542
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "method-skills",
+              "method-runtime"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.06344172914388203
+        }
+      ],
+      "requiredFill": 0.893,
+      "threshold": 0.4878791528656027
+    },
+    {
+      "view": "case-integration-r9/unfolded",
+      "fixtureSha256": "a21d90d595c284267e3df3b221b3bbfd7ee1c48d377d0e23d30a89b388f3137c",
+      "leafCount": 11,
+      "minimumWidth": 2460,
+      "minimumHeight": 1118,
+      "optimisticMaximumFill": 0.36796253472373724,
+      "levels": [
+        {
+          "level": "coordination-skills",
+          "rows": true,
+          "shelves": [
+            [
+              "h2a-skill",
+              "h2a-run-skill"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0.5291968988864422
+        },
+        {
+          "level": "external-skills",
+          "rows": true,
+          "shelves": [
+            [
+              "engram-memory"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "host-components",
+          "rows": true,
+          "shelves": [
+            [
+              "host-skills",
+              "host-plugin",
+              "host-upgrade"
+            ],
+            [
+              "host-doctor",
+              "host-scope"
+            ]
+          ],
+          "candidates": 8,
+          "score": 0.46907965632163207
+        },
+        {
+          "level": "registry-components",
+          "rows": true,
+          "shelves": [
+            [
+              "registry-definitions",
+              "registry-daemon"
+            ],
+            [
+              "registry-memory"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.09913850731103813
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "coordination-skills",
+              "host-components"
+            ],
+            [
+              "registry-components",
+              "external-skills"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.289016369913726
+        }
+      ],
+      "requiredFill": 0.779,
+      "threshold": 0.3479625347237372
+    },
+    {
+      "view": "case-trackfocus-r9/unfolded",
+      "fixtureSha256": "304f3151b9789ab3d84645187b88e638fbf983d3737569c8950c4d5135c07f24",
+      "leafCount": 11,
+      "minimumWidth": 2492,
+      "minimumHeight": 1017,
+      "optimisticMaximumFill": 0.39931122759003834,
+      "levels": [
+        {
+          "level": "focus-components",
+          "rows": true,
+          "shelves": [
+            [
+              "focus-model",
+              "focus-validation",
+              "focus-editing"
+            ],
+            [
+              "focus-render",
+              "focus-track",
+              "focus-registry"
+            ]
+          ],
+          "candidates": 10,
+          "score": 0.40512954797640716
+        },
+        {
+          "level": "focus-skill",
+          "rows": true,
+          "shelves": [
+            [
+              "focus-skill-leaf"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "root",
+          "rows": true,
+          "shelves": [
+            [
+              "s2-h2a"
+            ]
+          ],
+          "candidates": 2,
+          "score": 0
+        },
+        {
+          "level": "s2-h2a",
+          "rows": false,
+          "shelves": [
+            [
+              "track-skills",
+              "focus-skill"
+            ],
+            [
+              "focus-components"
+            ]
+          ],
+          "candidates": 4,
+          "score": 0.411759678584273
+        },
+        {
+          "level": "track-skills",
+          "rows": true,
+          "shelves": [
+            [
+              "track-branch-lifecycle",
+              "track-present-decision"
+            ],
+            [
+              "track-propose-workpackages",
+              "track-track-operation"
+            ]
+          ],
+          "candidates": 6,
+          "score": 0.0024004196871174263
+        }
+      ],
+      "requiredFill": 0.759,
+      "threshold": 0.3793112275900383
+    }
+  ],
+  "cappedFrame": {
+    "view": "migration-cluster-mesh/folded",
+    "optimisticMaximumFrameFill": 0.13553659259259263,
+    "requiredFrameFill": 0.147,
+    "scope": "capped; no fill gate (Appendix E)"
+  }
+}

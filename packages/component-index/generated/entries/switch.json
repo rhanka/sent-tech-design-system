@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Switch.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:49c4019c7088e1ec411b4ba2edc5f2bf189e870cd8e8fd46a467c5927957fdff",
+  "digest": "sha256:0bc6fa5228f71b23af471e6c93efc219e8354b109c6536fb29ea2bbc979d377d",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

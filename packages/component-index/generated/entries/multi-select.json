@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MultiSelect.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:044b1ff1d8e23dbaf5afba9f67b76926dc934c738588f61c148d2760b9b4e713",
+  "digest": "sha256:85b0b5d4a9c8b7ff4203f2449925c50fcd579a62946e6c9c4749b7a122f0167a",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

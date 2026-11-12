@@ -83,11 +83,87 @@ export interface RouteRequest {
   readonly endExit: Vec2;
   /** Entities that are not obstacles for this edge (L-R8). */
   readonly passable: ReadonlySet<EntityRef>;
+  /**
+   * The route stays inside this rectangle (DC-2a BF-3: the content box of the
+   * expanded container both ends share). When no admissible route exists
+   * inside it, the search runs once more without it and the relation is
+   * reported in `RouteOutcome.escaped`.
+   */
+  readonly within?: Rect;
 }
 
 export interface RouteOutcome {
   readonly routes: ReadonlyMap<RelationRef, readonly Vec2[]>;
   readonly obstructed: readonly RelationRef[];
+  /** Relations routed outside their `within` rectangle because no route exists inside it. */
+  readonly escaped: readonly RelationRef[];
+}
+
+/** L-R9 applies to full dock-to-dock routes, including clearance joins. */
+export function routesConflict(left: readonly Vec2[], right: readonly Vec2[]): boolean {
+  return fullSharesSegment(left, right) || left.slice(1).some((point, i) =>
+    right.slice(1).some((other, j) => segmentsCrossTransversal(left[i]!, point, right[j]!, other)),
+  );
+}
+
+/**
+ * BF-6: try horizontal label channels without changing any box or gutter.
+ * Dock joins keep their outward normals. Every full candidate is checked
+ * against raw obstacles, containment and the other routes of its pair.
+ */
+export function labelDetour(input: {
+  readonly request: RouteRequest;
+  readonly shapes: readonly Rect[];
+  readonly earlier: readonly (readonly Vec2[])[];
+  readonly xs: readonly number[];
+  readonly ys: readonly number[];
+  readonly accepts: (points: readonly Vec2[]) => boolean;
+}): readonly Vec2[] | undefined {
+  const { request, shapes, earlier } = input;
+  const step = 2;
+  const s = { x: request.start.x + step * request.startExit.x, y: request.start.y + step * request.startExit.y };
+  const t = { x: request.end.x + step * request.endExit.x, y: request.end.y + step * request.endExit.y };
+  const clear = (points: readonly Vec2[]): boolean => {
+    const within = request.within;
+    if (within !== undefined && points.some((p) => p.x < within.x || p.x > within.x + within.width || p.y < within.y || p.y > within.y + within.height)) return false;
+    for (let i = 1; i < points.length; i += 1) {
+      const a = points[i - 1]!;
+      const b = points[i]!;
+      if (shapes.some((r) => a.y === b.y
+        ? a.y > r.y && a.y < r.y + r.height && Math.max(Math.min(a.x, b.x), r.x) < Math.min(Math.max(a.x, b.x), r.x + r.width)
+        : a.x > r.x && a.x < r.x + r.width && Math.max(Math.min(a.y, b.y), r.y) < Math.min(Math.max(a.y, b.y), r.y + r.height))) return false;
+      if (sharesSamePair(a, b, earlier) || crossesSamePair(a, b, earlier)) return false;
+      // Reject a folded-back leg or a self intersection after simplification.
+      for (let j = 1; j < i - 1; j += 1) {
+        const c = points[j - 1]!;
+        const d = points[j]!;
+        if (fullSharesSegment([a, b], [c, d]) || segmentsCrossTransversal(a, b, c, d)) return false;
+      }
+    }
+    const first = points[1]!;
+    const last = points[points.length - 2]!;
+    return (first.x - request.start.x) * request.startExit.x + (first.y - request.start.y) * request.startExit.y > 0
+      && (last.x - request.end.x) * request.endExit.x + (last.y - request.end.y) * request.endExit.y > 0;
+  };
+  let best: readonly Vec2[] | undefined;
+  let bestLength = Infinity;
+  const tryRoute = (middle: readonly Vec2[]): void => {
+    const points = simplifyRoute([request.start, s, ...middle, t, request.end]);
+    if (best !== undefined && points.length > best.length) return;
+    const length = points.slice(1).reduce((sum, p, i) => sum + Math.abs(p.x - points[i]!.x) + Math.abs(p.y - points[i]!.y), 0);
+    if (best !== undefined && points.length === best.length && length >= bestLength) return;
+    if (!clear(points) || !input.accepts(points)) return;
+    best = points;
+    bestLength = length;
+  };
+  for (const y of input.ys) {
+    tryRoute([{ x: s.x, y }, { x: t.x, y }]);
+    for (const x of input.xs) {
+      tryRoute([{ x, y: s.y }, { x, y }, { x: t.x, y }]);
+      tryRoute([{ x: s.x, y }, { x, y }, { x, y: t.y }]);
+    }
+  }
+  return best;
 }
 
 const OVERLAP_PENALTY = 2;
@@ -331,20 +407,38 @@ export function routeEdges(input: {
   readonly rects: ReadonlyMap<EntityRef, Rect>;
   readonly requests: readonly RouteRequest[];
   readonly clearance: number;
+  /**
+   * Rectangles no route may cross, whatever its ends: they belong to no
+   * entity, so no request can list them as passable. The row-pack path passes
+   * the title band of every expanded container (a route may cross the wall of
+   * its own ancestor, never the title drawn inside it).
+   */
+  readonly barriers?: readonly Rect[];
+  /**
+   * Extra grid lines, beside the ones the obstacles give. The row-pack path
+   * passes horizontal lanes outside the drawing, one label pitch apart, so
+   * routes that would otherwise share the single clearance line round the
+   * drawing each take their own lane — and each lane holds its own label.
+   */
+  readonly lanes?: { readonly xs: readonly number[]; readonly ys: readonly number[] };
+  /** Measured layouts avoid raw interiors even when routing is obstructed. */
+  readonly avoidFallbackInteriors?: boolean;
 }): RouteOutcome {
   const { rects, requests, clearance } = input;
   const entities = [...rects.keys()].sort();
 
-  const grown = entities.map((id) => {
-    const rect = rects.get(id)!;
-    return {
-      id,
-      left: rect.x - clearance,
-      right: rect.x + rect.width + clearance,
-      top: rect.y - clearance,
-      bottom: rect.y + rect.height + clearance,
-    };
+  const grow = (id: EntityRef, rect: Rect) => ({
+    id,
+    left: rect.x - clearance,
+    right: rect.x + rect.width + clearance,
+    top: rect.y - clearance,
+    bottom: rect.y + rect.height + clearance,
   });
+  const grown = [
+    ...entities.map((id) => grow(id, rects.get(id)!)),
+    // Synthetic ids: never an entity reference, hence never in `passable`.
+    ...(input.barriers ?? []).map((rect, index) => grow(`barrier:${String(index)}` as EntityRef, rect)),
+  ];
 
   const withChannels = (values: number[]): number[] => {
     const sorted = [...new Set(values)].sort((a, b) => a - b);
@@ -365,6 +459,8 @@ export function routeEdges(input: {
       yValues.push(point.y);
     }
   }
+  for (const x of input.lanes?.xs ?? []) xValues.push(x);
+  for (const y of input.lanes?.ys ?? []) yValues.push(y);
   const xs = [...new Set(xValues)].sort((a, b) => a - b);
   const ys = [...new Set(yValues)].sort((a, b) => a - b);
   const xIndex = new Map(xs.map((value, index) => [value, index]));
@@ -489,21 +585,104 @@ export function routeEdges(input: {
 
   const routes = new Map<RelationRef, readonly Vec2[]>();
   const obstructed: RelationRef[] = [];
+  const escaped: RelationRef[] = [];
 
   const elbowFor = (startPoint: Vec2, endPoint: Vec2, startExit: Vec2): Vec2[] => {
     if (startPoint.x === endPoint.x || startPoint.y === endPoint.y) return [];
     return startExit.x !== 0 ? [{ x: endPoint.x, y: startPoint.y }] : [{ x: startPoint.x, y: endPoint.y }];
   };
+  // MAJ-2: blind single-elbow fallback sliced through cards. Test both elbow
+  // orientations and outer-perimeter 2-bend detours against the raw
+  // (uninflated) obstacle rectangles before falling back.
+  const rawRects: Rect[] = [...rects.values(), ...(input.barriers ?? [])];
+  const throughRaw = (a: Vec2, b: Vec2): number => {
+    let hits = 0;
+    for (const rect of rawRects) {
+      const left = rect.x;
+      const right = rect.x + rect.width;
+      const top = rect.y;
+      const bottom = rect.y + rect.height;
+      if (a.y === b.y) {
+        if (a.y > top && a.y < bottom && Math.max(Math.min(a.x, b.x), left) < Math.min(Math.max(a.x, b.x), right)) hits += 1;
+      } else if (a.x === b.x) {
+        if (a.x > left && a.x < right && Math.max(Math.min(a.y, b.y), top) < Math.min(Math.max(a.y, b.y), bottom)) hits += 1;
+      }
+    }
+    return hits;
+  };
+  const crossingsOf = (points: readonly Vec2[]): number => {
+    let total = 0;
+    for (let i = 1; i < points.length; i += 1) total += throughRaw(points[i - 1]!, points[i]!);
+    return total;
+  };
+  const bestFallback = (start: Vec2, startPoint: Vec2, endPoint: Vec2, end: Vec2, startExit: Vec2): Vec2[] => {
+    const candidates: Vec2[][] = [];
+    if (startPoint.x !== endPoint.x && startPoint.y !== endPoint.y) {
+      candidates.push([{ x: endPoint.x, y: startPoint.y }]);
+      candidates.push([{ x: startPoint.x, y: endPoint.y }]);
+    }
+    // Outer-perimeter 2-bend detours round the whole obstacle field.
+    if (rawRects.length > 0) {
+      const minX = Math.min(...rawRects.map((r) => r.x)) - clearance - 4;
+      const maxX = Math.max(...rawRects.map((r) => r.x + r.width)) + clearance + 4;
+      const minY = Math.min(...rawRects.map((r) => r.y)) - clearance - 4;
+      const maxY = Math.max(...rawRects.map((r) => r.y + r.height)) + clearance + 4;
+      candidates.push([
+        { x: startPoint.x, y: minY },
+        { x: endPoint.x, y: minY },
+      ]);
+      candidates.push([
+        { x: startPoint.x, y: maxY },
+        { x: endPoint.x, y: maxY },
+      ]);
+      candidates.push([
+        { x: minX, y: startPoint.y },
+        { x: minX, y: endPoint.y },
+      ]);
+      candidates.push([
+        { x: maxX, y: startPoint.y },
+        { x: maxX, y: endPoint.y },
+      ]);
+    }
+    let best: Vec2[] = elbowFor(startPoint, endPoint, startExit);
+    let bestScore = Number.POSITIVE_INFINITY;
+    for (const elbow of candidates) {
+      const full = simplifyRoute([start, startPoint, ...elbow, endPoint, end]);
+      const score = crossingsOf(full);
+      if (score < bestScore) {
+        bestScore = score;
+        best = elbow;
+        if (score === 0) break;
+      }
+    }
+    return best;
+  };
 
   for (const request of [...requests].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))) {
-    generation += 1;
-    heap.clear();
+    let goalParent = -1;
     let pairId = pairIds.get(request.pairKey);
     if (pairId === undefined) {
       pairId = pairIds.size;
       pairIds.set(request.pairKey, pairId);
     }
     const pid = pairId;
+    const earlier: readonly (readonly Vec2[])[] = pairFull.get(request.pairKey) ?? [];
+    const hasSamePair = earlier.length > 0;
+    const startPoint = clearancePoint(request.start, request.startExit);
+    const endPoint = clearancePoint(request.end, request.endExit);
+    // BF-3: first inside the containment rectangle, then — only when nothing
+    // is admissible there — without it.
+    const clamps: (Rect | undefined)[] = request.within === undefined ? [undefined] : [request.within, undefined];
+    let terminalObstructed = false;
+    for (const clamp of clamps) {
+    if (goalParent >= 0 || terminalObstructed) break;
+    if (clamp === undefined && request.within !== undefined) escaped.push(request.id);
+    const insideClamp = (x: number, y: number): boolean =>
+      clamp === undefined ||
+      (x >= clamp.x && x <= clamp.x + clamp.width && y >= clamp.y && y <= clamp.y + clamp.height);
+    if (!insideClamp(startPoint.x, startPoint.y) || !insideClamp(endPoint.x, endPoint.y)) continue;
+    generation += 1;
+    heap.clear();
     const excluded = obstacles.filter((o) => request.passable.has(o.id));
     const excludedEmpty = excluded.length === 0;
     const blockedH = (i: number, j: number) => {
@@ -521,8 +700,6 @@ export function routeEdges(input: {
     const isBlockedH = excludedEmpty ? blockedHFast : blockedH;
     const isBlockedV = excludedEmpty ? blockedVFast : blockedV;
 
-    const startPoint = clearancePoint(request.start, request.startExit);
-    const endPoint = clearancePoint(request.end, request.endExit);
     const si = xIndex.get(startPoint.x)!;
     const sj = yIndex.get(startPoint.y)!;
     const ti = xIndex.get(endPoint.x)!;
@@ -530,9 +707,6 @@ export function routeEdges(input: {
     const startHeading = headingOf(request.startExit);
     const arrival = headingOf({ x: -request.endExit.x, y: -request.endExit.y });
     const goalState = nStates; // virtual
-
-    const earlier: readonly (readonly Vec2[])[] = pairFull.get(request.pairKey) ?? [];
-    const hasSamePair = earlier.length > 0;
 
     // The two dock-to-clearance joins are fixed by docking: when either
     // already shares a segment with — or transversally crosses — an earlier
@@ -544,15 +718,8 @@ export function routeEdges(input: {
         sharesSamePair(endPoint, request.end, earlier) ||
         crossesSamePair(endPoint, request.end, earlier));
     if (terminalBlocked) {
-      obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
-      const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
-      routes.set(request.id, full);
-      const list = pairFull.get(request.pairKey) ?? [];
-      list.push(full);
-      pairFull.set(request.pairKey, list);
-      reserveGridPath([startPoint, ...elbow, endPoint], pid);
-      continue;
+      terminalObstructed = true;
+      break;
     }
 
     // Pair heuristic `(t, |dx| + |dy|)`: an admissible lower bound on each
@@ -572,7 +739,6 @@ export function routeEdges(input: {
     heap.push(heuristicB(si, sj, startHeading), heuristicL(si, sj), startState);
     let goalBends = Number.POSITIVE_INFINITY;
     let goalLen = Number.POSITIVE_INFINITY;
-    let goalParent = -1;
 
     while (heap.size > 0) {
       const state = heap.pop();
@@ -628,6 +794,7 @@ export function routeEdges(input: {
         const ni = i + DX[nh]!;
         const nj = j + DY[nh]!;
         if (ni < 0 || nj < 0 || ni >= nx || nj >= ny) continue;
+        if (clamp !== undefined && !insideClamp(xs[ni]!, ys[nj]!)) continue;
         let unit: number;
         let length: number;
         if (nh % 2 === 0) {
@@ -690,9 +857,15 @@ export function routeEdges(input: {
       }
     }
 
+    }
+
     if (goalParent < 0) {
+      // MAJ-2: retry with reduced 2 px inflation is covered by the outer-lane
+      // grid (clearance-point lanes); here at least avoid raw interiors.
       obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const elbow = input.avoidFallbackInteriors === true
+        ? bestFallback(request.start, startPoint, endPoint, request.end, request.startExit)
+        : elbowFor(startPoint, endPoint, request.startExit);
       const full = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, full);
       const list = pairFull.get(request.pairKey) ?? [];
@@ -749,7 +922,9 @@ export function routeEdges(input: {
     }
     if (violates) {
       obstructed.push(request.id);
-      const elbow = elbowFor(startPoint, endPoint, request.startExit);
+      const elbow = input.avoidFallbackInteriors === true
+        ? bestFallback(request.start, startPoint, endPoint, request.end, request.startExit)
+        : elbowFor(startPoint, endPoint, request.startExit);
       const fallback = simplifyRoute([request.start, startPoint, ...elbow, endPoint, request.end]);
       routes.set(request.id, fallback);
       const list = pairFull.get(request.pairKey) ?? [];
@@ -765,5 +940,5 @@ export function routeEdges(input: {
     pairFull.set(request.pairKey, list);
   }
 
-  return { routes, obstructed };
+  return { routes, obstructed, escaped };
 }
