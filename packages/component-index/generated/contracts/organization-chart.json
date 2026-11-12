@@ -1,8 +1,8 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:3c0e835571c2a05cb2eef3dab58a8ce72da02b19935a95ca575f1679f8140d56",
-  "entryDigest": "sha256:2e2b32118abb56961dd6186e87f300afee8355ddb30041ce51c55e6dde2d6a21",
+  "digest": "sha256:e0ac3e3752412172a09dde60cc4521d51401a02d027c3195412b83c2740c0b88",
+  "entryDigest": "sha256:f0d95b301ef34617e4020df56d4ec741291688b51b06e88708112cad5f484b96",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -255,7 +255,7 @@
         "declarationPath": "packages/components-svelte/dist/OrganizationChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OrganizationChartProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

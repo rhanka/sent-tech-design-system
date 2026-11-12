@@ -806,7 +806,7 @@
     font-family: var(--st-component-diagramCard-fontFamily, inherit);
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
