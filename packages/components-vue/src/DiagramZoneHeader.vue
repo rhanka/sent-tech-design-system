@@ -1,6 +1,5 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramZoneHeader' });
-import { computed, watchEffect } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
 import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
 /**
@@ -66,15 +65,15 @@ const { kicker, title, subtitle, iconName, iconGlyph, headerTextWidth, headerBlo
   }
   .st-diagramZoneHeader-subtitle {
     /* subtitleGap aliases the card gap (§6.4). */
-    margin-top: var(--st-component-diagramZone-subtitleGap, var(--st-component-diagramCard-gap));
+    margin-top: var(--st-component-diagramZone-subtitleGap, var(--st-component-diagramCard-gap, 6px));
     min-width: 0;
   }
   .st-diagramZone-subtitle {
     display: block;
     min-width: 0;
-    font-size: var(--st-component-diagramZone-subtitleFontSize);
-    font-weight: var(--st-component-diagramZone-subtitleFontWeight);
-    line-height: var(--st-component-diagramZone-subtitleLineHeight);
+    font-size: var(--st-component-diagramZone-subtitleFontSize, 24px);
+    font-weight: var(--st-component-diagramZone-subtitleFontWeight, 400);
+    line-height: var(--st-component-diagramZone-subtitleLineHeight, 1.3);
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     /* No mid-word break: an over-long word overflows and is diagnosed
        (Astra J4), never silently broken or cut. */

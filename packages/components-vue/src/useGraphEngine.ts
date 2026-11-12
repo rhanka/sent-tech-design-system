@@ -3,10 +3,11 @@ import { createGraphEngine, type GraphEngine, type GraphEngineData, type GraphIn
 import type { GraphRendererOptions } from '@sentropic/graph';
 
 /** One Vue boundary: heavy buffers are raw, only the version and intents signal changes. */
+export const EMPTY_GRAPH_SELECTION: readonly string[] = Object.freeze([]);
 export function useGraphEngine(canvas: ShallowRef<HTMLCanvasElement | undefined>, options?: GraphRendererOptions) {
   const data = shallowRef<GraphEngineData>();
   const version = shallowRef(0);
-  const selection = shallowRef<readonly string[]>([]);
+  const selection = shallowRef<readonly string[]>(EMPTY_GRAPH_SELECTION);
   const hover = shallowRef<string | null>(null);
   const viewport = shallowRef<GraphIntent['viewport']>();
   const filters = shallowRef<GraphIntent['filters']>();
