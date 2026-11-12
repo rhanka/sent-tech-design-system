@@ -20,6 +20,16 @@ const mockPipeline = () => vi.spyOn(engine, "layoutDocument").mockImplementation
 afterEach(() => vi.restoreAllMocks());
 
 describe("layout cache", () => {
+  it("should miss when the effective compatibility rank gap changes", () => {
+    const cache = createLayoutCache();
+    const first = cache.layout(document, { ...options, hints: { rankGap: 48 } });
+    const second = cache.layout(document, { ...options, hints: { rankGap: 96 } });
+    expect(second).not.toBe(first);
+    expect(second).toEqual(engine.layoutDocument(document, { ...options, hints: { rankGap: 96 } }));
+    expect(cache.stats()).toMatchObject({ misses: 2, hits: 0 });
+    expect(cache.layout(document, { ...options, hints: { rankGap: 48 }, metrics: { rankGap: 99 } })).toBe(first);
+  });
+
   it("should return the original object and canonical bytes without running the pipeline again", () => {
     const run = vi.spyOn(engine, "layoutDocument");
     const cache = createLayoutCache({ verifyImmutability: true });

@@ -25,7 +25,7 @@ import {
   relationRoute,
   sceneNodes,
   type CameraFit,
-  type LayoutCache,
+  type LayoutCacheStats,
   type LayoutHints,
   type LayoutMetrics,
   type LayoutOptions,
@@ -48,6 +48,16 @@ export type SceneOccurrenceRef = NonNullable<LayoutOptions["collapsed"]>[number]
 export type ScenePresentation = NonNullable<LayoutOptions["presentation"]>;
 export type SceneLaidOut = Extract<LayoutResult, { readonly status: "laid-out" }>;
 export type SceneOrientations = Readonly<Record<string, LevelOrientation>>;
+
+/** Named public boundary keeps host declaration emission in the canvas layer. */
+export interface SceneLayoutCache {
+  layout(document: SceneDocument, options: LayoutOptions, sourceView?: SceneView): LayoutResult;
+  layoutFolded(document: SceneDocument, sourceView: SceneView, options: LayoutOptions): LayoutResult;
+  has(document: SceneDocument, options: LayoutOptions, sourceView?: SceneView): boolean;
+  clear(): void;
+  dispose(): void;
+  stats(): LayoutCacheStats;
+}
 
 /**
  * `targetWidth` handed to the engine when the host supplies none. The
@@ -77,7 +87,7 @@ export function sceneContentSize(result: LayoutResult | undefined): DiagramScene
 }
 
 export interface SceneLayoutInput {
-  readonly cache?: LayoutCache;
+  readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
   /** Retained source view (authored occurrences, fold groups). Optional: the engine synthesises one. */
   readonly view?: SceneView;
