@@ -9,12 +9,14 @@
 
 import { embeddedExecutorBindings, type ExecutorProfileBindings } from "../bindings.js";
 import { createProfileRegistry, type Profile, type ProfileRegistry } from "../profile.js";
+import { erdProfile } from "./erd.js";
 import { genericProfile } from "./generic.js";
 import { generic2Profile } from "./generic2.js";
 import { archimateSkeletonProfile, bpmnSkeletonProfile, umlSkeletonProfile } from "./skeletons.js";
 import { archimate2Profile } from "./archimate2.js";
 import { uml2Profile } from "./uml2.js";
 
+export * from "./erd.js";
 export * from "./generic.js";
 export * from "./generic2.js";
 export * from "./skeletons.js";
@@ -43,6 +45,7 @@ export const m3ProfileRegistry: ProfileRegistry = createProfileRegistry([
   generic2Profile,
   archimate2Profile,
   uml2Profile,
+  erdProfile,
 ]);
 
 /** All six @1/@2 ids for coexistence and reload witnesses (§3.13.2). */
@@ -52,6 +55,7 @@ export const allProfilesRegistry: ProfileRegistry = createProfileRegistry([
   generic2Profile,
   archimate2Profile,
   uml2Profile,
+  erdProfile,
 ]);
 
 /**
@@ -80,6 +84,7 @@ export const shippedExecutorBindings: ExecutorProfileBindings = lazyBindings([
   generic2Profile,
   archimate2Profile,
   uml2Profile,
+  erdProfile,
 ]);
 
 /**

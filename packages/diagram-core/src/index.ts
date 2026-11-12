@@ -30,3 +30,5 @@ export * from "./canonical.js";
 export * from "./validate.js";
 export * from "./commands.js";
 export * from "./migrate.js";
+
+export * from "./erd.js";
