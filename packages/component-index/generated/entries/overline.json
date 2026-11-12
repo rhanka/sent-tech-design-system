@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Overline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Discreet small-caps section label (group heading above a block).",
     "fr": "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc)."
   },
-  "digest": "sha256:8f22f06cb29edc1ea350029d5199ae133022c335518ada4fc26b0cb6e6ace90f",
+  "digest": "sha256:aa9e9227f2237a8a179fee7598c9ef32d4b1a65ae7721f407f7eeed4b402be7d",
   "displayName": "Overline",
   "format": "component-entry/v1",
   "frameworks": [

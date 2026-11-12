@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MarimekkoChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Marimekko chart: weighted column width with stacked segments.",
     "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
   },
-  "digest": "sha256:94902b1b6d7d04e16e1f3cecce919a795533305ba8931adf659cccf0c917ec3b",
+  "digest": "sha256:4df711e613236d23b2088a5119748c5756833d44defc1ea2b3ff79920eef0b7a",
   "displayName": "MarimekkoChart",
   "format": "component-entry/v1",
   "frameworks": [

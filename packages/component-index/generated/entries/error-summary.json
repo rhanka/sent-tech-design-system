@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ErrorSummary.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Aggregated list of a form's errors, each entry linked to the offending field.",
     "fr": "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif."
   },
-  "digest": "sha256:d27cfc6c44f4874af04e2916ab64127f26d088676cf270cdbd868345b2337c1f",
+  "digest": "sha256:deef0d8060a5e1b508381c7983c8687c5d2f46c0eda1d2805ae30965dc7275fb",
   "displayName": "ErrorSummary",
   "format": "component-entry/v1",
   "frameworks": [

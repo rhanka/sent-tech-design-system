@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:5c0bc3acd5fc88351ef54de20895f3583c94750e38dd2364c4f77be06894ab1e",
+  "digest": "sha256:8ba490d9c13929d060b2a4d53141193164b8aecf2b28f59fbd603109456f2990",
   "entryDigest": "sha256:5272330b2cd9e33bb36b27700a5b5d24a15661c896b6c3705b536a5a08c37160",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

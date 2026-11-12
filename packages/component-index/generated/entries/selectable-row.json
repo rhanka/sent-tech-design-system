@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SelectableRow.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
     "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
   },
-  "digest": "sha256:100f2d622602ffe0706ec39f7e24ff08bfdd77ddbb4869bff3def631421d3e29",
+  "digest": "sha256:706c84d1c6665e7d16912229cf1e602a60a13d19e8390828cda54ccdae169225",
   "displayName": "SelectableRow",
   "format": "component-entry/v1",
   "frameworks": [

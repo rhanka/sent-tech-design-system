@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:330bcfaaf2bf0c965600b2b056d517bf12dba2d12549ffca5a2f6bd2b568c984",
-  "entryDigest": "sha256:2827815fa024a162b0385c7e43df78d5be3496810fc3bad7c4dca7fd4deaaf78",
+  "digest": "sha256:3f6cbf412083d9aba784ae1fc234cbc9381fbd58ea07e0fd33997ea53a9d2ff0",
+  "entryDigest": "sha256:a6123eb1be29b31e35d1289a56954e608a2dd396a307d3e7021b8ba9dad2b12c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -66,7 +66,7 @@
         "declarationPath": "packages/components-angular/dist/Breadcrumb.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BreadcrumbProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:8a25dce8801cc91a5cefc4f0467aaa83afd7cb9dc6387c6a884f93894bde4741",
-  "entryDigest": "sha256:a6f73332e42c86bd9c91ecb73948dd4f49a74d5e7a27eb8cc054062511f7a167",
+  "digest": "sha256:e872d0f6a959cbbdd9f7a14f5c3ecaa2669b52dce80e295b3c36483bcbfa93b3",
+  "entryDigest": "sha256:0be7edba466acedfbc87709158b34ecc7e252b8741e5ab2e9b0479a385b5c31a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -86,7 +86,7 @@
         "declarationPath": "packages/components-angular/dist/ContentSwitcher.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ContentSwitcherProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

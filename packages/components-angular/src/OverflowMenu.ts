@@ -1,4 +1,6 @@
 import {
+  ChangeDetectorRef,
+  inject,
   Component,
   ElementRef,
   EventEmitter,
@@ -10,6 +12,8 @@ import type { AfterViewInit, OnDestroy } from "@angular/core";
 
 import { classNames } from "./classNames.js";
 
+import { injectMenuDependency, MENU_HOST, MENU_HOST_CONTEXT } from "./menu-host.js";
+import type { MenuHost } from "./menu-host.js";
 import { Menu } from "./Menu.js";
 
 import type { MenuActionItem, MenuItem, MenuSelectPath } from "./Menu.js";
@@ -44,6 +48,7 @@ function overflowIsAction(item: MenuItem): item is MenuActionItem {
   selector: "st-overflow-menu",
   standalone: true,
   imports: [Menu],
+  providers: [{ provide: MENU_HOST, useFactory: () => inject(OverflowMenu)[MENU_HOST_CONTEXT] }],
   template: `
     <div
       #host
@@ -79,8 +84,19 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
   static readonly stComponentName = "OverflowMenu";
   readonly componentName = "OverflowMenu";
 
+  private readonly changeDetector = injectMenuDependency(ChangeDetectorRef);
+
   private static nextInstanceId = 0;
   readonly rootMenuId = `st-overflowmenu-${++OverflowMenu.nextInstanceId}`;
+  readonly [MENU_HOST_CONTEXT]: MenuHost = {
+    rootMenuId: this.rootMenuId,
+    select: (keyboard, cascade) => {
+      if (!cascade) return;
+      this.localOpen = false;
+      this.changeDetector?.markForCheck();
+      if (keyboard && cascade) this.triggerRef?.nativeElement.focus();
+    },
+  };
 
   @NgInput() items: MenuItem[] = [];
   @NgInput() label?: string;
@@ -108,6 +124,7 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
     if (event.key === "Escape") {
       event.preventDefault();
       this.localOpen = false;
+      this.changeDetector?.markForCheck();
       try {
         this.triggerRef?.nativeElement?.focus?.();
       } catch {
@@ -115,6 +132,7 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
       }
     } else if (event.key === "Tab") {
       this.localOpen = false;
+      this.changeDetector?.markForCheck();
     }
   };
   private readonly onPointerDown = (event: PointerEvent) => {
@@ -124,6 +142,7 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
     const host = this.hostRef?.nativeElement ?? null;
     if (menuPopoverIsWithin(event, host)) return;
     this.localOpen = false;
+    this.changeDetector?.markForCheck();
   };
 
   get hostClass(): string {
@@ -154,11 +173,13 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
 
   onMenuSelect(item: MenuItem): void {
     this.localOpen = false;
+    this.changeDetector?.markForCheck();
     this.select.emit(item);
   }
 
   onMenuSelectPath(payload: MenuSelectPath): void {
     this.localOpen = false;
+    this.changeDetector?.markForCheck();
     this.selectPath.emit(payload);
   }
 

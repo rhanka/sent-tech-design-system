@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AppChrome.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:1dca89c8e75854798dda777ecabb094bde9295e678e5bac4db8f8178df5d0f3c",
+  "digest": "sha256:abfde6e1a0a46fe2269c62811bdf1292623da28bb1a931878325b64cb5d98a1f",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

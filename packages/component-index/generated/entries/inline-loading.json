@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/InlineLoading.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline loading indicator paired with a label.",
     "fr": "Indicateur de chargement inline accompagné d’un libellé."
   },
-  "digest": "sha256:9a723696a7e0f4d37b633591ceb5d1948dd2e2961fad173f1063495d5ad9d7cb",
+  "digest": "sha256:2a81d41c81a2a03ed4af096b85e3c38a317e47f3f79ce12988a59a42dfab0ce2",
   "displayName": "InlineLoading",
   "format": "component-entry/v1",
   "frameworks": [

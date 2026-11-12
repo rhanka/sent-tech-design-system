@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BumpChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Rankings over time: rising and falling rank lines.",
     "fr": "Classements dans le temps : lignes qui montent et descendent."
   },
-  "digest": "sha256:67bdc684a3d671e44d9193c71b4136933c8424f80f4b2803ae1455f5898a330a",
+  "digest": "sha256:e9870dbb7fa715ab53f28fc632fa827865c7e8cb644f0f7666eac6d06595960b",
   "displayName": "BumpChart",
   "format": "component-entry/v1",
   "frameworks": [

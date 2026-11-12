@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FileUploader.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:7835b03ffdac0b39e94418b0b4c27c7dab60cbb31396452b764954f1086ed259",
+  "digest": "sha256:c76d102cac90c7d6a9cac2bb663bad3b7e3d19893dd9a57dbfa59b7e103d8ada",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

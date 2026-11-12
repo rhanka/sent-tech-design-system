@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:3135c56651d9e64dab99a9c1feb4bd895e3c2d4bcd919e46853d2da2e86ecc63",
-  "entryDigest": "sha256:8207889869320e7aa56d969468f87f7b5bf629859dced58c6e81c84e3ca5caa4",
+  "digest": "sha256:86811b1d18fb8f921113f6eb02a44bf9e399ade2b0b66a858cec47dc82dc948d",
+  "entryDigest": "sha256:6a9fe9c0dbe08bf696eb8c8c0db5510dee2fa97a9041b37e81ccf1c31c2a94f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -54,7 +54,7 @@
         "declarationPath": "packages/components-angular/dist/EmptyState.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EmptyStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

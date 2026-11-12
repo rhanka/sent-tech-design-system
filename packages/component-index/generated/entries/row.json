@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Row.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Row of a 12-column grid with configurable gutter.",
     "fr": "Ligne d'une grille 12 colonnes, gouttière paramétrable."
   },
-  "digest": "sha256:a481a53040faa17e55acb3af48f9921595d4e5254e8e5e1c867b8b52af1c72e4",
+  "digest": "sha256:604c068981a8cb3232389fef3aa319ce5236ed8d34e74de56b2baa50e45aa6e1",
   "displayName": "Row",
   "format": "component-entry/v1",
   "frameworks": [
