@@ -22,6 +22,10 @@ function dom(node: Element): unknown {
   return { tag: node.tagName, attributes, children: [...node.childNodes].flatMap(n => n.nodeType === 1 ? [dom(n as Element)] : n.nodeType === 3 && n.textContent?.trim() ? [n.textContent.replace(/\s+/g, ' ').trim()] : []) };
 }
 describe('ERD Vue/Svelte DOM and ARIA parity', () => {
+  it('should keep token styles identical across both hosts', () => {
+    const styles = ['../components-svelte/src/lib/DiagramSceneFigure.svelte', 'src/DiagramSceneFigure.vue'].map(path => readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim());
+    expect(styles[0]).toBe(styles[1]);
+  });
   for (const source of scenes)
     it('should keep identical expanded and folded DOM for ' + source.id, async () => {
       const data = convertEngramErdScene(source), props = { ...data, registry: m3ProfileRegistry, bindings: shippedExecutorBindings, title: source.id };
@@ -39,6 +43,8 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
         expect(dom(vue.element)).toEqual(dom(svelte.container.querySelector('figure')!));
         const vbutton = vue.find('.st-diagramErd-toggle');
         const sbutton = svelte.container.querySelector<HTMLButtonElement>('.st-diagramErd-toggle')!;
+        expect(sbutton.style.position).toBe('');
+        expect(sbutton.style.getPropertyValue('--st-erd-header-height')).not.toBe('');
         await vbutton.trigger('click');
         await fireEvent.click(sbutton);
         await nextTick();

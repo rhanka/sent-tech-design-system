@@ -67,9 +67,7 @@ export function convertEngramErdScene(scene: EngramErdScene) {
     });
   }
   scene.relations.forEach((relation, index) => {
-    const id = relationRef('r.' + index + '.' + erdLocalId(relation.name)), occurrence = occurrenceRef(id.slice(9));
-    const from = scene.classes.find(c => c.name === relation.from.class);
-    const candidates = from?.fields.filter(f => f.fk?.class === relation.to.class) ?? [];
+    const id = relationRef('r.' + String(index).padStart(4, '0') + '.' + erdLocalId(relation.name)), occurrence = occurrenceRef(id.slice(9));
     const stem = (value: string) => value.toLowerCase().replace(/id$/, '').replace('owned', 'owner');
     const relationStem = stem(relation.name);
     const words = (value: string) => value.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().replace('owned', 'owner').split(' ');
@@ -80,10 +78,15 @@ export function convertEngramErdScene(scene: EngramErdScene) {
         return 100;
       return words(relation.name).filter(w => !['by', 'of', 'to'].includes(w) && words(field.name).includes(w)).length;
     };
-    const fk = candidates.slice().sort((a, b) => score(b) - score(a))[0];
-    const many = relation.from.cardinality.endsWith('n') && relation.to.cardinality.endsWith('n');
-    const row = !many && fk?.fk !== null && fk?.fk !== undefined;
-    const targets = row ? [fieldId(relation.from.class, fk!.name), fieldId(fk!.fk!.class, fk!.fk!.field)] : [entityId(relation.from.class), entityId(relation.to.class)];
+    const pickFk = (owner: string, target: string) => scene.classes.find(c => c.name === owner)?.fields
+      .filter(f => f.fk?.class === target).sort((a, b) => score(b) - score(a))[0];
+    const forward = pickFk(relation.from.class, relation.to.class);
+    const reverse = forward ? undefined : pickFk(relation.to.class, relation.from.class);
+    const targets = forward?.fk
+      ? [fieldId(relation.from.class, forward.name), fieldId(forward.fk.class, forward.fk.field)]
+      : reverse?.fk
+        ? [fieldId(reverse.fk.class, reverse.fk.field), fieldId(relation.to.class, reverse.name)]
+        : [entityId(relation.from.class), entityId(relation.to.class)];
     const endpoints = ['from', 'to'].map((role, i) => ({ role, target: targets[i]! }));
     relations[id] = { id, profile: 'erd@1', type: 'relationship', endpoints, attributes: {
         name: text(relation.name), label: text(relation.roleLabel),
