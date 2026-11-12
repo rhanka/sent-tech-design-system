@@ -134,6 +134,9 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
   const gapAcross = rows ? options.gapY : options.gapX;
 
   let best: { shelves: Shelves; score: number; width: number } | undefined;
+  // Degenerate boxes (zero sizes and zero gaps) can leave the single column as
+  // the only fill: it is then kept rather than leaving the level unplaced.
+  let fallback: Shelves | undefined;
   const seen = new Set<string>();
   let prefix = 0;
   for (let index = 0; index < count; index += 1) {
@@ -142,9 +145,15 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
     const key = shelves.shelves.map((shelf) => shelf.length).join(",");
     if (seen.has(key)) continue;
     seen.add(key);
-    // P-3 admissibility (DEC-1): with two boxes or more, the candidate whose
-    // every shelf holds a single box is removed before scoring.
-    if (count >= 2 && shelves.shelves.length === count) continue;
+    // P-3 admissibility (DEC-1, BF-1): with two boxes or more, the candidate
+    // that stacks every box in one single vertical column is removed before
+    // scoring, in both forms. A shelf is a row in rows form — the column is
+    // the candidate of `count` one-box shelves — and a column in columns form
+    // — the column is the candidate of one shelf.
+    if (count >= 2 && (rows ? shelves.shelves.length === count : shelves.shelves.length === 1)) {
+      fallback ??= shelves;
+      continue;
+    }
     const width = rows ? shelves.main : shelves.cross;
     const height = rows ? shelves.cross : shelves.main;
     const score = count === 1 ? 0 : packScore(width, height, shelves.slack, options);
@@ -158,7 +167,13 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
       best = { shelves, score, width };
     }
   }
-  const chosen = best!.shelves;
+  if (best === undefined) {
+    const shelves = fallback!;
+    const width = rows ? shelves.main : shelves.cross;
+    const height = rows ? shelves.cross : shelves.main;
+    best = { shelves, score: packScore(width, height, shelves.slack, options), width };
+  }
+  const chosen = best.shelves;
   const positions: PackPosition[] = new Array<PackPosition>(count);
   let crossCursor = 0;
   chosen.shelves.forEach((shelf, shelfIndex) => {
@@ -179,7 +194,7 @@ function pack(boxes: readonly PackBox[], options: PackOptions, orientation: Pack
     height: rows ? chosen.cross : chosen.main,
     rows: chosen.shelves,
     positions,
-    score: best!.score,
+    score: best.score,
   };
 }
 
@@ -193,6 +208,48 @@ export function packColumns(boxes: readonly PackBox[], options: PackOptions): Pa
   return pack(boxes, options, "columns");
 }
 
+export interface SeatedShelves {
+  readonly positions: readonly { readonly x: number; readonly y: number }[];
+  readonly width: number;
+  readonly height: number;
+}
+
+/**
+ * Seat boxes on given shelves (BF-6: shelf membership is decided once, at the
+ * base gaps, and never re-wrapped). Each gutter takes its own gap: `alongGap`
+ * is the gap after the box at `slot` of `shelf`, `acrossGap` the gap after
+ * `shelf`. With one along gap per slot index on every shelf, boxes of equal
+ * size keep their column starts aligned.
+ */
+export function seatShelves(
+  boxes: readonly PackBox[],
+  shelves: readonly (readonly number[])[],
+  orientation: PackOrientation,
+  alongGap: (shelf: number, slot: number) => number,
+  acrossGap: (shelf: number) => number,
+): SeatedShelves {
+  const rows = orientation === "rows";
+  const positions: { x: number; y: number }[] = new Array<{ x: number; y: number }>(boxes.length);
+  let crossCursor = 0;
+  let main = 0;
+  let cross = 0;
+  shelves.forEach((shelf, shelfIndex) => {
+    let alongCursor = 0;
+    let thickness = 0;
+    shelf.forEach((boxIndex, slot) => {
+      const box = boxes[boxIndex]!;
+      positions[boxIndex] = rows ? { x: alongCursor, y: crossCursor } : { x: crossCursor, y: alongCursor };
+      const length = rows ? box.width : box.height;
+      main = Math.max(main, alongCursor + length);
+      alongCursor += length + (slot + 1 < shelf.length ? alongGap(shelfIndex, slot) : 0);
+      thickness = Math.max(thickness, rows ? box.height : box.width);
+    });
+    cross = crossCursor + thickness;
+    crossCursor += thickness + (shelfIndex + 1 < shelves.length ? acrossGap(shelfIndex) : 0);
+  });
+  return { positions, width: rows ? main : cross, height: rows ? cross : main };
+}
+
 export interface OrientationChoice {
   readonly orientation: PackOrientation;
   readonly result: PackResult;
@@ -201,9 +258,14 @@ export interface OrientationChoice {
 }
 
 /**
- * O-1–O-4: score both forms on the total P-3 score and keep the lower one;
- * equal scores keep `rows`; a previous orientation is kept while the two
- * scores are closer than `hysteresis`. A level of zero or one box is `rows`.
+ * O-1–O-4: score both forms on the total P-3 score and keep the lower one.
+ *
+ * O-4 precedes O-3 (SPEC §4.2): while the two scores sit inside the hysteresis
+ * band the previous orientation is kept, even when both forms fill one same
+ * outer box (three equal cards: `[2, 1]` either way, 944 × 424). The remaining
+ * gap is shelf-slack bookkeeping, still a near-boundary choice the band damps.
+ * Only exact ties (within `PACK_SCORE_EPSILON`) read as `rows` regardless of
+ * the previous orientation. A level of zero or one box is `rows`.
  */
 export function chooseOrientation(
   boxes: readonly PackBox[],

@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:828bca0ebf19ab8a9e51159d0bf8956071a83bcb1403f219aec4d57066f91505",
-  "entryDigest": "sha256:5a97ba324277ab57daea5fdae3398962a1c03d72caba11505ad0cc775f813279",
+  "digest": "sha256:f4f613119cea455ed28184bf835375da01171ed3b70494f3350f5f8273f87856",
+  "entryDigest": "sha256:a8d5ea9b5e3a251bc70031674dfb01323bfcef96325d0df23c00087e8e6b23ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-svelte/dist/PriorityMatrix.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PriorityMatrixProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toggle.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:58e03a8dfec598a0ceb747923bda386d49160905622c44d45826174a9c6756ab",
+  "digest": "sha256:420e1f64331eb2d4d83577283291bf10063460ec98d5cb47c6fc046173ce048a",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

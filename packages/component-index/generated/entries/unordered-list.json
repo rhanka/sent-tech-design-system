@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/UnorderedList.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bulleted unordered list, with nesting.",
     "fr": "Liste à puces, avec imbrication."
   },
-  "digest": "sha256:7c7e776bbe26e87becb813b6acb49933da179ea1f00389d3118cef89934ca4b3",
+  "digest": "sha256:a03c32298d97abfe290efe1164dfc7c7753d79577d342b504d1aa15c80859fca",
   "displayName": "UnorderedList",
   "format": "component-entry/v1",
   "frameworks": [

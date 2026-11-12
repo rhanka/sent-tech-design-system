@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:8ac46416253f86f24a794eb47f65b992f52361315b383994d49580c943be4d0b",
-  "entryDigest": "sha256:55bb2d19337e10669be4549f65976fac6268687258c3b8aa6d021559687a23cc",
+  "digest": "sha256:d81b6d53c9cbaacb919499f23bbe83eb66e01ed4338141c17ca37d4a12658183",
+  "entryDigest": "sha256:1283aed18d0df595c0766afb92ceefad4176f5c7f54beb343ae2cc47320e4b3b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -385,7 +385,7 @@
         "declarationPath": "packages/components-svelte/dist/Combobox.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboboxProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
