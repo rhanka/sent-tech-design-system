@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:3135c56651d9e64dab99a9c1feb4bd895e3c2d4bcd919e46853d2da2e86ecc63",
-  "entryDigest": "sha256:8207889869320e7aa56d969468f87f7b5bf629859dced58c6e81c84e3ca5caa4",
+  "digest": "sha256:6542361d5c982bfd39477eff1686a576d1ad6739cb0b8d9652b3a0018a0c105a",
+  "entryDigest": "sha256:d50b63ea6e31ecb6395bd4812816b89bfedc28f3614c8fe612662df8318e86b3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -208,7 +208,7 @@
         "declarationPath": "packages/components-vue/dist/EmptyState.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

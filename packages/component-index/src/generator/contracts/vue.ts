@@ -109,6 +109,25 @@ function componentValueType(input: FrameworkInput): ts.Type | undefined {
   return undefined;
 }
 
+function scanPublicEmits(checker: ts.TypeChecker, type: ts.Type, scanned: ScannedEvents): void {
+  // Compiled script-setup components carry object-form emits. Read their
+  // public $emit overloads without mistaking setup handlers for events.
+  for (const constructor of checker.getSignaturesOfType(type, ts.SignatureKind.Construct)) {
+    const instance = checker.getReturnTypeOfSignature(constructor);
+    const emit = checker.getPropertyOfType(instance, "$emit");
+    if (emit === undefined) continue;
+    const emitType = checker.getTypeOfSymbol(emit);
+    for (const signature of checker.getSignaturesOfType(emitType, ts.SignatureKind.Call)) {
+      const event = signature.parameters[0];
+      if (event === undefined) continue;
+      const names = literalUnion(checker, checker.getTypeOfSymbol(event));
+      for (const name of names ?? []) {
+        if (!scanned.emits.includes(name)) scanned.emits.push(name);
+      }
+    }
+  }
+}
+
 export function extractVue(input: FrameworkInput): FrameworkBody {
   const checker = input.checker;
   const found = findPropsType(input);
@@ -130,7 +149,10 @@ export function extractVue(input: FrameworkInput): FrameworkBody {
   // Events: emits strings plus onX handler members of the component value type.
   const scanned: ScannedEvents = { emits: [], onHandlers: [] };
   const componentType = componentValueType(input);
-  if (componentType !== undefined) scanTypeArguments(checker, componentType, scanned, new Set());
+  if (componentType !== undefined) {
+    scanTypeArguments(checker, componentType, scanned, new Set());
+    scanPublicEmits(checker, componentType, scanned);
+  }
   const handlerByName = new Map(scanned.onHandlers.map((handler) => [handler.name, handler.type]));
   const emitted = new Set<string>();
   for (const name of scanned.emits) {

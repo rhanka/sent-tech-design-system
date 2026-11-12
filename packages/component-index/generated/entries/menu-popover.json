@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:2c82d16debc6b13800653576fda92fcdeb94ea714114bd52d5edc2392ba6e883",
+      "digest": "sha256:681732be2e3863661c4dcebebc17be4cfdc2a90735e632f1648176c7b408c5d8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MenuPopover.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
     "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
   },
-  "digest": "sha256:30a31d0a24703ca491212d1be2df55687720dea4ec2666ebdaa16e006c3c4e01",
+  "digest": "sha256:af55c1e052cd46bbe5e342300acd956f42c21fd49c182dbf57a1ce79d52c7cd4",
   "displayName": "MenuPopover",
   "format": "component-entry/v1",
   "frameworks": [
