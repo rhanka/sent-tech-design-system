@@ -95,6 +95,18 @@ export type {
   ZoneDiagnostic,
   ZoneChildSpec,
 } from "./diagramCardModel.js";
+export { default as DiagramSceneFigure } from "./DiagramSceneFigure.svelte";
+export type {
+  DiagramSceneCamera,
+  DiagramSceneFigureLabels,
+  DiagramSceneFigureProps,
+} from "./DiagramSceneFigure.svelte";
+export type {
+  SceneDocument,
+  SceneOccurrenceRef,
+  ScenePresentation,
+  SceneView,
+} from "./diagramSceneModel.js";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";

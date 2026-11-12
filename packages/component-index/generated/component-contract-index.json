@@ -1,29 +1,29 @@
 {
-  "contractsRevision": "sha256:26af5f2fa8b0b5974d2dec079c1c6e674ca5fe84b6db8adaa36edb2647445df4",
+  "contractsRevision": "sha256:8c95cdfe6a6a97cbca6cf0657f1701b82c5860bf39887de0f5fcdd6d8ab101b2",
   "counts": {
     "byFramework": {
       "angular": {
         "complete": 109,
-        "none": 6,
+        "none": 7,
         "partial": 97
       },
       "react": {
         "complete": 115,
-        "none": 4,
+        "none": 5,
         "partial": 93
       },
       "svelte": {
         "complete": 161,
         "none": 1,
-        "partial": 50
+        "partial": 51
       },
       "vue": {
         "complete": 99,
-        "none": 5,
+        "none": 6,
         "partial": 108
       }
     },
-    "contracts": 212
+    "contracts": 213
   },
   "entries": [
     {
@@ -765,6 +765,19 @@
       "contractDigest": "sha256:557832939aa2ad6caa96ccbf36bbdf430e247cdaf139a49c0120df03090e4080",
       "entryDigest": "sha256:5272330b2cd9e33bb36b27700a5b5d24a15661c896b6c3705b536a5a08c37160",
       "path": "contracts/diagram-card.json",
+      "producerId": "sentropic-ds"
+    },
+    {
+      "completeness": {
+        "angular": "none",
+        "react": "none",
+        "svelte": "partial",
+        "vue": "none"
+      },
+      "componentId": "diagram-scene-figure",
+      "contractDigest": "sha256:3764f23a85cf71c54b0147615391c573b64d7bd3881db707afa322b16596d0b9",
+      "entryDigest": "sha256:c550a0cc2fa8028826d37e7b998341a12388f633ac5e00af1978d2d0b48eb910",
+      "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
     },
     {
@@ -2478,7 +2491,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:263a9b3932472985df6f26af8b9c05388c01acac3a84f396e417925a4881a0e8",
+      "contractDigest": "sha256:a870b61135a8d2c83ff452a8409f1c56f27a1fa7116748c5559d23c26da99193",
       "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2634,7 +2647,7 @@
         "vue": "complete"
       },
       "componentId": "typography",
-      "contractDigest": "sha256:a70e91a7652bf920aa9bd687d1c52ffd506a89b939ea38464d2582891a57b9d2",
+      "contractDigest": "sha256:f30147cdde57a7a3e2502416437def3b099da502e641de60f0693f875fb38b9b",
       "entryDigest": "sha256:40c2269e574d22d1d6bdd7b2ff08feb8f2689957f61d4d68979e7367c0d60c83",
       "path": "contracts/typography.json",
       "producerId": "sentropic-ds"
@@ -2811,5 +2824,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "87d2a0750a1c05170b31ff2584492e0065033239"
+  "sourceCommit": "3b937bde8cf261c2bcaba45ccfe3dce9e0596b1b"
 }
