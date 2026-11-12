@@ -7,10 +7,13 @@ import {
   cameraFit,
   chooseOrientation,
   clampZoom,
+  DEFAULT_EDGE_LABEL_FONT_SIZE,
   DEFAULT_MAX_DISPLAY_SCALE,
   DEFAULT_MIN_READABLE_SCALE,
+  edgeLabelCssPx,
   DEFAULT_ROW_PACK,
   fitBox,
+  MIN_EDGE_LABEL_CSS_PX,
   packColumns,
   packRows,
   resolveRowPack,
@@ -226,12 +229,26 @@ describe("camera fit (§5)", () => {
   });
 
   it("readability floor: a drawing larger than the floor allows is held at the floor and pans", () => {
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.42);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
     expect(huge.zoomFit).toBeCloseTo(810 / 8000, 6);
-    expect(huge.zoom).toBe(0.42);
+    expect(huge.zoom).toBe(0.45);
     expect(huge.pans).toBe(true);
     // Zoom-out still reaches the whole drawing (Z-2).
     expect(clampZoom(0, huge)).toBeCloseTo(810 / 8000, 6);
+  });
+
+  it("§5.3: an edge label renders at 8 CSS px or more at the floor; 0.45 is the smallest two-decimal floor that holds it", () => {
+    expect(DEFAULT_EDGE_LABEL_FONT_SIZE).toBe(18);
+    expect(edgeLabelCssPx(DEFAULT_MIN_READABLE_SCALE)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+    expect(edgeLabelCssPx(DEFAULT_MIN_READABLE_SCALE)).toBeCloseTo(8.1, 6);
+    // The former floor (0.42) and the next step down (0.44) both render the label under 8 CSS px.
+    expect(edgeLabelCssPx(0.42)).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
+    expect(edgeLabelCssPx(0.44)).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
+    // Every fit, whatever the drawing, shows the label at the minimum or more.
+    for (const height of [200, 810, 2000, 8000, 40000]) {
+      const fit = cameraFit({ bounds: { width: 2000, height }, viewWidth: 1440, windowHeight: 2000 });
+      expect(edgeLabelCssPx(fit.zoom), String(height)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+    }
   });
 });

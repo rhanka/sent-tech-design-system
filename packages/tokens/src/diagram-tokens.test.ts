@@ -55,6 +55,9 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     foldedHeaderTextWidth: "290px",
     proposedDashArray: "4 5",
     fontFamily: "var(--st-font-sans)",
+    // DC-2a root gaps: aliases of the zone gaps.
+    rootGapInline: "var(--st-component-diagramZone-childGapInline)",
+    rootGapBlock: "var(--st-component-diagramZone-childGapBlock)",
   },
   diagramZone: {
     radius: "0",
@@ -88,6 +91,20 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     toggleTopInset: "10px",
     footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
     proposedDashArray: "4 5",
+    // DC-2a row-pack spacing (SPEC_EVOL_DC2A §3.5).
+    childGapInline: "24px",
+    childGapBlock: "24px",
+    gapInlineMax: "32px",
+    gapBlockMax: "32px",
+    rowPackTargetAspect: "1.78",
+  },
+  // DC-2a scene camera, transition and edge-label typography (§5, §4.3).
+  diagramScene: {
+    maxDisplayScale: "0.62",
+    minReadableScale: "0.45",
+    transitionDuration: "240ms",
+    edgeLabelFontSize: "18px",
+    edgeLabelLineHeight: "22px",
   },
   diagramIcon: {
     viewBox: "0 0 64 64",
