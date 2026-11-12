@@ -1,7 +1,7 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:8c55377e45631c5e06ec7e9b90bb6cb9bf32a01500cd7707977be53ff30ce9a3",
+  "digest": "sha256:d18dc950c837568863f1a9f7a24e458b2701aef3c356e30bf1f6a8c6ddd78abd",
   "entryDigest": "sha256:46d300d6243b048700f542dfd43ea736de97bc4e9e65f6acb84ca6c737e53c26",
   "format": "component-contract/v1",
   "frameworks": {
@@ -89,7 +89,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterBarProps",

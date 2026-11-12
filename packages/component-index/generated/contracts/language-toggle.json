@@ -1,7 +1,7 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:3b2b35ef459b35856c0814b3977e1561eff8ab0200576b3531dc5fcdd649a775",
+  "digest": "sha256:4d88b9a5672a2bef8cc247042fe57cd04a24a0098ea52cf14abf5063c52eb14c",
   "entryDigest": "sha256:08aa4d755be34623c6bf5040934a8a07f2d8d08a31285b7f7f347a94383450ac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -139,7 +139,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LanguageToggleProps",
