@@ -91,7 +91,7 @@ import {
   type SlotMeasurement,
 } from "./measure.js";
 import { chooseOrientation, packColumns, packRows, seatShelves, type PackBox } from "./pack.js";
-import { routeEdges } from "./route.js";
+import { labelDetour, routeEdges, routesConflict } from "./route.js";
 import { rectsIntersect } from "../geometry.js";
 import type { Rect, Vec2 } from "../transform.js";
 import { evaluateVisibility } from "../visibility.js";
@@ -920,14 +920,11 @@ export function layoutMeasured(
         2 * CONTENT_INSET,
         CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + LAST_CHILD_TO_BOTTOM_GAP,
       );
-      // BLK-2: reserve U-channel headroom for labelled intra-row edges that
-      // share one shelf. One 30 px lane below the row fits inside `inner(C)`
-      // (4 px insets); a second overlapping label needs its own staggered
-      // lane (see usedUTracks) and stays unplaced under the 32 px cap —
-      // documented as saturated (AC-21 amendment), not a wider gutter.
-      // A single lane keeps fill waste minimal (frame-fill priority).
+      // BF-6: reserve measured U-channel headroom for labelled edges on one
+      // shelf, including wrapped labels and parallel channels. This is
+      // container content below its children; sibling gutters keep their cap.
       const packed = packedRuns.get(run.key);
-      let uEdges = 0;
+      let uExtra = 0;
       if (packed !== undefined) {
         const zone = runHasZone(run);
         const baseGap = packed.rows ? (zone ? rowGaps.zoneX : rowGaps.cardX) : (zone ? rowGaps.zoneY : rowGaps.cardY);
@@ -942,10 +939,9 @@ export function layoutMeasured(
           if (!sameShelf) continue;
           const need =
             (packed.rows ? labelSize.width : labelSize.height) + 2 * metrics.labelMargin;
-          if (need > baseGap) uEdges += 1;
+          if (need > baseGap) uExtra += labelSize.height + 2 * metrics.labelMargin;
         }
       }
-      const uExtra = uEdges > 0 ? 30 : 0;
       const levelHeight = level.height + uExtra;
       const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * CONTENT_INSET : 0));
       outerWidths.set(id, outer);
@@ -1212,8 +1208,7 @@ export function layoutMeasured(
         };
         if (vBridge >= size.height + 2 * metrics.labelMargin && !shapesOf(id).some((shape) => rectsIntersect(shape, band))) continue;
       }
-      const probe = probeMarginOf(sideBySide ? size.height : size.width);
-      if (probe < 0) continue;
+      const probe = metrics.labelMargin;
       const pairKey = [source, target].sort().join("|");
       const nth = labelledPairs.get(pairKey) ?? 0;
       labelledPairs.set(pairKey, nth + 1);
@@ -1223,7 +1218,8 @@ export function layoutMeasured(
         placementParentOf(source) !== undefined && placementParentOf(source) === placementParentOf(target)
           ? placementParentOf(source)!
           : "root";
-      const used = usedUTracks.get(containerKey) ?? 0;
+      const trackKey = `${containerKey}|${sideBySide ? Math.max(a.y + a.height, b.y + b.height) : Math.max(a.x + a.width, b.x + b.width)}`;
+      const used = usedUTracks.get(trackKey) ?? 0;
       const depth = (sideBySide ? size.height : size.width) + 2 * probe;
       const pitch = depth + 2 * metrics.labelMargin;
       const laneFreeRow = (side: "south" | "north", attempt: number): boolean => {
@@ -1290,7 +1286,7 @@ export function layoutMeasured(
           for (let attempt = used; attempt < used + 3 && !placed; attempt += 1) {
             if (laneFreeRow(side, attempt)) {
               sideOverrides.set(id, { source: side, target: side, turn: true });
-              usedUTracks.set(containerKey, attempt + 1);
+              usedUTracks.set(trackKey, attempt + 1);
               placed = true;
             }
           }
@@ -1301,7 +1297,7 @@ export function layoutMeasured(
           for (let attempt = used; attempt < used + 3 && !placed; attempt += 1) {
             if (laneFreeCol(side, attempt)) {
               sideOverrides.set(id, { source: side, target: side, turn: true });
-              usedUTracks.set(containerKey, attempt + 1);
+              usedUTracks.set(trackKey, attempt + 1);
               placed = true;
             }
           }
@@ -1400,9 +1396,9 @@ export function layoutMeasured(
       const spareY = Math.max(0, width / rowPack.targetAspect - height) / 2;
       const allowance = metrics.clearance + pitch;
       labelLimit = {
-        x: left - spareX - allowance,
+        x: left - spareX - metrics.clearance - pitchX,
         y: drawingTop - spareY - allowance,
-        width: width + 2 * (spareX + allowance),
+        width: width + 2 * (spareX + metrics.clearance + pitchX),
         height: height + 2 * (spareY + allowance),
       };
       const lanes = Math.min(labelSizes.size, OUTER_LANES, 1 + Math.floor(spareY / pitch));
@@ -1424,6 +1420,7 @@ export function layoutMeasured(
     const routed = routeEdges({
       rects,
       requests,
+      avoidFallbackInteriors: true,
       clearance: metrics.clearance,
       barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band),
       lanes: { xs: outerLanesX, ys: outerLanes },
@@ -1441,24 +1438,21 @@ export function layoutMeasured(
       const retried = routeEdges({
         rects,
         requests: retryRequests,
+        avoidFallbackInteriors: true,
         clearance: 2,
         barriers: [...titleBands].sort(([left], [right]) => byString(left, right)).map(([, band]) => band),
         lanes: { xs: outerLanesX, ys: outerLanes },
       });
       for (const [id, points] of retried.routes) {
         if (!failed.has(id) || retried.obstructed.includes(id) || retried.escaped.includes(id)) continue;
-        // The 2 px A* route avoids all grown (hence raw) interiors by
-        // construction; keep it only when it does not add a card crossing.
+        const request = requests.find((candidate) => candidate.id === id)!;
+        if (requests.some((other) => other.id !== id && other.pairKey === request.pairKey
+          && routesConflict(points, retryRoutes.get(other.id)!))) continue;
+        // Preserve the routes that already succeeded, including their pair
+        // reservations: the local retry did not search against those routes.
         retryRoutes.set(id, points);
         retryObstructed.delete(id);
       }
-    }
-    for (const id of [...retryObstructed].sort(byString)) {
-      warnings.push({
-        code: "route-obstructed",
-        refs: [id],
-        message: `no orthogonal route around the obstacles was found for ${id}; an elbow is drawn instead`,
-      });
     }
     // BLK-3: an escape means the clamped route failed and the router fell back
     // to unclamped global routing — a containment failure, never silent.
@@ -1489,9 +1483,88 @@ export function layoutMeasured(
     const taken: Rect[] = [];
     const unplaced: typeof entries = [];
     for (const entry of entries) {
-      const choice = placePackedLabel(entry, shapesOf(entry.id), taken, metrics.labelMargin);
-      if (choice === undefined) {
+      const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
+      let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
+      const probeMargin = probeMarginOf(entry.size.height);
+      // Prefer the existing bridge in a capped, label-bearing gutter to an
+      // exterior detour. Pass 2 will supply its measured transverse margin.
+      if (plan === undefined && choice === undefined && !retryObstructed.has(entry.id) && probeMargin >= 0
+        && placementParentOf(edge.source.entity) === placementParentOf(edge.target.entity)
+        && placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin, probeMargin) !== undefined) {
         unplaced.push(entry);
+        continue;
+      }
+      if (choice === undefined || retryObstructed.has(entry.id)) {
+        choice = undefined;
+        const request = requests.find((candidate) => candidate.id === entry.id)!;
+        const samePair = requests.filter((candidate) => candidate.id !== entry.id && candidate.pairKey === request.pairKey)
+          .map((candidate) => retryRoutes.get(candidate.id)!);
+        const shapes = shapesOf(entry.id);
+        const margin = probeMargin;
+        const xs = new Set<number>([request.start.x, request.end.x]);
+        const ys = new Set<number>(outerLanes);
+        for (const rect of shapes) {
+          xs.add(rect.x - metrics.clearance);
+          xs.add(rect.x + rect.width + metrics.clearance);
+          for (const pad of [metrics.labelMargin, Math.max(0, margin)]) {
+            ys.add(rect.y - entry.size.height / 2 - pad);
+            ys.add(rect.y + rect.height + entry.size.height / 2 + pad);
+          }
+        }
+        for (const end of [request.start, request.end]) {
+          xs.add(end.x - entry.size.width - 2 * metrics.labelMargin);
+          xs.add(end.x + entry.size.width + 2 * metrics.labelMargin);
+        }
+        const detour = labelDetour({ request, shapes, earlier: samePair, xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+          accepts: (points) => {
+            return placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined;
+          },
+        });
+        if (detour !== undefined) {
+          retryRoutes.set(entry.id, detour);
+          retryObstructed.delete(entry.id);
+          choice = placePackedLabel({ ...entry, route: detour }, fixedShapes, taken, metrics.labelMargin);
+        } else if (margin >= 0) {
+          const probeRoute = labelDetour({ request, shapes, earlier: samePair, xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+            accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin, margin) !== undefined,
+          });
+          if (probeRoute !== undefined) retryRoutes.set(entry.id, probeRoute);
+        }
+        // A saturated dock exit cannot be repaired by moving the remote
+        // segment. Try an ordinary pair's other faces, keeping every other
+        // edge's docks and route fixed. The full-route checks still bind.
+        const sharesPort = drawnEdges.some((other) => other !== edge && [other.source.port, other.target.port]
+          .some((port) => port !== undefined && (port === edge.source.port || port === edge.target.port)));
+        if (choice === undefined && edge.source.entity !== edge.target.entity && !sharesPort
+          && !isAncestor(filteredGraph, edge.source.entity, edge.target.entity)
+          && !isAncestor(filteredGraph, edge.target.entity, edge.source.entity)) {
+          const sides = ["north", "south", "east", "west"] as const;
+          const facePairs = [
+            ...sides.map((side) => [side, side] as const),
+            ...sides.flatMap((source) => sides.filter((target) => target !== source).map((target) => [source, target] as const)),
+          ];
+          for (const [source, target] of facePairs) {
+            const overrides = new Map(sideOverrides);
+            overrides.set(entry.id, { source, target, turn: source === target });
+            const pair = dockEdges({ graph: filteredGraph, rects, direction: "top-to-bottom", metrics,
+              labelSizes: new Map(), fixed: true, sideOverrides: overrides }).docks.get(entry.id)!;
+            const alternative = { ...request, start: pair.source.point, startExit: pair.source.exit,
+              end: pair.target.point, endExit: pair.target.exit };
+            const route = labelDetour({ request: alternative, shapes, earlier: samePair,
+              xs: [...xs].sort((a, b) => a - b), ys: [...ys].sort((a, b) => a - b),
+              accepts: (points) => placePackedLabel({ ...entry, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
+            });
+            if (route === undefined) continue;
+            retryRoutes.set(entry.id, route);
+            retryObstructed.delete(entry.id);
+            finalDocks.set(entry.id, pair);
+            choice = placePackedLabel({ ...entry, route }, fixedShapes, taken, metrics.labelMargin);
+            break;
+          }
+        }
+      }
+      if (choice === undefined) {
+        unplaced.push({ ...entry, route: retryRoutes.get(entry.id)! });
         continue;
       }
       labelBoxes.set(entry.id, choice.box);
@@ -1499,6 +1572,9 @@ export function layoutMeasured(
     }
     for (const entry of unplaced) {
       warnings.push({ code: "label-unplaced", refs: [entry.id], message: `no segment holds the label of ${entry.id}` });
+    }
+    for (const id of [...retryObstructed].sort(byString)) {
+      warnings.push({ code: "route-obstructed", refs: [id], message: `no orthogonal route around the obstacles was found for ${id}; an elbow is drawn instead` });
     }
 
     // §3.5 edge-aware gaps (BF-6). Every gutter of every run, read back from
@@ -1590,10 +1666,16 @@ export function layoutMeasured(
     for (const entry of unplaced) {
       const probe = probeMarginOf(entry.size.height);
       if (probe < 0) continue;
-      const choice = placePackedLabel(entry, shapesOf(entry.id), probed, metrics.labelMargin, probe);
+      const choice = placePackedLabel(entry, fixedShapes, probed, metrics.labelMargin, probe);
       if (choice === undefined) continue;
       probed.push(choice.box);
+      const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
+      const shared = sharedContainerOf(edge.source.entity, edge.target.entity);
+      const level = shared === undefined ? ROOT_LEVEL_KEY : representativeOf(shared);
       for (const gutter of gutters) {
+        // S-1: an outgoing edge may use a level's base gutter, but cannot
+        // change its geometry when a different level is folded.
+        if (!gutter.id.startsWith(`${level}|`)) continue;
         if (!gutter.strips.some((strip) => rectsIntersect(strip, choice.box))) continue;
         const needed = (gutter.horizontal ? entry.size.height : entry.size.width) + 2 * metrics.labelMargin;
         if (needed > gutter.max || needed <= gutter.gap) continue;

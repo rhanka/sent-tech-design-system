@@ -19,6 +19,7 @@ import { formatDiagnostics, m3ProfileRegistry, shippedExecutorBindings, validate
 import { describe, expect, it } from "vitest";
 
 import { DEFAULT_MIN_READABLE_SCALE, MIN_EDGE_LABEL_CSS_PX } from "../../../src/index.js";
+import { sharesSegment } from "../fixtures.js";
 import {
   BASE_GAP,
   EDGE_LABEL_FONT_SIZE,
@@ -214,6 +215,31 @@ describe("DC-2a L2 row-pack gates", () => {
     expect(regressions).toEqual([]);
   });
 
+  it("L-R9: full routes of one unordered pair never share a segment or cross, including repaired dock joins", () => {
+    const conflicts: string[] = [];
+    for (const view of views) {
+      const routes = layouts.get(view.key)!.routes;
+      routes.forEach((route, index) => {
+        const pair = [route.source, route.target].sort().join("|");
+        for (const other of routes.slice(index + 1)) {
+          if ([other.source, other.target].sort().join("|") !== pair) continue;
+          // Independent geometry audit: do not reuse the router's predicate.
+          const crosses = route.points.slice(1).some((end, i) => other.points.slice(1).some((otherEnd, j) => {
+            const start = route.points[i]!;
+            const otherStart = other.points[j]!;
+            const [h1, h2, v1, v2] = start.y === end.y
+              ? [start, end, otherStart, otherEnd] : [otherStart, otherEnd, start, end];
+            return h1.y === h2.y && v1.x === v2.x
+              && Math.min(h1.x, h2.x) < v1.x && v1.x < Math.max(h1.x, h2.x)
+              && Math.min(v1.y, v2.y) < h1.y && h1.y < Math.max(v1.y, v2.y);
+          }));
+          if (sharesSegment(route.points, other.points) || crosses) conflicts.push(`${view.key} ${short(route.id)} / ${short(other.id)}`);
+        }
+      });
+    }
+    expect(conflicts).toEqual([]);
+  });
+
   it("AC-2/BF-1: no level of two siblings or more is stacked in one single vertical column", () => {
     const violations: string[] = [];
     for (const view of views) {
@@ -251,10 +277,10 @@ describe("DC-2a L2 row-pack gates", () => {
       // A single visible box has one possible drawing; two cards alone are gated above.
       if (a.visible <= 2) continue;
       if (!(a.logAspectError < b.logAspectError)) violations.push(`${view.key} aspect ${a.logAspectError} !< ${b.logAspectError}`);
-      // Frame fill compares only where the fit constrained the baseline: a
-      // view already at the maximum display scale fills by its area alone,
-      // and a tighter drawing of the same cards is not a regression.
-      if (b.frameScale < MAX_DISPLAY_SCALE && !(a.frameFillRatio > b.frameFillRatio)) {
+      // §7.3 binds every transition view, including cap-limited folded
+      // baselines. A compact drawing that cannot beat it must fail by name.
+      const transition = ["vue-globale", "ajout-preprod", "migration-cluster-mesh"].includes(view.caseId);
+      if ((transition || b.frameScale < MAX_DISPLAY_SCALE) && !(a.frameFillRatio > b.frameFillRatio)) {
         violations.push(`${view.key} frame fill ${a.frameFillRatio} !> ${b.frameFillRatio}`);
       }
       if (!(a.frameScale >= b.frameScale)) violations.push(`${view.key} frame scale ${a.frameScale} !>= ${b.frameScale}`);
@@ -452,7 +478,7 @@ describe("DC-2a §7.3 gates (spec thresholds, no arbitration list)", () => {
     // BLK-1: hard gate as written — no arbitration list. Failing views named.
     const violations = views
       .filter((view) => after[view.key]!.visibleLeaves >= 9 && !(after[view.key]!.fillRatio >= before[view.key]!.fillRatio + 0.1))
-      .map((view) => `${view.key} ${String(before[view.key]!.fillRatio)} → ${String(after[view.key]!.fillRatio)}`);
+      .map((view) => `${view.key} ${String(after[view.key]!.fillRatio)} < required ${String(Math.round((before[view.key]!.fillRatio + 0.1) * 1000) / 1000)}`);
     expect(violations).toEqual([]);
   });
 });
