@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MenuPopover.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
     "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
   },
-  "digest": "sha256:0e0bf0248a74e295e6052474a0760dd899043d2c335232e20c1917cea07ec14a",
+  "digest": "sha256:c82aeb28dbc59906b4c99a258227bc68bc97f6a521e8366e5fc57dd5c51667e8",
   "displayName": "MenuPopover",
   "format": "component-entry/v1",
   "frameworks": [

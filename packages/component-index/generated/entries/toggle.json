@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toggle.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:49f0e946066fb4a4f4b6aa8df7e4c2d368de6074eb7dba394c1a0017719037be",
+  "digest": "sha256:281482426dc11b154be7453b1b6edf73254012e0fad8524e5f92cfeeda6d4139",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Drawer.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Side panel for secondary workflows.",
     "fr": "Panneau latéral pour workflows secondaires."
   },
-  "digest": "sha256:0ea932b23749fd6b63a7f615e441cc6456f518d0b71cd4981f9598164321d78c",
+  "digest": "sha256:6c718dfc28622f747bb99a7a317453011f6b8e12c36ad12737a3e0986c037666",
   "displayName": "Drawer",
   "format": "component-entry/v1",
   "frameworks": [

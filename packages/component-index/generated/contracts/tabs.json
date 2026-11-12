@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:180286633205f629f62338a65962c1556571b895a3a6e687b9edf6199ab2d5fe",
-  "entryDigest": "sha256:6ba9e28db4aefae7dbae3e0643c5739d48763479b56ccc25acbacdea4ed66a56",
+  "digest": "sha256:3ba213bb030554903be38de5056b8882c7c882da23aed11e25f3938cf995c8fb",
+  "entryDigest": "sha256:c01dbfc4b65aa5ea29dc9f0af5548ded5fba06c242e7e8019cffaaa2f46f8dd7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TabsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

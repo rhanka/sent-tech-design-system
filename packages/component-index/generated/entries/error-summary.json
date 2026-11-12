@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ErrorSummary.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Aggregated list of a form's errors, each entry linked to the offending field.",
     "fr": "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif."
   },
-  "digest": "sha256:f47f3dff2f65d0ecabd5929afa719dedbc01a0df28b139c9393ed9d446c22acc",
+  "digest": "sha256:2bfe954b662aeca440830480196ac8ebcb46244e239f8ccdeb8fcc06b08dab4e",
   "displayName": "ErrorSummary",
   "format": "component-entry/v1",
   "frameworks": [

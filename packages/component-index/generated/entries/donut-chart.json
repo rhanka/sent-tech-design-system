@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DonutChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Donut chart (parts of a whole), tooltip and center total.",
     "fr": "Graphique en anneau (parts d'un total), tooltip et total au centre."
   },
-  "digest": "sha256:d402536b76604f551a03a5c8d67c42ab74d7a5cfe4f00ec73270344f22f30d82",
+  "digest": "sha256:ee5798c6b28d2e102fc7033b91af59349651a59d5c4dbc0a0ea592e99d87fb08",
   "displayName": "DonutChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DashboardGrid.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Serializable panel grid on twelve columns.",
     "fr": "Grille de panneaux sérialisable sur douze colonnes."
   },
-  "digest": "sha256:49c8524f110fa6fd896cfbbf8600e15b6ef95f3ba3138d39eba37ea821fbd37d",
+  "digest": "sha256:ad516c9863bfcdc9dff24b189eb823fcb2310c3eea867e1945a72872cbe02426",
   "displayName": "DashboardGrid (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

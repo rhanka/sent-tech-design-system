@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:16b7fe74b5594a89a5d7b6fe5144669387b777fa7a4c442699c40cc40c7d461c",
+  "digest": "sha256:7666e477c79db7aa809bb6e1c2bedf05e78b3edf08045497c53e13b255f79079",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -43,7 +43,7 @@
         "declarationPath": "packages/components-react/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UrlSyncProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

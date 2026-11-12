@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Transcription.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Collapsible transcript panel with timestamps and speaker labels.",
     "fr": "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant."
   },
-  "digest": "sha256:1d3148154d109d6d60a1fe6447c5b91bf09e077ad1d30d5c994eb81c9f9debd6",
+  "digest": "sha256:27e3a6e44a6735fcf623782dc33115bdf850a3e859f44493f2ba62e16caa9656",
   "displayName": "Transcription",
   "format": "component-entry/v1",
   "frameworks": [

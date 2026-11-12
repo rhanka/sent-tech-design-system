@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:a0df37e85fbed509265064f083def4380ca15c9d51c0432e82fbf1876e8f372f",
-  "entryDigest": "sha256:e24fba173ee90bbfd52b929e8ed806a52d8ac58da1c89d4fc04d9059017ad831",
+  "digest": "sha256:fd0cf6ae3564ec82f951ddd6aac140119207cb2f286a1316b9de406f9cba9328",
+  "entryDigest": "sha256:420f8983a8c6375bf41ac0d5f53edaa42ecb798f58fa0954c3e1e06d45c83da2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/CheckboxGroup.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CheckboxGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

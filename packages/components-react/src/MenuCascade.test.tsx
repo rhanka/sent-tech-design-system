@@ -9,6 +9,166 @@ import type { MenuItem, MenuSubmenuSide } from "./index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
+describe("control review regressions", () => {
+  it("positions a newly opened panel immediately under StrictMode", () => {
+    render(<React.StrictMode><Menu items={cascadeItems} /></React.StrictMode>);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    expect(panel.style.top).toBe("8px");
+    expect(panel.style.left).toBe("8px");
+  });
+
+  it("AC-19: level 2 flips independently and its parent's arrow follows its chevron", () => {
+    render(<Menu items={[{ label: "Root", children: [{ label: "Middle", children: [{ label: "Leaf" }] }] }]} />);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Root" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Middle" }));
+    const root = levelEl(document.body, 0)!;
+    const middlePanel = levelEl(document.body, 1)!;
+    const leafPanel = levelEl(document.body, 2) as HTMLElement;
+    const rootButton = levelItem(root, "Root");
+    const middle = levelItem(middlePanel, "Middle");
+    stubRect(root, { left: 400, right: 592 });
+    stubRect(rootButton, { top: 100 });
+    stubRect(middlePanel, { left: 592, right: 784, width: 192, height: 100 });
+    stubRect(middle, { top: 110 });
+    stubRect(leafPanel, { width: 300, height: 100 });
+    resizeWindow();
+    expect(rootButton.querySelector(".st-menu__itemChevron--end")).toBeTruthy();
+    expect(middle.querySelector(".st-menu__itemChevron--start")).toBeTruthy();
+    expect(leafPanel.style.left).toBe("292px");
+    middle.focus();
+    fireEvent.keyDown(middle, { key: "ArrowLeft" });
+    expect(levelEl(document.body, 2)).toBe(leafPanel);
+    const leaf = levelItem(leafPanel, "Leaf");
+    expect(document.activeElement).toBe(leaf);
+    fireEvent.keyDown(leaf, { key: "ArrowRight" });
+    expect(levelEl(document.body, 2)).toBeNull();
+    expect(document.activeElement).toBe(middle);
+  });
+
+  it.each((["standalone", "popover-items", "popover-children", "overflow"] as const).flatMap(
+    (host) => (["click", "Enter", " "] as const).map((activation) => ({ host, activation }))
+  ))(
+    "invokes the leaf callback once before selection in $host with $activation", ({ host, activation }) => {
+      const calls: string[] = [];
+      const items: MenuItem[] = [{ label: "Parent", onClick: () => calls.push("parent"), children: [
+        { label: "Leaf", onClick: () => calls.push("click") }
+      ] }];
+      const onSelect = () => calls.push("select");
+      const view = render(host === "standalone" ? <Menu items={items} onSelect={onSelect} />
+        : host === "popover-items" ? <MenuPopover defaultOpen items={items} onSelect={onSelect} />
+        : host === "popover-children" ? <MenuPopover defaultOpen><Menu items={items} onSelect={onSelect} /></MenuPopover>
+        : <OverflowMenu open items={items} onSelect={onSelect} />);
+      fireEvent.click(screen.getByRole("menuitem", { name: "Parent" }));
+      expect(calls).toEqual([]);
+      const leaf = screen.getByRole("menuitem", { name: "Leaf" });
+      if (activation === "click") fireEvent.click(leaf);
+      else fireEvent.keyDown(leaf, { key: activation });
+      expect(calls).toEqual(["click", "select"]);
+      view.unmount();
+    }
+  );
+
+  it("restores focus from a descendant when a pointer timer closes its ancestor", async () => {
+    render(<Menu items={[{ label: "Root", children: [{ label: "Middle", children: [{ label: "Leaf" }] }] }]} />);
+    const root = screen.getByRole("menuitem", { name: "Root" });
+    fireEvent.click(root);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Middle" }));
+    screen.getByRole("menuitem", { name: "Leaf" }).focus();
+    fireEvent.pointerOut(root.closest(".st-menu__itemWrap")!, mouseProps());
+    await advance(250);
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(levelEl(document.body, 2)).toBeNull();
+    expect(document.activeElement).toBe(root);
+  });
+
+  it.each([false, true])("AC-33: host owns the root ID with explicit child ID, cascade=%s", (cascade) => {
+    const trigger = document.createElement("button");
+    const view = render(<MenuPopover defaultOpen trigger={trigger}>
+      <Menu id="custom" items={cascade ? cascadeItems : [{ label: "Flat" }]} />
+    </MenuPopover>);
+    const root = levelEl(document.body, 0)!;
+    expect(trigger.getAttribute("aria-controls")).toBe(root.id);
+    expect(document.getElementById(trigger.getAttribute("aria-controls")!)).toBe(root);
+    expect(root.id).not.toBe("custom");
+    view.unmount();
+    const standalone = render(<Menu id="custom" items={cascadeItems} />);
+    expect(levelEl(standalone.container, 0)?.id).toBe("custom");
+  });
+
+  it.each(["items", "children"] as const)("AC-23: visible popover surface uses cascade shadow only for cascades (%s)", (mode) => {
+    const style = document.createElement("style");
+    // Exercise the shipped selectors against the actual host surface in jsdom.
+    style.textContent = readFileSync(join(here, "styles.css"), "utf8");
+    document.head.appendChild(style);
+    try {
+      const view = render(<MenuPopover open items={mode === "items" ? cascadeItems : []}>
+        {mode === "children" ? <Menu items={cascadeItems} /> : null}
+      </MenuPopover>);
+      const surface = screen.getByRole("dialog");
+      expect(getComputedStyle(surface).boxShadow).toBe("var(--st-component-popover-shadow, var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14)))");
+      view.rerender(<MenuPopover open items={mode === "items" ? [{ label: "Flat" }] : []}>
+        {mode === "children" ? <Menu items={[{ label: "Flat" }]} /> : null}
+      </MenuPopover>);
+      expect(getComputedStyle(surface).boxShadow).toBe("var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14))");
+    } finally {
+      style.remove();
+    }
+  });
+
+  it("ships the React cascade minor release with consistent local version metadata", () => {
+    const pkg = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
+    const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
+    const docs = JSON.parse(readFileSync(join(here, "../../../apps/docs/package.json"), "utf8"));
+    expect(pkg.version).toBe("0.40.0");
+    expect(lock.packages["packages/components-react"].version).toBe(pkg.version);
+    expect(docs.dependencies[pkg.name]).toBe(pkg.version);
+    expect(lock.packages["apps/docs"].dependencies[pkg.name]).toBe(pkg.version);
+  });
+
+  it("AC-38: items replacement cancels pending close while retaining the open branch", async () => {
+    const view = render(<Menu items={cascadeItems} />);
+    const root = screen.getByRole("menuitem", { name: "Class A" });
+    fireEvent.click(root);
+    // Drain the post-mount positioning frame before counting hover timers.
+    await advance(20);
+    fireEvent.pointerOut(root.closest(".st-menu__itemWrap")!, mouseProps());
+    expect(vi.getTimerCount()).toBe(1);
+    view.rerender(<Menu items={[...cascadeItems]} />);
+    expect(vi.getTimerCount()).toBe(0);
+    await advance(300);
+    expect(levelEl(document.body, 1)).toBeTruthy();
+    expect(root.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it.each(["top-start", "top-end", "bottom-end"] as const)("AC-36: converts submenu geometry inside actual %s host", (placement) => {
+    const trigger = document.createElement("button");
+    stubRect(trigger, { top: 400, bottom: 430, left: 500, right: 600, width: 100 });
+    const style = document.createElement("style");
+    style.textContent = readFileSync(join(here, "styles.css"), "utf8");
+    document.head.appendChild(style);
+    try {
+      render(<MenuPopover defaultOpen trigger={trigger} placement={placement} items={cascadeItems} />);
+      const host = screen.getByRole("dialog");
+      expect(host.classList.contains(`st-menuPopover--${placement}`)).toBe(true);
+      expect(getComputedStyle(host).transform).not.toBe("none");
+      expect(getComputedStyle(host).transform).not.toBe("");
+      stubRect(host, { top: 200, left: 300 });
+      fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+      const root = levelEl(document.body, 0)!;
+      const panel = levelEl(document.body, 1) as HTMLElement;
+      stubRect(root, { left: 300, right: 492 });
+      stubRect(levelItem(root, "Class A"), { top: 220 });
+      stubRect(panel, { width: 192, height: 100 });
+      resizeWindow();
+      expect(panel.style.top).toBe("15px");
+      expect(panel.style.left).toBe("192px");
+    } finally {
+      style.remove();
+    }
+  });
+});
+
 const cascadeItems: MenuItem[] = [
   {
     label: "Class A",
@@ -363,16 +523,17 @@ describe("Menu cascade — hover intent and safe triangle (AC-07, AC-08, AC-25, 
     ).toBe("false");
   });
 
-  it("AC-38: unmount during a pending hover fires nothing", async () => {
-    const onSelect = vi.fn();
-    const { unmount } = render(<Menu items={cascadeItems} onSelect={onSelect} />);
+  it("AC-38: unmount cancels the pending hover timer", async () => {
+    const { unmount } = render(<Menu items={cascadeItems} />);
     const wrap = screen
       .getByRole("menuitem", { name: "Class A" })
       .closest(".st-menu__itemWrap") as HTMLElement;
     fireEvent.pointerOver(wrap, mouseProps());
+    expect(vi.getTimerCount()).toBe(1);
     unmount();
+    expect(vi.getTimerCount()).toBe(0);
     await advance(500);
-    expect(onSelect).not.toHaveBeenCalled();
+    expect(levelEl(document.body, 1)).toBeNull();
   });
 });
 
@@ -723,7 +884,10 @@ describe("Menu cascade — sides, groups, items change (AC-19, AC-20, AC-21, AC-
       .closest(".st-menu__itemWrap") as HTMLElement;
     fireEvent.pointerOver(wrap, mouseProps());
     await advance(100);
-    rerender(<Menu items={[{ label: "Direct", value: "direct" }]} />);
+    expect(vi.getTimerCount()).toBe(1);
+    // Keep the branch valid: a stale callback would visibly reopen it.
+    rerender(<Menu items={[...cascadeItems]} />);
+    expect(vi.getTimerCount()).toBe(0);
     await advance(200);
     expect(levelEl(document.body, 1)).toBeNull();
   });

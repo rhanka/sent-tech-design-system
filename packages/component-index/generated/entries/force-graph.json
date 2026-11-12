@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ForceGraph.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip.",
     "fr": "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip."
   },
-  "digest": "sha256:912683107e720c08b0e79376f538219458b55bcaffa875eb8e5d065678c9212c",
+  "digest": "sha256:69b12ca570580dac6fb79d0860df1b230e27c7f4528618fd89afd35d3097ff81",
   "displayName": "ForceGraph",
   "format": "component-entry/v1",
   "frameworks": [

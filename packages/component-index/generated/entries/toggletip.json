@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toggletip.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Click-activated, persistent tooltip.",
     "fr": "Tooltip activable au clic, persistant."
   },
-  "digest": "sha256:2179b965d7e1f4729f2e542e6aaec745a32faf6bde9ec7845838cd7edf11d27c",
+  "digest": "sha256:718449e56de52a156a1ecaf1124fa2582b75e83d0c07a2d7f206447699a8fa7e",
   "displayName": "Toggletip",
   "format": "component-entry/v1",
   "frameworks": [

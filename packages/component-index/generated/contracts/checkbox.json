@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:3fae5ab48450bfd9a3b3998ecf7b6991f9debf3d728c9c0d58feeb1269716a5f",
-  "entryDigest": "sha256:5e3bf9499cf65e5b066ac95312773c095201cf312d91d131d826ffabc152e54d",
+  "digest": "sha256:d1620be4a5dbd750b5ff12e30764abddec48ae7f0cecf38c1222a82a4bc7fe10",
+  "entryDigest": "sha256:a0a811a06d9aed10dd4407ad00da988a48dea79966eb8af47a6d094eea7b60d7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -150,7 +150,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CheckboxProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

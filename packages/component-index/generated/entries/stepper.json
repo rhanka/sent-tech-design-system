@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Stepper.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step indicator for a flow, horizontal or vertical.",
     "fr": "Indicateur d'étapes d'un parcours, horizontal ou vertical."
   },
-  "digest": "sha256:ea3cfd90cb6d4447f79e750f46d165e03edd80cb720048434924ac8d08ed07d2",
+  "digest": "sha256:4a99a2582f9bbe70dc4f9699749f063a335696f2f73e60d5499d115304a5f176",
   "displayName": "Stepper",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FileUploader.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:44f786928816f2636459609eec282322040abb210d6d8791516c1e6a7cfbbb1b",
+  "digest": "sha256:c7778984467b705f799318568996d7da34941b58462331420fbbc22efce66a2d",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

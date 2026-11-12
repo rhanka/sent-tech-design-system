@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:b2735e67b27744b2026e8cf77d248db221d94f3454c5bdf7fc0957a017d4f6b1",
-  "entryDigest": "sha256:f47f3dff2f65d0ecabd5929afa719dedbc01a0df28b139c9393ed9d446c22acc",
+  "digest": "sha256:aae3f7572c293aa9bc07af32dc7a58ce3ecfbcc3fd780e7d23d4c117070de376",
+  "entryDigest": "sha256:2bfe954b662aeca440830480196ac8ebcb46244e239f8ccdeb8fcc06b08dab4e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -116,7 +116,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorSummaryProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -3666,7 +3666,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     menuInstanceCounter += 1;
     fallbackIdRef.current = `st-menu-${menuInstanceCounter}`;
   }
-  const rootId = id ?? hostContext?.rootMenuId ?? fallbackIdRef.current;
+  const rootId = hostContext?.rootMenuId ?? id ?? fallbackIdRef.current;
 
   // Internal open state is an index path (never keys), so duplicate sibling
   // keys cannot open or close together (§2.3, D7).
@@ -3761,14 +3761,14 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     }
   }
 
-  React.useEffect(
-    () => () => {
+  React.useEffect(() => {
+    destroyedRef.current = false;
+    return () => {
       destroyedRef.current = true;
       cancelAllTimers();
       cancelDeferredPositions();
-    },
-    []
-  );
+    };
+  }, []);
 
   function levelButtons(level: number): HTMLButtonElement[] {
     const levelRoot = levelElsRef.current.get(level);
@@ -3957,6 +3957,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
 
   function selectItem(item: MenuActionItem, fullPath: number[], modality: "pointer" | "keyboard") {
     if (item.disabled) return;
+    item.onClick?.();
     if (hasCascade || isNested) {
       onSelect?.(item, pathKeys(fullPath));
     } else {
@@ -4021,12 +4022,14 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     const parentIndex = openPath[level];
     closeTimerRef.current = setTimeout(() => {
       const active = document.activeElement;
-      const closingPanel = levelElsRef.current.get(level + 1);
+      const focusInClosingLevels = active && Array.from(levelElsRef.current).some(
+        ([panelLevel, panel]) => panelLevel > level && panel.contains(active)
+      );
       setOpenPath((prev) => prev.slice(0, level));
       safeApexRef.current = null;
       safeLevelRef.current = -1;
       // Focus inside a pointer-closed level moves to its parent line (§3.3).
-      if (active && closingPanel && closingPanel.contains(active)) {
+      if (focusInClosingLevels) {
         if (parentIndex !== undefined) focusButton(level, parentIndex);
       }
       closeTimerRef.current = undefined;
@@ -4118,16 +4121,14 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
   }
 
   /**
-   * Opening side for keyboard handling: inside a sub-menu the whole level
-   * shares its containing level's resolved side, so a flipped panel keeps
-   * one opening arrow for parents and leaves alike (§3.4, AC-06/AC-19).
-   * Depth 0 keeps the per-item rule (open parents use their resolved side).
+   * Expandable items follow their own panel's resolved side (AC-19).
+   * Leaves use the containing panel's side for the closing arrow (AC-06).
    */
   function openingSideFor(depth: number, index: number, item: MenuActionItem): ResolvedSubMenuSide {
+    if (hasSubMenu(item) && depth < 2) return resolvedSideFor(depth, index);
     if (depth >= 1 && levelSides[depth - 1] !== undefined) {
       return levelSides[depth - 1];
     }
-    if (hasSubMenu(item)) return resolvedSideFor(depth, index);
     return openingArrow() === "ArrowRight" ? "right" : "left";
   }
 
@@ -4581,9 +4582,7 @@ export function MenuPopover({
   }, [open, trigger, rootMenuId]);
 
   function handleMenuSelect(item: MenuActionItem, path?: string[]) {
-    // Leaf `onClick` still precedes `select`; parent activation never
-    // reaches here (the Menu opens the sub-menu instead).
-    item.onClick?.();
+    // Menu invokes the leaf callback before relaying selection.
     if (cascade) onSelect?.(item, path);
     else onSelect?.(item);
     setOpen(false);
@@ -4758,6 +4757,7 @@ export function MenuPopover({
       ref={panelRef}
       className={classNames(
         "st-menuPopover",
+        cascade && "st-menuPopover--hasCascade",
         `st-menuPopover--${menuPopoverEffectivePlacement(placement, pos.flipped)}`,
         pos.alignEnd ? "st-menuPopover--alignEnd" : null,
         pos.alignCenter ? "st-menuPopover--alignCenter" : null,
@@ -5274,9 +5274,7 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
   }, [open]);
 
   function handleMenuSelect(item: MenuActionItem, path?: string[]) {
-    // Leaf `onClick` still precedes `select`; parent activation never
-    // reaches here (the Menu opens the sub-menu instead).
-    item.onClick?.();
+    // Menu invokes the leaf callback before relaying selection.
     if (cascade) onSelect?.(item, path);
     else onSelect?.(item);
     setOpen(false);

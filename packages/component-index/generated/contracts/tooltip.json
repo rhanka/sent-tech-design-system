@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:1d48cf62049cbaac65e0acf5be47bd231add86ef5afd58e964eae4a81edb2e6e",
-  "entryDigest": "sha256:1d6cf4c91f1371cb2cda1c476b5fb43c54b2874bd3f4f4ad77bf66067f2f8acd",
+  "digest": "sha256:d69fb60d99023e4031e111d8adc05d1070270dfe47378ff04fb432a9a4c51b06",
+  "entryDigest": "sha256:f1ba2c3e48e0c3280020ce8ad5f3cc420e0a6cc9438b3eb139a0a30eccc4c1f4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

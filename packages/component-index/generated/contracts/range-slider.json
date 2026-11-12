@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:d64fb7b3efe3cb2f24d900dd3a3df233c2a41e6239d39d422cb14a4f56cdb183",
-  "entryDigest": "sha256:0556f423d4c61a5349b98229619b486d96bc6599ea3f5789ebe085af41a49acd",
+  "digest": "sha256:4b2a15155fa10d22209aa0c72d883c167846c794ec8b659ca2fcc52b92aed9d7",
+  "entryDigest": "sha256:0a481b198f6ec8738cc2751b8c0d6ebc1d9938bf496ff49cb39a7f2b46b32385",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-react/dist/RangeSlider.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RangeSliderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

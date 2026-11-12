@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:c89603036953e6bea8f6bfa7217484d941447c3546acacc57d178e64692c3b8b",
-  "entryDigest": "sha256:94396b37cb204e5ed9a797b88911a65257b3912715ccfdc377268b82456c3e80",
+  "digest": "sha256:fa42e75c078c5d0471fb8ce36caf1aca8a1632b300819ea28964557fce1b8763",
+  "entryDigest": "sha256:414c2fb5c4a5910d90f9d4ac440722e45d444a35c500a5f84c548bd85a997d18",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SideNavProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

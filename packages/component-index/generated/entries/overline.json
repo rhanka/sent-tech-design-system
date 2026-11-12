@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Overline.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Discreet small-caps section label (group heading above a block).",
     "fr": "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc)."
   },
-  "digest": "sha256:943d66e8ca2ef4b04bf90f915e9f13833fe0152ef942a9216b92a33563b1a58b",
+  "digest": "sha256:49595ebc8d9fbf57a65a9ec42e513cca7fb8a851641e3e100360eb38d86b26ab",
   "displayName": "Overline",
   "format": "component-entry/v1",
   "frameworks": [

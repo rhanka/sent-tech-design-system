@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SelectionChip.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact chip showing a selection with count and optional clear button.",
     "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
   },
-  "digest": "sha256:64cc46d3cb19215208cf451f9916b6f0448a7f8a95194b5c28da0ea16b427ad1",
+  "digest": "sha256:c72e1819375d076ec597aa4f021d19f18c66d2e65ab95b64984be3addfbc3a98",
   "displayName": "SelectionChip",
   "format": "component-entry/v1",
   "frameworks": [

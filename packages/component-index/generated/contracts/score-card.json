@@ -1,8 +1,8 @@
 {
   "componentId": "score-card",
   "contractSource": "derived",
-  "digest": "sha256:0c88d894cb42e0730684a97e9d750ede775088d31b90c1379c7dc98441961d7e",
-  "entryDigest": "sha256:84aef4a7943a7d24bbbcd058136ad7fc8bff9129d26c8fa266b0340f4e5366de",
+  "digest": "sha256:70ad6975d1635abf5db35805ec3e821636a1f3bc4d4a11d6faf84ad9679d14c5",
+  "entryDigest": "sha256:1a3093f7201078496af4e8ba188efe274c42c289fd183f43ce41858a6cc4b81b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -130,7 +130,7 @@
         "declarationPath": "packages/components-react/dist/ScoreCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ScoreCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

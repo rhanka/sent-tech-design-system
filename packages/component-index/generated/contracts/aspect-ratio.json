@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:48305329bd068c6c8aed9b5e0e27efdbac866cbf30ef8a191c817c303414b66a",
-  "entryDigest": "sha256:1f1c38e1f7f271f67ba0c8a96fc82dd94a2f28c3a00a5bcb6f0dd46013ae0de1",
+  "digest": "sha256:eb46675de53611cf159292f32ad407982b14ba1ded4d1c54833bae2157d04b32",
+  "entryDigest": "sha256:0be803b2d2ff5dbd2a5d8b1840145fad5a65c953f60bbf340c5c23b12733c78a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -82,7 +82,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AspectRatioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

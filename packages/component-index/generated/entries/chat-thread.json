@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ChatThread.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scrollable message list with auto-scroll and empty-state.",
     "fr": "Liste de messages scrollable avec auto-scroll et état vide."
   },
-  "digest": "sha256:ab75e44394638692e76db327adcb2e5592196f08e9b51256a5957d6016423bf3",
+  "digest": "sha256:7f52c6ad3ae8a32fa762e41b457550051a0d0f55b6e8fffdeb44ef0b9c35e525",
   "displayName": "ChatThread",
   "format": "component-entry/v1",
   "frameworks": [

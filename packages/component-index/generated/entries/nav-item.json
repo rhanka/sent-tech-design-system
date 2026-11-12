@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/NavItem.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
     "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
   },
-  "digest": "sha256:e4bce983071bce03cd6c7c8a4e825026ebf5ffcf84f2386dfdaf057e38638207",
+  "digest": "sha256:5db5a64babd24d38152c1185caa9f10b4c37a2d2edb7b1633de35fbeccef13c8",
   "displayName": "NavItem",
   "format": "component-entry/v1",
   "frameworks": [

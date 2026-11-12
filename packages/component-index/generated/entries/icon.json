@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Icon.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:27d6ab2472ae121032fe56d49df2c91bed8a6393efe7b64d68991f145ee08153",
+  "digest": "sha256:32121bbfa6050c4ecde45e20742c4f874124865f903e589d91fd1fb5109112c6",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

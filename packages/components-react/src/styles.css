@@ -4158,6 +4158,10 @@
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
+  .st-menuPopover--hasCascade {
+    box-shadow: var(--st-component-popover-shadow, var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14)));
+  }
+
   /* Le panneau (.st-menuPopover) porte déjà la surface (bordure, ombre, rayon).
      Le Menu imbriqué (React/Vue rendent .st-menuPopover > .st-menu, sans
      wrapper intermédiaire — parité DOM avec Svelte) ne doit donc PAS redessiner

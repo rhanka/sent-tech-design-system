@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toast.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:a0439f56ec4cc50a11363f89c3a230227e79041df0f7c51f6d50f39d2466b298",
+  "digest": "sha256:14aec9996d83705e61ce89677a706054a881c793c5622a20811ee0339556e760",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [

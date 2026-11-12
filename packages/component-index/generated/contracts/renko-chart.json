@@ -1,8 +1,8 @@
 {
   "componentId": "renko-chart",
   "contractSource": "derived",
-  "digest": "sha256:7a99b3a83ff3de0d1714823935ac693a431255a74499991f10095235de6ca4ce",
-  "entryDigest": "sha256:aec434f0fc990e4e3601fdbfd1b5679f7d5d10e51cc06f597bb4dbae63c36e6a",
+  "digest": "sha256:dc9906e254988e0a9b16812d78ff50edf2fbadd1017b44ad9548923ac9f68387",
+  "entryDigest": "sha256:e166047cead3b90ff0813a999f2befffe54cf1e99c31e39cf0c1bcc555f55e35",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -146,7 +146,7 @@
         "declarationPath": "packages/components-react/dist/RenkoChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RenkoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

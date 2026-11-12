@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:84a0ddee1fb63e5786025fd4fc27c577c03070ae3c430824168b87331e8686b4",
+  "digest": "sha256:1a8a74b37acb1ef31264fc55cc418e28a7776062d5e57bdb24620830e963191e",
   "entryDigest": "sha256:a57dc54f29aa661c11621117ac5a195f9a60da681548e8742035571992b6740f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -43,7 +43,7 @@
         "declarationPath": "packages/components-react/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

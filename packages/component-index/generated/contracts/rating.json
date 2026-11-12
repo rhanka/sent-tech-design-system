@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:294100cd9b5c44ddd8d2d9238dcb9c15cfa8448f62c587d59f86094297b6ca21",
-  "entryDigest": "sha256:de56d31ec816cb582c62d1cc2363af7b77109d180a37d8c333670086f7c3ae14",
+  "digest": "sha256:0fadac6a663266f28a60d3cda1534199fd9d61865563f388e9b1066121c52724",
+  "entryDigest": "sha256:061fc4027e8f748b2b558bbc0088f4ec1c0960e1ca306a10e05c6e9130d678d9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RatingProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

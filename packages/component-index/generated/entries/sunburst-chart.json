@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SunburstChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radial hierarchy for exploring nested contributions.",
     "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
   },
-  "digest": "sha256:924895fb11daa9d8b37c7425996e9da6505ec29765dce235fe552391db4879fa",
+  "digest": "sha256:9268776ec7b6adc839fd8c2ed95950b01d93dda64ebc67b20f36d899831f9c97",
   "displayName": "SunburstChart",
   "format": "component-entry/v1",
   "frameworks": [

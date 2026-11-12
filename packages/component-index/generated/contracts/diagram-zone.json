@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:72694caf2dfdf8b81e25fa69637a886c11a689de1374bfaa4a27c9bc4476d00d",
+  "digest": "sha256:a9326eb12666a97b02bb248a15d28fe34ba14196f1e1ab5aef3c8c3f2632aad4",
   "entryDigest": "sha256:b3a92cb58abbbfb5eadd6217c5a756a99a5ca250962723bd6a026bb1bca11fb7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -43,7 +43,7 @@
         "declarationPath": "packages/components-react/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

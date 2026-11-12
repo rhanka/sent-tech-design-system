@@ -1,8 +1,8 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:c6410c5b828a4696a3bf8d70663316adf09bbc2d3d3dbb86c736236a27a1297b",
-  "entryDigest": "sha256:e2fa2208f97ec08de8a11d871d97ddad40e72aec06dcae99f65131621816da91",
+  "digest": "sha256:95445d27965d0b8a9425d3a14d0abf3ef0c247fb6e9945598de95431d382043c",
+  "entryDigest": "sha256:3ddbf868a02741171637fe3a07cd76f0de37d9cc8d851fd30384a0895b7e80ea",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-react/dist/GanttChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "GanttChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

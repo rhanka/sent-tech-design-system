@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AppChrome.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:6c1e27f21446dc4d63c4fdd386a802981805b369fe0ba50a2e40acbd075a09cc",
+  "digest": "sha256:b115788eab9d957836ee04705f6dbf129c343f5780a11a4d9bb5b67df3f6ec63",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

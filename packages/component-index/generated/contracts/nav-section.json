@@ -1,8 +1,8 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:e45bad866fa7b40dbda7097f23e8c008b4afa5ecdbe63b51bac136962e64ee8d",
-  "entryDigest": "sha256:419fd613dde9b55cf62b9dd43f1e779d3f1a1319ac613ac88343e0adce2ca039",
+  "digest": "sha256:b7c02d2228f6533c8bc423ef931bf5d71271fc062797155a42c5bb1dddf7ac78",
+  "entryDigest": "sha256:4493e1a5fe00fa2318c4295e5c784229b74d77c840466300b1c6b727b20e8cec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -116,7 +116,7 @@
         "declarationPath": "packages/components-react/dist/NavSection.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NavSectionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

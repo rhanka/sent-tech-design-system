@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ContourChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Topographic contour: 2D grid painted as colour bands with isolines at level boundaries (data category1…8 scale).",
     "fr": "Contour topographique : grille 2D peinte en bandes de couleur avec isolignes aux ruptures de niveau (échelle data category1…8)."
   },
-  "digest": "sha256:fcafef2c3bcbc7a38897f62da3798499d081b5505ca0f20b19e49feb2a87efdb",
+  "digest": "sha256:6ec98bd832c28d7b428f7ba61cce5cfe46fc447603cf2d2ade6b8be997e2b7fb",
   "displayName": "ContourChart",
   "format": "component-entry/v1",
   "frameworks": [

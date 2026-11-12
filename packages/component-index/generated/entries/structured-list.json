@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StructuredList.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Structured key/value list (term/definition pairs).",
     "fr": "Liste clé/valeur structurée (paires terme/définition)."
   },
-  "digest": "sha256:c829f97b398555db5601ad3e08e7ed260f2d21de9ff773cc4a2dd55d3649e460",
+  "digest": "sha256:60064256dfb0adaa1d9be5e516940ddca5a95005cd863b0296cb69a86d7ce81c",
   "displayName": "StructuredList",
   "format": "component-entry/v1",
   "frameworks": [

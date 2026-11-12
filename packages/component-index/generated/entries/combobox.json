@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Combobox.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:62b5e3af7c990fabf619505c4c9585669630e70e73a216b0323d64775fc56447",
+  "digest": "sha256:ebcc042eb1c302b771fbaffee8030ff35a022781e7a4e48a70249c8c8f548970",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

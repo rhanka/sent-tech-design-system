@@ -1,8 +1,8 @@
 {
   "componentId": "code-snippet",
   "contractSource": "derived",
-  "digest": "sha256:be5621c5e5cc17afe33750f1bd756e87978b02410c0ea768bd2c972b2b1c8310",
-  "entryDigest": "sha256:e9bbd39176f545433718427dbe0a08755fc842fdb9fb298302ab5ad2b2686fcb",
+  "digest": "sha256:cfe16f292cfcc653faf19dafd85ca368a7e199610f19973e7dfe67e15bed458d",
+  "entryDigest": "sha256:c131281451ecdd0e51594170b7cece01fdf1c130b343c2fed836298c3387dd86",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CodeSnippetProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

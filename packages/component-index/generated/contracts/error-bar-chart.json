@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:7504b0f31ef90b2dcd38cedcb0400fab9dbc0f4b29511b82ee42a0b79e0f0b35",
-  "entryDigest": "sha256:7f3fa49b5d1867e5969207476436d77d0ed7831c866abe8a3f7433c153871c01",
+  "digest": "sha256:f9c6338bdecdbb247489a762a45a2077d8ade12907eae20b44b8ddb8afc9146a",
+  "entryDigest": "sha256:a5a1021ff03163c5ecce1ce1a55ba9c33464dce10c23667af585dc14ea388707",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -173,7 +173,7 @@
         "declarationPath": "packages/components-react/dist/ErrorBarChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:f1749ed95379b43e0bb49231e93bb44b0b6380d422d568e14c5c6d9a51e52ec4",
-  "entryDigest": "sha256:6c1e27f21446dc4d63c4fdd386a802981805b369fe0ba50a2e40acbd075a09cc",
+  "digest": "sha256:d15a7b9f9fc8e82b97b892727675dfe96aa06ff225bad4d315457eb025b90957",
+  "entryDigest": "sha256:b115788eab9d957836ee04705f6dbf129c343f5780a11a4d9bb5b67df3f6ec63",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -463,7 +463,7 @@
         "declarationPath": "packages/components-react/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppChromeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Typography.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Text component: variants, weight, tone, and alignment.",
     "fr": "Composant de texte : variantes, poids, ton, alignement."
   },
-  "digest": "sha256:11260533869926439da4a18e384adb98dff9edc5bc57fba091af53cc06158060",
+  "digest": "sha256:5382852465a52fb55dc2d9a6d4ad7453f299eda998627f58f9be3933a8cfaf98",
   "displayName": "Typography",
   "format": "component-entry/v1",
   "frameworks": [

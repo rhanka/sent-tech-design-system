@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MediaContent.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:fcfe879186e1000ec88df5333c40d7920e6cd4a1b86a32d3f6066ad12fb5e2e5",
+  "digest": "sha256:dd7b8e1ba4b59050a5549c794f6b24adf25a6be633525d9649f4da67b59adbd2",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

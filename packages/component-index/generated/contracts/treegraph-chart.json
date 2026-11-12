@@ -1,8 +1,8 @@
 {
   "componentId": "treegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:af0084821b567490041a200fed8187febec4c31dd2a53267034ff22c03fee1f2",
-  "entryDigest": "sha256:b3fd667d491abbe7344fa3f7e4022230a69b4a3904088065664e6771dc30e658",
+  "digest": "sha256:afaad1bc70871568988b8dceb1e08b9ca2587fc22c1bdcd4fd7f6aa245810db1",
+  "entryDigest": "sha256:47c613335d7d9780943b714c333bb9fdfa3cee634e321bc1987c12c0148eff12",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -170,7 +170,7 @@
         "declarationPath": "packages/components-react/dist/TreegraphChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TreegraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

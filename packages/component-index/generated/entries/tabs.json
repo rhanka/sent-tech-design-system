@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tabs.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:6ba9e28db4aefae7dbae3e0643c5739d48763479b56ccc25acbacdea4ed66a56",
+  "digest": "sha256:c01dbfc4b65aa5ea29dc9f0af5548ded5fba06c242e7e8019cffaaa2f46f8dd7",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

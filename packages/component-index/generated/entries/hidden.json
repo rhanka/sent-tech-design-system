@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Hidden.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:70410a8686ab12f81bba92fbf890372c00c633ebf7687aefc7a0f5486affc4cb",
+  "digest": "sha256:b4b412b43019c7aa7405c29e305d4c7961db4d37eff61e2f10207069eba5e03d",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [
