@@ -10,23 +10,32 @@
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramCard.svelte",
       "version": "0.38.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:faa995554b646b3e83626c9afba9f7e8dec5cadb43b6f1c953b15bbc4d434ffc",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/DiagramCard.vue",
+      "version": "0.39.0"
     }
   ],
   "description": {
     "en": "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit.",
     "fr": "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn."
   },
-  "digest": "sha256:95f27fd498f62af5f06a563e0ede3f9b844e448efbe3b117e6c1f57d5acbb49c",
+  "digest": "sha256:d0652ec8bea1171a0cd6cd6f78a89c9009c4ad7ed9cfc1f44f745fcf6bbb7e9a",
   "displayName": "DiagramCard",
   "format": "component-entry/v1",
   "frameworks": [
-    "svelte"
+    "svelte",
+    "vue"
   ],
   "parity": {
     "angular": "missing",
     "react": "missing",
     "svelte": "source-of-truth",
-    "vue": "missing"
+    "vue": "match"
   },
   "producerId": "sentropic-ds",
   "renderable": "doc-only",

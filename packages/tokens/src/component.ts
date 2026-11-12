@@ -1860,8 +1860,11 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       maxDisplayScale: "0.62",
       minReadableScale: "0.45",
       transitionDuration: "240ms",
-      edgeLabelFontSize: "18px"
+      edgeLabelFontSize: "18px",
+      readoutMinWidth: "4ch"
     },
+    // Existing BPMN element host footprint, shared by framework bindings.
+    bpmnCanvas: { minHeight: "120px" },
     // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
     // resolve through the semantic feedback-info and surface tokens; no
     // per-glyph colour, no raw hex in the asset. Stroke weights are in
