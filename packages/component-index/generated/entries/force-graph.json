@@ -5,11 +5,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:4b3d4d5068eebb9027bc620bd4bde95f7356df0c2c04dae55ea571b430581ae9",
+      "digest": "sha256:89ab22084e59bfa10eb1cb3d5481ffff3a24b7f2a0c9de434271d2d9fc1d5855",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ForceGraph.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Force-directed graph (nodes/edges), self-contained simulation, focusable nodes, tooltip.",
     "fr": "Graphe à force dirigée (nœuds/liens), simulation autonome, nœuds focusables, tooltip."
   },
-  "digest": "sha256:3bf6c46f2bec4a665eb70d0841b6dda8b44f93d5e709711ccbfdea4bb9305186",
+  "digest": "sha256:1a24863c27581974e9eec48c3e83c99e89cb16c5ab67acff35e987f880a24032",
   "displayName": "ForceGraph",
   "format": "component-entry/v1",
   "frameworks": [

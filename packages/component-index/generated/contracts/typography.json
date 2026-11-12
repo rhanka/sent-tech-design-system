@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:7ead09c76ca565b953ecc8830c497f4dad3ea6f70e34875fd060d565d8a20be5",
-  "entryDigest": "sha256:1342a3027f19f883d2c00c723f174f16d886f082b80ef2ac27aba702f1d87d58",
+  "digest": "sha256:a42fdb1dfd05eb2e4ee6c11cdbb4117556ded72e8d36ef3a0f02d719e0cc5a82",
+  "entryDigest": "sha256:40c2269e574d22d1d6bdd7b2ff08feb8f2689957f61d4d68979e7367c0d60c83",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -223,6 +223,7 @@
           },
           "variant": {
             "enum": [
+              "body",
               "display",
               "h2",
               "h3",
@@ -230,7 +231,6 @@
               "h4",
               "h5",
               "h6",
-              "body",
               "body-sm",
               "caption",
               "overline"
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],

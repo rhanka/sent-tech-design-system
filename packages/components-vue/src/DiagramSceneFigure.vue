@@ -7,7 +7,8 @@ import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
 import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
-import type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
+import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
+export type DiagramSceneFigureProps = SceneFigureProps;
 const props = defineProps<DiagramSceneFigureProps>();
 const emit = defineEmits<{
     foldChange: [
@@ -477,7 +478,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     font-family: var(--st-component-diagramCard-fontFamily, inherit);
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;

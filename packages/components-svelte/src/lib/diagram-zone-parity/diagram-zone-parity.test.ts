@@ -900,15 +900,15 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
 
 describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", () => {
   const SOURCES = [
-    "../../../../diagram-canvas/src/presentation/diagramCardModel.ts",
+    "../diagramCardModel.ts",
     "../DiagramCard.svelte",
     "../DiagramCardHeader.svelte",
     "../DiagramZone.svelte",
     "../DiagramZoneHeader.svelte",
-    "../../../../diagram-canvas/src/presentation/registry.ts",
+    "../diagram-icons/registry.ts",
     "../diagram-icons/DiagramIcon.svelte",
-    "../../../../diagram-canvas/src/presentation/renderCardSvg.ts",
-    "../../../../diagram-canvas/src/presentation/renderZoneSvg.ts",
+    "../diagram-render/renderCardSvg.ts",
+    "../diagram-render/renderZoneSvg.ts",
     "../diagram-render/index.ts",
   ];
   // Comments document the hacks they replace; the scan targets code only.
@@ -945,7 +945,7 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
   });
 
   it("the shared model still imports nothing", () => {
-    const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
+    const model = readFileSync(resolve(HERE, "../diagramCardModel.ts"), "utf8");
     expect(model).not.toMatch(/^import /m);
     expect(model).not.toMatch(/from ["']/);
   });

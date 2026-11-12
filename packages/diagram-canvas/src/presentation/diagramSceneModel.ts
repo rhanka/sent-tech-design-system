@@ -56,8 +56,8 @@ export type SceneOrientations = Readonly<Record<string, LevelOrientation>>;
 export const DEFAULT_SCENE_TARGET_WIDTH = 1440;
 /**
  * Edge-label wrapping width of the measured path (`measured.ts`, §4.6.3
- * step 5). The engine does not export it; the label replay must measure
- * with the same allocation or the replayed boxes drift from the engine's.
+ * step 5). The engine does not export it; rendered text must wrap with the
+ * same allocation as the engine's measured label.
  */
 export const EDGE_LABEL_ALLOCATION = 400;
 /** Zoom ratio of one button or key step. */
@@ -179,10 +179,9 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
 
 /**
  * The drawable scene of one laid-out result: nodes at emitted geometry,
- * routes, and the edge-label boxes replayed from the emitted view with the
- * engine's own placement function, measurer, margin and blockers (cards,
- * collapsed boxes and the title band of each expanded zone — an expanded
- * zone's interior is not a blocker on the row-pack path).
+ * routes, and the engine's emitted edge-label boxes. Results without emitted
+ * boxes use the legacy placement replay with the same measurer, margin and
+ * blockers (cards, collapsed boxes and expanded-zone title bands).
  */
 export function resolveScene(
   result: SceneLaidOut,
@@ -259,10 +258,12 @@ export function resolveScene(
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const labels: SceneLabelModel[] = [];
   let bounds = frame.bounds;
-  for (const [id, placement] of placeEdgeLabels(entries, blockers, margin)) {
-    if (placement === undefined) continue;
-    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box });
-    bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
+  const replayed = result.labelBoxes === undefined ? placeEdgeLabels(entries, blockers, margin) : undefined;
+  for (const { id } of entries) {
+    const box = result.labelBoxes === undefined ? replayed?.get(id)?.box : result.labelBoxes[id];
+    if (box === undefined) continue;
+    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box });
+    bounds = bounds === undefined ? box : rectUnion(bounds, box);
   }
 
   return {

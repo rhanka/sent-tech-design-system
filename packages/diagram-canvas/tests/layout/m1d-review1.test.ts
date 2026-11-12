@@ -250,9 +250,12 @@ describe("RED item 9 — gapAfter replaces the inherited gap", () => {
         ],
       },
     });
-    const ay = geometryOf(measured.view, "a").y;
-    const by = geometryOf(measured.view, "b").y;
-    expect(by - (ay + 200)).toBe(10);
+    // DC-2a re-pin (AC-2, §3.7): the two groups pack on one row instead of
+    // stacking; `gapAfter` is the gap after the group along that row.
+    const a = geometryOf(measured.view, "a");
+    const b = geometryOf(measured.view, "b");
+    expect(b.y).toBe(a.y);
+    expect(b.x - (a.x + 460)).toBe(10);
   });
 });
 
@@ -799,8 +802,14 @@ describe("RED item 6 — fixed-box docking keeps declared spacing", () => {
       refs: readonly string[];
       details?: Record<string, unknown>;
     };
-    expect(hubWarning.details?.["required"]).toBe(45);
-    expect((hubWarning.details?.["fitted"] as number) < 45).toBe(true);
+    // DC-2a re-pin (AC-1): the 46 cards pack in a grid instead of one
+    // column, so the hub's 45 ends spread over its sides; the sides past
+    // their capacity carry `required` ends, fewer than 45, at the declared
+    // 12 px spacing.
+    const required = hubWarning.details?.["required"] as number;
+    const fitted = hubWarning.details?.["fitted"] as number;
+    expect(required).toBeGreaterThan(fitted);
+    expect(required).toBeLessThanOrEqual(45);
     expect(hubWarning.refs).toEqual([occurrenceOfEntity("hub")]);
     expect(geometryOf(measured.view, "hub")).toMatchObject({ width: 460, height: 200 });
   });

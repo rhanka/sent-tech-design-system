@@ -472,6 +472,12 @@
       "vue": "match",
       "angular": "missing"
     },
+    "diagram-scene-figure": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
     "diagram-zone": {
       "svelte": "source-of-truth",
       "react": "missing",
@@ -1325,6 +1331,16 @@
       "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
     },
     {
+      "componentId": "diagram-scene-figure",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+    },
+    {
       "componentId": "diagram-zone",
       "parity": {
         "svelte": "source-of-truth",
@@ -1351,7 +1367,6 @@
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",
-      "DiagramSceneFigure",
       "GraphLegend",
       "ICONS",
       "ICON_NAMES",
@@ -1372,6 +1387,7 @@
       "UtilityPanel",
       "Wizard",
       "composeAbsolute",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1379,8 +1395,10 @@
       "identityInitial",
       "nodeShapePath",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolveRelative",
-      "splitAbsolute"
+      "splitAbsolute",
+      "toContainingBlockPosition"
     ],
     "react": [
       "AppShell",
@@ -1424,7 +1442,6 @@
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",
-      "DiagramSceneFigure",
       "GraphCanvas",
       "GraphLegend",
       "ICONS",

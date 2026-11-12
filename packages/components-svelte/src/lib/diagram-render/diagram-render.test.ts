@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { getDiagramGlyph } from "../diagram-icons/registry.js";
 import {
+  CARD_GEOMETRY,
   defaultCardMeasure,
+  EDGE_LABEL_GEOMETRY,
   firstOverflowDiagnostic,
   headerSlotGeometry,
   layoutCard,
@@ -659,5 +661,38 @@ describe("pass 3 item 11 — layoutCard applies headerGeo.iconTopOffset (dual-re
     const svelteIconTop = layout.contentTop + (layout.headerBlockHeight - 70) / 2;
     expect(svelteIconTop).toBe(30.890625);
     expect(layout.iconBox!.y).toBe(svelteIconTop);
+  });
+});
+
+describe("DC-2a — the edge label measures at its own token size (18 px on a 22 px line box)", () => {
+  it("EDGE_LABEL_GEOMETRY uses an 18 px font on a 22 px line box", () => {
+    expect(EDGE_LABEL_GEOMETRY.size).toBe(18);
+    expect(EDGE_LABEL_GEOMETRY.lineHeight).toBe(22);
+  });
+
+  it("one label line is 22 px tall — 30 px with the engine's two 4 px margins, inside the 32 px gap cap", () => {
+    const measurer = cardLineMeasurer();
+    const label = measurer({ text: "lance · appelle", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
+    expect(label.lines).toEqual(["lance · appelle"]);
+    expect(label.height).toBe(22);
+    expect(label.height + 2 * 4).toBeLessThanOrEqual(32);
+    // The body line box (24 px × 1.3 = 31.2 px) would need 39.2 px: the role no longer measures as body.
+    const body = measurer({ text: "lance · appelle", role: "body", availableWidth: 400, allocatedLines: 1, folded: false });
+    expect(body.height).toBeGreaterThan(32 - 2 * 4);
+  });
+
+  it("the label is the body face scaled by 18/24: same wrapping, proportional width", () => {
+    const measurer = cardLineMeasurer();
+    const scale = EDGE_LABEL_GEOMETRY.size / CARD_GEOMETRY.body.size;
+    const text = "lance · appelle · 2 liaisons";
+    const label = measurer({ text, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
+    const body = defaultCardMeasure(text, "body", 400 / scale);
+    expect(label.lines).toEqual(body.lines);
+    expect(label.width).toBeCloseTo(Math.max(...body.lineWidths!) * scale, 6);
+    expect(label.overflow).toBe(false);
+    const narrow = measurer({ text, role: "edge-label", availableWidth: 120, allocatedLines: 1, folded: false });
+    expect(narrow.lines.length).toBeGreaterThan(1);
+    expect(narrow.height).toBe(narrow.lines.length * 22);
+    expect(narrow.overflow).toBe(true);
   });
 });

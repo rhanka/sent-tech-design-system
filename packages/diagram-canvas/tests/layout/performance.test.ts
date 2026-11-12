@@ -5,10 +5,11 @@
  * budget with a wide margin so a slower CI machine does not flake. The README
  * records the measured value and the command.
  */
-import { defaultProfileRegistry } from "@sentropic/diagram-core";
+import { defaultProfileRegistry, m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
 import { describe, expect, it } from "vitest";
 
-import { layoutDocument } from "../../src/index.js";
+import { layoutDocument, layoutFolded, type LayoutOptions } from "../../src/index.js";
+import { occurrenceOf, pinnedMeasurer, sceneInput, type SceneInput } from "./dc2a/scenes.js";
 import { buildDocument, largeDocumentSpec, measure } from "./fixtures.js";
 
 /** Budget per layout, in ms. The measured median on the development machine is far below it (README). */
@@ -70,5 +71,67 @@ describe("performance", () => {
     times.sort((a, b) => a - b);
     console.info(`dense layout of 40 nodes / 200 links: ${times.map((t) => t.toFixed(0)).join(", ")} ms`);
     expect(times[1]!).toBeLessThan(BUDGET_MS);
+  });
+});
+
+/**
+ * DC-2a AC-11 — the measured path (row-pack placement, two-pass edge-aware
+ * gaps, routing, labels) on the cluster-scale scenes, in the same 1000 ms
+ * style: the median of 5 runs after one warm-up, printed, held under the
+ * budget. `layoutMeasured` runs through `layoutDocument` with a presentation;
+ * `layoutFolded` re-lays a view from its emitted source view.
+ */
+describe("performance — measured path (DC-2a AC-11)", () => {
+  const clusters = [
+    ["vue-globale", "after"],
+    ["ajout-preprod", "after"],
+    ["migration-cluster-mesh", "after"],
+  ] as const;
+
+  const options = (input: SceneInput): LayoutOptions => ({
+    registry: m3ProfileRegistry,
+    bindings: shippedExecutorBindings,
+    measureText: measure,
+    targetWidth: 1440,
+    presentation: input.presentation,
+    measureLines: pinnedMeasurer,
+    collapsed: input.collapsed,
+    hints: { ordering: input.ordering, rootOrder: input.rootOrder },
+  });
+  const median = (run: () => void): { median: number; max: number } => {
+    run();
+    const times: number[] = [];
+    for (let index = 0; index < 5; index += 1) {
+      const started = performance.now();
+      run();
+      times.push(performance.now() - started);
+    }
+    times.sort((a, b) => a - b);
+    return { median: times[2]!, max: times[4]! };
+  };
+
+  for (const [caseId, viewName] of clusters) {
+    it(`layoutMeasured lays ${caseId}/${viewName} out within ${BUDGET_MS} ms`, () => {
+      const input = sceneInput(caseId, viewName);
+      expect(input.visible.length).toBeGreaterThanOrEqual(25);
+      expect(input.links.length).toBeGreaterThanOrEqual(20);
+      const result = layoutDocument(input.document, options(input));
+      expect(result.status).toBe("laid-out");
+      const time = median(() => layoutDocument(input.document, options(input)));
+      console.info(`measured layout of ${caseId}/${viewName} (${String(input.visible.length)} boxes, ${String(input.links.length)} links): median ${time.median.toFixed(1)} ms, max ${time.max.toFixed(1)} ms`);
+      expect(time.median).toBeLessThan(BUDGET_MS);
+    });
+  }
+
+  it(`layoutFolded re-lays the largest scene from its source view within ${BUDGET_MS} ms`, () => {
+    const input = sceneInput("vue-globale", "after");
+    const source = layoutDocument(input.document, options(input));
+    if (source.status !== "laid-out") throw new Error("refused");
+    const fold = [occurrenceOf("sys-h2a"), occurrenceOf("pkg-h2a")];
+    const folded = layoutFolded(input.document, source.view, { ...options(input), collapsed: fold });
+    expect(folded.status).toBe("laid-out");
+    const time = median(() => layoutFolded(input.document, source.view, { ...options(input), collapsed: fold }));
+    console.info(`folded layout of vue-globale/after: median ${time.median.toFixed(1)} ms, max ${time.max.toFixed(1)} ms`);
+    expect(time.median).toBeLessThan(BUDGET_MS);
   });
 });

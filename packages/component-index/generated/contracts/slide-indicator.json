@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:8c5aa801fc7f3645ad7d1be605a163b213d10bd893dc5277206fa2de2645277e",
-  "entryDigest": "sha256:bbc145031d097f678f3df1c69439fa2c0814091afc7894f85a03c65b6f9047aa",
+  "digest": "sha256:4a7330293036986afe755675fbd5ed8a0e5e2310bb8b7d632a1534bd38e42122",
+  "entryDigest": "sha256:996f65b847577b4a6e5a536976d512b14798c7ab93ba4152215d4654d898ebc7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SlideIndicatorProps",
-        "version": "0.38.0"
+        "version": "0.39.0"
       },
       "status": "complete",
       "unresolved": [],
