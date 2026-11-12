@@ -39,7 +39,6 @@ import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLay
 
 const BASELINE = new URL("./baseline.json", import.meta.url);
 const AFTER = new URL("./after.json", import.meta.url);
-const MISSES = new URL("./misses.json", import.meta.url);
 const GAP_CAP = 32;
 
 type Orientations = Readonly<Record<string, "rows" | "columns">>;
@@ -74,72 +73,14 @@ const toggle = (caseId: CaseId, a: string, b: string): SceneLayout[] => {
   return out;
 };
 
-/**
- * Gates the shipped engine does not meet, with the spec's own thresholds and
- * the views (or relations) that miss them, by name and number, pinned in
- * `misses.json`. Each list is an open item for arbitration (§7.4), not an
- * exemption: the thresholds are not edited, and a view joining or leaving a
- * list turns the test red. The file is regenerated with `after.json`.
- *
- * - `panningViews` (BF-2): drawings larger than the 0.45 readability floor
- *   allows; the fit is held at the floor and the host pans.
- * - `aspectOver035` (§7.3): views of nine leaves or more whose log aspect
- *   error stays above 0.35 — the root of `vue-globale/before` holds two cards
- *   then four zones in declaration order, and no admissible shelf fill of
- *   that order lands closer to 16:9.
- * - `fillUnderBaselinePlus010` (§7.3): the fill gate is written against the
- *   column baseline, whose bbox is one zone wide and holds almost no slack;
- *   a packed 16:9 drawing has inter-zone slack by construction, so the gate's
- *   direction is contradicted by the baseline itself on every cluster view.
- * - `foldedLabelLosses`, `routesThroughCards`: views that do worse than the
- *   column baseline on label placement or routes through cards.
- * - `unplacedLabels` (AC-21): see l3.test.ts.
- */
-interface Misses {
-  readonly panningViews: readonly string[];
-  readonly aspectOver035: readonly string[];
-  readonly fillUnderBaselinePlus010: readonly string[];
-  readonly foldedLabelLosses: readonly string[];
-  readonly routesThroughCards: readonly string[];
-  readonly obstructedRoutes: readonly string[];
-  readonly unplacedLabels: { readonly confinedToZone: readonly string[]; readonly laneFull: readonly string[] };
-}
+// BLK-1: no misses bypass — every gate below is hard. Panning (BF-2) is
+// allowed when the drawing exceeds the 0.45 floor (held at the floor, host
+// pans); all other lists must be empty. Live layouts are gated, not pins.
 const short = (id: string): string => id.replace("occurrence:r.link.", "");
-const computedMisses = (): Misses => {
-  const unplaced = views.flatMap((view) => unplacedLabels(layouts.get(view.key)!).map((label) => ({ view: view.key, ...label })));
-  return {
-    panningViews: views.filter((view) => after[view.key]!.pans).map((view) => `${view.key} ${String(after[view.key]!.displayScale)}`),
-    aspectOver035: views
-      .filter((view) => after[view.key]!.visibleLeaves >= 9 && after[view.key]!.logAspectError > 0.35)
-      .map((view) => `${view.key} ${String(after[view.key]!.logAspectError)}`),
-    fillUnderBaselinePlus010: views
-      .filter((view) => after[view.key]!.visibleLeaves >= 9 && !(after[view.key]!.fillRatio >= before[view.key]!.fillRatio + 0.1))
-      .map((view) => `${view.key} ${String(before[view.key]!.fillRatio)} → ${String(after[view.key]!.fillRatio)}`),
-    foldedLabelLosses: views
-      .filter((view) => view.viewName.includes("folded") && after[view.key]!.labelUnplaced > before[view.key]!.labelUnplaced)
-      .map((view) => `${view.key} ${String(before[view.key]!.labelUnplaced)} → ${String(after[view.key]!.labelUnplaced)}`),
-    routesThroughCards: views
-      .filter((view) => after[view.key]!.edgeCardCrossings > before[view.key]!.edgeCardCrossings)
-      .map((view) => `${view.key} ${String(before[view.key]!.edgeCardCrossings)} → ${String(after[view.key]!.edgeCardCrossings)}`),
-    obstructedRoutes: views.flatMap((view) =>
-      layouts
-        .get(view.key)!
-        .warnings.filter((warning) => warning.code === "route-obstructed")
-        .map((warning) => `${view.key} ${short(warning.refs[0]!)}`),
-    ),
-    unplacedLabels: {
-      confinedToZone: unplaced.filter((label) => label.container !== undefined).map((label) => `${label.view} ${short(label.id)} (in ${label.container!})`),
-      laneFull: unplaced.filter((label) => label.container === undefined).map((label) => `${label.view} ${short(label.id)}`),
-    },
-  };
-};
-if (process.env["DC2A_WRITE_AFTER"] === "1") writeFileSync(MISSES, `${JSON.stringify(computedMisses(), null, 2)}\n`);
-const misses = JSON.parse(readFileSync(MISSES, "utf8")) as Misses;
 
 describe("DC-2a L2 row-pack gates", () => {
-  it("matches the pinned after numbers and the pinned misses", () => {
+  it("matches the pinned after numbers", () => {
     expect(after).toEqual(JSON.parse(readFileSync(AFTER, "utf8")));
-    expect(computedMisses()).toEqual(misses);
   });
 
   it("AC-1: no rowPack option packs every level toward 16:9; the option only tunes the objective", () => {
@@ -253,11 +194,24 @@ describe("DC-2a L2 row-pack gates", () => {
     expect([metrics.titleBandCrossings, metrics.edgeCardCrossings]).toEqual([0, 0]);
   });
 
-  it("no view draws more routes through cards than the column baseline did", () => {
-    const violations = views
+  it("AC-25: zero routes through cards and zero route-obstructed on every view", () => {
+    // BLK-1: hard gates — no bypass list.
+    const cardViolations = views
+      .filter((view) => after[view.key]!.edgeCardCrossings > 0)
+      .map((view) => `${view.key} edgeCardCrossings=${String(after[view.key]!.edgeCardCrossings)}`);
+    expect(cardViolations).toEqual([]);
+    const obstructed = views.flatMap((view) =>
+      layouts
+        .get(view.key)!
+        .warnings.filter((warning) => warning.code === "route-obstructed")
+        .map((warning) => `${view.key} ${short(warning.refs[0]!)}`),
+    );
+    expect(obstructed).toEqual([]);
+    // No view draws more routes through cards than the column baseline did.
+    const regressions = views
       .filter((view) => after[view.key]!.edgeCardCrossings > before[view.key]!.edgeCardCrossings)
       .map((view) => `${view.key} ${String(before[view.key]!.edgeCardCrossings)} → ${String(after[view.key]!.edgeCardCrossings)}`);
-    expect(violations).toEqual(misses.routesThroughCards);
+    expect(regressions).toEqual([]);
   });
 
   it("AC-2/BF-1: no level of two siblings or more is stacked in one single vertical column", () => {
@@ -386,16 +340,17 @@ describe("DC-2a L2 row-pack gates", () => {
 
   it("AC-16: the orientation of a level follows the fold state through a real toggle (case-trackfocus-r9)", () => {
     // unfolded → inner-folded → unfolded → inner-folded, the emitted map fed
-    // forward each time. `s2-h2a` holds two zones and a card when unfolded
-    // (columns wins outside the band) and three equal cards when its zones
-    // fold: both forms then fill the same 944 × 424 box, so the level reads
-    // rows again instead of staying columns because the last state was.
+    // forward each time. BLK-4: O-4 precedes O-3, so both states keep columns
+    // inside the band — no alternation within the hysteresis band (O-5).
     const key = "occurrence:e.s2-h2a";
     const sequence = toggle("case-trackfocus-r9", "unfolded", "inner-folded");
-    expect(sequence.map((layout) => layout.orientations[key])).toEqual(["columns", "rows", "columns", "rows"]);
-    // With the map fed forward each state draws what it draws alone.
-    expect(JSON.stringify(sequence[1]!.view)).toBe(JSON.stringify(layouts.get("case-trackfocus-r9/inner-folded")!.view));
+    expect(sequence.map((layout) => layout.orientations[key])).toEqual(["columns", "columns", "columns", "columns"]);
+    // The fed-forward unfolded state draws what it draws alone (both columns);
+    // the fed-forward inner-folded state keeps columns while the map-free
+    // inner-folded state reads rows — O-4 working as specified.
     expect(JSON.stringify(sequence[2]!.view)).toBe(JSON.stringify(layouts.get("case-trackfocus-r9/unfolded")!.view));
+    expect(sequence[1]!.orientations[key]).toBe("columns");
+    expect(layouts.get("case-trackfocus-r9/inner-folded")!.orientations[key]).toBe("rows");
   });
 
   it("AC-8/AC-17/O-5: every fold toggle A → B → A → B repeats byte for byte, the orientation map fed forward", () => {
@@ -418,9 +373,9 @@ describe("DC-2a L2 row-pack gates", () => {
         }
       }
     }
-    // The only level that changes orientation on a toggle is the one whose
-    // footprints change (AC-16): no level alternates inside the band.
-    expect(alternations).toEqual(["case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a: columns↔rows"]);
+    // BLK-4: O-4 precedes O-3, so no level alternates inside the band — the
+    // s2-h2a footprints change but both scores sit inside 0.08, hence stable.
+    expect(alternations).toEqual([]);
   }, 120_000);
 
   it("AC-8/S-1: a fold toggle moves no sibling inside a level it leaves unchanged", () => {
@@ -455,46 +410,49 @@ describe("DC-2a L2 row-pack gates", () => {
       expect(metrics.frameScale, view.key).toBeCloseTo(frameFit({ width, height }).zoomFit, 3);
       if (metrics.pans) panning.push(`${view.key} ${String(metrics.displayScale)}`);
     }
-    // Views larger than the floor allows are held at the floor and pan (BF-2), by name.
-    expect(panning).toEqual(misses.panningViews);
+    // BLK-1: panning is allowed (BF-2) but only at the floor — every panning
+    // view is held at 0.45. No name list to bypass.
+    for (const entry of panning) {
+      expect(Number(entry.split(" ").pop())).toBe(DEFAULT_MIN_READABLE_SCALE);
+    }
   });
 
-  it("AC-21 report: labels the capped gutters cannot hold are named, never given a wider gutter", () => {
-    // The zero-unplaced gate itself is in l3.test.ts; here the row-packed
-    // scenes must not lose label placements against the column baseline.
-    let unplacedBefore = 0;
-    let unplacedAfter = 0;
+  it("AC-21 report: zero unplaced and zero overlaps on every view (live)", () => {
+    // BLK-1: hard gate on live layouts — the zero-unplaced gate itself is in
+    // l3.test.ts; here too no bypass list and no baseline comparison.
     for (const view of views) {
-      unplacedBefore += before[view.key]!.labelUnplaced;
-      unplacedAfter += after[view.key]!.labelUnplaced;
       expect(after[view.key]!.labelCardOverlaps, view.key).toBe(0);
+      expect(after[view.key]!.labelUnplaced, view.key).toBe(0);
     }
-    expect(unplacedAfter).toBeLessThan(unplacedBefore);
+    const liveUnplaced = views.flatMap((view) =>
+      unplacedLabels(layouts.get(view.key)!).map((label) => `${view.key} ${short(label.id)}`),
+    );
+    expect(liveUnplaced).toEqual([]);
   });
 
   it("a folded view places no fewer labels than the column baseline", () => {
+    // BLK-1: hard — with zero unplaced everywhere, no folded view can lose.
     const worse = views
       .filter((view) => view.viewName.includes("folded") && after[view.key]!.labelUnplaced > before[view.key]!.labelUnplaced)
       .map((view) => `${view.key} ${String(before[view.key]!.labelUnplaced)} → ${String(after[view.key]!.labelUnplaced)}`);
-    expect(worse).toEqual(misses.foldedLabelLosses);
+    expect(worse).toEqual([]);
   });
 });
 
-describe("DC-2a §7.3 gates in arbitration (spec thresholds, misses named)", () => {
+describe("DC-2a §7.3 gates (spec thresholds, no arbitration list)", () => {
   it("§7.3 root aspect: views with nine visible leaves or more land within 0.35 of the 16:9 log aspect", () => {
+    // BLK-1: hard gate — no §7.4 arbitration list. A failing view is named.
     const violations = views
       .filter((view) => after[view.key]!.visibleLeaves >= 9 && after[view.key]!.logAspectError > 0.35)
       .map((view) => `${view.key} ${String(after[view.key]!.logAspectError)}`);
-    expect(violations).toEqual(misses.aspectOver035);
+    expect(violations).toEqual([]);
   });
 
   it("§7.3 fill: cluster-scale views reach the column baseline fill + 0.10", () => {
-    // fillRatio = visible-leaf areas / entity bbox area. The column baseline
-    // stacks one zone per row, so its bbox is one zone wide and holds almost
-    // no slack; the +0.10 direction is recorded against it as written.
+    // BLK-1: hard gate as written — no arbitration list. Failing views named.
     const violations = views
       .filter((view) => after[view.key]!.visibleLeaves >= 9 && !(after[view.key]!.fillRatio >= before[view.key]!.fillRatio + 0.1))
       .map((view) => `${view.key} ${String(before[view.key]!.fillRatio)} → ${String(after[view.key]!.fillRatio)}`);
-    expect(violations).toEqual(misses.fillUnderBaselinePlus010);
+    expect(violations).toEqual([]);
   });
 });

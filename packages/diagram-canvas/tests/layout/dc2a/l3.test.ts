@@ -18,8 +18,6 @@ import { GAP_TOLERANCE, siblingGaps, unplacedLabels } from "./rowpack-metrics.js
 import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLayout } from "./scenes.js";
 
 const STABILITY = new URL("./stability.json", import.meta.url);
-const MISSES = new URL("./misses.json", import.meta.url);
-const BASELINE = new URL("./baseline.json", import.meta.url);
 
 const views = CASE_IDS.flatMap((caseId) => viewNamesOf(caseId).map((viewName) => ({ key: `${caseId}/${viewName}`, caseId, viewName })));
 const lay = (caseId: CaseId, viewName: string, extra: Parameters<typeof layScene>[1] = {}): SceneLayout => {
@@ -121,9 +119,10 @@ describe("DC-2a L3 fold stability (S-1, S-2, AC-8)", () => {
           for (const id of members) {
             const before = { x: a.rects.get(id)!.x - a.rects.get(origin)!.x, y: a.rects.get(id)!.y - a.rects.get(origin)!.y };
             const after = { x: b.rects.get(id)!.x - b.rects.get(origin)!.x, y: b.rects.get(id)!.y - b.rects.get(origin)!.y };
-            // An edge-aware gutter may open or close by the label thickness (§3.5): never more than the cap allows.
-            expect(Math.abs(after.x - before.x), `${caseId} ${names[index]!} ${id} x`).toBeLessThanOrEqual(DEFAULT_ROW_GAP_MAX - 24);
-            expect(Math.abs(after.y - before.y), `${caseId} ${names[index]!} ${id} y`).toBeLessThanOrEqual(DEFAULT_ROW_GAP_MAX - 24);
+            // BLK-1 / S-1: 0 px — gutter-widening probes are scoped per level,
+            // so folding inside P cannot alter gutters inside Q.
+            expect(Math.abs(after.x - before.x), `${caseId} ${names[index]!} ${id} x`).toBe(0);
+            expect(Math.abs(after.y - before.y), `${caseId} ${names[index]!} ${id} y`).toBe(0);
           }
         }
       }
@@ -144,10 +143,7 @@ describe("DC-2a L3 fold stability (S-1, S-2, AC-8)", () => {
 });
 
 describe("DC-2a L3 label gate (AC-21, DEC-3, DEC-6)", () => {
-  const misses = JSON.parse(readFileSync(MISSES, "utf8")) as {
-    readonly unplacedLabels: { readonly confinedToZone: readonly string[]; readonly laneFull: readonly string[] };
-  };
-  const baseline = JSON.parse(readFileSync(BASELINE, "utf8")) as Record<string, { readonly labelUnplaced: number }>;
+  // BLK-1: no misses bypass — AC-21 requires zero unplaced on all 31 views.
 
   it("no label box covers a card, a collapsed box, a title band or another label, on any of the 31 views", () => {
     for (const view of views) {
@@ -186,30 +182,10 @@ describe("DC-2a L3 label gate (AC-21, DEC-3, DEC-6)", () => {
     }
   });
 
-  it("AC-21: a label the capped gutters cannot hold is named, never given a wider gutter", () => {
+  it("AC-21: zero label-unplaced on every acceptance view (DEC-3, §7.3, §10 L3)", () => {
     const unplaced = views.flatMap((view) => unplacedLabels(layouts.get(view.key)!).map((label) => ({ view: view.key, ...label })));
-    // The gate is zero. The engine does not reach it: the relations below are
-    // the open items, by name. A relation joining or leaving a list turns the test red.
-    //
-    // `confinedToZone`: both ends sit in one expanded container, so BF-3 keeps
-    // the route and the label inside its content box; the two boxes are side
-    // by side on the only shelf of that container (BF-1 forbids stacking
-    // them), or the one lane between its shelves already holds a label. No
-    // room exists inside the box within the 32 px cap (DEC-6).
-    expect(unplaced.filter((label) => label.container !== undefined).map((label) => `${label.view} ${short(label.id)} (in ${label.container!})`)).toEqual(
-      misses.unplacedLabels.confinedToZone,
-    );
-    // `laneFull`: more labels cross one lane than its length holds, mostly on
-    // folded views where a handful of cards carry twenty relations.
-    expect(unplaced.filter((label) => label.container === undefined).map((label) => `${label.view} ${short(label.id)}`)).toEqual(
-      misses.unplacedLabels.laneFull,
-    );
-    expect([misses.unplacedLabels.confinedToZone.length, misses.unplacedLabels.laneFull.length]).toEqual([22, 11]);
-    // 170 on the column baseline; no view places fewer labels than it did.
-    expect(Object.values(baseline).reduce((sum, metrics) => sum + metrics.labelUnplaced, 0)).toBe(170);
-    for (const view of views) {
-      expect(unplaced.filter((label) => label.view === view.key).length, view.key).toBeLessThanOrEqual(baseline[view.key]!.labelUnplaced);
-    }
+    // BLK-1: hard gate — no bypass list. Any unplaced label fails by name.
+    expect(unplaced.map((label) => `${label.view} ${short(label.id)}${label.container === undefined ? "" : ` (in ${label.container})`}`)).toEqual([]);
     // Never a wider gutter to pass (DEC-6): every sibling gap holds the cap.
     for (const view of views) {
       for (const gap of siblingGaps(layouts.get(view.key)!)) expect(gap.gap, `${view.key} ${gap.level}`).toBeLessThanOrEqual(DEFAULT_ROW_GAP_MAX + GAP_TOLERANCE);

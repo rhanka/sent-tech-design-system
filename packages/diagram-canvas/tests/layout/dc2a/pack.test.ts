@@ -163,14 +163,10 @@ describe("chooseOrientation", () => {
     expect(chooseOrientation(boxes, options("root"), 0.08, free.orientation).orientation).toBe(free.orientation);
   });
 
-  it("O-3: equivalent forms read as rows whatever the previous orientation — the band damps near-boundary scores only", () => {
-    // Two equal cards: both forms draw the same line, scores equal to the last bit.
-    const two = chooseOrientation(cards(2), options("root"), 0.08, "columns");
-    expect(Math.abs(two.scoreRows - two.scoreColumns)).toBeLessThanOrEqual(1e-9);
-    expect(two.orientation).toBe("rows");
-    // Three equal cards: rows [2, 1] and columns [2, 1] fill the same 944 × 424
-    // box. The scores differ by shelf-slack bookkeeping only (well inside the
-    // band), so a level that was `columns` in another fold state reads rows.
+  it("BLK-4: O-4 precedes the O-3 tie-break — a previous orientation inside the band is kept even on one same outer box", () => {
+    // Three equal cards fill the same 944 × 424 box in both forms; the score
+    // gap is shelf-slack bookkeeping inside the 0.08 band, so O-4 keeps the
+    // previous orientation instead of forcing rows (SPEC §3.2 O-3/O-4).
     for (const chrome of ["root", "zone"] as const) {
       const rows = packRows(cards(3), options(chrome));
       const columns = packColumns(cards(3), options(chrome));
@@ -178,9 +174,46 @@ describe("chooseOrientation", () => {
       const gap = Math.abs(rows.score - columns.score);
       expect(gap).toBeGreaterThan(1e-9);
       expect(gap).toBeLessThan(0.08);
-      for (const previous of ["columns", "rows", undefined] as const) {
-        expect(chooseOrientation(cards(3), options(chrome), 0.08, previous).orientation).toBe("rows");
-      }
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, "columns").orientation).toBe("columns");
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, "rows").orientation).toBe("rows");
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, undefined).orientation).toBe("rows");
+    }
+    // s2-h2a-like unfolded shape (460×262 + 2 × 460×200): whatever the free
+    // choice, a previous orientation inside the band is kept (O-4 first).
+    const mixed: PackBox[] = [
+      { width: 460, height: 262 },
+      { width: 460, height: 200 },
+      { width: 460, height: 200 },
+    ];
+    const free = chooseOrientation(mixed, options("root"), 0);
+    const gapMixed = Math.abs(free.scoreRows - free.scoreColumns);
+    expect(gapMixed).toBeLessThan(0.08);
+    const loserMixed = free.orientation === "rows" ? "columns" : "rows";
+    expect(chooseOrientation(mixed, options("root"), 0.08, loserMixed).orientation).toBe(loserMixed);
+    expect(chooseOrientation(mixed, options("root"), 0.08, free.orientation).orientation).toBe(free.orientation);
+  });
+
+  it("O-3: exact ties read as rows without a previous orientation — O-4 keeps a previous orientation first", () => {
+    // Two equal cards: both forms draw the same line, scores equal to the last bit.
+    // With no previous orientation the tie reads rows; with one inside the band
+    // O-4 keeps it (exact fix order: previous first, then the epsilon tie-break).
+    const two = chooseOrientation(cards(2), options("root"), 0.08, "columns");
+    expect(Math.abs(two.scoreRows - two.scoreColumns)).toBeLessThanOrEqual(1e-9);
+    expect(two.orientation).toBe("columns");
+    expect(chooseOrientation(cards(2), options("root"), 0.08, undefined).orientation).toBe("rows");
+    // Three equal cards fill the same 944 × 424 box but the scores differ by
+    // shelf-slack bookkeeping inside the band: O-4 keeps the previous
+    // orientation, only the map-free choice reads rows.
+    for (const chrome of ["root", "zone"] as const) {
+      const rows = packRows(cards(3), options(chrome));
+      const columns = packColumns(cards(3), options(chrome));
+      expect([columns.width, columns.height]).toEqual([rows.width, rows.height]);
+      const gap = Math.abs(rows.score - columns.score);
+      expect(gap).toBeGreaterThan(1e-9);
+      expect(gap).toBeLessThan(0.08);
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, "columns").orientation).toBe("columns");
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, "rows").orientation).toBe("rows");
+      expect(chooseOrientation(cards(3), options(chrome), 0.08, undefined).orientation).toBe("rows");
     }
   });
 });
