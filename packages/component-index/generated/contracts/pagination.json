@@ -1,8 +1,8 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:ae6bbc9b0cb025f8befe49257c2df28a1ec7fb79bbf21d572331b9ec500552b2",
-  "entryDigest": "sha256:49a7674adc8ab8e8ed448006a58307f8e6e2ad5f1d0f53bef814f6c61fda22f7",
+  "digest": "sha256:4d21f61ac4124e9e7d8061326046842366bbc3d685644f99e4426a8c57573200",
+  "entryDigest": "sha256:d5aaca72f148c55e5b13ad18a53d41922726b5d5db1a1d36b1193dbbd35be496",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Pagination.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PaginationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

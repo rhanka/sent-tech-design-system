@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:e6d93eacea29e5ed3490a7c05d3e247e5bc28dbc6db95a172da8097c7e939035",
-  "entryDigest": "sha256:9ae67cccc641e50fdfd1f801a9905c865394fa3ec212e047032a35dec30f8f3e",
+  "digest": "sha256:7b8432afc35ccdfdb44f75e9e8856ed4e1da49e518e5922c60c04ceea7673784",
+  "entryDigest": "sha256:7247da9e3b89d66a37b905f303a344844915f02a04c6bcc29b29e1c0a3cd7055",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/PolygonChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PolygonChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

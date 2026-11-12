@@ -1,4 +1,7 @@
 import {
+  afterNextRender,
+  ChangeDetectorRef,
+  Injector,
   Component,
   ElementRef,
   EventEmitter,
@@ -13,6 +16,7 @@ import type {
   SimpleChanges,
 } from "@angular/core";
 
+import { injectMenuDependency, MENU_HOST } from "./menu-host.js";
 import { classNames } from "./classNames.js";
 import {
   CLOSE_DELAY,
@@ -132,11 +136,12 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                   [attr.aria-disabled]="child.disabled ? 'true' : null"
                   [class]="itemClass(child)"
                   [attr.tabindex]="groupChildTabIndex(0, outerIdx, innerIdx, asGroup(item).items || [])"
+                  [attr.data-group-child-index]="innerIdx"
                   [attr.data-item-index]="outerIdx"
                   [attr.data-menu-level]="0"
                   (click)="onGroupChildClick(0, outerIdx, innerIdx, child)"
-                  (keydown)="onItemKeyDown($event, 0, outerIdx, child)"
-                  (focus)="onItemFocus(0, outerIdx)"
+                  (keydown)="onItemKeyDown($event, 0, outerIdx, child, innerIdx)"
+                  (focus)="onItemFocus(0, outerIdx, innerIdx)"
                 >
                   <span class="st-menu__itemLabel">{{ child.label }}</span>
                 </button>
@@ -226,11 +231,12 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                     [attr.aria-disabled]="child.disabled ? 'true' : null"
                     [class]="itemClass(child)"
                     [attr.tabindex]="groupChildTabIndex(1, outerIdx, innerIdx, asGroup(item).items || [])"
+                    [attr.data-group-child-index]="innerIdx"
                     [attr.data-item-index]="outerIdx"
                     [attr.data-menu-level]="1"
                     (click)="onGroupChildClick(1, outerIdx, innerIdx, child)"
-                    (keydown)="onItemKeyDown($event, 1, outerIdx, child)"
-                    (focus)="onItemFocus(1, outerIdx)"
+                    (keydown)="onItemKeyDown($event, 1, outerIdx, child, innerIdx)"
+                    (focus)="onItemFocus(1, outerIdx, innerIdx)"
                   >
                     <span class="st-menu__itemLabel">{{ child.label }}</span>
                   </button>
@@ -321,11 +327,12 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                     [attr.aria-disabled]="child.disabled ? 'true' : null"
                     [class]="itemClass(child)"
                     [attr.tabindex]="groupChildTabIndex(2, outerIdx, innerIdx, asGroup(item).items || [])"
+                    [attr.data-group-child-index]="innerIdx"
                     [attr.data-item-index]="outerIdx"
                     [attr.data-menu-level]="2"
                     (click)="onGroupChildClick(2, outerIdx, innerIdx, child)"
-                    (keydown)="onItemKeyDown($event, 2, outerIdx, child)"
-                    (focus)="onItemFocus(2, outerIdx)"
+                    (keydown)="onItemKeyDown($event, 2, outerIdx, child, innerIdx)"
+                    (focus)="onItemFocus(2, outerIdx, innerIdx)"
                   >
                     <span class="st-menu__itemLabel">{{ child.label }}</span>
                   </button>
@@ -378,11 +385,12 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                 [attr.aria-disabled]="child.disabled ? 'true' : null"
                 [class]="itemClass(child)"
                 [attr.tabindex]="groupChildTabIndex(0, outerIdx, innerIdx, asGroup(item).items || [])"
+                [attr.data-group-child-index]="innerIdx"
                 [attr.data-item-index]="outerIdx"
                 [attr.data-menu-level]="0"
                 (click)="onGroupChildClick(0, outerIdx, innerIdx, child)"
-                (keydown)="onItemKeyDown($event, 0, outerIdx, child)"
-                (focus)="onItemFocus(0, outerIdx)"
+                (keydown)="onItemKeyDown($event, 0, outerIdx, child, innerIdx)"
+                (focus)="onItemFocus(0, outerIdx, innerIdx)"
               >
                 <span class="st-menu__itemLabel">{{ child.label }}</span>
               </button>
@@ -417,6 +425,18 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   readonly componentName = "Menu";
   readonly MENU_CHEVRON_RIGHT_SVG = CHEVRON_RIGHT_SVG;
   readonly MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
+
+  private readonly changeDetector = injectMenuDependency(ChangeDetectorRef);
+  private readonly injector = injectMenuDependency(Injector);
+  private readonly menuHost = injectMenuDependency(MENU_HOST);
+  private readonly rovingChild: (number | undefined)[] = [];
+
+  private afterRender(callback: () => void): void {
+    const run = () => { if (!this.destroyed) callback(); };
+    if (this.injector) afterNextRender(run, { injector: this.injector });
+    else queueMicrotask(run); // Direct Node callers have no Angular view.
+    this.changeDetector?.markForCheck();
+  }
 
   private static nextInstanceId = 0;
   private readonly fallbackRootId = `st-menu-${++Menu.nextInstanceId}`;
@@ -458,7 +478,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   };
 
   get rootMenuId(): string {
-    return this.id ?? this.fallbackRootId;
+    return this.menuHost?.rootMenuId ?? this.id ?? this.fallbackRootId;
   }
 
   get hostClass(): string {
@@ -600,7 +620,9 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     const list = this.levelItems(depth);
     const target = this.rovingTarget(depth, list);
     if (target !== groupIndex) return "-1";
-    return childIndex === firstEnabled ? "0" : "-1";
+    const stored = this.rovingChild[depth];
+    const active = stored !== undefined && siblings[stored] && !siblings[stored].disabled ? stored : firstEnabled;
+    return childIndex === active ? "0" : "-1";
   }
 
   itemClass(item: MenuActionItem, depth?: number, index?: number): string {
@@ -745,7 +767,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
 
   focusButton(level: number, index: number): void {
     const levelRoot = this.levelRootEl(level);
-    this.roving[level] = index;
+    this.onItemFocus(level, index);
     if (!levelRoot || typeof levelRoot.querySelector !== "function") return;
     try {
       const button = levelRoot.querySelector(`[data-item-index="${index}"]`) as HTMLButtonElement | null;
@@ -758,7 +780,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   focusFirstEnabled(level: number): boolean {
     const buttons = this.levelButtons(level);
     if (buttons.length === 0) return false;
-    this.roving[level] = this.rawIndexOf(buttons[0]);
+    this.rememberFocusedButton(level, buttons[0]);
     buttons[0].focus();
     return true;
   }
@@ -767,19 +789,24 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     if (buttons.length === 0) return;
     const size = buttons.length;
     const target = ((at % size) + size) % size;
-    this.roving[level] = this.rawIndexOf(buttons[target]);
+    this.rememberFocusedButton(level, buttons[target]);
     buttons[target].focus();
   }
 
-  onItemFocus(depth: number, index: number): void {
+  private rememberFocusedButton(level: number, button: HTMLButtonElement): void {
+    const child = button.getAttribute?.("data-group-child-index");
+    this.onItemFocus(level, this.rawIndexOf(button), child == null ? undefined : Number(child));
+  }
+
+  onItemFocus(depth: number, index: number, childIndex?: number): void {
     this.roving[depth] = index;
+    this.rovingChild[depth] = childIndex;
   }
 
   schedulePositions(): void {
     if (this.destroyed) return;
-    // Angular has no Svelte `tick()` : the microtask plays that role, then a
-    // RAF recompute once the real panel size is known (§3.4 step 6).
-    queueMicrotask(() => {
+    // Measure only once Angular has committed the panel to the view.
+    this.afterRender(() => {
       if (this.destroyed) return;
       this.computeAllPositions();
       if (typeof requestAnimationFrame === "function") {
@@ -848,6 +875,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
         { top: solved.top, left: solved.left },
         block ? block.getBoundingClientRect() : null,
       );
+      this.changeDetector?.markForCheck();
       this.levelSides[level - 1] = solved.side;
       this.levelPositions[level - 1] = {
         top: converted.top,
@@ -879,7 +907,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   chevronSide(depth: number, index: number): ResolvedSubMenuSide {
     const item = this.levelItems(depth)[index];
     if (item && this.isAction(item)) {
-      return this.openingSideFor(depth, index, item as MenuActionItem);
+      return this.resolvedSideFor(depth, index);
     }
     return resolvePreferredSide(this.submenuSide);
   }
@@ -910,9 +938,9 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   /** Leaf activation (§2.3) : `select` emits the bare leaf item unchanged at
    * any depth (D1) ; additive `selectPath` emits `{item, path}` pour chaque
    * feuille (root leaf -> `path` length 1). */
-  selectItem(item: MenuActionItem, fullPath: number[], _modality: "pointer" | "keyboard"): void {
-    void _modality;
+  selectItem(item: MenuActionItem, fullPath: number[], modality: "pointer" | "keyboard"): void {
     if (item.disabled) return;
+    const cascade = this.hasCascade;
     // Parent activation never reaches here (toggle/open instead) ; leaf
     // `onClick` still precedes `select` ; parent `onClick` never runs on open.
     item.onClick?.();
@@ -921,6 +949,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     this.selectPath.emit({ item, path });
     this.cancelAllTimers();
     this.openPath = [];
+    this.menuHost?.select(modality === "keyboard", cascade);
   }
 
   /** Leaf inside a `group` (Angular `MenuGroupItem.items`) : `group` never
@@ -930,8 +959,10 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     depth: number,
     _groupIndex: number,
     childIndex: number,
+    modality: "pointer" | "keyboard" = "pointer",
   ): void {
     if (child.disabled) return;
+    const cascade = this.hasCascade;
     child.onClick?.();
     const ancestors = this.pathKeys(this.openPath.slice(0, depth));
     const path = [...ancestors, this.keyOf(child, childIndex)];
@@ -939,6 +970,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     this.selectPath.emit({ item: child, path });
     this.cancelAllTimers();
     this.openPath = [];
+    this.menuHost?.select(modality === "keyboard", cascade);
   }
 
   onGroupChildClick(
@@ -963,8 +995,8 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     this.openPath = [...this.openPath.slice(0, depth), index];
     this.schedulePositions();
     if (focusFirst) {
-      queueMicrotask(() => {
-        if (this.destroyed) return;
+      this.afterRender(() => {
+        if (!this.isOpen(depth, index)) return;
         this.focusFirstEnabled(depth + 1);
       });
     }
@@ -1043,6 +1075,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
       }
       this.closeTimer = undefined;
       this.closeLevel = -1;
+      this.changeDetector?.markForCheck();
     }, CLOSE_DELAY);
   }
 
@@ -1161,6 +1194,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     depth: number,
     index: number,
     item: MenuActionItem,
+    childIndex?: number,
   ): void {
     const levelRoot = this.levelRootEl(depth);
     const buttons = levelRoot ? this.levelButtons(depth) : [];
@@ -1192,7 +1226,9 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     const opposite = opening === "ArrowRight" ? "ArrowLeft" : "ArrowRight";
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      if (this.hasSubMenu(item) && depth < 2) {
+      if (childIndex !== undefined) {
+        this.selectGroupChild(item, depth, index, childIndex, "keyboard");
+      } else if (this.hasSubMenu(item) && depth < 2) {
         this.openParent(depth, index, true);
       } else {
         this.selectItem(item, this.indexPathFor(depth, index), "keyboard");
@@ -1303,6 +1339,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
       // Unknown reference (detached item): emit with a label-derived path of
       // length 1 so `select` still carries the bare item (AC-01 compat).
       item.onClick?.();
+      this.menuHost?.select(false, this.hasCascade);
       this.select.emit(item);
       this.selectPath.emit({ item, path: [this.keyOf(item, 0)] });
       this.cancelAllTimers();

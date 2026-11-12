@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:1c731abeff8fd82ea49d83cbb3f0925879dc5c85a2f14f19ed960c34a508109d",
-  "entryDigest": "sha256:0995937a9d170a6882f452881639f50665f6037421c49925efc0a179a2630137",
+  "digest": "sha256:c2be02b72707abcc980b27a90a2eec2d8ffd2cdcdc7b660df9d4a0d13b036529",
+  "entryDigest": "sha256:49c7e11e288e3d152d2a48591dc685dd283c1adc8294550f9660f3a432e6d835",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

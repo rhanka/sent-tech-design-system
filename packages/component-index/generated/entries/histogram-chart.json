@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/HistogramChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Histogram for explicit or generated distribution bins.",
     "fr": "Histogramme pour afficher des classes explicites ou générées."
   },
-  "digest": "sha256:676217a83812a7621f04fd496fbcee81d12b98fa3ace58863f74bd12caa71a80",
+  "digest": "sha256:c9a58a76fcbbe53e8f731c1ea554609530a791957eaea8e3aead2e16bd01d478",
   "displayName": "HistogramChart",
   "format": "component-entry/v1",
   "frameworks": [

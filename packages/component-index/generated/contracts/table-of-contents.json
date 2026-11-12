@@ -1,8 +1,8 @@
 {
   "componentId": "table-of-contents",
   "contractSource": "derived",
-  "digest": "sha256:47f9278b447bc8e17cf022d61f4b0ceee1d6d76c1b8b7f733885cf966e90d528",
-  "entryDigest": "sha256:8ae4f2829c1d0d1f14bb324b937ce310793d995221ffc99374d0cf1e68c04df1",
+  "digest": "sha256:3b288d34d05b6d8d0c9334f238e0c0f9cd8576fd3b6ccca678e00789d45d474c",
+  "entryDigest": "sha256:7dc5d51216340f0df5c64238a7d67ced452ae99a08af584b420bbad6a3a51876",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/TableOfContents.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TableOfContentsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

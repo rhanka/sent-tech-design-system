@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:365d4bab37f8aa9a4d54bcfb9817d5c6e53142fb2d1d2bf17fdc1c39ef0d27ed",
+  "digest": "sha256:67d76059a846a1582fc637458588874c8335e3cc86bb79fd530f19182d3fd6f3",
   "entryDigest": "sha256:72cc3379076562916a1c71a373dbff3eb192a6d5f49afc1bdc876a4749e7835e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -20,7 +20,7 @@
         "declarationPath": "packages/components-angular/dist/DiagramSceneFigure.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

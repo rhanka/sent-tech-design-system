@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Quote.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Editorial blockquote with author and source.",
     "fr": "Citation éditoriale (blockquote) avec auteur et source."
   },
-  "digest": "sha256:44ffc10de2995474898a4923ed1a322f7d085f2af981b0ef2a94989bf88b5ec2",
+  "digest": "sha256:1c9454d287ba1f7b7fe46ec298ef18d1e35ec0c555bea1969dc302641dad3032",
   "displayName": "Quote",
   "format": "component-entry/v1",
   "frameworks": [

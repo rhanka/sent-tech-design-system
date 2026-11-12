@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:3f5eb8c79ee345629f734ec5752f2c524afc64d80ce2e62ecd5427c14951e334",
-  "entryDigest": "sha256:fd4abe05c5ea41d1f2ff7e5c2fb10f128d5d08a23819419b6b82c932f9079aa3",
+  "digest": "sha256:2ad0627be173c1869e56d049255efbedeed11ccf06ff94ccbe2227acebfed8d5",
+  "entryDigest": "sha256:d64e64326db0783262175870df57eb3556ca3a05665286b9b54c7603d8bf2fbd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/MessageActions.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

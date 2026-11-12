@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:4bb11dc531fc99b6efcf8eb5a9ad5f5ab09806baf62969be1f5894a7a34369b6",
-  "entryDigest": "sha256:9e67f733b2f2c70a66cc245f951cbed877e32eb105b73670e264902fae0e4053",
+  "digest": "sha256:4a0ca7b2326c2ba763ca62cb680a517d0228fe681f8741dbb73169efd53f671a",
+  "entryDigest": "sha256:e802e842d21dd8e07c288bbac78a24d7ae7198a5996ff28ae4cea1c7f7e76fe3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-angular/dist/DatePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DatePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

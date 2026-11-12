@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:2d36f48772423d3dc0825c3131b72574498156072996f0a6b290603a8380f519",
-  "entryDigest": "sha256:1dbe9c0ae97faed612a5bd6acf8ca4d20b94fc25be5264a5536cd07fa9ea1642",
+  "digest": "sha256:6d487d159bcddd38ce9fe94131e7cca279e969ad7bf0a2f96fcb958f3c7bec26",
+  "entryDigest": "sha256:9c49166f4bd00b8d1537b79082ba5aebec3aebdc5eacb136416ed37f13e49293",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,11 +206,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9094413c3d37128a6e22db0062e5fbe9c200522f70850c48e6e6b5dd1bec5322",
+        "declarationDigest": "sha256:4f8b7508b2c05818addc33b9d68df69ecd0ac4615d0b9dc0fbd5c32be81efbd4",
         "declarationPath": "packages/components-angular/dist/Menu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
