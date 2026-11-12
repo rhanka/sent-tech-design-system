@@ -1,6 +1,18 @@
 import { readFileSync } from "node:fs";
 import { fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
+import * as canvas from "@sentropic/diagram-canvas";
+import { defineHostContract } from "./DiagramSceneFigure.test-support.js";
+import Dc2bContentSizeFixture from "./Dc2bContentSizeFixture.svelte";
+import type { DiagramSceneSize, SceneLayoutCache, LayoutCacheConfig, LayoutCacheStats, createLayoutCache as hostCacheFactory } from "./index.js";
+
+// The package checker compiles the actual consumer-facing barrel types.
+function hostCacheTypes(config: LayoutCacheConfig, size: DiagramSceneSize): [SceneLayoutCache, LayoutCacheStats, DiagramSceneSize] {
+  const create: typeof hostCacheFactory = canvas.createLayoutCache;
+  const cache: SceneLayoutCache = create(config);
+  return [cache, cache.stats(), size];
+}
+void hostCacheTypes;
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DEFAULT_MAX_DISPLAY_SCALE,
@@ -38,9 +50,26 @@ import {
   type SceneLaidOut,
   type SceneOccurrenceRef,
   type ScenePresentation,
-} from "./diagramSceneModel.js";
+} from "@sentropic/diagram-canvas/diagramSceneModel";
 
 /* ── scene fixtures ──────────────────────────────────────────────── */
+
+defineHostContract({
+  name: "Svelte", flush: tick,
+  async mount(figureProps) {
+    let size: { width: number; height: number } | undefined;
+    const view = render(Dc2bContentSizeFixture, { figureProps: figureProps as unknown as DiagramSceneFigureProps, publish: value => { size = value; } });
+    await tick();
+    const viewport = view.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
+    return {
+      viewport, size: () => size,
+      toggle: async () => { await fireEvent.click(view.container.querySelector('button[aria-expanded]')!); await tick(); },
+      pan: async () => { viewport.scrollLeft++; await fireEvent.scroll(viewport); },
+      zoom: async () => { await fireEvent.wheel(viewport, { ctrlKey: true, deltaY: -1 }); },
+      unmount: () => view.unmount(),
+    };
+  },
+});
 
 interface CardSpec {
   readonly id: string;
@@ -1090,3 +1119,66 @@ describe("DiagramSceneFigure cheap minors", () => {
   });
 });
 
+
+
+describe("DC-2b cache and content size", () => {
+  it("publishes only actual size changes and performs no layout during 120 pan + 120 zoom steps and resize", async () => {
+    reducedMotion = true;
+    const cache = canvas.createLayoutCache();
+    const dispose = vi.spyOn(cache, "dispose");
+    const size = vi.fn();
+    const view = mount(WIDE, { layoutCache: cache, onSizeChange: size });
+    await tick();
+    expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });
+    size.mockClear();
+    const before = cache.stats(), measurements = view.counting.mock.calls.length;
+    const times: number[] = [];
+    for (let step = 0; step < 120; step++) {
+      const start = performance.now();
+      view.viewport.scrollLeft += 1;
+      view.viewport.scrollTop += 2;
+      await fireEvent.scroll(view.viewport);
+      await fireEvent.wheel(view.viewport, { ctrlKey: true, deltaY: step % 2 === 0 ? -10 : 10 });
+      times.push(performance.now() - start);
+    }
+    setWindow(1024, 768);
+    await fireEvent(window, new Event("resize"));
+    await tick();
+    expect(cache.stats()).toEqual(before);
+    expect(view.counting).toHaveBeenCalledTimes(measurements);
+    expect(size).not.toHaveBeenCalled();
+    const p95 = times.sort((a, b) => a - b)[113]!;
+    console.info(`DC-2b Svelte mounted camera: 120 pan + 120 zoom events, p95 ${p95.toFixed(3)} ms <= 16.7 ms; 0 layout/measurement/size emissions`);
+    expect(p95).toBeLessThanOrEqual(16.7);
+    await fireEvent.click(view.toggle("a"));
+    await tick();
+    expect(size).toHaveBeenLastCalledWith({ width: view.lastLayout().fit.width, height: view.lastLayout().fit.height });
+    expect(size).toHaveBeenCalledTimes(1);
+    view.unmount();
+    expect(dispose).not.toHaveBeenCalled();
+    cache.dispose();
+  });
+
+  it("disposes the owned cache and removes listeners through the registered elements", async () => {
+    const cache = canvas.createLayoutCache();
+    vi.spyOn(canvas, "createLayoutCache").mockReturnValue(cache);
+    const targets = new Set<Element>();
+    class FakeObserver {
+      observe(element: Element) { targets.add(element); }
+      disconnect() { targets.clear(); }
+    }
+    vi.stubGlobal("ResizeObserver", FakeObserver);
+    const add = vi.spyOn(EventTarget.prototype, "addEventListener");
+    const remove = vi.spyOn(EventTarget.prototype, "removeEventListener");
+    const view = mount(WIDE);
+    await tick();
+    expect(cache.stats().entries).toBe(1);
+    const wheel = add.mock.calls.findIndex(([type], index) => type === "wheel" && add.mock.contexts[index] === view.viewport);
+    expect(wheel).toBeGreaterThanOrEqual(0);
+    view.unmount();
+    expect(cache.stats().entries).toBe(0);
+    expect(targets.size).toBe(0);
+    expect(remove.mock.calls.some(([type, handler], index) => type === "wheel" && handler === add.mock.calls[wheel]![1] && remove.mock.contexts[index] === view.viewport)).toBe(true);
+    vi.unstubAllGlobals();
+  });
+});
