@@ -18,6 +18,7 @@ import {
   DEFAULT_ROW_GAP,
   DEFAULT_ROW_GAP_MAX,
   DEFAULT_ROW_PACK,
+  MIN_EDGE_LABEL_CSS_PX,
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
 
@@ -73,8 +74,8 @@ describe("DC-2a tokens (AC-6)", () => {
   it("a gap token value passed as a metric changes the geometry in the same call", () => {
     const input = sceneInput("case-skills-r9", "unfolded");
     const hints = { rootOrder: input.rootOrder };
-    const base = layScene(input, { rowPack: {} }, hints);
-    const tight = layScene(input, { rowPack: {}, metrics: { rowGapInline: 16, rowGapBlock: 16 } }, hints);
+    const base = layScene(input, {}, hints);
+    const tight = layScene(input, { metrics: { rowGapInline: 16, rowGapBlock: 16 } }, hints);
     const first = base.rects.get("harness-router")!;
     const second = base.rects.get("method-using-harness")!;
     const tightFirst = tight.rects.get("harness-router")!;
@@ -85,8 +86,39 @@ describe("DC-2a tokens (AC-6)", () => {
 
   it("a sibling-gap override above the axis cap refuses; an invalid objective refuses", () => {
     const input = sceneInput("case-b", "unfolded");
-    expect(() => layScene(input, { rowPack: {} }, { cardGapY: 40 })).toThrow(/layout-hint-invalid/);
+    expect(() => layScene(input, {}, { cardGapY: 40 })).toThrow(/layout-hint-invalid/);
     expect(() => layScene(input, { rowPack: { targetAspect: 0 } })).toThrow(/row-pack-invalid/);
-    expect(() => layScene(input, { rowPack: {} }, { rootOrder: ["entity:rt-h2a" as never] })).toThrow(/layout-hint-invalid/);
+    expect(() => layScene(input, {}, { rootOrder: ["entity:rt-h2a" as never] })).toThrow(/layout-hint-invalid/);
+  });
+});
+
+describe("DC-2a §5.3 display-scale calibration", () => {
+  /** Card typography, world px, from the token source. */
+  const TITLE = Number.parseFloat(token("diagramCard", "titleFontSize"));
+  const BODY = Number.parseFloat(token("diagramCard", "bodyFontSize"));
+  const round = (value: number): number => Math.round(value * 1000) / 1000;
+
+  it("100 %: the smallest scale of [0.50, 0.75] holding an 18 px title and a 13 px body is 0.5625; 0.62 satisfies it and is kept", () => {
+    expect([TITLE, BODY]).toEqual([32, 24]);
+    const smallest = Math.max(18 / TITLE, 13 / BODY);
+    expect(smallest).toBeCloseTo(0.5625, 6);
+    expect(smallest).toBeGreaterThanOrEqual(0.5);
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBeGreaterThanOrEqual(smallest);
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBeLessThanOrEqual(0.75);
+    expect(DEFAULT_MAX_DISPLAY_SCALE).toBe(0.62);
+    expect(TITLE * DEFAULT_MAX_DISPLAY_SCALE).toBeCloseTo(19.84, 6);
+    expect(BODY * DEFAULT_MAX_DISPLAY_SCALE).toBeCloseTo(14.88, 6);
+    // A card renders at 285.2 × 124 CSS px at 100 %, never at 460 × 200 (AC-22).
+    expect([460 * DEFAULT_MAX_DISPLAY_SCALE, 200 * DEFAULT_MAX_DISPLAY_SCALE].map(round)).toEqual([285.2, 124]);
+  });
+
+  it("fit: an 18 px edge label needs a scale of 0.444 to render at 8 CSS px; the floor is the next two-decimal scale, 0.45", () => {
+    const needed = MIN_EDGE_LABEL_CSS_PX / DEFAULT_EDGE_LABEL_FONT_SIZE;
+    expect(needed).toBeCloseTo(0.4444, 4);
+    expect(Math.ceil(needed * 100) / 100).toBe(0.45);
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
+    // 0.42, the value shipped by L1, rendered the label at 7.56 CSS px.
+    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * 0.42).toBeLessThan(MIN_EDGE_LABEL_CSS_PX);
+    expect(DEFAULT_EDGE_LABEL_FONT_SIZE * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
   });
 });

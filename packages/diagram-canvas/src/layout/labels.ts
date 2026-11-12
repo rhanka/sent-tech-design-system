@@ -156,3 +156,127 @@ export function relationRoute(view: ViewDocument, occurrence: OccurrenceRef): re
     ...(last === undefined || last === first ? [] : anchor(last.occurrence)),
   ];
 }
+
+/** One label of the row-pack path: its route, its measured size, and the box it must stay inside. */
+export interface PackedLabelEntry extends LabelEntry {
+  /**
+   * DC-2a BF-3: the content box of the expanded container both ends share.
+   * The label box stays inside it; absent for an edge between two containers.
+   */
+  readonly within?: Rect;
+  /**
+   * The room a label may take outside the drawing: the drawing grown to the
+   * target aspect, so a label never costs display scale on the axis that
+   * already fills the frame. The label box stays inside it.
+   */
+  readonly limit?: Rect;
+}
+
+/**
+ * DC-2a row-pack label rule (SPEC_EVOL_DC2A §3.5, BF-6). A label sits ON its
+ * route — its box always holds a point of the segment it is attached to — but
+ * not necessarily centred on it: sibling gaps are capped, so the only room for
+ * a label is the lane a route runs along or crosses, and the route itself
+ * keeps a clearance from the cards that is smaller than half a label.
+ *
+ * Segments are tried by decreasing length, as in L-R10. On a horizontal
+ * segment the box centre slides along the segment — up to a quarter of the
+ * box past either end — and may shift across it by up to `height / 2 −
+ * inset`, so the line still runs through the text. On a vertical segment the
+ * centre slides along the segment likewise and may shift sideways by up to
+ * `width / 2 − inset`. Among the positions clear of every
+ * shape and every label already placed, the nearest to the segment centre
+ * wins (Manhattan distance, then the smaller shift across the segment, then
+ * the smaller coordinates). `marginY` is the free space kept above and under
+ * the box: the engine passes `inset` for a final placement, and a smaller
+ * value to probe which lane a label would fit once widened.
+ */
+export function placePackedLabel(
+  entry: PackedLabelEntry,
+  shapes: readonly Rect[],
+  taken: readonly Rect[],
+  inset: number,
+  marginY: number = inset,
+): LabelPlacement | undefined {
+  const { width, height } = entry.size;
+  for (const segment of edgeLabelCandidates(entry.route)) {
+    const a = entry.route[segment]!;
+    const b = entry.route[segment + 1]!;
+    const horizontal = a.y === b.y;
+    if (!horizontal && a.x !== b.x) continue;
+    const preferred = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+    // Across the segment the line stays inside the box by `inset`; along it
+    // the box may run past an end of the segment by a quarter of its length.
+    const shiftX = horizontal ? width / 4 : Math.max(0, width / 2 - inset);
+    const shiftY = horizontal ? Math.max(0, height / 2 - inset) : height / 4;
+    const xRange: [number, number] = [Math.min(a.x, b.x) - shiftX, Math.max(a.x, b.x) + shiftX];
+    const yRange: [number, number] = [Math.min(a.y, b.y) - shiftY, Math.max(a.y, b.y) + shiftY];
+    const reach: Rect = {
+      x: xRange[0] - width / 2 - inset,
+      y: yRange[0] - height / 2 - marginY,
+      width: xRange[1] - xRange[0] + width + 2 * inset,
+      height: yRange[1] - yRange[0] + height + 2 * marginY,
+    };
+    const near = [...shapes, ...taken].filter((shape) => rectsIntersect(shape, reach));
+    const xs = new Set<number>([preferred.x, xRange[0], xRange[1]]);
+    const ys = new Set<number>([preferred.y, yRange[0], yRange[1]]);
+    for (const shape of near) {
+      xs.add(shape.x + shape.width + inset + width / 2);
+      xs.add(shape.x - inset - width / 2);
+      ys.add(shape.y + shape.height + marginY + height / 2);
+      ys.add(shape.y - marginY - height / 2);
+    }
+    const bounds = [entry.within, entry.limit].filter((rect): rect is Rect => rect !== undefined);
+    for (const rect of bounds) {
+      xs.add(rect.x + width / 2);
+      xs.add(rect.x + rect.width - width / 2);
+      ys.add(rect.y + height / 2);
+      ys.add(rect.y + rect.height - height / 2);
+    }
+    const inRange = (values: Set<number>, range: [number, number]): number[] =>
+      [...values].filter((value) => value >= range[0] && value <= range[1]);
+    const candidates: { x: number; y: number; cost: number; across: number }[] = [];
+    for (const x of inRange(xs, xRange)) {
+      for (const y of inRange(ys, yRange)) {
+        const dx = Math.abs(x - preferred.x);
+        const dy = Math.abs(y - preferred.y);
+        candidates.push({ x, y, cost: dx + dy, across: horizontal ? dy : dx });
+      }
+    }
+    candidates.sort((left, right) => left.cost - right.cost || left.across - right.across || left.x - right.x || left.y - right.y);
+    for (const candidate of candidates) {
+      const box: Rect = { x: candidate.x - width / 2, y: candidate.y - height / 2, width, height };
+      if (
+        bounds.some(
+          (rect) => box.x < rect.x || box.y < rect.y || box.x + box.width > rect.x + rect.width || box.y + box.height > rect.y + rect.height,
+        )
+      ) {
+        continue;
+      }
+      const padded: Rect = { x: box.x - inset, y: box.y - marginY, width: width + 2 * inset, height: height + 2 * marginY };
+      if (near.some((shape) => rectsIntersect(shape, padded))) continue;
+      return { segment, centre: { x: candidate.x, y: candidate.y }, box };
+    }
+  }
+  return undefined;
+}
+
+/**
+ * Every label of a row-packed view, in the order given (sorted relation
+ * occurrence ids): `placePackedLabel` against the shapes and the labels placed
+ * before it. `undefined` for a label no segment of its route can hold.
+ */
+export function placeEdgeLabelsPacked(
+  entries: readonly PackedLabelEntry[],
+  shapes: readonly Rect[],
+  inset: number,
+): ReadonlyMap<string, LabelPlacement | undefined> {
+  const placed = new Map<string, LabelPlacement | undefined>();
+  const taken: Rect[] = [];
+  for (const entry of entries) {
+    const choice = placePackedLabel(entry, shapes, taken, inset);
+    placed.set(entry.id, choice);
+    if (choice !== undefined) taken.push(choice.box);
+  }
+  return placed;
+}

@@ -1,0 +1,90 @@
+{
+  "case-a unfolded → pkg-folded": {
+    "common": 5,
+    "moved": [
+      "sys-h2a",
+      "sys-track",
+      "pkg-track",
+      "rt-track"
+    ]
+  },
+  "case-a pkg-folded → track-folded": {
+    "common": 3,
+    "moved": [
+      "sys-h2a",
+      "sys-track"
+    ]
+  },
+  "case-b unfolded → mesh-engram-folded": {
+    "common": 4,
+    "moved": [
+      "sys-mesh",
+      "sys-engram"
+    ]
+  },
+  "case-b mesh-engram-folded → folded": {
+    "common": 3,
+    "moved": [
+      "sys-h2a",
+      "sys-mesh",
+      "sys-engram"
+    ]
+  },
+  "case-c unfolded → lib-folded": {
+    "common": 3,
+    "moved": [
+      "pkg-diagram-core",
+      "sys-focus",
+      "rt-focus"
+    ]
+  },
+  "case-c lib-folded → folded": {
+    "common": 2,
+    "moved": [
+      "sys-focus"
+    ]
+  },
+  "case-d unfolded → folded": {
+    "common": 2,
+    "moved": [
+      "sys-track"
+    ]
+  },
+  "case-skills-r9 unfolded → skills-unfolded": {
+    "common": 12,
+    "moved": [
+      "method-runtime"
+    ]
+  },
+  "case-skills-r9 skills-unfolded → folded": {
+    "common": 2,
+    "moved": [
+      "method-skills",
+      "method-runtime"
+    ]
+  },
+  "case-integration-r9 unfolded → folded": {
+    "common": 4,
+    "moved": [
+      "coordination-skills",
+      "host-components",
+      "registry-components",
+      "external-skills"
+    ]
+  },
+  "case-trackfocus-r9 unfolded → inner-folded": {
+    "common": 4,
+    "moved": [
+      "s2-h2a",
+      "track-skills",
+      "focus-skill",
+      "focus-components"
+    ]
+  },
+  "case-trackfocus-r9 inner-folded → folded": {
+    "common": 1,
+    "moved": [
+      "s2-h2a"
+    ]
+  }
+}
