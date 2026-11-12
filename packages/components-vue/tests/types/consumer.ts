@@ -1,6 +1,10 @@
 import { DiagramSceneFigure, GraphCanvas, DiagramZone } from '@sentropic/design-system-vue';
 import type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView, ForceGraphProps } from '@sentropic/design-system-vue';
 import { DiagramIcon } from '@sentropic/design-system-vue/diagram-icons';
+import type { DiagramIconProps } from '@sentropic/design-system-vue/diagram-icons';
+import type { DiagramIconProps as RootIconProps } from '@sentropic/design-system-vue';
+import type { DiagramIconProps as VaporIconProps } from '@sentropic/design-system-vue/vapor/diagram-icons';
+import type { DiagramIconProps as VaporRootIconProps } from '@sentropic/design-system-vue/vapor';
 import { renderCardSvg, renderZoneSvg } from '@sentropic/design-system-vue/diagram-render';
 import { BpmnCanvas } from '@sentropic/design-system-vue/bpmn';
 import { DiagramSceneFigure as VaporScene, GraphCanvas as VaporGraph, DiagramZone as VaporZone, DiagramCard as VaporCard, ForceGraph as VaporForceGraph, GraphLegend as VaporLegend } from '@sentropic/design-system-vue/vapor';
@@ -11,6 +15,21 @@ import { BpmnCanvas as VaporBpmn } from '@sentropic/design-system-vue/vapor/bpmn
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;
 type Assert<T extends true> = T;
+type IconContract = { name: string; size?: number; class?: string };
+type IconProps = Assert<Equal<DiagramIconProps, IconContract>>;
+type RootIconParity = Assert<Equal<RootIconProps, DiagramIconProps>>;
+type VaporIconParity = Assert<Equal<VaporIconProps, DiagramIconProps>>;
+type VaporRootIconParity = Assert<Equal<VaporRootIconProps, DiagramIconProps>>;
+const iconProps: DiagramIconProps = { name: 'server', size: 48, class: 'custom-icon' };
+const minimalIconProps: VaporIconProps = { name: 'server' };
+iconProps satisfies InstanceType<typeof DiagramIcon>['$props'];
+iconProps satisfies InstanceType<typeof VaporIcon>['$props'];
+minimalIconProps satisfies InstanceType<typeof DiagramIcon>['$props'];
+minimalIconProps satisfies InstanceType<typeof VaporIcon>['$props'];
+// @ts-expect-error A glyph name is required.
+const missingIconName: DiagramIconProps = {};
+// @ts-expect-error Icon size is a number.
+const invalidIconSize: VaporIconProps = { name: 'server', size: '48' };
 type Contracts = [CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec, SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView];
 type VaporContracts = [Vapor.CardDiagnostic, Vapor.CardLineMeasure, Vapor.DiagramCardToggle, Vapor.DiagramGlyphPaths, Vapor.DiagramZoneToggle, Vapor.ZoneDiagnostic, Vapor.ZoneChildSpec, Vapor.SceneDocument, Vapor.SceneOccurrenceRef, Vapor.ScenePresentation, Vapor.SceneView];
 type Parity = Assert<Equal<Contracts, VaporContracts>>;
