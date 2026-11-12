@@ -1,3 +1,4 @@
+import { relationSchema } from "./relation-types.js";
 /**
  * Fold binding, folded-edge projection and authored summary labels (M3 §4).
  *
@@ -529,7 +530,7 @@ function isUndirectedRelation(
   const relation = document.relations[relationId];
   if (relation === undefined) return false;
   const profile = registry.get(relation.profile);
-  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  const declared = profile === undefined ? undefined : relationSchema(document, profile, relation);
   if (declared === undefined) return false;
   return declared.direction === "undirected";
 }
@@ -543,7 +544,7 @@ function declaredRoleOrder(
   const relation = document.relations[relationId];
   if (relation === undefined) return undefined;
   const profile = registry.get(relation.profile);
-  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  const declared = profile === undefined ? undefined : relationSchema(document, profile, relation);
   if (declared === undefined) return undefined;
   return declared.roles.map((role) => role.role);
 }
