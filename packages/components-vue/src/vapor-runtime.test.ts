@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
-import { createVaporApp, nextTick } from 'vue';
+import { createVaporApp, nextTick, type VaporComponent } from 'vue';
 import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend } from '../dist/vapor/index.js';
 import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/index.js';
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
@@ -11,11 +11,11 @@ const engine = vi.hoisted(() => ({ create: vi.fn(), destroy: vi.fn() }));
 vi.mock('@sentropic/bpmn-canvas', () => ({ createBpmnCanvas: (...args: unknown[]) => engine.create(...args) }));
 const apps: ReturnType<typeof createVaporApp>[] = [];
 afterEach(() => { apps.splice(0).forEach(app => app.unmount()); document.body.replaceChildren(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
-function mount(component: unknown, props: Record<string, unknown>) {
+function mount(component: VaporComponent, props: Record<string, unknown>) {
   const root = document.createElement('div'); document.body.append(root);
   // Vapor raw props represent function-valued inputs as getter sources.
   const inputs = Object.fromEntries(Object.entries(props).map(([key, value]) => [key, typeof value === 'function' ? () => value : value]));
-  const app = createVaporApp(component as never, inputs); apps.push(app);
+  const app = createVaporApp(component, inputs); apps.push(app);
   const vm = app.mount(root); return { root, vm };
 }
 

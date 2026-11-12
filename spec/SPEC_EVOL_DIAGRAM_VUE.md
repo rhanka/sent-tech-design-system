@@ -153,6 +153,29 @@ selection style copies on the prior implementation. They pass after correction.
 - `notices:generate` and `git diff --check` pass. Lockfile updated by npm install.
 - No local browser or actual GPU pixel verification was run.
 
+### Second review corrections (2026-11-12)
+
+| Finding | Fix | Regression proof |
+| --- | --- | --- |
+| R2-B1 | Emit a declaration beside every Vapor SFC and route all three Vapor barrels through those declarations. The `VaporSfc` adapter uses Vue's `VaporComponentOptions` and `VaporComponentInstance`, retains props, slots, events and exposed members, and drops VDOM instance internals. Remove the runtime mount helper's `as never` cast. | The extended `tests/types/consumer.ts` first failed with TS2322/TS2345 for the VDOM declarations. It now compiles with `skipLibCheck: false` against both built output and the installed tarball: all eight public components accept the app, SSR and component APIs; direct and default-module async loaders compile; exposed methods, required props, events and slots remain typed. |
+| R2-B2 | Add diagram-canvas and graph to the Vue smoke closure; the existing walk includes diagram-core transitively. | The Vue smoke shard first failed fetching unpublished diagram-canvas from npm (E404). It now installs local tarballs and passes deep verification. The shard also requires all six subpath JS/declaration pairs and the Vapor adapter, and resolves the public subpaths (R2-N2). |
+| R2-M1 | Change the peer range to `^3.5 || ^3.6.0-0`, retaining exact runtime/compiler pins at `3.6.0-rc.15`. Update the lockfile through npm. | A new strict packed-consumer install first failed with ERESOLVE on the old peer range. The same install now passes without `--legacy-peer-deps` or `--force`, followed by the consumer type check. |
+
+The strict consumer includes the optional Elements peer for its BPMN checks.
+Its TypeScript runner rejects any source file resolved outside the consumer
+directory, including workspace symlinks, so ancestor dependencies cannot mask
+missing packed declarations or dependencies. Smoke-pack respects an explicitly
+configured npm cache.
+
+Second-pass results: Vue 1,743 tests / 108 files; targeted Svelte diagram,
+scene, SSR and ForceGraph 153 tests / 5 files; diagram-canvas 356 passing
+tests and one skipped benchmark. Vue and Svelte builds/checks pass (Svelte:
+zero errors, 26 warnings in the main check, zero warnings in parity).
+`node scripts/smoke-pack.mjs --workspaces=@sentropic/design-system-vue`,
+`npm pack --dry-run -w @sentropic/design-system-vue`, component-index
+generation/check (428 fresh artifacts), and `notices:generate` pass.
+No root test campaign or local browser was run.
+
 ## Changed files
 
 ```text
