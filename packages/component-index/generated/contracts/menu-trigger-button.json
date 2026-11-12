@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:89286739eeadb6dfc9c0f6e2a68fe549d55048be2594e0a4acffda1c9bceca08",
-  "entryDigest": "sha256:ae6664cd3315d8e8fe444a0b828345c5cc276e513c546c335a2c43b88d5db12d",
+  "digest": "sha256:ce4cacdecefd59ad1f40ffa92669525858505e4a661bc46558e2a84bb697be80",
+  "entryDigest": "sha256:68507bc0cde38a62f5cf23aaa73b9d9c73eba333a0dbf947e49944d868b9e95d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -15,6 +15,10 @@
       "props": {
         "additionalProperties": false,
         "properties": {
+          "ariaControls": {
+            "description": "Root-menu id set by the host while open (§2.2, D10, AC-33).",
+            "type": "string"
+          },
           "class": {
             "type": "string"
           },
@@ -50,7 +54,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:5a6342a734336a51226c33b90a9acc3c1c77abb0d6ada3b26b323741013d110e",
+        "declarationDigest": "sha256:35418d800c34e3ace0ef631546a06720b8eb25761559334af7eb7bd9e7573760",
         "declarationPath": "packages/components-angular/dist/MenuTriggerButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuTriggerButtonProps",
