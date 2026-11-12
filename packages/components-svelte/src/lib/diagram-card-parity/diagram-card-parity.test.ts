@@ -316,6 +316,7 @@ describe("one geometry source — token, canvas and renderer agree", () => {
       subtitle: 2,
       "legend-label": 2,
       "edge-label": 1,
+      "flow-badge": 1,
     });
   });
 });
