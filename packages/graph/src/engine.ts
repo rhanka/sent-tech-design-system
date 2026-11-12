@@ -69,7 +69,8 @@ export function createGraphEngine(canvas: HTMLCanvasElement, options: GraphRende
     setData(next: GraphEngineData) { if (destroyed) return; data = next; graphDirty = true; styleDirty = true; invalidate(); },
     setIntent(next: GraphIntent) {
       if (destroyed) return;
-      styleDirty ||= intent.selection !== next.selection || intent.hover !== next.hover || intent.filters !== next.filters;
+      const selectionChanged = intent.selection !== next.selection && Boolean(intent.selection?.length || next.selection?.length);
+      styleDirty ||= selectionChanged || intent.hover !== next.hover || intent.filters !== next.filters;
       intent = { ...next }; invalidate();
     },
     resize(width: number, height: number, pixelRatio: number) {

@@ -2,7 +2,7 @@ import type { ForceGraphNode, ForceGraphEdge, ForceGraphLegendEntry } from "@sen
 export type ForceGraphProps = {
   nodes: ForceGraphNode[];
   edges: ForceGraphEdge[];
-  label?: string;
+  label: string;
   width?: number;
   height?: number;
   nodeRadius?: number;

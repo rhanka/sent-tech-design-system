@@ -1,6 +1,5 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramCardHeader' });
-import { computed, watchEffect } from "vue";
 import DiagramControlGlyph from "./DiagramControlGlyph.vue";
 import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
 /**
@@ -81,14 +80,14 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
   .st-diagramCardHeader {
     display: flex;
     align-items: center;
-    gap: var(--st-component-diagramCard-iconTextGap);
+    gap: var(--st-component-diagramCard-iconTextGap, 6px);
     min-width: 0;
     flex: 0 0 auto;
   }
   .st-diagramCardHeader-icon {
-    flex: 0 0 var(--st-component-diagramCard-iconSize);
-    width: var(--st-component-diagramCard-iconSize);
-    height: var(--st-component-diagramCard-iconSize);
+    flex: 0 0 var(--st-component-diagramCard-iconSize, 70px);
+    width: var(--st-component-diagramCard-iconSize, 70px);
+    height: var(--st-component-diagramCard-iconSize, 70px);
   }
   .st-diagramCardHeader-text {
     display: flex;
@@ -100,11 +99,11 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
   .st-diagramCard-kicker {
     display: block;
     min-width: 0;
-    font-size: var(--st-component-diagramCard-kickerFontSize);
-    font-weight: var(--st-component-diagramCard-kickerFontWeight);
-    line-height: var(--st-component-diagramCard-kickerLineHeight);
-    letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing);
-    text-transform: var(--st-component-diagramCard-kickerTextTransform);
+    font-size: var(--st-component-diagramCard-kickerFontSize, 22px);
+    font-weight: var(--st-component-diagramCard-kickerFontWeight, 400);
+    line-height: var(--st-component-diagramCard-kickerLineHeight, 1.3);
+    letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing, 0.04em);
+    text-transform: var(--st-component-diagramCard-kickerTextTransform, uppercase);
     color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
     /* No mid-word break: an over-long word is diagnosed, never broken. */
     overflow-wrap: normal;
@@ -113,9 +112,9 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
   .st-diagramCard-title {
     display: block;
     min-width: 0;
-    font-size: var(--st-component-diagramCard-titleFontSize);
-    font-weight: var(--st-component-diagramCard-titleFontWeight);
-    line-height: var(--st-component-diagramCard-titleLineHeight);
+    font-size: var(--st-component-diagramCard-titleFontSize, 32px);
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    line-height: var(--st-component-diagramCard-titleLineHeight, 1.3);
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     overflow-wrap: normal;
     word-break: normal;

@@ -713,3 +713,5 @@ export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCam
 export { default as GraphCanvas } from './GraphCanvas.vue';
 export type { GraphCanvasProps } from './GraphCanvas.vue';
 export { useGraphEngine } from './useGraphEngine.js';
+export type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec } from './diagramCardModel.js';
+export type { SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from './diagramSceneModel.js';

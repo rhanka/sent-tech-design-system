@@ -119,17 +119,17 @@ onMounted(() => {
 <style>
 
   .st-diagramCard {
-    width: var(--st-component-diagramCard-width);
-    height: var(--st-component-diagramCard-height);
+    width: var(--st-component-diagramCard-width, 460px);
+    height: var(--st-component-diagramCard-height, 200px);
     box-sizing: border-box;
-    border: var(--st-component-diagramCard-borderWidth) solid
+    border: var(--st-component-diagramCard-borderWidth, 2px) solid
       var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
-    border-left: var(--st-component-diagramCard-accentWidth) solid
+    border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
       var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
-    border-radius: var(--st-component-diagramCard-radius);
+    border-radius: var(--st-component-diagramCard-radius, 0);
     background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
-    padding: var(--st-component-diagramCard-padding);
+    padding: var(--st-component-diagramCard-padding, 8px);
     display: flex;
     flex-direction: column;
     text-align: left;
@@ -146,8 +146,8 @@ onMounted(() => {
   }
   .st-diagramCard-gap {
     display: block;
-    height: var(--st-component-diagramCard-gap);
-    flex: 0 0 var(--st-component-diagramCard-gap);
+    height: var(--st-component-diagramCard-gap, 6px);
+    flex: 0 0 var(--st-component-diagramCard-gap, 6px);
   }
   .st-diagramCard-body {
     /* margin-left and width both come from the shared layout: the body box
@@ -157,9 +157,9 @@ onMounted(() => {
        centred at 32 + 396/2 = 230, not over the wider content box). */
     min-width: 0;
     flex: 0 0 auto;
-    font-size: var(--st-component-diagramCard-bodyFontSize);
-    font-weight: var(--st-component-diagramCard-bodyFontWeight);
-    line-height: var(--st-component-diagramCard-bodyLineHeight);
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
   }
   .st-diagramCard--subtitle .st-diagramCard-body {
     /* §6.2.1: the collapsed-zone subtitle block is centred horizontally
@@ -199,8 +199,8 @@ onMounted(() => {
        counter-scaled: the host scales the viewport by --st-diagram-zoom, so
        scaleY(1/zoom) on the fixed 1 px box paints exactly 1 screen px — the
        HTML twin of the SVG vector-effect="non-scaling-stroke". */
-    height: var(--st-component-diagramCard-ruleHeight);
-    margin: var(--st-component-diagramCard-ruleMargin) 0;
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;
     background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));
     transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
     transform-origin: center;
@@ -212,12 +212,12 @@ onMounted(() => {
        here: the rule and the footer are positioned together by the shared
        foot wrapper. */
     margin-bottom: calc(
-      var(--st-component-diagramCard-footerBottomInset) -
-        var(--st-component-diagramCard-padding)
+      var(--st-component-diagramCard-footerBottomInset, 9.25px) -
+        var(--st-component-diagramCard-padding, 8px)
     );
-    font-size: var(--st-component-diagramCard-footerFontSize);
-    font-weight: var(--st-component-diagramCard-footerFontWeight);
-    line-height: var(--st-component-diagramCard-footerLineHeight);
+    font-size: var(--st-component-diagramCard-footerFontSize, 24px);
+    font-weight: var(--st-component-diagramCard-footerFontWeight, 700);
+    line-height: var(--st-component-diagramCard-footerLineHeight, 1.3);
   }
   .st-diagramCard-footerLine {
     display: block;

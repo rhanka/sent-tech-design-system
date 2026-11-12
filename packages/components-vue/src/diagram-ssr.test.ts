@@ -6,8 +6,18 @@ import ForceGraph from './ForceGraph.vue';
 import DiagramSceneFigure from './DiagramSceneFigure.vue';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
+import GraphCanvas from './GraphCanvas.vue';
+import BpmnCanvas from './BpmnCanvas.vue';
 import type { SceneDocument, ScenePresentation } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-core/dist/index.js';
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
+
+it('should render WebGL and BPMN shells without DOM globals or engine creation', async () => {
+  expect(typeof window).toBe('undefined'); expect(typeof ResizeObserver).toBe('undefined');
+  const graph = await renderToString(createSSRApp(GraphCanvas, { label: 'Graph', graph: { nodeIds: [], positions: new Float32Array(), edges: new Uint32Array() }, styles: {} as never }));
+  expect(graph).toContain('<canvas'); expect(graph).toContain('aria-label="Graph"');
+  const bpmn = await renderToString(createSSRApp(BpmnCanvas, { envelope: {} }));
+  expect(bpmn).toContain('st-element__root'); expect(bpmn).not.toContain('st-element__body'); expect(bpmn).not.toContain('role="alert"');
+});
 
 it('should render a dossier scene on the server without DOM globals', async () => {
   expect(typeof window).toBe('undefined');

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:80d2779498dfcb1755b467999af8951aa9bb9d6b56ff1fee134f3c1648400126",
-  "entryDigest": "sha256:d0652ec8bea1171a0cd6cd6f78a89c9009c4ad7ed9cfc1f44f745fcf6bbb7e9a",
+  "digest": "sha256:5dccdf4829b7fc4b000c24dae490e9065dd8f7e5851c9345fc6357e35c671668",
+  "entryDigest": "sha256:b88eda6b5d05896373d5c0b6792daa2eb72792141cb72caca40ec45d51b3b8bc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -7,11 +7,11 @@ import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
 import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
-import type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
+import type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 const props = defineProps<DiagramSceneFigureProps>();
 const emit = defineEmits<{
     foldChange: [
-        collapsed: readonly SceneOccurrenceRef[],
+        collapsed: SceneCollapsedOccurrences,
         change: {
             occurrence: SceneOccurrenceRef;
             collapsed: boolean;
@@ -203,8 +203,10 @@ function onPointerMove(event: PointerEvent) {
     if (!touches.has(event.pointerId))
         return;
     touches.set(event.pointerId, { x: event.clientX, y: event.clientY });
-    if (pinch !== undefined && pinch.distance > 0)
+    if (pinch !== undefined && pinch.distance > 0) {
+        event.preventDefault();
         setZoom(pinch.zoom * touchDistance() / pinch.distance);
+    }
 }
 function onPointerEnd(event: PointerEvent) { touches.delete(event.pointerId); pinch = undefined; }
 const origin = shallowRef<ReadonlyMap<string, Rect>>();
@@ -260,19 +262,22 @@ watch(sceneRects, next => {
 }, { flush: 'pre' });
 watch(displayed, value => { shown = value; }, { flush: 'post' });
 let observer: ResizeObserver | undefined;
+let mountedViewport: HTMLElement | undefined;
 onMounted(() => {
     measureFrame();
     window.addEventListener('resize', measureFrame);
     observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measureFrame);
     if (frameEl.value)
         observer?.observe(frameEl.value);
-    viewportEl.value?.addEventListener('wheel', onWheel, { passive: false });
+    mountedViewport = viewportEl.value;
+    mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
 });
 onUnmounted(() => {
     stopFrames();
     observer?.disconnect();
     window.removeEventListener('resize', measureFrame);
-    viewportEl.value?.removeEventListener('wheel', onWheel);
+    mountedViewport?.removeEventListener('wheel', onWheel);
+    mountedViewport = undefined;
 });
 function rectOf(node: SceneNodeModel) { return displayed.value.get(node.occurrence) ?? node.rect; }
 function nodeStyle(node: SceneNodeModel) {
@@ -314,6 +319,10 @@ function zonePropsOf(node: SceneNodeModel) {
         ...(props.resolveGlyph === undefined ? {} : { resolveGlyph: props.resolveGlyph }) });
     return projected.kind === 'zone' ? projected.props : undefined;
 }
+const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
+    cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
+    zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
+})) ?? []);
 const viewportStyle = computed(() => `${measured.value ? `height:${fit.value.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom.value}`);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
@@ -345,12 +354,12 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               <svg class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
                 <polyline v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
               </svg>
-              <div v-for="node in scene.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
+              <div v-for="{ node, cardProps, zoneProps } in projectedNodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
                 <template v-if="node.kind === 'card'">
-                  <DiagramCard v-if="cardPropsOf(node) !== undefined" v-bind="cardPropsOf(node)!" :measure="measure" @select="emit('select', $event)" />
+                  <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
                 </template>
                 <template v-else-if="node.kind === 'zone'">
-                  <DiagramZone v-if="zonePropsOf(node) !== undefined" v-bind="zonePropsOf(node)!" :measure="measure" @select="emit('select', $event)" @toggle="toggleFold(node)" />
+                  <DiagramZone v-if="zoneProps !== undefined" v-bind="zoneProps" :measure="measure" @select="emit('select', $event)" @toggle="toggleFold(node)" />
                 </template>
                 <div v-else class="st-diagramSceneFigure-label" :data-entity="node.entity">{{ node.text }}</div>
               </div>
@@ -372,13 +381,13 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
     display: grid;
-    gap: var(--st-spacing-2);
+    gap: var(--st-spacing-2, 0.5rem);
     grid-template-columns: minmax(0, 1fr) auto;
     margin: 0;
     min-width: 0;
   }
   .st-diagramSceneFigure--compact {
-    gap: var(--st-spacing-1);
+    gap: var(--st-spacing-1, 0.25rem);
   }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
@@ -386,17 +395,17 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     font-weight: var(--st-component-button-anatomy-typography-weight);
   }
   .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
   }
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
-    gap: var(--st-spacing-1);
+    gap: var(--st-spacing-1, 0.25rem);
     grid-column: 2;
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
     font-variant-numeric: tabular-nums;
     min-width: var(--st-component-diagramScene-readoutMinWidth);
     text-align: center;
@@ -438,10 +447,10 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily);
-    font-size: var(--st-component-diagramCard-bodyFontSize);
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
-    line-height: var(--st-component-diagramCard-bodyLineHeight);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
     width: 100%;
   }
   .st-diagramSceneFigure-edges {
@@ -457,7 +466,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     fill: none;
     stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramZone-borderWidth);
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edgeLabel {
@@ -465,10 +474,10 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily);
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize);
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramCard-bodyLineHeight);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;

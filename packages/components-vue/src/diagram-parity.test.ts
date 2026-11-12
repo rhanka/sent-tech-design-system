@@ -2,12 +2,12 @@ import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
 import type { SceneDocument, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
-import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-core/dist/index.js';
+import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { resolve } from 'node:path';
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import { defineComponent, nextTick, shallowRef } from 'vue';
 import { render, cleanup } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
@@ -48,6 +48,46 @@ export function dom(node: Element): unknown {
 }
 
 describe('Svelte/Vue corpus DOM and ARIA parity', () => {
+  it('should emit each collapsed-zone diagnostic once', async () => {
+    const props = { entityId: 'unknown-zone', title: 'Unknown', collapsed: true, icon: 'unmapped' };
+    const vue = mount(DiagramZone, { props }); await nextTick();
+    expect(vue.emitted('diagnostic')?.flat()).toEqual(renderZoneSvg(props).diagnostics);
+    vue.unmount();
+  });
+  it('should invoke graph listeners once and restrict pointer activation to the dot', async () => {
+    const onSelect = vi.fn(), onOpenEntity = vi.fn(), onNodeHover = vi.fn(), onEdgeHover = vi.fn();
+    const vue = mount(ForceGraph, { props: { label: 'Graph', nodes: [{ id: 'a', shape: 'star' }, { id: 'b' }], edges: [{ source: 'a', target: 'b' }], iterations: 1, onSelect, onOpenEntity, onNodeHover, onEdgeHover } });
+    for (const dot of vue.findAll('.st-forceGraph__dot')) {
+      onSelect.mockClear(); onOpenEntity.mockClear(); onNodeHover.mockClear();
+      await dot.trigger('click'); expect(onSelect).toHaveBeenCalledTimes(1);
+      await dot.trigger('dblclick'); expect(onOpenEntity).toHaveBeenCalledTimes(1);
+      onSelect.mockClear(); onOpenEntity.mockClear();
+      await dot.trigger('keydown', { key: 'Enter' });
+      expect(onSelect).toHaveBeenCalledTimes(1); expect(onOpenEntity).toHaveBeenCalledTimes(1);
+      await dot.trigger('focus'); expect(onNodeHover).toHaveBeenCalledTimes(1);
+      await dot.trigger('blur'); expect(onNodeHover).toHaveBeenCalledTimes(2); expect(onNodeHover).toHaveBeenLastCalledWith(null);
+    }
+    await vue.find('.st-forceGraph__edgeHit').trigger('mouseenter'); expect(onEdgeHover).toHaveBeenCalledTimes(1);
+    onSelect.mockClear(); onOpenEntity.mockClear();
+    await vue.find('.st-forceGraph__label').trigger('click'); await vue.find('.st-forceGraph__label').trigger('dblclick');
+    expect(onSelect).not.toHaveBeenCalled(); expect(onOpenEntity).not.toHaveBeenCalled(); vue.unmount();
+  });
+  it('should invoke template graph listeners once, including merge completion', async () => {
+    vi.stubGlobal('matchMedia', () => ({ matches: true }));
+    const listeners = { select: vi.fn(), open: vi.fn(), node: vi.fn(), edge: vi.fn(), merge: vi.fn() };
+    const pair = shallowRef<{ id: string; from: string; into: string } | null>(null);
+    const graph = { label: 'Graph', nodes: [{ id: 'a' }, { id: 'b' }], edges: [{ source: 'a', target: 'b' }], iterations: 1 };
+    const Host = defineComponent({ components: { ForceGraph }, setup: () => ({ graph, listeners, pair }),
+      template: '<ForceGraph v-bind="graph" :merge-pair="pair" @select="listeners.select" @open-entity="listeners.open" @node-hover="listeners.node" @edge-hover="listeners.edge" @merge-complete="listeners.merge" />' });
+    const vue = mount(Host);
+    await vue.find('.st-forceGraph__dot').trigger('click'); expect(listeners.select).toHaveBeenCalledExactlyOnceWith('a');
+    await vue.find('.st-forceGraph__dot').trigger('dblclick'); expect(listeners.open).toHaveBeenCalledExactlyOnceWith('a');
+    await vue.find('.st-forceGraph__dot').trigger('focus'); expect(listeners.node).toHaveBeenCalledTimes(1);
+    await vue.find('.st-forceGraph__edgeHit').trigger('mouseenter'); expect(listeners.edge).toHaveBeenCalledTimes(1);
+    const mergePair = { id: 'merge', from: 'a', into: 'b' };
+    pair.value = mergePair; await nextTick(); await nextTick();
+    expect(listeners.merge).toHaveBeenCalledExactlyOnceWith(mergePair); vue.unmount(); vi.unstubAllGlobals();
+  });
   for (const card of CORPUS_NODES) for (const lang of ['fr', 'en'] as const) {
     it(`should match card ${card.id} in ${lang}`, async () => {
       const text = card[lang];
@@ -116,6 +156,23 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   });
 });
 
+// Token fallbacks are valid CSS; only values outside a DS var() are literals.
+function bareCss(css: string): string {
+  let result = '', cursor = 0;
+  for (let index = 0; index < css.length; index++) {
+    if (!css.startsWith('var(--st-', index)) continue;
+    let end = index + 4, depth = 1;
+    for (; end < css.length && depth; end++) {
+      if (css[end] === '(') depth++; else if (css[end] === ')') depth--;
+    }
+    result += css.slice(cursor, index) + 'token'; cursor = end; index = end - 1;
+  }
+  return result + css.slice(cursor);
+}
+it('should permit nested token fallbacks while retaining bare CSS values for the guard', () => {
+  expect(bareCss('width:var(--st-width, 460px);color:var(--st-ink,var(--st-text,#fff));gap:3px')).toBe('width:token;color:token;gap:3px');
+});
+
 describe('official classic and Vapor SFC compilers', () => {
   const require = createRequire(import.meta.url);
   const compilers = [['classic', require('vue/compiler-sfc')], ['Vapor', require('@vue/compiler-sfc')]] as const;
@@ -125,7 +182,7 @@ describe('official classic and Vapor SFC compilers', () => {
   for (const [mode, compiler] of compilers) for (const file of files) it(`should compile ${file} in ${mode}`, () => {
     const filename = resolve(root, file);
     const source = readFileSync(filename, 'utf8');
-    const { descriptor, errors } = compiler.parse(mode === 'Vapor' ? source.replace('<script setup', '<script setup vapor') : source, { filename });
+    const { descriptor, errors } = compiler.parse(mode === 'Vapor' ? source.replace(/^(<script\b[^>]*\bsetup\b)(?![^>]*\bvapor\b)/m, '$1 vapor') : source, { filename });
     expect(errors).toEqual([]);
     if (mode === 'Vapor') expect(descriptor.vapor).toBe(true);
     const output = compiler.compileScript(descriptor, { id: file, inlineTemplate: true,
@@ -135,7 +192,7 @@ describe('official classic and Vapor SFC compilers', () => {
     if (mode === 'Vapor') expect(output.content).toContain('defineVaporComponent');
     expect(source).not.toMatch(/\bh\s*\(/);
     const styles = [...source.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(match => match[1]).join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
-    expect(styles).not.toMatch(/#[0-9a-fA-F]{3,8}\b|(?<![-\w])(?:[1-9]\d*|0?\.\d+)(?:px|rem|em|ch)\b/);
+    expect(bareCss(styles)).not.toMatch(/#[0-9a-fA-F]{3,8}\b|(?<![-\w])(?:[1-9]\d*|0?\.\d+)(?:px|rem|em|ch)\b/);
   });
 });
 
@@ -248,6 +305,21 @@ describe('scene host DOM and camera/fold behavior', () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
   }
   const host = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings };
+  it('should cancel browser pinch handling and remove the wheel listener on teardown', async () => {
+    frame();
+    const vue = mount(SceneFigure, { props: { ...host, ...WIDE } });
+    const viewport = vue.find('.st-diagramSceneFigure-viewport');
+    const remove = vi.spyOn(viewport.element, 'removeEventListener');
+    for (const [pointerId, clientX] of [[1, 0], [2, 100]]) {
+      const down = new Event('pointerdown', { bubbles: true });
+      Object.assign(down, { pointerType: 'touch', pointerId, clientX, clientY: 0 }); viewport.element.dispatchEvent(down);
+    }
+    const event = new Event('pointermove', { bubbles: true, cancelable: true });
+    Object.assign(event, { pointerType: 'touch', pointerId: 2, clientX: 150, clientY: 0 });
+    viewport.element.dispatchEvent(event); await nextTick();
+    expect(event.defaultPrevented).toBe(true);
+    vue.unmount(); expect(remove).toHaveBeenCalledWith('wheel', expect.any(Function)); vi.unstubAllGlobals();
+  });
   for (const fixture of [SINGLE, WIDE, LABELLED, EMPTY]) it('should match scene '+fixture.document.documentId, async () => {
     frame();
     const props = { ...host, ...fixture, title: 'Dossier' };

@@ -144,25 +144,6 @@ onMounted(() => {
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
-function remapDiagnostic(diagnostic: {
-    code: string;
-    slot: string;
-    entityId: string;
-    neededPx: number;
-    allocatedPx: number;
-    text?: string;
-}): void {
-    if (onDiagnostic === undefined)
-        return;
-    onDiagnostic({
-        code: diagnostic.code === "card-icon-unknown" ? "zone-icon-unknown" : "zone-overflow",
-        slot: diagnostic.slot,
-        entityId: diagnostic.entityId,
-        neededPx: diagnostic.neededPx,
-        allocatedPx: diagnostic.allocatedPx,
-        ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
-    });
-}
 </script>
 
 <template>
@@ -170,7 +151,7 @@ function remapDiagnostic(diagnostic: {
   <template v-if="refused !== undefined">
     <div class="st-diagramZone st-diagramZone--refused" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" role="group" :aria-label="title"></div>
   </template><template v-else><template v-if="collapsed">
-    <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect" @diagnostic="remapDiagnostic"></DiagramCard>
+    <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
     <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
@@ -220,9 +201,9 @@ function remapDiagnostic(diagnostic: {
        stack of border + padding + line boxes. */
     position: relative;
     box-sizing: border-box;
-    border: var(--st-component-diagramZone-borderWidth) solid
+    border: var(--st-component-diagramZone-borderWidth, 1.5px) solid
       var(--st-component-diagramZone-border, var(--st-semantic-border-strong));
-    border-radius: var(--st-component-diagramZone-radius);
+    border-radius: var(--st-component-diagramZone-radius, 0);
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     text-align: left;
@@ -259,7 +240,7 @@ function remapDiagnostic(diagnostic: {
        as the card rule — the zone footer never moves at overview zoom.
        The rule's top/left/right come from the shared layout inline
        (ruleY and the rule insets). */
-    height: var(--st-component-diagramCard-ruleHeight);
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
     transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
     transform-origin: center;
     background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
@@ -278,7 +259,7 @@ function remapDiagnostic(diagnostic: {
        rule (review pass 2, item 5): fixed 1 px layout box, paint-only
        counter-scale. Top/left/right come from the shared layout inline
        (footerRuleY and the rule insets). */
-    height: var(--st-component-diagramCard-ruleHeight);
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
     transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
     transform-origin: center;
     background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
@@ -290,9 +271,9 @@ function remapDiagnostic(diagnostic: {
        box already sits inside the border, so the whole bottom offset is
        the footerBottomInset token (9.25 px) — no border subtraction in
        the value (review pass 4). Inline insets: the layout's footerX. */
-    font-size: var(--st-component-diagramZone-footerFontSize, var(--st-component-diagramCard-footerFontSize));
-    font-weight: var(--st-component-diagramZone-footerFontWeight, var(--st-component-diagramCard-footerFontWeight));
-    line-height: var(--st-component-diagramZone-footerLineHeight, var(--st-component-diagramCard-footerLineHeight));
+    font-size: var(--st-component-diagramZone-footerFontSize, var(--st-component-diagramCard-footerFontSize, 24px));
+    font-weight: var(--st-component-diagramZone-footerFontWeight, var(--st-component-diagramCard-footerFontWeight, 700));
+    line-height: var(--st-component-diagramZone-footerLineHeight, var(--st-component-diagramCard-footerLineHeight, 1.3));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
   }
   .st-diagramZone-footerLine {

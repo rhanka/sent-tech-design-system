@@ -1,6 +1,8 @@
 import type { LayoutHints, LayoutMetrics, LayoutOptions, LayoutResult, LineMeasurer, RowPackOptions } from '@sentropic/diagram-canvas';
 import type { CardLineMeasure, DiagramGlyphPaths } from './diagramCardModel.js';
 import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
+/** Named array boundary keeps emitted declarations within the public canvas layer. */
+export interface SceneCollapsedOccurrences extends ReadonlyArray<SceneOccurrenceRef> {}
   export interface DiagramSceneFigureLabels {
     /** Accessible name of the camera control group. */
     controls: string;

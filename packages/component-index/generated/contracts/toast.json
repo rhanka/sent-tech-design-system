@@ -1,7 +1,7 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:af8855b3e70ce7ad6e43cde0a4039949b3efea0c6dcac91273b3f2bc6328d013",
+  "digest": "sha256:ac326caa835c399f2a2c4125efd297f41639bc298f654e860cc179335fc4dab1",
   "entryDigest": "sha256:6b0abdbcb599534805d8bd3598b44b7f639cec0331a283ce56c34b2ae857c613",
   "format": "component-contract/v1",
   "frameworks": {
@@ -403,7 +403,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d48f8ec669ef909272eaab41056c1e62e4b8f12ef2105af8675fbed6fb7d8ce4",
+        "declarationDigest": "sha256:61edde93771b72cd742f323ba383dab11deeba9997a21d0e626223a2e0b0ec55",
         "declarationPath": "packages/components-vue/dist/Toast.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
