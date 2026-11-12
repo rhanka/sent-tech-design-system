@@ -1,11 +1,11 @@
 {
   "counts": {
     "byRenderable": {
-      "doc-only": 214,
+      "doc-only": 215,
       "https": 0,
       "mcp": 0
     },
-    "entries": 214
+    "entries": 215
   },
   "entries": [
     {
@@ -1586,6 +1586,30 @@
         "vue": "missing"
       },
       "path": "entries/diagram-card.json",
+      "producerId": "sentropic-ds",
+      "renderable": "doc-only",
+      "scope": "generic",
+      "status": "documented",
+      "visibility": "public"
+    },
+    {
+      "category": "layout",
+      "componentId": "diagram-scene-figure",
+      "dataClass": "public-safe",
+      "deliveryChannels": [
+        "source"
+      ],
+      "digest": "sha256:c550a0cc2fa8028826d37e7b998341a12388f633ac5e00af1978d2d0b48eb910",
+      "frameworks": [
+        "svelte"
+      ],
+      "parity": {
+        "angular": "missing",
+        "react": "missing",
+        "svelte": "source-of-truth",
+        "vue": "missing"
+      },
+      "path": "entries/diagram-scene-figure.json",
       "producerId": "sentropic-ds",
       "renderable": "doc-only",
       "scope": "generic",
@@ -5763,6 +5787,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:c9f95d4e831dc5edff2d8cbda5ceb27b3143eff36bdb544e25c00f10aaa80405",
-  "sourceCommit": "ed01855bc75f0442a8ca0b4f07def3ed602bd98f"
+  "registryRevision": "sha256:0b9f66f1fd2288ba5132a4883680195d706ed7866044c034cd205689a37bad9d",
+  "sourceCommit": "3b937bde8cf261c2bcaba45ccfe3dce9e0596b1b"
 }
