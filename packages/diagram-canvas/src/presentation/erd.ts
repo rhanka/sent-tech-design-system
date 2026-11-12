@@ -11,9 +11,9 @@ export const ERD_GEOMETRY = {
   "rowHeight": 32,
   "lineHeight": 24,
   "padding": 12,
-  "keyWidth": 40,
-  "nameWidth": 178,
-  "typeWidth": 178,
+  "keyWidth": 56,
+  "nameWidth": 170,
+  "typeWidth": 170,
   "fontSize": 18,
   "titleFontSize": 24,
   "markerLength": 24,
@@ -52,8 +52,10 @@ export interface ErdCard {
   readonly collapsed: boolean;
 }
 /** Wraps without truncation, breaking at identifier/punctuation boundaries where possible. */
-export function wrapErdText(text: string, width: number, measure?: LineMeasurer): string[] {
-  const size = (value: string) => measure ? measure({ text: value, role: 'edge-label', availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false }).width : Array.from(value).length * ERD_GEOMETRY.fontSize * 0.6;
+export function wrapErdText(text: string, width: number, measure?: LineMeasurer, fontSize: number = ERD_GEOMETRY.fontSize): string[] {
+  // The shared edge-label measurer uses the body size and may use a proportional font.
+  const size = (value: string) => Math.max(Array.from(value).length * fontSize * 0.6,
+    measure ? measure({ text: value, role: 'edge-label', availableWidth: Number.MAX_SAFE_INTEGER, allocatedLines: 1, folded: false }).width * fontSize / ERD_GEOMETRY.fontSize : 0);
   const lines: string[] = [];
   let line = '';
   for (const word of text.replace(/([a-z0-9])([A-Z])/g, '$1​$2').split(/(?<=[_|(),.s​])/u)) {
@@ -76,7 +78,7 @@ export function wrapErdText(text: string, width: number, measure?: LineMeasurer)
 }
 export function measureErdCard(document: SemanticDocument, entity: EntityRef, collapsed = false, measure?: LineMeasurer): ErdCard {
   const t = ERD_GEOMETRY, title = erdText(document.entities[entity]!.attributes, 'name');
-  const titleLines = wrapErdText(title, t.width - 2 * t.padding, measure);
+  const titleLines = wrapErdText(title, t.width - 2 * t.padding - t.titleFontSize, measure, t.titleFontSize);
   const headerHeight = Math.max(t.headerHeight, titleLines.length * t.lineHeight + 2 * t.padding);
   let y = headerHeight;
   const rows = collapsed ? [] : erdFields(document, entity).map(field => {
@@ -93,18 +95,20 @@ export function measureErdCard(document: SemanticDocument, entity: EntityRef, co
 const ink = 'var(--st-semantic-text-primary)';
 const paper = 'var(--st-semantic-surface-default)';
 const border = 'var(--st-semantic-border-strong)';
+const strokeWidth = 'var(--st-component-diagramErd-strokeWidth)';
 export function renderErdCardSvg(card: ErdCard): string {
   const t = ERD_GEOMETRY;
-  const text = (lines: readonly string[], x: number, y: number, size: number = t.fontSize) => lines.map((line, i) => '<text x="' + x + '" y="' + (y + i * t.lineHeight) + '" font-size="' + size + '">' + escapeErdXml(line) + '</text>').join('');
-  let body = '<rect width="' + card.width + '" height="' + card.height + '" fill="' + paper + '" stroke="' + border + '" stroke-width="' + t.strokeWidth + '"/>' + text(card.titleLines, t.padding, t.padding + t.lineHeight, t.titleFontSize);
+  const text = (lines: readonly string[], x: number, y: number, size = 'fontSize', attributes = '') => lines.map((line, i) => '<text x="' + x + '" y="' + (y + i * t.lineHeight) + '" font-size="var(--st-component-diagramErd-' + size + ')"' + attributes + '>' + escapeErdXml(line) + '</text>').join('');
+  let body = '<rect width="' + card.width + '" height="' + card.height + '" fill="' + paper + '" stroke="' + border + '" stroke-width="' + strokeWidth + '"/>' + text(card.titleLines, t.padding, t.padding + t.lineHeight, 'titleFontSize');
+  body += text([card.collapsed ? '+' : '−'], card.width - t.padding, t.padding + t.lineHeight, 'titleFontSize', ' data-erd-fold-indicator="" text-anchor="end"');
   for (const row of card.rows) {
-    body += '<g data-erd-field="' + escapeErdXml(row.field.id) + '"><path d="M0 ' + row.y + 'H' + card.width + '" stroke="' + border + '" stroke-width="' + t.strokeWidth + '"/>';
+    body += '<g data-erd-field="' + escapeErdXml(row.field.id) + '"><path d="M0 ' + row.y + 'H' + card.width + '" stroke="' + border + '" stroke-width="' + strokeWidth + '"/>';
     body += text([[erdFlag(row.field, 'pk') ? 'PK' : '', row.field.attributes.fk ? 'FK' : ''].filter(Boolean).join('/')], t.padding, row.y + t.lineHeight);
     body += text(row.name, t.padding + t.keyWidth, row.y + t.lineHeight) + text(row.type, t.padding + t.keyWidth + t.nameWidth, row.y + t.lineHeight);
-    body += text([erdFlag(row.field, 'nullable') ? '?' : 'NN'], card.width - 2 * t.padding, row.y + t.lineHeight);
+    body += text([erdFlag(row.field, 'nullable') ? '?' : 'NN'], card.width - t.padding, row.y + t.lineHeight, 'fontSize', ' text-anchor="end"');
     body += text(row.fk, t.padding, row.y + (Math.max(row.name.length, row.type.length) + 1) * t.lineHeight) + '</g>';
   }
-  return '<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramErdCard" aria-hidden="true" width="100%" height="100%" viewBox="0 0 ' + card.width + ' ' + card.height + '" style="color:' + ink + ';font-family:var(--st-font-mono);fill:currentColor">' + body + '</svg>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramErdCard" aria-hidden="true" width="100%" height="100%" viewBox="0 0 ' + card.width + ' ' + card.height + '" style="color:' + ink + ';font-family:var(--st-component-diagramErd-fontFamily);fill:currentColor">' + body + '</svg>';
 }
 export interface ErdMarker {
   readonly lines: readonly (readonly [
@@ -133,8 +137,8 @@ export function erdMarkerGeometry(cardinality: ErdCardinality, anchor: Vec2, dir
   return { lines, ...(optional ? { circle: { center: p(l - tokens.markerRadius, 0), radius: tokens.markerRadius } } : {}) };
 }
 export function renderErdMarkerSvg(cardinality: ErdCardinality, anchor: Vec2, direction: Vec2): string {
-  const marker = erdMarkerGeometry(cardinality, anchor, direction), t = ERD_GEOMETRY;
-  return '<g data-erd-marker="' + cardinality + '" stroke="' + border + '" stroke-width="' + t.strokeWidth + '" fill="none">' + marker.lines.map(([a, b]) => '<path d="M' + a.x + ' ' + a.y + 'L' + b.x + ' ' + b.y + '"/>').join('') + (marker.circle ? '<circle cx="' + marker.circle.center.x + '" cy="' + marker.circle.center.y + '" r="' + marker.circle.radius + '" fill="' + paper + '"/>' : '') + '</g>';
+  const marker = erdMarkerGeometry(cardinality, anchor, direction);
+  return '<g data-erd-marker="' + cardinality + '" stroke="' + border + '" stroke-width="' + strokeWidth + '" fill="none">' + marker.lines.map(([a, b]) => '<path d="M' + a.x + ' ' + a.y + 'L' + b.x + ' ' + b.y + '"/>').join('') + (marker.circle ? '<circle cx="' + marker.circle.center.x + '" cy="' + marker.circle.center.y + '" r="' + marker.circle.radius + '" fill="' + paper + '"/>' : '') + '</g>';
 }
 /** Escaped native HTML shared verbatim by both framework hosts; always includes folded fields. */
 export function renderErdTable(document: SemanticDocument): string {
@@ -147,7 +151,7 @@ export function renderErdTable(document: SemanticDocument): string {
       html += '<tr data-erd-table-field="' + e(field.id) + '"><th scope="row">' + e(erdText(entity.attributes, 'name')) + '</th><td>' + e(field.name) + '</td><td>' + e(erdText(field.attributes, 'dataType')) + '</td><td>' + [erdFlag(field, 'pk') ? 'PK' : '', field.attributes.fk ? 'FK' : ''].filter(Boolean).join(' ') + '</td><td>' + e(endpoint(erdText(field.attributes, 'fk'))) + '</td><td>' + (erdFlag(field, 'nullable') ? 'Yes' : 'No') + '</td></tr>';
   html += '</tbody></table><table><caption>Relations</caption><thead><tr><th scope="col">From</th><th scope="col">Cardinality</th><th scope="col">Role</th><th scope="col">To</th><th scope="col">Cardinality</th><th scope="col">Role</th></tr></thead><tbody>';
   for (const relation of Object.values(document.relations).sort((a, b) => a.id < b.id ? -1 : 1))
-    html += '<tr data-erd-table-relation="' + e(relation.id) + '">' + ['from', 'to'].map(role => '<td>' + e(endpoint(relation.endpoints.find(end => end.role === role)?.target ?? '')) + '</td><td>' + e(erdText(relation.attributes, role + 'Cardinality')) + '</td><td>' + e(erdText(relation.attributes, role + 'Role')) + '</td>').join('') + '</tr>';
+    html += '<tr data-erd-table-relation="' + e(relation.id) + '">' + ['from', 'to'].map(role => '<td>' + e(endpoint(relation.endpoints.find(end => end.role === role)?.target ?? '')) + '</td><td>' + e(erdText(relation.attributes, role + 'Cardinality')) + '</td><td>' + e(erdText(relation.attributes, role + 'Role') || (role === 'to' ? erdText(relation.attributes, 'label') || erdText(relation.attributes, 'name') : '')) + '</td>').join('') + '</tr>';
   return html + '</tbody></table></details>';
 }
 export interface ErdLabelEntry {

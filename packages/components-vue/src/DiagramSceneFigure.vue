@@ -350,8 +350,8 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               </svg>
               <div v-for="node in scene.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
                 <template v-if="node.kind === 'erd' && node.erd">
-                  <button class="st-diagramErd-toggle" type="button" :aria-label="node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)" :aria-expanded="!node.collapsed" :style="`position:absolute;inset:0 0 auto;height:${node.erd.headerHeight}px;width:100%;background:transparent;border:0;color:transparent`" @click="toggleFold(node)">{{ node.erd.title }}</button>
-                  <div class="st-diagramErd-svg" style="height:100%;width:100%" v-html="renderErdCardSvg(node.erd)" />
+                  <button class="st-diagramErd-toggle" type="button" :aria-label="node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)" :aria-expanded="!node.collapsed" :style="`--st-erd-header-height: ${node.erd.headerHeight}px`" @click="toggleFold(node)">{{ node.erd.title }}</button>
+                  <div class="st-diagramErd-svg" v-html="renderErdCardSvg(node.erd)" />
                 </template>
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardPropsOf(node) !== undefined" v-bind="cardPropsOf(node)!" :measure="measure" @select="emit('select', $event)" />
@@ -375,6 +375,8 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
 </template>
 
 <style>
+  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
+  .st-diagramErd-svg { height: 100%; width: 100%; }
 
   .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
   .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
