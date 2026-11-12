@@ -108,6 +108,9 @@ export function sideToward(self: Rect, other: Rect, direction: FlowDirection): P
   return dy >= 0 ? "south" : "north";
 }
 
+/** Larger than any world coordinate: keeps U-channel slots outside the ordinary ones. */
+const U_TURN_OFFSET = 1e9;
+
 const WALL_ORDER: readonly PortSide[] = ["east", "south", "west", "north"];
 
 function nearestWall(inner: Rect, outer: Rect): PortSide {
@@ -160,6 +163,27 @@ export function dockEdges(input: {
   readonly metrics: LayoutMetrics;
   readonly labelSizes: ReadonlyMap<RelationRef, TextSize>;
   readonly fixed?: boolean;
+  /**
+   * Sides imposed on the two ends of an ordinary pair (neither a self-loop nor
+   * an ancestor pair). The row-pack path docks a labelled bridge between two
+   * side-by-side boxes on one same side, so its route dips into the lane
+   * under (or over) the boxes where the label fits (DC-2a BF-6, U-channel).
+   */
+  readonly sideOverrides?: ReadonlyMap<
+    RelationRef,
+    {
+      readonly source: PortSide;
+      readonly target: PortSide;
+      /**
+       * True for a U-channel: both ends leave on one same side and the route
+       * turns back. U-channels of one side nest — the one to the nearest box
+       * innermost — so their slots are ordered by the other end's distance,
+       * the nearest closest to it, and edges of one same pair take the
+       * shallowest lane in ascending relation id.
+       */
+      readonly turn?: boolean;
+    }
+  >;
 }): DockOutcome {
   const { graph, rects, direction, metrics, labelSizes, fixed } = input;
   const leftToRight = direction === "left-to-right";
@@ -191,8 +215,9 @@ export function dockEdges(input: {
       push("source", source, target, wall, outerIsSource);
       push("target", target, source, wall, !outerIsSource);
     } else {
-      push("source", source, target, sideToward(rects.get(source)!, rects.get(target)!, direction), false);
-      push("target", target, source, sideToward(rects.get(target)!, rects.get(source)!, direction), false);
+      const imposed = input.sideOverrides?.get(edge.id);
+      push("source", source, target, imposed?.source ?? sideToward(rects.get(source)!, rects.get(target)!, direction), false);
+      push("target", target, source, imposed?.target ?? sideToward(rects.get(target)!, rects.get(source)!, direction), false);
     }
   }
 
@@ -235,16 +260,28 @@ export function dockEdges(input: {
       [...members].sort(
         (left, right) => byString(left.edge, right.edge) || byString(left.role, right.role),
       )[0]!;
+    const turns = (end: PendingEnd): boolean => input.sideOverrides?.get(end.edge)?.turn === true;
+    const selfCentre = centreOf(rect);
     const position = (end: PendingEnd) => {
       const other = centreOf(rects.get(end.other)!);
-      return vertical ? other.y : other.x;
+      const at = vertical ? other.y : other.x;
+      if (!turns(end)) return at;
+      // U-channels sit outside the ordinary slots, on the side of their other
+      // end, the nearest other end closest to it.
+      return (at < (vertical ? selfCentre.y : selfCentre.x) ? -U_TURN_OFFSET : U_TURN_OFFSET) - at;
     };
     const slots = new Map<string, PendingEnd[]>();
     for (const end of group) (slots.get(slotKey(end)) ?? slots.set(slotKey(end), []).get(slotKey(end))!).push(end);
     const orderedKeys = [...slots.keys()].sort((left, right) => {
-      const a = position(representative(slots.get(left)!));
-      const b = position(representative(slots.get(right)!));
-      return a - b || byString(left, right);
+      const first = representative(slots.get(left)!);
+      const second = representative(slots.get(right)!);
+      const a = position(first);
+      const b = position(second);
+      if (a !== b) return a - b;
+      // Same other end: U-channels of one pair nest, the smallest relation id
+      // nearest to the other end (it is routed first and takes the shallowest lane).
+      if (turns(first) && turns(second) && a > 0) return byString(right, left);
+      return byString(left, right);
     });
     const thickness = group.reduce(
       (widest, end) => (end.label === undefined ? widest : Math.max(widest, vertical ? end.label.height : end.label.width)),
