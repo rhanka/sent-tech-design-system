@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ConfigItemCard.svelte",
-      "version": "0.38.0"
+      "version": "0.39.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Configuration item card: name, key, description, provenance badge and provenance-aware actions.",
     "fr": "Carte d'item de configuration : nom, clé, description, badge de provenance et actions selon la provenance."
   },
-  "digest": "sha256:9f019de9783749c4a942a604d44bb3b978ae7baff9c82de7369dea369c4df401",
+  "digest": "sha256:38eeee4dd0b893d57809188f8ecb5f11dcaf6bdcb3aa420ba68a3d615d46af9b",
   "displayName": "ConfigItemCard",
   "format": "component-entry/v1",
   "frameworks": [
