@@ -1388,6 +1388,7 @@
       "Wizard",
       "composeAbsolute",
       "computeSubMenuPosition",
+      "createLayoutCache",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
