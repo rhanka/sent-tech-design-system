@@ -2,15 +2,13 @@
  * Contract module for `DecisionDossier` (§5.1, §5.4 — the composition pilot).
  *
  * SOURCE OF TRUTH: the `DecisionDossierDocument` of `@sentropic/focus`
- * (owner decision 2026-10-30 on 0.5.0-rc.9, pinned at 0.5.0 once it reached `latest`:
- * same files as rc.9 except package.json, same v1 schema sha256). The pin
- * below records WHY v1: the package's `./validate` export validates legacy v1
- * by default when `schemaVersion` is absent (its d.ts names the v1 asset as
- * the published schema it matches, `DOSSIER_SCHEMA_VERSION = "1.0.0"`), while
+ * 0.6.0, carrying diagram references, section inputs and completion criteria.
+ * The pin below records WHY v1: the package's `./validate` export validates v1
+ * by default when `schemaVersion` is absent, while
  * v2 requires an explicit `schemaVersion: 2` with a breaking evidence
  * envelope. The catalogue therefore embeds the v1 schema
  * (`@sentropic/focus/schemas/decision-dossier-document.v1.schema.json`,
- * `$id` `urn:sentropic:focus:DecisionDossierDocument:1.0.0`) and routes
+ * `$id` `urn:sentropic:focus:DecisionDossierDocument:1.1.0`) and routes
  * semantics to `@sentropic/focus/validate` (§4.3 item 2, source "focus").
  * The embedded copy is scoped to its host document — its internal
  * `#/$defs/X` refs are rewritten to `#/$defs/DecisionDossierDocument/$defs/X`
@@ -58,7 +56,7 @@ export const decisionDossierContract: ContractModule = {
   replacedTypes: [
     {
       prop: "document",
-      sourceType: "DecisionDossierDocument (focus v1, urn:sentropic:focus:DecisionDossierDocument:1.0.0)",
+      sourceType: "DecisionDossierDocument (focus v1, urn:sentropic:focus:DecisionDossierDocument:1.1.0)",
       replacement:
         "Embedded focus v1 JSON Schema under $defs.DecisionDossierDocument, referenced by " +
         "$ref from the document property (marker type DecisionDossierDocumentRef). The " +
@@ -91,7 +89,7 @@ export const decisionDossierContract: ContractModule = {
     { framework: "angular", file: "packages/components-angular", typeName: "", role: "no-counterpart" },
   ],
   metadata: {
-    contract: "1.0",
+    contract: "1.1",
     element: "st-decision-dossier",
     engine: "lazy:focus",
     events: ["choose-option"],
@@ -144,10 +142,10 @@ export const decisionDossierContract: ContractModule = {
   },
   semantic: {
     source: "focus",
-    runtimePackage: "@sentropic/focus@0.5.0",
+    runtimePackage: "@sentropic/focus@0.6.0",
     schemaSubpath: "schemas/decision-dossier-document.v1.schema.json",
-    schemaId: "urn:sentropic:focus:DecisionDossierDocument:1.0.0",
-    sha256: "725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852",
+    schemaId: "urn:sentropic:focus:DecisionDossierDocument:1.1.0",
+    sha256: "f4b5247f025e99081c20fd9a8b0ed98b32a061c4a98597010be0264e5e564c6c",
     reason:
       "§4.3 item 2: the pinned focus validator is authoritative for a DecisionDossierDocument. " +
       "The example above is valid for both the embedded schema and the real validator.",
