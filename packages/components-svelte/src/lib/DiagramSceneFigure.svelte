@@ -270,13 +270,22 @@
   let requestedZoom = $state<number>();
   let atFit = true;
 
-  function measureFrame(): void {
-    if (frameEl === undefined) return;
-    const width = frameEl.clientWidth;
-    viewWidth = width > 0 ? width : undefined;
-    windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
+  // m3: camera tokens are re-read on every measure and before every camera
+  // input, so a post-mount theme change applies without waiting for a resize.
+  function readCameraTokens(): void {
     maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE));
     minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
+  }
+
+  function measureFrame(): void {
+    if (frameEl === undefined) return;
+    // m6: the fit width is the viewport narrowed by its scrollbar, not the
+    // frame wrapper.
+    const viewportWidth = viewportEl?.clientWidth ?? 0;
+    const width = viewportWidth > 0 ? viewportWidth : frameEl.clientWidth;
+    viewWidth = width > 0 ? width : undefined;
+    windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
+    readCameraTokens();
     if (atFit) requestedZoom = undefined;
   }
 
@@ -352,6 +361,7 @@
   /** Z-1: any request lands inside the current range. The viewport centre is kept where scrolling allows. */
   export function setZoom(next: number): void {
     if (!Number.isFinite(next)) return;
+    readCameraTokens();
     const before = zoom;
     const target = clampZoom(next, fit);
     atFit = target === fit.zoom;
@@ -382,6 +392,7 @@
 
   /** Z-3/Z-4: fit and reset are one action. An overflowing axis scrolls from its start. */
   export function fitToFrame(): void {
+    readCameraTokens();
     atFit = true;
     requestedZoom = fit.zoom;
     const element = viewportEl;
@@ -405,7 +416,13 @@
 
   function onKeydown(event: KeyboardEvent): void {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
-    if (event.target !== event.currentTarget) return;
+    // m5: shortcuts work from non-input descendants (card buttons, nodes);
+    // only typing targets keep the keys.
+    const target = event.target as HTMLElement | null;
+    if (target !== null && target !== event.currentTarget) {
+      const tag = target.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || target.isContentEditable) return;
+    }
     if (event.key === "+" || event.key === "=") zoomIn();
     else if (event.key === "-" || event.key === "_") zoomOut();
     else if (event.key === "0") fitToFrame();
@@ -604,6 +621,12 @@
     <Button size="sm" variant="secondary" onclick={fitToFrame}>{strings.fit}</Button>
   </div>
   <div class="st-diagramSceneFigure-frame" bind:this={frameEl}>
+    <!-- m5: a refused layout draws visible text, not only the data attribute. -->
+    {#if layoutResult.status === "refused"}
+      <p class="st-diagramSceneFigure-refused" role="alert">
+        Diagram unavailable ({layoutResult.refusals[0]?.code ?? "refused"})
+      </p>
+    {/if}
     <!-- The scrollable drawing region is focusable so the keyboard reaches
          both the scroll (arrow keys) and the camera keys (+, −, 0). -->
     <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -630,6 +653,17 @@
       >
         <div class="st-diagramSceneFigure-world" style={worldStyle}>
           {#if scene !== undefined}
+            <!-- m4: edges paint before nodes, labels last; edges and labels
+                 fade in with the transition (T-1) while the boxes move. -->
+            <svg
+              class="st-diagramSceneFigure-edges"
+              aria-hidden="true"
+              style={animating ? `opacity:${eased}` : undefined}
+            >
+              {#each scene.edges as edge (edge.occurrence)}
+                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
+              {/each}
+            </svg>
             {#each scene.nodes as node (node.occurrence)}
               {@const rect = rectOf(node)}
               <div
@@ -653,17 +687,6 @@
                 {/if}
               </div>
             {/each}
-            <!-- Edges draw against the final routes and fade in with the
-                 transition (T-1); the boxes are what moves. -->
-            <svg
-              class="st-diagramSceneFigure-edges"
-              aria-hidden="true"
-              style={animating ? `opacity:${eased}` : undefined}
-            >
-              {#each scene.edges as edge (edge.occurrence)}
-                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
-              {/each}
-            </svg>
             {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
               <div
                 class="st-diagramSceneFigure-edgeLabel"
@@ -781,7 +804,7 @@
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, inherit);
-    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
     line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
     pointer-events: none;

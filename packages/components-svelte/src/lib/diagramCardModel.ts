@@ -40,6 +40,12 @@ export const CARD_GEOMETRY = {
   /** Header row → body block. */
   gap: 6,
   body: { size: 24, weight: 400, lineHeight: 1.3 },
+  /**
+   * Edge-label text (BF-6): 18px so one line plus margins fits the 32px
+   * gutter cap (23.39 + 2 × 4 = 31.39 ≤ 32). Mirrors the
+   * `diagramScene.edgeLabelFontSize` token; additive, frozen card sizes unchanged.
+   */
+  edgeLabel: { size: 18, weight: 400, lineHeight: 1.3 },
   /** Accent-bar left edge → first body glyph. */
   bodyInsetFromBar: 14,
   ruleHeight: 1,
@@ -555,11 +561,11 @@ export interface CardLineLayout {
  * Bridge from the card measurer to the canvas `LineMeasurer` shape: a host
  * pairing `diagram-canvas` with these renderers passes `cardLineMeasurer()`
  * straight as the injected `LineMeasurer` — no adapter, no role cast.
- * Every canvas role maps onto the card role with the same font size
- * (subtitle, detail, legend-label and edge-label measure as body),
- * `width` is the widest emitted line, `height` the line count at the
- * role's line box, and `overflow` reports a too-wide line or a line-count
- * overflow.
+ * Subtitle, detail and legend-label measure as body; edge-label wraps as
+ * body but sizes at the `diagramScene.edgeLabelFontSize` token (18px, BF-6)
+ * so one line plus margins fits the 32px gutter cap. `width` is the widest
+ * emitted line, `height` the line count at the role's line box, and
+ * `overflow` reports a too-wide line or a line-count overflow.
  */
 export function cardLineMeasurer(
   measure: CardLineMeasure = defaultCardMeasure,
@@ -571,11 +577,13 @@ export function cardLineMeasurer(
         : "body";
     const measured = measure(request.text, role, request.availableWidth, request.allocatedLines);
     const size =
-      role === "kicker"
-        ? CARD_GEOMETRY.kicker.size
-        : role === "title"
-          ? CARD_GEOMETRY.title.size
-          : CARD_GEOMETRY.body.size;
+      request.role === "edge-label"
+        ? CARD_GEOMETRY.edgeLabel.size
+        : role === "kicker"
+          ? CARD_GEOMETRY.kicker.size
+          : role === "title"
+            ? CARD_GEOMETRY.title.size
+            : CARD_GEOMETRY.body.size;
     const widest =
       measured.lineWidths === undefined
         ? request.availableWidth

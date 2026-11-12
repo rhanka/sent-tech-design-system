@@ -1854,10 +1854,13 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // DC-2a — scene camera and transition (spec §5, §4.3). Readout 100 % is
     // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
     // `minReadableScale` is the floor a fit holds before the host pans.
+    // Re-pin 2026-11-12 (M1/BF-6): 0.45 keeps an 18px edge label readable
+    // at fit (18 × 0.45 = 8.1 ≥ 8 CSS px); 0.42 gave 7.6 < 8.
     diagramScene: {
       maxDisplayScale: "0.62",
-      minReadableScale: "0.42",
-      transitionDuration: "240ms"
+      minReadableScale: "0.45",
+      transitionDuration: "240ms",
+      edgeLabelFontSize: "18px"
     },
     // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
     // resolve through the semantic feedback-info and surface tokens; no

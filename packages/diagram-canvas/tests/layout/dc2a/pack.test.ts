@@ -189,10 +189,12 @@ describe("camera fit (§5)", () => {
   });
 
   it("readability floor: a drawing larger than the floor allows is held at the floor and pans", () => {
-    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.42);
+    // Re-pin 2026-11-12 (M1/BF-6): 0.45 keeps an 18px edge label readable
+    // at fit (18 × 0.45 = 8.1 ≥ 8 CSS px); 0.42 gave 7.6 < 8.
+    expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
     expect(huge.zoomFit).toBeCloseTo(810 / 8000, 6);
-    expect(huge.zoom).toBe(0.42);
+    expect(huge.zoom).toBe(0.45);
     expect(huge.pans).toBe(true);
     // Zoom-out still reaches the whole drawing (Z-2).
     expect(clampZoom(0, huge)).toBeCloseTo(810 / 8000, 6);

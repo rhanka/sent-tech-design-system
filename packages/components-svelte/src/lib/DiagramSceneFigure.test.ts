@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { fireEvent, render } from "@testing-library/svelte";
 import { tick } from "svelte";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -24,7 +25,7 @@ import {
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
-import { cardLineMeasurer } from "./diagramCardModel.js";
+import { cardLineMeasurer, lineBoxHeight } from "./diagramCardModel.js";
 import {
   layoutScene,
   parseDurationMs,
@@ -835,6 +836,255 @@ describe("DiagramSceneFigure transition", () => {
     expect(easeOut(0.75)).toBeGreaterThanOrEqual(easeOut(0.5));
     expect(parseEasing(undefined)(0.3)).toBe(0.3);
     expect(parseEasing("ease")(0.3)).toBe(0.3);
+  });
+});
+
+/* ── M1 production measurer and readability floor (BF-6) ─────── */
+
+describe("M1 production edge labels (BF-6) and readability floor", () => {
+  const productionLines = cardLineMeasurer();
+  const edgeSample = (text: string): { readonly height: number } =>
+    productionLines({ text, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
+
+  const tokenSource = (): string => {
+    for (const candidate of [
+      "../tokens/src/component.ts",
+      "packages/tokens/src/component.ts",
+      "/home/antoinefa/src/sent-tech-design-system/.dc2a-l4-wt/packages/tokens/src/component.ts",
+    ]) {
+      try {
+        return readFileSync(candidate, "utf8");
+      } catch {
+        continue;
+      }
+    }
+    throw new Error("tokens component.ts not found from DiagramSceneFigure.test.ts");
+  };
+
+  function productionModelOf(scene: ReturnType<typeof sceneOf>) {
+    const input = {
+      document: scene.document,
+      registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
+      bindings: shippedExecutorBindings as DiagramSceneFigureProps["bindings"],
+      presentation: scene.presentation,
+      hints: scene.hints,
+      measureLines: productionLines,
+      collapsed: [] as SceneOccurrenceRef[],
+    };
+    const result = layoutScene(input);
+    if (result.status !== "laid-out") throw new Error(JSON.stringify(result.refusals));
+    return { result, model: resolveScene(result, input) };
+  }
+
+  function mountDefault(scene: ReturnType<typeof sceneOf>, extra: Partial<DiagramSceneFigureProps> = {}) {
+    const layouts: LayoutResult[] = [];
+    const cameras: DiagramSceneCamera[] = [];
+    const result = render(DiagramSceneFigure, {
+      props: {
+        document: scene.document,
+        registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
+        bindings: shippedExecutorBindings as DiagramSceneFigureProps["bindings"],
+        presentation: scene.presentation,
+        hints: scene.hints,
+        title: "Scene",
+        onLayout: (layout: LayoutResult) => layouts.push(layout),
+        onCameraChange: (camera: DiagramSceneCamera) => cameras.push(camera),
+        ...extra,
+      },
+    });
+    const root = result.container;
+    const figure = root.querySelector("figure") as HTMLElement;
+    const viewport = root.querySelector(".st-diagramSceneFigure-viewport") as HTMLElement;
+    const world = root.querySelector(".st-diagramSceneFigure-world") as HTMLElement;
+    const lastLayout = (): SceneLaidOut => {
+      const last = layouts[layouts.length - 1];
+      if (last === undefined || last.status !== "laid-out") throw new Error("no laid-out result");
+      return last;
+    };
+    return { ...result, root, figure, viewport, world, layouts, cameras, lastLayout };
+  }
+
+  it("edge-label measures at the 18px token line box, fitting the 32px cap", () => {
+    expect(tokenSource()).toContain('edgeLabelFontSize: "18px"');
+    expect(edgeSample("ok").height).toBeCloseTo(lineBoxHeight(18), 6);
+    expect(edgeSample("ok").height + 2 * 4).toBeLessThanOrEqual(32);
+    expect(18 * DEFAULT_MIN_READABLE_SCALE).toBeGreaterThanOrEqual(8);
+  });
+
+  it("LABELLED and WIDE draw the engine placed set with the default measurer, readable at fit and at 100%", async () => {
+    // LABELLED fits its one-line label in the capped gutter at 18px (BF-6):
+    // no unplaced warning, one drawn label, readable at fit and at 100 %.
+    {
+      const { result, model } = productionModelOf(LABELLED);
+      expect(result.warnings.filter((warning) => warning.code === "label-unplaced")).toEqual([]);
+      expect(model.labels.length).toBeGreaterThan(0);
+      const view = mountDefault(LABELLED);
+      await tick();
+      expect(view.root.querySelectorAll("[data-scene-label]").length).toBe(model.labels.length);
+      for (const entry of model.labels) {
+        const label = view.root.querySelector(`[data-scene-label="${entry.occurrence}"]`) as HTMLElement | null;
+        expect(label).not.toBeNull();
+        expect(parseFloat(label!.style.left)).toBe(entry.box.x);
+        expect(parseFloat(label!.style.top)).toBe(entry.box.y);
+        expect(entry.box.height * view.component.getCamera().zoom).toBeGreaterThanOrEqual(8);
+        expect(18 * view.component.getCamera().zoom).toBeGreaterThanOrEqual(8);
+      }
+      view.component.setZoom(view.component.getCamera().maxZoom);
+      await tick();
+      expect(view.root.querySelector("output")?.textContent?.trim()).toBe("100 %");
+      for (const entry of model.labels) {
+        expect(18 * view.component.getCamera().zoom).toBeGreaterThanOrEqual(8);
+      }
+    }
+    // WIDE proves the default path is mounted (no stub): the figure draws
+    // exactly the engine's placed set with the production measurer. Its
+    // "calls" bridge still needs the L2/L3 route work, so no placement count
+    // is pinned here — parity plus readability of whatever is placed.
+    {
+      const { model } = productionModelOf(WIDE);
+      const view = mountDefault(WIDE);
+      await tick();
+      expect(view.root.querySelectorAll("[data-scene-label]").length).toBe(model.labels.length);
+      for (const entry of model.labels) {
+        const label = view.root.querySelector(`[data-scene-label="${entry.occurrence}"]`) as HTMLElement | null;
+        expect(label).not.toBeNull();
+        expect(parseFloat(label!.style.left)).toBe(entry.box.x);
+        expect(parseFloat(label!.style.top)).toBe(entry.box.y);
+        expect(entry.box.height * view.component.getCamera().zoom).toBeGreaterThanOrEqual(8);
+        expect(18 * view.component.getCamera().zoom).toBeGreaterThanOrEqual(8);
+      }
+    }
+  });
+
+  it("host turns row-pack ON by default: no rowPack prop still packs rows with orientations", async () => {
+    const view = mountDefault(LABELLED);
+    await tick();
+    expect(Object.keys(view.lastLayout().orientations ?? {})).toContain("root");
+    const base = {
+      document: LABELLED.document,
+      registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
+      bindings: shippedExecutorBindings as DiagramSceneFigureProps["bindings"],
+      presentation: LABELLED.presentation,
+      hints: LABELLED.hints,
+      measureLines: productionLines,
+      collapsed: [] as SceneOccurrenceRef[],
+    };
+    const implicit = layoutScene(base) as SceneLaidOut;
+    const explicit = layoutScene({ ...base, rowPack: {} }) as SceneLaidOut;
+    expect(implicit.orientations).toEqual(explicit.orientations);
+  });
+});
+
+/* ── cheap Minors: m2 hysteresis band, m3 token re-read, m4 paint order, m5 a11y, m6 viewport width ── */
+
+describe("DiagramSceneFigure cheap minors", () => {
+  it("m2 hysteresis band: a zero band switches back to free while a huge band holds the flip", () => {
+    const base = {
+      document: WIDE.document,
+      registry: m3ProfileRegistry as DiagramSceneFigureProps["registry"],
+      bindings: shippedExecutorBindings as DiagramSceneFigureProps["bindings"],
+      presentation: WIDE.presentation,
+      hints: WIDE.hints,
+      measureLines,
+      collapsed: [] as SceneOccurrenceRef[],
+    };
+    const free = layoutScene({ ...base, rowPack: { orientationHysteresis: 0 } }) as SceneLaidOut;
+    const flipped = Object.fromEntries(
+      Object.entries(free.orientations ?? {}).map(([key, value]) => [key, value === "rows" ? "columns" : "rows"]),
+    ) as Record<string, "rows" | "columns">;
+    // Zero band: any score gap switches back to the free orientation.
+    const switched = layoutScene({
+      ...base,
+      rowPack: { orientationHysteresis: 0 },
+      previousOrientation: flipped,
+    }) as SceneLaidOut;
+    expect(switched.orientations).toEqual(free.orientations);
+    // Huge band: the flipped record is held (plumbing proof at the default path).
+    const held = layoutScene({
+      ...base,
+      rowPack: { orientationHysteresis: 1e6 },
+      previousOrientation: flipped,
+    }) as SceneLaidOut;
+    expect(held.orientations?.["root"]).toBe(flipped["root"]);
+  });
+
+  it("m3 re-reads camera tokens before setZoom/fitToFrame (post-mount theme change)", async () => {
+    const view = mount(SINGLE);
+    await tick();
+    expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
+    setToken("--st-component-diagramScene-maxDisplayScale", "0.5");
+    view.component.setZoom(3);
+    await tick();
+    expect(view.zoom()).toBe(0.5);
+    expect(view.button("Zoom in").disabled).toBe(true);
+    setToken("--st-component-diagramScene-maxDisplayScale", "0.62");
+    view.component.fitToFrame();
+    await tick();
+    expect(view.zoom()).toBe(DEFAULT_MAX_DISPLAY_SCALE);
+  });
+
+  it("m4 edges paint before nodes and labels last", async () => {
+    const view = mount(LABELLED);
+    await tick();
+    const world = view.root.querySelector(".st-diagramSceneFigure-world") as HTMLElement;
+    const order = [...world.children];
+    const edgeIndex = order.findIndex((el) => el.classList.contains("st-diagramSceneFigure-edges"));
+    const firstNodeIndex = order.findIndex((el) => el.classList.contains("st-diagramSceneFigure-node"));
+    const firstLabelIndex = order.findIndex((el) => el.classList.contains("st-diagramSceneFigure-edgeLabel"));
+    expect(edgeIndex).toBeGreaterThanOrEqual(0);
+    expect(firstNodeIndex).toBeGreaterThanOrEqual(0);
+    expect(edgeIndex).toBeLessThan(firstNodeIndex);
+    expect(firstLabelIndex).toBeGreaterThan(firstNodeIndex);
+  });
+
+  it("m5 keys reach the camera from non-input descendants and camera payloads are asserted", async () => {
+    const view = mount(WIDE);
+    await tick();
+    expect(view.cameras.length).toBeGreaterThan(0);
+    const last = view.cameras[view.cameras.length - 1]!;
+    expect(last.zoom).toBe(view.zoom());
+    expect(last.readout).toBe(Math.round((view.zoom() / last.maxZoom) * 100));
+    expect(last.minZoom).toBeLessThanOrEqual(last.zoom);
+    expect(last.zoom).toBeLessThanOrEqual(last.maxZoom);
+    expect(typeof last.pans).toBe("boolean");
+    const before = view.zoom();
+    await fireEvent.keyDown(view.toggle("a"), { key: "+" });
+    expect(view.zoom()).toBeGreaterThan(before);
+  });
+
+  it("m5 a refused layout renders visible text, not only the data attribute", async () => {
+    const view = mount(WIDE, { rowPack: { targetAspect: 0 } });
+    await tick();
+    expect(view.figure.dataset["sceneRefused"]).toBe("row-pack-invalid");
+    expect(view.root.querySelector('[role="alert"]')).not.toBeNull();
+  });
+
+  it("m6 fit width uses the viewport narrowed by its scrollbar", async () => {
+    const view = mount(WIDE);
+    await tick();
+    Object.defineProperty(view.viewport, "clientWidth", { configurable: true, value: 1000 });
+    await resize(1280, 720);
+    const { model } = modelOf(WIDE);
+    const expected = sceneFit({ bounds: model.bounds!, viewWidth: 1000, windowHeight: 720 });
+    expect(view.zoom()).toBe(expected.zoom);
+  });
+
+  it("m1 a document switch starts with a fresh orientation record and refits the camera", async () => {
+    reducedMotion = true;
+    const view = mount(WIDE);
+    await tick();
+    await fireEvent.click(view.toggle("a"));
+    await tick();
+    expect(view.drawn()).not.toContain(occurrence("a1"));
+    await view.rerender({
+      document: SINGLE.document,
+      presentation: SINGLE.presentation,
+      hints: SINGLE.hints,
+    });
+    await tick();
+    expect(view.drawn()).toContain(occurrence("solo"));
+    expect(Object.keys(view.lastLayout().orientations ?? {})).toContain("root");
+    expect(view.zoom()).toBe(view.component.getCamera().fitZoom);
   });
 });
 

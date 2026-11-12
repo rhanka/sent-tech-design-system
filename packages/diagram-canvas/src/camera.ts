@@ -11,8 +11,12 @@
 
 /** Display scale at readout 100 % (Z-5): a 460 × 200 card renders at ≈ 285 × 124 CSS px. */
 export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
-/** Readability floor of the fit: below it a fit stops shrinking and the host pans. */
-export const DEFAULT_MIN_READABLE_SCALE = 0.42;
+/**
+ * Readability floor of the fit: below it a fit stops shrinking and the host pans.
+ * Re-pin 2026-11-12 (M1/BF-6): 0.45 keeps an 18px edge label readable at fit
+ * (18 × 0.45 = 8.1 ≥ 8 CSS px); mirrors the `diagramScene.minReadableScale` token.
+ */
+export const DEFAULT_MIN_READABLE_SCALE = 0.45;
 /** Share of the window height a figure may take (§5.1 fit box). */
 export const FIT_WINDOW_HEIGHT_SHARE = 0.85;
 /** Fit box aspect (§5.1): 16:9. */
