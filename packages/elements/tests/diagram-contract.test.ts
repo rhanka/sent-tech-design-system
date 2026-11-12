@@ -90,8 +90,22 @@ describe("diagram contract 1.1 and interpreter subset (B1, B7, B8, B16, B17)", (
     const bytes = readFileSync(require.resolve("@sentropic/focus/schemas/decision-dossier-document.v1"));
     expect(JSON.parse(bytes.toString()).$id).toBe("urn:sentropic:focus:DecisionDossierDocument:1.1.0");
     expect(decisionDossierContract.semantic?.sha256).toBe(createHash("sha256").update(bytes).digest("hex"));
-    expect(decisionDossierContract.semantic?.runtimePackage).toBe("@sentropic/focus@0.6.0-rc.1");
+    expect(decisionDossierContract.semantic?.runtimePackage).toBe("@sentropic/focus@0.6.0");
     expect(Object.keys(catalog.components).sort()).toEqual(["BarChart", "BpmnCanvas", "DecisionDossier"]);
+  });
+
+  it("should install the declared owner release reproducibly for elements 0.3.0", () => {
+    const manifest = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+    const lock = JSON.parse(readFileSync(new URL("../../../package-lock.json", import.meta.url), "utf8"));
+    const require = createRequire(import.meta.url);
+    const installed = JSON.parse(readFileSync(require.resolve("@sentropic/focus/package.json"), "utf8"));
+    const locked = lock.packages["packages/elements"];
+    expect(locked.dependencies["@sentropic/focus"]).toBe(manifest.dependencies["@sentropic/focus"]);
+    expect(lock.packages["node_modules/@sentropic/focus"].version).toBe(manifest.dependencies["@sentropic/focus"]);
+    expect(installed.version).toBe(manifest.dependencies["@sentropic/focus"]);
+    expect(manifest.dependencies["@sentropic/focus"]).toBe("0.6.0");
+    expect(manifest.version).toBe("0.3.0");
+    expect(locked.version).toBe(manifest.version);
   });
 
   it("should refuse malformed diagrams as envelope schema violations before focus semantics", () => {
