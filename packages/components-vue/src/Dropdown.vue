@@ -7,7 +7,9 @@ import Icon from './Icon.vue';
 
 export type DropdownOption = {
   value: string;
-  label: unknown;
+
+  /** @slot option-label */
+  label?: unknown;
   disabled?: boolean;
 };
 

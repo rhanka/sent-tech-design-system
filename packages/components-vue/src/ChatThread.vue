@@ -11,9 +11,13 @@ export type ChatThreadProps = {
   messages?: Array<{
     id: string;
     role?: ChatMessageRole;
-    content: unknown;
+
+  /** @slot message-content */
+  content?: unknown;
     status?: ChatMessageStatus;
   }>;
+
+  /** @slot empty */
   emptyLabel?: unknown;
   class?: string;
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, useId } from 'vue';
 import { classNames } from './classNames.js';
 
 export type EventFeedPanelSeverity = 'info' | 'success' | 'warning' | 'error' | (string & {});
@@ -57,6 +57,7 @@ const items = computed(() =>
 );
 
 const resolvedMaxHeight = computed(() => props.maxHeight ?? props.height);
+const labelId = `st-eventFeedPanel-${useId()}-label`;
 const scrollStyle = computed(() =>
   typeof resolvedMaxHeight.value === 'number' && Number.isFinite(resolvedMaxHeight.value)
     ? { maxHeight: `${resolvedMaxHeight.value}px` }
@@ -66,7 +67,7 @@ const scrollStyle = computed(() =>
 
 <template>
   <div v-bind="{ ...($attrs), class: (classNames('st-eventFeedPanel', props.class)) }" >
-    <p v-if="props.label" class="st-eventFeedPanel__label" id="st-eventFeedPanel-label">{{ props.label }}</p>
+    <p v-if="props.label" class="st-eventFeedPanel__label" :id="labelId">{{ props.label }}</p>
     <ul class="st-eventFeedPanel__list" role="feed" :aria-label="props.label" aria-busy="false" :style="scrollStyle">
       <li v-for="item in items" :key="item.index" :class="classNames('st-eventFeedPanel__item', `st-eventFeedPanel__item--${item.tone}`)" role="article" :aria-label="`${item.datum.type} — ${item.datum.message}`">
         <span :class="classNames('st-eventFeedPanel__badge', `st-eventFeedPanel__badge--${item.tone}`)" aria-hidden="true"></span>

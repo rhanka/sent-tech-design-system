@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:cc591531b73430af991474e6d51a0b66a51da6f3e57fae419f7f148a06fea506",
-  "entryDigest": "sha256:76df4656100075b44746512b58911b65af814182137e3e8d25898504ad54dcdb",
+  "digest": "sha256:f4877bde46eb4ad0c5145eebf117adfe25d337623431d35290bd96531fb6a3cd",
+  "entryDigest": "sha256:a087ea840f5ae378ff0e16e260e65f508b4950c550718a6d6973340aaa237b22",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -306,8 +306,7 @@
               "label": {}
             },
             "required": [
-              "key",
-              "label"
+              "key"
             ],
             "type": "object"
           },
@@ -383,7 +382,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:50f1797851fc23223dab58780eb4dafa7d2e8ad1ceb2a42a24700913b152b4b6",
+        "declarationDigest": "sha256:c7b629defb6497bc41aeebe0298ac1a91f8b67ce989469a3ac035dcc9e655fe5",
         "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",

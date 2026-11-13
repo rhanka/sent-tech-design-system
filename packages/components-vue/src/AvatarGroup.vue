@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { normalizeStyle, computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import type { AvatarSize } from './Avatar.vue';
@@ -21,20 +21,18 @@ const props = withDefaults(defineProps<AvatarGroupProps>(), {
   total: undefined,
   class: undefined,
 });
-const attrs = useAttrs();
 const overflow = computed(() =>
   props.max != null && props.total != null && props.total > props.max ? props.total - props.max : 0,
 );
 const groupStyle = computed<CSSProperties>(() => ({
-  ...(normalizeStyle([attrs.style]) as CSSProperties),
   ['--st-avatar-group-max' as string]: props.max ?? '',
 }));
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <div v-bind="$attrs"
+  <div v-bind="{ ...$attrs, style: [groupStyle, $attrs.style] }"
     :class="classNames('st-avatarGroup', `st-avatarGroup--${props.size}`, props.class)"
-    :style="groupStyle"
   >
     <slot />
     <span v-if="overflow > 0" class="st-avatarGroup__overflow" :aria-label="`+${overflow}`">+{{ overflow }}</span>

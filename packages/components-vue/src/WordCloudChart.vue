@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type WordCloudChartTone =
@@ -154,7 +154,7 @@ const props = withDefaults(defineProps<WordCloudChartProps>(), {
   width: 480, height: 320, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-wordCloudChart', props.class),

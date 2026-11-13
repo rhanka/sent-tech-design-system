@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:47b95a9f2c8ab75aace19756e8e2f5bef9a56b634cc2e2e8f88ff88800559b80",
-  "entryDigest": "sha256:e020f2a35b9acb7261d74a79a3b2d25d39b816ce1861ae1ef05de9f0c0591b5a",
+  "digest": "sha256:412d1831eecf719aa41678bfb7e29707277228272015fac21b5a34a3d9f0b12d",
+  "entryDigest": "sha256:12bf0e14b34790d5a6fb4f6ac4594570aca184deac9130b44e629c85d5e3b91a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -158,7 +158,7 @@
         "declarationPath": "packages/components-svelte/dist/ColorSwatch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColorSwatchProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

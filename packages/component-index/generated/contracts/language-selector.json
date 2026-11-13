@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:14151243636baf9c8226f298ae7b1931f56c66719e3f9efa3eddd50d1658ab58",
-  "entryDigest": "sha256:8ae3b6d696b277984506f9556e3e9607feb2b42de0abb77eab45c325cdefe1c2",
+  "digest": "sha256:dfa5e7728589ac922b355747b512c80df5b878a44fb0e587a8f6a77e653dcd46",
+  "entryDigest": "sha256:630f5d4f3564e4c1f845ff27fb04429eb20758b3d4ac55622dd6a5598538a1bf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageSelector.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageSelectorProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -265,7 +265,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -329,7 +328,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7a163bd28ff5520f4c4a448bbb2beced569ac1afe7ea50163e43986b169ed593",
+        "declarationDigest": "sha256:91fe7485393b29d15551e9cb10b5ada6440a2d579d6d0ce5004c5c158ac2362d",
         "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",

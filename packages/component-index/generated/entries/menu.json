@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Menu.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,10 +21,10 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:bbc93d3b8199178dd013d446f74a07a81afa7fa403772db534a2c254b76ed0d9",
+      "digest": "sha256:505441ed0206575f15b0c61f3be4ad6c323b4bfbb700f630da588d08f1f23e5e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Menu.ts",
+      "path": "packages/components-vue/src/Menu.vue",
       "version": "0.41.0-next.0"
     },
     {
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:0434f0d350b091e0c60e57e856a25f48ed4dbc53a2904a608f04f5a7139bb462",
+  "digest": "sha256:dc03eb3ac9db72911c8e7b0189ef6751f19ac54bb203b866987bfa2a54eaa2f6",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

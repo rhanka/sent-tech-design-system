@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:48b6ce3632f5b7516d852a53cf7cbaf45b47bdacd18086945bdd50443c298686",
-  "entryDigest": "sha256:b1e040fac375bde217d7d59eca17fa41f9cc317c4c6e1f75e11cd7811af52acc",
+  "digest": "sha256:304ea1751736c629e95947c30318ea55925387446ffdda75c1e54503f5afec90",
+  "entryDigest": "sha256:17047236feb9966922bcff4c314bdab55519ddae896556ff8d47be27e7d2c7f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -385,7 +385,7 @@
         "declarationPath": "packages/components-svelte/dist/Combobox.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboboxProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -463,7 +463,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -559,6 +558,9 @@
           "name": "label"
         },
         {
+          "name": "no-results-label"
+        },
+        {
           "name": "option-label",
           "params": {
             "additionalProperties": false,
@@ -575,7 +577,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:98a10630457febc7847b9b55196724fa3532a90bd5fb5823cc81070a83fb0b8f",
+        "declarationDigest": "sha256:3a63175d34ca8fc971cf9a5de7a5a93fd55170b4d378522029780ab477b29f35",
         "declarationPath": "packages/components-vue/dist/Combobox.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboboxProps",

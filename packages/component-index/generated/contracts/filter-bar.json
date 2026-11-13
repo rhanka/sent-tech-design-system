@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:7b07b63bd51df84b029fb6aec41bd638c5cfd4166f34bde2737753c91868a739",
-  "entryDigest": "sha256:65abec0f3c67324727087dd736ddda858ab125c2c15a0b602b3d21106040111b",
+  "digest": "sha256:5906a448ba5ae5142c767f1f65170bda7d2db0cf337bd3ad487447178c4a2595",
+  "entryDigest": "sha256:d52fe1224781dc0e1564688125f68c9e8773b2c444889d00ab453348e0aba07b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterBarProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

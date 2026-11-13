@@ -22,8 +22,13 @@ function dom(node: Element): unknown {
   return { tag: node.tagName, attributes, children: [...node.childNodes].flatMap(n => n.nodeType === 1 ? [dom(n as Element)] : n.nodeType === 3 && n.textContent?.trim() ? [n.textContent.replace(/\s+/g, ' ').trim()] : []) };
 }
 describe('ERD Vue/Svelte DOM and ARIA parity', () => {
-  it('should keep token styles identical across both hosts', () => {
-    const styles = ['../components-svelte/src/lib/DiagramSceneFigure.svelte', 'src/DiagramSceneFigure.vue'].map(path => readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim());
+  it('should keep ERD and base scene token styles identical across both hosts', () => {
+    // Vue delegates ordinary scenes to the base host; flow-only rules are separate.
+    const styles = ['../components-svelte/src/lib/DiagramSceneFigure.svelte', 'src/DiagramSceneFigureBase.vue'].map(path => {
+      const style = readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!;
+      expect(style).toContain('  .st-diagramErd-toggle');
+      return style.slice(style.indexOf('  .st-diagramErd-toggle')).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim();
+    });
     expect(styles[0]).toBe(styles[1]);
   });
   for (const source of scenes)
