@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FormGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:54fd1944387aacc3ae00c875c1fdcc0e6a166461c3dc522d516b017822fd0bd7",
+  "digest": "sha256:cfedb84075192204f012087194a3506d37c1a0ae23a2b32261a5148572253639",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

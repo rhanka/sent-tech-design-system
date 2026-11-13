@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ScoreCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Indicator card aggregated from a store (renders KpiCard).",
     "fr": "Carte d’indicateur agrégée depuis un store (rend KpiCard)."
   },
-  "digest": "sha256:627ed34efaa814f5b33bbd0db3becb1b44b713df7e3c731e9fc67eabf6d4d478",
+  "digest": "sha256:7356d61b0d62e608b14a9619087ec4ac1056abf96bc1663c63b860e9c5cbec2b",
   "displayName": "ScoreCard (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

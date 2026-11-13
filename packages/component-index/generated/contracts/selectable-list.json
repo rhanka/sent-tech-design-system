@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:c0672e04ffbcae0c0dd803bef241f5c952d7214bb9a1f7d995b7de2e9f782283",
-  "entryDigest": "sha256:6293bde808756a59e70777dab9cfc36ec555cd648f426d640ac55abc33663cff",
+  "digest": "sha256:bc071ef13a245f547682ee19b53fa96f7835feef24291f02135f3dbcbe63de71",
+  "entryDigest": "sha256:3fb1f1d5eb2d38f1dac13ebfe6b765b0908a3b1680302e696998c62aafcd0a7a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,6 +252,9 @@
       ],
       "events": [
         {
+          "name": "change"
+        },
+        {
           "name": "onChange",
           "payload": {
             "anyOf": [
@@ -320,11 +323,14 @@
         "declarationPath": "packages/components-vue/dist/SelectableList.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"change\": payload not in declaration",
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

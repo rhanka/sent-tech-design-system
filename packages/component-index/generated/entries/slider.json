@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Slider.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous value slider.",
     "fr": "Curseur de valeur continue."
   },
-  "digest": "sha256:09c8f756fa21f4e464055830e1ab6bc70c1b8b7e02fbfc18d709220394f07b2d",
+  "digest": "sha256:5d66cc658f179a3a90cb5d10a39d976683fa46a812bc3c2b652eb2f64fb4b9b7",
   "displayName": "Slider",
   "format": "component-entry/v1",
   "frameworks": [

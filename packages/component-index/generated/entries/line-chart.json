@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:1bd7c066218afbe55293ea39a2a685a920739af6736f519099d13e10eb342a94",
+  "digest": "sha256:137bf68009006ec4ec7155bfe8fca6b3ed35673554181a99d8e10a09dbb07461",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

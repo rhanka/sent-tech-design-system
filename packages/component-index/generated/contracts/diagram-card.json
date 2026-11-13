@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:917a173ab18b389d6a8471278e1922a398a44a950b8961dba0e16dcfe2b54498",
-  "entryDigest": "sha256:1cf0df01a6277b2eae8153cad5ad91266b450a9fa6f5f790ebd2aed126ff4ac0",
+  "digest": "sha256:75519f7b016a50cbb46a12d4ef8d2407f845d20b47af652de82ec48ba93cbb78",
+  "entryDigest": "sha256:668bad59882f5ce8a1844b4507df4309838dc6dd8536478ffb4c439d3373dc7b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,6 +273,9 @@
       ],
       "events": [
         {
+          "name": "diagnostic"
+        },
+        {
           "name": "onDiagnostic",
           "payload": {
             "$ref": "#/$defs/CardDiagnostic"
@@ -292,6 +295,9 @@
             ],
             "type": "object"
           }
+        },
+        {
+          "name": "select"
         }
       ],
       "limitations": [
@@ -442,11 +448,16 @@
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"diagnostic\": payload not in declaration",
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"
