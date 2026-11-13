@@ -309,12 +309,12 @@ export { ColorScaleBar } from "./ColorScaleBar.js";
 export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.js";
 export { Timeline } from "./Timeline.js";
 export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.js";
-export { RibbonChart } from "./RibbonChart.js";
+export { default as RibbonChart } from "./RibbonChart.vue";
 export type {
   RibbonChartProps,
   RibbonChartTone,
   RibbonChartDatum,
-} from "./RibbonChart.js";
+} from "./RibbonChart.vue";
 export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
 export type {
   AnomalySwimLaneChartProps,
