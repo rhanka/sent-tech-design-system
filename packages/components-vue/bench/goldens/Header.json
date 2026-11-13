@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Header",
+  "sourceRevision": "fcba18229a8c921a74d5e1e21475d901695b206b",
+  "source": "src/Header.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<header class=\"st-header\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\">Acme</a><span class=\"st-header__title\">Console</span></div><nav class=\"st-header__navigation\"><a href=\"/\">Home</a><a href=\"/docs\">Docs</a></nav></header>"
+    },
+    {
+      "id": "nav-items-alias",
+      "html": "<header class=\"st-header\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\">Acme</a></div><nav class=\"st-header__navigation\"><a href=\"/a\">A</a></nav></header>"
+    },
+    {
+      "id": "account",
+      "html": "<header class=\"st-header\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\">Acme</a></div><nav class=\"st-header__navigation\"></nav><div class=\"st-header__account\"><span class=\"st-header__avatar st-header__avatar--initials\">JD</span><span class=\"st-header__account-name\">Jean Dupont</span><span class=\"st-header__account-email\">jean@acme.test</span></div></header>"
+    },
+    {
+      "id": "brand-slot",
+      "html": "<header class=\"st-header\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\"><strong>Brand</strong></a><span class=\"st-header__title\">Console</span></div><nav class=\"st-header__navigation\"></nav></header>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<header class=\"st-header\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\"><strong>Brand</strong></a><span class=\"st-header__title\"><em>Console</em></span></div><nav class=\"st-header__navigation\"></nav></header>"
+    },
+    {
+      "id": "sticky-custom",
+      "html": "<header class=\"st-header st-header--sticky consumer\" data-bench=\"header\" style=\"color:red;\"><div class=\"st-header__leading\"><a class=\"st-header__logo\" href=\"/\">Acme</a></div><nav class=\"st-header__navigation\"></nav></header>"
+    }
+  ],
+  "sourceSha256": "68476fc0a45f3202308ed9d8d00510c53dd9cf923b104bd88cae9894fbc36464",
+  "fixtureSha256": "00b3d7e6ed8db9e6c010485a965fe0b7645f1fbc2b07ca4682aa2bc4d8828f42",
+  "publicExports": [
+    {
+      "name": "Header",
+      "typeOnly": false
+    },
+    {
+      "name": "HeaderProps",
+      "typeOnly": true
+    },
+    {
+      "name": "HeaderNavItem",
+      "typeOnly": true
+    },
+    {
+      "name": "HeaderAccount",
+      "typeOnly": true
+    },
+    {
+      "name": "deriveInitials",
+      "typeOnly": false
+    }
+  ]
+}
