@@ -447,8 +447,8 @@ export type {
 } from "./DisplaySettings.js";
 export { default as MediaContent } from "./MediaContent.vue";
 export type { MediaContentProps, MediaKind } from "./MediaContent.vue";
-export { Notification } from "./Notification.js";
-export type { NotificationProps, NotificationTone } from "./Notification.js";
+export { default as Notification } from "./Notification.vue";
+export type { NotificationProps, NotificationTone } from "./Notification.vue";
 export { TableOfContents } from "./TableOfContents.js";
 export type { TableOfContentsProps, TableOfContentsItem } from "./TableOfContents.js";
 export { Transcription } from "./Transcription.js";
