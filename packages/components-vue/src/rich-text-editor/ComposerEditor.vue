@@ -35,7 +35,7 @@
     onKeydown?: (event: ComposerKeyEvent) => boolean | void;
   }
 
-  // @attrs none: editor semantics belong to the inner engine, as in Svelte.
+  /** @attrs none The editor owns its inner textbox; class is an explicit prop. */
   defineOptions({ name: 'ComposerEditor', inheritAttrs: false });
   const {
     value,

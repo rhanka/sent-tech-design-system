@@ -13,6 +13,13 @@ test('all editor peers are optional and have local build dependencies', () => {
   }
   assert.equal(manifest('packages/rich-text').dependencies?.['@tiptap/markdown'], undefined, 'markdown must not pull editor dependencies into root consumers');
 });
+test('Vue pins a fresh rich-text release carrying optional peer metadata', () => {
+  const richText = manifest('packages/rich-text');
+  assert.notEqual(richText.version, '0.1.0', 'published 0.1.0 has mandatory editor dependencies and cannot be overwritten');
+  for (const path of ['packages/components-vue', 'packages/components-svelte']) {
+    assert.equal(manifest(path).dependencies[richText.name], richText.version);
+  }
+});
 test('every control glyph uses Icon instead of a raw Lucide svg', () => {
   const walk = dir => readdirSync(new URL(`../${dir}`, import.meta.url), { withFileTypes: true }).flatMap(entry => entry.isDirectory() ? walk(`${dir}/${entry.name}`) : entry.name.endsWith('.vue') ? [`${dir}/${entry.name}`] : []);
   const offenders = walk('packages/components-vue/src').filter(file => /<svg\b[^>]*class="[^"]*lucide/.test(read(file)));

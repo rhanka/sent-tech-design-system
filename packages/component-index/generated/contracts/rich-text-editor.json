@@ -1,8 +1,8 @@
 {
   "componentId": "rich-text-editor",
   "contractSource": "derived",
-  "digest": "sha256:7f378b4b1fe92155c353de4db724833c82d1b2c8c5d98a75beb8f565a26fd56c",
-  "entryDigest": "sha256:83480aae64b2891011480b98e86e20185f8b71f9619ac720f0b5c5e27ecd6664",
+  "digest": "sha256:9d82cb16aae6f845ce1d413523f59e52326f0cda63d6fbce5aedc4d9fdc4be8d",
+  "entryDigest": "sha256:02ec1fe6f788f38ad2fc746226021ad860caf314803d9e24c44dfa17e3a5248e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

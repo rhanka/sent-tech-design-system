@@ -1,8 +1,8 @@
 {
   "componentId": "composer-editor",
   "contractSource": "derived",
-  "digest": "sha256:89029aa878c0e331f2b80054bdf8c38d7188717b20647ae0796234680a36cf43",
-  "entryDigest": "sha256:ca38ce2a7a0cbe03958f8adf1f8645ea84ce9f2e6c05b17be3496416542f72a9",
+  "digest": "sha256:61cc1eab94a23a2fd84f1a26103a7aa903beb6962cc7472d357592112ffbfbcf",
+  "entryDigest": "sha256:31b15569c3827df421c4b9e732ff482aa496983db1ac7f152cfbe6d435c406b6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

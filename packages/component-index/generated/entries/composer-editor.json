@@ -13,7 +13,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:79068f93c06f6f871ef72c3fd78045c1a70c795f993c6734e3d61b7596ecddbe",
+      "digest": "sha256:8f39a47b76e9fd3924e6566df4bf7bda8438b2ee0e28e6e0f30a33ff18abeab2",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/rich-text-editor/ComposerEditor.vue",
@@ -24,7 +24,7 @@
     "en": "Controlled text composer with capture that waits for IME composition.",
     "fr": "Surface de rédaction à valeur texte contrôlée et capture compatible avec la composition IME."
   },
-  "digest": "sha256:ca38ce2a7a0cbe03958f8adf1f8645ea84ce9f2e6c05b17be3496416542f72a9",
+  "digest": "sha256:31b15569c3827df421c4b9e732ff482aa496983db1ac7f152cfbe6d435c406b6",
   "displayName": "ComposerEditor",
   "format": "component-entry/v1",
   "frameworks": [

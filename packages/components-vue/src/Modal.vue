@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
-import { computed, onUnmounted, watch } from 'vue';
+import { onUnmounted, useAttrs, watch } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ModalProps = {
@@ -18,14 +18,15 @@ const props = withDefaults(defineProps<ModalProps>(), {
 const emit = defineEmits<{ close: [] }>();
 
 
-const sectionProps = computed(() => ({
+const attrs = useAttrs();
+const sectionProps = () => ({
 
   class: classNames('st-modal', props.class),
   role: 'dialog',
   'aria-modal': 'true' as const,
-  'aria-label': props.title || 'Modal',
+  'aria-label': props.title || (attrs['aria-labelledby'] ? undefined : (attrs['aria-label'] as string | undefined) ?? 'Modal'),
   tabindex: -1,
-}));
+});
 
 function onKeyDown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
@@ -34,29 +35,35 @@ function onKeyDown(event: KeyboardEvent) {
   }
 }
 
+let previousOverflow: string | undefined;
+function cleanup() {
+  if (typeof document === 'undefined' || previousOverflow === undefined) return;
+  document.body.style.overflow = previousOverflow;
+  previousOverflow = undefined;
+  document.removeEventListener('keydown', onKeyDown);
+}
 watch(
   () => props.open,
   (open) => {
+    if (typeof document === 'undefined') return;
     if (open) {
+      previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', onKeyDown);
     } else {
-      document.body.style.overflow = '';
-      document.removeEventListener('keydown', onKeyDown);
+      cleanup();
     }
   },
+  { immediate: true },
 );
 
-onUnmounted(() => {
-  document.body.style.overflow = '';
-  document.removeEventListener('keydown', onKeyDown);
-});
+onUnmounted(cleanup);
 defineSlots<{ "default"?: () => unknown; "footer"?: () => unknown }>();
 </script>
 
 <template>
   <div v-if="props.open" class="st-modal__backdrop">
-    <section v-bind="{ ...$attrs, ...sectionProps }">
+    <section v-bind="{ ...$attrs, ...sectionProps() }">
       <div class="st-modal__header">
         <h2 v-if="props.title" class="st-modal__title">{{ props.title }}</h2>
         <button type="button" class="st-modal__close" :aria-label="props.closeLabel" @click="emit('close')">

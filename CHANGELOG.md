@@ -25,3 +25,9 @@
 - Reject VNode/component content props in favor of the documented named slots;
   see `packages/components-vue/bench/CONTRACT-CHANGES.md` for migration examples.
 - Share WebFrame with dataviz-vue and preserve `.once` and merged listeners.
+- Pin rich-text 0.1.1 so published optional editor/collaboration peers reach
+  consumers; verify registry-resolved tarball installs without those peers.
+- Preserve Svelte fold-toggle SVG attributes while composing DS Icon, initialize
+  initially open Modal/Drawer, and retain caller dialog labels and scrolling.
+- Reject missing or duplicate ancestor/descendant attribute forwarding and cover
+  full-profile paragraph edits and synthetic trailing paragraphs in native Vapor.

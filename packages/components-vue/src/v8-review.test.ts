@@ -15,6 +15,8 @@ import Combobox from './Combobox.vue';
 import MultiSelect from './MultiSelect.vue';
 import TimePicker from './TimePicker.vue';
 import TimeRangePicker from './TimeRangePicker.vue';
+import Modal from './Modal.vue';
+import Drawer from './Drawer.vue';
 
 const wrappers: ReturnType<typeof mount>[] = [];
 function render(component: any, props: Record<string, unknown>) {
@@ -23,6 +25,40 @@ function render(component: any, props: Record<string, unknown>) {
 }
 afterEach(() => { wrappers.splice(0).forEach(w => w.unmount()); document.body.replaceChildren(); vi.restoreAllMocks(); });
 const messages = { editorLabel: 'Editor', placeholder: 'Write', preservedBlockLabel: 'Preserved {kind}', externalConflictLabel: 'Conflict' };
+
+for (const component of [Modal, Drawer]) {
+  it(`should initialize an initially open ${component.name}, close on Escape and restore scrolling`, async () => {
+    document.body.style.overflow = 'auto';
+    const onClose = vi.fn(), wrapper = render(component, { open: true, onClose, 'aria-label': 'Consumer title' });
+    expect(document.body.style.overflow).toBe('hidden');
+    expect(wrapper.get('[role=dialog]').attributes('aria-label')).toBe('Consumer title');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    await wrapper.setProps({ open: false });
+    expect(document.body.style.overflow).toBe('auto');
+    await wrapper.setProps({ open: true });
+    expect(document.body.style.overflow).toBe('hidden');
+    wrapper.unmount(); wrappers.pop();
+    expect(document.body.style.overflow).toBe('auto');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    document.body.style.overflow = '';
+  });
+  it(`should preserve external labeling on an initially open ${component.name}`, () => {
+    const wrapper = render(component, { open: true, 'aria-labelledby': 'consumer-heading' });
+    expect(wrapper.get('[role=dialog]').attributes('aria-labelledby')).toBe('consumer-heading');
+    expect(wrapper.get('[role=dialog]').attributes('aria-label')).toBeUndefined();
+  });
+}
+
+it('should preserve the Svelte fold-toggle SVG attributes through the DS Icon', () => {
+  const control = render(DiagramControlGlyph, { plus: true, size: 'var(--control-size)' });
+  const svg = control.get('svg');
+  expect(svg.attributes('stroke-width')).toBe('2');
+  expect(svg.classes()).not.toContain('st-icon');
+  expect(svg.attributes('focusable')).toBeUndefined();
+  expect(svg.attributes('aria-hidden')).toBe('true');
+});
 
 it('should bind table attributes and bubbling listeners exactly once on the table', async () => {
   const onClick = vi.fn();
@@ -112,7 +148,7 @@ it('should render control glyphs with the DS icon token contract', () => {
   const button = render(CopyButton, { value: 'Copy me' });
   expect(button.get('svg').classes()).toContain('st-icon'); expect(button.get('svg').attributes('stroke-width')).toBe('2.25');
   const control = render(DiagramControlGlyph, { plus: true, size: 'var(--control-size)' });
-  expect(control.get('svg').classes()).toContain('st-icon'); expect(control.get('svg').attributes('stroke-width')).toBe('2.25');
+  expect(control.get('svg').classes()).toContain('lucide-plus'); expect(control.get('svg').attributes('stroke-width')).toBe('2');
   expect(control.get('svg').attributes('width')).toBe('var(--control-size)');
 });
 
