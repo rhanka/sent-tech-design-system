@@ -194,7 +194,6 @@
   "packages/components-vue/src/Tooltip.ts",
   "packages/components-vue/src/TraceWaterfallChart.ts",
   "packages/components-vue/src/Transcription.ts",
-  "packages/components-vue/src/TreeView.ts",
   "packages/components-vue/src/TreegraphChart.ts",
   "packages/components-vue/src/TreemapChart.ts",
   "packages/components-vue/src/Typography.ts",
