@@ -47,7 +47,7 @@
       "gitBlob": "ace049eeddcc4467ac0e103cde9466d7eb0805aa",
       "sha256": "2e336ec40b2a4febb1b1cef53ca2e411fb6817fbb55ba9fe99ace6db83949092",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "8654ff2838fac72b83751e190a2d1ae54e07ba1dad25393a8c840fed0def19f9",
+      "destinationSha256": "ee524b7089899b21170b80f509189bb1c52a9b73779211f2161655ee6db8c7cf",
       "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
@@ -564,7 +564,7 @@
       "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
       "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "c20a3c677c8eee22244c315c4a2220a00be1df412a629ba51132aafee9788798",
+      "destinationSha256": "4af5b4008db0dd7a4626bd52e55493f4fde9a8cab87d832128c798c0232fb534",
       "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
