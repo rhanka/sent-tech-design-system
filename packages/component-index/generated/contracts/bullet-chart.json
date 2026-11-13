@@ -1,8 +1,8 @@
 {
   "componentId": "bullet-chart",
   "contractSource": "derived",
-  "digest": "sha256:099e449ea80868edf8cfbf20bb9c2df3031ee5e55de70895f346af83b9453028",
-  "entryDigest": "sha256:8697d82c58fa0a7b79f757749fba106fbde52a3ea543d61d383cf2f43f68d68b",
+  "digest": "sha256:89318c787a2345764f50c26b0d3ab7dcd949af3c8c52856230543305fc93ea18",
+  "entryDigest": "sha256:4fdab19126ac5a0b83e60b26537814405fb25495ea7054dc30c1a7f4cebec22f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -77,7 +77,7 @@
         "declarationPath": "packages/components-angular/dist/BulletChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BulletChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -165,7 +165,7 @@
         "declarationPath": "packages/components-react/dist/BulletChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BulletChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

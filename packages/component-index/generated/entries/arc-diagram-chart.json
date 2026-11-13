@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ArcDiagramChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ArcDiagramChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Arc diagram: nodes on an axis, weighted arcs coloured by source.",
     "fr": "Diagramme en arcs : nœuds alignés sur un axe, arcs pondérés colorés par source."
   },
-  "digest": "sha256:ca03a7e856aa8f76a846cf411d5b48d5c16df39b8577d45b23f478a53cf69b3f",
+  "digest": "sha256:08a8f0259868f020eeb17e8c501a8c0a496461ac216ee984ff66758e6f2278ac",
   "displayName": "ArcDiagramChart",
   "format": "component-entry/v1",
   "frameworks": [

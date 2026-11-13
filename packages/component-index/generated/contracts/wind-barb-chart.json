@@ -1,8 +1,8 @@
 {
   "componentId": "wind-barb-chart",
   "contractSource": "derived",
-  "digest": "sha256:d9d6b33f026597fa036d59da99d532f2953e36211a2febe398cbf73299310756",
-  "entryDigest": "sha256:a9ba271858cdcc752100a7f7b6a1db8b71011487421173543e7e5b1853ea0983",
+  "digest": "sha256:96c436766b0923fc3b3a34b8aa69eab1c63a317c5c01f153e5716660e93ab387",
+  "entryDigest": "sha256:6912ae830b1e58609be0052cb12818026e937336dfaeee20a61ff8e44045641c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/WindBarbChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WindBarbChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-react/dist/WindBarbChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "WindBarbChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

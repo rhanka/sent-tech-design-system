@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:051da26d3e9f25a0becb78474f6958202e82d2d574e84babf02ff3cac6c7c55d",
-  "entryDigest": "sha256:70c34a0774cd10db3a16ab9cbf6f0a91de19c472e584eb310ec513964765115c",
+  "digest": "sha256:d40cd2fc4999a5181f540603d48429440062f474bd382906e4fdbbd111e320da",
+  "entryDigest": "sha256:207338b43aa0470a1f1f42a460b542d102a77801b7f5dde6cd6370f2c2f4ebfe",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VectorFieldChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VectorFieldChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

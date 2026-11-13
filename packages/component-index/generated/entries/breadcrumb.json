@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Breadcrumb.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Breadcrumb.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Semantic breadcrumb trail.",
     "fr": "Fil d’Ariane sémantique."
   },
-  "digest": "sha256:d47db57842b84b4cda1bec278065b519e7ccc7ac917b2e1c35e7968ae6672564",
+  "digest": "sha256:728d7831af526e3c01f66cc579c410f7b854f6c4c955c82c2fbe2bf64233512c",
   "displayName": "Breadcrumb",
   "format": "component-entry/v1",
   "frameworks": [

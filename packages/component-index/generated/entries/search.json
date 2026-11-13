@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Search.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Search.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:2c65bed8a3f975e778f0520e96880c40362bb9b9e6585918e85d126a51ae9244",
+  "digest": "sha256:9e538165939f2346fe468a2aca6d4c1084a53bb38d9321b095f65c7de38f10b6",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

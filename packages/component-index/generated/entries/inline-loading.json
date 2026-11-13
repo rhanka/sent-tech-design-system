@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/InlineLoading.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/InlineLoading.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline loading indicator paired with a label.",
     "fr": "Indicateur de chargement inline accompagné d’un libellé."
   },
-  "digest": "sha256:1cedf7156d6f3afb6d79a6b939defcc45d51b9e1189f40cb571b903c92ad904a",
+  "digest": "sha256:789079366ae47ad17756371164628ab4312b621ba8c194722faa3d6ccead6a81",
   "displayName": "InlineLoading",
   "format": "component-entry/v1",
   "frameworks": [

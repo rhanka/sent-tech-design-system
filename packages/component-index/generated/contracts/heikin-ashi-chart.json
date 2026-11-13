@@ -1,8 +1,8 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:a61d865745239623c54815802a71138cb128c8e9937c34edf6ca45b864dec90f",
-  "entryDigest": "sha256:b271e4f103498399af06d6912bfb70b5b823438611e53e8291a201eb594b6ac3",
+  "digest": "sha256:4364d09b84e20eb8c188a208e7fdb4c7b12b8c3b499115857f3dba989c949c6b",
+  "entryDigest": "sha256:73d5dc1824858bb9704ff929b9e560124aad6132579460175550102c72a891ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/HeikinAshiChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/HeikinAshiChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

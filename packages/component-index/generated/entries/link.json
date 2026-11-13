@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Link.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Link.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:300ec9b0ee6d36b5f28a168348a833c6e529c6f732a81c0ed18eb3b5b193d30e",
+  "digest": "sha256:5c25c269bdb6094ff0c99f5636a5d75c9fb86a363cb10b79d829c8002375790c",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Alert.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Alert.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:fe5b25b167f0a5faedf1935c801afe08fb973c60c7b6efac69e71483503cfacd",
+  "digest": "sha256:8de629d9f963175d397aa8c225473902f63f4b7fa70704206f868f7ff9f8bde9",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

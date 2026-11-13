@@ -1,8 +1,8 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:5c47f9acf5af7fd368dd1157e4d6cb40304ed45edad43bc148604a4329e5bd43",
-  "entryDigest": "sha256:703353edc886dbcd24ccd68886181f823e1d9967322d631f486cf277bdca17ed",
+  "digest": "sha256:edfaba69b011b46562a05d3c1b04458d5bc68e85ab31098464e2df4bb22d1775",
+  "entryDigest": "sha256:a928208b40f1c5b8cf7c96409a672b505bb7f11aa24b2e20f1426879465078ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/ItemChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ItemChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/ItemChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ItemChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

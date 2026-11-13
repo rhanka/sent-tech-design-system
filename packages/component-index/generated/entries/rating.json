@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Rating.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Rating.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:1858033f7968297c853e435cef6f33e594ddab64978cc63dfbf457458e5475f0",
+  "digest": "sha256:3e922300fb051d22273815af3429962ced6f068aebb2065f6c25b92447679a28",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

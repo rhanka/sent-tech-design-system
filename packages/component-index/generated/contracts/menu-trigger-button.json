@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:90425b9c397c109299f95226018251418dd4a5e991d8118345b151d787d52b48",
-  "entryDigest": "sha256:ddeacce1afeee3a52aa44321ba079c1d970c2135efb4d7500df0b10d03872509",
+  "digest": "sha256:99739553a9371a61f9494f9dc0d816a182b42619d2763b5ec68816e40662741b",
+  "entryDigest": "sha256:58780eaa1653382654b9ca27404d406023511958a1a2013be93123906d61eb18",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -54,7 +54,7 @@
         "declarationPath": "packages/components-angular/dist/MenuTriggerButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -103,7 +103,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
