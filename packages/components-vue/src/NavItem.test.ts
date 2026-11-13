@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { h } from "vue";
-import { NavItem } from "./NavItem.js";
+import NavItem from './NavItem.vue';
 
 // In @vue/test-utils `wrapper.element` IS the rendered root node, so the
 // `.st-navItem` wrapper is the element itself (not a descendant).

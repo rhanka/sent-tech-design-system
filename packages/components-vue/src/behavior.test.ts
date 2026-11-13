@@ -2916,10 +2916,11 @@ describe("Vue behavioral parity — batch 4", () => {
       expect(empty.find(".st-dataTable__empty").text()).toBe("Nothing here");
       const wrapper = mount(DataTable, {
         props: {
-          columns: [{ key: "name", label: "Name", cell: (row: { name: unknown }) => h("strong", {}, String(row.name)) }],
+          columns: [{ key: "name", label: "Name" }],
           rows: [{ id: "a", name: "Alpha" }],
           onRowClick,
         },
+        slots: { cell: ({ row }: { row: { name: unknown } }) => h("strong", {}, String(row.name)) },
       });
       expect(wrapper.find("td strong").text()).toBe("Alpha");
       await wrapper.find(".st-dataTable__row--clickable").trigger("click");

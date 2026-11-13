@@ -4,6 +4,19 @@ This directory is a measurement harness. It does not ship converted product
 components. The reference is commit `213a81f8326cb481508190991d02dc763f123955`,
 `packages/components-vue/src`, and PLAN.md §2.2. Use one component per trial.
 
+The HARD lane extends the original ten trials with separately frozen fixtures
+and goldens. `lib.mjs` discovers module names from fixture filenames. Capture
+explicit unconverted modules with `generate-goldens.mjs <Name> ...`; existing
+goldens cannot be overwritten. Portal/Popper reference their original V0c `.ts`
+public entries and SFCs. The non-component `cellDecoration` uses a reference-only
+host for its original render helper, then checks its pure data resolver and
+`CellDecorationIcon.vue`. G2 pins both the package wrapper and shared compiler
+script. The added generated-ID patterns were fixed before reference capture.
+G5 mounts every frozen fixture, verifies overlay destinations and teardown, and
+requires no browser or interop plugin. `hard-interactions.test.mjs` adds native
+Vapor event, state, provider, keyboard and SVG-namespace witnesses. Results are
+in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
+
 ## Mechanical procedure
 
 1. Read `src/<Name>.ts`, its imported helpers, its two barrel exports, and
@@ -130,9 +143,10 @@ the task's `npm_config_cache`. No added dependency or package build is required.
   example into src, runs all gates, runs eight negative controls, and restores
   Badge.ts/index.ts byte-for-byte in `finally`. Writes `results/selftest.json`.
   Do not interrupt with SIGKILL or run concurrent conversion trials.
-- `node packages/components-vue/bench/generate-goldens.mjs`: explicit reference
-  maintenance only. Requires all ten original `.ts` implementations and no
-  corresponding `.vue`; renders all fixtures before writing any golden.
+- `node packages/components-vue/bench/generate-goldens.mjs <Name> ...`: explicit
+  reference capture only. Requires each requested original `.ts` implementation
+  (including existing V0c public wrappers) and refuses an existing golden;
+  renders all requested fixtures before writing any golden.
   Review source changes before running it. It never runs from the checker.
 
 ## Gate boundaries
@@ -143,7 +157,7 @@ the task's `npm_config_cache`. No added dependency or package build is required.
 | G2 | Same parse/injection/compileScript/transpile pipeline as build-sfc.mjs, both compilers; build-script SHA-256 guards drift | In-memory target compilation, not a package/published consumer build or stable Vue 3.5 test |
 | G3 | Real vue-tsc with a temporary config extending package strict settings, target and transitive imports | Unrelated package components excluded; inherited skipLibCheck remains |
 | G4 | createSSRApp + @vue/server-renderer in isolated Node worker; every fixture compared with frozen JSON | Classic SSR only, no client interaction; not Vapor SSR |
-| G5 | Official development ESM runtime exporting createVaporApp; compiled target must have __vapor; template wrapper supplies slots; flush + unmount | Default fixture only, jsdom has no visual/layout/accessibility engine; no interop plugin |
+| G5 | Official development ESM runtime exporting createVaporApp; compiled target must have __vapor; every fixture mounts through template slots; flush + unmount; overlay destinations and teardown | jsdom has no visual/layout/accessibility engine; no interop plugin |
 | G6 | Compare all original named exports and value/type kinds with frozen manifest, check destination, type-check selected declarations and value/type import probe | No full barrel build or package declaration emission; public Props structure is preserved by recipe, not exhaustively diffed |
 
 The Node `vue` entry on this pin omits createVaporApp. G5 aliases **all** bare

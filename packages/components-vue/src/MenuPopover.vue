@@ -3,10 +3,11 @@ let menuPopoverInstanceCounter = 0;
 </script>
 
 <script setup lang="ts">
-import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
+import type { MenuLabelSlots } from './menu-label-slots.js';
+import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.vue";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
-import { Menu } from "./Menu.js";
-import type { MenuActionItem, MenuItem } from "./Menu.js";
+import Menu from "./Menu.vue";
+import type { MenuActionItem, MenuItem } from "./Menu.vue";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
 // Anchor spacing between panel and trigger.
@@ -65,6 +66,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
   }
   return false;
 }
+
+defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 
 defineOptions({ name: "MenuPopover", inheritAttrs: false });
 const props = defineProps({
@@ -415,7 +418,10 @@ onUnmounted(teardown);
       :aria-label="props.label"
       :submenu-side="props.submenuSide"
       @select="handleMenuSelect"
-    />
+    >
+      <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
+      <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
+    </Menu>
     <slot v-else />
   </div>
 </template>

@@ -3,11 +3,12 @@ let overflowMenuInstanceCounter = 0;
 </script>
 
 <script setup lang="ts">
-import type { OverflowMenuPlacement } from "./OverflowMenu.js";
+import type { MenuLabelSlots } from './menu-label-slots.js';
+import type { OverflowMenuPlacement } from "./OverflowMenu.vue";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { Ellipsis } from "lucide-vue-next";
-import { Menu } from "./Menu.js";
-import type { MenuActionItem, MenuItem } from "./Menu.js";
+import Menu from "./Menu.vue";
+import type { MenuActionItem, MenuItem } from "./Menu.vue";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
 function treeHasCascade(list: MenuItem[]): boolean {
@@ -32,6 +33,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
   }
   return false;
 }
+
+defineSlots<MenuLabelSlots>();
 
 defineOptions({ name: "OverflowMenu", inheritAttrs: false });
 const props = defineProps({
@@ -195,7 +198,10 @@ onUnmounted(() => {
         :aria-label="props.label"
         :submenu-side="props.submenuSide"
         @select="handleMenuSelect"
-      />
+      >
+      <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
+      <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
+    </Menu>
     </div>
   </div>
 </template>

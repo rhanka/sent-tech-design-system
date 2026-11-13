@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "SelectableRow",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/SelectableRow.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-selected=\"false\" class=\"st-selectableRow\" role=\"option\" tabindex=\"0\"><span class=\"st-selectableRow__content\">Row</span></div>"
+    },
+    {
+      "id": "stacked",
+      "html": "<div aria-selected=\"true\" class=\"st-selectableRow st-selectableRow--selected st-selectableRow--accentBar st-selectableRow--hasCaption\" data-value=\"a\" role=\"option\" tabindex=\"0\"><span class=\"st-selectableRow__leading\"><b>L</b></span><span class=\"st-selectableRow__content st-selectableRow__content--stacked\"><span class=\"st-selectableRow__label\">Row</span><span class=\"st-selectableRow__caption\">Caption</span></span><span class=\"st-selectableRow__trailing\"><em>T</em></span></div>"
+    },
+    {
+      "id": "link",
+      "html": "<a class=\"st-selectableRow st-selectableRow--selected consumer\" data-bench=\"row\" href=\"/a\" tabindex=\"0\"><span class=\"st-selectableRow__content\">Link</span></a>"
+    },
+    {
+      "id": "disabled",
+      "html": "<a aria-disabled=\"true\" class=\"st-selectableRow st-selectableRow--selected st-selectableRow--disabled\" tabindex=\"-1\"><span class=\"st-selectableRow__content\">Disabled</span></a>"
+    },
+    {
+      "id": "button",
+      "html": "<div aria-pressed=\"false\" class=\"st-selectableRow\" role=\"button\" tabindex=\"0\"><span class=\"st-selectableRow__content\">Button</span></div>"
+    }
+  ],
+  "sourceSha256": "8fc2062d060208cbf8b39b23e512bb369d5e5c8f8dd59dbeb6d936318b7791ba",
+  "fixtureSha256": "41c48d5dc9a2180de308a867417d2eb43ad81e8f3eaae353931bf42190e4159e",
+  "publicExports": [
+    {
+      "name": "SelectableRow",
+      "typeOnly": false
+    },
+    {
+      "name": "SELECTABLE_LIST_KEY",
+      "typeOnly": false
+    },
+    {
+      "name": "SelectableRowProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SelectableListContext",
+      "typeOnly": true
+    }
+  ]
+}

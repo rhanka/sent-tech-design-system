@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import * as priorityLabels from "./priorityLabels.js";
 import { PriorityMatrix } from "./index.js";
-import type { PriorityMatrixDatum } from "./PriorityMatrix.js";
+import type { PriorityMatrixDatum } from "./PriorityMatrix.vue";
 
 const data: PriorityMatrixDatum[] = [
   { x: 18, y: 82, label: "Auth SSO" },

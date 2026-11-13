@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { h } from "vue";
 import { mount, type VueWrapper } from "@vue/test-utils";
-import { FieldCard } from "./FieldCard.js";
+import FieldCard from "./FieldCard.vue";
 
 const mounted: VueWrapper[] = [];
 function track<T extends VueWrapper>(wrapper: T): T {

@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ContourChart } from "./ContourChart.js";
+import ContourChart from "./ContourChart.vue";
 
 const grid = [
   { x: 0, y: 0, value: 1 },

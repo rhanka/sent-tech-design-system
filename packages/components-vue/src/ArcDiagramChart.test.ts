@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ArcDiagramChart } from "./ArcDiagramChart.js";
+import ArcDiagramChart from "./ArcDiagramChart.vue";
 
 // Diagramme en arcs : nœuds alignés sur un axe, arcs reliant les paires pondérées.
 const deps = [
