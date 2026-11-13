@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "VennChart",
+  "sourceRevision": "d81698108e8123aa822ea7b8e8e5e2e8d270d6d5",
+  "source": "src/lib/VennChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Venn\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"152.4\" cy=\"180\" data-chart-index=\"0\" r=\"108\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category2\" cx=\"267.6\" cy=\"180\" data-chart-index=\"1\" r=\"72\"></circle><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"180\">10</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38.400000000000006\" y=\"180\">A</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"start\" x=\"345.6\" y=\"180\">B</text></svg></div><ul aria-label=\"Data values for Venn\" class=\"st-chartDataList\"><li>A: 40</li><li>B: 30</li><li>A ∩ B: 10</li></ul></div>"
+    },
+    {
+      "id": "three-sets",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Three sets\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"148.8\" cy=\"143.28\" data-chart-index=\"0\" r=\"95.67146646194414\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category2\" cx=\"271.2\" cy=\"143.28\" data-chart-index=\"1\" r=\"108\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category3\" cx=\"210\" cy=\"232.02\" data-chart-index=\"2\" r=\"72\"></circle><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"143.28\">8</text><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"240.6\" y=\"187.65\">6</text><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"172.86\">3</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"61.617436762062724\" y=\"90.97046205723763\">A</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"start\" x=\"368.95419353123003\" y=\"84.62748388126198\">B</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"310.02\">C</text></svg></div><ul aria-label=\"Data values for Three sets\" class=\"st-chartDataList\"><li>A: 20</li><li>B: 18</li><li>C: 15</li><li>A ∩ B: 8</li><li>B ∩ C: 6</li><li>A ∩ B ∩ C: 3</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-vennChart consumer\" data-bench=\"venn\" style=\"color:red;\"><div aria-label=\"Venn\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"188.8\" cy=\"160\" data-chart-index=\"0\" r=\"96\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category2\" cx=\"291.2\" cy=\"160\" data-chart-index=\"1\" r=\"96\"></circle><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"240\" y=\"160\">25</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"86.80000000000001\" y=\"160\">A</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"start\" x=\"393.2\" y=\"160\">B</text></svg></div><ul aria-label=\"Data values for Venn\" class=\"st-chartDataList\"><li>A ∩ B: 25</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Venn\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "cb4ccbe53d1912e1b0cf0c6e5942702c0d705d78d0e7ddd23472b9f12b5d10b5",
+  "fixtureSha256": "91498d57b9426a100517dd5470ff689822605c13b3ddcf40bb57e0ae5263dbdd",
+  "publicExports": [
+    {
+      "name": "VennChart",
+      "typeOnly": false
+    },
+    {
+      "name": "VennChartProps",
+      "typeOnly": true
+    }
+  ]
+}
