@@ -4,6 +4,7 @@ import { tick } from "svelte";
 import * as model from "@sentropic/diagram-canvas/diagramSceneModel";
 import { createLayoutCache,DEFAULT_FLOW_TOKENS } from "@sentropic/diagram-canvas";
 import { flowHitSize,type StepChange } from "@sentropic/diagram-canvas/flowModel";
+import { runFlowHostCase } from "../../../diagram-canvas/dist-host-support/host-support/flowHostContract.js";
 import { flowHostCases } from "../../../diagram-canvas/dist-test-support/flowHostCases.js";
 import { flowFixture,flowMeasure } from "../../../diagram-canvas/dist-test-support/flowFixture.js";
 import DiagramSceneFigure,{type DiagramSceneFigureProps} from "./DiagramSceneFigure.svelte";
@@ -19,63 +20,18 @@ function propsFor(count=3,config:Parameters<typeof flowFixture>[1]={}):DiagramSc
  const f=flowFixture(count,config);return {document:f.document,registry:f.options.registry,bindings:f.options.bindings,presentation:f.presentation,measureLines:flowMeasure};
 }
 describe("DC-2c A12 shared host cases — Svelte",()=>{
+ it("waits for a controlled navigation proposal before announcing or pressing its badge",async()=>{
+  const props=propsFor(),step=vi.fn(),view=render(DiagramSceneFigure,{...props,activeStep:null,onStepChange:step});await tick();
+  const readout=()=>view.container.querySelector('.st-diagramSceneFigure-flowNavigator output[aria-label="Step"]')?.textContent;
+  const live=()=>view.container.querySelector('output.st-diagramSceneFigure-flowDescription')?.textContent;
+  await fireEvent.click([...view.container.querySelectorAll("button")].find((b)=>b.textContent==="Next step")!);await tick();
+  expect(step.mock.calls).toEqual([[{relation:"relation:z",scenario:"",ordinal:0,visible:{kind:"edge",occurrence:"occurrence:r.z"}}]]);
+  expect(readout()).toBe("");expect(view.container.querySelector('[aria-pressed="true"]')).toBeNull();expect(live()).toBe("");
+  await view.rerender({activeStep:"relation:z"});await tick();
+  expect(readout()).toBe("Step 1");expect(view.container.querySelector('[data-flow-badge="occurrence:r.z"]')?.getAttribute("aria-pressed")).toBe("true");expect(live()).toBe("Step 1");expect(step).toHaveBeenCalledTimes(1);
+ });
  for(const test of flowHostCases)it(test.id+": "+test.note,async()=>{
-  const props=propsFor(test.count??3,{self:test.internal,scenarios:test.scenarios,folded:test.folded}),step=vi.fn(),highlight=vi.fn(),select=vi.fn();
-  const view=render(DiagramSceneFigure,{...props,flows:{fanOutMax:test.bundle?1:4},...(test.controlled?{activeStep:test.activeStep??null}:{}),...(test.omitted?{measureLines:(request:Parameters<typeof flowMeasure>[0])=>({...flowMeasure(request),width:request.role==="flow-badge"?50000:flowMeasure(request).width})}:{}),onStepChange:step,onHighlightChange:highlight,onSelect:select});
-  await tick();expect(step).not.toHaveBeenCalled();expect(highlight).not.toHaveBeenCalled();
-  const viewport=view.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
-  const target=(name="viewport"):HTMLElement=>{
-   const [kind,index="0"]=name.split(":");const selector=kind==="badge"?"[data-flow-badge]":kind==="node"?"[data-flow-node]":kind==="edge"?"[data-flow-hit]":kind==="card"?"[data-scene-occurrence] .st-diagramCard":undefined;
-   if(kind==="field"||kind==="editable"){const field=document.createElement(kind==="field"?"input":"div");if(kind==="editable")field.setAttribute("contenteditable","true");viewport.append(field);return field;}
-   if(kind==="toggle")return view.container.querySelector<HTMLElement>("button[aria-expanded]")!;
-   if(selector)return view.container.querySelectorAll<HTMLElement>(selector)[Number(index)]!;
-   if(kind==="next"||kind==="previous")return [...view.container.querySelectorAll<HTMLElement>(".st-diagramSceneFigure-flowNavigator button")].find((e)=>e.textContent?.includes(kind==="next"?"Next":"Previous"))!;
-   return viewport;
-  };
-  for(const event of test.events){
-   const element=target(event.target);expect(element,"missing "+event.target).toBeDefined();
-   if(event.type==="click")await fireEvent.click(element);
-   else if(event.type==="over")await fireEvent.pointerOver(element);
-   else if(event.type==="out")await fireEvent.pointerOut(element,{relatedTarget:viewport});
-   else if(event.type==="focus")element.focus();
-   else if(event.type==="blur")element.blur();
-   else if(event.type==="key")await fireEvent.keyDown(element,{key:event.key,ctrlKey:event.modified??false});
-   else if(event.type==="filter")await fireEvent.change(view.container.querySelector("select")!,{target:{value:"scenario:"+event.value}});
-   else if(event.type==="prop")await view.rerender({activeStep:event.value});
-   else if(event.type==="remove"){
-    const relations=event.value==="all"?{}:{...props.document.relations};if(event.value!=="all")delete relations[event.value!];
-    await view.rerender({document:{...props.document,revision:2,relations}});await tick();await tick();
-   }
-   else if(event.type==="pan"){
-    for(const [type,x]of [["pointerdown",0],["pointermove",20],["pointerup",20]]as const){const pointer=new Event(type,{bubbles:true});Object.defineProperties(pointer,{pointerId:{value:1},pointerType:{value:"touch"},clientX:{value:x},clientY:{value:0}});element.dispatchEvent(pointer);}
-    await fireEvent.click(element,{detail:1});
-   }
-   else if(event.type==="zoom")await fireEvent.wheel(viewport,{ctrlKey:true,deltaY:-100});
-   await tick();
-  }
-  const expected=test.expect;
-  if(expected.selected!==undefined){
-   const selected=expected.selected===null?undefined:expected.selected;
-   if(!test.controlled||test.events.some((e)=>e.type==="prop")){
-    const pressed=[...view.container.querySelectorAll<HTMLElement>('[data-flow-badge][aria-pressed="true"]')];
-    if(selected===undefined)expect(pressed).toHaveLength(0);
-    else if(!test.internal&&!test.omitted&&view.container.querySelector("[data-flow-badge]"))expect(pressed).toHaveLength(1);
-   }
-   if(!test.controlled&&expected.selected!==null)expect((step.mock.calls.at(-1)?.[0] as StepChange)?.relation).toBe(expected.selected);
-  }
-  if(expected.primary)expect(view.container.querySelector(`[data-flow-state="primary"][data-scene-edge="${expected.primary}"],[data-flow-state="primary"][data-scene-occurrence="${expected.primary}"]`)).not.toBeNull();
-  if(expected.noHighlight)expect(view.container.querySelector("[data-flow-active]")).toBeNull();
-  if(expected.stepCalls!==undefined)expect(step).toHaveBeenCalledTimes(expected.stepCalls);
-  if(expected.highlightCalls!==undefined)expect(highlight).toHaveBeenCalledTimes(expected.highlightCalls);
-  if(test.id==="fold-toggle-isolation")expect(select).not.toHaveBeenCalled();
-  if(expected.folded!==undefined)expect(view.container.querySelector("button[aria-expanded]")?.getAttribute("aria-expanded")).toBe(expected.folded?"false":"true");
-  if(expected.tabStop)expect(target(expected.tabStop).getAttribute("tabindex")).toBe("0");
-  if(expected.focus)expect(document.activeElement).toBe(target(expected.focus));
-  if(expected.badges!==undefined)expect(view.container.querySelectorAll("[data-flow-badge]")).toHaveLength(expected.badges);
-  if(expected.live)expect(view.container.querySelector('output[aria-live="polite"].st-diagramSceneFigure-flowDescription')?.textContent).toContain(expected.live);
-  for(const selector of ["[data-flow-badge]","[data-flow-node]"])if(view.container.querySelector(selector))expect(view.container.querySelectorAll(selector+'[tabindex="0"]')).toHaveLength(1);
-  expect(view.container.querySelector("button button")).toBeNull();
-  const zoom=Number(view.container.querySelector("figure")!.getAttribute("data-zoom"));if(view.container.querySelector(".st-diagramSceneFigure-flowNavigator"))expect(Number.parseFloat(viewport.style.getPropertyValue("--st-diagramSceneFigure-flowHit"))).toBe(flowHitSize(zoom,DEFAULT_FLOW_TOKENS));
+  await runFlowHostCase(test,(props)=>render(DiagramSceneFigure,props),tick);
  });
  it("keeps stable descriptions under selection/filter and repairs a removed selected relation once",async()=>{
   const props=propsFor(3,{scenarios:true}),step=vi.fn(),view=render(DiagramSceneFigure,{...props,onStepChange:step});await tick();

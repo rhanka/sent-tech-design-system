@@ -1,69 +1,66 @@
-# DC-2c.1 acceptance evidence
+# DC-2c.1 review corrections and verification
 
-Base: d9a04d2e (the requested origin/main at task start). Local branch:
-feat/dc2c-numbered-flows. No versions were changed. Remote tracking main later
-advanced through the wave-1 release; those version-bump commits were not merged
-into this scoped implementation.
+Branch: feat/dc2c-numbered-flows. Review target: 16ce63cf. Package versions are unchanged.
+Review: scratchpad/diag-lib/REVIEW-dc2c1-astra.md, read from its final verdict.
+The owner's correction request supersedes the earlier Vue deferral in BRANCH.md.
 
-## AC → tests
+## Finding → fix → regression
 
-| AC | Evidence | Result / boundary |
+| Review finding | Correction | Failing-first evidence and regression |
 |---|---|---|
-| A1 | diagram-core/tests/flows.test.ts; flows/refinement-review.test.ts; diagram-canvas/tests/layout/flows.test.ts | Refinement, inherited constraints, frozen presentation adapter boundary, both layout paths, folding and scene projection pass |
-| A2 | diagram-core/tests/flows.test.ts | Every flow diagnostic, valid negatives, idempotence and unchanged conflict document pass |
-| A3 | diagram-core/tests/flows.test.ts; flows/mapping.test.ts | Authored rank, reversed ids, implicit/explicit scenarios, omitted kind, 20 seeded shuffles pass |
-| A4 | diagram-core/tests/flows/mapping.ts and mapping.test.ts | Four hand-written facts tables, diamond branches/join, initial and same-component self steps, loop and multiple starts pass |
-| A5 | diagram-canvas/tests/layout/flow-order.test.ts; flows.test.ts | Four facing/opposite steps, mixed fixed positions, both U-channel signs, shared port slots, input reversal, pairwise route conflicts and self steps pass |
-| A6 | diagram-canvas/tests/layout/flows.test.ts | Cap-4 fan-out, fold reason precedence, original ends, 3/1 direction counts, two arrows, internal targets and cache revisit identity pass |
-| A7 | diagram-canvas/tests/layout/flow-summaries.test.ts; flow-review.test.ts | Both directions, mixed ordinary link, active-key conflicts, fan-out independence and suppressed member/carrier labels pass |
-| A8 | diagram-canvas/tests/layout/flow-badges.test.ts; flows.test.ts | Source-first segment, 999z, two templates, occupancy and within/limit boundaries pass |
-| A9 | diagram-canvas/tests/layout/flows.test.ts | One whole-view obstructed repair, retained members/targets, omitted badges and no mark overlap pass |
-| A10 | diagram-canvas/tests/layout/dc2a/*; layout/cache.test.ts; flows.test.ts; components-svelte DiagramSceneFigure.flows.test.ts | Eight after.json scene digests retained; deterministic bytes and flow geometry cache keys pass; interaction workload adds no cache misses |
-| A11 | diagram-canvas/tests/presentation/flowModel.test.ts; layout/flow-review.test.ts | Precedence, bundle/internal identities, reducer emissions, sets, descriptions, static SVG, target sizes and logical node retargeting pass |
-| A12 | diagram-canvas/test-support/flowHostCases.ts; components-svelte DiagramSceneFigure.flows.test.ts and DiagramSceneFigure.ssr.test.ts | Svelte adapter, controlled state, removal/focus repair, keyboard, native-button contract, touch, descriptions, no nested buttons and origin/main normalized no-flow DOM pass. Vue adapter and cross-host DOM comparison pending #267 integration |
-| A13 | components-svelte DiagramSceneFigure.flows.test.ts and DiagramSceneFigure.test.ts; canvas presentation/flowModel.test.ts | 200 hover/focus/selection/filter/navigation changes: zero layout/scene/cache work, timers or RAF; retained-selection virtual idle and existing DC-2b mounted campaign pass |
-| A14 | tokens/src/flow-tokens.test.ts; Svelte source-discipline and SSR tests; canvas flowModel.test.ts | Frozen numbers, contrast in all shipped modes, no motion/visual literals in flow CSS, focusability and pure/static arrow+badge output pass. Vue SSR and final cross-host literal gate remain pending |
+| P1: required Vue implementation absent | Export Vue DiagramSceneFigure, using the shared scene, reducer, highlighting, camera, frozen card geometry and token styles; add its internal canvas dependency | Vue test initially failed to resolve the missing host. Both hosts now execute 52 shared cases through one runner; 53 cross-host tests compare the complete normalized scene and navigator, including a no-flow scene. Vue SSR renders arrows and badge text without DOM globals. |
+| P2: compatibility layout accepts invalid flow semantics | Run document and flow validation in layoutDocument and diagnoseLabels | Missing/duplicate step tests initially received laid-out instead of refused. Both entry points now reject with flow-step-missing / flow-step-duplicate; the valid compatibility warning remains tested. |
+| P2: controlled navigation announces a proposal | Keep navigation proposals pending; announce the committed cursor after parent acceptance | The live-region assertion initially received Step 1 while readout and pressed target stayed empty. Both hosts now assert the full callback payload, readout, exact pressed badge and announcement together before and after delayed acceptance. |
+| P2: scenario-only filtering dims plain links | Limit filter-only edge dimming to flow edges and bundles, while preserving untouched-box dimming | The mixed plain-link/two-scenario test initially included occurrence:plain in dimmed. Exact primary, related and dimmed sets now exclude it. |
+| P2: acceptance assertions too weak | Require feasible badge placement, assert impossible omission, check every shared case's exact callback payload and selected target, add controlled scenario spies and full filter-leave sets | A temporary always-undefined placement mutation fails the new feasible-boundary assertion; restoring the implementation passes. Controlled scenario tests also exposed and fixed Svelte's stale native select value during rejected/accepted proposals. |
 
-Paths in this table are relative to packages/ unless otherwise qualified. The
-unpublished support table contains 47 shared cases, each with written expectations.
-Node/jsdom supplies a native button's click when checking Enter/Space contracts;
-no browser keyboard default-action behavior or rendered appearance is claimed.
+Additional review coverage: U-channel slot/request sequences, pairwise conflict
+checks with the measured path's outside lanes, reversed input; four external
+routes across fold/unfold, original ends and a cross-child internal step; omitted
+singleton/count badges, retained members and recentered carrier docks; exact
+highlight sets for own-edge, bundle-only, bundle-member, internal, node, filter
+and empty states. The no-flow DC-2a fixtures and Svelte pre-flow DOM snapshot pass.
 
-## Commands and results
+## Package suites
 
-- `npm test --workspace packages/diagram-core`: 44 files, 556 passed.
-- `npm test --workspace packages/diagram-canvas`: 45 files, 481 passed / 1 skipped;
-  the subsequently added four-facing/opposite-direction regression also passes
-  (flow-order.test.ts now has 5 passing tests; 482 distinct passing canvas tests).
-- Final targeted Svelte: 4 files, 301 passed, including 51 flow host tests and
-  all 47 shared cases. The 200-change workload includes scenario changes.
-- Token package Vitest: 3 files, 20 passed, including all shipped theme modes.
-- Core and canvas package tsc checks pass; tokens tsc check passes.
-- Both Svelte checks pass: 0 errors (main check reports 26 warnings in other
-  component files; parity check reports 0 warnings).
-- Core, canvas (including unpublished support), tokens, themes, DSFR, Svelte,
-  graph, rich-text, dataviz-core and declaration prerequisites build successfully.
-- Standalone Svelte reference: compile and svelte-check, 0 errors / 0 warnings.
-- Component-index generate/check: 430 artifacts fresh. Generated ForceGraph
-  changes only reorder two equivalent enum arrays as a compiler consequence.
-- Notices generation and licensing: pass for all 22 publishable packages.
-- `git diff --check`: pass. All five affected package versions match the base.
+All commands use the owner-specified npm_config_cache and package scope.
 
-Reproduction for the targeted host run:
+| Workspace | Files | Passed | Skipped |
+|---|---:|---:|---:|
+| diagram-core | 44 | 556 | 0 |
+| diagram-canvas | 45 | 486 | 1 |
+| components-svelte | 138 | 2149 | 0 |
+| components-vue | 104 | 1642 | 0 |
+| tokens | 3 | 20 | 0 |
+| themes | 1 | 7 | 0 |
+| component-index | 15 | 136 | 0 |
 
-```sh
-cd packages/components-svelte
-npx vitest run src/lib/DiagramSceneFigure.flows.test.ts src/lib/DiagramSceneFigure.ssr.test.ts src/lib/DiagramSceneFigure.test.ts src/lib/diagram-card-parity/diagram-card-parity.test.ts
-```
+Command pattern: npm test --workspace packages/<workspace> -- --maxWorkers=2.
+Final scoped reruns also cover strengthened flow-order/highlight assertions and
+the restored badge-placement implementation. Both host workload tests execute
+200 hover/focus/selection/filter/navigation changes with no layout, scene
+resolution, cache layout/miss, timer or RAF work, then check retained-selection
+idle behavior.
 
-No browser, root npm test, Python, stash, version bump or push was used. npm ci
-ran once with the owner-specified cache. Rendered appearance is not covered.
+## Build and packaging gates
 
-## Remaining work
+- Core, canvas, tokens, Vue and component-index type checks pass. Canvas source
+  still compiles without DOM or Node types; its DOM test runner has a separate,
+  unpublished build output.
+- Both Svelte checks pass: zero errors; 26 warnings in other components in the
+  main check and zero warnings in the parity check.
+- Core, canvas (including both unpublished support outputs), tokens, themes,
+  Svelte, Vue and component-index builds pass. Existing sibling declaration
+  builds supply the other framework inputs to the index generator.
+- Component-index generate/check passes for 430 artifacts. Vue's scene entry
+  and declaration-derived props/callbacks now appear in the generated contract.
+  Small unrelated declaration digest changes are emitted by the required build.
+- Third-party notices generation and licensing pass for all 22 publishable
+  packages, including license files in tarballs.
+- git diff --check passes. Test support remains outside published dist and has
+  no package export. No third-party dependency or package version was added.
 
-Vue: integrate after #267, bind the shared model and same case table, compare
-normalized DOM, and run Vue SSR/controlled-state/focus/budget/token gates.
-DC-2c.2: data ownership/state matrix, detail/fold overrides, finite opt-in dash
-pulses and cancellation/completion behavior. See DC2C_NUMBERED_FLOWS.md for the
-bounded handoffs and DC2C_REVIEW.md for the two design-verification rounds and
-Astra3 resolution. Harness h2a consensus review remains unavailable in this session.
+Rendered appearance is not covered: no browser was launched. No root test,
+Track command, Python, stash, push, tag or publication was used. DC-2c.2 remains
+outside this branch. The supplied independent review was addressed; no new h2a
+consensus review is claimed.

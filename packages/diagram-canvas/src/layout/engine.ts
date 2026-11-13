@@ -985,7 +985,7 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
   // fixed-footprint measurement path. Without it the pinned compatibility
   // path below runs untouched, byte-identical (§4.8).
   if (options.presentation !== undefined) return layoutMeasured(document, options);
-  const diagnostics = validateDocument(document, { registry: options.registry });
+  const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",
@@ -1080,7 +1080,7 @@ export function diagnoseLabels(
     };
   }
   if (options.presentation !== undefined) return diagnoseMeasuredLabels(document, options);
-  const diagnostics = validateDocument(document, { registry: options.registry });
+  const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",

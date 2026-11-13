@@ -703,3 +703,5 @@ export { PanelStack, PANEL_STACK_MAX_SECTIONS } from "./PanelStack.js";
 export type { PanelStackShape, PanelStackProps } from "./PanelStack.js";
 export { PanelSection } from "./PanelSection.js";
 export type { PanelSectionProps } from "./PanelSection.js";
+export { DiagramSceneFigure } from "./DiagramSceneFigure.js";
+export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "./DiagramSceneFigure.js";
