@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "RenkoChart",
+  "sourceRevision": "c1c530ab448848c0a22a7d7a7e98473a4aee02f6",
+  "source": "src/lib/RenkoChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-renkoChart\"><div class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "box-size-label",
+      "html": "<div class=\"st-renkoChart\"><div aria-label=\"Renko bricks\" class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-renkoChart consumer\" data-bench=\"renko\" style=\"color:red;\"><div class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"462\" y1=\"204\" y2=\"204\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"204\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"204\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"462\" y1=\"204\" y2=\"204\"></line></svg></div></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-renkoChart\"><div class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-renkoChart\"><div class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-renkoChart\"><div class=\"st-renkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-renkoChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-renkoChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-renkoChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "a731c36ac41c3b9d5061d7f247f4992df64cd87c29332e00de08ad7b13e48d09",
+  "fixtureSha256": "bdd3e23e86129a2d190146a2772b5518fdbad495fc658b0edb312b8921918700",
+  "publicExports": [
+    {
+      "name": "RenkoChart",
+      "typeOnly": false
+    },
+    {
+      "name": "RenkoChartProps",
+      "typeOnly": true
+    }
+  ]
+}
