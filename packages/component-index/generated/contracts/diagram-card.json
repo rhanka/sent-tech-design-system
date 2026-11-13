@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:9a53f854ac12eb3419aa5b1bb65dadfbcfdebeee5f8b62f6f77f59a3486b1805",
+  "digest": "sha256:f3bc754b2580a99be920ca67f730487d68058d35c289a8e430235a28a795db20",
   "entryDigest": "sha256:668bad59882f5ce8a1844b4507df4309838dc6dd8536478ffb4c439d3373dc7b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -444,7 +444,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:21a22132e4b7b60c50393be45f460f101ebf4b569829f1e6f0b3faa07428d239",
+        "declarationDigest": "sha256:945607e5b4dc7970aaf3223b0b34ad1fbec067a7dd0070a7d399505e7c82c4d5",
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",

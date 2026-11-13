@@ -77,3 +77,63 @@ generic declarations, the VNode classification and semantic mappings. Existing
 menu SFCs depend on legacy children/Lucide; being an SFC does not make them
 native. V1–V9 remain subject to V0b/V0c and the plan's manifest/reference gates.
 No full fan-out clearance is inferred from this foundation alone.
+
+## V0c results on 3.6.0-rc.15
+
+All witnesses use `createVaporApp` without the interop plugin. The custom
+element uses the dedicated `defineVaporCustomElement` factory.
+
+| API | Result | Evidence and limit |
+| --- | --- | --- |
+| Teleport: Portal | Works | Public SFC: HTMLElement target, default slot, move inline via `disabled`, teardown |
+| Teleport: Popper | Works | Public SFC: body target, anchor geometry, reactive close, arrow, slot and cleanup |
+| Teleport: Dropdown shape | Works | Native test SFC: conditional listbox, disabled option, select exactly once, close |
+| Production Dropdown | Blocked for native Vapor | Existing `h()` implementation, `unknown` labels that can be VNodes, and `lucide-vue-next`. Left unchanged to preserve its public contract; V0b/V6/V9 own the mapping and conversion. This is not a covered component. |
+| Custom element | Works | Published Vapor GraphLegend, initial properties, observed attribute update and unmount callback |
+| Server rendering | Works with SSR compilation | Pinned compiler `templateOptions.ssr`, `__vapor` marker, `renderToString(createVaporApp(...))`, escaped output. The published Vapor output is a client build; this does not establish a packaged SSR entry or hydration. |
+| `getCurrentInstance` replacement | Works | Legacy API returns null; `useId` yields unique labelled-input ids, provide/inject shares reactive state, events and exposed methods update both children |
+| Diagram runtime | Works | Existing three tests execute card, zone, icon, legend, ForceGraph, GraphCanvas, scene and BPMN outputs, callbacks, exposed refs and teardown |
+
+Portal and Popper were converted for the real-component Teleport tests. Their
+props, slots, callback/event behavior and geometry exports remain available.
+The classic suite and generated Popper/Portal semantic contract bodies remain
+equal to the baseline. Popper keeps a typed TS compatibility export so the
+current extractor can still see its events.
+
+The context fixture also exercises a generic SFC, imported props, default and
+named/scoped slots, events and `defineExpose`. A separate infrastructure test
+compiles a future dataviz SFC in both modes, emits its declarations and compiles
+it on 3.5. These are compiler/runtime witnesses; V0b still owns the complete
+contract-equality gate, including slots and generics.
+
+Final source indicator:
+
+```text
+components-vue  Vapor-ready   16 /  232  (  6 %)   still h(): 216
+dataviz-vue     Vapor-ready    0 /  115  (  0 %)   still h(): 115
+TOTAL           Vapor-ready   16 /  347  (  4 %)   still h(): 331
+```
+
+## Validation and remaining risks
+
+- Vue classic: 110 files, 1,872 tests. Vapor API/diagram: 2 files, 8 tests.
+- Dataviz Vue: 37 files, 160 tests. Component-index: 15 files, 139 tests.
+- Packed consumers: strict declarations, graph checks and 2 runtime tests per
+  leg; classic also repeats on the stable compiler output. Classic graph:
+  2,419 modules. Vapor graph: 380 modules. A deliberately injected Vapor import
+  fails the classic graph gate; the native graph also rejects DS VDOM modules.
+- K25, compiler/plugin pins, both type checks, stable compilation, licensing
+  and notices pass. The required component-index repository guard is also run
+  after regenerating the declaration/source digests.
+
+V0b must address constructor/re-export visibility, slots and generic contract
+completeness, and the VNode semantic mapping. The existing extractor serializes
+TypeScript internal branded-symbol ids, so declaration graph changes can
+renumber those keys in the generated scene contract. The regeneration here
+retains that existing behavior; no extractor redesign is included.
+
+V1–V9 remain gated: 331 legacy modules remain, the menu SFCs have legacy
+dependencies, Dropdown needs its contract mapping, and Lucide removal is V9.
+The RC can still change before stable. This lot proves jsdom/runtime behavior;
+browser/print acceptance, package-wide SSR/hydration and the §2.9 coverage
+manifest are not claimed. Zero native-Vapor exceptions remains the target.
