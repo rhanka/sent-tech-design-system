@@ -235,11 +235,11 @@ export type { ExportMenuProps } from './lib/ExportMenu.js';
 export { DateRangeFilter, dateRangeToSpec } from './lib/DateRangeFilter.js';
 export type { DateRangeFilterProps } from './lib/DateRangeFilter.js';
 export {
-  RelativeDateFilter,
+  default as RelativeDateFilter,
   relativeRangeToSpec,
   DEFAULT_RELATIVE_PRESETS,
-} from './lib/RelativeDateFilter.js';
-export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
+} from './lib/RelativeDateFilter.vue';
+export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.vue';
 export { default as RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.vue';
 export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.vue';
 export { ChartExport } from './lib/ChartExport.js';
