@@ -680,14 +680,14 @@ export type {
   WizardProps,
   WizardStep,
 } from "./Wizard.js";
-export { TimeRangePicker } from "./TimeRangePicker.js";
+export { default as TimeRangePicker } from "./TimeRangePicker.vue";
 export type {
   TimeRangePickerProps,
   TimeRangePickerSize,
   TimeRangePickerPlacement,
   TimeRangePickerAlign,
   TimeRangePickerTimeFormat,
-} from "./TimeRangePicker.js";
+} from "./TimeRangePicker.vue";
 export {
   DEFAULT_TIME_RANGE_PRESETS,
   parsePresetMs,
