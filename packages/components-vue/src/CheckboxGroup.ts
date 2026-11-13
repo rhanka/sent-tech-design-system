@@ -1,7 +1,7 @@
 import { defineComponent, h } from "vue";
 import type { PropType } from "vue";
 import { classNames } from "./classNames.js";
-import { Checkbox } from "./Checkbox.js";
+import Checkbox from "./Checkbox.vue";
 
 export interface CheckboxGroupOption {
   label: string;
