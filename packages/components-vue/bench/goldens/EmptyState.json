@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "EmptyState",
+  "sourceRevision": "57a6d522b8940b59d7cbe0435b904145117356d5",
+  "source": "src/EmptyState.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">No results</h2><p class=\"st-empty-state__message st-emptyState__message\">Try another search.</p></div></section>"
+    },
+    {
+      "id": "with-action",
+      "html": "<section class=\"st-empty-state st-emptyState consumer\" data-bench=\"empty\" style=\"color:red;\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Empty</h2><p class=\"st-empty-state__message st-emptyState__message\">Nothing here.</p><div class=\"st-empty-state__action\">Clear filters</div></div></section>"
+    },
+    {
+      "id": "title-only",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Just a title</h2></div></section>"
+    },
+    {
+      "id": "action-only",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Title</h2><div class=\"st-empty-state__action\">Retry</div></div></section>"
+    },
+    {
+      "id": "with-slot",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Slot title</h2><p class=\"st-empty-state__message st-emptyState__message\">Slot message</p><strong>Slot</strong> detail</div></section>"
+    },
+    {
+      "id": "bare-slot",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Bare</h2>Slot body</div></section>"
+    }
+  ],
+  "sourceSha256": "e18f6c6db289b8551085a08d5e63f28bb4785171eee93577c2d298233cdb2755",
+  "fixtureSha256": "bab002eabb83585ed025f4bae23e757c509b4696f796ff5006ec09c189288349",
+  "publicExports": [
+    {
+      "name": "EmptyState",
+      "typeOnly": false
+    },
+    {
+      "name": "EmptyStateProps",
+      "typeOnly": true
+    }
+  ]
+}
