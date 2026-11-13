@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "RibbonChart",
+  "sourceRevision": "c1c530ab448848c0a22a7d7a7e98473a4aee02f6",
+  "source": "src/lib/RibbonChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-ribbonChart\"><div class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M133.33,142.00 C169.60,142.00 187.73,79.00 224.00,79.00 L224.00,268.00 C187.73,268.00 169.60,268.00 133.33,268.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"97.33333333333333\" y=\"284\">A</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-0-North\" height=\"126\" rx=\"2\" width=\"72\" x=\"61.33333333333333\" y=\"142\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"260\" y=\"284\">B</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-North\" height=\"189\" rx=\"2\" width=\"72\" x=\"224\" y=\"79\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"422.66666666666663\" y=\"284\">D</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"2-0-South\" height=\"252\" rx=\"2\" width=\"72\" x=\"386.66666666666663\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de ribbon\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>North</li><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category2\"></span>South</li></ul><ul aria-label=\"Data values for ribbon\" class=\"st-chartDataList\"><li>North: A = 10, B = 15, D = 0</li><li>South: A = 0, B = 0, D = 20</li></ul></div>"
+    },
+    {
+      "id": "size-label",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Ribbons\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 14 300\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M16.25,142.00 C16.32,142.00 16.35,79.00 16.42,79.00 L16.42,268.00 C16.35,268.00 16.32,268.00 16.25,268.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"16.166666666666668\" y=\"284\">A</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-0-North\" height=\"126\" rx=\"2\" width=\"0.16666666666666666\" x=\"16.083333333333332\" y=\"142\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"16.5\" y=\"284\">B</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-North\" height=\"189\" rx=\"2\" width=\"0.16666666666666666\" x=\"16.416666666666664\" y=\"79\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"16.833333333333332\" y=\"284\">D</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"2-0-South\" height=\"252\" rx=\"2\" width=\"0.16666666666666666\" x=\"16.75\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de Ribbons\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>North</li><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category2\"></span>South</li></ul><ul aria-label=\"Data values for Ribbons\" class=\"st-chartDataList\"><li>North: A = 10, B = 15, D = 0</li><li>South: A = 0, B = 0, D = 20</li></ul></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-ribbonChart consumer\" data-bench=\"ribbon\" style=\"color:red;\"><div class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M126.67,112.00 C157.60,112.00 173.07,64.00 204.00,64.00 L204.00,208.00 C173.07,208.00 157.60,208.00 126.67,208.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"90.66666666666667\" y=\"224\">A</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-0-North\" height=\"96\" rx=\"2\" width=\"72\" x=\"54.66666666666667\" y=\"112\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"240\" y=\"224\">B</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-North\" height=\"144\" rx=\"2\" width=\"72\" x=\"204\" y=\"64\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"389.33333333333337\" y=\"224\">D</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"2-0-South\" height=\"192\" rx=\"2\" width=\"72\" x=\"353.33333333333337\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de ribbon\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>North</li><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category2\"></span>South</li></ul><ul aria-label=\"Data values for ribbon\" class=\"st-chartDataList\"><li>North: A = 10, B = 15, D = 0</li><li>South: A = 0, B = 0, D = 20</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-ribbonChart\"><div class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M174.00,100.00 C242.80,100.00 277.20,16.00 346.00,16.00 L346.00,268.00 C277.20,268.00 242.80,268.00 174.00,268.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"138\" y=\"284\">A</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-0-North\" height=\"168\" rx=\"2\" width=\"72\" x=\"102\" y=\"100\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"382\" y=\"284\">B</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-North\" height=\"252\" rx=\"2\" width=\"72\" x=\"346\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de ribbon\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>North</li></ul><ul aria-label=\"Data values for ribbon\" class=\"st-chartDataList\"><li>North: A = 10, B = 15</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-ribbonChart\"><div class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-ribbonChart\"><div class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "54846d1b46972a72110cd9ed1e74efcd0342b08c6ae742f0bf6f11ca8bc09099",
+  "fixtureSha256": "cf739a466b42e601c27502cf993a314b71d979b26e61da8c22693465ffba4868",
+  "publicExports": [
+    {
+      "name": "RibbonChart",
+      "typeOnly": false
+    },
+    {
+      "name": "RibbonChartProps",
+      "typeOnly": true
+    }
+  ]
+}
