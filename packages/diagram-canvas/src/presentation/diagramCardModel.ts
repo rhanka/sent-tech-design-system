@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from '../layout/spacing.generated.js';
 import { getDiagramGlyph } from "./registry.js";
 /**
  * DiagramCard shared model — geometry, projection and line layout (DC-1).
@@ -584,18 +585,7 @@ export function defaultCardMeasure(
     }
     return sum + 2;
   };
-  const lines: string[] = [];
-  let tooWide = false;
-  for (const word of String(text).split(/\s+/).filter(Boolean)) {
-    const candidate = lines.length === 0 ? word : `${lines[lines.length - 1]} ${word}`;
-    if (lines.length > 0 && measureString(candidate) <= availableWidth) {
-      lines[lines.length - 1] = candidate;
-    } else {
-      if (measureString(word) > availableWidth) tooWide = true;
-      lines.push(word);
-    }
-  }
-  return { lines, tooWide, lineWidths: lines.map(measureString) };
+  return createCardMeasure(measureString, DEFAULT_CARD_MEASURER_VERSION, true)(text, role, availableWidth, Number.MAX_SAFE_INTEGER);
 }
 
 /**
@@ -783,9 +773,10 @@ export interface CardLayout {
  */
 export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
   const icon = props.icon ?? "base";
-  const missing = props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
+  const suppressed = icon === "none";
+  const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
-    iconGlyph: props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
+    iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
   let g = { ...CARD_GEOMETRY, height: props.height ?? CARD_GEOMETRY.height };
   const diagnostics: CardDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
   const align = props.align ?? "left";
@@ -794,7 +785,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   const contentRight = g.width - g.borderWidth - g.padding;
   // The icon slot collapses when the glyph is missing (DIF-14): the header
   // text then starts at the content inset and no space is reserved.
-  const hasIcon = props.icon !== undefined && props.iconGlyph !== undefined;
+  const hasIcon = !suppressed && props.icon !== undefined && props.iconGlyph !== undefined;
   const headerTextX = hasIcon ? g.headerInset + g.iconSize + g.iconTextGap : g.headerInset;
   const toggle = props.toggle !== undefined;
   // Toggle present: the header text keeps the owner-pinned folded width
@@ -844,7 +835,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     }
   };
 
-  if (props.icon !== undefined && props.iconGlyph === undefined) {
+  if (missing) {
     diagnostics.push({
       code: "card-icon-unknown",
       slot: "icon",
@@ -1097,9 +1088,9 @@ export const ZONE_GEOMETRY = {
   /** Rendered title → subtitle gap: alias of the card `gap` (§6.4). */
   subtitleGap: CARD_GEOMETRY.gap,
   headerRuleGap: 4,
-  contentInsetTop: 16,
-  contentInsetBottom: 16,
-  contentInsetInline: 16,
+  contentInsetTop: spacing.containerPadding,
+  contentInsetBottom: spacing.containerPadding,
+  contentInsetInline: spacing.containerPadding,
   ruleHeight: CARD_GEOMETRY.ruleHeight,
   ruleMargin: CARD_GEOMETRY.ruleMargin,
   ruleInsetStart: CARD_GEOMETRY.ruleInsetStart,
@@ -1140,6 +1131,7 @@ export interface DiagramZoneToggle {
 }
 
 export interface DiagramZoneProps {
+  readonly containerPadding?: number;
   readonly autoSize?: boolean;
   readonly entityId: string;
   readonly kicker?: string;
@@ -1282,13 +1274,24 @@ export function layoutZone(
   children: readonly ZoneChildSpec[] = [],
 ): ZoneLayout {
   const icon = props.icon ?? "cluster";
-  const missing = props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
+  const suppressed = icon === "none";
+  const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
-    iconGlyph: props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = ZONE_GEOMETRY;
+    iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
+  const g = { ...ZONE_GEOMETRY, ...(props.containerPadding === undefined ? {} : { contentInsetTop: props.containerPadding, contentInsetBottom: props.containerPadding, contentInsetInline: props.containerPadding }) };
   const x = props.x ?? 0;
   const y = props.y ?? 0;
   const diagnostics: ZoneDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
+
+  if (missing) {
+    diagnostics.push({
+      code: "zone-icon-unknown",
+      slot: "icon",
+      entityId: props.entityId,
+      neededPx: 1,
+      allocatedPx: 0,
+    });
+  }
 
   if (props.collapsed) {
     const card = layoutCard(zoneCollapsedCardProps(props), measure);
@@ -1314,7 +1317,7 @@ export function layoutZone(
   // Expanded frame.
   const width = props.width ?? g.collapsedWidth;
   const contentRight = x + width - g.contentInsetInline;
-  const hasIcon = props.icon !== undefined && props.iconGlyph !== undefined;
+  const hasIcon = !suppressed && props.icon !== undefined && props.iconGlyph !== undefined;
   const headerTextX = hasIcon ? x + g.headerInset + g.iconSize + g.iconTextGap : x + g.headerInset;
   // Kit header rule: with the icon and the toggle room both present,
   // kicker/title wrap at `width − 178` (314 px at the PEOPLE width 492).
@@ -1364,15 +1367,7 @@ export function layoutZone(
     }
   };
 
-  if (props.icon !== undefined && props.iconGlyph === undefined) {
-    diagnostics.push({
-      code: "zone-icon-unknown",
-      slot: "icon",
-      entityId: props.entityId,
-      neededPx: 1,
-      allocatedPx: 0,
-    });
-  }
+
 
   // The kit stacks the 24 px subtitle at the raw 24 × 1.3 = 31.2 (not the
   // floored 1/64 grid) and ends its block 8 px under the last baseline.
@@ -1590,6 +1585,7 @@ export type ZoneResolveResult =
   | { readonly kind: "label" };
 
 export interface ProjectZoneOptions {
+  readonly containerPadding?: number;
   readonly entityId: string;
   readonly collapsed: boolean;
   readonly toggleLabel?: string;
@@ -1623,6 +1619,7 @@ export function projectZoneProps(
     kind: "zone",
     props: {
       entityId: opts.entityId,
+      ...(opts.containerPadding === undefined ? {} : { containerPadding: opts.containerPadding }),
       ...(presentation.text.kicker === undefined || presentation.text.kicker === ""
         ? {}
         : { kicker: presentation.text.kicker }),

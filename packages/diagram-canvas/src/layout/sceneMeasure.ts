@@ -8,7 +8,7 @@ import { DEFAULT_ALLOCATED_LINES, type HeaderMeasurement, type LineMeasurer, typ
 
 export function measureSceneBox(
   presentation: EntityPresentation | undefined, occurrence: OccurrenceRef,
-  width: number, collapsed: boolean, measure: LineMeasurer,
+  width: number, collapsed: boolean, measure: LineMeasurer, containerPadding?: number,
 ) {
   const zone = presentation?.form === "container" || presentation?.form === "legend";
   const measured = new Map<string, LineLayout>();
@@ -29,7 +29,7 @@ export function measureSceneBox(
   // Reserving an icon even when a host cannot resolve it is conservative.
   const resolveGlyph = () => ({ face: "" });
   const projected = zone
-    ? projectZoneProps(presentation, { entityId: occurrence, collapsed, width, toggleLabel: "toggle", resolveGlyph })
+    ? projectZoneProps(presentation, { entityId: occurrence, collapsed, width, ...(containerPadding === undefined ? {} : { containerPadding }), toggleLabel: "toggle", resolveGlyph })
     : projectCardProps(presentation, { entityId: occurrence, resolveGlyph });
   const props = projected.kind === "label" ? { entityId: occurrence, title: presentation?.text.title ?? "", body: [] } : projected.props;
   const layout = projected.kind === "zone"
@@ -42,7 +42,7 @@ export function measureSceneBox(
   const title = at(presentation?.text.title ?? "", "title", textWidth);
   const subtitle = header === undefined || presentation?.text.subtitle === undefined ? undefined
     : at(presentation.text.subtitle, "subtitle", header.subtitleWidth);
-  const blockHeight = Math.max(projected.kind === "label" ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
+  const blockHeight = Math.max(projected.kind === "label" || presentation?.icon === "none" ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
   const height = header === undefined ? blockHeight : blockHeight + ZONE_GEOMETRY.headerRuleGap
     + (subtitle === undefined || subtitle.lines.length === 0 ? 0 : ZONE_GEOMETRY.subtitleGap + subtitle.height);
   const measuredHeader: HeaderMeasurement = {
@@ -55,7 +55,7 @@ export function measureSceneBox(
     : header.footer.length * lineBoxHeight(CARD_GEOMETRY.footer.size)
       + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset;
   return { width: layout.box.width, height: layout.box.height, header: measuredHeader,
-    bodyWidth: card?.bodyWidth ?? width - 32,
-    footerWidth: card === undefined ? width - 32 : collapsed ? 434 : card.bodyWidth,
+    bodyWidth: card?.bodyWidth ?? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline),
+    footerWidth: card === undefined ? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline) : collapsed ? 434 : card.bodyWidth,
     footerReserve, diagnostics: layout.diagnostics };
 }

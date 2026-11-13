@@ -144,7 +144,8 @@ describe("item 8 — cardLineMeasurer through diagram-render, empty input clampe
     expect(line.overflow).toBe(false);
     const wide = measurer({ text: "W".repeat(50), role: "title", availableWidth: 434, allocatedLines: 2, folded: false });
     expect(wide.overflow).toBe(true);
-    expect(wide.width).toBeGreaterThan(434);
+    expect(wide.width).toBeLessThanOrEqual(434);
+    expect(wide.lines.join("")).toBe("W".repeat(50));
   });
 });
 

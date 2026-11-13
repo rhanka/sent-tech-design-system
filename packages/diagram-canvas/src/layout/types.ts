@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * The layout engine's contract: what it takes, what it returns, and the few
  * numbers it is tuned by. No diagram model is declared here. The input is a
@@ -121,8 +122,8 @@ export const DEFAULT_ROW_PACK: ResolvedRowPack = {
 };
 
 /** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
-export const DEFAULT_ROW_GAP = 96;
-export const DEFAULT_ROW_GAP_MAX = 240;
+export const DEFAULT_ROW_GAP = spacing.gapMin;
+export const DEFAULT_ROW_GAP_MAX = spacing.gapMax;
 
 /** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
 export type LevelOrientation = "rows" | "columns";
@@ -162,7 +163,7 @@ export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
   nodePaddingY: 8,
   nodeMinWidth: 64,
   nodeMinHeight: 32,
-  containerPadding: 16,
+  containerPadding: spacing.containerPadding,
   titlePaddingY: 6,
   rankGap: 56,
   nodeGap: 24,

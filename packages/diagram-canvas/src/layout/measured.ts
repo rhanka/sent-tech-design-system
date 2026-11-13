@@ -70,17 +70,14 @@ import { measureSceneBox } from "./sceneMeasure.js";
 import { ZONE_GEOMETRY } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
-  CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   FIXED_CARD_HEIGHT,
   FIXED_CARD_WIDTH,
   headerAvailableWidth,
   headerOverflows,
   innerWidthOf,
-  LAST_CHILD_TO_BOTTOM_GAP,
   LEGEND_KEY_HEIGHT,
   measureHeader,
-  RULE_TO_FIRST_CHILD_GAP,
   SWATCH_ALLOCATION,
   TOGGLE_ALLOCATION,
   UNWRAPPED_PROBE_WIDTH,
@@ -304,7 +301,7 @@ export function layoutMeasured(
       const kind = kinds.get(projected.entityOccurrences[id]?.entity!);
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
       box = measureSceneBox(expanded && entry?.form === "card" ? { ...entry, form: "container" } : entry,
-        id, width, collapsed, measure);
+        id, width, collapsed, measure, metrics.containerPadding);
       sceneBoxCache.set(key, box);
     }
     return box;
@@ -322,13 +319,14 @@ export function layoutMeasured(
   const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
-  const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? 14 };
+  const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? channelMetrics({}, true).trackSpacing };
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
   const globalStretch = hints.stretch ?? false;
   // DC-2a row-pack (SPEC_EVOL_DC2A §3–§4, AC-1): every measured view is
   // packed; `options.rowPack` only tunes the objective.
   const rowPack = resolveRowPack(options.rowPack);
+  const contentInset = metrics.containerPadding;
   const rowGaps = resolveRowGaps(hints, metrics);
   {
     const refusals: LayoutRefusal[] = [...validateRowPack(rowPack)];
@@ -706,8 +704,8 @@ export function layoutMeasured(
     const first = pair[0]!;
     edgeBundles[first.occurrence] = { members: pair.map(edge => edge.occurrence),
       label: `${pair.length} liaisons`,
-      relations: pair.map(edge => edgeLabelOf(document, edge.relation) ?? edge.relation),
-      title: pair.map(edge => edgeLabelOf(document, edge.relation) ?? edge.relation).join("\n") };
+      relations: pair.map(edge => edgeLabelOf(document, edge.relation)).filter((label): label is string => label !== undefined),
+      title: pair.map(edge => edgeLabelOf(document, edge.relation)).filter((label): label is string => label !== undefined).join("\n") };
     pair.slice(1).forEach(edge => bundled.add(edge.occurrence));
   }
   for (let index = drawnEdges.length - 1; index >= 0; index -= 1) {
@@ -735,14 +733,15 @@ export function layoutMeasured(
     const label = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const bundle = edgeBundles[edge.occurrence];
-    const layout = bundle?.relations === undefined ? measure({
+    const chip = bundle?.relations === undefined ? undefined : measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth, bundle.members.length);
+    const layout = chip === undefined ? measure({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_WIDTH,
       allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
       folded: false,
-    }) : measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth).layout;
-    if (bundle?.relations !== undefined) bundle.chip = measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth);
+    }) : chip.layout;
+    if (bundle !== undefined && chip !== undefined) bundle.chip = chip;
     const occurrenceId = edge.occurrence as unknown as RelationRef;
     edgeLayouts.set(occurrenceId, layout);
     labelSizes.set(occurrenceId, { width: layout.width, height: layout.height });
@@ -861,7 +860,7 @@ export function layoutMeasured(
       };
       const entry = presentation.entities[representativeOf(id)];
       const header = entry === undefined ? measureHeader(input, measure)
-        : sceneBoxAt(representativeOf(id), inner + 2 * CONTENT_INSET, input.folded).header;
+        : sceneBoxAt(representativeOf(id), inner + 2 * ZONE_GEOMETRY.headerInset, input.folded).header;
       headers.set(id, header);
       headerInputs.set(id, input);
       headerWidths.set(id, inner);
@@ -961,7 +960,7 @@ export function layoutMeasured(
         return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
-      const hasIcon = true;
+      const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
       const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
       const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
       const floor = Math.max(FIXED_CARD_WIDTH, headerDriven);
@@ -971,7 +970,7 @@ export function layoutMeasured(
         // A legend stays a single-column list of keys (DLR-341): exempt from packing.
         outerWidths.set(id, floor);
         const keys = ordered.length * LEGEND_KEY_HEIGHT + Math.max(0, ordered.length - 1) * gaps.cardGapY;
-        const size = { width: floor, height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + keys + LAST_CHILD_TO_BOTTOM_GAP };
+        const size = { width: floor, height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + keys + contentInset };
         packedSizes.set(id, size);
         return size;
       }
@@ -979,8 +978,8 @@ export function layoutMeasured(
       levelRuns.set(id, run);
       const level = sizeRun(
         run,
-        2 * CONTENT_INSET,
-        CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + LAST_CHILD_TO_BOTTOM_GAP,
+        2 * contentInset,
+        ZONE_GEOMETRY.headerInset + headerHeight + contentInset + contentInset,
       );
       // BF-6: reserve measured U-channel headroom for labelled edges on one
       // shelf, including wrapped labels and parallel channels. This is
@@ -1005,11 +1004,11 @@ export function layoutMeasured(
         }
       }
       const levelHeight = level.height + uExtra;
-      const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * CONTENT_INSET : 0));
+      const outer = Math.max(floor, level.width + (ordered.length > 0 ? 2 * contentInset : 0));
       outerWidths.set(id, outer);
       const size = {
         width: outer,
-        height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + levelHeight + LAST_CHILD_TO_BOTTOM_GAP
+        height: ZONE_GEOMETRY.headerInset + headerHeight + contentInset + levelHeight + contentInset
           + sceneBoxAt(representativeOf(id), outer, false).footerReserve,
       };
       packedSizes.set(id, size);
@@ -1086,9 +1085,9 @@ export function layoutMeasured(
       const header = headers.get(id)!;
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
-      titleBands.set(id, { x, y, width: size.width, height: CONTENT_INSET + header.height });
-      const contentX = x + CONTENT_INSET;
-      const contentY = y + CONTENT_INSET + header.height + RULE_TO_FIRST_CHILD_GAP;
+      titleBands.set(id, { x, y, width: size.width, height: ZONE_GEOMETRY.headerInset + header.height });
+      const contentX = x + contentInset;
+      const contentY = y + ZONE_GEOMETRY.headerInset + header.height + contentInset;
       if (kind === "legend-expanded") {
         legendInner.set(id, inner);
         orderedChildrenOf(id).forEach((key, index) => {
@@ -1741,6 +1740,7 @@ export function layoutMeasured(
       readonly strips: readonly Rect[];
       readonly gap: number;
       readonly base: number;
+      readonly authoredBase: boolean;
       readonly max: number;
     }
     const gutters: Gutter[] = [];
@@ -1748,6 +1748,9 @@ export function layoutMeasured(
       const boxes = seatedBoxes.get(key);
       if (boxes === undefined || boxes.length < 2) continue;
       const rows = packed.rows;
+      const zone = runHasZone(packed.run);
+      const axisAuthored = (horizontal: boolean) => (horizontal ? (zone ? hints?.zoneGapX : hints?.cardGapX) : (zone ? hints?.zoneGapY : hints?.cardGapY)) !== undefined;
+      const gapAfter = (slot: number) => { const item=packed.run.items[slot]!; return "run" in item ? item.gapAfter : undefined; };
       const alongOf = (rect: Rect): [number, number] => (rows ? [rect.x, rect.x + rect.width] : [rect.y, rect.y + rect.height]);
       const acrossOf = (rect: Rect): [number, number] => (rows ? [rect.y, rect.y + rect.height] : [rect.x, rect.x + rect.width]);
       const stripOf = (along: [number, number], across: [number, number]): Rect =>
@@ -1758,7 +1761,7 @@ export function layoutMeasured(
         Math.min(...boxes.map((rect) => alongOf(rect)[0])),
         Math.max(...boxes.map((rect) => alongOf(rect)[1])),
       ];
-      const alongStrips = new Map<number, { readonly shelf: number; readonly strip: Rect }[]>();
+      const alongStrips = new Map<number, { readonly shelf: number; readonly slot: number; readonly strip: Rect }[]>();
       packed.shelves.forEach((shelf, shelfIndex) => {
         const start = acrossOf(boxes[shelf[0]!]!)[0];
         const end = Math.max(...shelf.map((slot) => acrossOf(boxes[slot]!)[1]));
@@ -1770,7 +1773,8 @@ export function layoutMeasured(
             horizontal: rows,
             strips: [stripOf(extent, [end, nextStart])],
             gap: nextStart - end,
-            base: packed.acrossBase,
+            base: gapAfter(shelf.at(-1)!) ?? packed.acrossBase,
+            authoredBase: gapAfter(shelf.at(-1)!) !== undefined || axisAuthored(!rows),
             max: rows ? rowGaps.maxY : rowGaps.maxX,
           });
         }
@@ -1778,7 +1782,7 @@ export function layoutMeasured(
           const following = shelf[index + 1];
           if (following === undefined) return;
           const strip = stripOf([alongOf(boxes[slot]!)[1], alongOf(boxes[following]!)[0]], [start, end]);
-          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, strip });
+          (alongStrips.get(index) ?? alongStrips.set(index, []).get(index)!).push({ shelf: shelfIndex, slot, strip });
         });
       });
       for (const [index, strips] of [...alongStrips].sort(([left], [right]) => left - right)) {
@@ -1796,12 +1800,13 @@ export function layoutMeasured(
             horizontal: !rows,
             strips: strips.map(({ strip }) => strip),
             gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
-            base: packed.alongBase,
+            base: Math.max(...strips.map(({slot}) => gapAfter(slot) ?? packed.alongBase)),
+            authoredBase: strips.some(({slot}) => gapAfter(slot) !== undefined) || axisAuthored(rows),
             max,
           });
         } else {
-          for (const { shelf, strip } of strips) {
-            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: packed.alongBase, max });
+          for (const { shelf, slot, strip } of strips) {
+            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: gapAfter(slot) ?? packed.alongBase, authoredBase: gapAfter(slot) !== undefined || axisAuthored(rows), max });
           }
         }
       }
@@ -1815,11 +1820,13 @@ export function layoutMeasured(
           width: Math.abs(point.x - next.x), height: Math.abs(point.y - next.y) });
       }))).map(([id]) => String(id)).sort(byString);
       const n = edges.reduce((sum, id) => sum + (edgeBundles[id]?.members.length ?? 1), 0);
-      const labelled = [...labelBoxes.values()].some(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
+      const intersecting = [...labelBoxes.values()].filter(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
+      const labelled = intersecting.length > 0;
+      const placedFloor = Math.max(0, ...intersecting.map(box => (gutter.horizontal ? box.height : box.width) + 2 * metrics.labelMargin).filter(needed => needed <= gutter.max));
       const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
       const parameters = channelMetrics(metrics, axis === 'horizontal');
       return { id: gutter.id, axis, edges, strips: gutter.strips, n, labelled, gap: gutter.gap,
-        expected: channelGap(n, labelled, { ...parameters, gapMin: Math.max(parameters.gapMin, gutter.base) }) };
+        expected: Math.min(gutter.max, Math.max(placedFloor, channelGap(n, labelled, { ...parameters, gapMin: gutter.authoredBase ? gutter.base : Math.max(parameters.gapMin, gutter.base) }))) };
     });
     // A widened gutter in which no placed label sits is an empty lane: a bare
     // route needs no more than the base gap (two clearances).
@@ -1852,8 +1859,11 @@ export function layoutMeasured(
       }
     }
 
-    requested.clear();
-    channels.forEach(channel => { if (Math.abs(channel.expected - channel.gap) > 0.5) requested.set(channel.id, channel.expected); });
+    for (const channel of channels) {
+      const target = Math.max(requested.get(channel.id) ?? 0, channel.expected);
+      if (Math.abs(target - channel.gap) > 0.5) requested.set(channel.id, target);
+      else requested.delete(channel.id);
+    }
 
     // Emit the view plus measurements.
     const placedView = buildMeasuredView(

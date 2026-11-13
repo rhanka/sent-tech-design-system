@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /** Flow-sized channels. All dimensions are world px, independent of the viewport. */
 import type { LayoutMetrics } from './types.js';
 export interface ChannelMetrics {
@@ -9,11 +10,11 @@ export interface ChannelMetrics {
 }
 export function channelMetrics(metrics: Partial<LayoutMetrics>, horizontal: boolean): ChannelMetrics {
   return {
-    gapMin: (horizontal ? metrics.gapMin : metrics.gapMinBlock) ?? (horizontal ? 96 : 72),
-    gapBase: (horizontal ? metrics.gapBase : metrics.gapBaseBlock) ?? (horizontal ? 64 : 8),
-    trackSpacing: (horizontal ? metrics.trackSpacing : metrics.trackSpacingBlock) ?? (horizontal ? 14 : 7),
-    labelBand: metrics.labelBand ?? 30,
-    gapMax: (horizontal ? metrics.gapInlineMax : metrics.gapBlockMax) ?? metrics.gapMax ?? 240,
+    gapMin: (horizontal ? metrics.gapMin : metrics.gapMinBlock) ?? (horizontal ? spacing.gapMin : spacing.gapMinBlock),
+    gapBase: (horizontal ? metrics.gapBase : metrics.gapBaseBlock) ?? (horizontal ? spacing.gapBase : spacing.gapBaseBlock),
+    trackSpacing: (horizontal ? metrics.trackSpacing : metrics.trackSpacingBlock) ?? (horizontal ? spacing.trackSpacing : spacing.trackSpacingBlock),
+    labelBand: metrics.labelBand ?? spacing.labelBand,
+    gapMax: (horizontal ? metrics.gapInlineMax : metrics.gapBlockMax) ?? metrics.gapMax ?? spacing.gapMax,
   };
 }
 export function channelGap(n: number, labelled: boolean, metrics: ChannelMetrics): number {

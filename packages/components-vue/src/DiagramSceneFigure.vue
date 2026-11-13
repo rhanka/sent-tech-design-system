@@ -1,7 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramSceneFigure' });
 import { getDiagramGlyph } from './diagram-icons/registry.js';
-import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, shallowRef, useId, watch } from 'vue';
 import { renderErdCardSvg, renderErdTable, clampZoom, createLayoutCache, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { CardLineMeasure } from './diagramCardModel.js';
@@ -42,8 +42,9 @@ const defaults: DiagramSceneFigureLabels = {
     expand: title => `Expand ${title}`, collapse: title => `Collapse ${title}`,
 };
 const strings = computed(() => ({ ...defaults, ...props.labels }));
+const arrowId = 'diagram-arrow-' + useId();
 const browserMeasure = shallowRef<CardLineMeasure>();
-const measure = computed(() => sceneCardMeasure(browserMeasure.value ?? props.measure ?? defaultCardMeasure));
+const measure = computed(() => sceneCardMeasure(props.measure ?? browserMeasure.value ?? defaultCardMeasure));
 const tokenMetrics = shallowRef<Record<string, number>>({});
 const effectiveMetrics = computed(() => ({ ...tokenMetrics.value, ...props.metrics }));
 const measureLines = computed(() => props.measureLines ?? cardLineMeasurer(measure.value));
@@ -108,7 +109,7 @@ function token(name: string) {
 }
 function readCameraTokens() {
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth"]) {
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
         const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
         if (Number.isFinite(value)) values[key] = value;
     }
@@ -142,7 +143,7 @@ const camera = computed<DiagramSceneCamera>(() => ({
     maxZoom: fit.value.maxZoom, fitZoom: fit.value.zoom,
     pans: placement.value.overflowX || placement.value.overflowY,
 }));
-watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; });
+watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; browserMeasure.value = undefined; });
 watch([measured, zoom, fit], () => {
     if (!measured.value)
         return;
@@ -303,14 +304,15 @@ onMounted(() => {
         observer?.observe(frameEl.value);
     mountedViewport = viewportEl.value;
     mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
-    if (props.measure === undefined && props.measureLines === undefined) {
-        watch(scene, (current, _previous, cleanup) => {
+    {
+        watch([scene, () => props.measure, () => props.measureLines], ([current], _previous, cleanup) => {
+            if (props.measure !== undefined || props.measureLines !== undefined) return;
             if (current === undefined || browserMeasure.value !== undefined) return;
             let active = true;
             cleanup(() => { active = false; });
             void document.fonts?.ready.then(() => {
                 if (active && fontsActive && frameEl.value !== undefined)
-                    browserMeasure.value = measureRenderedSceneFont(frameEl.value, current, defaultCardMeasure);
+                    browserMeasure.value = measureRenderedSceneFont(frameEl.value, current, measure.value);
             });
         }, { immediate: true, flush: 'post' });
     }
@@ -358,7 +360,8 @@ function cardPropsOf(node: SceneNodeModel) {
 function zonePropsOf(node: SceneNodeModel) {
     const title = node.presentation?.text.title ?? '';
     const rect = rectOf(node);
-    const projected = projectZoneProps(node.presentation, { entityId: node.entity, collapsed: node.collapsed,
+    const projected = projectZoneProps(node.presentation, {
+      containerPadding: effectiveMetrics.value.containerPadding, entityId: node.entity, collapsed: node.collapsed,
         toggleLabel: node.collapsed ? strings.value.expand(title) : strings.value.collapse(title),
         ...(node.collapsed ? {} : { width: rect.width, height: rect.height }),
         resolveGlyph: props.resolveGlyph ?? getDiagramGlyph });
@@ -398,7 +401,8 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
           <div class="st-diagramSceneFigure-world" :style="worldStyle">
             <template v-if="scene !== undefined">
               <svg class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
-                <polyline v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
+                <polyline :marker-end="edge.markers === undefined ? `url(#${arrowId})` : undefined" v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
                 <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
               </svg>
