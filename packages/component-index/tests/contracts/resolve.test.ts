@@ -17,6 +17,9 @@ describe("K1b declaration resolution (spec 6.1 step 2)", () => {
     expect(declarationPathForSource("packages/components-vue/src/Modal.ts")).toBe(
       "packages/components-vue/dist/Modal.d.ts",
     );
+    expect(declarationPathForSource("packages/components-vue/src/DiagramCard.vue")).toBe(
+      "packages/components-vue/dist/DiagramCard.vue.d.ts",
+    );
     expect(declarationPathForSource("packages/components-angular/src/Modal.ts")).toBe(
       "packages/components-angular/dist/Modal.d.ts",
     );

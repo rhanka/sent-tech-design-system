@@ -23,6 +23,10 @@ const DECL_CANDIDATES: { match: RegExp; replace: (stem: string) => string }[] = 
     replace: (stem) => `packages/components-react/dist/${stem}.d.ts`,
   },
   {
+    match: /^packages\/components-vue\/src\/(.+)\.vue$/,
+    replace: (stem) => `packages/components-vue/dist/${stem}.vue.d.ts`,
+  },
+  {
     match: /^packages\/components-vue\/src\/(.+)\.ts$/,
     replace: (stem) => `packages/components-vue/dist/${stem}.d.ts`,
   },
