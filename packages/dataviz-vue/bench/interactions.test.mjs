@@ -141,3 +141,23 @@ test(`${mode}: object layer actions notify once and retain locked visibility`, a
     assert.deepEqual(selected, ['a']); assert.deepEqual(visible, [['a', false]]);
   } finally { await host.close(); }
 });
+
+test(mode + ': populated feed fixtures retain articles, severity, names, order and filter updates', async () => {
+  const { default: fixtures } = await import('./fixtures/EventFeedPanel.fixtures.ts');
+  const fixture = fixtures.find(f => f.id === 'populated');
+  assert.ok(fixture, 'EventFeedPanel must have a populated fixture');
+  const host = await mount('EventFeedPanel', fixture.props);
+  const articles = () => [...host.element.querySelectorAll('[role="article"]')];
+  try {
+    assert.deepEqual(articles().map(node => node.getAttribute('aria-label')), [
+      'alert — Failed deploy', 'deploy — Deployed', 'notice — Scheduled', 'audit — Reviewed',
+    ]);
+    assert.deepEqual(articles().map(node => node.className), ['error', 'success', 'warning', 'neutral'].map(tone => 'st-eventFeedPanel__item st-eventFeedPanel__item--' + tone));
+    assert.deepEqual([...host.element.querySelectorAll('.st-eventFeedPanel__message')].map(node => node.textContent), ['Failed deploy', 'Deployed', 'Scheduled', 'Reviewed']);
+    fixture.props.store.setFilter('type', { kind: 'include', values: ['deploy'] }); await flush();
+    assert.equal(articles().length, 1);
+    assert.equal(articles()[0].getAttribute('aria-label'), 'deploy — Deployed');
+    fixture.props.store.clearFilter('type'); await flush();
+    assert.equal(articles().length, 4);
+  } finally { await host.close(); }
+});

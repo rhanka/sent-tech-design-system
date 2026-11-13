@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:1ad8fcdd8cc41826e56b216e82484c2b202c420547416e0aee5e3c28118f26c9",
-  "entryDigest": "sha256:a7c18bf927517cba0f8c4112f5a260da2693ccbbd882ebafa90ebdd75363e4ee",
+  "digest": "sha256:c033c8387ae9277d1bb3f8b6f58eb20da30f051c0b8d1c5fea94f8fbaef5510c",
+  "entryDigest": "sha256:8eff8e63de6f611348c2c6e9671f0266794c54f38aa08e095fa041564217b2c2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -645,7 +645,7 @@
         "declarationPath": "packages/components-vue/dist/Calendar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CalendarProps",
-        "version": "0.41.0-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],

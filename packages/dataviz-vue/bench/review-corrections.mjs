@@ -3,6 +3,7 @@
 // Frozen fixtures and goldens remain byte-for-byte unchanged.
 import { reviewCorrections as controlCorrections } from '../../components-vue/bench/review-corrections.mjs';
 export function reviewCorrections(name, fixture, JSDOM) {
+  if (name === 'EventFeedPanel') return controlCorrections(name, fixture, JSDOM);
   const affected = new Set(['CalculationEditor', 'DashboardFilterBar', 'FormatPanel', 'QueryBar', 'RangeSliderFilter', 'RelativeDateFilter', 'TopNFilter', 'ValueSlicer']);
   if (!affected.has(name)) return fixture;
   const tree = JSDOM.fragment(fixture.html);

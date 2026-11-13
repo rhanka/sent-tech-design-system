@@ -1,28 +1,32 @@
 {
   "schema": 1,
   "component": "EventFeedPanel",
-  "sourceRevision": "1cfe31815e70473f9e070de0c9dab62bfa39f2b3",
+  "sourceRevision": "3e53293d1b350017af16c8b00787c5447116765f",
   "source": "src/lib/EventFeedPanel.ts",
   "fixtures": [
     {
       "id": "default",
-      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"st-eventFeedPanel-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"></ul></div>"
+      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"generated-1-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\"></ul></div>"
     },
     {
       "id": "sized",
-      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"st-eventFeedPanel-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"max-height:320px;\"></ul></div>"
+      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"generated-1-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"max-height:320px\"></ul></div>"
     },
     {
       "id": "class-attrs",
-      "html": "<div class=\"st-eventFeedPanel consumer\" data-bench=\"feed\"><p class=\"st-eventFeedPanel__label\" id=\"st-eventFeedPanel-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"></ul></div>"
+      "html": "<div class=\"st-eventFeedPanel consumer\" data-bench=\"feed\"><p class=\"st-eventFeedPanel__label\" id=\"generated-1-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\"></ul></div>"
+    },
+    {
+      "id": "populated",
+      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"generated-1-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\"><li aria-label=\"alert — Failed deploy\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--error\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--error\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">alert</span><time class=\"st-eventFeedPanel__time\">12:00 AM</time></div><p class=\"st-eventFeedPanel__message\">Failed deploy</p></div></li><li aria-label=\"deploy — Deployed\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--success\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--success\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">deploy</span><time class=\"st-eventFeedPanel__time\">12:00 AM</time></div><p class=\"st-eventFeedPanel__message\">Deployed</p></div></li><li aria-label=\"notice — Scheduled\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--warning\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--warning\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">notice</span><time class=\"st-eventFeedPanel__time\">12:00 AM</time></div><p class=\"st-eventFeedPanel__message\">Scheduled</p></div></li><li aria-label=\"audit — Reviewed\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--neutral\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--neutral\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">audit</span><time class=\"st-eventFeedPanel__time\">12:00 AM</time></div><p class=\"st-eventFeedPanel__message\">Reviewed</p></div></li></ul></div>"
     },
     {
       "id": "empty",
-      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"st-eventFeedPanel-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"></ul></div>"
+      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"generated-1-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\"></ul></div>"
     }
   ],
   "sourceSha256": "f8394f72fd69f127b61d53e0fe7157970f81bfe47180960c75ab8a9fcffdaa98",
-  "fixtureSha256": "8181ff26a788a493e85d521dee0c21285ae8f7ecef65a9c2cc464832aa75f31e",
+  "fixtureSha256": "e75f091b5a397debeb6257252434ccd86f195e66701b9c793777ba6e28cf98fe",
   "publicExports": [
     {
       "name": "EventFeedPanel",

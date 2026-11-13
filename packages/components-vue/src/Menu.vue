@@ -15,7 +15,8 @@ import { useId,
   ref,
   watch,
 } from "vue";
-
+import Icon from "./Icon.vue";
+import { ICONS, type IconGlyph } from "./icon-data.js";
 import { classNames } from "./classNames.js";
 import MenuLabel from './MenuLabel.vue';
 import type { MenuLabelSlots } from './menu-label-slots.js';
@@ -32,6 +33,12 @@ import {
   type CascadePoint,
   type ResolvedSubMenuSide,
 } from "./menu-cascade.js";
+
+// Lucide v0.562.0 neutral nodes (ISC; notice in icon-data.ts).
+const chevronLeft: IconGlyph = {
+  name: "chevron-left",
+  nodes: [["path", { d: "m15 18-6-6 6-6" }]],
+};
 
 function itemKind(item: MenuItem): string | undefined {
   const tagged = item as { type?: string; kind?: string };
@@ -1097,7 +1104,13 @@ const panelDepths = computed(() => [
               class="st-menu__itemChevron st-menu__itemChevron--start"
               aria-hidden="true"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+              <Icon
+                bare
+                :glyph="chevronLeft"
+                :size="16"
+                :stroke-width="2"
+                aria-hidden="true"
+              />
             </span>
             <span
               v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
@@ -1117,7 +1130,13 @@ const panelDepths = computed(() => [
               class="st-menu__itemChevron st-menu__itemChevron--end"
               aria-hidden="true"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+              <Icon
+                bare
+                :glyph="ICONS['chevron-right']"
+                :size="16"
+                :stroke-width="2"
+                aria-hidden="true"
+              />
             </span>
           </button>
         </div>

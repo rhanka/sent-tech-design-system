@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "component": "WebFrame",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "packages/dataviz-svelte/src/lib/WebFrame.svelte",
+  "referenceFramework": "svelte",
+  "sourceSha256": "c8ea0c5ff52a56b9a6f38e2ac7e5cef956afeadf072ca5456f4fcbd234db790d",
+  "fixtureSha256": "b3d52367e32c13ac0cfe024cb43424df2dac33e300f344cbe9d6186f1344149a",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<iframe loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" src=\"https://example.com/embed\" title=\"Embedded report\"></iframe>"
+    },
+    {
+      "id": "defaults",
+      "html": "<iframe loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" src=\"https://example.com/default\" title=\"Embedded page\"></iframe>"
+    },
+    {
+      "id": "sandbox",
+      "html": "<iframe allow=\"fullscreen\" class=\"consumer\" loading=\"eager\" referrerpolicy=\"no-referrer\" sandbox=\"allow-scripts allow-forms\" src=\"https://example.com/form\" title=\"&lt;b&gt;Form&lt;/b&gt;\"></iframe>"
+    },
+    {
+      "id": "empty-sandbox",
+      "html": "<iframe allow=\"\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" sandbox=\"\" src=\"/local\" title=\"\"></iframe>"
+    }
+  ],
+  "publicExports": [
+    {
+      "name": "WebFrame",
+      "typeOnly": false
+    },
+    {
+      "name": "WebFrameProps",
+      "typeOnly": true
+    }
+  ]
+}

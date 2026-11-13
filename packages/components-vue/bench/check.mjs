@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-import { bench, pkg, src, names, require, compilers, compileSfc, normalizeHtml } from './lib.mjs';
+import { bench, pkg, src, names, require, compilers, compileSfc, normalizeHtml, componentPath } from './lib.mjs';
 
 const args = process.argv.slice(2);
 const name = args[0];
@@ -15,7 +15,7 @@ if (!names.includes(name) || args.slice(1).some(arg => arg !== '--json') || args
   console.error(`Usage: node bench/check.mjs <${names.join('|')}> [--json]`);
   process.exit(2);
 }
-const file = resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`);
+const file = name === 'cellDecoration' ? resolve(src, 'CellDecorationIcon.vue') : componentPath(name);
 const gates = [];
 let temporary;
 const fail = message => { throw new Error(message); };
@@ -169,7 +169,8 @@ try {
     return `createVaporApp; fixture=${result.fixture}; interop=${result.interop}; mounted, flushed, unmounted`;
   });
   gate('G6', 'Public exports + Props', () => {
-    const indexFile = resolve(src, 'index.ts');
+    const indexFile = ['RichTextEditor', 'ComposerEditor', 'LockPresenceBadge'].includes(name)
+      ? resolve(file, '../index.ts') : resolve(src, 'index.ts');
     const index = readFileSync(indexFile, 'utf8');
     const ast = ts.createSourceFile(indexFile, index, ts.ScriptTarget.Latest, true);
     const target = `${name}Props`;
@@ -219,7 +220,7 @@ try {
     const barrel = resolve(temporary, 'public.ts');
     // Preserve every export in the selected declarations, including auxiliary
     // types, but exclude unrelated components from this file-scoped gate.
-    writeFileSync(barrel, exports.map(node => node.getText(ast).replace(/(["'])\.\//g, '$1../../src/')).join('\n'));
+    writeFileSync(barrel, exports.map(node => node.getText(ast).replace(/(["'])\.\//g, '$1../../src/' + (['RichTextEditor', 'ComposerEditor'].includes(name) ? 'rich-text-editor/' : name === 'LockPresenceBadge' ? 'presence-badge/' : ''))).join('\n'));
     const probe = resolve(temporary, 'probe.ts');
     const typeNames = expectedExports.filter(e => e.typeOnly).map(e => e.name);
     writeFileSync(probe, `import { ${name} } from './public.js';\nimport type { ${typeNames.join(', ')} } from './public.js';\nconst component: object | Function = ${name};\ntype PublicTypes = [${typeNames.join(', ')}];\nvoid component;\n`);

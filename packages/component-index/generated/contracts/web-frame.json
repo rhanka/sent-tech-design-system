@@ -1,8 +1,8 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:3eca2fe39bcb2d87fc21be40926d9016e8b09fe05be86e75f8c46949347e6892",
-  "entryDigest": "sha256:946d9855eb37d3548e136ff6d862dd5526cd6cb03915ff9febf48ef596433fac",
+  "digest": "sha256:c93c2b642fa590251edf02d99764b50fd8e5f7572fa2d6c096b46ff13f411cb5",
+  "entryDigest": "sha256:a200103b488bdd5e37264c844514aa3c652b5be33ea06693ef99d413fc6044d8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,11 +327,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:509f03082061da6e22d4413a7d4fcdd0e6ef09dea1e205faa13f3ba329b64cfe",
-        "declarationPath": "packages/dataviz-vue/dist/lib/WebFrame.vue.d.ts",
-        "package": "@sentropic/dataviz-vue",
+        "declarationDigest": "sha256:d18a131f2ada4ef622d417827532b0155df03e17d154192ba3373c509252acd4",
+        "declarationPath": "packages/components-vue/dist/WebFrame.vue.d.ts",
+        "package": "@sentropic/design-system-vue",
         "propsType": "WebFrameProps",
-        "version": "0.6.0-next.0"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

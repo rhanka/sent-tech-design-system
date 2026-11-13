@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, readdirSync, mkdirSync } from "node:fs";
+import { readFileSync, writeFileSync, readdirSync, mkdirSync, copyFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
 const source = resolve("src/styles.css");
@@ -14,3 +14,6 @@ function sfcStyles(dir) {
   });
 }
 writeFileSync(target, [readFileSync(source, 'utf8'), ...sfcStyles(resolve('src'))].join('\n'));
+
+mkdirSync(resolve("dist/rich-text-editor"), { recursive: true });
+copyFileSync(resolve("src/rich-text-editor/rich-text-editor.css"), resolve("dist/rich-text-editor/rich-text-editor.css"));
