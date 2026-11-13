@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { h } from "vue";
-import { Overline } from "./Overline.js";
+import Overline from './Overline.vue';
 
 const root = (el: HTMLElement) =>
   el.classList.contains("st-overline") ? el : el.querySelector<HTMLElement>(".st-overline");
