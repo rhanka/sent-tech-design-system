@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MenuPopover.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
     "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
   },
-  "digest": "sha256:cec85137d00423c3b0bf17961aed0ce80ce8313cb64a0740453e87a39650af66",
+  "digest": "sha256:d385d106649457ce65cd84c6f7e74e5c4ba4dffc5266877ce093bc21d681767e",
   "displayName": "MenuPopover",
   "format": "component-entry/v1",
   "frameworks": [

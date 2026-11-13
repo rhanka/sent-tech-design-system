@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/EventFeedPanel.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message.",
     "fr": "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message."
   },
-  "digest": "sha256:b1445f6a322bbbf91e7aca8ca46ca023899192de9c47f33c7b56abf94ed4fb34",
+  "digest": "sha256:a7fd2443de3ae66b5a40b4d1eb24d5ae17d6af8ef713ec3a4be9af27c676a041",
   "displayName": "EventFeedPanel",
   "format": "component-entry/v1",
   "frameworks": [

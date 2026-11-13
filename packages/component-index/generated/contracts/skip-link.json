@@ -1,8 +1,8 @@
 {
   "componentId": "skip-link",
   "contractSource": "derived",
-  "digest": "sha256:be1ab423dcd2a1d17b3df694ab170f044d4a00de97a93c1ee35ad43b90e75928",
-  "entryDigest": "sha256:6653a26325d0d51748d8f982887f281a1651d785efdb515535d2097f82f045d0",
+  "digest": "sha256:66fc61fb6a75b8470096844a316c4edc2bfdbe5f562d210c79eff603a96f07fb",
+  "entryDigest": "sha256:a0a0ee96fdd8f86e37514cb3bc4a954a59bea72fb0edca10fd37cdbb1e71abb1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -112,7 +112,7 @@
         "declarationPath": "packages/components-svelte/dist/SkipLink.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SkipLinkProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

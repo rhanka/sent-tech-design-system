@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:fe5930c6fb2a03865a48e9f5d91fc7ff57f89c72cbcfb3401affc49bad5ddda4",
-  "entryDigest": "sha256:953fa0303049d9fad7ea006b71c312160c3391ca076d17e7c9cbcf891a117c0a",
+  "digest": "sha256:da3e5e764265c3643ddfdb5d7850401055596b3ee38769daa37fdb77d22cb9e9",
+  "entryDigest": "sha256:fe17fbc05dbb8d1bbe6d589f344e429014d1e0e88cfa3e54e517ddd9fce8e88b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DisplaySettingsProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

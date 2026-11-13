@@ -1338,7 +1338,7 @@
         "vue": "match",
         "angular": "missing"
       },
-      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+      "reason": "DC-2c.1 exports Svelte and Vue scene hosts with shared behavioral and normalized DOM parity tests; React and Angular remain outside this lot."
     },
     {
       "componentId": "diagram-zone",

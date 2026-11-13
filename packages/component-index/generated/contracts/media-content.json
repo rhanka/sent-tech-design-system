@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:6fa402d6d8a26075f3cabeee7a9c980fedaad09f94e2217338bd1f5153d63a6e",
-  "entryDigest": "sha256:e92d0fe14498525d3a3637a44c072fdfee7601987ed2771b4741e385c0908bf1",
+  "digest": "sha256:37cf61d270f2aa48c15de51d9f1b1fc8b4231fbbf7c20bd9d3e1d943c01f8399",
+  "entryDigest": "sha256:52c9b3e4324fe366fb127fe51c8237e9700975e68fcc37436e590273324c0aa0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,7 @@
         "declarationPath": "packages/components-svelte/dist/MediaContent.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MediaContentProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

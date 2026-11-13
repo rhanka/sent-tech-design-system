@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DatePicker.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Date picker, single or range mode.",
     "fr": "Sélecteur de date, mode simple ou plage."
   },
-  "digest": "sha256:5983c309b03288885afd5e9cb68ea53bc3b0fa71779dffcea4e004ae1ca73547",
+  "digest": "sha256:bcd5d73d959d29cb57b04da8c236a1b8c90ccc25e5872425a8dcf21b80fcada6",
   "displayName": "DatePicker",
   "format": "component-entry/v1",
   "frameworks": [

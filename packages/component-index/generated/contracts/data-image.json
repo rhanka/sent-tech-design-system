@@ -1,8 +1,8 @@
 {
   "componentId": "data-image",
   "contractSource": "derived",
-  "digest": "sha256:89d95b8a6ae32ecbe1d01415b9a9e2f529d20272636a458ab01491adb6d15c5e",
-  "entryDigest": "sha256:57400a08be1d183025d2bde502fd247882a6679bce787b7b0dfaa7d80c98b4ac",
+  "digest": "sha256:01058bb4d264ec0f70af2dc5f5324291b8c304ce594a9d93a0b71a9f550e105a",
+  "entryDigest": "sha256:c9a579ca31c771318c71ac81033acd9241d8e1bc0ac841c5e36320629bba0217",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -265,7 +265,7 @@
         "declarationPath": "packages/components-svelte/dist/DataImage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataImageProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

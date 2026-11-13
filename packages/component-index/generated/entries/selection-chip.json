@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectionChip.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact chip showing a selection with count and optional clear button.",
     "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
   },
-  "digest": "sha256:ea13f6b2935d711f98ddbbfc0824f72f0c5069780a40285eae1d1379c591ecf8",
+  "digest": "sha256:fbcb48ec3d5d9d4b0f8b0af4329f3b2fc800e54b28f15a11a49179d10dae6ba3",
   "displayName": "SelectionChip",
   "format": "component-entry/v1",
   "frameworks": [

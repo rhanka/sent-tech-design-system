@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/VectorFieldChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vector field: grid of arrows whose length encodes magnitude and orientation encodes direction.",
     "fr": "Champ de vecteurs : grille de flèches dont la longueur encode la magnitude et l'orientation la direction."
   },
-  "digest": "sha256:cf9a01377b06f8af07cf12decbee00d158004dc36a5780081343d4c910556b0a",
+  "digest": "sha256:d71fbabcd399405f2775589d0fad02981164dfc01975a3d97f56929bf902a8e0",
   "displayName": "VectorFieldChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:1f33f6fde1c0a01d22da26b35d436f1a1811d3210ab96836bb6f3f660e77916b",
-  "entryDigest": "sha256:325bc03804f6de3db98efb53f91e6c2f1e8ee84f5dc0a6a30a3036435257c27d",
+  "digest": "sha256:d94b754f03ce4af8c0d159939df56f709ef09212c8dbb34aa10c182dbfb0fd15",
+  "entryDigest": "sha256:2514ba415e0d233865c91314ea13d779555532c47706d24357df224c57452111",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -1221,10 +1221,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1287,10 +1287,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1421,7 +1421,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c1c5b40381c0d164f90bb683ea5a0eda38acdf12baaa6f30409fa146c1cfd1b3",
+        "declarationDigest": "sha256:21d2e86d2e14ededad8e016e6ff36d5abfa1a6a89c8d2d19679e842dd85a1d9b",
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",

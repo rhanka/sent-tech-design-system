@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ComboChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Combo chart with bars and lines, dual Y axis, and legend.",
     "fr": "Graphique combiné barres + courbes, double axe Y, légende."
   },
-  "digest": "sha256:e7c9944b67f11c8ae41a05ea7961ed05d077146bdf097b6af84d4fd4f837456f",
+  "digest": "sha256:aa0bc5cbcbd906962e528ba4c2447675b21d8706440810de81cf71b980289f79",
   "displayName": "ComboChart",
   "format": "component-entry/v1",
   "frameworks": [

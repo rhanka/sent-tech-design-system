@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LineChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:c9a878d64eddeedd7740eb1a2a26adf3b728cac754379a4c4fe8988da0f689d8",
+  "digest": "sha256:a9dfaa0f6ed5049795c6694e8fdf52a32d269dd338d7808492eaf7fb807fc565",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

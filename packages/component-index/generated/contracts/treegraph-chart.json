@@ -1,8 +1,8 @@
 {
   "componentId": "treegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:0d995824ba04e8e1c414bb07622791e6015ef7dd15be74d050069e658ac3ea90",
-  "entryDigest": "sha256:3591673522732d106d0a1ff8a6f22b049d6a7adf2be91593d7aeb81f62146e96",
+  "digest": "sha256:b249330c45b41dbe092d3745c013c0e97635c7d1930939e19fa726b51e527080",
+  "entryDigest": "sha256:6178597732071b70e8fc594523aed66399bd85623f4acffc0927d98f7b852183",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -255,7 +255,7 @@
         "declarationPath": "packages/components-svelte/dist/TreegraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreegraphChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

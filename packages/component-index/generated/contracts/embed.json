@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:ad593b2c2aa23d8f113ac3088cad28cdfbe8586d8d83b48a3904c08ccc417596",
-  "entryDigest": "sha256:525731edb4455604d9c95ab75ff5d8cafaaf54599a10a6d98a6960aedb0f8c33",
+  "digest": "sha256:31ae0cc520c353fe26916c4bce3915aee43602f8f9d3b70a80eaa915ef41e28c",
+  "entryDigest": "sha256:a2fb890e5d35446c77940f6838ba3d816b632a3316fb8c0070068059458eeb9e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Embed.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmbedProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
