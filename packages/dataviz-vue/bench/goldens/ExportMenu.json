@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "ExportMenu",
+  "sourceRevision": "15e24e2b0ec09316f6e2cc5d5c0cfd954e934e81",
+  "source": "src/lib/ExportMenu.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Exporter (CSV)</button>"
+    },
+    {
+      "id": "view-fields",
+      "html": "<button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Exporter (CSV)</button>"
+    },
+    {
+      "id": "named",
+      "html": "<button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Download CSV</button>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<button class=\"st-button st-button--secondary st-button--md consumer\" data-bench=\"exportmenu\" type=\"button\">Exporter (CSV)</button>"
+    }
+  ],
+  "sourceSha256": "946323166606311f18ae89725424bc5ea139ba9c756e68b658ca33dfcd8db74c",
+  "fixtureSha256": "98a72a808d16c8dd9cb1d61950bbb2f3270c7632a3a26f9e38c51c0597be079f",
+  "publicExports": [
+    {
+      "name": "ExportMenu",
+      "typeOnly": false
+    },
+    {
+      "name": "rowsToCsv",
+      "typeOnly": false
+    },
+    {
+      "name": "ExportMenuProps",
+      "typeOnly": true
+    }
+  ]
+}
