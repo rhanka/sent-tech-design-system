@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:f1b69f46fdd4acadfe8645f3f3ccf7bf0ad775325ca7a385cabedb3cfa36f06b",
-  "entryDigest": "sha256:b347d305da8fa9c05c09408d29893b7799a71598b3db9ae3f0dad0f422160f69",
+  "digest": "sha256:33bdad517b50c1357d0087ac040ee21702bb9893bce1882fa01dad0602305af8",
+  "entryDigest": "sha256:8c4be091bcacf69fb3fdd2f738fb3b73590f1acbd6d48dcf7885720cc935011a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -341,7 +341,7 @@
         "declarationPath": "packages/components-vue/dist/ArcDiagramChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

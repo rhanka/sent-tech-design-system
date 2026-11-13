@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:4ba96131876fea10279b6956bcae3190085271134bfab282f765e32102f2abd4",
-  "entryDigest": "sha256:35b8bcf86fd01b94afddd2527a450f84b4c257b327c19a8d5331e54f06ca3d5f",
+  "digest": "sha256:df55880630d64586ae6f2f4920fc6d98c41332109032b52245544a7c8d35c93b",
+  "entryDigest": "sha256:cbdaaee8da31fb63e30a964604be5dd9bfcf35128cbd52f25fbbea9d0cf1867d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -186,7 +186,7 @@
         "declarationPath": "packages/components-vue/dist/Quote.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "QuoteProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

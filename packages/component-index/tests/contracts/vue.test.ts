@@ -24,6 +24,11 @@ function inputFor(identifier: string, expectedSlots: string[] = []): FrameworkIn
 }
 
 describe("K1b Vue extractor (spec 7.4)", () => {
+  it("preserves script-setup events and binding from public $emit overloads", () => {
+    const body = extractVue(inputFor("TemplateMenu"));
+    expect(body.events.map((event) => event.name)).toEqual(["onSelect", "select", "update:open"]);
+    expect(body.bindable).toEqual(["open"]);
+  });
   it("derives events from emits and onX, pairs update: with bindable", () => {
     const body = extractVue(inputFor("Sheet"));
     // GEN-C2: the onClose payload (...args: unknown[]) records a replaced

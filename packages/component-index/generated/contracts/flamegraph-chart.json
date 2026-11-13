@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:d6d42b216a03ce5771277eddc318eedfaa776490f2530b6001225fb808d7e32d",
-  "entryDigest": "sha256:479eb72569857518b9398229761f677256341905adb716ee94da1f59b34e927b",
+  "digest": "sha256:031381e85cfec3f44fc3d5e16409f04d33860749fd3cd622e95c6b3137c36e6c",
+  "entryDigest": "sha256:f976209cef542654c056cf7630c2ddc337d771108d6349869461eeebe0b2313c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -287,7 +287,7 @@
         "declarationPath": "packages/components-vue/dist/FlamegraphChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlamegraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

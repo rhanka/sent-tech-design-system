@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:0921c6770867967dbe0aa2853fcba701a718ebdf54bff4a021d5963cc511fdbb",
-  "entryDigest": "sha256:d2ff23645597df7e92d457aa03294d1fbcba7e94e2d91570ec88da00ac76489e",
+  "digest": "sha256:45eb9d1ed64f99175b78bcb0dd6650530117c5ddc70b29681a6a72b57bdf835d",
+  "entryDigest": "sha256:bb61d4b766520f5747d9827eddaae88cfbb7af1b1e49bcc08b60a0732fca0c3d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -331,7 +331,7 @@
         "declarationPath": "packages/components-vue/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

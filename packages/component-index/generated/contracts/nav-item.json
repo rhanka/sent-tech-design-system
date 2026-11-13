@@ -1,8 +1,8 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:9e4087dca423d4d26de69753133ff8cf6546b3d65ded7c01f42b4875f868f984",
-  "entryDigest": "sha256:a672562afa6686756325ed7de50e90709e76954b231986cf6c0f9a2b7efc2c0e",
+  "digest": "sha256:cb5a0c35cb5330cfc7d3b931b0d292392b4e3d489b1e85cd6669df1852f9a8a1",
+  "entryDigest": "sha256:5dbd8e42cbab1f450a3b6751b2b21b4ea7879c8afd6c07d460f2decbc9c1a472",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -390,6 +390,9 @@
           "payload": {
             "type": "boolean"
           }
+        },
+        {
+          "name": "select"
         }
       ],
       "limitations": [
@@ -496,15 +499,18 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c4e787d76ee4a0a70041ba0361687f7d5237b17929d5abaec7e38ec561bc82a9",
+        "declarationDigest": "sha256:00e741822b3ad268cde85c9ab4a73c6d5e4d0175faedcf8bfcdd7cdbd5a6aeb7",
         "declarationPath": "packages/components-vue/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavItemProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

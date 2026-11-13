@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Accordion.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "List of collapsible panels.",
     "fr": "Liste de panneaux pliables."
   },
-  "digest": "sha256:c5a365dfb217ac58f99061d9724c7ec6e8ad6e76bdc4a0bbadcd58485a6b0c4d",
+  "digest": "sha256:c96774e12fdbb727b2571045449b7715416d6152072ade353f5d61c42be06230",
   "displayName": "Accordion",
   "format": "component-entry/v1",
   "frameworks": [
