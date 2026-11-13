@@ -265,7 +265,7 @@ export {
 } from './lib/url-sync.js';
 export type { UrlSyncOptions } from './lib/url-sync.js';
 export { useUrlSync } from './lib/useUrlSync.js';
-export { DrillChart } from './lib/DrillChart.js';
-export type { DrillChartProps, DrillChartKind } from './lib/DrillChart.js';
+export { default as DrillChart } from './lib/DrillChart.vue';
+export type { DrillChartProps, DrillChartKind } from './lib/DrillChart.vue';
 export { drillLevel, onDrillSelect, drillDepth } from './lib/drill.js';
 export type { DrillLevel, DrillDatum } from './lib/drill.js';
