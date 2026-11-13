@@ -1,6 +1,6 @@
 # Diagram 0.40 blocking patch
 
-Base: `23929b5b` on `fix/dc2a-ds040-defects`. The supplied consumer report and PNGs were inspected. The four cleared JSON inputs are copied without modification; their SHA-256 values are in the fixture README.
+Initial base: `23929b5b` on `fix/dc2a-ds040-defects`. The endpoint-provenance main update (`00900974`) is included by a normal merge; generated index conflicts are resolved by regeneration. The supplied consumer report and PNGs were inspected. The four cleared JSON inputs are copied without modification; their SHA-256 values are in the fixture README.
 
 | Defect | Fix | Regression evidence |
 | --- | --- | --- |
@@ -56,12 +56,12 @@ Base: `23929b5b` on `fix/dc2a-ds040-defects`. The supplied consumer report and P
 ## Versions and generated artifacts
 
 - `@sentropic/diagram-canvas` 0.1.1; `@sentropic/design-system-svelte` 0.40.1; `@sentropic/design-system-vue` 0.39.1.
-- `diagram-core` stays 0.1.0; its source is unchanged.
+- `diagram-core` stays 0.1.0; this patch adds no core source changes relative to current main.
 - Consumer pins, including dataviz-vue, and the npm 10.9.9 lockfile are updated. Notices generation, component-index generation/check and licensing are required validation commands. No tags.
 
 ## Validation
 
-Final command results are recorded in the PR. Commands use the supplied npm cache. The root npm test command, Track, browser runners and Python were not used.
+Final command results are recorded in the PR. After the main merge, the core suite passes 645 tests, the Svelte scope passes 356, and the Vue diagram/SSR/parity scope passes 161. Commands use the supplied npm cache. The root npm test command, Track, browser runners and Python were not used.
 
 - Canvas: `node node_modules/vitest/vitest.mjs run --config packages/diagram-canvas/vitest.config.ts --maxWorkers=2` and both TypeScript configurations.
 - Svelte: scoped card/zone/scene/SSR/presentation suites, package build, both svelte-check configurations.
