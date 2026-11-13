@@ -24,8 +24,8 @@ export type {
 } from "./ContentSwitcher.vue";
 export { default as CopyButton } from "./CopyButton.vue";
 export type { CopyButtonProps, CopyButtonSize } from "./CopyButton.vue";
-export { Drawer } from "./Drawer.js";
-export type { DrawerProps, DrawerPlacement } from "./Drawer.js";
+export { default as Drawer } from "./Drawer.vue";
+export type { DrawerProps, DrawerPlacement } from "./Drawer.vue";
 export { Dropdown } from "./Dropdown.js";
 export type { DropdownProps, DropdownOption } from "./Dropdown.js";
 export { default as DataImage } from "./DataImage.vue";
