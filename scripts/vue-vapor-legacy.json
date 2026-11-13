@@ -90,7 +90,6 @@
   "packages/components-vue/src/Highlight.ts",
   "packages/components-vue/src/HistogramChart.ts",
   "packages/components-vue/src/HollowCandlestickChart.ts",
-  "packages/components-vue/src/Icon.ts",
   "packages/components-vue/src/IconButton.ts",
   "packages/components-vue/src/IdentityMenu.ts",
   "packages/components-vue/src/Inline.ts",

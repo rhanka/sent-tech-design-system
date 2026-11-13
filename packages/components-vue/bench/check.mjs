@@ -181,7 +181,12 @@ try {
     for (const { name: exported, typeOnly } of expectedExports) {
       const entry = entries.find(e => e.exported === exported);
       if (!entry || typeof entry.specifier !== 'string') fail(`${exported} must be explicitly re-exported from src/index.ts`);
-      const expected = existsSync(file) ? `./${name}.vue` : `./${name}.js`;
+      const relocations = {
+        Icon: { ICONS: './icon-data.js', ICON_NAMES: './icon-data.js' },
+        Popper: { computePosition: './popper-position.js', splitPlacement: './popper-position.js', joinPlacement: './popper-position.js' },
+        SelectableRow: { SELECTABLE_LIST_KEY: './selectable-list-context.js' },
+      };
+      const expected = relocations[name]?.[exported] ?? (existsSync(file) ? `./${name}.vue` : `./${name}.js`);
       if (entry.specifier !== expected) fail(`${exported} routes to ${entry.specifier}, expected ${expected}`);
       if (entry.type !== typeOnly) fail(`${exported} changed value/type export kind`);
     }
