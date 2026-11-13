@@ -4,7 +4,7 @@ import { renderToString } from "vue/server-renderer";
 import { describe, expect, it } from "vitest";
 import { DEFAULT_MAX_DISPLAY_SCALE, FIT_ASPECT } from "@sentropic/diagram-canvas";
 import DiagramSceneFigure from "./DiagramSceneFigure.vue";
-import { flowFixture } from "../../diagram-canvas/dist-test-support/flowFixture.js";
+import { flowFixture } from "../../diagram-canvas/test-support/flowFixture.js";
 
 describe("DC-2c Vue server render", () => {
   for (const count of [0, 1]) it(`renders ${count} flows without DOM globals`, async () => {

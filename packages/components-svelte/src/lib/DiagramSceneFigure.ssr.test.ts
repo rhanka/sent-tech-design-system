@@ -65,7 +65,7 @@ describe("DiagramSceneFigure on the server", () => {
 
 describe("DC-2c A14 static flow output", () => {
   it("renders arrows and numbered badge text on the server", async () => {
-    const { flowFixture } = await import("../../../diagram-canvas/dist-test-support/flowFixture.js");
+    const { flowFixture } = await import("../../../diagram-canvas/test-support/flowFixture.js");
     const fixture = flowFixture(1);
     const { body } = render(DiagramSceneFigure, { props: { document: fixture.document, registry: fixture.options.registry, bindings: fixture.options.bindings, presentation: fixture.presentation, measureLines: fixture.options.measureLines } });
     expect(body).toContain('data-flow-arrow="occurrence:r.z"');
@@ -74,7 +74,7 @@ describe("DC-2c A14 static flow output", () => {
   });
   it("matches the normalized origin/main no-flow DOM snapshot", async () => {
     const { readFileSync } = await import("node:fs");
-    const { flowFixture } = await import("../../../diagram-canvas/dist-test-support/flowFixture.js");
+    const { flowFixture } = await import("../../../diagram-canvas/test-support/flowFixture.js");
     const f = flowFixture(0);
     const { body } = render(DiagramSceneFigure, { props: { document: f.document, registry: f.options.registry, bindings: f.options.bindings, presentation: f.presentation, measureLines: f.options.measureLines } });
     // Conditional ERD markup can add inter-element whitespace without changing the DOM.

@@ -2,8 +2,8 @@ import { expect, vi } from "vitest";
 import { fireEvent } from "@testing-library/dom";
 import { flowHitSize } from "@sentropic/diagram-canvas/flowModel";
 import { DEFAULT_FLOW_TOKENS } from "@sentropic/diagram-canvas";
-import { flowFixture, flowMeasure } from "../../dist-test-support/flowFixture.js";
-import type { FlowHostCase } from "../../dist-test-support/flowHostCases.js";
+import { flowFixture, flowMeasure } from "../../test-support/flowFixture.js";
+import type { FlowHostCase } from "../../test-support/flowHostCases.js";
 import type { DiagramSceneFigureProps } from "@sentropic/diagram-canvas/diagramSceneModel";
 export interface HostView { container: HTMLElement; rerender: (props: Partial<DiagramSceneFigureProps>) => Promise<unknown> }
 export type HostMount = (props: DiagramSceneFigureProps) => HostView;
