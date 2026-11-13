@@ -1,8 +1,8 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:ebc398300fbba9fb40da5c78800daa2b2ac00a9e058f8ba093656720e9a64cf8",
-  "entryDigest": "sha256:0ea352fb69eeab7d9e96bf9b19f43fba9fb63e614806213c9ee9f0d428e7e9e5",
+  "digest": "sha256:ea3baaa723bc7f5884ac7ebc0d03b27072ff513a619f71b81ed1853444b0ef23",
+  "entryDigest": "sha256:eec6e895a939b770bbe7c0a14e6cc32d3fa07a167ea3bf6f070d3e32b6d6fac8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1171,7 +1171,7 @@
         "declarationPath": "packages/components-svelte/dist/ComboChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LoadingState.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full loading indicator or skeleton.",
     "fr": "Indicateur de chargement plein ou skeleton."
   },
-  "digest": "sha256:8b5247836823df1cd8d7335067a424ccf5a4ad309e7224ffa5d977b7d706ebb9",
+  "digest": "sha256:ea152c34cf14d71255a46e575972b1ddad9ff3933125c6c447762b76022cc4eb",
   "displayName": "LoadingState",
   "format": "component-entry/v1",
   "frameworks": [

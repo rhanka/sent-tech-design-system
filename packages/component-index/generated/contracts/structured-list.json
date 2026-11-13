@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:7187bef9357de79c185fe01431c61de1aa4f05a442f67ad2a829f5ebfa4bb5d6",
-  "entryDigest": "sha256:5ce0f4b68cc8c1dce0ca9d3b51e30ae039c69516429f8f93821584110d22e688",
+  "digest": "sha256:674f0c041829e43abc64d30b9d61e955fa02a419935d84c044533815539428d5",
+  "entryDigest": "sha256:c829f97b398555db5601ad3e08e7ed260f2d21de9ff773cc4a2dd55d3649e460",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,7 @@
         "declarationPath": "packages/components-svelte/dist/StructuredList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StructuredListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

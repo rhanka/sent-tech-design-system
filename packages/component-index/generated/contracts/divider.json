@@ -1,8 +1,8 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:358736a7c7211b6cd4f7077de98e22bf88e84030ccfdba612bd41c2ae39ee0f9",
-  "entryDigest": "sha256:98c1cea52c6965eccd07dd12ecea4c9162b9e0191fc331471fe7a33f299e0590",
+  "digest": "sha256:df2198f7363b33c2aafc3a8272405e712e23d30964251416fb83b71e62041f19",
+  "entryDigest": "sha256:0cd047cd9601095f14efbfa48544926f41fcc59a1ad25b4d5f329ea71fe705c4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-svelte/dist/Divider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DividerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
