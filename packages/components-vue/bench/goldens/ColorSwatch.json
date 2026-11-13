@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ColorSwatch",
+  "sourceRevision": "70768d54621b11b5e1ccccc1f6ebce744336644c",
+  "source": "src/ColorSwatch.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--square\"><span aria-label=\"#1971c2\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#1971c2;width:24px;height:24px;\"></span></span>"
+    },
+    {
+      "id": "circle",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#e8590c\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#e8590c;width:16px;height:16px;\"></span></span>"
+    },
+    {
+      "id": "pill",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--pill\"><span aria-label=\"Green\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#2f9e44;width:24px;height:24px;\"></span><span class=\"st-colorSwatch__label\">Green</span></span>"
+    },
+    {
+      "id": "custom",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--square consumer\" data-bench=\"swatch\" style=\"color:red;\"><span aria-label=\"#f08c00\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#f08c00;width:24px;height:24px;\"></span></span>"
+    },
+    {
+      "id": "zero-size",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--square\"><span aria-label=\"#000000\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#000000;width:1px;height:1px;\"></span></span>"
+    }
+  ],
+  "sourceSha256": "09d9ca5b1d5af0d66a891735e7c099626d69fd4bc963330d5e3c11ffa00f0db5",
+  "fixtureSha256": "c84deaef7d2848b5e4fa9cdbb4721fe781e16df7716db420d10e28322062c9c8",
+  "publicExports": [
+    {
+      "name": "ColorSwatch",
+      "typeOnly": false
+    },
+    {
+      "name": "ColorSwatchProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ColorSwatchShape",
+      "typeOnly": true
+    }
+  ]
+}
