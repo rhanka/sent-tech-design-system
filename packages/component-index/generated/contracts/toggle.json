@@ -1,7 +1,7 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:ec22c1298512ffe9a67e7b6621c6ccf15caf1e35e396bca4d1f148af87e6193c",
+  "digest": "sha256:fac9b61e28d50515389096a6b3f014f0501f0ca51d96efe4c4a86b598f1f4604",
   "entryDigest": "sha256:aa9fa6131e464dde4bd7d5880f6769ee7499d9d30fa7d4ba7e2ffc715808eb22",
   "format": "component-contract/v1",
   "frameworks": {
@@ -218,7 +218,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -235,7 +239,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -285,6 +293,12 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "helperText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -307,6 +321,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -320,8 +340,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""

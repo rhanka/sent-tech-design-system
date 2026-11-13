@@ -1,7 +1,7 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:e32f4cb846ee94572c1143b75a54e1341aeb5fa7b101c201e92c456feed89d5d",
+  "digest": "sha256:11f8aac65a39338cc136235dca1854cb430275e9b35bf53de741554317ca5859",
   "entryDigest": "sha256:82d4a09ded17cf81539703c4e57933392dae9913be46a34a4e276084ab68c469",
   "format": "component-contract/v1",
   "frameworks": {
@@ -290,7 +290,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -367,6 +371,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -384,7 +394,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:93a93721a6b701f2449fe43a6b6650f3c81eb419e6f8ac087f756c29a420d7f1",
+      "digest": "sha256:8d4f2a2c2a2f3badb4bb9ac014eeb96c7993170795252d5869e73b9da7d93a76",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Portal.ts",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:035d89dd2e0510759f1bfcaa606f29de5159d42597ee6a947db0ada220f0f51e",
+  "digest": "sha256:563d5a620fd8a5e6c637eb572fb47c2bb8a5a98d62cef578494b512f680674cd",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

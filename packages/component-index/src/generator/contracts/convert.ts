@@ -5,8 +5,8 @@ import type { JsonSchema, Loss, LossKind, Replacement } from "./types.js";
 /**
  * Structural type walker (spec 6.2): ts.TypeChecker only. Regex over
  * declaration text for type structure and typeToTypeNode as an oracle are
- * both forbidden; checker.typeToString is used only for verbatim source-type
- * text in loss rows.
+ * both forbidden; checker.typeToString supplies diagnostic text and readable
+ * specialization labels, never type classification or schema structure.
  */
 export interface ConvertState {
   checker: ts.TypeChecker;
@@ -18,8 +18,8 @@ export interface ConvertState {
   dropped: Loss[];
   replaced: Replacement[];
   unresolved: Loss[];
-  /** Type-parameter name to its default type (generic instantiation). */
-  genericDefaults: Map<string, ts.Type>;
+  /** Type-parameter symbol to its default type (generic instantiation). */
+  genericDefaults: Map<ts.Symbol, ts.Type>;
   genericWarned: Set<string>;
   /** Dotted owner prefix for nested loss names ("" at the member level). */
   path: string;
@@ -95,11 +95,12 @@ export type ConvertOutcome = { outcome: "schema"; schema: JsonSchema } | { outco
  */
 export function populateGenericDefaults(state: ConvertState, type: ts.Type, ownerName: string): void {
   const checker = state.checker;
-  const record = (name: string, defaultNode: ts.TypeNode | undefined): void => {
-    if (state.genericDefaults.has(name)) return;
+  const record = (symbol: ts.Symbol, defaultNode: ts.TypeNode | undefined): void => {
+    const name = symbol.name;
+    if (state.genericDefaults.has(symbol)) return;
     if (defaultNode === undefined) return;
     const def = checker.getTypeFromTypeNode(defaultNode);
-    state.genericDefaults.set(name, def);
+    state.genericDefaults.set(symbol, def);
     state.warnings.push(
       `generic type parameter "${name}" of "${ownerName}" instantiated with its default (${typeText(checker, def)})`,
     );
@@ -112,7 +113,7 @@ export function populateGenericDefaults(state: ConvertState, type: ts.Type, owne
       if (name === undefined) continue;
       const declaration = parameter.symbol?.getDeclarations()?.[0];
       record(
-        name,
+        parameter.symbol!,
         declaration !== undefined && ts.isTypeParameterDeclaration(declaration)
           ? declaration.default
           : undefined,
@@ -131,7 +132,10 @@ export function populateGenericDefaults(state: ConvertState, type: ts.Type, owne
       ? declaration.typeParameters
       : undefined;
   if (lists === undefined) return;
-  for (const parameter of lists) record(parameter.name.text, parameter.default);
+  for (const parameter of lists) {
+    const symbol = checker.getSymbolAtLocation(parameter.name);
+    if (symbol) record(symbol, parameter.default);
+  }
 }
 
 /**
@@ -146,8 +150,7 @@ export function convertType(state: ConvertState, type: ts.Type, name: string): C
   if ((type.flags & ts.TypeFlags.TypeParameter) !== 0) {
     // Instantiation (with its single populateGenericDefaults warning site);
     // a parameter with no default is unresolved.
-    const paramName = type.symbol?.name ?? typeText(checker, type);
-    const def = state.genericDefaults.get(paramName);
+    const def = type.symbol && state.genericDefaults.get(type.symbol);
     if (def !== undefined) return convertType(state, def, name);
     recordUnresolved(state, name, "generic", typeText(checker, type), "no default type argument to instantiate");
     return { outcome: "omitted" };
@@ -205,6 +208,13 @@ export function convertType(state: ConvertState, type: ts.Type, name: string): C
     // unresolved. Framework-internal intersections are never expanded.
     const reduced = reduceOpenPrimitive(checker, type as ts.IntersectionType);
     if (reduced !== undefined) return convertType(state, reduced, name);
+    const primitive = (type as ts.IntersectionType).types.find(part =>
+      part.flags === ts.TypeFlags.String || part.flags === ts.TypeFlags.Number || part.flags === ts.TypeFlags.Boolean);
+    if (primitive) {
+      const converted = convertType(state, primitive, name);
+      if (converted.outcome === "schema") recordReplaced(state, name, typeText(checker, type), JSON.stringify(converted.schema), "primitive intersection constraints (including brands) are not represented in JSON");
+      return converted;
+    }
     if (isLibraryType(type)) {
       if (state.payloadMode) {
         recordUnresolved(state, name, "other", typeText(checker, type), "library type has no JSON Schema form");
@@ -405,6 +415,15 @@ function hoistName(state: ConvertState, type: ts.Type): string | undefined {
       !declaration.getSourceFile().fileName.includes("/node_modules/"),
   );
   if (!own) return undefined;
+  const reference = type as ts.TypeReference;
+  const args = type.aliasTypeArguments ?? (reference.target ? state.checker.getTypeArguments(reference) : undefined);
+  const parameters = reference.target?.typeParameters;
+  if (args?.length && args.some((arg, index) => {
+    if ((arg.flags & ts.TypeFlags.TypeParameter) !== 0) return false;
+    const parameter = parameters?.[index];
+    const defaultType = parameter && state.checker.getDefaultFromTypeParameter(parameter);
+    return defaultType === undefined || arg !== defaultType;
+  })) return `${symbol.name}<${args.map(arg => typeText(state.checker, arg)).join(", ")}>`;
   return symbol.name;
 }
 
@@ -443,7 +462,7 @@ function convertObject(state: ConvertState, type: ts.Type, name: string): Conver
   const hoist = hoistName(state, type);
   if (hoist !== undefined) {
     if (state.active.has(hoist) || state.defs.has(hoist)) {
-      return { outcome: "schema", schema: { $ref: `#/$defs/${hoist}` } };
+      return { outcome: "schema", schema: { $ref: definitionRef(hoist) } };
     }
     populateGenericDefaults(state, type, hoist);
     state.defs.set(hoist, {});
@@ -458,11 +477,15 @@ function convertObject(state: ConvertState, type: ts.Type, name: string): Conver
       return { outcome: "omitted" };
     }
     state.defs.set(hoist, built);
-    return { outcome: "schema", schema: { $ref: `#/$defs/${hoist}` } };
+    return { outcome: "schema", schema: { $ref: definitionRef(hoist) } };
   }
   const built = buildObjectSchema(state, type, name);
   if (built === null) return { outcome: "omitted" };
   return { outcome: "schema", schema: built };
+}
+
+function definitionRef(name: string): string {
+  return `#/$defs/${encodeURIComponent(name.replaceAll("~", "~0").replaceAll("/", "~1"))}`;
 }
 
 function convertIntersection(state: ConvertState, type: ts.IntersectionType, name: string): ConvertOutcome {
@@ -516,6 +539,17 @@ function convertIntersection(state: ConvertState, type: ts.IntersectionType, nam
   return { outcome: "schema", schema };
 }
 
+/** Computed symbol keys have no JSON spelling; use declaration text only in losses. */
+export function dropSymbolMember(state: ConvertState, member: ts.Symbol): boolean {
+  const declaration = member.declarations?.find(node => "name" in node && node.name !== undefined && ts.isComputedPropertyName(node.name as ts.Node));
+  const node = declaration && (declaration as ts.NamedDeclaration).name;
+  if (!node || !ts.isComputedPropertyName(node)) return false;
+  const keyType = state.checker.getTypeAtLocation(node.expression);
+  if ((keyType.flags & ts.TypeFlags.ESSymbolLike) === 0) return false;
+  recordDropped(state, `[${node.expression.getText()}]`, "other", typeText(state.checker, state.checker.getTypeOfSymbol(member)), "symbol-keyed member has no JSON property name");
+  return true;
+}
+
 /** Convert the members of an object type; nested losses use owner-prefixed names. */
 export function convertObjectMembers(
   type: ts.Type,
@@ -530,6 +564,7 @@ export function convertObjectMembers(
   const descriptions: Record<string, string> = {};
   const members = [...checker.getPropertiesOfType(type)].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
   for (const member of members) {
+    if (dropSymbolMember(state, member)) continue;
     const memberType = checker.getTypeOfSymbol(member);
     const optional =
       (member.flags & ts.SymbolFlags.Optional) !== 0 || includesUndefined(checker, memberType);
@@ -739,6 +774,7 @@ export function convertSignatureParams(
   checker: ts.TypeChecker,
   signatures: readonly ts.Signature[],
   owner: string,
+  skip = 0,
 ): JsonSchema[] | null {
   if (signatures.length === 0) return null;
   const [first, ...rest] = signatures;
@@ -749,16 +785,22 @@ export function convertSignatureParams(
   const previousPath = state.path;
   state.payloadMode = true;
   state.path = owner;
-  for (const parameter of first.getParameters()) {
+  for (const parameter of first.getParameters().slice(skip)) {
     const parameterType = checker.getTypeOfSymbol(parameter);
-    // Rest parameters (...args: T[]) convert as their array type.
-    const converted = convertType(state, parameterType, parameter.name);
-    if (converted.outcome === "omitted") {
-      state.payloadMode = previousMode;
-      state.path = previousPath;
-      return null;
+    // Vue's public emit overloads use a rest tuple after the event name.
+    // Flatten that tuple; ordinary rest arrays retain their array schema.
+    const declaration = parameter.valueDeclaration;
+    const restTuple = skip > 0 && declaration && ts.isParameter(declaration) && declaration.dotDotDotToken && checker.isTupleType(parameterType);
+    const parameterTypes = restTuple ? checker.getTypeArguments(parameterType as ts.TypeReference) : [parameterType];
+    for (const itemType of parameterTypes) {
+      const converted = convertType(state, itemType, parameter.name);
+      if (converted.outcome === "omitted") {
+        state.payloadMode = previousMode;
+        state.path = previousPath;
+        return null;
+      }
+      schemas.push(converted.schema);
     }
-    schemas.push(converted.schema);
   }
   state.payloadMode = previousMode;
   state.path = previousPath;

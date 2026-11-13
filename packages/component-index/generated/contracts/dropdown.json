@@ -1,7 +1,7 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:1741ee82d490b17a15e88b1f98b9995a09febe1798277d9e2ca41e486d23cadd",
+  "digest": "sha256:c2e62eba876983d2feb95209b8c49a8b752015d477a761ba6191d14f62929d88",
   "entryDigest": "sha256:2cdd8ec21797de2430e0018a7b3ee9a8c2a16028cf1b382d7a50e6a672a612ba",
   "format": "component-contract/v1",
   "frameworks": {
@@ -310,10 +310,18 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -384,6 +392,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -397,8 +417,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
