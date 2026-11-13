@@ -257,13 +257,13 @@ export type {
   ComboChartBarSeries,
   ComboChartLineSeries,
 } from "./ComboChart.js";
-export { GaugeChart } from "./GaugeChart.js";
+export { default as GaugeChart } from "./GaugeChart.vue";
 export type {
   GaugeChartProps,
   GaugeChartTone,
   GaugeChartThreshold,
   GaugeChartFormat,
-} from "./GaugeChart.js";
+} from "./GaugeChart.vue";
 export { SolidGaugeChart } from "./SolidGaugeChart.js";
 export type {
   SolidGaugeChartProps,
