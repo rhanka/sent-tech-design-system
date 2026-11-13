@@ -424,3 +424,12 @@ rtk npm run build
 For printed measurements, use `rtk proxy node ../../node_modules/vitest/vitest.mjs
 run tests/layout/cache-performance.test.ts tests/presentation/diagramSceneModel.test.ts
 --disableConsoleIntercept --reporter=verbose --maxWorkers=1` (one shell command).
+
+## Numbered flows (DC-2c.1)
+
+Measured layouts support `flows.fanOutMax` (default 4), `countTemplate`, engine
+flow tokens, bundles, arrows, badges and internal targets. The pure
+`@sentropic/diagram-canvas/flowModel` subpath owns interaction semantics and
+static `flowMarksSvg`; selection/filter changes require no layout. Shared host
+acceptance cases are imported directly from unpublished `test-support` source. See
+[the contract, Vue handoff and limitations](../../docs/DC2C_NUMBERED_FLOWS.md).

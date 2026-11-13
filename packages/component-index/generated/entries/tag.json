@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tag.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:02ae47fb688323c13e0f01fda3728d950b7149314ce8d0f9925deb10fa445016",
+  "digest": "sha256:c9f137cf2735c0f5d8065b6ca31c6179928c7a3ab3bc853ddb27b5915d315ab9",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

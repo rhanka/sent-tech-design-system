@@ -1,21 +1,25 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
-import { createVaporApp, nextTick, type VaporComponent } from 'vue';
+import { createVaporApp, nextTick, vaporInteropPlugin, type VaporComponent } from 'vue';
 import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend } from '../dist/vapor/index.js';
 import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/index.js';
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 
+import { flowFixture, flowMeasure } from '../../diagram-canvas/test-support/flowFixture.js';
+
 const engine = vi.hoisted(() => ({ create: vi.fn(), destroy: vi.fn() }));
 vi.mock('@sentropic/bpmn-canvas', () => ({ createBpmnCanvas: (...args: unknown[]) => engine.create(...args) }));
 const apps: ReturnType<typeof createVaporApp>[] = [];
 afterEach(() => { apps.splice(0).forEach(app => app.unmount()); document.body.replaceChildren(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
-function mount(component: VaporComponent, props: Record<string, unknown>) {
+function mount(component: VaporComponent, props: Record<string, unknown>, interop = false) {
   const root = document.createElement('div'); document.body.append(root);
   // Vapor raw props represent function-valued inputs as getter sources.
   const inputs = Object.fromEntries(Object.entries(props).map(([key, value]) => [key, typeof value === 'function' ? () => value : value]));
-  const app = createVaporApp(component, inputs); apps.push(app);
+  const app = createVaporApp(component, inputs);
+  if (interop) app.use(vaporInteropPlugin);
+  apps.push(app);
   const vm = app.mount(root); return { root, vm };
 }
 
@@ -71,4 +75,20 @@ it('should preserve exposed scene camera and BPMN readiness in published Vapor m
   expect(bpmn.vm.state).toBe('rendering'); expect(terminal).not.toHaveBeenCalled();
   finish(); await vi.waitFor(() => expect(bpmn.vm.state).toBe('rendered'));
   expect(terminal).toHaveBeenCalledTimes(1);
+});
+
+it('should preserve numbered flow navigation through the published Vapor scene entry', async () => {
+  vi.stubGlobal('matchMedia', () => ({ matches: true }));
+  const fixture = flowFixture(2), onStepChange = vi.fn();
+  const scene = mount(DiagramSceneFigure, {
+    document: fixture.document, registry: fixture.options.registry,
+    bindings: fixture.options.bindings, presentation: fixture.presentation,
+    measureLines: flowMeasure, onStepChange,
+  });
+  await nextTick();
+  expect(scene.root.querySelectorAll('[data-flow-badge]')).toHaveLength(2);
+  const next = [...scene.root.querySelectorAll('button')].find(button => button.textContent === 'Next step')!;
+  next.click(); await nextTick();
+  expect(onStepChange).toHaveBeenCalledExactlyOnceWith(expect.objectContaining({ relation: 'relation:z' }));
+  scene.vm.setZoom(1); expect(scene.vm.getCamera().zoom).toBeGreaterThan(0);
 });

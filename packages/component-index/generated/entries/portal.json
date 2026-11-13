@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Portal.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:563d5a620fd8a5e6c637eb572fb47c2bb8a5a98d62cef578494b512f680674cd",
+  "digest": "sha256:17c75b30b983334b85491c43481ef4eea655b4f2ed7a980c411cb360eaee6cfb",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

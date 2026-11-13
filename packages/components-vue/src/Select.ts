@@ -1,4 +1,4 @@
-import { defineComponent, h, ref } from "vue";
+import { defineComponent, h, ref, type PropType } from "vue";
 import { classNames } from "./classNames.js";
 
 export type SelectSize = "sm" | "md" | "lg";
@@ -29,7 +29,7 @@ function nextId(): string {
 export const Select = defineComponent({
   name: "Select",
   props: {
-    label: { type: [String, Object] as unknown as () => unknown, default: undefined },
+    label: { type: [String, Object] as PropType<string | object>, default: undefined },
     helperText: { type: [String, Object] as unknown as () => unknown, default: undefined },
     errorText: { type: [String, Object] as unknown as () => unknown, default: undefined },
     invalid: { type: Boolean, default: false },
