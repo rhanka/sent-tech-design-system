@@ -122,6 +122,8 @@ try {
     const build = readFileSync(resolve(pkg, 'scripts/build-sfc.mjs'));
     const pin = readFileSync(resolve(bench, 'build-sfc.sha256'), 'utf8').trim();
     if (createHash('sha256').update(build).digest('hex') !== pin) fail('build-sfc.mjs changed: reconcile bench/lib.mjs compiler logic and update build-sfc.sha256');
+    const shared = readFileSync(resolve(pkg, '../../scripts/vue-sfc-build.mjs'));
+    if (createHash('sha256').update(shared).digest('hex') !== readFileSync(resolve(bench, 'shared-build.sha256'), 'utf8').trim()) fail('Shared SFC compiler changed; reconcile the bench compiler');
     for (const mode of ['classic', 'vapor']) compileSfc(source(), file, mode);
     return `Build-script compiler options; classic ${compilers.classic.version}, Vapor ${compilers.vapor.version}`;
   });
@@ -160,7 +162,15 @@ try {
     const ast = ts.createSourceFile(indexFile, index, ts.ScriptTarget.Latest, true);
     const target = `${name}Props`;
     const expectedExports = JSON.parse(readFileSync(resolve(bench, 'goldens', `${name}.json`), 'utf8')).publicExports;
-    if (!Array.isArray(expectedExports) || ![name, target].every(n => expectedExports.some(e => e.name === n))) fail('Missing frozen public export manifest');
+    if (!Array.isArray(expectedExports)) fail('Missing frozen public export manifest');
+    if (!expectedExports.length) {
+      temporary ??= mkdtempSync(resolve(bench, '.tmp-check-'));
+      const probe = resolve(temporary, 'private.ts');
+      writeFileSync(probe, `import Component, { type ${target} } from '../../src/${name}.vue';\nconst component: object | Function = Component;\ntype Props = ${target};\nvoid component;\n`);
+      typecheck([probe]);
+      return 'Internal component; direct default export and Props resolve (no public barrel exports in reference)';
+    }
+    if (![name, target].every(n => expectedExports.some(e => e.name === n))) fail('Missing frozen public export manifest');
     const expectedNames = expectedExports.map(e => e.name);
     const exports = ast.statements.filter(node => ts.isExportDeclaration(node) && node.exportClause && ts.isNamedExports(node.exportClause)
       && node.exportClause.elements.some(e => expectedNames.includes(e.name.text)));
