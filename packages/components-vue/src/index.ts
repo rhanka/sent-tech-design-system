@@ -240,12 +240,12 @@ export type {
   KpiCardDeltaFormat,
   KpiCardTone,
 } from "./KpiCard.js";
-export { ConfigItemCard } from "./ConfigItemCard.js";
+export { default as ConfigItemCard } from "./ConfigItemCard.vue";
 export type {
   ConfigItemCardProps,
   ConfigItem,
   ConfigItemSourceLevel,
-} from "./ConfigItemCard.js";
+} from "./ConfigItemCard.vue";
 export { FieldCard } from "./FieldCard.js";
 export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.js";
 export { ScoreCard } from "./ScoreCard.js";
