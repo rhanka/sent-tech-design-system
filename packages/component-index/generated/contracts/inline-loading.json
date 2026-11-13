@@ -1,7 +1,7 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:4ee0fa8c69b1c7fa79103fbf3b6e5f62e19c55d734b24c1d7e8470f81c7b1f5e",
+  "digest": "sha256:2f5132e1f4f3aa0ebb3e931929ae8610df19d603eafa1a12750977bc59cc9057",
   "entryDigest": "sha256:789079366ae47ad17756371164628ab4312b621ba8c194722faa3d6ccead6a81",
   "format": "component-contract/v1",
   "frameworks": {
@@ -91,7 +91,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InlineLoadingProps",

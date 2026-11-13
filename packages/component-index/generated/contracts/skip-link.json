@@ -1,7 +1,7 @@
 {
   "componentId": "skip-link",
   "contractSource": "derived",
-  "digest": "sha256:129222b3fbdb7c8cc20fd638a2ee9e33878ffb1287ea5ff5e87b93fab835b1f6",
+  "digest": "sha256:20a2ae2b323a44d01b364d47aa4111c987fb103853d311da3069ecf8980000c2",
   "entryDigest": "sha256:ac4ed77930280614a4268c2dfca30759625d95f0990628955f5d5251176144df",
   "format": "component-contract/v1",
   "frameworks": {
@@ -64,7 +64,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SkipLinkProps",
