@@ -532,8 +532,8 @@ export type {
 } from "./SelectableRow.js";
 export { SelectableList } from "./SelectableList.js";
 export type { SelectableListProps } from "./SelectableList.js";
-export { BulletChart } from "./BulletChart.js";
-export type { BulletChartProps, BulletChartDatum } from "./BulletChart.js";
+export { default as BulletChart } from "./BulletChart.vue";
+export type { BulletChartProps, BulletChartDatum } from "./BulletChart.vue";
 export { LollipopChart } from "./LollipopChart.js";
 export type { LollipopChartProps, LollipopChartDatum, LollipopChartTone } from "./LollipopChart.js";
 export { ColumnRangeChart } from "./ColumnRangeChart.js";
