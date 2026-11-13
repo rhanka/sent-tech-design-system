@@ -334,8 +334,8 @@ export type {
   DecompositionTreeLevel,
   DecompositionTreeData,
 } from "./DecompositionTreeChart.vue";
-export { Density2DChart } from "./Density2DChart.js";
-export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.js";
+export { default as Density2DChart } from "./Density2DChart.vue";
+export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.vue";
 export { GeoChart } from "./GeoChart.js";
 export type {
   GeoChartProps,
