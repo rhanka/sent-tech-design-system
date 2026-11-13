@@ -1,7 +1,7 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:abbcba9b18f93e2d035a0f49802680952f41b0f207ca9bca2b5532f7a46c7b59",
+  "digest": "sha256:5a190c41344d6fc142e65dababeab9e5180e541bea4f6fc5ddbcd6c46a0efb87",
   "entryDigest": "sha256:ced8097e53645810cb3fe78549b0cd1ae1dd59eb387a760413571d99518bcfdb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -787,10 +787,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -853,10 +853,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]

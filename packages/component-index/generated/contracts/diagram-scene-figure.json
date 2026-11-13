@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:cc466ca2b721e2d3ec0eab418b0dacebdeb78af82a301f155d7352ef45b4b099",
-  "entryDigest": "sha256:d575dcbf4a879cd3ebad8332ed92fa28cafa2b61617b4ec00203927069768408",
+  "digest": "sha256:d354406b3e9fe5c1cf7cf7b953c7bcc7cf6df578fce05a136d8dd45a2b4f033c",
+  "entryDigest": "sha256:f136b5158a49269c9732217d218828195a428dad8c46f18ab155a99f5f4cfcbf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -159,6 +159,19 @@
               }
             ],
             "type": "array"
+          }
+        },
+        {
+          "name": "onHighlightChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EffectiveTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         {
@@ -427,6 +440,15 @@
           }
         },
         {
+          "name": "onScenarioChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
           "name": "onSelect",
           "payload": {
             "additionalProperties": false,
@@ -445,6 +467,19 @@
           "name": "onSizeChange",
           "payload": {
             "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "onStepChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/StepChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       ],
@@ -747,6 +782,70 @@
             "required": [
               "height",
               "width"
+            ],
+            "type": "object"
+          },
+          "EffectiveTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "step": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "visible"
             ],
             "type": "object"
           },
@@ -2794,6 +2893,82 @@
             ],
             "type": "object"
           },
+          "StepChange": {
+            "additionalProperties": false,
+            "properties": {
+              "ordinal": {
+                "type": "number"
+              },
+              "realises": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              },
+              "scenario": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "ordinal",
+              "relation",
+              "scenario",
+              "visible"
+            ],
+            "type": "object"
+          },
           "StructAttributeValue": {
             "additionalProperties": false,
             "properties": {
@@ -3631,6 +3806,12 @@
         },
         "additionalProperties": false,
         "properties": {
+          "activeStep": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "bindings": {
             "$ref": "#/$defs/ExecutorProfileBindings"
           },
@@ -3647,6 +3828,9 @@
           "contentSize": {
             "$ref": "#/$defs/DiagramSceneSize"
           },
+          "defaultActiveStep": {
+            "type": "string"
+          },
           "defaultFolds": {
             "description": "Initial collapsed occurrence ids when `collapsed` is not controlled.",
             "items": {
@@ -3654,8 +3838,20 @@
             },
             "type": "array"
           },
+          "defaultScenario": {
+            "type": "string"
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
+          },
+          "flows": {
+            "additionalProperties": false,
+            "properties": {
+              "fanOutMax": {
+                "type": "number"
+              }
+            },
+            "type": "object"
           },
           "hints": {
             "$ref": "#/$defs/LayoutHints",
@@ -3714,6 +3910,12 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "scenario": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "strictIcons": {
             "type": "boolean"
@@ -3993,7 +4195,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a89bf758a4373c1913a5d2351ecb22774ea85b86a2cd72ec78f275277716a95a",
+        "declarationDigest": "sha256:ebfc6246b87514647f6791154de5c1cdb589489f1803c2018fc82d87cc2685d0",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",

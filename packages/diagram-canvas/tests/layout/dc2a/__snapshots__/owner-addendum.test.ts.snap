@@ -488,8 +488,8 @@ exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards,
       {
         "height": 22,
         "width": 144.84425280000005,
-        "x": 3652,
-        "y": 337.125,
+        "x": 2379.5778736,
+        "y": 536.5625,
       },
     ],
     [
@@ -2683,7 +2683,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 177.0137664,
-        "x": 1127.8043168000002,
+        "x": 1140.8043168000002,
         "y": 1033.8125,
       },
     ],
@@ -2695,7 +2695,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 195.14607360000002,
-        "x": 1546.2381632000001,
+        "x": 1575.2381632000001,
         "y": 1033.8125,
       },
     ],
@@ -2707,7 +2707,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 243.02587200000005,
-        "x": 1461.3087168000002,
+        "x": 1474.3087168000002,
         "y": 1696.1875,
       },
     ],
@@ -2731,8 +2731,8 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 297.81571199999996,
-        "x": 684.7145440000002,
-        "y": 1710.375,
+        "x": 1067.6224000000002,
+        "y": 1709.1666666666667,
       },
     ],
     [
@@ -2743,7 +2743,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 289.33056960000005,
-        "x": 2254.8556208000005,
+        "x": 2280.8556208000005,
         "y": 1647.1875,
       },
     ],
@@ -2815,7 +2815,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 263.99247360000004,
-        "x": 1612.028432,
+        "x": 1631.2015391999998,
         "y": 1438.375,
       },
     ],
@@ -2827,7 +2827,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 277.2224736,
-        "x": 1582.7984320000005,
+        "x": 1610.5865392,
         "y": 1464.375,
       },
     ],
@@ -2839,7 +2839,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 22,
         "width": 204.39850560000005,
-        "x": 1671.6224000000002,
+        "x": 1674.9985232,
         "y": 1412.375,
       },
     ],
@@ -2931,7 +2931,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 950.8125,
         "width": 1636,
-        "x": 1848.0209056000003,
+        "x": 1874.0209056000003,
         "y": 1059.8125,
       },
     ],
@@ -2948,7 +2948,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       "occurrence:e.sys-sentropic",
       {
         "height": 729.625,
-        "width": 1635.6224000000002,
+        "width": 1661.6224000000002,
         "x": 0,
         "y": 1059.8125,
       },
@@ -3003,7 +3003,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 408.8125,
         "width": 492,
-        "x": 1864.0209056000003,
+        "x": 1890.0209056000003,
         "y": 1234.375,
       },
     ],
@@ -3048,7 +3048,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 200,
         "width": 460,
-        "x": 1159.6224000000002,
+        "x": 1185.6224000000002,
         "y": 1234.375,
       },
     ],
@@ -3057,7 +3057,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 200,
         "width": 460,
-        "x": 1864.0209056000003,
+        "x": 1890.0209056000003,
         "y": 1715.1875,
       },
     ],
@@ -3075,7 +3075,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 200,
         "width": 460,
-        "x": 1880.0209056000003,
+        "x": 1906.0209056000003,
         "y": 1377.75,
       },
     ],
@@ -3138,7 +3138,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 200,
         "width": 460,
-        "x": 2452.0209056000003,
+        "x": 2478.0209056000003,
         "y": 1234.375,
       },
     ],
@@ -3183,7 +3183,7 @@ exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons an
       {
         "height": 200,
         "width": 460,
-        "x": 3008.0209056000003,
+        "x": 3034.0209056000003,
         "y": 1234.375,
       },
     ],

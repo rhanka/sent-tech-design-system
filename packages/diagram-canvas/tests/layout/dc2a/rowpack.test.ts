@@ -165,7 +165,7 @@ describe("DC-2a L2 row-pack gates", () => {
         expect(frameFit({ width: 460, height: 200 }).zoomFit).toBe(MAX_DISPLAY_SCALE);
         expect(frame.capped, `${extent} at ${scale}`).toBe(false);
         expect(frame.fit.zoomFit).toBeCloseTo(scale, 12);
-        if (scale < DEFAULT_MIN_READABLE_SCALE) expect(frame.fit.zoom).toBe(frame.fit.zoomFit);
+        if (scale < DEFAULT_MIN_READABLE_SCALE) expect(frame.fit.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
         else expect(Math.round(frame.fit.zoomFit * 1000) / 1000).toBe(MAX_DISPLAY_SCALE);
       }
     }
@@ -508,7 +508,7 @@ describe("DC-2a L2 row-pack gates", () => {
       const metrics = after[view.key]!;
       const layout = layouts.get(view.key)!;
       expect(metrics.displayScale, view.key).toBeGreaterThan(0);
-      expect(sceneFrame(layout).fit.zoom).toBe(sceneFrame(layout).fit.zoomFit);
+      expect(sceneFrame(layout).fit.zoom).toBe(Math.max(DEFAULT_MIN_READABLE_SCALE, sceneFrame(layout).fit.zoomFit));
       expect(metrics.displayScale, view.key).toBeLessThanOrEqual(MAX_DISPLAY_SCALE);
       expect(metrics.edgeLabelCssPx, view.key).toBeCloseTo(metrics.displayScale * EDGE_LABEL_FONT_SIZE, 1);
       // The frame scale is the shipped fit of the entity bbox, not a harness formula.

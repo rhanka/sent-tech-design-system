@@ -1,5 +1,8 @@
 # PR 277 — A14, A9 et corrections du probe h-cond
 
+Historique du premier passage. Les corrections et le contrat A13 actuels
+sont décrits dans [le second passage](dc2a-probe2-fixes.md).
+
 Les cartes de composant restent **460 × 200**, y compris repliées. Kicker et
 pied ont une ligne, le titre au plus deux, corps et détail partagent le
 reste. Une ligne de corps est réservée quand du contenu existe ; le titre
