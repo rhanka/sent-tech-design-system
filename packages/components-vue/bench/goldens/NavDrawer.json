@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "NavDrawer",
+  "sourceRevision": "7333dc9c7e16c845ebd301df84f8d09a64d7a83b",
+  "source": "src/NavDrawer.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Navigation\" aria-modal=\"true\" class=\"st-drawer st-drawer--left st-navShell st-navShell--drawer\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Navigation</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\"><header class=\"st-navShell__header\"><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Navigation</p></div></header><div class=\"st-navShell__body\"><a>Home</a></div></div></aside></div>"
+    },
+    {
+      "id": "back-search-footer",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Menu\" aria-modal=\"true\" class=\"st-drawer st-drawer--right st-navShell st-navShell--drawer\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Menu</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\"><header class=\"st-navShell__header\"><button aria-label=\"Back\" class=\"st-navShell__back\" type=\"button\">←</button><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Menu</p><p class=\"st-navShell__subtitle\">Sections</p></div></header><div class=\"st-navShell__search\"><input></div><div class=\"st-navShell__body\"><a>Item</a></div></div><div class=\"st-drawer__footer\"><button>Logout</button></div></aside></div>"
+    },
+    {
+      "id": "closed",
+      "html": ""
+    },
+    {
+      "id": "no-title",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Navigation\" aria-modal=\"true\" class=\"st-drawer st-drawer--left st-navShell st-navShell--drawer\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Navigation</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\"><div class=\"st-navShell__body\"><span>Links</span></div></div></aside></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-drawer__backdrop\" data-bench=\"drawer\" data-testid=\"st-drawer-backdrop\" role=\"presentation\" style=\"color:red;\"><aside aria-label=\"Attrs\" aria-modal=\"true\" class=\"st-drawer st-drawer--left st-navShell st-navShell--drawer consumer\" data-bench=\"drawer\" role=\"dialog\" style=\"color:red;\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Attrs</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\"><header class=\"st-navShell__header\"><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Attrs</p></div></header><div class=\"st-navShell__body\">Body</div></div></aside></div>"
+    }
+  ],
+  "sourceSha256": "5c6f85b76748c62a235bdea818e85c7f26ab24a0907e3626f9ecf00f37e138ab",
+  "fixtureSha256": "ca993365cf9730aa65530f4fde5c784099a2a76ba6e78028947cab561dcee21e",
+  "publicExports": [
+    {
+      "name": "NavDrawer",
+      "typeOnly": false
+    },
+    {
+      "name": "NavDrawerProps",
+      "typeOnly": true
+    }
+  ]
+}
