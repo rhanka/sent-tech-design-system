@@ -1,7 +1,7 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:27cac144e8bd93f700cf925c928960ad2367d70d015f64c21fa6be9ebc78e54b",
+  "digest": "sha256:f890bd1b6af46343bd65cdb832051b5efece071144ee6115b068716c86db406c",
   "entryDigest": "sha256:0c76d4f7040bfaeb14572a1b09a1292834a761c5b4912e1d2655ee27a4598e6b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -156,7 +156,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TextareaProps",

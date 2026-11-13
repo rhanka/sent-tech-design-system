@@ -1,7 +1,7 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:c0fad5ae00bf33bea9e59888d33509bd83f78fdb1d912fd43b61a019d10787af",
+  "digest": "sha256:24e83b63867a3efd528ea51d50bcdc19bf7e1ffc2a337c39fe89b7d8dd4d2898",
   "entryDigest": "sha256:6685187e5c2bdb08d19402083414b2ea0e086c88e0b1182fa8192173ca789456",
   "format": "component-contract/v1",
   "frameworks": {
@@ -85,7 +85,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "QuoteProps",

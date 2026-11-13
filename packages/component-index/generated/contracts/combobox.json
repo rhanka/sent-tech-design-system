@@ -1,7 +1,7 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:c88aea30263c2a4242e15e41ecba32c237260a4709b1b0a9b95402f7eb1b6222",
+  "digest": "sha256:523c1eb3d25b57503b1a5f6a08cd68be1fd51f52ca36372ee3232217ec9341f3",
   "entryDigest": "sha256:ebcc042eb1c302b771fbaffee8030ff35a022781e7a4e48a70249c8c8f548970",
   "format": "component-contract/v1",
   "frameworks": {
@@ -257,7 +257,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ComboboxProps",

@@ -3658,7 +3658,7 @@ export type MenuProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onSelect"> &
    * with a single argument (AC-01). */
   onSelect?: (item: MenuActionItem, path?: string[]) => void;
 };
-export function Menu({ items, dense = false, submenuSide = "auto", onSelect, className, role, id, "aria-label": ariaLabel, ...rest }: MenuProps) {
+export function Menu({ items, dense = false, submenuSide = "auto", onSelect, className, role, id, "aria-label": ariaLabel, "aria-labelledby": ariaLabelledBy, ...rest }: MenuProps) {
   const hostContext = React.useContext(MenuHostContext);
   const isNested = hostContext !== null;
   const fallbackIdRef = React.useRef("");
@@ -3910,15 +3910,14 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
   React.useEffect(() => {
     if (destroyedRef.current || openPath.length === 0) return;
     computeAllPositions();
-    let raf: number | undefined;
     if (typeof requestAnimationFrame === "function") {
       rafIdRef.current = requestAnimationFrame(() => {
         rafIdRef.current = undefined;
         if (!destroyedRef.current) computeAllPositions();
       });
     }
-    void raf;
-  }, [openPath]);
+    return cancelDeferredPositions;
+  }, [openPath, submenuSide, items]);
 
   React.useEffect(() => {
     if (openPath.length === 0) return;
@@ -3929,7 +3928,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
       window.removeEventListener("scroll", recompute, true);
       window.removeEventListener("resize", recompute);
     };
-  }, [openPath]);
+  }, [openPath, submenuSide, items]);
 
   // Enter/Space and the opening arrow focus the first enabled sub item once
   // the panel has rendered (§3.2, AC-05/AC-06).
@@ -4039,6 +4038,11 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
 
   function onParentPointerEnter(depth: number, index: number, event: React.PointerEvent) {
     if (!isMouseEvent(event) || !hasCascade) return;
+    if (openPath[depth] === index) {
+      // Re-entry cancels closure without reopening and truncating descendants.
+      cancelAllTimers();
+      return;
+    }
     // Safe-triangle priority: crossings during the diagonal arm nothing (§3.3).
     if (pointInActiveTriangle(depth, { x: event.clientX, y: event.clientY })) return;
     cancelCloseTimer();
@@ -4386,6 +4390,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
       <div
         {...rest}
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         ref={(el: HTMLDivElement | null) => {
           if (el) levelElsRef.current.set(0, el);
           else levelElsRef.current.delete(0);
@@ -4411,6 +4416,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
         role="menu"
         id={rootId}
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         tabIndex={-1}
         data-menu-level="0"
         ref={(el: HTMLDivElement | null) => {
@@ -4585,7 +4591,9 @@ export function MenuPopover({
     // Menu invokes the leaf callback before relaying selection.
     if (cascade) onSelect?.(item, path);
     else onSelect?.(item);
-    setOpen(false);
+    // Cascade selection closes through Menu.requestClose, which also handles
+    // keyboard focus return. Flat menus keep the legacy host close path.
+    if (!cascade) setOpen(false);
   }
 
   const computePosition = React.useCallback(() => {
@@ -4775,6 +4783,7 @@ export function MenuPopover({
           // menus and `role="menu"` when `children` are present.
           <Menu
             items={items}
+            aria-label={label}
             role={itemsCascade ? "menu" : "presentation"}
             onSelect={handleMenuSelect}
             submenuSide={submenuSide}
@@ -5277,7 +5286,8 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
     // Menu invokes the leaf callback before relaying selection.
     if (cascade) onSelect?.(item, path);
     else onSelect?.(item);
-    setOpen(false);
+    // The cascade Menu owns closing and modality-specific focus return.
+    if (!cascade) setOpen(false);
   }
 
   React.useEffect(() => {
@@ -5319,7 +5329,8 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
         aria-label={text(label)}
         onClick={() => {
           if (open) setOpen(false);
-          else openAndFocus();
+          else if (cascade) openAndFocus();
+          else setOpen(true);
         }}
         onKeyDown={(event) => {
           if (!["ArrowDown", "Enter", " "].includes(event.key)) return;
@@ -5333,7 +5344,7 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
       {open ? (
         <div className={classNames("st-overflowMenu__list", `st-overflowMenu__list--${placement}`)}>
           <MenuHostContext.Provider value={hostContext}>
-            <Menu items={items} onSelect={handleMenuSelect} submenuSide={submenuSide} />
+            <Menu items={items} aria-label={text(label)} onSelect={handleMenuSelect} submenuSide={submenuSide} />
           </MenuHostContext.Provider>
         </div>
       ) : null}
