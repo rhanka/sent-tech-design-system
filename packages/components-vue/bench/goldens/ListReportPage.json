@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "ListReportPage",
+  "sourceRevision": "cf6c4c5d8d745149bc0094c6ae2b23746868267e",
+  "source": "src/ListReportPage.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-lrp\"><div class=\"st-lrp__body\"><aside class=\"st-lrp__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-lrp__main\"><div class=\"st-lrp__titlebar\"><h1 class=\"st-lrp__title\">Orders</h1><div class=\"st-lrp__actions\"></div></div><div class=\"st-lrp__toolbar\"><input class=\"st-lrp__search\" placeholder=\"Search…\" type=\"search\"></div><table class=\"st-lrp__table\"><thead><tr><th class=\"st-lrp__th\">ID</th><th class=\"st-lrp__th\">Total</th></tr></thead><tbody></tbody></table></main></div></div>"
+    },
+    {
+      "id": "full",
+      "html": "<div class=\"st-lrp\"><div class=\"st-lrp__body\"><aside class=\"st-lrp__aside\"><div class=\"st-lrp__app-title\">Acme</div><nav class=\"st-sidenav\"><a class=\"st-sidenav__item\" href=\"/\">Home</a><a class=\"st-sidenav__item st-sidenav__item--active\" href=\"/orders\">Orders</a></nav></aside><main class=\"st-lrp__main\"><div class=\"st-lrp__titlebar\"><h1 class=\"st-lrp__title\">Orders</h1><div class=\"st-lrp__actions\"><button class=\"st-button st-button--secondary\" type=\"button\">Filter</button><button class=\"st-button st-button--primary\" type=\"button\">Export</button></div></div><div class=\"st-lrp__toolbar\"><input class=\"st-lrp__search\" placeholder=\"Search…\" type=\"search\"></div><table class=\"st-lrp__table\"><thead><tr><th class=\"st-lrp__th\">ID</th><th class=\"st-lrp__th\">Total</th><th class=\"st-lrp__th\">Status</th></tr></thead><tbody><tr><td class=\"st-lrp__td\">o1</td><td class=\"st-lrp__td\">42</td><td class=\"st-lrp__td\">Paid</td></tr><tr><td class=\"st-lrp__td\">o2</td><td class=\"st-lrp__td\">7</td><td class=\"st-lrp__td\"></td></tr></tbody></table></main></div></div>"
+    },
+    {
+      "id": "empty-rows",
+      "html": "<div class=\"st-lrp\"><div class=\"st-lrp__body\"><aside class=\"st-lrp__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-lrp__main\"><div class=\"st-lrp__titlebar\"><h1 class=\"st-lrp__title\">None</h1><div class=\"st-lrp__actions\"></div></div><div class=\"st-lrp__toolbar\"><input class=\"st-lrp__search\" placeholder=\"Find…\" type=\"search\"></div><table class=\"st-lrp__table\"><thead><tr><th class=\"st-lrp__th\">A</th></tr></thead><tbody></tbody></table></main></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-lrp consumer\" data-bench=\"lrp\" style=\"color:red;\"><div class=\"st-lrp__body\"><aside class=\"st-lrp__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-lrp__main\"><div class=\"st-lrp__titlebar\"><h1 class=\"st-lrp__title\">T</h1><div class=\"st-lrp__actions\"></div></div><div class=\"st-lrp__toolbar\"><input class=\"st-lrp__search\" placeholder=\"Search…\" type=\"search\"></div><table class=\"st-lrp__table\"><thead><tr><th class=\"st-lrp__th\">A</th></tr></thead><tbody></tbody></table></main></div></div>"
+    }
+  ],
+  "sourceSha256": "6bbb30ff9973ae1f9fc32e970470ebafe3b47281dddd9ff1d5f06fccab44b141",
+  "fixtureSha256": "0290f2b1be0e4634ee4c133c20bd1b944293a0738af82c1b66ad1ae9c439e14d",
+  "publicExports": [
+    {
+      "name": "ListReportPage",
+      "typeOnly": false
+    },
+    {
+      "name": "ListReportPageProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ListReportPageNavItem",
+      "typeOnly": true
+    },
+    {
+      "name": "ListReportPageColumn",
+      "typeOnly": true
+    },
+    {
+      "name": "ListReportPageRow",
+      "typeOnly": true
+    },
+    {
+      "name": "ListReportPageAction",
+      "typeOnly": true
+    },
+    {
+      "name": "ListReportPageFilter",
+      "typeOnly": true
+    }
+  ]
+}
