@@ -1,7 +1,7 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:6063526c3150d8fe162770a9fc689624691c484a33851bbe3e5b4f84bf536fef",
+  "digest": "sha256:d37afe0c1b339c6470861f15c6f6a32c53abac483a10f235a90dd228042c1b55",
   "entryDigest": "sha256:16c7a8000b329b04ee2bb5e9c17c1ef2535fa64d96c121e4c618b01d14a42e04",
   "format": "component-contract/v1",
   "frameworks": {
@@ -125,7 +125,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BreadcrumbProps",

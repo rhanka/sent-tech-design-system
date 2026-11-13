@@ -1,7 +1,7 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:5f8680ec4141dc18368e4fcc17347ca150ce530bdc0cd347eeaa94e70d660114",
+  "digest": "sha256:4e67ffd1111c155e2eb200ed95fcd2b96879c4e553b29bd8b5630a0f3972f325",
   "entryDigest": "sha256:29ba98e6bd30acc69223f1958ce0509a431c247bc223b3bc1d7e9d59050d8bee",
   "format": "component-contract/v1",
   "frameworks": {
@@ -140,7 +140,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterPillProps",

@@ -1,7 +1,7 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:8416eb1fd6471b51c9f16e1edaf12d83da2903dd1bee40214dbd3ee060dbf8e6",
+  "digest": "sha256:2973eeca59b58f883bcad96715b16fc13f1d40b1778eb5502003a084f1b1691d",
   "entryDigest": "sha256:c83bfbd8421081fef43830106896fc00c556af98fef5172ced47733ac638d03c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -91,7 +91,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HighlightProps",

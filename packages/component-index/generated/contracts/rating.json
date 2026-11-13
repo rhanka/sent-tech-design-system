@@ -1,7 +1,7 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:826bfc650c521db57176662bc2d1c603af240267e6ea45bac6d691e1ed81254f",
+  "digest": "sha256:d62b9bf911dcf82cd9cc8cffafa4e6520c37e1d3b7ddb1d5dd1c54274ed9c2a4",
   "entryDigest": "sha256:8f9cdc90f9b57f883cd71c9145c598dc080272ad766867f2f56d124cfe9a78ed",
   "format": "component-contract/v1",
   "frameworks": {
@@ -137,7 +137,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RatingProps",
