@@ -9,7 +9,7 @@ import MekkoChart from './MekkoChart.vue';
 import PackedBubbleChart from './PackedBubbleChart.vue';
 import RadarChart from './RadarChart.vue';
 import RoseChart from './RoseChart.vue';
-import { SankeyChart } from './SankeyChart.js';
+import SankeyChart from './SankeyChart.vue';
 import { SunburstChart } from './SunburstChart.js';
 import { TreemapChart } from './TreemapChart.js';
 import { WaterfallChart } from './WaterfallChart.js';
