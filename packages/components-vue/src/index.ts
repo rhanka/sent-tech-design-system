@@ -359,8 +359,8 @@ export type {
 } from "./GeoChart.js";
 export { FunnelChart } from "./FunnelChart.js";
 export type { FunnelChartProps, FunnelChartTone, FunnelChartDatum } from "./FunnelChart.js";
-export { WaterfallChart } from "./WaterfallChart.js";
-export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.js";
+export { default as WaterfallChart } from "./WaterfallChart.vue";
+export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.vue";
 export { TreemapChart } from "./TreemapChart.js";
 export type {
   TreemapChartProps,
