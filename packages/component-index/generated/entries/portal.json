@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Portal.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Portal.ts",
-      "version": "0.39.0"
+      "version": "0.39.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:e3e991cb62444b50260c9e2cafaf941fad53397c5b30dfe59f2194df0e871d36",
+  "digest": "sha256:80018fd8469c0983be46e422e865ff83d07fb46c96a0de6cb4982e90d2423666",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

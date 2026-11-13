@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RenkoChart.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RenkoChart.ts",
-      "version": "0.39.0"
+      "version": "0.39.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Renko bricks: from a price series, stacks fixed-size bricks (boxSize) while ignoring regular time.",
     "fr": "Briques Renko : à partir d'une série de prix, empile des briques d'une taille fixe (boxSize) en ignorant le temps régulier."
   },
-  "digest": "sha256:aec434f0fc990e4e3601fdbfd1b5679f7d5d10e51cc06f597bb4dbae63c36e6a",
+  "digest": "sha256:78ff89f381bcb904d677e8b9c19ceca3fa93485e6399d12bdd33bc834823d35b",
   "displayName": "RenkoChart",
   "format": "component-entry/v1",
   "frameworks": [
