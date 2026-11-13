@@ -1,3 +1,5 @@
+import { measureErdCard, renderErdMarkerSvg, erdText, wrapErdText, placeErdRoleLabels, ERD_GEOMETRY, type ErdCard } from "./erd.js";
+import type { EntityRef, ErdCardinality } from "@sentropic/diagram-core";
 /**
  * `DiagramSceneFigure` — the pure half of the scene host (DC-2a lot L4,
  * SPEC_EVOL_DC2A §4.3, §5, §6.7, Appendix D).
@@ -154,7 +156,7 @@ export function collapsedOccurrencesOf(view: SceneView | undefined): SceneOccurr
   return found;
 }
 
-export type SceneNodeKind = "card" | "zone" | "legend-key" | "label";
+export type SceneNodeKind = "card" | "zone" | "legend-key" | "label" | "erd";
 
 export interface SceneNodeModel {
   readonly occurrence: SceneOccurrenceRef;
@@ -166,17 +168,21 @@ export interface SceneNodeModel {
   readonly presentation?: EntityPresentation;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
+  readonly erd?: ErdCard;
 }
 
 export interface SceneEdgeModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly points: readonly Vec2[];
+  readonly markers?: string;
 }
 
 export interface SceneLabelModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly lines: readonly string[];
   readonly box: Rect;
+  readonly leader?: readonly Vec2[];
+  readonly erd?: boolean;
 }
 
 export interface SceneModel {
@@ -224,8 +230,9 @@ export function resolveScene(
     const presentation = input.presentation.entities[node.occurrence] as EntityPresentation | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
+    const erd = input.document.entities[node.entity]?.profile === "erd@1";
     const kind: SceneNodeKind =
-      form === "legend-key"
+      erd ? "erd" : form === "legend-key"
         ? "legend-key"
         : !titled
           ? "label"
@@ -238,7 +245,8 @@ export function resolveScene(
       occurrence: node.occurrence,
       entity: node.entity,
       kind,
-      collapsed: kind === "zone" && collapsed.has(node.occurrence),
+      collapsed: (kind === "zone" || kind === "erd") && collapsed.has(node.occurrence),
+      ...(erd ? { erd: measureErdCard(input.document, node.entity as EntityRef, collapsed.has(node.occurrence), input.measureLines) } : {}),
       rect: node.rect,
       ...(presentation === undefined ? {} : { presentation }),
       text: presentation?.text.title ?? presentation?.text.body ?? "",
@@ -275,9 +283,17 @@ export function resolveScene(
     if (occurrence.waypoints === undefined) continue;
     const points = relationRoute(view, occurrence.id) ?? [];
     if (points.length < 2) continue;
-    edges.push({ occurrence: occurrence.id, points });
+    const semantic = input.document.relations[occurrence.relation];
+    let markers: string | undefined;
+    if (semantic?.profile === 'erd@1') {
+      const first = points[0]!, second = points[1]!, last = points[points.length-1]!, before = points[points.length-2]!;
+      markers = renderErdMarkerSvg(erdText(semantic.attributes,'fromCardinality') as ErdCardinality, first, {x:second.x-first.x,y:second.y-first.y}) + renderErdMarkerSvg(erdText(semantic.attributes,'toCardinality') as ErdCardinality,last,{x:before.x-last.x,y:before.y-last.y});
+    }
+    edges.push({ occurrence: occurrence.id, points, ...(markers === undefined ? {} : { markers }) });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
-    const label = edgeLabelOf(input.document, occurrence.relation);
+    const label = semantic?.profile === 'erd@1'
+      ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
+      : edgeLabelOf(input.document, occurrence.relation);
     if (label === undefined) continue;
     const layout = measuredLabels.get(id) ?? input.measureLines({
       text: label,
@@ -286,18 +302,22 @@ export function resolveScene(
       allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
       folded: false,
     });
-    labelLines.set(id, layout.lines);
-    entries.push({ id, route: points, size: { width: layout.width, height: layout.height } });
+    const lines = semantic?.profile === 'erd@1' ? wrapErdText(label, ERD_GEOMETRY.labelWidth, input.measureLines) : layout.lines;
+    labelLines.set(id, lines);
+    entries.push({ id, route: points, size: semantic?.profile === 'erd@1' ? { width: ERD_GEOMETRY.labelWidth, height: lines.length * ERD_GEOMETRY.lineHeight } : { width: layout.width, height: layout.height } });
   }
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const labels: SceneLabelModel[] = [];
   let bounds = frame.bounds;
-  const placements = result.labelBoxes === undefined
-    ? placeEdgeLabels(entries, blockers, margin)
-    : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
+  const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
+  const placements = erd
+    ? placeErdRoleLabels(entries, blockers, margin)
+    : result.labelBoxes === undefined
+      ? placeEdgeLabels(entries, blockers, margin)
+      : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
   for (const [id, placement] of placements) {
     if (placement === undefined) continue;
-    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box });
+    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}) });
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
