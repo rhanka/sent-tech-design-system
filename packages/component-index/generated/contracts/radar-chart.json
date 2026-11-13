@@ -1,8 +1,8 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:7aa7601f177d8d13dca26f52afa784263c62976e4911f7e24f5f913bdb0a68c9",
-  "entryDigest": "sha256:73a11b67d3de87812a354f718560b09af5a2fafee1e75db6ea6180476271b6fb",
+  "digest": "sha256:4b369ef9d97dcc3989dac31ba44175523aebcf9202a2f06533a71f666a3fc7a5",
+  "entryDigest": "sha256:931ff06724a08b84a176f14e44de9d44c470f5cc5cad4e5bd25d8e253ae0159f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -390,7 +390,7 @@
         "declarationPath": "packages/components-vue/dist/RadarChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadarChartProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],

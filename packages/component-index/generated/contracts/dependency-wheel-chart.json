@@ -1,8 +1,8 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:656c675b94d60a1d1e3f5e3ce5fa62dab4a089d2d316f1e42393178ffcb2a88d",
-  "entryDigest": "sha256:5de34b2607d432e4c81aa850e4f5fa29e3cd1ad82d79df3a3ac0ef8a40a205df",
+  "digest": "sha256:af8ef5435cf70d40ec2c4c5535f1b57b916d02fef9722254127ce185f45bd56f",
+  "entryDigest": "sha256:39fd1b29fd5bd66d9bde419f2515b7303dbe75d02340fd10719416bfba178122",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -341,7 +341,7 @@
         "declarationPath": "packages/components-vue/dist/DependencyWheelChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],

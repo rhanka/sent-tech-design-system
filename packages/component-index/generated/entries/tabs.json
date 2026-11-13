@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tabs.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:94358460a7ffe2c1566462ec89c24f3c1c91b4d36476d2aa974fc7dcc0bc6d21",
+  "digest": "sha256:51d7bf0b972b0e2f39ad8014f2456422e84849c91478382c9a9d2dde07886db6",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

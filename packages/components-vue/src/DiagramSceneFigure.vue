@@ -290,10 +290,15 @@ onMounted(() => {
     mountedViewport = viewportEl.value;
     mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
     if (props.measure === undefined && props.measureLines === undefined) {
-        void document.fonts?.ready.then(() => {
-            if (fontsActive && frameEl.value !== undefined && scene.value !== undefined)
-                browserMeasure.value = measureRenderedSceneFont(frameEl.value, scene.value, defaultCardMeasure);
-        });
+        watch(scene, (current, _previous, cleanup) => {
+            if (current === undefined || browserMeasure.value !== undefined) return;
+            let active = true;
+            cleanup(() => { active = false; });
+            void document.fonts?.ready.then(() => {
+                if (active && fontsActive && frameEl.value !== undefined)
+                    browserMeasure.value = measureRenderedSceneFont(frameEl.value, current, defaultCardMeasure);
+            });
+        }, { immediate: true, flush: 'post' });
     }
 });
 onUnmounted(() => {

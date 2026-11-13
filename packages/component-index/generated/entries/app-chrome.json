@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AppChrome.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:599eda80c29ac6632ba262039eff4fe8ac4afd315786fcb30567c4cb68141d25",
+  "digest": "sha256:9eaebc8785ddaf847fdb7be4b15025e5047b7b908d9382bc64cda67628f56669",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

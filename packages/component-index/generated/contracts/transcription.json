@@ -1,8 +1,8 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:91b7bf46212d07ef3ac6591fd23be206cc51fa3045dacbf5baa227a0a6f38d64",
-  "entryDigest": "sha256:05ea187d6904f523ba4ef73fe49642dbebc5c82ad0d598e27535224b18e23676",
+  "digest": "sha256:31f3ed68d4de8e68023a8ce913d570f7536b66a39b9cbfd2c9f23acd5ddc4b21",
+  "entryDigest": "sha256:e9bfb0cdbe2a20898c04859fcef27217d3dedf24dd6f87107462cea9577ac5c7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -316,7 +316,7 @@
         "declarationPath": "packages/components-vue/dist/Transcription.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TranscriptionProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],
