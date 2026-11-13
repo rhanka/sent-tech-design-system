@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "TimePicker",
+  "sourceRevision": "0be814319c862401ffb429775481741313e30c7a",
+  "source": "src/TimePicker.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-1-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"st-timepicker-1\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "with-value",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-2-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"st-timepicker-2\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"09:30\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "format-12",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-3-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"st-timepicker-3\" placeholder=\"hh:mm AM\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"01:05 PM\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "bounded-step",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-4-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"st-timepicker-4\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"08:30\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "disabled",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-5-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" disabled=\"\" id=\"st-timepicker-5\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"12:00\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" disabled=\"\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "labelled-lg",
+      "html": "<div class=\"st-field\"><div class=\"st-field__control\"><label class=\"st-field__label\" for=\"st-timepicker-6\">Departure</label><span class=\"st-timepicker st-timepicker--lg\"><input aria-autocomplete=\"none\" aria-controls=\"st-timepicker-6-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"st-timepicker-6\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"07:15\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-field consumer\" data-bench=\"timePicker\" style=\"color:red;\"><div class=\"st-field__control\"><label class=\"st-field__label\" for=\"consumer-timepicker\">Arrival</label><span class=\"st-timepicker st-timepicker--md\"><input aria-autocomplete=\"none\" aria-controls=\"consumer-timepicker-list\" aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-timepicker__control\" id=\"consumer-timepicker\" placeholder=\"HH:mm\" readonly=\"\" role=\"combobox\" tabindex=\"0\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" aria-label=\"Ouvrir la liste des horaires\" class=\"st-timepicker__trigger\" tabindex=\"-1\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg></button></span></div></div>"
+    }
+  ],
+  "sourceSha256": "d28d898ec735f8f10ff1210679049567eb9809b93c5cdd1250bebd5a3179ca1c",
+  "fixtureSha256": "a57b6a7113d974bc03c9995a965e864fddc2b17dd6b34442afd7b57de291ce57",
+  "publicExports": [
+    {
+      "name": "TimePicker",
+      "typeOnly": false
+    },
+    {
+      "name": "TimePickerProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TimePickerFormat",
+      "typeOnly": true
+    },
+    {
+      "name": "TimePickerSize",
+      "typeOnly": true
+    }
+  ]
+}
