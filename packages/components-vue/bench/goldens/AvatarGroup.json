@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "AvatarGroup",
+  "sourceRevision": "8c1566ed425b6e15a6b9577a4091a301798c563d",
+  "source": "src/AvatarGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-avatarGroup st-avatarGroup--md\" style=\"--st-avatar-group-max:2;\"><span class=\"st-avatar\">AB</span><span class=\"st-avatar\">CD</span><span class=\"st-avatar\">EF</span><span aria-label=\"+1\" class=\"st-avatarGroup__overflow\">+1</span></div>"
+    },
+    {
+      "id": "no-overflow",
+      "html": "<div class=\"st-avatarGroup st-avatarGroup--md\" style=\"--st-avatar-group-max:5;\"><span class=\"st-avatar\">AB</span><span class=\"st-avatar\">CD</span><span class=\"st-avatar\">EF</span></div>"
+    },
+    {
+      "id": "no-max",
+      "html": "<div class=\"st-avatarGroup st-avatarGroup--md\" style=\"--st-avatar-group-max:;\"><span class=\"st-avatar\">AB</span><span class=\"st-avatar\">CD</span><span class=\"st-avatar\">EF</span></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-avatarGroup st-avatarGroup--lg\" style=\"--st-avatar-group-max:1;\"><span class=\"st-avatar\">AB</span><span class=\"st-avatar\">CD</span><span class=\"st-avatar\">EF</span><span aria-label=\"+3\" class=\"st-avatarGroup__overflow\">+3</span></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-avatarGroup st-avatarGroup--md consumer\" data-bench=\"group\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;--st-avatar-group-max:3;color:red;\"><span class=\"st-avatar\">AB</span><span class=\"st-avatar\">CD</span><span class=\"st-avatar\">EF</span><span aria-label=\"+7\" class=\"st-avatarGroup__overflow\">+7</span></div>"
+    }
+  ],
+  "sourceSha256": "23c7c5d95ab096bc36204a5136fc0678c21eb39706f9ab205514812169d5f723",
+  "fixtureSha256": "2ade8e3026d4c9dd91e1ebe33e3709851de520826963957e988d6e1dd0e5d082",
+  "publicExports": [
+    {
+      "name": "AvatarGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "AvatarGroupProps",
+      "typeOnly": true
+    }
+  ]
+}
