@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:327573b6e3012b7d40f505c033fad95e8c48383c31093e1b786ef5f213155f3a",
-  "entryDigest": "sha256:83c62ccb99b51704cec12da03ec6502aded01053d3bc7704c37bae0380e91edd",
+  "digest": "sha256:1996358cfa740fd4371e47b2b7d4113f75120cb6dc83467a246d4e7ca18b415a",
+  "entryDigest": "sha256:bef68c75c2a69eea6cd19b9a41b659ac2adaa5b26da81616db066780c92e6d57",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -283,7 +283,7 @@
         "declarationPath": "packages/components-vue/dist/FieldCard.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FieldCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
