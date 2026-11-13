@@ -1,8 +1,8 @@
 {
   "componentId": "divergent-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:c5fdaee2b752f1b741330cdc04e24e658d80eacc131a6075f10a7b1d6ea077fa",
-  "entryDigest": "sha256:05a4ff4b5ca908bf144c6a4dbb6acf1752590ff1414520a4da91e522c255d64d",
+  "digest": "sha256:e332eb4be80f2b2ae5fe9de3d3227b3519b22bcc8ac54776ffe4de92633e0a0a",
+  "entryDigest": "sha256:7a3520003c8cf6c840d74402d1508008c24db4dfa93d7ff5ffe4bb91f77234bb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

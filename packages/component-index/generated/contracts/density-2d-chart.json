@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:3a180d2b230ad7d04cd3f9d025fea13d891a76a84d1bcffdc7cffd806b88abef",
-  "entryDigest": "sha256:7781d86a2dfeea0a4ec7966614e46a5eccdc2c2f4134366c3d1a4f9cc42e2aa8",
+  "digest": "sha256:7af71589e007f71bd628bda3517e838e31f4a78bd7326a08809e79d4e123e788",
+  "entryDigest": "sha256:522e497df2269f6d97a992e176f04725537ae0148b60b03f836c491d5cdb220d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

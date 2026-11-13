@@ -1,8 +1,8 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:2ef5aa7a37cfd99394e9e4785e3c77a48c72fa0fec89d81666d416f5278c02e3",
-  "entryDigest": "sha256:92ac33e7935d20362be8558982eda977cf7f7e1676be3d4121c156c2aa5665b3",
+  "digest": "sha256:12fe70a1c45a10c8882908b75860fda8fd07f813d8b8571ccfafc24e7a095a1a",
+  "entryDigest": "sha256:b9a08f855fa471b73400a90ea0331fc740f49df05dd2f06db37bab2280c45b6f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

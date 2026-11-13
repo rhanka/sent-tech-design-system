@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:f4a7c47ce09e0fc9d471e0b6e926fbec05ce3a9b48c11ab8afa08cf71f95f540",
-  "entryDigest": "sha256:ce8e5113b2961fcf9477ef6fe41fa3257a668e8569670838e3cc0cfdbceb575f",
+  "digest": "sha256:c2ee0c39ef244866c91413ba704fec49973f0f1f3e10c06b840aa1d9f819e680",
+  "entryDigest": "sha256:b54aa965c9b489209ee8275bbf901cdb99fb59f74d2f8d9eb4a255b6563f0a35",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -274,12 +274,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -288,7 +282,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "item": {}
+              "item": {
+                "$ref": "#/$defs/SideNavItem"
+              }
             },
             "required": [
               "item"
@@ -298,7 +294,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:f0a8da83dde8e74a7f8a02f1eb07664a4808fb2444e0325cf29dabdb73472e1f",
+        "declarationDigest": "sha256:45012fb8ae9d370ca8ffd5b3d0b0bde3ffefa25f0431acde3b037e5daa6d7130",
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",

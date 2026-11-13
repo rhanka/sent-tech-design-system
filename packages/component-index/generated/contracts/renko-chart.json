@@ -1,8 +1,8 @@
 {
   "componentId": "renko-chart",
   "contractSource": "derived",
-  "digest": "sha256:b01ed3302549234f7e177458f2c1839b315522f28769f5f89bbee3d722cc3177",
-  "entryDigest": "sha256:0a3a87f0a08fbd10eac08b6b768bf4999b0786f8f7ca1795795211b14194fe3e",
+  "digest": "sha256:9d8ab30755b1660552ff4fa3e5c8ef0acaa8cc489479037900a04e52d9978872",
+  "entryDigest": "sha256:685df47e37700f2eb18abe2adfb0204bbb5ea2fba3aef8acc1412b08b472b697",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

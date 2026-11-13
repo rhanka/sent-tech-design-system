@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:0cc3600824a96a98559822ec242eba9a527a76e9aa7c5497793e7ba38f18141c",
+      "digest": "sha256:1d287f91d95d2dcd1f8e24a5cbf23a0b17a70eacd761fb76906c16d82ce33967",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ParallelCoordinatesChart.vue",
@@ -40,7 +40,7 @@
     "en": "Parallel coordinates for comparing multi-dimensional records.",
     "fr": "Axes parallèles pour comparer des enregistrements multidimensionnels."
   },
-  "digest": "sha256:60a7bee5260b3822c0a55a7a5ae3f5f77d52064e0fa68e3bfaa9b8b27315f1c1",
+  "digest": "sha256:c5a464d3a5affc7d9663778f6c48482afab9120781539ee32d72c333628fb8ec",
   "displayName": "ParallelCoordinatesChart",
   "format": "component-entry/v1",
   "frameworks": [

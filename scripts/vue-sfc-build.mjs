@@ -93,7 +93,10 @@ if (!stable) {
     if (node.isTypeOnly) { entries.push(node.getText(index).replace(path, shared)); continue; }
     const component = resolve('src', path.replace(/\.(?:js|vue)$/, '.vue'));
     if (path.startsWith('.') && existsSync(component)) {
-      if (!native(component)) continue;
+      if (!native(component)) {
+        if (basename(resolve('.')) === 'components-vue') throw new Error(`Native Vapor export is blocked by a legacy dependency: ${component}`);
+        continue;
+      }
       const name = basename(component, '.vue');
       for (const item of node.exportClause?.elements ?? []) {
         if (item.isTypeOnly) continue;

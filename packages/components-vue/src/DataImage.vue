@@ -50,12 +50,12 @@ const imgStyle = computed<Record<string, string>>(() => {
   return style;
 });
 const callerStyle = computed(() => attrs.style as Record<string, string> | string | undefined);
-const rootAttrs = computed(() => {
+const rootAttrs = () => {
   const { style: _callerStyle, ...rest } = attrs;
   return rest;
-});
+};
 </script>
 
 <template>
-  <img v-bind="rootAttrs" :class="classNames('st-dataImage', `st-dataImage--${props.fit}`, props.class)" :src="props.src" :alt="props.alt" :style="[imgStyle, callerStyle]" :loading="props.loading" :decoding="props.decoding" />
+  <img v-bind="rootAttrs()" :class="classNames('st-dataImage', `st-dataImage--${props.fit}`, props.class)" :src="props.src" :alt="props.alt" :style="[imgStyle, callerStyle]" :loading="props.loading" :decoding="props.decoding" />
 </template>

@@ -1,8 +1,8 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:261f71ce954ad90582fa54da9aa8ca1729eab34de96448850b74c0b962ca4727",
-  "entryDigest": "sha256:5a1f58a8d4672056a780d1d183287b8c9bbd2569cab9ec2392edafaf4671851c",
+  "digest": "sha256:dbb1c4dc025e955fb449dfccedf68a29128c8ea3cac7ed0e1ec2f243010f5507",
+  "entryDigest": "sha256:b83273bd2fce33be09ba20d199950b16e5897c599ef8cefe42f828041cbbb2b5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

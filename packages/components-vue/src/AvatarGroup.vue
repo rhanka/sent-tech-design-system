@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { normalizeStyle, computed, useAttrs } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import type { AvatarSize } from './Avatar.vue';
@@ -14,7 +14,7 @@ export type AvatarGroupProps = {
   class?: string;
 };
 
-defineOptions({ name: 'AvatarGroup' });
+defineOptions({ name: 'AvatarGroup', inheritAttrs: false });
 const props = withDefaults(defineProps<AvatarGroupProps>(), {
   max: undefined,
   size: 'md',
@@ -26,13 +26,13 @@ const overflow = computed(() =>
   props.max != null && props.total != null && props.total > props.max ? props.total - props.max : 0,
 );
 const groupStyle = computed<CSSProperties>(() => ({
-  ...(attrs.style as CSSProperties | undefined),
+  ...(normalizeStyle([attrs.style]) as CSSProperties),
   ['--st-avatar-group-max' as string]: props.max ?? '',
 }));
 </script>
 
 <template>
-  <div
+  <div v-bind="$attrs"
     :class="classNames('st-avatarGroup', `st-avatarGroup--${props.size}`, props.class)"
     :style="groupStyle"
   >

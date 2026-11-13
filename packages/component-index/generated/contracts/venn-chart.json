@@ -1,8 +1,8 @@
 {
   "componentId": "venn-chart",
   "contractSource": "derived",
-  "digest": "sha256:044d0a8e74139bd1b6e343c1a3f90375808a293d4f70a241ed3b80ffd6ceda07",
-  "entryDigest": "sha256:afe3771cca5b9502e0a0082026649a70d97a0ff20a5817fc27b6914644ef605b",
+  "digest": "sha256:da5988332710ebae8d3560aedcbd6bb2b6b3c50c534e1e03a3d761c0b5e51549",
+  "entryDigest": "sha256:cbc3778ac7d2cbf97b3d5390f14a7d1abb1132819dd2f0eb9172484de6c38dcf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

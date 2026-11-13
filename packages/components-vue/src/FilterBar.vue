@@ -23,7 +23,7 @@ const onClearClicked = () => props.onClearAll?.();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-filterBar', props.class)" role="group" :aria-label="props.label">
+  <div v-bind="{ ...($attrs), class: (classNames('st-filterBar', props.class)) }"  role="group" :aria-label="props.label">
     <div class="st-filterBar__pills"><slot /></div>
     <button v-if="props.onClearAll" type="button" class="st-filterBar__clearAll" @click="onClearClicked">{{ props.clearAllLabel }}</button>
   </div>

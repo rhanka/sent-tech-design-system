@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ac2e7310c9324ff9f96ae46ad5de6b83ffc9484520b68c73ef300475d9f62b16",
+      "digest": "sha256:7f724260ff14c7b23516f75900c0dcdf71a03b2c960001e036ba2b8075c649cc",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LoadingState.vue",
@@ -40,7 +40,7 @@
     "en": "Full loading indicator or skeleton.",
     "fr": "Indicateur de chargement plein ou skeleton."
   },
-  "digest": "sha256:0ee39d0344de2001137d89a1d9691ee7437d75ef0e72127ff5114f4a7df436c6",
+  "digest": "sha256:4490822de6bbe3b747bad2cf16386fb69b1b4bd0fbe84899515df988c653f563",
   "displayName": "LoadingState",
   "format": "component-entry/v1",
   "frameworks": [

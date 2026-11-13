@@ -1,8 +1,8 @@
 {
   "componentId": "marimekko-chart",
   "contractSource": "derived",
-  "digest": "sha256:f8990ba5368ae7cf6eaec47b668c4d2be3a210cd4d905c94616dadbb888d8871",
-  "entryDigest": "sha256:4899ac3e21a3c496a11d4451a7222e7c16650a12f9ff1f46f81a106430e90a2c",
+  "digest": "sha256:d09c0ba45585c2a569dd0690004230c9d4bae806a677a6a8a34012a044bf274d",
+  "entryDigest": "sha256:fbbf62e4bf7510baaf9d103d2ad814be36cc30a88bc6cf1284d0e15f12efc742",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "state-timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:aa31e9af7e910b9d5c2b1c7e1322383ab946c7c03668cd7de24707baeca6cda7",
-  "entryDigest": "sha256:9b92c68b727d8ad23a4cc40fb8e73c5bcdb3db6f14153a928522994cb2ba8b65",
+  "digest": "sha256:a834dc7637209cd50949c630030eeec7a70a73e3c7e1e2683dce515060230b49",
+  "entryDigest": "sha256:0680203689242546402aeeda6e1b8065718369a71c792e4733085b39a815cd0d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

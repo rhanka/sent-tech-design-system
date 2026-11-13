@@ -243,7 +243,7 @@ const hoveredBullet = computed(() => (hoveredIndex.value !== null ? bullets.valu
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-bulletChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-bulletChart', props.class)) }" >
     <div
       class="st-bulletChart__visual"
       role="img"

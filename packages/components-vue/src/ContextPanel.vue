@@ -23,7 +23,7 @@ defineSlots<{
 </script>
 
 <template>
-  <aside v-bind="$attrs" :class="classNames('st-contextPanel', props.class)" :aria-label="props.label ?? props.title ?? 'Context panel'">
+  <aside v-bind="{ ...($attrs), class: (classNames('st-contextPanel', props.class)) }"  :aria-label="props.label ?? props.title ?? 'Context panel'">
     <header v-if="props.title || props.subtitle || $slots.actions" class="st-contextPanel__header">
       <div class="st-contextPanel__heading">
         <h2 v-if="props.title" class="st-contextPanel__title">{{ props.title }}</h2>

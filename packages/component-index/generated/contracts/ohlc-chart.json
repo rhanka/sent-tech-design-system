@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:0012cd406242df371901904ad2b5ae93453a355353c19894f2aea89d5068e35d",
-  "entryDigest": "sha256:24d9bd751fc5ce1a5b23cdae2cd17fd041fbc7bc9911ff1bab7031bac0cbebc1",
+  "digest": "sha256:6a976e449f4fc1a3f596948aedfe8caa3235f0c8d681681d5f184e71297a2069",
+  "entryDigest": "sha256:fa11aa630d7eb58070e810b5683f8e3a7dcd131b128d6d406be21a274708527f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

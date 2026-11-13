@@ -32,10 +32,17 @@
       "teleports": {
         "body": "<!--teleport start anchor--><div class=\"st-popper consumer\" data-popper-placement=\"bottom\" style=\"position: absolute; top: 0px; left: 0px;\">Text</div><!--teleport anchor-->"
       }
+    },
+    {
+      "id": "inline-attrs",
+      "html": "<div aria-label=\"Inline\" class=\"st-popper\" data-popper-placement=\"bottom\" id=\"inline-panel\" role=\"dialog\" style=\"position: absolute; top: 0px; left: 0px;\">Panel</div>",
+      "teleports": {
+        "body": ""
+      }
     }
   ],
   "sourceSha256": "96d8c8f666e012c3b4199c632fcf1c5ba7269f293c4fd511f750cba9bf9bf3ac",
-  "fixtureSha256": "85c12b3f60caccb649c486635ee806203fa8517cfc3a2d0d2d00c97aa8988ab3",
+  "fixtureSha256": "4f7bc232e2eb295ecb5070c7c07478fe335fe961a724ffe3e0c97f9d589fb6d8",
   "publicExports": [
     {
       "name": "Popper",
@@ -77,5 +84,6 @@
       "name": "Rect",
       "typeOnly": true
     }
-  ]
+  ],
+  "reviewCorrection": "inline-attrs: explicitly restore id, role and accessible name on the inline panel; archived V0c SFC drops them and warns."
 }

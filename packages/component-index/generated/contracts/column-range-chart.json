@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:e3646bf8cf3353c88727b03d300c87f19d6648fbeb2bac0571347c7032a8388f",
-  "entryDigest": "sha256:ca655ffe6d08c5c5d336dadec1c4a6f4f1e0e72bad2ff4022478a63625984444",
+  "digest": "sha256:b18a9af4c3bce5f75309b84187fb5507d18a4352f9d570bdd13d3aa2b07ad0d9",
+  "entryDigest": "sha256:4e159e80e696a1acc380f6f5d283dccaddc159e04ac67fbb889b5b3fb8350828",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:bd72226d0c5df84aca96f7c9fa04a7542120f5b27522ded3c83a23d20b986c3d",
+      "digest": "sha256:e9b9399196df56a117baf2fa0f5be85234c4633138340da6a4bd08062296a5c1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Radio.vue",
@@ -40,7 +40,7 @@
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:1520f2e81a375da41b945e6bff8fbf62d4580fa670c9a7e01d4ad5e0a6c9be22",
+  "digest": "sha256:362edcafcd426f1cfaaaa385ed0aaa2ef330a7fe35ec9fd7922b70a01d9ce296",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:b0b0a20bbcc96699d7927557b5d0c690751a1d93bd4d0e0cedab145d4084436b",
-  "entryDigest": "sha256:20df001cd3135dc1bd091c4318ae563b5661febd3616583bb0db35a5185844d0",
+  "digest": "sha256:a4741954cde56fa289449d08182d0140ae16cb6b944634bbde97b61db3a94040",
+  "entryDigest": "sha256:49b7141501d90b1f0a752fad4f94b980bed90b0fc672e2620298597a76788cb3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -354,18 +354,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -377,7 +365,9 @@
               "index": {
                 "type": "number"
               },
-              "item": {}
+              "item": {
+                "$ref": "#/$defs/ProgressIndicatorItem"
+              }
             },
             "required": [
               "index",
@@ -394,7 +384,9 @@
               "index": {
                 "type": "number"
               },
-              "item": {}
+              "item": {
+                "$ref": "#/$defs/ProgressIndicatorItem"
+              }
             },
             "required": [
               "index",
@@ -405,7 +397,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:9a2dea93f8647e3c1d44e5c4fc782221590a5bfd199ce2a5a019ffc19b876c56",
+        "declarationDigest": "sha256:40e02cf5df312c26bdef3b1b0a26002aab9dccafbe17898a1887c49cfa4a0a82",
         "declarationPath": "packages/components-vue/dist/ProgressIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressIndicatorProps",

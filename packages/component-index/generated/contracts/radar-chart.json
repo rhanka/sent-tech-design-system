@@ -1,8 +1,8 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:dfba1fe394a8c8c776464e3433d9d39ae664460ccb82cee0f74a380a2ab8abbc",
-  "entryDigest": "sha256:883e75d5906cf324f67d3113dbf6f08d7222ae098c7b073197d86cad9a0eefbc",
+  "digest": "sha256:80ca4b33671974920fdb5521b02f9e2566ee2867f4acfb279d04acee19e8e0f3",
+  "entryDigest": "sha256:eb57e20e63df79dc4a77c6873730f2c2de8ebd46820df7905412f9fe79c4c21b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

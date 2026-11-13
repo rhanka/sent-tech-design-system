@@ -1,8 +1,8 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:e9d9ceed1558da27a01c1a8e191d69890cc3def35d9e93da43df2ae5c68a7aed",
-  "entryDigest": "sha256:d933adf6bc55d89b66b2aaf5db3ed04b89daa2671c6e3e98216bb4da05270ab2",
+  "digest": "sha256:35cf99da5db405c43ebb7e676869c7781b462f6ac83a8d3efdb2310943bf5456",
+  "entryDigest": "sha256:06d464f0e05d4a64d03e75cc5ac8717e9fbbce23cc7e748269d76a3a0a42a51e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

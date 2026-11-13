@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:ea071a0375be5ac14ecd10ac34e65f82590ad1fb704b7c9e861eaa57576004da",
-  "entryDigest": "sha256:9a7c401d2865bf89e49d175c58faa26fcc8e34655241ae8270dca6ef562c0ad6",
+  "digest": "sha256:3c5b56902d70e52ed7523403944c6821e5721fae44aba77a8872fb6907c4b6d0",
+  "entryDigest": "sha256:332d7bd9009bbcbc4edef56e69d43501e6f749120806f3e548520aed1e2a7b44",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -753,12 +753,6 @@
           "sourceType": "unknown"
         },
         {
-          "name": "scope.event",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "text",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -771,7 +765,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "event": {}
+              "event": {
+                "$ref": "#/$defs/StreamingMessageEvent"
+              }
             },
             "required": [
               "event"
@@ -787,7 +783,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:4e2b7703329efd7e2d1d166979eba4d4717d559e8cd86df78e29f9e73ebd0b8f",
+        "declarationDigest": "sha256:79d3510bb2c9353cfc70e2b29122059e8627ed5cc3c47b4e495ae1387737c12f",
         "declarationPath": "packages/components-vue/dist/StreamingMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamingMessageProps",

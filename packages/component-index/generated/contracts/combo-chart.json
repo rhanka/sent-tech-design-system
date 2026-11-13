@@ -1,8 +1,8 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:303327284a90b366bec3a819bf34a427ee70d04a250d5825cd59d7babae5bee9",
-  "entryDigest": "sha256:d6010677922dde443b34a9d037f43f1dc6c41ec01f1b5dd8825113548bd12f03",
+  "digest": "sha256:660d2be78ff88a9427f4a3cb55cc550f3098dc576c7c0e37f79e6e0d14647860",
+  "entryDigest": "sha256:e7c9944b67f11c8ae41a05ea7961ed05d077146bdf097b6af84d4fd4f837456f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

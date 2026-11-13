@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:bed9477b1277d8e3b8ab4ae416446a8091b45fb43dc51b612217bffdcedddd1c",
-  "entryDigest": "sha256:af13530910ecb6ae9a4e5ba7430ffb25602792ba5ce03b344e4feabd4fbe4063",
+  "digest": "sha256:9ef92b34366b54a29a481446f884cdd35619a491e137d81c54db3eb834a3a90d",
+  "entryDigest": "sha256:30abffebdda643d0093922b22da37202d33d9957ca707bc1da87fcf0663d61fa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:d514a8104f6ad9778f0b0b745c73594d8ca328269b7119a0f79ba51e2cef5979",
-  "entryDigest": "sha256:596c8199e794f0da0f4e59d1821a315b5915166f8922a393c37b2491644c59a3",
+  "digest": "sha256:3ccf8920c5f10e2a53f8f1992ba6507429137d73502facf3aaecf5746b583f87",
+  "entryDigest": "sha256:8f06bbaa83e86662807d432d4e52b5f40a35dad69f8ed0114a2d70f4db3bdb64",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

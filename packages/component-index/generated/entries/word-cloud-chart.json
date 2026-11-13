@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:90d0bf942201d639fbc5ce76e3181fe5298b24f15f9ddd0f35bcc5e24a1e4284",
+      "digest": "sha256:abbccce6a019fe26e0aae5c52fbf14706ad884bf5186811125600b10349b9858",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WordCloudChart.vue",
@@ -40,7 +40,7 @@
     "en": "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap.",
     "fr": "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement."
   },
-  "digest": "sha256:d933adf6bc55d89b66b2aaf5db3ed04b89daa2671c6e3e98216bb4da05270ab2",
+  "digest": "sha256:06d464f0e05d4a64d03e75cc5ac8717e9fbbce23cc7e748269d76a3a0a42a51e",
   "displayName": "WordCloudChart",
   "format": "component-entry/v1",
   "frameworks": [

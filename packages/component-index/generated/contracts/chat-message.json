@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:68b51ce68fe766b863ff70cf774416c2a027c0a550fc58ee8fae4f510222ff11",
-  "entryDigest": "sha256:5327ff71a8499aef2c2f38c9090d34e05f79bd75b5cabd44e169caf588a9e54d",
+  "digest": "sha256:fa53c72783e82cbc8b3f0cf369460c9c4c47f35b22a78b4bcbff471a7a797538",
+  "entryDigest": "sha256:a9b1f09d3c5d26e47908d28c82925156c4d3f2205223528e4aaded15fb701d32",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -336,10 +336,13 @@
         },
         {
           "name": "footer"
+        },
+        {
+          "name": "timestamp"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7bef63b305f68bbd37ca484e6d2562cff3f2a7953416f8efa3485dc644ab4689",
+        "declarationDigest": "sha256:981a46ce11d65bd178b5a83aa9de937ec8cfc72c3d94d3bfd827c358aa47199d",
         "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",

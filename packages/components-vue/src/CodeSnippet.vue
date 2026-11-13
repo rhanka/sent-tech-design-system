@@ -11,7 +11,7 @@ export type CodeSnippetProps = {
   copiedLabel?: string;
   class?: string;
 };
-defineOptions({ name: 'CodeSnippet' });
+defineOptions({ name: 'CodeSnippet', inheritAttrs: false });
 const props = withDefaults(defineProps<CodeSnippetProps>(), {
   language: undefined,
   inline: false,
@@ -26,13 +26,13 @@ const attrs = useAttrs();
 <template>
   <template v-if="props.inline"
     ><code
-      v-bind="attrs"
-      :class="classNames('st-codeSnippet--inline', props.class)"
+      v-bind="{ ...(attrs), class: (classNames('st-codeSnippet--inline', props.class)) }"
+
       :data-language="props.language"
       >{{ props.code }}</code
     ></template
   ><template v-else
-    ><div v-bind="attrs" :class="'st-codeSnippet__wrapper'">
+    ><div v-bind="{ ...(attrs), class: ('st-codeSnippet__wrapper') }" >
       <pre
         :class="classNames('st-codeSnippet', props.class)"
         :data-language="props.language"

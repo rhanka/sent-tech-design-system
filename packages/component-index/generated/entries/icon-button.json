@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:aba6dc9a0bb8082fa0ecb1c40ce4a13dfd0a98a8342d629283fe174a7c56f7ae",
+      "digest": "sha256:278b42d9d02b7611d154d3abb9640e0991e6b02ebd6f822e0b0d13823bfa503a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/IconButton.vue",
@@ -40,7 +40,7 @@
     "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
     "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
   },
-  "digest": "sha256:298c9ef2852e90085c1855449b98f6a2d333f44c59d60dc64d6e0242ba3c6e1f",
+  "digest": "sha256:7b3119f720c8c2b74203b44932d922f1bd48b0db8ab46de82627eadc45e66336",
   "displayName": "IconButton",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:cba38127dd31e68af1799271bc1642a1d776f0f543627b17206ace22c5c781aa",
-  "entryDigest": "sha256:0bf738967c9b2955fb1c89833ccc80e5cd67809059b414513498be8f9821753a",
+  "digest": "sha256:418ce48e14f8ced8bfa69603e22e67e201a42212fccada6c30b6dac27f1b3246",
+  "entryDigest": "sha256:2a0d3f6c48464b8d4a21757b48f9f6651e708534c352141f46f3dc42193704f0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

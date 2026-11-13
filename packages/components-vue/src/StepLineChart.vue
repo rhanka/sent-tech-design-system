@@ -152,7 +152,7 @@ const hoveredPoint = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-stepLineChart', `st-stepLineChart--${tone}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-stepLineChart', `st-stepLineChart--${tone}`, props.class)) }" >
     <div
       class="st-stepLineChart__visual"
       role="img"

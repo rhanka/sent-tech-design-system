@@ -157,7 +157,7 @@ const dataValueItems = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-gaugeChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-gaugeChart', props.class)) }" >
     <div class="st-gaugeChart__visual" role="meter" :aria-valuenow="clamped" :aria-valuemin="props.min ?? 0" :aria-valuemax="props.max ?? 100" :aria-valuetext="ariaValueText" :aria-label="props.label">
       <svg :viewBox="`0 ${geometry.vbTop} ${geometry.size} ${geometry.vbHeight}`" width="100%" height="100%" focusable="false" aria-hidden="true">
         <path class="st-gaugeChart__track" :d="arcPath(0, 1)" fill="none" :stroke-width="geometry.thickness" />

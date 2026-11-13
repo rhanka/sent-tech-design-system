@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:3e7241bad08a1ee7b119c45fb1723fee888556b76704670bcc0afba1b3f8e154",
-  "entryDigest": "sha256:048d759be7d23d3c09f143fc317fc0ec175c56d843d1b3732d0eca1e09553d04",
+  "digest": "sha256:c422f5b6cd29a4e4dfdd924ccd533533b475e743c8d8cbcf189fac34a9aa2e9e",
+  "entryDigest": "sha256:ec2ddca6456c78573ce2802dc5ef012948ada132803b73c3e90f30b99b6d19e2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

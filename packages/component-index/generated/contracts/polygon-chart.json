@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:f7047a8cdafffb13775f6222fd94aac90207d74526fb13240e29086551ff699f",
-  "entryDigest": "sha256:ea6f3bd357b31c29d813d0eacda351a739222d1f946aabd141ddf70fdb01f843",
+  "digest": "sha256:2c4308a7ce31f3dea39b80e266703c5f81723bcf3b9408d393c717f542415cd9",
+  "entryDigest": "sha256:71464e0926ec4ec70c1c14ce80d55febfec6765cf24f3e18345d8a97d1f3e81b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

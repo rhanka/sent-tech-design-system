@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:029f14d0d158dc139449d18e9e6dd62d1ae8b79cace378dfd5887bd6f8d90636",
+      "digest": "sha256:61f43fae29d0dac49235143723b4b515bfa9b23b1270b4963afa7e8fc3aef46c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Alert.vue",
@@ -40,7 +40,7 @@
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:c23a020a224c7814f536be498fc4c809bc02ef010b6a77312aeddabf4ff1ad0d",
+  "digest": "sha256:16fb95ed55ecd3979994c0d1d0e4ee5bee3426252d71c2014d0f5bd65556c87b",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

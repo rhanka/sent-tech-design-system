@@ -59,7 +59,7 @@ const scrollOwner = computed(() => stack?.isScrollOwner(props.id) ?? true);
 </script>
 
 <template>
-  <div v-bind="$attrs" ref="rootEl" :class="classNames('st-panelSection', scrollOwner && 'st-panelSection--scrollOwner', props.class)" :data-panel-section-id="props.id">
+  <div v-bind="{ ...($attrs), class: (classNames('st-panelSection', scrollOwner && 'st-panelSection--scrollOwner', props.class)) }" ref="rootEl"  :data-panel-section-id="props.id">
     <div ref="headerEl" class="st-panelSection__header"><h3 class="st-panelSection__heading"><span v-if="isPrimary" class="st-panelSection__title st-panelSection__title--primary" :id="triggerId">{{ props.label }}</span><button v-else type="button" class="st-panelSection__trigger" :aria-expanded="expanded ? 'true' : 'false'" :aria-controls="regionId" :id="triggerId" @click="onTriggerClick"><span class="st-panelSection__title">{{ props.label }}</span><span :class="classNames('st-panelSection__icon', expanded && 'st-panelSection__icon--expanded')" aria-hidden="true"><Icon name="chevron-down" bare :size="18" :stroke-width="2.25" aria-hidden="true" /></span></button></h3><div v-if="$slots.actions" class="st-panelSection__actions"><slot name="actions" /></div></div>
     <div :class="classNames('st-panelSection__body', scrollOwner ? 'st-panelSection__body--scrollOwner' : !expanded ? 'st-panelSection__body--collapsed' : null)" role="region" :id="regionId" :aria-labelledby="triggerId"><slot /></div>
   </div>

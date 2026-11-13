@@ -215,8 +215,8 @@ provide(SELECTABLE_LIST_KEY, context);
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-selectableList', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-selectableList', props.class)) }"
+
     role="listbox"
     :aria-label="props.labelledby ? undefined : props.label"
     :aria-labelledby="props.labelledby"

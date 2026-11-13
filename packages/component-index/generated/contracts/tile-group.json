@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:3ed9a8bc211e061f6cac62b435cab327e2edc6fe4e1298c2ee3847f3a60f29aa",
-  "entryDigest": "sha256:f25199085d6d7ccb2bfa57367d91e676c65e63f303a13293e7f183d7bfd1489d",
+  "digest": "sha256:761e7b69e8b6d04aecf68001a7fd1facbb4282e4988d7be4a708a3257035cfa8",
+  "entryDigest": "sha256:8e619784058a7ad1eda3ca36a07803644d50b8612daa6c9c560c3f8260367729",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

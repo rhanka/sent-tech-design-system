@@ -1,3 +1,4 @@
+import { h } from 'vue';
 import type { Fixture } from './types.js';
 export default [
   { id: 'default', props: { messages: [{ id: '1', content: 'Hi' }, { id: '2', role: 'user', content: 'Hello', status: 'sent' }, { id: '3', role: 'assistant', content: 'Typing', status: 'streaming' }] } },
@@ -5,4 +6,5 @@ export default [
   { id: 'empty-label', props: { messages: [], emptyLabel: 'No messages yet' } },
   { id: 'empty-slot', props: {}, slots: { empty: '<p>Nothing here</p>' } },
   { id: 'custom', props: { messages: [{ id: '1', content: 'Hi' }], autoScroll: false, label: 'Thread', class: 'consumer', style: 'color: red', 'data-bench': 'thread' } },
+{ id:'rich-messages',props:{messages:[{id:'a',content:'Hello'}]},legacyProps:{messages:[{id:'a',content:h('strong','Hello')}]},slots:{'message-content':{scope:'{ message }',html:'<strong>{{message.content}}</strong>'}} },
 ] satisfies Fixture[];

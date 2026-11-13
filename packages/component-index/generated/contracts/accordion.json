@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:e086d995374fdbbfe71cdd8f54e0f1b7046ccc3c52205a8382aecdfd53fcf7b2",
-  "entryDigest": "sha256:9999c790d34d435714741ccf3ec81962bb5b0113a7f6422263ce2c2dbaa8623f",
+  "digest": "sha256:4884db6b69b21e6b4fc3e5f7d76d0885453027417ae0f864b363e12f51479b15",
+  "entryDigest": "sha256:2d27593fcf295fa52c20ff741d27e8586955a519b00f21d3056831b7a14975a2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

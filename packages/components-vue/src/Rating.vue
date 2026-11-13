@@ -70,7 +70,7 @@ function commit(next: number) {
   if (props.value === undefined) internal.value = clamped;
   emit('update:modelValue', clamped);
   emit('change', clamped);
-  props.onChange?.(clamped);
+
 }
 
 function onStarClick(event: MouseEvent, star: number) {
@@ -161,8 +161,8 @@ function onSliderKeyDown(event: KeyboardEvent) {
 <template>
   <div
     v-if="props.readonly"
-    v-bind="$attrs"
-    :class="baseClass"
+    v-bind="{ ...($attrs), class: (baseClass) }"
+
     role="img"
     :aria-label="readonlyLabel"
   >
@@ -205,8 +205,8 @@ function onSliderKeyDown(event: KeyboardEvent) {
   </div>
   <div
     v-else-if="props.allowHalf"
-    v-bind="$attrs"
-    :class="baseClass"
+    v-bind="{ ...($attrs), class: (baseClass) }"
+
     role="slider"
     :aria-label="props.label"
     :aria-valuemin="0"
@@ -256,8 +256,8 @@ function onSliderKeyDown(event: KeyboardEvent) {
   </div>
   <div
     v-else
-    v-bind="$attrs"
-    :class="baseClass"
+    v-bind="{ ...($attrs), class: (baseClass) }"
+
     role="radiogroup"
     :aria-label="props.label"
     @keydown="onRadioKeyDown"
