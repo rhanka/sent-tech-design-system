@@ -514,8 +514,8 @@ export type {
 } from "./SlideIndicator.js";
 export { Autosave } from "./Autosave.js";
 export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
-export { Portal } from "./Portal.js";
-export type { PortalProps } from "./Portal.js";
+export { default as Portal } from './Portal.vue';
+export type { PortalProps } from './Portal.vue';
 export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.js";
 export type {
   PopperProps,
