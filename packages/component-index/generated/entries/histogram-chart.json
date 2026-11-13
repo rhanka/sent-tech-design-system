@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:bfa5a10350c8936d9d80ee19a88139294b885584a2d25bbbef1b4d62da4bad61",
+      "digest": "sha256:28a73cac048018cd429e322c50ae1b9394efa4bab09467c06627d5f1b722473a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/HistogramChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/HistogramChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Histogram for explicit or generated distribution bins.",
     "fr": "Histogramme pour afficher des classes explicites ou générées."
   },
-  "digest": "sha256:9d49744cb79d5d31e2766e8e54f0a42ea1674781e4078396cb6574eb169dafc2",
+  "digest": "sha256:9310976c2147ad43ebc836e2642fb13ae593365a1ba615cda2335be511c96000",
   "displayName": "HistogramChart",
   "format": "component-entry/v1",
   "frameworks": [

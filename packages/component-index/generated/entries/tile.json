@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:168f547ef46fcab36ab63d9bdfb59b6320ced3921aa3e135b64545ef08e815ff",
+      "digest": "sha256:c47ad4efbb31ff88600b0ee66b62d5bf399829eca6feaa44b93ba01330969b50",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Tile.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Tile.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
     "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
   },
-  "digest": "sha256:aa148bfefc4bc261421081f27d7bce9e59e47428f5574b05e6d8cf79503be906",
+  "digest": "sha256:d0f4b79ffa337373674a9ca7567c939314a2388c8d2ba44fc0a361a499806493",
   "displayName": "Tile",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:e557c05a5795e96127fd629b497ab260378d47ced7c5bf5e37b494cfa49fa790",
-  "entryDigest": "sha256:a4a214325c48c983b6e22fd9ea13af6644e3fd70a8c66861c4fc3883d5b5982d",
+  "digest": "sha256:530ff6648ac00c7fd35f57f9d645c793ffd576a5e794675da08724e6b57ca53b",
+  "entryDigest": "sha256:c51f486e8b741d93cfeffbc4ea3116cc19c511a4f6f21826c3401bd1d7586fe1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -788,8 +788,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -957,13 +956,20 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "extraSelectors"
+        },
+        {
+          "name": "identity"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:a56bf7e96bd3b4e70049b87bf5b8dbd6d43a45f401f8c76ea99e0c65e19de513",
-        "declarationPath": "packages/components-vue/dist/AppChrome.d.ts",
+        "declarationDigest": "sha256:2fae31157ef49bd574ae66a4e1f6775b0f64a7525e22ae0bc051f4a6cf0b1c7b",
+        "declarationPath": "packages/components-vue/dist/AppChrome.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppChromeProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

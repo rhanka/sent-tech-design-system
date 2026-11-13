@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:d7fddd3667a6702a70045f4994ce472b01d7ef0f80387a0d0f6616a6bedd9e81",
-  "entryDigest": "sha256:1556537d63ceb9d7f1c270e0ead66acca49b6895c2b341ec48f3ecf36f507f08",
+  "digest": "sha256:72406ad0a37122a6e8a323a7cede45dea4604addd2d3663a4dda486c37e4e29f",
+  "entryDigest": "sha256:bcd99d91c6a78c70b8b983ed5efaeabbe262c12d1d4dfd03f0e1de23d9aa2f71",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -291,8 +291,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -333,13 +332,22 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b735e9f29a9a764d44abb54e84ad256f193c360edf1d86328ca43881ecc8b577",
-        "declarationPath": "packages/components-vue/dist/SelectableList.d.ts",
+        "declarationDigest": "sha256:a72a424d633922ce7fd9c238b18b61347859755b979a923fcced1a050e513864",
+        "declarationPath": "packages/components-vue/dist/SelectableList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableListProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:b85196582ad424d1c15229799b0108488c8acbaba1347da88a502bef2a110b5a",
-  "entryDigest": "sha256:77c025c276ec1d7e8621a645900ba31554f4048f20f1f3e655e6c067d45b7716",
+  "digest": "sha256:b7a30f7d4870daf3e610b2c250e26b1b449087b1fb1ab474f23d242ed9e6ecfd",
+  "entryDigest": "sha256:628e7d0fe3028b744fa977c0750d6f4459a16ed2cc5588b5ff680c5775d4363a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -576,8 +576,7 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/TimeRange"
           }
         },
         {
@@ -589,35 +588,30 @@
         {
           "name": "onOpenChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/TimeRange"
           }
         },
         {
           "name": "openChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/TimeRange"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -750,45 +744,18 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onOpenChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "openChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "customExtra"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:015b72fd46688015bbadb09e1e2c627c28d13303c40e4bd49846394c5b310fcc",
-        "declarationPath": "packages/components-vue/dist/TimeRangePicker.d.ts",
+        "declarationDigest": "sha256:6d7d0538ec13e6de3c061969d3b8a9eac4070730bc071f227eaea815440cf02e",
+        "declarationPath": "packages/components-vue/dist/TimeRangePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeRangePickerProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

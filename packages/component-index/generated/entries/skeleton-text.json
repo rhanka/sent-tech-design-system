@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:56e157663b557dfcf04b8a2c4bfdec6744d46c7b5a1d3bfbc9117f70df58c375",
+      "digest": "sha256:7b65de12e079a4586c2b50b3f3a9ab93de336b66bf9a54d1b34382a17203273d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SkeletonText.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/SkeletonText.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:b8212662932e8b76159a6ea2ecdb613fe729437b576c7e4c31eedc7dade65ed3",
+  "digest": "sha256:33a9869873daf8ea9a4b45e1a5e74fd4576787d56770d4f18cd23398f2b07327",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [

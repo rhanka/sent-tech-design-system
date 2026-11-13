@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:85bc8569971e20f2f90c816ed8a60600baef65a208d2c63472d2d514f135de33",
-  "entryDigest": "sha256:4dabc98c03059e8e12d268bb0333ede2123bd09b2cdb3f2562be3212cf960ea6",
+  "digest": "sha256:29f58c3263f00e63f54c16c4c6ebcf084f73328192d993cbbae1808a149d62c2",
+  "entryDigest": "sha256:8bc52420c5e29946cb534493239685e0c6c211a53f90008801e5be8206900f84",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -281,29 +281,25 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         }
       ],
@@ -363,39 +359,14 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:99358b62be4c72093797a569c37cf5e1d372dc86973aaea8fe8b57e50fd4d051",
-        "declarationPath": "packages/components-vue/dist/Slider.d.ts",
+        "declarationDigest": "sha256:5a72eabe6296649dec84519dba74400cc6aaeca593c18cf6797e7a7be371dc3b",
+        "declarationPath": "packages/components-vue/dist/Slider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SliderProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

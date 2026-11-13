@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue';
 import { classNames } from './classNames.js';
-import SelectableRow from './selectable-list-context.js';
+import SelectableRow from './SelectableRow.vue';
 import ColorSwatch, { type ColorSwatchShape } from './ColorSwatch.vue';
 import StatusDot, { type StatusDotTone } from './StatusDot.vue';
 import Badge from './Badge.vue';

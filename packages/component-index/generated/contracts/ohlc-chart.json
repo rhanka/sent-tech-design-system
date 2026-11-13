@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:6cfcd33e0b15030245151ccf1fb256410c508fb32f8a18fd0bc8ba0dc7fface7",
-  "entryDigest": "sha256:50d73e56c263ea6531e7298e41a577e91f5b256e614aec20082b60edb6e5a709",
+  "digest": "sha256:46dda366fa1969b530d7c8f61d4cdc9539996beb942a29dc27a3eb50adcf9171",
+  "entryDigest": "sha256:f7bf97100b633fdb1ef55071cf32a1e86fa49502f0f15ad7c814cfd55c38591e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1283,11 +1283,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:010932e9ec6a27ff6bd5514ce2b44df57418666f562d1d88ed94c46bda664963",
-        "declarationPath": "packages/components-vue/dist/OHLCChart.d.ts",
+        "declarationDigest": "sha256:0fbd76ceaa82f2f099d605e03755afc0d7388c34b553d39b70f07c050122008e",
+        "declarationPath": "packages/components-vue/dist/OHLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OHLCChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

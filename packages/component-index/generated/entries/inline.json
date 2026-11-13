@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:22cc6a32c1931824eda5ecd48b878f63953378d4e6c4cb0e7a05f155c4408c1b",
+      "digest": "sha256:3aab39058d6fb30cc043cc62669412a7ed710c90db01e9affbb400e89bc915d5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Inline.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Inline.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Wrapping horizontal flow with uniform gap.",
     "fr": "Flux horizontal qui passe à la ligne, gap homogène."
   },
-  "digest": "sha256:3ccb71f671f7f12199f2db34617dd472c87bd95157ca7f3b5d6cc1cf517d3e13",
+  "digest": "sha256:85044a2a697f261c3744be2f0231adf400cd41eaf469a520d5e2b559b7631e46",
   "displayName": "Inline",
   "format": "component-entry/v1",
   "frameworks": [

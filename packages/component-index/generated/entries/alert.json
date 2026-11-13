@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e857f3525fe1bae2e236d5e9dc2a85a51f9f73ef4cf2621b39b542b8a9cd0d1c",
+      "digest": "sha256:d6c8a31c33aa6716675e0b4b2609a537fee4dcdad798615afd088e5576a8bedd",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Alert.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Alert.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Info/success/warning/error banner.",
     "fr": "Bandeau d’information info/success/warning/error."
   },
-  "digest": "sha256:d60f054e34ad08508df97d2ed928180d36a571235252f927007f6291e6ab2558",
+  "digest": "sha256:d593ca94e7377af5f4a1c5f478a30eec13c9d703f69dfbc49e43fb6f6da45aac",
   "displayName": "Alert",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:75d057c9ffb5599f8723e5c60db2a73df816dcd725907ee45057c357836a1fbc",
-  "entryDigest": "sha256:f81187708b13261b25272b2c92b8cfb273566387d6636978f380fec3acfd7eec",
+  "digest": "sha256:0e1e5ecb54653fb1e7871cb361d92694ff4c1fffff90fff3b74e5648396d4fea",
+  "entryDigest": "sha256:cfcf9dfedf195ab7f587f9981cd60ffd19683e073a930f1259b9083af0e1ca7f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -276,15 +276,13 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
@@ -350,27 +348,15 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:16dcccfca5e5d16728775348d0e015812b4615e0840ddf9169d7a32fbfc26cd1",
-        "declarationPath": "packages/components-vue/dist/ContentSwitcher.d.ts",
+        "declarationDigest": "sha256:0feb2c9c351ea8b6d6fcd02be36e1e342de5756882efa7ed693085f66bc5cb2f",
+        "declarationPath": "packages/components-vue/dist/ContentSwitcher.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContentSwitcherProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

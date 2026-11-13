@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:4c5590d7cb529161519c32c6a3588a53b4e4d08d9c31e89842286ac31738aba4",
-  "entryDigest": "sha256:0b1909f625db1033c7c1e8291e60d90590b5cbb492f1e01fa6f5d05f0b31ab70",
+  "digest": "sha256:6fe0faacd000188b24f4f6ec11037f86f8691aa5ec7407da72e84d1a4c234e4d",
+  "entryDigest": "sha256:c29ebe38e42f82120aca449f76daed48612b7a7d066a6ae6a87f2865869228e0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -203,8 +203,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -245,13 +244,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c486bc068646252119daf169e94b14dc0cf9e3862d49dfb147cb42c3fe51503d",
-        "declarationPath": "packages/components-vue/dist/Row.d.ts",
+        "declarationDigest": "sha256:757f4a11f7884e9744f1980bc453a6ba4eff1f4fe7413af316eef9d8103ebe25",
+        "declarationPath": "packages/components-vue/dist/Row.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RowProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

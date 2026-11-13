@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:cc161491c9fb8ff1d0faad2b5a04ca8c5ffc81e62006050c2abaac6815cc88c6",
+      "digest": "sha256:d95904b14156e4a6dcc2818cedf9dc7cd62b2abfabd322cd88bdd2bb8a3c9e68",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Sparkline.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Sparkline.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact inline line micro-chart for trends.",
     "fr": "Mini-graphique en ligne, inline, pour tendances compactes."
   },
-  "digest": "sha256:0b47547c8871fa4fd75e5d3d14613a39db554546ebe24493cffb79088ede295e",
+  "digest": "sha256:955ea6f4b44ee74336ad34c9ec0f2b253a307c3247b8399f88e860b8e453b502",
   "displayName": "Sparkline",
   "format": "component-entry/v1",
   "frameworks": [

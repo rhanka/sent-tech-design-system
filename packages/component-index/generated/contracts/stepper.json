@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:9daa57566f4f7f15baf6f12074b3555816dc1f2bf2a427d798f647c0c1d8e221",
-  "entryDigest": "sha256:12b3891126bee670be4496c0d2926e727fa051a75ebc8f446fedf1ea197d6a0d",
+  "digest": "sha256:a70bfe71c51e8861c661604d2566fff7711ffac5e702a32598208a555d2ca8f0",
+  "entryDigest": "sha256:9592d8a709741443c7297f095af580f16bffeae1b8c2f2677e422700670e246e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -278,8 +278,7 @@
         {
           "name": "stepClick",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         }
       ],
@@ -340,21 +339,14 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "stepClick.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:21247175993fd054a0a94c48da6f374f2b48f9a1cced6cccc46473c0d4326626",
-        "declarationPath": "packages/components-vue/dist/Stepper.d.ts",
+        "declarationDigest": "sha256:aceeffbe71d89765855972b01c0bec0a0ca65ecd9b570fed9663c2a32f9f8c10",
+        "declarationPath": "packages/components-vue/dist/Stepper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepperProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

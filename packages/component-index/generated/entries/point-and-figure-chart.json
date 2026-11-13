@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b31d4c40352802d91802ab74f086af6bccab17fd639787f3cc9e03c0bab4bd91",
+      "digest": "sha256:fb55baf9043a11cb3b7fedeb5d87ed4eedb055edbc4b676c9064dd23f57807bb",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/PointAndFigureChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/PointAndFigureChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:6c2ed0e8bf38a2fed0a2f63e68825c7769b91e159105656a3d24773414900fe6",
+  "digest": "sha256:ac03dae16dd4e9a3591fcd792646176dfcdaaa350affafafc933f1c79d7aa1a5",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [

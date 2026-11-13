@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b8defe44717e4c0dc2452e0e8b45f5f877eea3f33dabf71b2aba04f1ad353fbd",
+      "digest": "sha256:df20de0df7e17be965a766a7c2d555dff6b191332dfc4d1f249db29cef82a8ca",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Overline.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Overline.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Discreet small-caps section label (group heading above a block).",
     "fr": "Étiquette de section discrète en petites capitales (libellé de groupe au-dessus d'un bloc)."
   },
-  "digest": "sha256:9a295dc85a2e7baa4a9ec4b3c84e82ec21840e40f3ab8f28e86a023af336957b",
+  "digest": "sha256:216af521ed5b8e1464580fed44f23727da1b9389aa9d0e6173be016a5a72b172",
   "displayName": "Overline",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:4e970aaf78634a3bdac43ea6a348cc5c612f4815ec747333f774849b9b0c9daf",
-  "entryDigest": "sha256:b2b653f3858a404ee43c71f825d28c6f335bf142a0d5244861c3928a57a8f7ea",
+  "digest": "sha256:41a268ee53fc4e72c26298f428551ae91f01521a34b0797538f2befd4f684c86",
+  "entryDigest": "sha256:9b246f8d60a0c412e0c4c38fae3c6de84a2db3457040de86f52e4d4acace4d67",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -672,8 +672,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -714,8 +713,8 @@
               },
               "variant": {
                 "enum": [
-                  "default",
-                  "danger"
+                  "danger",
+                  "default"
                 ]
               }
             },
@@ -860,13 +859,60 @@
           "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "group-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuGroupItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:0cb72855475f69770c83245d7a70c2722b0986528766ef7479df5b5c868e44e1",
+        "declarationDigest": "sha256:9ffbff9ca15942b8386c58872bc7fe3b3cff6d5c2ca6c562d2030d6c891bb34e",
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

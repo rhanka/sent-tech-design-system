@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:92a16c8ae391ca1fcfd5f1f91d3e31d42188485c409cf07786cd0bb831830330",
+      "digest": "sha256:4329cd05d02528c837461e137de715ff913247cf2bbb0e8ae1b7db935eeada03",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SelectableList.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/SelectableList.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Accessible listbox driving its rows: single or multiple selection, keyboard navigation.",
     "fr": "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier."
   },
-  "digest": "sha256:1556537d63ceb9d7f1c270e0ead66acca49b6895c2b341ec48f3ecf36f507f08",
+  "digest": "sha256:bcd99d91c6a78c70b8b983ed5efaeabbe262c12d1d4dfd03f0e1de23d9aa2f71",
   "displayName": "SelectableList",
   "format": "component-entry/v1",
   "frameworks": [

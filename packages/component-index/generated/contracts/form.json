@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:1f96e3cf14b644823de35d46a14e2fc98bc9b0c579b6d1e90e9743969e983201",
-  "entryDigest": "sha256:8fabaf9901589b2b73d41dd706b0a9606ae3ce66c532619608e900b474e1b0fd",
+  "digest": "sha256:07f4ef0821dc052d5764a69d8b1dc64e8794ae6032a7f09446b23d80edc3f50e",
+  "entryDigest": "sha256:2fcd86755ebf7ef2e386f6f1f6acbf029f5def09c9d054f4677bb42a89f3a97e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -200,22 +200,15 @@
       "events": [
         {
           "name": "onSubmit",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "submit",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -237,30 +230,39 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onSubmit.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "submit.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:40b561573489abcb14af89e9239dc7ab96e3e306cb1b13f3c6092e1f1b90a18d",
-        "declarationPath": "packages/components-vue/dist/Form.d.ts",
+        "declarationDigest": "sha256:d03eb3470f4b816faaf8c38584f044178924f60714e18100d181605f5860d93f",
+        "declarationPath": "packages/components-vue/dist/Form.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "onSubmit.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "submit.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
       ]
