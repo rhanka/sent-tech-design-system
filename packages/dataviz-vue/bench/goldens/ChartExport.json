@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "ChartExport",
+  "sourceRevision": "43332117d2683251f4cfc9c565b6fb09ed65c2ca",
+  "source": "src/lib/ChartExport.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PNG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">SVG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PDF</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Print</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">CSV</button></div>"
+    },
+    {
+      "id": "formats",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">CSV</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">SVG</button></div>"
+    },
+    {
+      "id": "labels",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Image</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Imprimer</button></div>"
+    },
+    {
+      "id": "no-store",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PNG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">SVG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PDF</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Print</button></div>"
+    },
+    {
+      "id": "named",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PNG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">SVG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PDF</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Print</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">CSV</button></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-flex st-inline consumer\" data-bench=\"export\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PNG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">SVG</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">PDF</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Print</button><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">CSV</button></div>"
+    }
+  ],
+  "sourceSha256": "7d151ac6f8bcb87ea604ff30a981740844f1bed6801ae692ce7e2ddf188a9b27",
+  "fixtureSha256": "8cf9b33d9bda73d7f2c27c75de1edfea430e2aa736fce35386fa462abbe4fa02",
+  "publicExports": [
+    {
+      "name": "ChartExport",
+      "typeOnly": false
+    },
+    {
+      "name": "ChartExportProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ChartExportTarget",
+      "typeOnly": true
+    }
+  ]
+}
