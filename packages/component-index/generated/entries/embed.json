@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Embed.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Embed.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Controlled iframe wrapper with strict sandbox, ratio, and loading control.",
     "fr": "Iframe contrôlée avec sandbox strict, ratio et chargement configurable."
   },
-  "digest": "sha256:1abe8c36301b2e542294ae1d6b2c0821cd57ad8042591326fc14efd634a239b4",
+  "digest": "sha256:85bfad149bb9178d5005c5a52066f858a041f6981530ba58a2d7e776754b74fe",
   "displayName": "Embed",
   "format": "component-entry/v1",
   "frameworks": [

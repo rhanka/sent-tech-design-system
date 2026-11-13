@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:070a99408233dc9bf98de17a46045f8273d82e9c06ea9f0023c2a438fa895970",
-  "entryDigest": "sha256:63b88ea9612507a8b9dd2b5487d5c4528944593df608eb0851846c00792cd47f",
+  "digest": "sha256:ccb9ce7fe57a73dfe86b33528564a34b6144066416f57ea2378abd8d2e08af31",
+  "entryDigest": "sha256:c66ae2f12d3dc04a2e3f1c9deefbc02ab88f3e595ea8e13a269ccf8d3cd1c43f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/Inline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -136,7 +136,7 @@
         "declarationPath": "packages/components-react/dist/Inline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

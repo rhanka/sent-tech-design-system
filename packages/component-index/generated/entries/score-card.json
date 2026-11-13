@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ScoreCard.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScoreCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:eabc6fe2b69a627be1731b8ffcc20b4b0b6073c83007bd0ec49e2d4be0ade3a5",
+  "digest": "sha256:9faa9934406193d43fbc7e9c75d9cc513192ec373e0467a68cfc7d308f0b8487",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [

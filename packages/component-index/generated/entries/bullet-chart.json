@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BulletChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BulletChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Bullet graph: measure vs target with qualitative range bands.",
     "fr": "Bullet graph : mesure vs cible avec bandes qualitatives."
   },
-  "digest": "sha256:32438d488cad6ca70653ee8660804123aa00339f3cf84f3500736295951398cf",
+  "digest": "sha256:8c7b81e785208445121636325e0bd94e68d60b3dec028050ec498d16387a0801",
   "displayName": "BulletChart",
   "format": "component-entry/v1",
   "frameworks": [

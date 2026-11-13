@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:92ec45333da7fd43f8f7a726de624a6d47f5892ea29c54e4a846aa480bfa71b4",
-  "entryDigest": "sha256:478064ac0a8ecee09c9a0044f2f9d46eeb8d753a70b2cc5142c3517e4aa621a0",
+  "digest": "sha256:f3a6cc8a6fdca734e6a284e8b6aeb3c32eb560ed525a776fc7bd63e7a2e1d874",
+  "entryDigest": "sha256:0f175d5a171602b78f8e3c80f55bf4eef2756646dff2f2737621c5892dbd224d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/MessageActions.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -165,11 +165,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

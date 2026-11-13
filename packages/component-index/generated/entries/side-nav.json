@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SideNav.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SideNav.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical side navigation.",
     "fr": "Navigation latérale verticale."
   },
-  "digest": "sha256:413f0e4e788c90142da115a67cdd8c313b11b7b7a246916e52d1089c1606101a",
+  "digest": "sha256:42391a113eeaabfdc1fe36e1ee3d945488e8b746eec3aaee5a14400b2603c1e9",
   "displayName": "SideNav",
   "format": "component-entry/v1",
   "frameworks": [

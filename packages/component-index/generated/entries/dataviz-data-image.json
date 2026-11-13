@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DataImage.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DataImage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Image resolved from a data row ({{field}} templates).",
     "fr": "Image résolue depuis une ligne de données (gabarits {{champ}})."
   },
-  "digest": "sha256:e23e046156ffdb418fed6971a6117ce6ab86cf563dd14fe0fba241c7e8978117",
+  "digest": "sha256:7393f237b4f8e5c73b7472b3c8ab7a9208fd0de152f376dfd4c3a6be3219f7ec",
   "displayName": "DataImage (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

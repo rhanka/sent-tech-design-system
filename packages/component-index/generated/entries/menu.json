@@ -13,11 +13,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:fb75b0f5f8a42283bb4c59045b435b84ab57417d02bcda5cb67412e53036a018",
+      "digest": "sha256:a781843404cfec83598a727e6449cdd16927e23c51aee9e0c489cbe63ba97159",
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Menu.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -29,18 +29,18 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c91b69e629abccf227b4a19924e3778397ba62f2bf6e90dc67ca1b5eb92fd37e",
+      "digest": "sha256:b78564e76d93d43f6572a282e2f872274b4e5efb93c50c9b2dbe01cb448366f7",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Menu.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:b9b69f1d875732dddb05f3e1b8b950d46e20d53c0df1f8977293be4503d4b6b4",
+  "digest": "sha256:c4fa0a505e38a93d24975cbcc147900644e6e8b0185098eac388537c8e3007d0",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

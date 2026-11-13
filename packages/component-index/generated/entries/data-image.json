@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DataImage.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DataImage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius).",
     "fr": "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon)."
   },
-  "digest": "sha256:9e51e56170a3daf4014cd2f6e4b337abcb168df5befcff25b9c6e9cc63ede324",
+  "digest": "sha256:d70b55b86d344b8148996d2678ec8e3faa2bcd0937642aaa51279e5307312a95",
   "displayName": "DataImage",
   "format": "component-entry/v1",
   "frameworks": [

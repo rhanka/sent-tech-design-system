@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:0ea1b4797f2e59d538fbbbf17655bb646397617cea544ed37adb9c82320a4972",
-  "entryDigest": "sha256:947bb704acb50e0f76a05dff1bcca4518e4d0600486a51c3ec1f759c05bbed5b",
+  "digest": "sha256:0ad6de50b1c48fa0840c6a5f1232398c035360bea43e128d28f36808c1c794d0",
+  "entryDigest": "sha256:1b121e681fc4f9b8d596a1e8b0279c99f1dba0501c631c3c1e3b5b2d56523561",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -89,7 +89,7 @@
         "declarationPath": "packages/components-angular/dist/Dropdown.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DropdownProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -184,11 +184,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DropdownProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

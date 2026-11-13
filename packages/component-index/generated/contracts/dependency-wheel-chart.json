@@ -1,8 +1,8 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:af8ef5435cf70d40ec2c4c5535f1b57b916d02fef9722254127ce185f45bd56f",
-  "entryDigest": "sha256:39fd1b29fd5bd66d9bde419f2515b7303dbe75d02340fd10719416bfba178122",
+  "digest": "sha256:24a4cc9f99ac67268d3561a6eeb7fc46926de1c4e42b60557ec139b68f013bd4",
+  "entryDigest": "sha256:f1fafb8d4c867decd56385de65fefecc0cca52fd2614b4713ef35310224eb62f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/DependencyWheelChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/DependencyWheelChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DependencyWheelChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:9d83ce37372711a8d831779809b48b7c72bb3153d8e30918e3e3cea2524abfcb",
-  "entryDigest": "sha256:c35967b06aadae93877b6ad238bc237845828df8c7ec76c2ce484f54fa1b82bf",
+  "digest": "sha256:5a057a9a73b93c357aacabb56e6a38a7871b6a88219b40358593bcd3b181619b",
+  "entryDigest": "sha256:29c1daf0bb5b0314dfbe3ca97026c98d5f70810c0b6ab5d779de927b0d44077b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/Input.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/Input.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

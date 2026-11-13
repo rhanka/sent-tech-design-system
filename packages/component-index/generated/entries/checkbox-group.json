@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CheckboxGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CheckboxGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Set of checkboxes with a legend and multiple values.",
     "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
   },
-  "digest": "sha256:47f12459c84dcbfc1e658271cee71fb241590bbbccc4a59fd71e6b00eee2d9cb",
+  "digest": "sha256:de7a134b3db0e7ae437511a6b14bbc22719bde98962e7cb6e8c7e266af2252dd",
   "displayName": "CheckboxGroup",
   "format": "component-entry/v1",
   "frameworks": [

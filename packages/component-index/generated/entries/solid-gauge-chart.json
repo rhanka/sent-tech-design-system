@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SolidGaugeChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SolidGaugeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Solid progress ring: filled arc proportional to value, threshold-tinted, with centered value.",
     "fr": "Anneau de progression plein : arc rempli proportionnel à la valeur, teinté par seuils, valeur centrale."
   },
-  "digest": "sha256:cb9c2816feda06375fc60beb98481bdfaa46818a5550b153b0dea3ee628a9bd8",
+  "digest": "sha256:25aee9540abf65ed4dbb2ada6598bdaf395237fd30c369dc3d4002e70545cd0e",
   "displayName": "SolidGaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

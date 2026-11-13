@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:c77f014a8a6264cccf3204fbfe4adcc7d702863abc83e84d5c6fdb1d4053e083",
-  "entryDigest": "sha256:cbece3968faf8c208cc80171aa48c0e90f6f327b9ca1de682e0a7e31b2f4d9e8",
+  "digest": "sha256:41cc345de8dc6b9cdd02180ad48e4780c2acfb94a74439354690c4e126e8195c",
+  "entryDigest": "sha256:89247dbd260d55130af6afdb09e57a9b1c12f3bfe2e39628007a82b3d1443119",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

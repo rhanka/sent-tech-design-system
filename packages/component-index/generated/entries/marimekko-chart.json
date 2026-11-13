@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MarimekkoChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MarimekkoChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Marimekko chart: weighted column width with stacked segments.",
     "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
   },
-  "digest": "sha256:4e2bc7eda67220f90e86229600fac3c0de464ca3c12147db75d86d563d4ee2a8",
+  "digest": "sha256:15c30bea057d6e5309183444a3bde546372b4aa1acd4c04a469785083d484e88",
   "displayName": "MarimekkoChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:0330949ada58bf256b995e0560a7ff13be1137d0c1ebdf102f5665dbcbce8f01",
-  "entryDigest": "sha256:c36cea4147c6e3daf093004afb712b60c94ec46a9d5328402177bc3b127683b7",
+  "digest": "sha256:70174765077c44b4835806aa00bd8a475c859566de2133a79e56b7c5ca96a717",
+  "entryDigest": "sha256:47520a3b1e91e79b4c7369fc9dbad9a8b69967e0839948541383f8691adaa8a0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-angular/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -199,11 +199,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/RibbonChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RibbonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
     "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
   },
-  "digest": "sha256:01f0c60f6fada5390079a1a49923fe9ea9a5da2ac3710c422fed7776affa6992",
+  "digest": "sha256:268c128ffbe621fd94341283e459cbb80a73bca534ba8ce308c94614d6d62cb8",
   "displayName": "RibbonChart",
   "format": "component-entry/v1",
   "frameworks": [

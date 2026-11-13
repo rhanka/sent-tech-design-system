@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StateTimelineChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StateTimelineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Discrete state bands over time: one lane per series, contiguous segments colored by state.",
     "fr": "Bandes d'états discrets dans le temps : une ligne par série, segments contigus colorés par état."
   },
-  "digest": "sha256:5f0d75759e37e215468cb91d4da09e6abed31b9c4ac42de843ec372965842e22",
+  "digest": "sha256:dc7f4ea2879f63daa77aaf6b39bf469f15593981e6ae28d5d0ebaabfa62f768c",
   "displayName": "StateTimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

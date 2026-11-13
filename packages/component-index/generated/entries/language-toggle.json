@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LanguageToggle.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageToggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Controlled language toggle, as a desktop select or mobile accordion.",
     "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
   },
-  "digest": "sha256:6c103cb5e673d0172b089e5a098cea9914785579e20c911d99c5bcd04ce5756d",
+  "digest": "sha256:e117a5c5710b5c19e7bb87405ab6fab3e187c3607695534bf6eeaa5b2bf790b3",
   "displayName": "LanguageToggle",
   "format": "component-entry/v1",
   "frameworks": [

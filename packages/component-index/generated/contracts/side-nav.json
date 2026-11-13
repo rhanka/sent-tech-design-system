@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:527a2b51fbc0f923a7e6b5f08d4d89f1d1a6f3cdf8ce1c4f98888a58ac1f7e35",
-  "entryDigest": "sha256:413f0e4e788c90142da115a67cdd8c313b11b7b7a246916e52d1089c1606101a",
+  "digest": "sha256:522f49a6673744bc289719b55bd05a93263f7a5199af4ee3c1303a0a529aa701",
+  "entryDigest": "sha256:42391a113eeaabfdc1fe36e1ee3d945488e8b746eec3aaee5a14400b2603c1e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/SideNav.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SideNavProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -137,11 +137,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SideNavProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

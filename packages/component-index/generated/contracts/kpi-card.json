@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:8304ac9c156343f9b3bb2aaefe1dce2e932f7e5920d3fb950972990ca5d66cbc",
-  "entryDigest": "sha256:203c69bd165dc2ed70c4a36e39aab2fbeb93dbd5c5a2f08c26a65348f7487d6a",
+  "digest": "sha256:a2aa0158e8090c338f5eec23279589bb0f5e9c66c3382e000d739c6a20fdee36",
+  "entryDigest": "sha256:2bfa1a73e342ea8b1c63628476c810ef2206235a9a2ef2e3228443a464ae6f37",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-angular/dist/KpiCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "KpiCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-react/dist/KpiCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "KpiCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:3552142509976d62ab22d9bb4781f84145466bce599a883011713854f57f54ed",
-  "entryDigest": "sha256:51d7bf0b972b0e2f39ad8014f2456422e84849c91478382c9a9d2dde07886db6",
+  "digest": "sha256:5aaf632c7e31f04f52f3771339b263c981cfad1822274617aedd03db72154653",
+  "entryDigest": "sha256:6e0a174763e04d1df992a923041035a9b7f9f2895d83c6440a1b3be4dc814e2c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -96,7 +96,7 @@
         "declarationPath": "packages/components-angular/dist/Tabs.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TabsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -183,11 +183,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TabsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
