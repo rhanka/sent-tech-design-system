@@ -21,7 +21,7 @@ import {
 } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
-import { MenuLabel } from "./MenuLabel.js";
+import MenuLabel from './MenuLabel.vue';
 import {
   CLOSE_DELAY,
   MENU_HOST_KEY,

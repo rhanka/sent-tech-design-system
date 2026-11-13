@@ -107,7 +107,6 @@
   "packages/components-vue/src/MarimekkoChart.ts",
   "packages/components-vue/src/MasterDetail.ts",
   "packages/components-vue/src/MediaContent.ts",
-  "packages/components-vue/src/MenuLabel.ts",
   "packages/components-vue/src/MenuTriggerButton.ts",
   "packages/components-vue/src/MessageActions.ts",
   "packages/components-vue/src/MessageStatusBadge.ts",
