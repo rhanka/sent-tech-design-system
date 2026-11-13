@@ -1,7 +1,7 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:1fdc59dc0cccb66f11aff9d8af76dec27bee6213b8ef1121ba4221c4090b7422",
+  "digest": "sha256:beba848872b6f59e15425af33ffaf9f2c9d5becf10ad2a5f78388fd7593a308c",
   "entryDigest": "sha256:67c972d7a4d4d13e0ccc191467d420e4f86b6bf94ae6130d6f7eace96efe9461",
   "format": "component-contract/v1",
   "frameworks": {
@@ -1167,7 +1167,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:8df205db886904d362671b83d839839bc688a6200520ee8314981a6f950a5adb",
+        "declarationDigest": "sha256:3f8f002d80da6eeab59d6d21d5604925441727bc6029febd8d2aeea11aa7ee80",
         "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",
