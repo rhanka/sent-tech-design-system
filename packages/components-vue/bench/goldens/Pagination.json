@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Pagination",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Pagination.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination\"><button disabled=\"\" type=\"button\">Previous</button><button aria-current=\"page\" aria-label=\"Page 1\" class=\"st-pagination__page st-pagination__page--active\" type=\"button\">1</button><button aria-label=\"Page 2\" class=\"st-pagination__page\" type=\"button\">2</button><button aria-label=\"Page 3\" class=\"st-pagination__page\" type=\"button\">3</button><button type=\"button\">Next</button></nav>"
+    },
+    {
+      "id": "middle-page-count",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination\"><button type=\"button\">Previous</button><button aria-label=\"Page 1\" class=\"st-pagination__page\" type=\"button\">1</button><button aria-current=\"page\" aria-label=\"Page 2\" class=\"st-pagination__page st-pagination__page--active\" type=\"button\">2</button><button aria-label=\"Page 3\" class=\"st-pagination__page\" type=\"button\">3</button><button aria-label=\"Page 4\" class=\"st-pagination__page\" type=\"button\">4</button><button type=\"button\">Next</button></nav>"
+    },
+    {
+      "id": "last-total-pages",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination\"><button type=\"button\">Previous</button><button aria-label=\"Page 1\" class=\"st-pagination__page\" type=\"button\">1</button><button aria-label=\"Page 2\" class=\"st-pagination__page\" type=\"button\">2</button><button aria-current=\"page\" aria-label=\"Page 3\" class=\"st-pagination__page st-pagination__page--active\" type=\"button\">3</button><button disabled=\"\" type=\"button\">Next</button></nav>"
+    },
+    {
+      "id": "custom-labels-size",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination consumer\" data-bench=\"pages\" style=\"color:red;\"><button type=\"button\">Back</button><button aria-label=\"Page 1\" class=\"st-pagination__page\" type=\"button\">1</button><button aria-current=\"page\" aria-label=\"Page 2\" class=\"st-pagination__page st-pagination__page--active\" type=\"button\">2</button><button aria-label=\"Page 3\" class=\"st-pagination__page\" type=\"button\">3</button><button type=\"button\">Forward</button></nav>"
+    },
+    {
+      "id": "no-total",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination\"><button disabled=\"\" type=\"button\">Previous</button><button aria-current=\"page\" aria-label=\"Page 1\" class=\"st-pagination__page st-pagination__page--active\" type=\"button\">1</button><button disabled=\"\" type=\"button\">Next</button></nav>"
+    },
+    {
+      "id": "zero-pages",
+      "html": "<nav aria-label=\"Pagination\" class=\"st-pagination\"><button disabled=\"\" type=\"button\">Previous</button><button disabled=\"\" type=\"button\">Next</button></nav>"
+    }
+  ],
+  "sourceSha256": "b96a7d3adacb5a3281cadedb7c880bbc4339df7009de9fc7eab0f994f58659c8",
+  "fixtureSha256": "eba8228323a5a2c698aa9cc6c5bbf40ae53bf25dbb534e97c8522aeba7ef6d95",
+  "publicExports": [
+    {
+      "name": "Pagination",
+      "typeOnly": false
+    },
+    {
+      "name": "PaginationProps",
+      "typeOnly": true
+    }
+  ]
+}
