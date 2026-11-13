@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AspectRatio.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Fixed aspect-ratio container (media, embeds).",
     "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
   },
-  "digest": "sha256:c563af0aa7a017f817c79b5a05643f9833242e4933fbb5d3ddc77bbfe8c9d86a",
+  "digest": "sha256:6dd914389c6b1092b2b79c03f7f101622da1cd0a30188aa12053663ad49c6cc8",
   "displayName": "AspectRatio",
   "format": "component-entry/v1",
   "frameworks": [

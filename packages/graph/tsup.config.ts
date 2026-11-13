@@ -19,7 +19,7 @@ import { defineConfig } from "tsup";
 // tarball.
 export default defineConfig([
   {
-    entry: { index: "src/index.ts", "processing/index": "src/processing/index.ts" },
+    entry: { index: "src/index.ts", presentation: "src/presentation.ts", engine: "src/engine.ts", "processing/index": "src/processing/index.ts" },
     format: ["esm", "cjs"],
     dts: true,
     sourcemap: true,

@@ -10,7 +10,7 @@
     "@lucide/svelte": "^0.562.0",
     "@sentropic/design-system-angular": "0.40.0",
     "@sentropic/design-system-react": "0.39.0",
-    "@sentropic/design-system-svelte": "0.39.0",
+    "@sentropic/design-system-svelte": "0.40.0",
     "@sentropic/design-system-theme-accor": "0.1.0",
     "@sentropic/design-system-theme-aeroports-de-paris": "0.1.0",
     "@sentropic/design-system-theme-agropur": "0.1.0",
@@ -161,7 +161,7 @@
     "@sentropic/design-system-theme-writer": "0.1.0",
     "@sentropic/design-system-theme-xai": "0.1.0",
     "@sentropic/design-system-theme-you": "0.1.0",
-    "@sentropic/design-system-themes": "0.12.0",
+    "@sentropic/design-system-themes": "0.13.0",
     "@sentropic/design-system-vue": "0.39.0",
     "@sentropic/dataviz-angular": "0.5.0",
     "@sentropic/dataviz-core": "0.5.0",
@@ -173,8 +173,7 @@
     "jose": "^6.2.3",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
-    "svelte": "^5.53.2",
-    "vue": "^3.5.35"
+    "svelte": "^5.53.2"
   },
   "devDependencies": {
     "@angular/compiler": "21.2.24",
@@ -187,7 +186,8 @@
     "jsdom": "^27.2.0",
     "playwright-core": "^1.60.0",
     "vite": "^8.0.16",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.11",
+    "vue": "3.6.0-rc.15"
   },
   "scripts": {
     "predev": "node ../../scripts/ensure-theme-dists.mjs",

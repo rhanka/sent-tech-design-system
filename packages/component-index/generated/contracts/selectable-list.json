@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:4f8797be01dc7f46c7bf7d55f0c7b4a4d3719c80c96f49d70ef5389a7006caf0",
-  "entryDigest": "sha256:bd43a7a5b30932cfcc11f525d5ca712cc84956df5fa9e6b8d95a0ebd56d01d1b",
+  "digest": "sha256:8e9769c47236517080034fceceab210d83633930f35bb0428d9267fca98cfac6",
+  "entryDigest": "sha256:5c5035b8f1a5943bbc2380899ae9f1da9f3bbcd946807037ff61a49694df42c1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
