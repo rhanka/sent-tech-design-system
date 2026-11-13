@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:8a5629479cd9b633538cd25ff0db661d1352caa678aa75bf1e5f874e260fecaa",
+      "digest": "sha256:feea55275da1bf226914fe32984ccb561993aebb4e84b572fb13b5f7c747f9bd",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SunburstChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/SunburstChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Radial hierarchy for exploring nested contributions.",
     "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
   },
-  "digest": "sha256:e5bfe86cf37f4fe9d8c8db948ac3abb805396c648e8e84aa71d2bf2bf8e86a6d",
+  "digest": "sha256:6d39aa85edeeded8c449dce868ea603c3c217d1037977c1e66fea702be33589f",
   "displayName": "SunburstChart",
   "format": "component-entry/v1",
   "frameworks": [

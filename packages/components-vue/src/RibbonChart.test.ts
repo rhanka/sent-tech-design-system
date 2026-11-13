@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { RibbonChart } from "./RibbonChart.js";
+import RibbonChart from "./RibbonChart.vue";
 
 const data = [
   { category: "Card", period: "Q1", value: 42 },

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Portal",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/Portal.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<!--teleport start--><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><div class=\"st-portal\" data-st-portal=\"teleported\"><p>Portal body</p></div><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "inline",
+      "html": "<!--teleport start--><div class=\"st-portal\" data-st-portal=\"inline\"><button>Inline</button></div><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "custom-target",
+      "html": "<!--teleport start--><!--teleport end-->",
+      "teleports": {
+        "#destination": "<!--teleport start anchor--><div class=\"st-portal consumer\" data-st-portal=\"teleported\"><span>Moved</span></div><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "attrs",
+      "html": "<!--teleport start--><div class=\"st-portal consumer\" data-st-portal=\"inline\">Text</div><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><!--teleport anchor-->"
+      }
+    }
+  ],
+  "sourceSha256": "8d4f2a2c2a2f3badb4bb9ac014eeb96c7993170795252d5869e73b9da7d93a76",
+  "fixtureSha256": "206e115b989793a881e11ead5db7223b0eb2013428929f32f422b8acc7f9d898",
+  "publicExports": [
+    {
+      "name": "Portal",
+      "typeOnly": false
+    },
+    {
+      "name": "PortalProps",
+      "typeOnly": true
+    }
+  ]
+}

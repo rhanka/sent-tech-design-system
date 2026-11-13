@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f81a6ff02f5c5b7c8b3ca4daa8d92da7a5ad9cebacc2addcbd5079973a218320",
+      "digest": "sha256:389f9ea424f2ca242fbb3acbb8ce1919888a64765fe4752d670726f8cb561676",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ErrorBarChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/ErrorBarChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval).",
     "fr": "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance)."
   },
-  "digest": "sha256:b22b367e84b13eeadf46bec0a90be6ab7313f9ad8a433361049f99bf64fbea50",
+  "digest": "sha256:ff319109f0ab527ef8de4e2c68170a08373e51a1a6171b994c4d032aca73a8ce",
   "displayName": "ErrorBarChart",
   "format": "component-entry/v1",
   "frameworks": [

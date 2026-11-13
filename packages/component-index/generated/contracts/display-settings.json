@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:5b2213afd4f6ed9e43a33135add1a018c3046b0be04168eb87fd954b06e57737",
-  "entryDigest": "sha256:8b548cc675f87d2a3d3a46aca082418fb6edce74bbb646525ae86db03ccb796e",
+  "digest": "sha256:da3e5e764265c3643ddfdb5d7850401055596b3ee38769daa37fdb77d22cb9e9",
+  "entryDigest": "sha256:fe17fbc05dbb8d1bbe6d589f344e429014d1e0e88cfa3e54e517ddd9fce8e88b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -312,15 +312,13 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/DisplaySettingsState"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/DisplaySettingsState"
           }
         }
       ],
@@ -329,6 +327,42 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "additionalProperties": false,
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
           "class": {
@@ -355,18 +389,6 @@
       },
       "replaced": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "values",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -375,11 +397,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d00fd788c74b4b3fc93d52f8aadb8562f6a6cdb5f8c1d2e89c036371932dd7f3",
-        "declarationPath": "packages/components-vue/dist/DisplaySettings.d.ts",
+        "declarationDigest": "sha256:435420b4dbf43050955c97a0585844eeb8c33017dd11022841b17392a1d6ccb1",
+        "declarationPath": "packages/components-vue/dist/DisplaySettings.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DisplaySettingsProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

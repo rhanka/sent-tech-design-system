@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:cc27f5ec767245982e68b07698bf62ebfa651011ff555e780039edca002bedb5",
+      "digest": "sha256:08594e8d920e1cc5f8a2c207636d54a92e525071d881fe980957f34f96ddebe1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ChatMessage.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/ChatMessage.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Visual chat message bubble with role and status.",
     "fr": "Bulle de message visuelle avec rôles et statut."
   },
-  "digest": "sha256:14a77d5c9a5d2b04242278874321edfffcb71b84a0b733c2d9771ad565a0119e",
+  "digest": "sha256:14ba59cb92fa8d3245b6f13d5dce3b55a305cafab755802494a521148a61fa09",
   "displayName": "ChatMessage",
   "format": "component-entry/v1",
   "frameworks": [

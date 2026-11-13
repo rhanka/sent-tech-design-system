@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { DumbbellChart } from "./index.js";
-import type { DumbbellChartDatum } from "./DumbbellChart.js";
+import type { DumbbellChartDatum } from "./DumbbellChart.vue";
 
 const data: DumbbellChartDatum[] = [
   { category: "Ingénierie", low: 62, high: 78 },

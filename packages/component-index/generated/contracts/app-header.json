@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:6a5d21105a5a7f7459dbe9ea37e14bfad298c64d96b53612f1825bc31977c438",
-  "entryDigest": "sha256:fde79ab0a287ed417c7e3442b2eb96121adf486126ab393b6d19d86d635b7e3c",
+  "digest": "sha256:a703864cd4abdbb632d59b3ea7be6a9731da6d0cbad957cd6ffd783a433e72a5",
+  "entryDigest": "sha256:7f44d0081787b0f9a373a9640a049d2c1960936ab3dedd187e6fc01a70413935",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -285,23 +285,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "menuToggle",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "menuToggle"
         },
         {
-          "name": "onMenuToggle",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onMenuToggle"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -349,29 +340,29 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "menuToggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "actions"
         },
         {
-          "name": "onMenuToggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "drawer"
+        },
+        {
+          "name": "logo"
+        },
+        {
+          "name": "nav"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:249ebd653fd129c11d9356778dafb2b02c857dae5c6f3ca687c78e44b0175801",
-        "declarationPath": "packages/components-vue/dist/AppHeader.d.ts",
+        "declarationDigest": "sha256:324f74398b60ab2a4304cbd5d0e4b85c1b7dc60e58748d9828717849cca93e1b",
+        "declarationPath": "packages/components-vue/dist/AppHeader.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppHeaderProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"menuToggle\" and prop \"onMenuToggle\" both listed verbatim"

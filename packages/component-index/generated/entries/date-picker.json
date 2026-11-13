@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:7624d45fae5eae1f44f1a893a231d81d9195834182c9fcc5b713de3d97374e80",
+      "digest": "sha256:7888aa2b5abce447c273ca1e48020c49fc4b68747af48524e81b3f922757d45c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/DatePicker.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/DatePicker.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Date picker, single or range mode.",
     "fr": "Sélecteur de date, mode simple ou plage."
   },
-  "digest": "sha256:24892ee52aa07d58dbc50ec6d70197b2a52427630ecc8c7f5f901de7dc628b0c",
+  "digest": "sha256:5acbce592d0446da3807e63b52982c51d85b40871d6a92b1285cea080ca787db",
   "displayName": "DatePicker",
   "format": "component-entry/v1",
   "frameworks": [

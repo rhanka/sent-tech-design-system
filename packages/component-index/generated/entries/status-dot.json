@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:76e644f10b7501c1594a56da6c5fcf64f38d4b52c53de80bf85bb11c1ead7362",
+      "digest": "sha256:38f9eb1d228f31fec3a5c6843e75472d001f0ff74728e5d2494bfb40d222b2fe",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/StatusDot.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/StatusDot.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
     "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
   },
-  "digest": "sha256:d98aa69a696c92c6f3472f3def12810cb703cbf3843eff0b2a69df78bbbb081f",
+  "digest": "sha256:14dc8c8705df04719f2f98f1c67f2def71616574e890d301c27340df09ba5239",
   "displayName": "StatusDot",
   "format": "component-entry/v1",
   "frameworks": [

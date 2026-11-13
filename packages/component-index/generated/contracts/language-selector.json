@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:9ced248f5c05b828a7d12dcca25bc3022ba810348144396237085fad48384efc",
-  "entryDigest": "sha256:15b22a97dd0b6f2e87a50304d5f6388576bb51561d24838abc8f17bb7ed0defa",
+  "digest": "sha256:dfa5e7728589ac922b355747b512c80df5b878a44fb0e587a8f6a77e653dcd46",
+  "entryDigest": "sha256:630f5d4f3564e4c1f845ff27fb04429eb20758b3d4ac55622dd6a5598538a1bf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -241,21 +241,18 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -268,7 +265,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -303,27 +299,40 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "current-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {
+                "$ref": "#/$defs/LanguageOption"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {
+                "$ref": "#/$defs/LanguageOption"
+              }
+            },
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:28deb528c43cdb6b734264c974149f4ade0c4d86d2de5b95dcf81b2a7c182f90",
-        "declarationPath": "packages/components-vue/dist/LanguageSelector.d.ts",
+        "declarationDigest": "sha256:91fe7485393b29d15551e9cb10b5ada6440a2d579d6d0ce5004c5c158ac2362d",
+        "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Footer",
+  "sourceRevision": "d163b24f7320c8c86158b8451a53bf26934df834",
+  "source": "src/Footer.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__brand\">Acme</div><div class=\"st-footer__columns\"></div></div></footer>"
+    },
+    {
+      "id": "columns-links",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__columns\"><nav><h2>Product</h2><a href=\"/pricing\">Pricing</a><a href=\"/changelog\">Changelog</a></nav><nav><a href=\"/docs\">Docs</a></nav></div></div><div class=\"st-footer__bottom\"><span class=\"st-footer__copyright\">© 2025 Acme</span><nav aria-label=\"Legal links\" class=\"st-footer__legal\"><a href=\"/privacy\">Privacy</a></nav></div></footer>"
+    },
+    {
+      "id": "links-only",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__columns\"><nav><a href=\"/\">Home</a></nav></div></div><div class=\"st-footer__bottom\"><span class=\"st-footer__copyright\">© 2025</span></div></footer>"
+    },
+    {
+      "id": "brand-slot",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__brand\"><strong>Brand</strong></div><div class=\"st-footer__columns\"></div></div><div class=\"st-footer__bottom\"><span class=\"st-footer__copyright\">© 2025</span></div></footer>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__brand\"><strong>Brand</strong></div><div class=\"st-footer__columns\"></div></div><div class=\"st-footer__bottom\"><span class=\"st-footer__copyright\"><em>© 2025</em></span></div></footer>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<footer aria-label=\"Footer\" class=\"st-footer consumer\" data-bench=\"footer\" style=\"color:red;\"><div class=\"st-footer__top\"><div class=\"st-footer__brand\">Acme</div><div class=\"st-footer__columns\"></div></div></footer>"
+    },
+    {
+      "id": "rich-links",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__columns\"><nav><h2><strong>Title</strong></h2><a href=\"/\"><em>Link</em></a></nav></div></div><div class=\"st-footer__bottom\"><nav aria-label=\"Legal links\" class=\"st-footer__legal\"><a href=\"/legal\"><em>Legal</em></a></nav></div></footer>"
+    }
+  ],
+  "sourceSha256": "4e8d833a7eb998a8157d6210e0d0b0e89ed645b5a68c5b50749a99580e78f0e1",
+  "fixtureSha256": "f2098dca480485db5bdf5d06edc37ce1af4f5a4316a03276519b2f75a7133e53",
+  "publicExports": [
+    {
+      "name": "Footer",
+      "typeOnly": false
+    },
+    {
+      "name": "FooterProps",
+      "typeOnly": true
+    },
+    {
+      "name": "FooterLink",
+      "typeOnly": true
+    },
+    {
+      "name": "FooterColumn",
+      "typeOnly": true
+    }
+  ]
+}

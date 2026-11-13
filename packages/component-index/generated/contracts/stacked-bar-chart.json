@@ -1,8 +1,8 @@
 {
   "componentId": "stacked-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:174ab2a996542b53103490f732985d760b224a66d0fa942b9c5b37586de7f4aa",
-  "entryDigest": "sha256:2253ccc8304204f46e9e7ffbb6dee005ab2390f907050d28397427c55c7b1d01",
+  "digest": "sha256:eca6014fd8b21949a90b07e16d0ab5fabd1c4ca4d22318d78ef3a68ad33a4fc6",
+  "entryDigest": "sha256:a742ba55041f2363aae647401e0cd6b78c63c4fe3a1e3ce562c1fbaeddc2ae23",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -561,14 +561,12 @@
                 },
                 "type": "object"
               }
-            ],
-            "description": "Per-segment value labels. `false`/absent (default) → none. `true` → each\nsegment's value with the chart's numeric formatter. Object → `format(value)`\nand/or a `position` override (default `center` of the segment). Segments too\nshort to host a legible label are skipped. Labels are `aria-hidden` — the\nvalues already live in the accessible ChartDataList."
+            ]
           },
           "height": {
             "type": "number"
           },
           "hiddenSeries": {
-            "description": "Interactive legend (FR-4). Ids/labels of series hidden from the render\n(controlled by the parent; default = all visible). Each segment whose\n`label` ∈ `hiddenSeries` is omitted and its legend item is shown \"off\"\n(`aria-pressed`). Undefined → legacy non-interactive legend, unless\n`onToggleSeries` is provided.",
             "items": {
               "type": "string"
             },
@@ -593,11 +591,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:701821065b821d22009ff8d577e2cb5fcdcd9b01d235c49f82a9f971bbb05342",
-        "declarationPath": "packages/components-vue/dist/StackedBarChart.d.ts",
+        "declarationDigest": "sha256:499894d742960f5cfedccb29b3cf42ac575f34f7cd50f98a40f86779aea6a574",
+        "declarationPath": "packages/components-vue/dist/StackedBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StackedBarChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

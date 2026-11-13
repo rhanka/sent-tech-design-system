@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "LanguageSelector",
+  "sourceRevision": "8d0a320f877d137001f6a421df2d0a3e0fc5ea4c",
+  "source": "src/LanguageSelector.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-languageSelector\"><button class=\"st-languageSelector__trigger\" type=\"button\"><span class=\"st-languageSelector__current\">Français</span></button></div>"
+    },
+    {
+      "id": "open-menu",
+      "html": "<div class=\"st-languageSelector\"><button class=\"st-languageSelector__trigger\" type=\"button\"><span class=\"st-languageSelector__current\">English</span></button><ul class=\"st-languageSelector__menu\"><li><button class=\"st-languageSelector__option\" type=\"button\">Français</button></li><li><button class=\"st-languageSelector__option st-languageSelector__option--active\" type=\"button\">English</button></li></ul></div>"
+    },
+    {
+      "id": "no-value",
+      "html": "<div class=\"st-languageSelector\"><button class=\"st-languageSelector__trigger\" type=\"button\"><span class=\"st-languageSelector__current\">Français</span></button></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-languageSelector consumer\" data-bench=\"language\" style=\"color:red;\"><button class=\"st-languageSelector__trigger\" type=\"button\"><span class=\"st-languageSelector__current\">FR</span></button></div>"
+    }
+  ],
+  "sourceSha256": "2886b8c7cbd757c319d6e407525669811fe35c7ea60feb9b4c918620e2cf30e2",
+  "fixtureSha256": "0aedf9b1322a1d20543c354c422dbb86758bd6ce1db83268211278edb2212024",
+  "publicExports": [
+    {
+      "name": "LanguageSelector",
+      "typeOnly": false
+    },
+    {
+      "name": "LanguageSelectorProps",
+      "typeOnly": true
+    },
+    {
+      "name": "LanguageOption",
+      "typeOnly": true
+    }
+  ]
+}

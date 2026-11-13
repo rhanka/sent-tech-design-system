@@ -1,12 +1,9 @@
-<script lang="ts">
-let overflowMenuInstanceCounter = 0;
-</script>
-
 <script setup lang="ts">
+import type { MenuLabelSlots } from './menu-label-slots.js';
 import type { OverflowMenuPlacement } from "./OverflowMenu.js";
-import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
-import { Ellipsis } from "lucide-vue-next";
-import { Menu } from "./Menu.js";
+import { useId, useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
+
+import Menu from "./Menu.vue";
 import type { MenuActionItem, MenuItem } from "./Menu.js";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
@@ -33,6 +30,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
   return false;
 }
 
+defineSlots<MenuLabelSlots>();
+
 defineOptions({ name: "OverflowMenu", inheritAttrs: false });
 const props = defineProps({
   items: { type: Array as () => MenuItem[], required: true },
@@ -49,7 +48,7 @@ const props = defineProps({
 const emit = defineEmits(["update:open", "select"]);
 const attrs = useAttrs();
 
-const rootMenuId = `st-overflowmenu-${++overflowMenuInstanceCounter}`;
+const rootMenuId = `st-overflowmenu-${useId()}`;
 const localOpen = ref(false);
 const hostRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
@@ -161,13 +160,13 @@ onUnmounted(() => {
 </script>
 <template>
   <div
-    v-bind="attrs"
-    ref="hostRef"
-    :class="[
+    v-bind="{ ...(attrs), class: ([
       'st-overflowMenu',
       { 'st-overflowMenu--dense': props.dense },
       props.class,
-    ]"
+    ]) }"
+    ref="hostRef"
+
   >
     <button
       ref="triggerRef"
@@ -180,7 +179,7 @@ onUnmounted(() => {
       @click="setOpen(!isOpen())"
       @keydown="onTriggerKeyDown"
     >
-      <Ellipsis :size="18" :stroke-width="2.25" aria-hidden="true" />
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-icon lucide-ellipsis" aria-hidden="true"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
     </button>
     <div
       v-if="isOpen()"
@@ -195,7 +194,11 @@ onUnmounted(() => {
         :aria-label="props.label"
         :submenu-side="props.submenuSide"
         @select="handleMenuSelect"
-      />
+      >
+<template v-if="$slots['item-icon']" #item-icon="scope"><slot name="item-icon" v-bind="scope" /></template>
+      <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
+      <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
+    </Menu>
     </div>
   </div>
 </template>

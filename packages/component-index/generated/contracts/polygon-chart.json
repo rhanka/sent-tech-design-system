@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:659ae9201c8152a7f5133193410a0abb60e13273f38c8c816e477d8e4f8bf075",
-  "entryDigest": "sha256:af02e3bedc06604ba29f0322720f1ee95bb2592b713fceb040bb889ef6a41658",
+  "digest": "sha256:a2bd976ca41f9161e503d492971de0859e2c33162ad1dfa1a60a8cd91f2cd7a5",
+  "entryDigest": "sha256:ab8a53cceb03accf7f7ddd3b968acab3d9c6ff63350b26c83694fdbc75e0abb0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:cb71f6835f29c0f5e3ebab68ae6058feb122ba24c68ab952af1986bb967251e7",
-        "declarationPath": "packages/components-vue/dist/PolygonChart.d.ts",
+        "declarationDigest": "sha256:bd88a7264b9688b79c47cbe9fcd6108ba47a6a88b6b9ebfe1f898f8098b8cbc7",
+        "declarationPath": "packages/components-vue/dist/PolygonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PolygonChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

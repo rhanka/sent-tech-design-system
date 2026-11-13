@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:0077131dceabc8d06a2e532c0d63a66ed480e192212a9810acd7abe31b8aa152",
-  "entryDigest": "sha256:892839d2c9c02c8daebfa2d872054a61059439cbe078ab2e15f05087ac1f2057",
+  "digest": "sha256:7ec61d309d229a1e43a21c7ec3eb9fa8d89ee8c759a2d288f4720890f0a9a5f7",
+  "entryDigest": "sha256:1367dbe7dafba36d6db3bfb2d92603532d7d0288965132fc3565847be78ed703",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -152,8 +152,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -164,9 +163,6 @@
           "helperText": {},
           "legend": {}
         },
-        "required": [
-          "legend"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -183,13 +179,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "helperText"
+        },
+        {
+          "name": "legend"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:65441387835a8c524ad1a3dc7c00b9999aa264bc5afa0a3b94cc0e3559cd7f61",
-        "declarationPath": "packages/components-vue/dist/FormGroup.d.ts",
+        "declarationDigest": "sha256:aff4175f6fff246b6c15216130277ce2f1100c9068373a5c093bc6695395d0d1",
+        "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "AppHeader",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "source": "src/AppHeader.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><div class=\"st-appHeader__logo\"><b>Logo</b></div><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"><a href=\"/\">Nav</a></nav><div class=\"st-appHeader__actions\"><button>Action</button></div></div></header>"
+    },
+    {
+      "id": "variant-1",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><div class=\"st-appHeader__logo\"><b>Logo</b></div><div class=\"st-appHeader__burger\"><button aria-controls=\"generated-1\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"Menu\" class=\"st-appHeader__burgerButton\" type=\"button\"><svg aria-hidden=\"true\" class=\"st-appHeader__burgerIcon\" fill=\"none\" focusable=\"false\" height=\"20\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"20\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div></div></header><button aria-label=\"Menu\" class=\"st-appHeader__scrim\" type=\"button\"></button><aside class=\"st-appHeader__drawer\" id=\"generated-1\"><p>Drawer</p></aside>"
+    },
+    {
+      "id": "variant-2",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><div class=\"st-appHeader__logo\"><b>Logo</b></div><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"><a href=\"/\">Nav</a></nav><div class=\"st-appHeader__actions\"><button>Action</button></div></div></header>"
+    },
+    {
+      "id": "variant-3",
+      "html": "<header class=\"st-appHeader consumer\"><div class=\"st-appHeader__bar\"><div class=\"st-appHeader__logo\"><b>Logo</b></div><div class=\"st-appHeader__burger\"><button aria-controls=\"custom\" aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Menu\" class=\"st-appHeader__burgerButton\" type=\"button\"><svg aria-hidden=\"true\" class=\"st-appHeader__burgerIcon\" fill=\"none\" focusable=\"false\" height=\"20\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"20\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg></button></div></div></header>"
+    }
+  ],
+  "sourceSha256": "57d636f5cf3263af50bcf17e3239789894dadb012f88c2edd280fedb021fe36e",
+  "fixtureSha256": "2081029de5ef5ce43806bdbc237fbf80710ce697c07ee57ba8b2512c8762dddc",
+  "publicExports": [
+    {
+      "name": "AppHeader",
+      "typeOnly": false
+    },
+    {
+      "name": "AppHeaderProps",
+      "typeOnly": true
+    }
+  ]
+}

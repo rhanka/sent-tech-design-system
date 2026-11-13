@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { ColumnRangeChart } from "./index.js";
-import type { ColumnRangeChartDatum } from "./ColumnRangeChart.js";
+import type { ColumnRangeChartDatum } from "./ColumnRangeChart.vue";
 
 const data: ColumnRangeChartDatum[] = [
   { category: "Jan", low: -4, high: 3 },

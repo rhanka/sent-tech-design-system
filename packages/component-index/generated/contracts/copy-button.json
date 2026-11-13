@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:fa279a095160eaff860098f84a1856f27dea375f0063a909da4ca89bfdae55e5",
-  "entryDigest": "sha256:14d22101c50411a5b395b83a88478f4bf6b08db58875f255fbef646d90209853",
+  "digest": "sha256:d24db21cfb5a259bc2e3297235799397fd21508459c7a9e5a063414348047095",
+  "entryDigest": "sha256:f03e47d2b462c2a18911d47b0ce0dbb73d15f8ff1df1ba399f6575696ae5a4af",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,17 +199,11 @@
       "events": [
         {
           "name": "click",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onClick",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         }
       ],
       "limitations": [
@@ -247,30 +241,30 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "click.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onClick.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7b51c8ae2905fa95bbb82cc039da8c7c4361406feefdc32c009fb22b1f50ff9f",
-        "declarationPath": "packages/components-vue/dist/CopyButton.d.ts",
+        "declarationDigest": "sha256:d3d3fccde329380caa58774f6e3ec722b2e0750d04ba3c34f5eec994d7974da7",
+        "declarationPath": "packages/components-vue/dist/CopyButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CopyButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "click.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        },
+        {
+          "kind": "other",
+          "name": "onClick.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
       "warnings": [
         "event pair: emits \"click\" and prop \"onClick\" both listed verbatim"
       ]

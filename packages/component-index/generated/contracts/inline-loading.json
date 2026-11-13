@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:2f5132e1f4f3aa0ebb3e931929ae8610df19d603eafa1a12750977bc59cc9057",
-  "entryDigest": "sha256:789079366ae47ad17756371164628ab4312b621ba8c194722faa3d6ccead6a81",
+  "digest": "sha256:3eeb8e0cf17d652b1d8deeecc258954a70bcfb26215347f9b051ed01d8f0a0de",
+  "entryDigest": "sha256:e381362861088450c1c5abccc9717a7e76eaf912d4e80f4fe60ad2245ed0f01c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -155,8 +155,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -187,13 +186,17 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ee2a574c72258fe512a70948750726e2af22ad62d2529890a8ec79b6c35d8c92",
-        "declarationPath": "packages/components-vue/dist/InlineLoading.d.ts",
+        "declarationDigest": "sha256:6d26c6bfd79e6327fcb0be2fbf24ece918d1c102aebd611aa5460347e1f2acf0",
+        "declarationPath": "packages/components-vue/dist/InlineLoading.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineLoadingProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

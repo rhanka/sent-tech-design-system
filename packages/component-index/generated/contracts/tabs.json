@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:99bff5e2751167ad5ae2aaeb5a9262932a004a007ddeee67270771c33de523ae",
-  "entryDigest": "sha256:41b26c76275d1b9034aca7ce6fa2de220c6da694f0a74ee40ac415ab0308476d",
+  "digest": "sha256:de7e4bdce3fce5b97193a883291bf89143a80be229c21f80e07c421ebf74f9ee",
+  "entryDigest": "sha256:dddaff519ac56e1aa9abb8181a431cf90867221e460f8a8a23314d3082368297",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -292,21 +292,18 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -325,9 +322,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -369,27 +363,47 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "panel",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/TabItem"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "tab-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/TabItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d3c0af83a3505b3a87fc4d07298065974cbd29d587cf0ecebd3404b749e6890d",
-        "declarationPath": "packages/components-vue/dist/Tabs.d.ts",
+        "declarationDigest": "sha256:056a95822112053ad9f91ba6396b67fcf3078526bd03ef81697e6391372aa702",
+        "declarationPath": "packages/components-vue/dist/Tabs.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TabsProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

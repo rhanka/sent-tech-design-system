@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:7813557477ffdfae5496158deed5aee40da45128b3105800cc005bd173abc5ca",
-  "entryDigest": "sha256:2764bb8d01a3e66c568cede720fdf6a4e207e4e9107e9c602774aeb47913e6a9",
+  "digest": "sha256:1207c2f00dcb92a39fc1d478dca74af53ece3696abbe4cadc93a44eafb9c4732",
+  "entryDigest": "sha256:7e1ec58497066d22891bcee85cd406ed82f5d7580dcd9af62da9a416e88a7fd7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -321,8 +321,7 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
@@ -333,8 +332,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -403,21 +401,18 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:cfc76bf7a647a64cd8abba83d2b244cd667ef3b10a25ae3cf215c25cf2b07e99",
-        "declarationPath": "packages/components-vue/dist/RadioGroup.d.ts",
+        "declarationDigest": "sha256:9664261ac1cabbb01e42cb41d8cd88486ac4668f6522d289cc214e0be3a5762a",
+        "declarationPath": "packages/components-vue/dist/RadioGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

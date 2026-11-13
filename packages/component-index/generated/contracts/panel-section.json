@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:e10cbb09d0acefb2b468827f0018a26205e304fe8122a548b0e6ce50f5bf8471",
-  "entryDigest": "sha256:8674b66626590a8935e2136bfc8b3242f3e9262f9ce3e1a68a0b2bb7fa49b6ae",
+  "digest": "sha256:78d1d4fed76132fba7d99d31497c58dfb899f18606e892d1d96fe8a355daf146",
+  "entryDigest": "sha256:186b4656cabf8e05d8bc5c7118c96a1cf1eafa47dc0150ee7e04e10612db8b88",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -168,8 +168,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -191,13 +190,20 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:67c307f004e359f93bd4a4a8bf5573d2ed12539263505d9d5bd88b26d87c5a30",
-        "declarationPath": "packages/components-vue/dist/PanelSection.d.ts",
+        "declarationDigest": "sha256:4b19a6ecb6b4d13f24a3250e4ebb22c0b106f89eacaaa22cdf02b2b5423838ce",
+        "declarationPath": "packages/components-vue/dist/PanelSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PanelSectionProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

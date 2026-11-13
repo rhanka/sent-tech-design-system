@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:4652db474dcfb0ed8cce823d06dd58f898a8433ea7c00366c8f85201b41f276c",
-  "entryDigest": "sha256:7d7ae74c11082ab518689b54613a9f547d48378decec6f29c690ef7f73449d4c",
+  "digest": "sha256:eb69640c2c79e1cea94ea5f8f8ae4d3e789ac65211c1564b3c7523de4ddd8354",
+  "entryDigest": "sha256:1575993bff4b48c59e1cada3c3a113f60d4f391026ba5006e7118bc558487e48",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -294,11 +294,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:08625dc117af6c2afcff17872c0662dc9b4fadbf68eaad00d0bf04c12206f5f9",
-        "declarationPath": "packages/components-vue/dist/TileMapChart.d.ts",
+        "declarationDigest": "sha256:7d86217e7f8f4bbea9547b0f51cb7ad692f4cbf6aaf952e795738bd8e30cf354",
+        "declarationPath": "packages/components-vue/dist/TileMapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileMapChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

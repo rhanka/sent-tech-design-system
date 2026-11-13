@@ -1,8 +1,8 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:2e2e25a8a3202b4605a454d070e0f67e9669a8ca711dedd1ec714bad657caa38",
-  "entryDigest": "sha256:d35c5259ba830aef5c9c3cdfbaf655a5ef82f37878b7cf7e22f47b3d1a2d57bd",
+  "digest": "sha256:2e7e8a481a6a36a81dfeac390cbcb26141f0443652a518e31a5f60ef17442f6b",
+  "entryDigest": "sha256:b5acfdee72c7a9b49a272d618132334e42019521a4b293b6957f2047448c1cb6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -339,11 +339,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:017795a5c61ea60d3db6842a1ac9d56de9ecb0b7e43276805c186fa4993f13a7",
-        "declarationPath": "packages/components-vue/dist/WaffleChart.d.ts",
+        "declarationDigest": "sha256:f41722c0aea385b95526f72dbfeb841d1ab9cf6c4625a5e045dc7d2119b8e91d",
+        "declarationPath": "packages/components-vue/dist/WaffleChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WaffleChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

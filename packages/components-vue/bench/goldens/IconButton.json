@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "IconButton",
+  "sourceRevision": "e3cab6d10cfa0df3db3c324428e9712a264cd195",
+  "source": "src/IconButton.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\">✕</button>"
+    },
+    {
+      "id": "secondary-large",
+      "html": "<button class=\"st-iconButton st-iconButton--lg st-iconButton--secondary\" type=\"button\">＋</button>"
+    },
+    {
+      "id": "danger-small",
+      "html": "<button class=\"st-iconButton st-iconButton--sm st-iconButton--danger\" disabled=\"\" type=\"button\">🗑</button>"
+    },
+    {
+      "id": "submit-custom",
+      "html": "<button aria-label=\"Remove\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost consumer\" data-bench=\"icon-button\" style=\"color:red;\" type=\"submit\"><strong>×</strong></button>"
+    }
+  ],
+  "sourceSha256": "668a4e7d93b1bc1ae9328b85aabd177755c6e8baafba68d7f9f9a144d072d8d9",
+  "fixtureSha256": "3a237646f185cf2da9c041f0afeff8ad5e87355377acdd48926e237a154b7850",
+  "publicExports": [
+    {
+      "name": "IconButton",
+      "typeOnly": false
+    },
+    {
+      "name": "IconButtonProps",
+      "typeOnly": true
+    },
+    {
+      "name": "IconButtonSize",
+      "typeOnly": true
+    },
+    {
+      "name": "IconButtonVariant",
+      "typeOnly": true
+    }
+  ]
+}
