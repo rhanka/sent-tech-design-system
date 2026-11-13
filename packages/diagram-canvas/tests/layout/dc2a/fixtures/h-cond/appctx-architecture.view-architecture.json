@@ -1,0 +1,616 @@
+{
+  "viewId": "view:architecture",
+  "semanticDocumentId": "document:appctx-architecture",
+  "revision": 1,
+  "filters": [],
+  "portOccurrences": {},
+  "entityOccurrences": {
+    "occurrence:zone-immo": {
+      "id": "occurrence:zone-immo",
+      "entity": "entity:zone-immo",
+      "geometry": { "x": 32, "y": 40, "width": 416, "height": 1180 },
+      "z": 0
+    },
+    "occurrence:immo-specs": {
+      "id": "occurrence:immo-specs",
+      "entity": "entity:immo-specs",
+      "group": "grp.zone-immo",
+      "geometry": { "x": 56, "y": 140, "width": 368, "height": 210 },
+      "z": 1
+    },
+    "occurrence:immo-track": {
+      "id": "occurrence:immo-track",
+      "entity": "entity:immo-track",
+      "group": "grp.zone-immo",
+      "geometry": { "x": 56, "y": 400, "width": 368, "height": 210 },
+      "z": 1
+    },
+    "occurrence:immo-drizzle": {
+      "id": "occurrence:immo-drizzle",
+      "entity": "entity:immo-drizzle",
+      "group": "grp.zone-immo",
+      "geometry": { "x": 56, "y": 660, "width": 368, "height": 210 },
+      "z": 1
+    },
+    "occurrence:immo-ui": {
+      "id": "occurrence:immo-ui",
+      "entity": "entity:immo-ui",
+      "group": "grp.zone-immo",
+      "geometry": { "x": 56, "y": 920, "width": 368, "height": 210 },
+      "z": 1
+    },
+    "occurrence:zone-engram": {
+      "id": "occurrence:zone-engram",
+      "entity": "entity:zone-engram",
+      "geometry": { "x": 488, "y": 40, "width": 1024, "height": 1180 },
+      "z": 0
+    },
+    "occurrence:zone-extractors": {
+      "id": "occurrence:zone-extractors",
+      "entity": "entity:zone-extractors",
+      "group": "grp.zone-engram",
+      "geometry": { "x": 516, "y": 128, "width": 432, "height": 1060 },
+      "z": 1
+    },
+    "occurrence:ext-spec": {
+      "id": "occurrence:ext-spec",
+      "entity": "entity:ext-spec",
+      "group": "grp.zone-extractors",
+      "geometry": { "x": 540, "y": 220, "width": 384, "height": 196 },
+      "z": 2
+    },
+    "occurrence:ext-track": {
+      "id": "occurrence:ext-track",
+      "entity": "entity:ext-track",
+      "group": "grp.zone-extractors",
+      "geometry": { "x": 540, "y": 460, "width": 384, "height": 196 },
+      "z": 2
+    },
+    "occurrence:ext-data": {
+      "id": "occurrence:ext-data",
+      "entity": "entity:ext-data",
+      "group": "grp.zone-extractors",
+      "geometry": { "x": 540, "y": 700, "width": 384, "height": 196 },
+      "z": 2
+    },
+    "occurrence:ext-ui": {
+      "id": "occurrence:ext-ui",
+      "entity": "entity:ext-ui",
+      "group": "grp.zone-extractors",
+      "geometry": { "x": 540, "y": 940, "width": 384, "height": 196 },
+      "z": 2
+    },
+    "occurrence:zone-assembly": {
+      "id": "occurrence:zone-assembly",
+      "entity": "entity:zone-assembly",
+      "group": "grp.zone-engram",
+      "geometry": { "x": 984, "y": 128, "width": 500, "height": 568 },
+      "z": 1
+    },
+    "occurrence:comp-assemble": {
+      "id": "occurrence:comp-assemble",
+      "entity": "entity:comp-assemble",
+      "group": "grp.zone-assembly",
+      "geometry": { "x": 1012, "y": 216, "width": 444, "height": 176 },
+      "z": 2
+    },
+    "occurrence:zone-graph-json": {
+      "id": "occurrence:zone-graph-json",
+      "entity": "entity:zone-graph-json",
+      "group": "grp.zone-assembly",
+      "geometry": { "x": 1008, "y": 416, "width": 452, "height": 256 },
+      "z": 2
+    },
+    "occurrence:store-relations": {
+      "id": "occurrence:store-relations",
+      "entity": "entity:store-relations",
+      "group": "grp.zone-graph-json",
+      "geometry": { "x": 1032, "y": 500, "width": 404, "height": 152 },
+      "z": 3
+    },
+    "occurrence:zone-mcp-server": {
+      "id": "occurrence:zone-mcp-server",
+      "entity": "entity:zone-mcp-server",
+      "group": "grp.zone-engram",
+      "geometry": { "x": 984, "y": 728, "width": 500, "height": 460 },
+      "z": 1
+    },
+    "occurrence:mcp-tools-traverse": {
+      "id": "occurrence:mcp-tools-traverse",
+      "entity": "entity:mcp-tools-traverse",
+      "group": "grp.zone-mcp-server",
+      "geometry": { "x": 1012, "y": 816, "width": 444, "height": 160 },
+      "z": 2
+    },
+    "occurrence:mcp-tools-read": {
+      "id": "occurrence:mcp-tools-read",
+      "entity": "entity:mcp-tools-read",
+      "group": "grp.zone-mcp-server",
+      "geometry": { "x": 1012, "y": 1000, "width": 444, "height": 160 },
+      "z": 2
+    },
+    "occurrence:zone-cluster-mesh": {
+      "id": "occurrence:zone-cluster-mesh",
+      "entity": "entity:zone-cluster-mesh",
+      "geometry": { "x": 1552, "y": 40, "width": 656, "height": 840 },
+      "z": 0
+    },
+    "occurrence:mesh-route": {
+      "id": "occurrence:mesh-route",
+      "entity": "entity:mesh-route",
+      "group": "grp.zone-cluster-mesh",
+      "geometry": { "x": 1584, "y": 136, "width": 592, "height": 196 },
+      "z": 1
+    },
+    "occurrence:mesh-oauth": {
+      "id": "occurrence:mesh-oauth",
+      "entity": "entity:mesh-oauth",
+      "group": "grp.zone-cluster-mesh",
+      "geometry": { "x": 1584, "y": 368, "width": 592, "height": 196 },
+      "z": 1
+    },
+    "occurrence:mesh-tenancy": {
+      "id": "occurrence:mesh-tenancy",
+      "entity": "entity:mesh-tenancy",
+      "group": "grp.zone-cluster-mesh",
+      "geometry": { "x": 1584, "y": 600, "width": 592, "height": 196 },
+      "z": 1
+    },
+    "occurrence:actor-claude": {
+      "id": "occurrence:actor-claude",
+      "entity": "entity:actor-claude",
+      "geometry": { "x": 1584, "y": 940, "width": 592, "height": 220 },
+      "z": 1
+    }
+  },
+  "groups": {
+    "grp.zone-immo": {
+      "id": "grp.zone-immo",
+      "label": "radar-immobilier (immo) — Sources versionnées au commit",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-immo"
+    },
+    "grp.zone-engram": {
+      "id": "grp.zone-engram",
+      "label": "engram — Indexation déterministe au commit et serveur MCP",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-engram"
+    },
+    "grp.zone-extractors": {
+      "id": "grp.zone-extractors",
+      "label": "Extracteurs sans devinette (checkout détaché)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-extractors"
+    },
+    "grp.zone-assembly": {
+      "id": "grp.zone-assembly",
+      "label": "Assemblage & persistance au commit",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-assembly"
+    },
+    "grp.zone-graph-json": {
+      "id": "grp.zone-graph-json",
+      "label": "graph.json @ commit (nœuds, Spec.content, diagnostics)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-graph-json"
+    },
+    "grp.zone-mcp-server": {
+      "id": "grp.zone-mcp-server",
+      "label": "Serveur MCP app-context (5 outils lecture seule)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-mcp-server"
+    },
+    "grp.zone-cluster-mesh": {
+      "id": "grp.zone-cluster-mesh",
+      "label": "cluster-mesh — Route registre MCP, OAuth et isolation tenant",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-cluster-mesh"
+    }
+  },
+  "relationOccurrences": {
+    "occurrence:rel-arch-01": {
+      "id": "occurrence:rel-arch-01",
+      "relation": "relation:rel-arch-01",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:immo-specs" },
+        { "role": "target", "occurrence": "occurrence:ext-spec" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-arch-02": {
+      "id": "occurrence:rel-arch-02",
+      "relation": "relation:rel-arch-02",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:immo-track" },
+        { "role": "target", "occurrence": "occurrence:ext-track" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-arch-03": {
+      "id": "occurrence:rel-arch-03",
+      "relation": "relation:rel-arch-03",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:immo-drizzle" },
+        { "role": "target", "occurrence": "occurrence:ext-data" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-arch-04": {
+      "id": "occurrence:rel-arch-04",
+      "relation": "relation:rel-arch-04",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:immo-ui" },
+        { "role": "target", "occurrence": "occurrence:ext-ui" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-arch-05": {
+      "id": "occurrence:rel-arch-05",
+      "relation": "relation:rel-arch-05",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ext-spec" },
+        { "role": "target", "occurrence": "occurrence:comp-assemble" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-06": {
+      "id": "occurrence:rel-arch-06",
+      "relation": "relation:rel-arch-06",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ext-track" },
+        { "role": "target", "occurrence": "occurrence:comp-assemble" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-07": {
+      "id": "occurrence:rel-arch-07",
+      "relation": "relation:rel-arch-07",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ext-data" },
+        { "role": "target", "occurrence": "occurrence:comp-assemble" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-08": {
+      "id": "occurrence:rel-arch-08",
+      "relation": "relation:rel-arch-08",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ext-ui" },
+        { "role": "target", "occurrence": "occurrence:comp-assemble" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-09": {
+      "id": "occurrence:rel-arch-09",
+      "relation": "relation:rel-arch-09",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:comp-assemble" },
+        { "role": "target", "occurrence": "occurrence:store-relations" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-10": {
+      "id": "occurrence:rel-arch-10",
+      "relation": "relation:rel-arch-10",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mcp-tools-traverse" },
+        { "role": "target", "occurrence": "occurrence:store-relations" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-11": {
+      "id": "occurrence:rel-arch-11",
+      "relation": "relation:rel-arch-11",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mcp-tools-read" },
+        { "role": "target", "occurrence": "occurrence:zone-graph-json" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-12": {
+      "id": "occurrence:rel-arch-12",
+      "relation": "relation:rel-arch-12",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mesh-route" },
+        { "role": "target", "occurrence": "occurrence:mcp-tools-traverse" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-13": {
+      "id": "occurrence:rel-arch-13",
+      "relation": "relation:rel-arch-13",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mesh-route" },
+        { "role": "target", "occurrence": "occurrence:mcp-tools-read" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-14": {
+      "id": "occurrence:rel-arch-14",
+      "relation": "relation:rel-arch-14",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mesh-oauth" },
+        { "role": "target", "occurrence": "occurrence:mesh-route" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-15": {
+      "id": "occurrence:rel-arch-15",
+      "relation": "relation:rel-arch-15",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:mesh-tenancy" },
+        { "role": "target", "occurrence": "occurrence:mesh-route" }
+      ],
+      "strokeStyle": "dashed"
+    },
+    "occurrence:rel-arch-16": {
+      "id": "occurrence:rel-arch-16",
+      "relation": "relation:rel-arch-16",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:actor-claude" },
+        { "role": "target", "occurrence": "occurrence:mesh-route" }
+      ],
+      "strokeStyle": "dashed"
+    }
+  },
+  "presentation": {
+    "camera": { "x": 0, "y": 0, "zoom": 1 },
+    "diagram": {
+      "contractPin": {
+        "id": "diagram-presentation",
+        "version": "1",
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      },
+      "entities": {
+        "occurrence:zone-immo": {
+          "form": "container",
+          "icon": "link",
+          "text": {
+            "kicker": "Repo",
+            "title": "radar-immobilier (immo)",
+            "subtitle": "Sources versionnées du dépôt pilote lues sur checkout détaché",
+            "footer": "repo: radar-immobilier · root"
+          }
+        },
+        "occurrence:immo-specs": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Artefact · Spec",
+            "title": "docs/spec + spec-map.yaml",
+            "body": "Specs Markdown et manifeste déclaratif (3 formes explicites)",
+            "detail": "chargé par: extract-spec",
+            "footer": "repo: radar-immobilier · docs/spec"
+          }
+        },
+        "occurrence:immo-track": {
+          "form": "card",
+          "icon": "db",
+          "text": {
+            "kicker": "Stockage · JSONL",
+            "title": ".track (suivi)",
+            "body": "Items, lots et décisions lus uniquement via le CLI track",
+            "detail": "lu par: extract-track (lecture seule)",
+            "footer": "repo: radar-immobilier · .track"
+          }
+        },
+        "occurrence:immo-drizzle": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Artefact · Schéma",
+            "title": "api/drizzle (schéma TS)",
+            "body": "Tables pgTable, colonnes typées et accès Drizzle",
+            "detail": "chargé par: extract-data-model",
+            "footer": "repo: radar-immobilier · api"
+          }
+        },
+        "occurrence:immo-ui": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant · Svelte",
+            "title": "ui/src (écrans & composants)",
+            "body": "Routes, composants Svelte et appels HTTP littéraux",
+            "detail": "chargé par: extract-ui",
+            "footer": "repo: radar-immobilier · ui"
+          }
+        },
+        "occurrence:zone-engram": {
+          "form": "container",
+          "icon": "window",
+          "text": {
+            "kicker": "Système",
+            "title": "engram (cible)",
+            "subtitle": "Construction par commit et exposition MCP du graphe de contexte",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:zone-extractors": {
+          "form": "container",
+          "icon": "link",
+          "text": {
+            "kicker": "Paquet · Lib",
+            "title": "Extracteurs sans devinette (cible)",
+            "subtitle": "Analyse AST et CLI sans heuristique sur worktree détaché",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:ext-spec": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "extract-spec (cible)",
+            "body": "Extrait frontmatter, commentaire HTML mono-ligne et manifeste",
+            "detail": "exécuté par: engram app-context build",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:ext-track": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "extract-track (cible)",
+            "body": "Projette track query et track decision ls sous node.track",
+            "detail": "exécuté par: engram app-context build",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:ext-data": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "extract-data-model (cible)",
+            "body": "Extrait tables Drizzle, clés étrangères et accès select/mutation",
+            "detail": "exécuté par: engram app-context build",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:ext-ui": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "extract-ui (cible)",
+            "body": "Relie routes, composants Svelte et endpoints HTTP statiques",
+            "detail": "exécuté par: engram app-context build",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:zone-assembly": {
+          "form": "container",
+          "icon": "link",
+          "text": {
+            "kicker": "Paquet · Lib",
+            "title": "Assemblage & persistance au commit (cible)",
+            "subtitle": "Post-passe unique et stockage indexé par source_hash",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:comp-assemble": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "app-context-assemble (cible)",
+            "body": "Résout les cibles déclarées ou émet un diagnostic explicite",
+            "detail": "exécuté par: engram app-context build",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:zone-graph-json": {
+          "form": "container",
+          "icon": "db",
+          "text": {
+            "kicker": "Stockage · Graphe",
+            "title": "graph.json @ commit (cible)",
+            "subtitle": "Nœuds typés, Spec.content UTF-8, diagnostics (rétention N=10)",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:store-relations": {
+          "form": "card",
+          "icon": "db",
+          "text": {
+            "kicker": "Stockage · Graphe",
+            "title": "graph.app_context.relations (cible)",
+            "body": "Enregistrements séparés par triplet (source, cible, relation)",
+            "detail": "lu par: 5 outils MCP (préserve reads + writes)",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:zone-mcp-server": {
+          "form": "container",
+          "icon": "server",
+          "text": {
+            "kicker": "Exécution · Serveur MCP",
+            "title": "Serveur MCP app-context (cible)",
+            "subtitle": "Garde de fraîcheur au commit, tri stable et budget de tokens",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:mcp-tools-traverse": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "API · MCP",
+            "title": "3 outils de traversée (cible)",
+            "body": "context_for_target · specs_for_target · targets_for_spec",
+            "detail": "fourni par: Serveur MCP app-context",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:mcp-tools-read": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "API · MCP",
+            "title": "2 outils de lecture paginée (cible)",
+            "body": "read_spec_section · get_context_item (stubs récupérables)",
+            "detail": "fourni par: Serveur MCP app-context",
+            "footer": "repo: engram · @sentropic/engram"
+          }
+        },
+        "occurrence:zone-cluster-mesh": {
+          "form": "container",
+          "icon": "cloud",
+          "text": {
+            "kicker": "Système",
+            "title": "cluster-mesh (cible)",
+            "subtitle": "Passerelle MCP distante multi-application sécurisée",
+            "footer": "repo: cluster-mesh · mcp-registry"
+          }
+        },
+        "occurrence:mesh-route": {
+          "form": "card",
+          "icon": "server",
+          "text": {
+            "kicker": "Service",
+            "title": "Route registre MCP par app (cible)",
+            "body": "Expose l'instance MCP dédiée de chaque application indexée",
+            "detail": "sur: cluster-mesh",
+            "footer": "repo: cluster-mesh · mcp-registry"
+          }
+        },
+        "occurrence:mesh-oauth": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "OAuth délégué engram:read (cible)",
+            "body": "Portée lecture seule obligatoire, aucune mutation distante",
+            "detail": "exécuté par: Route registre MCP par app",
+            "footer": "repo: cluster-mesh · auth"
+          }
+        },
+        "occurrence:mesh-tenancy": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Composant",
+            "title": "Isolation tenant & plafonds (cible)",
+            "body": "Cloisonne chaque dépôt applicatif et borne les réponses",
+            "detail": "exécuté par: Route registre MCP par app",
+            "footer": "repo: cluster-mesh · tenancy"
+          }
+        },
+        "occurrence:actor-claude": {
+          "form": "card",
+          "icon": "robot",
+          "text": {
+            "kicker": "Acteur · Agent",
+            "title": "claude.ai",
+            "body": "Consulte specs, Track, modèle et écrans pendant la conception",
+            "detail": "utilise: Route registre MCP par app",
+            "footer": "propriétaire: Anthropic"
+          }
+        }
+      },
+      "legends": {},
+      "categoryTokens": []
+    }
+  }
+}

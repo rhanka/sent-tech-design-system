@@ -177,6 +177,7 @@ export interface SceneLabelModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly lines: readonly string[];
   readonly box: Rect;
+  readonly title?: string;
 }
 
 export interface SceneModel {
@@ -219,6 +220,9 @@ export function resolveScene(
 ): SceneModel {
   const view = result.view;
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
+  const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));
+  const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
+  const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
     const presentation = input.presentation.entities[node.occurrence] as EntityPresentation | undefined;
@@ -260,10 +264,10 @@ export function resolveScene(
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
     blockers.push({
-      x: node.rect.x + CONTENT_INSET,
-      y: node.rect.y + CONTENT_INSET,
-      width: node.rect.width - 2 * CONTENT_INSET,
-      height,
+      x: node.rect.x,
+      y: node.rect.y,
+      width: node.rect.width,
+      height: CONTENT_INSET + height,
     });
   }
 
@@ -271,13 +275,14 @@ export function resolveScene(
   const entries: { id: string; route: readonly Vec2[]; size: { width: number; height: number } }[] = [];
   const labelLines = new Map<string, readonly string[]>();
   for (const id of Object.keys(view.relationOccurrences).sort(byCodeUnit)) {
+    if (!visibleEdges.has(id)) continue;
     const occurrence = view.relationOccurrences[id]!;
     if (occurrence.waypoints === undefined) continue;
     const points = relationRoute(view, occurrence.id) ?? [];
     if (points.length < 2) continue;
     edges.push({ occurrence: occurrence.id, points });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
-    const label = edgeLabelOf(input.document, occurrence.relation);
+    const label = result.edgeBundles?.[id]?.label ?? edgeLabelOf(input.document, occurrence.relation);
     if (label === undefined) continue;
     const layout = measuredLabels.get(id) ?? input.measureLines({
       text: label,
@@ -291,13 +296,18 @@ export function resolveScene(
   }
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const labels: SceneLabelModel[] = [];
-  let bounds = frame.bounds;
+  let bounds: Rect | undefined;
+  for (const item of items) {
+    const box = item.kind === "edge" ? item.bounds : item.rect;
+    bounds = bounds === undefined ? box : rectUnion(bounds, box);
+  }
   const placements = result.labelBoxes === undefined
     ? placeEdgeLabels(entries, blockers, margin)
     : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
   for (const [id, placement] of placements) {
     if (placement === undefined) continue;
-    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box });
+    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box,
+      ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }) });
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
