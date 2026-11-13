@@ -1,0 +1,45 @@
+{
+  "category": "form",
+  "componentId": "rich-text-editor",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:596dbcc748dd8b956b8a11e5e518382cba97bff2020bba95c13c28d4ae12a12e",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/rich-text-editor/RichTextEditor.svelte",
+      "version": "0.40.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:ed526db4baaec40cf7353279893d0e857c7b86cad754cdd9b9b52981fcca090f",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/rich-text-editor/RichTextEditor.vue",
+      "version": "0.41.0-next.0"
+    }
+  ],
+  "description": {
+    "en": "Structured document editor with capture, Markdown profiles, and collaboration.",
+    "fr": "Éditeur de documents structurés, avec capture, profils Markdown et collaboration."
+  },
+  "digest": "sha256:23a024f0f82e90c202e21bb09214414ded13bdf871cf9afdea3c5fa0f46e0903",
+  "displayName": "RichTextEditor",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "vue"
+  ],
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

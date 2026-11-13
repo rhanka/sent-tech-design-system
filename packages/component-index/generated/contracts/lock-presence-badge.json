@@ -1,0 +1,859 @@
+{
+  "componentId": "lock-presence-badge",
+  "contractSource": "derived",
+  "digest": "sha256:4646caad788075489c2516a4d89fd97310e62f5a9ed600ead93bdbc5eecc0ad3",
+  "entryDigest": "sha256:bfab98d3921f1f8e66cb7369021cb87a6b0b4bf5f1bd7a89c4757c5d85a958bd",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationPath": "packages/components-angular/dist/LockPresenceBadge.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "LockPresenceBadgeProps",
+        "version": "0.39.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationPath": "packages/components-react/dist/LockPresenceBadge.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "LockPresenceBadgeProps",
+        "version": "0.39.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-react/src/index.ts), not a declaration"
+      ]
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [],
+      "events": [
+        {
+          "name": "onAcceptUnlock"
+        },
+        {
+          "name": "onForceUnlock"
+        },
+        {
+          "name": "onReleaseLock"
+        },
+        {
+          "name": "onRequestUnlock"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AwarenessCursor": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "head": {
+                "type": "string"
+              },
+              "paragraphId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "fieldKey",
+              "head",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "CollaborationActor": {
+            "additionalProperties": false,
+            "properties": {
+              "activity": {
+                "additionalProperties": false,
+                "properties": {
+                  "scopeRef": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "enum": [
+                      "viewing",
+                      "holding",
+                      "planned",
+                      "yielded"
+                    ]
+                  }
+                },
+                "required": [
+                  "scopeRef",
+                  "since",
+                  "state"
+                ],
+                "type": "object"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "cursor": {
+                "$ref": "#/$defs/AwarenessCursor",
+                "description": "Present iff the actor has published a caret (§5.6). Anchors, never offsets."
+              },
+              "displayLabel": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "human",
+                  "agent",
+                  "nhi"
+                ]
+              }
+            },
+            "required": [
+              "actorId",
+              "color",
+              "displayLabel",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "CollaborationCapabilities": {
+            "additionalProperties": false,
+            "properties": {
+              "canAcquire": {
+                "type": "boolean"
+              },
+              "canForceUnlock": {
+                "type": "boolean"
+              },
+              "canRequestUnlock": {
+                "type": "boolean"
+              },
+              "currentActorId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "canAcquire",
+              "canForceUnlock",
+              "canRequestUnlock",
+              "currentActorId"
+            ],
+            "type": "object"
+          },
+          "FieldBindingIdentity": {
+            "additionalProperties": false,
+            "properties": {
+              "documentId": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "documentId",
+              "fieldKey",
+              "sessionId"
+            ],
+            "type": "object"
+          },
+          "LockSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "expiresAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "holder": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unit": {
+                "$ref": "#/$defs/LockUnitRef"
+              },
+              "unlockRequestedBy": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expiresAt",
+              "holder",
+              "unit"
+            ],
+            "type": "object"
+          },
+          "LockUnitRef": {
+            "additionalProperties": false,
+            "properties": {
+              "scopeRef": {
+                "type": "string"
+              },
+              "unitRef": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "scopeRef"
+            ],
+            "type": "object"
+          },
+          "PresenceSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "actors": {
+                "description": "Co-viewers; current actor excluded by the host (B2 §5.1).",
+                "items": {
+                  "$ref": "#/$defs/CollaborationActor"
+                },
+                "type": "array"
+              },
+              "scopeRef": {
+                "type": "string"
+              },
+              "total": {
+                "description": "Count including the current actor (B2 §5.1; restored in r2).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "actors",
+              "scopeRef",
+              "total"
+            ],
+            "type": "object"
+          },
+          "RichTextMessages": {
+            "additionalProperties": false,
+            "properties": {
+              "editorLabel": {
+                "type": "string"
+              },
+              "externalConflictLabel": {
+                "type": "string"
+              },
+              "lockLabel": {
+                "description": "CL-2 live composition seam (§6.4): lock summary template, \"{holder}\"\ninterpolated with the holder display label.",
+                "type": "string"
+              },
+              "noLockLabel": {
+                "description": "CL-2 live composition seam (§6.4): no-lock summary text.",
+                "type": "string"
+              },
+              "placeholder": {
+                "type": "string"
+              },
+              "presenceLabel": {
+                "description": "CL-2 live composition seam (§6.4): presence summary template,\n\"{count}\" interpolated with the co-viewer total. Optional: a missing\nkey renders the `⟦untranslated:collab.presenceLabel⟧` marker.",
+                "type": "string"
+              },
+              "preservedBlockLabel": {
+                "type": "string"
+              },
+              "requesterKeyLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the requester key overlay,\n\"{label}\" interpolated with the requester display label.",
+                "type": "string"
+              },
+              "rosterLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the avatar roster.",
+                "type": "string"
+              },
+              "tooltipLockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked, \"{holder}\"\ninterpolated with the holder display label. Carries the request\nwording; the read-only variant omits it.",
+                "type": "string"
+              },
+              "tooltipLockedReadOnlyLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked in read-only mode,\n\"{holder}\" interpolated. Omits the request wording.",
+                "type": "string"
+              },
+              "tooltipUnlockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip text when no lock is active.",
+                "type": "string"
+              },
+              "unlockAcceptLabel": {
+                "description": "CL-1B badge (§6.4): accept-unlock action text.",
+                "type": "string"
+              },
+              "unlockForceLabel": {
+                "description": "CL-1B badge (§6.4): force-unlock action text.",
+                "type": "string"
+              },
+              "unlockReleaseLabel": {
+                "description": "CL-1B badge (§6.4): release-lock action text.",
+                "type": "string"
+              },
+              "unlockRequestLabel": {
+                "description": "CL-2 live composition seam (§6.4): request-unlock action text.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "editorLabel",
+              "externalConflictLabel",
+              "placeholder",
+              "preservedBlockLabel"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "binding": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FieldBindingIdentity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capabilities": {
+            "$ref": "#/$defs/CollaborationCapabilities"
+          },
+          "lock": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/LockSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "messages": {
+            "$ref": "#/$defs/RichTextMessages"
+          },
+          "nowIso": {
+            "type": "string"
+          },
+          "presence": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresenceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "readOnly": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "capabilities",
+          "lock",
+          "messages",
+          "nowIso",
+          "presence"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "AwarenessCursor.anchor",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "AwarenessCursor.head",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:dc2fe11eba1ae99838b6ddf42e9329967ae626aff00488be0665d1b013ff6559",
+        "declarationPath": "packages/components-svelte/dist/presence-badge/LockPresenceBadge.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "LockPresenceBadgeProps",
+        "version": "0.40.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onAcceptUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onForceUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onReleaseLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onRequestUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "acceptUnlock"
+        },
+        {
+          "name": "forceUnlock"
+        },
+        {
+          "name": "onAcceptUnlock"
+        },
+        {
+          "name": "onForceUnlock"
+        },
+        {
+          "name": "onReleaseLock"
+        },
+        {
+          "name": "onRequestUnlock"
+        },
+        {
+          "name": "releaseLock"
+        },
+        {
+          "name": "requestUnlock"
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AwarenessCursor": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "head": {
+                "type": "string"
+              },
+              "paragraphId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "fieldKey",
+              "head",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "CollaborationActor": {
+            "additionalProperties": false,
+            "properties": {
+              "activity": {
+                "additionalProperties": false,
+                "properties": {
+                  "scopeRef": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "enum": [
+                      "viewing",
+                      "holding",
+                      "planned",
+                      "yielded"
+                    ]
+                  }
+                },
+                "required": [
+                  "scopeRef",
+                  "since",
+                  "state"
+                ],
+                "type": "object"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "cursor": {
+                "$ref": "#/$defs/AwarenessCursor",
+                "description": "Present iff the actor has published a caret (§5.6). Anchors, never offsets."
+              },
+              "displayLabel": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "human",
+                  "agent",
+                  "nhi"
+                ]
+              }
+            },
+            "required": [
+              "actorId",
+              "color",
+              "displayLabel",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "CollaborationCapabilities": {
+            "additionalProperties": false,
+            "properties": {
+              "canAcquire": {
+                "type": "boolean"
+              },
+              "canForceUnlock": {
+                "type": "boolean"
+              },
+              "canRequestUnlock": {
+                "type": "boolean"
+              },
+              "currentActorId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "canAcquire",
+              "canForceUnlock",
+              "canRequestUnlock",
+              "currentActorId"
+            ],
+            "type": "object"
+          },
+          "FieldBindingIdentity": {
+            "additionalProperties": false,
+            "properties": {
+              "documentId": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "documentId",
+              "fieldKey",
+              "sessionId"
+            ],
+            "type": "object"
+          },
+          "LockSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "expiresAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "holder": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unit": {
+                "$ref": "#/$defs/LockUnitRef"
+              },
+              "unlockRequestedBy": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expiresAt",
+              "holder",
+              "unit"
+            ],
+            "type": "object"
+          },
+          "LockUnitRef": {
+            "additionalProperties": false,
+            "properties": {
+              "scopeRef": {
+                "type": "string"
+              },
+              "unitRef": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "scopeRef"
+            ],
+            "type": "object"
+          },
+          "PresenceSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "actors": {
+                "description": "Co-viewers; current actor excluded by the host (B2 §5.1).",
+                "items": {
+                  "$ref": "#/$defs/CollaborationActor"
+                },
+                "type": "array"
+              },
+              "scopeRef": {
+                "type": "string"
+              },
+              "total": {
+                "description": "Count including the current actor (B2 §5.1; restored in r2).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "actors",
+              "scopeRef",
+              "total"
+            ],
+            "type": "object"
+          },
+          "RichTextMessages": {
+            "additionalProperties": false,
+            "properties": {
+              "editorLabel": {
+                "type": "string"
+              },
+              "externalConflictLabel": {
+                "type": "string"
+              },
+              "lockLabel": {
+                "description": "CL-2 live composition seam (§6.4): lock summary template, \"{holder}\"\ninterpolated with the holder display label.",
+                "type": "string"
+              },
+              "noLockLabel": {
+                "description": "CL-2 live composition seam (§6.4): no-lock summary text.",
+                "type": "string"
+              },
+              "placeholder": {
+                "type": "string"
+              },
+              "presenceLabel": {
+                "description": "CL-2 live composition seam (§6.4): presence summary template,\n\"{count}\" interpolated with the co-viewer total. Optional: a missing\nkey renders the `⟦untranslated:collab.presenceLabel⟧` marker.",
+                "type": "string"
+              },
+              "preservedBlockLabel": {
+                "type": "string"
+              },
+              "requesterKeyLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the requester key overlay,\n\"{label}\" interpolated with the requester display label.",
+                "type": "string"
+              },
+              "rosterLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the avatar roster.",
+                "type": "string"
+              },
+              "tooltipLockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked, \"{holder}\"\ninterpolated with the holder display label. Carries the request\nwording; the read-only variant omits it.",
+                "type": "string"
+              },
+              "tooltipLockedReadOnlyLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked in read-only mode,\n\"{holder}\" interpolated. Omits the request wording.",
+                "type": "string"
+              },
+              "tooltipUnlockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip text when no lock is active.",
+                "type": "string"
+              },
+              "unlockAcceptLabel": {
+                "description": "CL-1B badge (§6.4): accept-unlock action text.",
+                "type": "string"
+              },
+              "unlockForceLabel": {
+                "description": "CL-1B badge (§6.4): force-unlock action text.",
+                "type": "string"
+              },
+              "unlockReleaseLabel": {
+                "description": "CL-1B badge (§6.4): release-lock action text.",
+                "type": "string"
+              },
+              "unlockRequestLabel": {
+                "description": "CL-2 live composition seam (§6.4): request-unlock action text.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "editorLabel",
+              "externalConflictLabel",
+              "placeholder",
+              "preservedBlockLabel"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "binding": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FieldBindingIdentity"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "capabilities": {
+            "$ref": "#/$defs/CollaborationCapabilities"
+          },
+          "lock": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/LockSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "messages": {
+            "$ref": "#/$defs/RichTextMessages"
+          },
+          "nowIso": {
+            "type": "string"
+          },
+          "presence": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresenceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "readOnly": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "capabilities",
+          "lock",
+          "messages",
+          "nowIso",
+          "presence"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "AwarenessCursor.anchor",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "AwarenessCursor.head",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:92b2f1d0fdb33750c84c43de0507b3f7e2ef4c5e6ccb1e0b26bce671553f33a7",
+        "declarationPath": "packages/components-vue/dist/presence-badge/LockPresenceBadge.vue.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "LockPresenceBadgeProps",
+        "version": "0.41.0-next.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "event pair: emits \"acceptUnlock\" and prop \"onAcceptUnlock\" both listed verbatim",
+        "event pair: emits \"forceUnlock\" and prop \"onForceUnlock\" both listed verbatim",
+        "event pair: emits \"releaseLock\" and prop \"onReleaseLock\" both listed verbatim",
+        "event pair: emits \"requestUnlock\" and prop \"onRequestUnlock\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}
