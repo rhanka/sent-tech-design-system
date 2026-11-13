@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "PivotDataTable",
+  "sourceRevision": "e1528074994fc2e39873bb7dc6306a37a1f5e55d",
+  "source": "src/lib/PivotDataTable.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Region</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">North</td><td class=\"st-dataTable__cell--end\">25</td></tr><tr class=\"\"><td class=\"\">South</td><td class=\"st-dataTable__cell--end\">15</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "columns-caption",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--sm\"><caption>Sales pivot</caption><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Region</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>A · Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>B · Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>C · Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>D · Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">North</td><td class=\"st-dataTable__cell--end\">10</td><td class=\"st-dataTable__cell--end\">15</td><td class=\"st-dataTable__cell--end\">0</td><td class=\"st-dataTable__cell--end\">0</td></tr><tr class=\"\"><td class=\"\">South</td><td class=\"st-dataTable__cell--end\">0</td><td class=\"st-dataTable__cell--end\">0</td><td class=\"st-dataTable__cell--end\">-5</td><td class=\"st-dataTable__cell--end\">20</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "no-cf",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>City</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">A</td><td class=\"st-dataTable__cell--end\">10</td></tr><tr class=\"\"><td class=\"\">B</td><td class=\"st-dataTable__cell--end\">15</td></tr><tr class=\"\"><td class=\"\">C</td><td class=\"st-dataTable__cell--end\">-5</td></tr><tr class=\"\"><td class=\"\">D</td><td class=\"st-dataTable__cell--end\">20</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Region</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">North</td><td class=\"st-dataTable__cell--end\">25</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-dataTable-wrap\" data-bench=\"pivot\" style=\"color:red;\"><table class=\"st-dataTable st-dataTable--md consumer\" data-bench=\"pivot\" style=\"color:red;\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Region</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">North</td><td class=\"st-dataTable__cell--end\">25</td></tr><tr class=\"\"><td class=\"\">South</td><td class=\"st-dataTable__cell--end\">15</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr></tr></thead><tbody><tr><td class=\"st-dataTable__empty\" colspan=\"0\">No data</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Region</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th aria-sort=\"none\" class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Sales</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr><td class=\"st-dataTable__empty\" colspan=\"2\">No data</td></tr></tbody></table></div>"
+    }
+  ],
+  "sourceSha256": "39c9928a30f8184fed47ee65021162b334266483cd775c40a40595545233340f",
+  "fixtureSha256": "e107403320bc9ba669492c49b535628b2570b768c887b22491f6af849f5190ac",
+  "publicExports": [
+    {
+      "name": "PivotDataTable",
+      "typeOnly": false
+    },
+    {
+      "name": "PivotDataTableProps",
+      "typeOnly": true
+    }
+  ]
+}
