@@ -29,7 +29,6 @@
   "packages/dataviz-vue/src/lib/DashboardGrid.ts",
   "packages/dataviz-vue/src/lib/DateHistogramChart.ts",
   "packages/dataviz-vue/src/lib/DateRangeFilter.ts",
-  "packages/dataviz-vue/src/lib/DivergingBarChart.ts",
   "packages/dataviz-vue/src/lib/DonutChart.ts",
   "packages/dataviz-vue/src/lib/DrillBarChart.ts",
   "packages/dataviz-vue/src/lib/DrillBreadcrumb.ts",
