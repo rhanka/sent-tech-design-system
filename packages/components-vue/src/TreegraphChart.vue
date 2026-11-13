@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TreegraphChartTone =
@@ -166,14 +166,14 @@ function buildLayout(data: TreegraphChartNode[], width: number, height: number):
 
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, Math.max(1, n - 1))}…` : s);
 
-defineOptions({ name: 'TreegraphChart' });
+defineOptions({ name: 'TreegraphChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TreegraphChartProps>(), {
   width: 640, height: 360, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-treegraphChart', props.class),
 }));
 
@@ -203,7 +203,7 @@ function linkPath(link: Link): string {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-treegraphChart__visual" role="img" :aria-label="props.label">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <path v-for="link in layout.links" :key="`link-${link.id}`" class="st-treegraphChart__link" :d="linkPath(link)" fill="none" />

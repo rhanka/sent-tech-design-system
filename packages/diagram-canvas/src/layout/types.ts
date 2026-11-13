@@ -36,7 +36,8 @@ export type TextRole =
   | "footer"
   | "subtitle"
   | "legend-label"
-  | "edge-label";
+  | "edge-label"
+  | "flow-badge";
 
 /** Role names of the pre-M1-d compatibility measurer, kept verbatim. */
 export type LegacyTextRole = "node" | "container-title" | "edge-label";
@@ -206,6 +207,8 @@ export interface LayoutOptions {
    * axes. Absent or empty selects the DS defaults (16:9). Ignored by the
    * compatibility path.
    */
+  readonly flows?: { readonly fanOutMax?: number; readonly countTemplate?: string };
+  readonly flowTokens?: Partial<import("./flows.js").FlowTokens>;
   readonly rowPack?: RowPackOptions;
   /**
    * Orientation last emitted per level key (`"root"` or the placement-parent
@@ -231,6 +234,9 @@ export interface LayoutFit {
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
 export type LayoutWarningCode =
+  | "flow-bundled"
+  | "badge-unplaced"
+  | "flow-layout-unsupported"
   | "label-unplaced"
   | "label-budget-exhausted"
   | "route-obstructed"
@@ -276,6 +282,11 @@ export type LayoutResult =
        * Shared line-layout output (M3 §4.6.3/§5.6). Present on measured
        * views only; the compatibility path carries no `measurements` key.
        */
+      readonly badgeBoxes?: Readonly<Record<string, import("../transform.js").Rect>>;
+      readonly arrowBoxes?: Readonly<Record<string, readonly import("./flows.js").FlowArrow[]>>;
+      readonly flowBundles?: readonly import("./flows.js").FlowBundle[];
+      readonly flowTargets?: Readonly<Record<string, import("./flows.js").FlowVisibleTarget>>;
+      readonly flowRepairPasses?: 0 | 1;
       readonly measurements?: import("./measure.js").LayoutMeasurements;
       /**
        * Orientation chosen per packed level (§4.1, §6.1). Present on measured

@@ -73,7 +73,7 @@ watch(
 function commit(nextTiles: DashboardGridTile[]) {
   const normalized = normalizeTiles(nextTiles, safeColumns(props.columns));
   layout.value = normalized;
-  props.onLayout?.(normalized.map(cloneTile));
+
   emit('layout', normalized.map(cloneTile));
 }
 
@@ -102,7 +102,7 @@ const gridStyle = computed<Record<string, string>>(() => ({
 </script>
 
 <template>
-  <section :style="gridStyle" v-bind="$attrs" :class="classNames('st-dashboardGrid', props.editable ? 'st-dashboardGrid--editable' : undefined, props.class)" :aria-label="props.label ?? 'Dashboard grid'">
+  <section  v-bind="{ ...$attrs, style: [gridStyle, $attrs.style], class: classNames('st-dashboardGrid', props.editable ? 'st-dashboardGrid--editable' : undefined, props.class) }" :aria-label="props.label ?? 'Dashboard grid'">
     <article v-for="tile in layout" :key="tile.id" class="st-dashboardGrid__tile" :style="`grid-column: ${tile.x + 1} / span ${tile.w}; grid-row: ${tile.y + 1} / span ${tile.h};`">
       <div class="st-dashboardGrid__content">
         <h3 v-if="tile.title" class="st-dashboardGrid__title">{{ tile.title }}</h3>

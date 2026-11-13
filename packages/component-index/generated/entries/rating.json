@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Rating.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Rating.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2a1a577a7afdf8b66dc54c9bff75d61c358948083d2220f4d943eafa46d0245c",
+      "digest": "sha256:b8096c698df40da5649269aa088894a909902bc9b293dcc0dbccac1a795fc093",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Rating.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Rating.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:ac084cc4cd9667623f7f53ab453f14d80dffac447c8ca5960262fe9a43425264",
+  "digest": "sha256:a0c80da4e6f3fa0ed4252cb3e67b58487952e8ff06006f357da324cd293ca39a",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

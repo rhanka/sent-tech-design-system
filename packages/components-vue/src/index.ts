@@ -735,3 +735,4 @@ export { default as LabelledIconButton } from "./LabelledIconButton.vue";
 export type { LabelledIconButtonProps } from "./LabelledIconButton.vue";
 export { default as WebFrame } from "./WebFrame.vue";
 export type { WebFrameProps } from "./WebFrame.vue";
+export { default as CellDecorationIcon, type CellDecorationIconProps } from './CellDecorationIcon.vue';

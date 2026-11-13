@@ -187,7 +187,7 @@ const hoveredCell = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-contourChart', `st-contourChart--${resolvedScale}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-contourChart', `st-contourChart--${resolvedScale}`, props.class)) }" >
     <div class="st-contourChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <rect v-for="cell in cells" :key="cell.key" :class="classNames('st-contourChart__cell', `st-contourChart__cell--${cell.tone}`, hoveredKey !== null && hoveredKey !== cell.key ? 'st-contourChart__cell--dim' : undefined)" :x="cell.x" :y="cell.y" :width="cell.width" :height="cell.height" :data-chart-key="cell.key"></rect>

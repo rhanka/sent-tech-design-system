@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "OverflowMenu",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "src/OverflowMenu.vue",
+  "sourceSha256": "8a4bdc8017fd86406603e8215db48f2fb367eaf3abbb0895b2db2f0eb394fb71",
+  "publicExports": [
+    {
+      "name": "OverflowMenu",
+      "typeOnly": false
+    },
+    {
+      "name": "OverflowMenuProps",
+      "typeOnly": true
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-overflowMenu\"><button aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"More\" class=\"st-overflowMenu__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-ellipsis-icon lucide-ellipsis\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button></div>"
+    },
+    {
+      "id": "open",
+      "html": "<div class=\"st-overflowMenu\"><button aria-controls=\"generated-1\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"More\" class=\"st-overflowMenu__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-ellipsis-icon lucide-ellipsis\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button><div class=\"st-overflowMenu__list st-overflowMenu__list--bottom-start\"><div aria-label=\"More\" class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Alpha</span></button></div></div></div>"
+    },
+    {
+      "id": "cascade",
+      "html": "<div class=\"st-overflowMenu\"><button aria-controls=\"generated-1\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"More\" class=\"st-overflowMenu__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-ellipsis-icon lucide-ellipsis\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button><div class=\"st-overflowMenu__list st-overflowMenu__list--bottom-start\"><div class=\"st-menu st-menu--hasCascade\"><div aria-label=\"More\" class=\"st-menu__scroll\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\" style=\"\" tabindex=\"-1\"><div class=\"st-menu__itemWrap\" role=\"presentation\"><button aria-controls=\"generated-1--sub-0-0\" aria-expanded=\"false\" aria-haspopup=\"menu\" class=\"st-menu__item st-menu__item--hasSubmenu\" data-item-index=\"0\" id=\"generated-1--parent-0-0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Parent</span><span aria-hidden=\"true\" class=\"st-menu__itemChevron st-menu__itemChevron--end\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-right-icon lucide-chevron-right\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m9 18 6-6-6-6\"></path></svg></span></button></div></div></div></div></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-overflowMenu\"><button aria-controls=\"generated-1\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"More\" class=\"st-overflowMenu__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-ellipsis-icon lucide-ellipsis\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"1\"></circle><circle cx=\"19\" cy=\"12\" r=\"1\"></circle><circle cx=\"5\" cy=\"12\" r=\"1\"></circle></svg></button><div class=\"st-overflowMenu__list st-overflowMenu__list--bottom-start\"><div aria-label=\"More\" class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\"><strong>Alpha</strong></span></button></div></div></div>"
+    }
+  ],
+  "fixtureSha256": "cffb65c59c48502dce4fd6c7334f6ac82dfd7fea8920f40a713968e9486397d9"
+}

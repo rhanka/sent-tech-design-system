@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:72406ad0a37122a6e8a323a7cede45dea4604addd2d3663a4dda486c37e4e29f",
-  "entryDigest": "sha256:bcd99d91c6a78c70b8b983ed5efaeabbe262c12d1d4dfd03f0e1de23d9aa2f71",
+  "digest": "sha256:cd1ca4a31a846c2f2b879adc2edc169b056895d8d3723fdcc595371995740b99",
+  "entryDigest": "sha256:dc16c4f2d0272238404fb4b3c6b83961e1b5bfab9cd271f0314f0778610787bf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/SelectableList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-react/dist/SelectableList.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableListProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -334,16 +334,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:a72a424d633922ce7fd9c238b18b61347859755b979a923fcced1a050e513864",
+        "declarationDigest": "sha256:d13381ce0e4961589ed9f17068204b7ebd38d8bbcff3ec49c5a54ce336c4f6ed",
         "declarationPath": "packages/components-vue/dist/SelectableList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableListProps",

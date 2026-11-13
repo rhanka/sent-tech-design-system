@@ -19,6 +19,14 @@ test('counter IDs and useId IDs match while reference relationships survive', ()
   assert.notEqual(normalize('<div id="st-tabs-1-tab-one" aria-controls="st-tabs-1-panel-one"></div>'),
     normalize('<div id="st-tabs-v-0-tab-one" aria-controls="st-tabs-v-0-panel-two"></div>'));
 });
+test('review label identities should normalize without losing their suffixes or relationships', () => {
+  for (const name of ['eventFeedPanel', 'multiSelect']) {
+    const html = (id, ref = id) => `<p id="st-${name}-${id}-label">Label</p><div aria-labelledby="st-${name}-${ref}-label"></div>`;
+    assert.equal(normalize(html('0')), normalize(html('v-0')));
+    assert.notEqual(normalize(html('0')), normalize(html('v-0', 'v-1')));
+    assert.notEqual(normalize(html('0')), normalize(html('v-0').replace('-label', '-other')));
+  }
+});
 test('static IDs, classes, text, styles, attributes and element order remain significant', () => {
   const base = '<section id="consumer" class="a b" style="color:red" aria-hidden="false"><strong>A</strong><em>B</em></section>';
   for (const changed of [base.replace('consumer', 'other'), base.replace('a b', 'b a'), base.replace('red', 'blue'), base.replace('false', 'true'), base.replace('>A<', '>C<'), base.replace('<strong>A</strong><em>B</em>', '<em>B</em><strong>A</strong>')]) {
@@ -56,4 +64,14 @@ test('worked examples compile with the house options in classic and Vapor', () =
     const source = readFileSync(resolve(bench, 'examples', `${name}.vue`), 'utf8');
     for (const mode of ['classic', 'vapor']) assert(compileSfc(source, resolve(src, `${name}.vue`), mode).length > 0);
   }
+});
+test('Vue runtime markers, empty classes and duplicate tokens do not change rendered HTML',()=>{
+  assert.equal(normalize('<div class="a a"><!--if--><!--for--><!--slot--><!--keyed--><!--dynamic-component--><!--(--><!--)--></div>'),normalize('<div class="a"></div>'));
+  assert.equal(normalize('<td class=""></td>'),normalize('<td></td>'));
+  assert.notEqual(normalize('<div><!--caller-note--></div>'),normalize('<div></div>'));
+});
+test('CSS declarations compare by parsed values while changed properties and priorities remain significant',()=>{
+  assert.equal(normalize('<div style="color: red; display: flex;"></div>'),normalize('<div style="display:flex;color:red"></div>'));
+  assert.notEqual(normalize('<div style="color:red!important"></div>'),normalize('<div style="color:red"></div>'));
+  assert.notEqual(normalize('<div style="margin-left:1px"></div>'),normalize('<div style="margin-left:2px"></div>'));
 });

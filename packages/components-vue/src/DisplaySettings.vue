@@ -75,7 +75,7 @@ const onReducedMotionChange = (event: Event) =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-displaySettings', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-displaySettings', props.class)) }" >
     <p class="st-displaySettings__title">{{ props.title }}</p>
     <div class="st-displaySettings__grid">
       <label v-if="props.showFontScale" class="st-displaySettings__field">

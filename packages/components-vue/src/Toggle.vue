@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ToggleSize = 'sm' | 'md';
 
 export type ToggleProps = {
-  label: unknown;
+  label?: unknown;
   labelOn?: string;
   labelOff?: string;
   helperText?: unknown;
@@ -18,7 +19,7 @@ export type ToggleProps = {
   class?: string;
 };
 
-defineOptions({ name: 'Toggle' });
+defineOptions({ name: 'Toggle', inheritAttrs: false });
 const props = withDefaults(defineProps<ToggleProps>(), {
   labelOn: 'On', labelOff: 'Off', helperText: undefined, size: 'md',
   modelValue: undefined, checked: undefined, disabled: false,
@@ -29,11 +30,13 @@ const emit = defineEmits<{
   change: [event: Event];
 }>();
 defineSlots<{
-  label?: () => unknown;
+  /** @deprecated Use helper-text. */
   helperText?: () => unknown;
+  label?: () => unknown;
+  'helper-text'?: () => unknown;
 }>();
 
-const attrs = useAttrs();
+
 const isChecked = computed(() => props.modelValue ?? props.checked ?? false);
 
 function onToggle(event: Event) {
@@ -43,7 +46,7 @@ function onToggle(event: Event) {
 }
 
 const inputProps = computed(() => ({
-  ...attrs,
+
   class: 'st-toggle__input',
   type: 'checkbox',
   role: 'switch',
@@ -58,14 +61,14 @@ const inputProps = computed(() => ({
 
 <template>
   <label :class="classNames('st-toggle', `st-toggle--${props.size}`, props.class)">
-    <span class="st-toggle__label"><template v-if="$slots.label"><slot name="label" /></template><template v-else>{{ props.label }}</template></span>
+    <span class="st-toggle__label"><template v-if="$slots.label"><slot name="label" /></template><template v-else>{{ scalarContent(props.label) }}</template></span>
     <span class="st-toggle__row">
-      <input v-bind="inputProps" />
+      <input v-bind="{ ...$attrs, ...inputProps }" />
       <span class="st-toggle__track" aria-hidden="true">
         <span class="st-toggle__thumb" />
       </span>
       <span class="st-toggle__state" aria-hidden="true">{{ isChecked ? props.labelOn : props.labelOff }}</span>
     </span>
-    <span v-if="$slots.helperText || props.helperText" class="st-toggle__help"><template v-if="$slots.helperText"><slot name="helperText" /></template><template v-else>{{ props.helperText }}</template></span>
+    <span v-if="($slots['helper-text'] || $slots.helperText) || props.helperText" class="st-toggle__help"><template v-if="($slots['helper-text'] || $slots.helperText)"><slot name="helper-text"><slot name="helperText" /></slot></template><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </label>
 </template>

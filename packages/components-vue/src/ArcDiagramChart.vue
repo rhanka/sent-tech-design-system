@@ -192,7 +192,7 @@ const hovered = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-arcDiagramChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-arcDiagramChart', props.class)) }" >
     <div
       class="st-arcDiagramChart__visual"
       role="img"

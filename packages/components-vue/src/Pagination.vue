@@ -35,7 +35,7 @@ function goToPage(pageNumber: number) { emit('pageChange', pageNumber); }
 </script>
 
 <template>
-  <nav v-bind="$attrs" :class="classNames('st-pagination', props.class)" aria-label="Pagination">
+  <nav v-bind="{ ...($attrs), class: (classNames('st-pagination', props.class)) }"  aria-label="Pagination">
     <button type="button" :disabled="props.page <= 1" @click="goToPrevious">{{ props.previousLabel }}</button>
     <button
       v-for="pageNumber in visiblePages"

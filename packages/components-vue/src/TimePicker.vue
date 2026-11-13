@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
+import { useId, computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { classNames } from './classNames.js';
-import { nextTimePickerId } from './timePickerId.js';
 
 export type TimePickerFormat = '24' | '12';
 export type TimePickerSize = 'sm' | 'md' | 'lg';
@@ -54,7 +53,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
-const autoId = ref(nextTimePickerId());
+const autoId = ref(`st-timepicker-${useId()}`);
 const internal = ref(props.value ?? '');
 const open = ref(false);
 const activeIndex = ref(-1);
@@ -251,7 +250,7 @@ const onListKeyDown = (event: KeyboardEvent) => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-field', props.class)" ref="hostEl">
+  <div v-bind="{ ...($attrs), class: (classNames('st-field', props.class)) }"  ref="hostEl">
     <div class="st-field__control">
       <label v-if="props.label" class="st-field__label" :for="fieldId">{{ props.label }}</label>
       <span :class="classNames('st-timepicker', `st-timepicker--${props.size}`)">

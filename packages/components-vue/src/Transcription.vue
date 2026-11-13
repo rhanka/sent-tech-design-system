@@ -38,7 +38,7 @@ const separator = ' • ';
 </script>
 
 <template>
-  <details v-bind="$attrs" :open="props.open" :class="classNames('st-transcription', props.class)">
+  <details v-bind="{ ...($attrs), class: (classNames('st-transcription', props.class)) }" :open="props.open" >
     <summary>{{ props.title }}</summary>
     <div class="st-transcription__content">
       <ol v-if="hasSegments" class="st-transcription__list">

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 export type ColSpan = number | 'auto';
@@ -17,7 +17,7 @@ export type ColProps = {
 };
 
 import { spanBasis, offsetMargin } from './col-layout.js';
-defineOptions({ name: 'Col' });
+defineOptions({ name: 'Col', inheritAttrs: false });
 const props = withDefaults(defineProps<ColProps>(), {
   span: 'auto',
   offset: 0,
@@ -28,7 +28,6 @@ const props = withDefaults(defineProps<ColProps>(), {
   class: undefined,
 });
 defineSlots<{ default?: () => unknown }>();
-const attrs = useAttrs();
 const bindings = computed(() => {
   const isAuto = props.span === 'auto';
   const basis = spanBasis(props.span);
@@ -40,11 +39,10 @@ const bindings = computed(() => {
     '--st-col-sm': spanBasis(props.sm),
     '--st-col-md': spanBasis(props.md),
     '--st-col-lg': spanBasis(props.lg),
-    ...(attrs.style as CSSProperties | undefined),
   } as CSSProperties;
 
   return {
-    ...attrs,
+
     class: classNames(
       'st-col',
       isAuto && 'st-col--auto',
@@ -59,5 +57,5 @@ const bindings = computed(() => {
 </script>
 
 <template>
-  <component :is="props.as" v-bind="bindings"><slot /></component>
+  <component :is="props.as" v-bind="{ ...$attrs, ...bindings, style: [bindings.style, $attrs.style] }"><slot /></component>
 </template>

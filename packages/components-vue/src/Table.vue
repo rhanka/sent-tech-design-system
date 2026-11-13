@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 export type TableColumn = {
   key: string;
-  label: unknown;
+  label?: unknown;
   align?: 'left' | 'center' | 'right' | 'start' | 'end';
 };
 export type TableRow = Record<string, unknown>;
@@ -13,14 +14,14 @@ export type TableProps = {
   caption?: unknown;
   class?: string;
 };
-defineOptions({ name: 'Table' });
+defineOptions({ name: 'Table', inheritAttrs: false });
 const props = withDefaults(defineProps<TableProps>(), {
   caption: () => 'Table',
   class: undefined,
 });
-const attrs = useAttrs();
+
 const tableBindings = computed(() => ({
-  ...attrs,
+
   class: classNames('st-table', props.class),
 }));
 defineSlots<{
@@ -31,11 +32,9 @@ defineSlots<{
 
 <template>
   <div :class="'st-table-wrap'">
-    <table v-bind="tableBindings">
+    <table v-bind="{ ...$attrs, ...tableBindings }">
       <caption>
-        <slot v-if="$slots.caption" name="caption" /><template v-else>{{
-          props.caption
-        }}</template>
+        <slot v-if="$slots.caption" name="caption" /><template v-else>{{ scalarContent(props.caption) }}</template>
       </caption>
       <thead>
         <tr>
@@ -43,7 +42,7 @@ defineSlots<{
             ><th>
               <slot v-if="$slots.label" name="label" :column="col" /><template
                 v-else
-                >{{ col.label }}</template
+                >{{ scalarContent(col.label) }}</template
               >
             </th></template
           >

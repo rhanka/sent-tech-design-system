@@ -215,8 +215,8 @@ const hovered = computed(() => {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-anomalySwimLaneChart', `st-anomalySwimLaneChart--${resolvedScale}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-anomalySwimLaneChart', `st-anomalySwimLaneChart--${resolvedScale}`, props.class)) }"
+
   >
     <div
       class="st-anomalySwimLaneChart__visual"

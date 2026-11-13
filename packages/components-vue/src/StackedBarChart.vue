@@ -181,7 +181,7 @@ function isDim(bi: number, si: number): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-stackedBar', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-stackedBar', props.class)) }" >
     <div
       class="st-stackedBar__visual"
       role="img"
