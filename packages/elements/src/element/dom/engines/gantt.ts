@@ -30,7 +30,7 @@ export function renderGantt(node: HTMLElement, props: Record<string, unknown>, a
   for (const [index, task] of tasks.entries()) {
     const bar = document.createElementNS(NS, "rect");
     bar.setAttribute("x", String(Math.min(x(task.start), x(task.end))));
-    bar.setAttribute("y", String(24 + index * (height - 24) / Math.max(1, tasks.length)));
+    bar.setAttribute("y", String(24 + (index / Math.max(1, tasks.length)) * (height - 24)));
     bar.setAttribute("width", String(Math.abs(x(task.end) - x(task.start))));
     bar.setAttribute("height", String(Math.max(1, (height - 24) / Math.max(1, tasks.length) * 0.7)));
     const description = document.createElementNS(NS, "title");

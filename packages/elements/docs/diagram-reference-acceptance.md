@@ -14,6 +14,33 @@ Reviewed base: `f9d1702e`, independent verdict **NON FUSIONNABLE**.
 | P1: manifest, lockfile and installation disagree; versions are stale | Elements 0.3.0 and Focus 0.6.0 agree across manifest, lockfile and installed package; lockfile uses a checked-in owner build archive | New consistency regression failed on locked 0.5.0 versus declared 0.6.0-rc.1; passes after the fix and a clean `npm ci` |
 | P2: Gantt markers escape the viewport or produce infinite coordinates | Include marker in both domain bounds after normalization | Seven cases at default and extreme widths; six failed before the fix, all seven pass afterwards |
 
+## Second review correction
+
+Reviewed base: `54bfacfa`, independent verdict **FUSIONNABLE AVEC CORRECTIFS**.
+
+| Finding | Fix | Failing-first witness and result |
+| --- | --- | --- |
+| P2: three tasks at `height: Number.MAX_VALUE` produce an infinite third-bar y coordinate | Divide the task index by the task count before multiplying by the available height | Three resolver-to-SVG cases at height 320, half the finite maximum and the finite maximum; the maximum failed with `Infinity` before the fix, all three pass afterwards |
+
+The regression verifies accepted props, resolved state without diagnostics,
+three evenly spaced task bars, positive bar heights, bounded bar extents,
+marker height, and finite horizontal and vertical SVG geometry.
+
+The second correction pass ran in `.elements03-wt` with the specified npm
+cache and no browser launch, root test command, or Track command:
+
+| Command | Result |
+| --- | --- |
+| Elements Vitest, `tests/diagram-reference.test.ts -t "finite vertical geometry"` | Before: 1 failed, 2 passed; after: 3 passed |
+| `npm run test -w packages/elements` | 307 passed across 18 files, no failures or skips |
+| `npm run check -w packages/elements` | Pass: Node and DOM TypeScript projects |
+| `npm run build -w packages/elements` | Pass: Node and browser bundle; core 56,869 / 153,600 gzip bytes |
+| Elements `catalog:generate` and `catalog:check` | Pass: 6 fresh artifacts, no catalog diff |
+| Component-index `build`, `index:generate` and `index:check` | Pass: 430 fresh artifacts; only source-commit stamps changed |
+| `npm run test -w packages/component-index` | 136 passed across 15 files |
+| `node --test scripts/elements-catalog.test.mjs scripts/elements-browser-artifacts.test.mjs scripts/elements-publish-tarball.test.mjs` | 18 passed, no failures or skips |
+| `npm run notices:generate` and `npm run licensing:check` | Pass: 22 publishable packages, no notice diff |
+
 ## Installation source and release prerequisite
 
 On 2026-11-12, npm metadata and the stable Focus 0.6.0 tarball URL returned
@@ -62,7 +89,7 @@ presentation fixtures still compare directly with Focus 0.6 rendering.
 | B16 | `diagram-contract.test.ts`: structural error vs host-warning surfaces; runtime warning forwarding | Pass |
 | B17 | Same: J1-shaped G3 at 1.1, pre-1.1 unsupported-contract, legacy envelope | Pass |
 
-## Command results
+## Command results (first correction pass)
 
 All commands ran in `.elements03-wt`. Shell commands used the RTK prefix.
 

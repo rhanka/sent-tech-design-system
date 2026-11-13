@@ -244,6 +244,40 @@ describe("diagram-by-reference lifecycle and fallback (B2–B6, B9, B11–B15)",
 });
 
 describe("Gantt marker domain", () => {
+  it.each([320, Number.MAX_VALUE / 2, Number.MAX_VALUE])("should resolve multiple tasks with finite vertical geometry when height is %s", async (height) => {
+    const props = {
+      data: [
+        { task: "Prototype", start: 0, end: 1 },
+        { task: "Pilot", start: 1, end: 2 },
+        { task: "Rollout", start: 2, end: 3 },
+      ],
+      label: "Roadmap", marker: 2, height,
+    };
+    expect(validateGanttProps(props)).toBe(true);
+    const { figure, diagnostics } = render(() => ({ component: "GanttChart", props }));
+    await settled(figure, "resolved");
+    expect(diagnostics).toEqual([]);
+    const bars = figure.querySelectorAll("svg rect");
+    expect(bars).toHaveLength(3);
+    for (const [index, bar] of bars.entries()) {
+      const y = Number(bar.getAttribute("y"));
+      const barHeight = Number(bar.getAttribute("height"));
+      expect((y - 24) / (height - 24)).toBeCloseTo(index / 3);
+      expect(barHeight).toBeGreaterThan(0);
+      expect(y / height + barHeight / height).toBeLessThanOrEqual(1);
+    }
+    expect(figure.querySelector("svg line")?.getAttribute("y2")).toBe(String(height));
+    for (const shape of figure.querySelectorAll("svg rect, svg line")) {
+      for (const name of ["x", "x1", "x2", "width", "y", "y1", "y2", "height"]) {
+        if (!shape.hasAttribute(name)) continue;
+        const value = Number(shape.getAttribute(name));
+        expect(Number.isFinite(value)).toBe(true);
+        expect(value).toBeGreaterThanOrEqual(0);
+        expect(value).toBeLessThanOrEqual(name.startsWith("y") || name === "height" ? height : 640);
+      }
+    }
+  });
+
   it.each([
     ["above the task", 0, 4, 8, 1],
     ["below the task", 0, 4, -4, 0],
