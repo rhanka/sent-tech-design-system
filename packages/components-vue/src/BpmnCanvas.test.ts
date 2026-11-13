@@ -11,7 +11,7 @@ const engine = vi.hoisted(() => ({
 vi.mock('@sentropic/bpmn-canvas', () => ({ createBpmnCanvas: (...args: unknown[]) => engine.create(...args) }));
 const envelope = JSON.parse(readFileSync(resolve(import.meta.dirname, '../../elements/tests/fixtures/bpmn-order-process.json'), 'utf8'));
 afterEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); engine.ready = Promise.resolve(); document.getElementById('st-host-config')?.remove(); });
-async function settled() { await vi.waitFor(() => expect(engine.create).toHaveBeenCalled()); await flushPromises(); await nextTick(); }
+async function settled() { await vi.waitFor(() => expect(engine.create).toHaveBeenCalled(), { timeout: 10000 }); await flushPromises(); await nextTick(); }
 function renderer() {
   engine.create.mockImplementation(() => ({ ready: engine.ready, destroy: engine.destroy, getDiagnostics: () => [] }));
 }

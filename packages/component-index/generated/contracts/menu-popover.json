@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:8e8fd9d5ca89822dda1eef0397f8bdca56fc7c53a8f8071a842d2d0e32d830c9",
-  "entryDigest": "sha256:0e0bf0248a74e295e6052474a0760dd899043d2c335232e20c1917cea07ec14a",
+  "digest": "sha256:0050f1b57a1141c0efd9293219c68c99719393a4392c56d7a74afbb9eac3b71f",
+  "entryDigest": "sha256:e20c4a2cae78c6fdbeda308ad517264044910282b0189e4f154692ad252caeb9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -505,11 +505,21 @@
       ],
       "events": [
         {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
           "name": "onUpdate:open",
           "payload": {
             "items": {},
             "type": "array"
           }
+        },
+        {
+          "name": "select"
         },
         {
           "name": "update:open"
@@ -524,6 +534,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -534,6 +560,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -639,6 +668,13 @@
               "bottom-end"
             ]
           },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
+          },
           "trigger": {
             "anyOf": [
               {},
@@ -671,6 +707,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onUpdate:open.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -685,16 +727,18 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:bf9c921f2ada0c8767c6c58356d5d07d210290df8b3a6697358d4acaa1771693",
+        "declarationDigest": "sha256:21c5df06d2c4c37e83e73dd4efb5714b9e485fe20ed7c822fd1aa2879cc65057",
         "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
+        "emit \"select\": payload not in declaration",
         "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
       ]
