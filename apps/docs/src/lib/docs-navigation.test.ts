@@ -22,8 +22,17 @@ describe("docs navigation model", () => {
       publicIndexPath,
       "utf8"
     );
+    const publicManifest = JSON.parse(readFileSync(new URL("../../../../packages/components-svelte/package.json", import.meta.url), "utf8"));
+    const subpathComponents = ["rich-text-editor", "presence-badge"].flatMap((subpath) => {
+      expect(publicManifest.exports[`./${subpath}`]?.svelte).toBeDefined();
+      const source = readFileSync(new URL(`../../../../packages/components-svelte/src/lib/${subpath}/index.ts`, import.meta.url), "utf8");
+      const namedExports = [...source.matchAll(/export \{([^}]+)\}/g)]
+        .flatMap((match) => match[1].split(",").map((name) => name.trim()));
+      return [...source.matchAll(/import (\w+) from ["'][^"']+\.svelte["']/g)]
+        .map((match) => match[1]).filter((name) => namedExports.includes(name));
+    });
     const exportedComponents = [...indexSource.matchAll(/export \{ default as (\w+) \}/g)]
-      .map((match) => match[1])
+      .map((match) => match[1]).concat(subpathComponents)
       // ThemeProvider = primitive infra ; GraphLegend = compagnon de ForceGraph
       // (légende du graphe, documentée avec le composant graphe) ; AppShell +
       // IdentityButton = chrome applicatif infra (ex-paquet app-shell), pas des

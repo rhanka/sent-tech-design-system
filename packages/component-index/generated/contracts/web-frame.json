@@ -1,8 +1,8 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:1ec5c2c033e39e3dd8fc563e61db9d8bbf7ec4db39b1864fb1b9d717294a5b8f",
-  "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "digest": "sha256:c93c2b642fa590251edf02d99764b50fd8e5f7572fa2d6c096b46ff13f411cb5",
+  "entryDigest": "sha256:a200103b488bdd5e37264c844514aa3c652b5be33ea06693ef99d413fc6044d8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,11 +327,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b34a3ecd77ebb188368ffdb60fb579963c662d593efe4e6ff28850a382f7a4f6",
-        "declarationPath": "packages/dataviz-vue/dist/lib/ObjectLayers.d.ts",
-        "package": "@sentropic/dataviz-vue",
+        "declarationDigest": "sha256:d18a131f2ada4ef622d417827532b0155df03e17d154192ba3373c509252acd4",
+        "declarationPath": "packages/components-vue/dist/WebFrame.vue.d.ts",
+        "package": "@sentropic/design-system-vue",
         "propsType": "WebFrameProps",
-        "version": "0.5.0"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

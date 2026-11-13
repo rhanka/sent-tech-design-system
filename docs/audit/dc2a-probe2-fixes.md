@@ -5,8 +5,8 @@ Reference: h-cond's `ds0401-probe2-last.md`, captured at
 captures remain in `h-cond/appctx-dossier/captures-ds0401-r2/`.
 
 Main `75844c4c9` was merged before the fixes. The Vue classic/Vapor port and
-publish dependency build are retained. Patch versions are Svelte 0.41.1,
-Vue 0.41.1-next.1, canvas 0.2.1 and tokens/themes 0.14.1, with dependent
+publish dependency build are retained. Versions align with main’s unreleased packages: Svelte 0.41.0,
+Vue 0.41.0-next.2, canvas 0.2.0 and tokens/themes 0.14.0, with dependent
 workspace pins updated.
 
 The shared jsdom probe covers architecture and ontology, folded and

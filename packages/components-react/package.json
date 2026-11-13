@@ -33,7 +33,7 @@
     "test": "vitest run src"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.14.1",
+    "@sentropic/design-system-themes": "0.14.0",
     "lucide-react": "^0.562.0"
   },
   "peerDependencies": {

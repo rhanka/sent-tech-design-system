@@ -173,7 +173,7 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
 
   it("is publishable, like the public dependency it names (DC-2a BF-5)", () => {
     expect(manifest.name).toBe("@sentropic/diagram-canvas");
-    expect(manifest.version).toBe("0.2.1");
+    expect(manifest.version).toBe("0.2.0");
     // DC-2a BF-5: `@sentropic/design-system-svelte` depends on this package for
     // the scene host (`DiagramSceneFigure`), and a PUBLISHED package naming a
     // private one installs broken for everyone. The manifest therefore drops

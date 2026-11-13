@@ -20,6 +20,7 @@ import Ajv2020, { type AnySchema } from "ajv/dist/2020.js";
 import {
   assertNoEditorialMetadata,
   parseBarrelFile,
+  parseComponentBarrels,
   resolveSourceFile,
   type ParsedBarrel,
 } from "./barrels.js";
@@ -499,8 +500,9 @@ function catalogueEntry(
 ): Entry {
   const identifier = stripDatavizMarker(row.name);
   const deliveries: Delivery[] = [];
-  if (presence.dataviz && presence.component.every((seen) => !seen)) {
+  if (presence.dataviz) {
     for (const framework of FRAMEWORK_ORDER) {
+      if (presence.component[FRAMEWORK_ORDER.indexOf(framework)]) continue;
       const barrel = barrels.get(`dataviz-${framework}`);
       if (barrel === undefined || !barrel.values.has(identifier)) continue;
       const manifest = manifests.get(`dataviz-${framework}`);
@@ -516,10 +518,11 @@ function catalogueEntry(
         ),
       );
     }
-    if (deliveries.length === 0) {
+    if (deliveries.length === 0 && presence.component.every((seen) => !seen)) {
       throw new Error(`emit: "${row.slug}" parity dataviz but no dataviz source resolved`);
     }
-  } else {
+  }
+  {
     for (const framework of FRAMEWORK_ORDER) {
       if (!presence.component[FRAMEWORK_ORDER.indexOf(framework)]) continue;
       const barrel = barrels.get(framework);
@@ -672,7 +675,7 @@ export function buildArtifacts(
   const manifests = new Map<string, Manifest>();
   for (const framework of FRAMEWORK_ORDER) {
     const barrelPath = COMPONENT_BARREL_PATHS[framework];
-    const parsed = parseBarrelFile(join(repoRoot, barrelPath));
+    const parsed = parseComponentBarrels(join(repoRoot, `packages/components-${framework}`));
     assertNoEditorialMetadata(parsed, barrelPath);
     barrels.set(framework, parsed);
     manifests.set(framework, readManifest(join(repoRoot, `packages/components-${framework}/package.json`)));

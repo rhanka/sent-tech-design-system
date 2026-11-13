@@ -11,6 +11,45 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, relative } from "node:path";
 import * as ts from "typescript";
 
+// Public, deliberately separate component entrypoints: inventorying them must
+// not pull their editor engine into the framework package's root runtime.
+const COMPONENT_SUBPATHS = ["rich-text-editor", "presence-badge"] as const;
+
+export function publicComponentBarrelPaths(packageDir: string): string[] {
+  const root = [join(packageDir, "src", "index.ts"), join(packageDir, "src", "lib", "index.ts")]
+    .find((candidate) => existsSync(candidate));
+  if (root === undefined) throw new Error(`${packageDir}: no component barrel`);
+  const manifestPath = join(packageDir, "package.json");
+  const manifest = existsSync(manifestPath)
+    ? JSON.parse(readFileSync(manifestPath, "utf8")) as { exports?: Record<string, unknown> }
+    : {};
+  const paths = [root];
+  for (const subpath of COMPONENT_SUBPATHS) {
+    if (manifest.exports?.[`./${subpath}`] === undefined) continue;
+    const barrel = join(dirname(root), subpath, "index.ts");
+    if (!existsSync(barrel)) throw new Error(`${packageDir}: public ./${subpath} has no source barrel`);
+    paths.push(barrel);
+  }
+  return paths;
+}
+
+/** Merge public subpath presence, retaining root-relative source specifiers. */
+export function parseComponentBarrels(packageDir: string): ParsedBarrel {
+  const [root, ...subpaths] = publicComponentBarrelPaths(packageDir);
+  const parsed = parseBarrelFile(root!);
+  for (const path of subpaths) {
+    const nested = parseBarrelFile(path);
+    assertNoEditorialMetadata(nested, path);
+    for (const [name, specifier] of nested.values) {
+      if (name === "default" || parsed.values.has(name)) continue;
+      const rebased = specifier === null ? null : relative(dirname(root!), join(dirname(path), specifier)).split("\\").join("/");
+      parsed.values.set(name, rebased === null || rebased.startsWith(".") ? rebased : `./${rebased}`);
+    }
+    for (const name of nested.types) parsed.types.add(name);
+  }
+  return parsed;
+}
+
 export interface BarrelExports {
   /** Exported value name -> module specifier (null for locals). */
   values: Map<string, string | null>;
@@ -31,6 +70,7 @@ function recordNamed(
   moduleSpecifier: string | null,
   values: Map<string, string | null>,
   types: Set<string>,
+  importedModules: Map<string, string>,
 ): void {
   for (const element of clause.elements) {
     const exported = element.name.text;
@@ -39,7 +79,7 @@ function recordNamed(
       continue;
     }
     if (values.has(exported)) continue;
-    values.set(exported, moduleSpecifier);
+    values.set(exported, moduleSpecifier ?? importedModules.get(element.propertyName?.text ?? exported) ?? null);
   }
 }
 
@@ -67,6 +107,17 @@ export function parseBarrelText(sourceText: string, fileName: string): ParsedBar
   const values = new Map<string, string | null>();
   const types = new Set<string>();
   const stars: string[] = [];
+  const importedModules = new Map<string, string>();
+  for (const statement of source.statements) {
+    if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier) || statement.importClause?.isTypeOnly) continue;
+    const clause = statement.importClause;
+    if (clause?.name) importedModules.set(clause.name.text, statement.moduleSpecifier.text);
+    if (clause?.namedBindings && ts.isNamedImports(clause.namedBindings)) {
+      for (const element of clause.namedBindings.elements) {
+        if (!element.isTypeOnly) importedModules.set(element.name.text, statement.moduleSpecifier.text);
+      }
+    }
+  }
   for (const statement of source.statements) {
     // D4.2: an exported variable/function/class statement also declares a
     // barrel export (for example `export const category = …`). Record it so
@@ -115,7 +166,7 @@ export function parseBarrelText(sourceText: string, fileName: string): ParsedBar
       for (const element of statement.exportClause.elements) types.add(element.name.text);
       continue;
     }
-    recordNamed(statement.exportClause, specifier, values, types);
+    recordNamed(statement.exportClause, specifier, values, types, importedModules);
   }
   return { values, types, stars };
 }

@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:999e4c70f21c5bbe8bbceb7af52963d023414a1e26eb9e0d9b174f8d062e47d0",
-  "entryDigest": "sha256:996d85a52d163dc4a852b12692f75c973609bd4d3fc681e74b74976ad4c32060",
+  "digest": "sha256:0e1a59cf2dfdb1ba79e8558b3d60eb29c2c2f5f5212a101db60c5970a9749f18",
+  "entryDigest": "sha256:b5c54797a21b441fc1553feb5ce6e631e256816ed8717d43e7f0ea1856769a26",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -269,7 +269,7 @@
         "declarationPath": "packages/components-svelte/dist/Search.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SearchProps",
-        "version": "0.41.1"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -377,7 +377,7 @@
         "declarationPath": "packages/components-vue/dist/Search.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SearchProps",
-        "version": "0.41.1-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [

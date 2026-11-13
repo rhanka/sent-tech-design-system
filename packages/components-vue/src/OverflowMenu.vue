@@ -2,10 +2,21 @@
 import type { MenuLabelSlots } from './menu-label-slots.js';
 import type { OverflowMenuPlacement } from "./OverflowMenu.js";
 import { useId, useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
-
+import Icon from "./Icon.vue";
+import type { IconGlyph } from "./icon-data.js";
 import Menu from "./Menu.vue";
 import type { MenuActionItem, MenuItem } from "./Menu.js";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
+
+// Lucide v0.562.0 neutral nodes (ISC; notice in icon-data.ts).
+const ellipsis: IconGlyph = {
+  name: "ellipsis",
+  nodes: [
+    ["circle", { cx: "12", cy: "12", r: "1" }],
+    ["circle", { cx: "19", cy: "12", r: "1" }],
+    ["circle", { cx: "5", cy: "12", r: "1" }],
+  ],
+};
 
 function treeHasCascade(list: MenuItem[]): boolean {
   for (const item of list) {
@@ -179,7 +190,7 @@ onUnmounted(() => {
       @click="setOpen(!isOpen())"
       @keydown="onTriggerKeyDown"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-icon lucide-ellipsis" aria-hidden="true"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
+      <Icon bare :glyph="ellipsis" :size="18" :stroke-width="2.25" aria-hidden="true" />
     </button>
     <div
       v-if="isOpen()"

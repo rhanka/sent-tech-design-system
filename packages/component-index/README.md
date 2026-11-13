@@ -37,7 +37,7 @@ values, `"none"`/`"non-personal"`/`"personal"` data classes,
 Inputs (all committed, read from the generation checkout):
 
 - `apps/docs/src/lib/components-catalog.ts` — editorial source (parsed with the TypeScript compiler API).
-- `packages/components-{svelte,react,vue,angular}/src/index.ts` and `packages/dataviz-{svelte,react,vue,angular}/src/index.ts` — presence and source-file resolution. The contract extractor additionally reads each delivery source's barrel re-export to recover the component identifier (names and paths only, never type structure).
+- `packages/components-{svelte,react,vue,angular}/src/index.ts` and `packages/dataviz-{svelte,react,vue,angular}/src/index.ts` — presence and source-file resolution. The declared `./rich-text-editor` and `./presence-badge` public component subpaths are also inventoried, with paths resolved relative to their own barrels. They retain their separate runtime boundaries. The contract extractor reads the same public barrels to recover component identifiers (names and paths only, never type structure).
 - Framework, dataviz, tokens, themes and Elements manifests — exact version pins.
 - `packages/elements/catalog.json` + `packages/elements/schemas/*.v1.json` — Elements contracts (including the `no-counterpart` parity roles).
 - `catalog-overlay.json` — non-catalogue entries and reviewed exclusions.
@@ -45,6 +45,11 @@ Inputs (all committed, read from the generation checkout):
 - `schemas/component-contract.v1.json`, `schemas/component-contract-index.v1.json` — the K1b contract schemas (hand-authored, reviewed).
 - `contract-baseline.json` — expected per-framework completeness plus full member lists for the witness components (reviewed data; the generator never writes it).
 - Built declarations (`packages/*-{svelte,react,vue,angular}/dist/**/*.d.ts`) — the only type input to the extractor, via the TypeScript compiler API.
+
+A row can have both component-package and dataviz deliveries. Each framework
+uses its native component delivery when present, otherwise its dataviz delivery;
+the native parity map keeps its existing meaning. This retains the Svelte and
+React WebFrame references when its Vue component-package port is present.
 
 Outputs (committed, byte-deterministic): `generated/component-index.json`, `generated/entries/*.json`, `generated/contracts/*.json` (one per population entry), `generated/component-contract-index.json`.
 

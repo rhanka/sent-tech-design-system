@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.41.1-next.1",
+  "version": "0.41.0-next.2",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -47,7 +47,24 @@
     "./vapor/bpmn": {
       "types": "./dist/vapor/bpmn/index.d.ts",
       "import": "./dist/vapor/bpmn/index.js"
-    }
+    },
+    "./rich-text-editor": {
+      "types": "./dist/rich-text-editor/index.d.ts",
+      "import": "./dist/rich-text-editor/index.js"
+    },
+    "./vapor/rich-text-editor": {
+      "types": "./dist/vapor/rich-text-editor/index.d.ts",
+      "import": "./dist/vapor/rich-text-editor/index.js"
+    },
+    "./presence-badge": {
+      "types": "./dist/presence-badge/index.d.ts",
+      "import": "./dist/presence-badge/index.js"
+    },
+    "./vapor/presence-badge": {
+      "types": "./dist/vapor/presence-badge/index.d.ts",
+      "import": "./dist/vapor/presence-badge/index.js"
+    },
+    "./rich-text-editor.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
     "dist"
@@ -62,14 +79,33 @@
     "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.14.1",
-    "lucide-vue-next": "^0.562.0",
-    "@sentropic/diagram-canvas": "0.2.1",
-    "@sentropic/graph": "0.3.0"
+    "@sentropic/design-system-themes": "0.14.0",
+    "@sentropic/diagram-canvas": "0.2.0",
+    "@sentropic/graph": "0.3.0",
+    "@sentropic/design-system-rich-text": "0.1.0"
   },
   "peerDependencies": {
     "vue": "^3.5 || ^3.6.0-0",
-    "@sentropic/design-system-elements": "0.2.0"
+    "@sentropic/design-system-elements": "0.2.0",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extension-blockquote": "^3.0.0",
+    "@tiptap/extension-bold": "^3.0.0",
+    "@tiptap/extension-code": "^3.0.0",
+    "@tiptap/extension-code-block": "^3.0.0",
+    "@tiptap/extension-document": "^3.0.0",
+    "@tiptap/extension-hard-break": "^3.0.0",
+    "@tiptap/extension-heading": "^3.0.0",
+    "@tiptap/extension-horizontal-rule": "^3.0.0",
+    "@tiptap/extension-italic": "^3.0.0",
+    "@tiptap/extension-link": "^3.0.0",
+    "@tiptap/extension-list": "^3.0.0",
+    "@tiptap/extension-paragraph": "^3.0.0",
+    "@tiptap/extension-placeholder": "^3.0.0",
+    "@tiptap/extension-strike": "^3.0.0",
+    "@tiptap/extension-text": "^3.0.0",
+    "@tiptap/extension-underline": "^3.0.0",
+    "@tiptap/extensions": "^3.0.0",
+    "@tiptap/pm": "^3.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "6.0.11",
