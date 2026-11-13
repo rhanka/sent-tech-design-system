@@ -1,5 +1,5 @@
-export { AspectRatio } from "./AspectRatio.js";
-export type { AspectRatioProps } from "./AspectRatio.js";
+export { default as AspectRatio } from "./AspectRatio.vue";
+export type { AspectRatioProps } from "./AspectRatio.vue";
 export { default as Accordion } from "./Accordion.vue";
 export type { AccordionProps, AccordionItem } from "./Accordion.vue";
 export { default as Alert } from "./Alert.vue";
