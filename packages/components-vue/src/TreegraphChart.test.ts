@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { TreegraphChart } from "./TreegraphChart.js";
-import type { TreegraphChartNode } from "./TreegraphChart.js";
+import TreegraphChart from "./TreegraphChart.vue";
+import type { TreegraphChartNode } from "./TreegraphChart.vue";
 
 const tree: TreegraphChartNode[] = [
   { id: "root", label: "Racine" },

@@ -8,10 +8,11 @@ import {
   nextTick,
 } from 'vue';
 import { classNames } from './classNames.js';
-import { ContentSwitcher } from './ContentSwitcher.js';
-import { SelectableList } from './SelectableList.js';
-import { SelectableRow } from './SelectableRow.js';
-import { Calendar, type CalendarValue } from './Calendar.js';
+import ContentSwitcher from './ContentSwitcher.vue';
+import SelectableList from './SelectableList.vue';
+import SelectableRow from './SelectableRow.vue';
+import Calendar from './Calendar.vue';
+import { type CalendarValue } from './Calendar.vue';
 import TimePicker from './TimePicker.vue';
 import Input from './Input.vue';
 import Button from './Button.vue';

@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { WindBarbChart } from "./WindBarbChart.js";
+import WindBarbChart from "./WindBarbChart.vue";
 
 const series = [
   { at: 0, speed: 5, direction: 0 },

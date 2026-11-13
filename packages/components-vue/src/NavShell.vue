@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Drawer } from './Drawer.js';
+import Drawer from './Drawer.vue';
 import { classNames } from './classNames.js';
 
 export type NavShellVariant = 'rail' | 'drawer';

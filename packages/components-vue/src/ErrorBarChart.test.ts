@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { ErrorBarChart } from "./index.js";
-import type { ErrorBarChartDatum } from "./ErrorBarChart.js";
+import type { ErrorBarChartDatum } from "./ErrorBarChart.vue";
 
 const data: ErrorBarChartDatum[] = [
   { category: "Ingénierie", value: 70, low: 62, high: 78 },

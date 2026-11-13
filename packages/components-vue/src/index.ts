@@ -26,8 +26,8 @@ export { default as CopyButton } from "./CopyButton.vue";
 export type { CopyButtonProps, CopyButtonSize } from "./CopyButton.vue";
 export { default as Drawer } from "./Drawer.vue";
 export type { DrawerProps, DrawerPlacement } from "./Drawer.vue";
-export { Dropdown } from "./Dropdown.js";
-export type { DropdownProps, DropdownOption } from "./Dropdown.js";
+export { default as Dropdown } from './Dropdown.vue';
+export type { DropdownProps, DropdownOption } from './Dropdown.vue';
 export { default as DataImage } from "./DataImage.vue";
 export type { DataImageProps, DataImageFit } from "./DataImage.vue";
 export { default as Embed } from "./Embed.vue";
@@ -52,8 +52,9 @@ export { Header } from "./Header.js";
 export type { HeaderProps, HeaderNavItem, HeaderAccount } from "./Header.js";
 export { default as Highlight } from "./Highlight.vue";
 export type { HighlightProps, HighlightTone } from "./Highlight.vue";
-export { Icon, ICONS, ICON_NAMES } from "./Icon.js";
-export type { IconGlyph, IconName, IconProps } from "./Icon.js";
+export { default as Icon } from './Icon.vue';
+export { ICONS, ICON_NAMES } from './icon-data.js';
+export type { IconGlyph, IconName, IconProps } from './Icon.vue';
 export { default as IconButton } from "./IconButton.vue";
 export type {
   IconButtonProps,
@@ -75,8 +76,8 @@ export { default as LoadingState } from "./LoadingState.vue";
 export type { LoadingStateProps, LoadingStateVariant } from "./LoadingState.vue";
 export { default as NumberInput } from "./NumberInput.vue";
 export type { NumberInputProps, NumberInputSize } from "./NumberInput.vue";
-export { OrderedList } from "./OrderedList.js";
-export type { OrderedListProps, OrderedListItem, OrderedListInput } from "./OrderedList.js";
+export { default as OrderedList } from './OrderedList.vue';
+export type { OrderedListProps, OrderedListItem, OrderedListInput } from './OrderedList.vue';
 export { default as Pagination } from "./Pagination.vue";
 export type { PaginationProps } from "./Pagination.vue";
 export { default as PaginationNav } from "./PaginationNav.vue";
@@ -106,7 +107,7 @@ export { default as Select } from "./Select.vue";
 export type { SelectProps, SelectSize, SelectOption } from "./Select.vue";
 export { default as SideNav } from "./SideNav.vue";
 export type { SideNavProps, SideNavItem } from "./SideNav.vue";
-export { AppShell } from "./AppShell.js";
+export { default as AppShell } from './AppShell.vue';
 export type {
   AppShellPanelCollapse,
   AppShellPanelKey,
@@ -114,7 +115,7 @@ export type {
   AppShellUtilityMode,
   AppShellUtilitySide,
   AppShellVariant,
-} from "./AppShell.js";
+} from './AppShell.vue';
 export { default as NavShell } from "./NavShell.vue";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.vue";
 export { default as NavRail } from "./NavRail.vue";
@@ -145,15 +146,15 @@ export { ThemeProvider } from "./ThemeProvider.js";
 export type { ThemeProviderProps } from "./ThemeProvider.js";
 export { default as Tile } from "./Tile.vue";
 export type { TileProps, TileVariant } from "./Tile.vue";
-export { TileGroup } from "./TileGroup.js";
-export type { TileGroupProps, TileGroupItem } from "./TileGroup.js";
+export { default as TileGroup } from './TileGroup.vue';
+export type { TileGroupProps, TileGroupItem } from './TileGroup.vue';
 export { default as Toggle } from "./Toggle.vue";
 export type { ToggleProps, ToggleSize } from "./Toggle.vue";
-export { UnorderedList } from "./UnorderedList.js";
-export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from "./UnorderedList.js";
+export { default as UnorderedList } from './UnorderedList.vue';
+export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from './UnorderedList.vue';
 export { default as Combobox } from "./Combobox.vue";
 export type { ComboboxProps, ComboboxOption, ComboboxSize } from "./Combobox.vue";
-export { DataTable } from "./DataTable.js";
+export { default as DataTable } from './DataTable.vue';
 export type {
   DataTableProps,
   DataTableColumn,
@@ -161,7 +162,7 @@ export type {
   DataTableSize,
   DataTableSelectMode,
   DataTableSort,
-} from "./DataTable.js";
+} from './DataTable.vue';
 export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export { default as DatePicker } from "./DatePicker.vue";
 export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.vue";
@@ -188,14 +189,14 @@ export { Table } from "./Table.js";
 export type { TableProps, TableColumn, TableRow } from "./Table.js";
 export { default as Tabs } from "./Tabs.vue";
 export type { TabsProps, TabItem } from "./Tabs.vue";
-export { Toast } from "./Toast.js";
-export type { ToastProps, ToastItem, ToastTone } from "./Toast.js";
+export { default as Toast } from './Toast.vue';
+export type { ToastProps, ToastItem, ToastTone } from './Toast.vue';
 export { default as Toggletip } from "./Toggletip.vue";
 export type { ToggletipProps, ToggletipPlacement } from "./Toggletip.vue";
 export { default as Tooltip } from "./Tooltip.vue";
 export type { TooltipProps, TooltipPlacement } from "./Tooltip.vue";
-export { TreeView } from "./TreeView.js";
-export type { TreeViewProps, TreeNode } from "./TreeView.js";
+export { default as TreeView } from './TreeView.vue';
+export type { TreeViewProps, TreeNode } from './TreeView.vue';
 export { AreaChart } from "./AreaChart.js";
 export type { AreaChartProps, AreaChartDatum, AreaChartTone } from "./AreaChart.js";
 export { AreaRangeChart } from "./AreaRangeChart.js";
@@ -303,8 +304,8 @@ export type {
   WaffleTone,
   WaffleChartDatum,
 } from "./WaffleChart.vue";
-export { default as ColorSwatch } from "./ColorSwatch.vue";
-export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.vue";
+export { default as ColorSwatch } from './ColorSwatch.vue';
+export type { ColorSwatchProps, ColorSwatchShape } from './ColorSwatch.vue';
 export { default as ColorScaleBar } from "./ColorScaleBar.vue";
 export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.vue";
 export { default as Timeline } from "./Timeline.vue";
@@ -406,8 +407,8 @@ export { default as ItemChart } from "./ItemChart.vue";
 export type { ItemChartProps, ItemChartDatum, ItemChartTone } from "./ItemChart.vue";
 export { default as VariablePieChart } from "./VariablePieChart.vue";
 export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.vue";
-export { VennChart } from "./VennChart.js";
-export type { VennChartProps, VennChartArea, VennChartTone } from "./VennChart.js";
+export { default as VennChart } from './VennChart.vue';
+export type { VennChartProps, VennChartArea, VennChartTone } from './VennChart.vue';
 export { default as ViolinChart } from "./ViolinChart.vue";
 export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.vue";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.vue";
@@ -469,8 +470,8 @@ export { Grid, gridTemplateColumns } from "./Grid.js";
 export type { GridProps } from "./Grid.js";
 export { default as Hidden } from "./Hidden.vue";
 export type { HiddenProps, HiddenBreakpoint } from "./Hidden.vue";
-export { default as Divider } from "./Divider.vue";
-export type { DividerProps, DividerOrientation, DividerVariant } from "./Divider.vue";
+export { default as Divider } from './Divider.vue';
+export type { DividerProps, DividerOrientation, DividerVariant } from './Divider.vue';
 export { deriveInitials } from "./Header.js";
 
 export { default as Avatar } from "./Avatar.vue";
@@ -495,8 +496,8 @@ export type {
   TypographyTone,
   TypographyAlign,
 } from "./Typography.vue";
-export { default as Collapsible } from "./Collapsible.vue";
-export type { CollapsibleProps } from "./Collapsible.vue";
+export { default as Collapsible } from './Collapsible.vue';
+export type { CollapsibleProps } from './Collapsible.vue';
 export { default as Stepper } from "./Stepper.vue";
 export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.vue";
 
@@ -514,9 +515,10 @@ export type {
 } from "./SlideIndicator.vue";
 export { default as Autosave } from "./Autosave.vue";
 export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.vue";
-export { default as Portal } from "./Portal.vue";
-export type { PortalProps } from "./Portal.vue";
-export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.vue";
+export { default as Portal } from './Portal.vue';
+export type { PortalProps } from './Portal.vue';
+export { default as Popper } from './Popper.vue';
+export { computePosition, splitPlacement, joinPlacement } from './popper-position.js';
 export type {
   PopperProps,
   PopperPlacement,
@@ -524,12 +526,13 @@ export type {
   PopperSide,
   PopperAlign,
   Rect,
-} from "./Popper.vue";
-export { SelectableRow, SELECTABLE_LIST_KEY } from "./SelectableRow.js";
+} from './Popper.vue';
+export { default as SelectableRow } from './selectable-list-context.js';
+export { SELECTABLE_LIST_KEY } from './selectable-list-context.js';
 export type {
   SelectableRowProps,
   SelectableListContext,
-} from "./SelectableRow.js";
+} from './selectable-list-context.js';
 export { default as SelectableList } from "./SelectableList.vue";
 export type { SelectableListProps } from "./SelectableList.vue";
 export { default as BulletChart } from "./BulletChart.vue";
@@ -600,44 +603,44 @@ export { default as FilterBar } from "./FilterBar.vue";
 export type { FilterBarProps } from "./FilterBar.vue";
 export { default as SelectionChip } from "./SelectionChip.vue";
 export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.vue";
-export { default as AppHeader } from "./AppHeader.vue";
-export type { AppHeaderProps } from "./AppHeader.vue";
-export { AppChrome } from "./AppChrome.js";
+export { default as AppHeader } from './AppHeader.vue';
+export type { AppHeaderProps } from './AppHeader.vue';
+export { default as AppChrome } from './AppChrome.vue';
 export type {
   AppChromeProps,
   AppChromeNavItem,
   AppChromeThemeOption,
   AppChromeColorMode,
   AppChromeLocale
-} from "./AppChrome.js";
+} from './AppChrome.vue';
 export { default as LanguageToggle } from "./LanguageToggle.vue";
 export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.vue";
 export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
 export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
-export { default as Overline } from "./Overline.vue";
-export type { OverlineProps, OverlineAs } from "./Overline.vue";
-export { default as StatusDot } from "./StatusDot.vue";
-export type { StatusDotProps, StatusDotTone } from "./StatusDot.vue";
-export { NavActionStack } from "./NavActionStack.js";
+export { default as Overline } from './Overline.vue';
+export type { OverlineProps, OverlineAs } from './Overline.vue';
+export { default as StatusDot } from './StatusDot.vue';
+export type { StatusDotProps, StatusDotTone } from './StatusDot.vue';
+export { default as NavActionStack } from './NavActionStack.vue';
 export type {
   NavActionStackProps,
   NavAction,
   NavActionKind,
   NavActionDangerZone,
   NavActionStackOrientation,
-} from "./NavActionStack.js";
-export { NavItem } from "./NavItem.js";
+} from './NavActionStack.vue';
+export { default as NavItem } from './NavItem.vue';
 export type {
   NavItemProps,
   NavItemDepth,
   NavItemStatus,
   NavItemSwatch,
-} from "./NavItem.js";
-export { NavSection } from "./NavSection.js";
+} from './NavItem.vue';
+export { default as NavSection } from './NavSection.vue';
 export type {
   NavSectionProps,
   NavSectionHeadingLevel,
-} from "./NavSection.js";
+} from './NavSection.vue';
 export { default as ListReportPage } from "./ListReportPage.vue";
 export type {
   ListReportPageProps,
@@ -706,8 +709,8 @@ export type {
 } from "./timeRange.js";
 export { PanelStack, PANEL_STACK_MAX_SECTIONS } from "./PanelStack.js";
 export type { PanelStackShape, PanelStackProps } from "./PanelStack.js";
-export { PanelSection } from "./PanelSection.js";
-export type { PanelSectionProps } from "./PanelSection.js";
+export { default as PanelSection } from './PanelSection.vue';
+export type { PanelSectionProps } from './PanelSection.vue';
 
 export { default as DiagramCard } from './DiagramCard.vue';
 export type { DiagramIconProps } from './diagram-icons/index.js';

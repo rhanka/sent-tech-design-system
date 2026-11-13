@@ -1,32 +1,28 @@
 {
   "schema": 1,
   "component": "Overline",
-  "sourceRevision": "c6fff14e47ecdf489a44c93d23eb328d9e4331bb",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
   "source": "src/Overline.ts",
   "fixtures": [
     {
       "id": "default",
-      "html": "<span class=\"st-overline\">Documentation</span>"
+      "html": "<span class=\"st-overline\">Label</span>"
     },
     {
-      "id": "as-div",
-      "html": "<div class=\"st-overline\">Block</div>"
+      "id": "variant-1",
+      "html": "<h2 class=\"st-overline\">Label</h2>"
     },
     {
-      "id": "as-h2",
-      "html": "<h2 class=\"st-overline\">Heading</h2>"
+      "id": "variant-2",
+      "html": "<h3 class=\"st-overline consumer\">Label</h3>"
     },
     {
-      "id": "as-h3-custom",
-      "html": "<h3 class=\"st-overline consumer\" data-bench=\"overline\" style=\"color:red;\">Sub</h3>"
-    },
-    {
-      "id": "empty",
-      "html": "<span class=\"st-overline\"></span>"
+      "id": "variant-3",
+      "html": "<div class=\"st-overline\" data-bench=\"overline\">Label</div>"
     }
   ],
   "sourceSha256": "b8defe44717e4c0dc2452e0e8b45f5f877eea3f33dabf71b2aba04f1ad353fbd",
-  "fixtureSha256": "4906873c32029ef589cf9793ec5faeeb44d4467728931a896f95db682788d663",
+  "fixtureSha256": "008ce1e3af7f0d2e7d18effa73231b18ee7f4f743fa8b3869f70c784eb80185b",
   "publicExports": [
     {
       "name": "Overline",

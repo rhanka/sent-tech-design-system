@@ -2,8 +2,8 @@ import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { AreaChart, BarChart, DonutChart, LineChart, StackedBarChart } from "./index.js";
 import type { BarChartDatum } from "./BarChart.vue";
-import type { DonutChartDatum } from "./DonutChart.js";
-import type { StackedBarDatum } from "./StackedBarChart.js";
+import type { DonutChartDatum } from "./DonutChart.vue";
+import type { StackedBarDatum } from "./StackedBarChart.vue";
 
 // FR-2 — uniform data labels across every series chart. Same behaviour, classes
 // and assertions in react / svelte / vue (strict tri-framework parity).

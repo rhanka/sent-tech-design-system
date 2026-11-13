@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { h } from "vue";
 import { mount, type VueWrapper } from "@vue/test-utils";
-import { ConfigItemCard } from "./ConfigItemCard.js";
+import ConfigItemCard from "./ConfigItemCard.vue";
 
 const mounted: VueWrapper[] = [];
 function track<T extends VueWrapper>(wrapper: T): T {

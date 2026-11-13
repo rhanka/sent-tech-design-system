@@ -9,7 +9,7 @@ import type {
   MenuGroupItem,
   MenuItem,
   MenuSubmenuSide,
-} from "./Menu.js";
+} from "./Menu.vue";
 import {
   computed,
   useAttrs,
@@ -21,7 +21,8 @@ import {
 } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
-import { MenuLabel } from "./MenuLabel.js";
+import MenuLabel from './MenuLabel.vue';
+import type { MenuLabelSlots } from './menu-label-slots.js';
 import {
   CLOSE_DELAY,
   MENU_HOST_KEY,
@@ -81,6 +82,8 @@ interface ExpandedRow {
   kind: "divider" | "group" | "action";
   action?: MenuActionItem;
 }
+
+defineSlots<MenuLabelSlots>();
 
 defineOptions({ name: "Menu", inheritAttrs: false });
 const props = defineProps({
@@ -962,7 +965,7 @@ const panelDepths = computed(() => [
         :id="rootId + '--group-' + 0 + '-' + row.index"
         role="presentation"
       >
-        <MenuLabel :label="(row.item as MenuGroupItem).label" />
+        <slot v-if="$slots['group-label']" name="group-label" :item="(row.item as MenuGroupItem)" :index="row.index" :depth="0" /><MenuLabel v-else :label="(row.item as MenuGroupItem).label" />
       </div>
       <button
         v-else
@@ -994,7 +997,7 @@ const panelDepths = computed(() => [
           />
         </span>
         <span class="st-menu__itemLabel">
-          <MenuLabel :label="row.action!.label" />
+          <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="0" /><MenuLabel v-else :label="row.action!.label" />
         </span>
       </button>
     </template>
@@ -1063,7 +1066,7 @@ const panelDepths = computed(() => [
           :id="rootId + '--group-' + depth + '-' + row.index"
           role="presentation"
         >
-          <MenuLabel :label="(row.item as MenuGroupItem).label" />
+          <slot v-if="$slots['group-label']" name="group-label" :item="(row.item as MenuGroupItem)" :index="row.index" :depth="depth" /><MenuLabel v-else :label="(row.item as MenuGroupItem).label" />
         </div>
         <div
           v-else-if="rowIsParent(row, depth)"
@@ -1126,7 +1129,7 @@ const panelDepths = computed(() => [
               />
             </span>
             <span class="st-menu__itemLabel">
-              <MenuLabel :label="row.action!.label" />
+              <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />
             </span>
             <span
               v-if="chevronSide(depth, row.index) === 'right'"
@@ -1174,7 +1177,7 @@ const panelDepths = computed(() => [
             />
           </span>
           <span class="st-menu__itemLabel">
-            <MenuLabel :label="row.action!.label" />
+            <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />
           </span>
         </button>
       </template>

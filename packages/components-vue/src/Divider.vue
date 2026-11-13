@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed, useAttrs, type CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
-import { spacingToken } from './Flex.js';
+import { spacingToken } from './spacing.js';
 
-export type DividerOrientation = 'horizontal' | 'vertical';
-export type DividerVariant = 'solid' | 'dashed';
+
+export type DividerOrientation = "horizontal" | "vertical";
+
+export type DividerVariant = "solid" | "dashed";
+
 
 export type DividerProps = {
   orientation?: DividerOrientation;
@@ -15,43 +18,18 @@ export type DividerProps = {
   variant?: DividerVariant;
   class?: string;
 };
-
 defineOptions({ name: 'Divider', inheritAttrs: false });
-const props = withDefaults(defineProps<DividerProps>(), {
-  orientation: 'horizontal',
-  spacing: undefined,
-  label: undefined,
-  variant: 'solid',
-  class: undefined,
-});
+const props = withDefaults(defineProps<DividerProps>(), { orientation: "horizontal", spacing: undefined, label: undefined, variant: "solid", class: undefined });
+
 
 const attrs = useAttrs();
+const forwardedAttrs = () => { const { style, ...rest } = attrs; return rest; };
 const isVertical = computed(() => props.orientation === 'vertical');
 const hasLabel = computed(() => !isVertical.value && props.label != null && props.label !== '');
 const margin = computed(() => spacingToken(props.spacing));
-
-const classes = computed(() => classNames(
-  'st-divider',
-  `st-divider--${props.orientation}`,
-  `st-divider--${props.variant}`,
-  hasLabel.value && 'st-divider--labeled',
-  props.class,
-));
-
-const callerStyle = computed(() => attrs.style as Record<string, string> | undefined);
-const rootStyle = computed(() => ({
-  marginBlock: isVertical.value ? undefined : margin.value,
-  marginInline: isVertical.value ? margin.value : undefined,
-  ...(callerStyle.value ?? {}),
-}));
+const style = computed(() => ({ marginBlock: isVertical.value ? undefined : margin.value, marginInline: isVertical.value ? margin.value : undefined, ...(attrs.style as CSSProperties | undefined) }));
 </script>
 
 <template>
-  <div :style="rootStyle" v-bind="$attrs" :class="classes" role="separator" :aria-orientation="hasLabel ? 'horizontal' : props.orientation">
-    <template v-if="hasLabel">
-      <span class="st-divider__line" aria-hidden="true"></span>
-      <span class="st-divider__label">{{ props.label }}</span>
-      <span class="st-divider__line" aria-hidden="true"></span>
-    </template>
-  </div>
+  <div v-bind="forwardedAttrs()" :class="classNames('st-divider', `st-divider--${props.orientation}`, `st-divider--${props.variant}`, hasLabel && 'st-divider--labeled', props.class)" role="separator" :aria-orientation="hasLabel ? 'horizontal' : props.orientation" :style="style"><template v-if="hasLabel"><span class="st-divider__line" aria-hidden="true" /><span class="st-divider__label">{{ props.label }}</span><span class="st-divider__line" aria-hidden="true" /></template></div>
 </template>

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "component": "Divider",
-  "sourceRevision": "bb001a06d1523b981eb7097e405d7efc15c482c7",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
   "source": "src/Divider.ts",
   "fixtures": [
     {
@@ -9,28 +9,20 @@
       "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid\" role=\"separator\" style=\"\"></div>"
     },
     {
-      "id": "vertical",
-      "html": "<div aria-orientation=\"vertical\" class=\"st-divider st-divider--vertical st-divider--solid\" role=\"separator\" style=\"margin-inline:var(--st-spacing-4, 1rem);\"></div>"
+      "id": "variant-1",
+      "html": "<div aria-orientation=\"vertical\" class=\"st-divider st-divider--vertical st-divider--solid\" role=\"separator\" style=\"margin-inline:var(--st-spacing-2, 0.5rem);\"></div>"
     },
     {
-      "id": "labeled",
-      "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--dashed st-divider--labeled consumer\" data-bench=\"divider\" role=\"separator\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;margin-block:var(--st-spacing-2, 0.5rem);color:red;\"><span aria-hidden=\"true\" class=\"st-divider__line\"></span><span class=\"st-divider__label\">Or</span><span aria-hidden=\"true\" class=\"st-divider__line\"></span></div>"
+      "id": "variant-2",
+      "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--dashed st-divider--labeled\" role=\"separator\" style=\"margin-block:0;\"><span aria-hidden=\"true\" class=\"st-divider__line\"></span><span class=\"st-divider__label\">Label</span><span aria-hidden=\"true\" class=\"st-divider__line\"></span></div>"
     },
     {
-      "id": "dashed-spaced",
-      "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--dashed\" role=\"separator\" style=\"margin-block:var(--st-spacing-8, 2rem);\"></div>"
-    },
-    {
-      "id": "vertical-label-ignored",
-      "html": "<div aria-orientation=\"vertical\" class=\"st-divider st-divider--vertical st-divider--solid\" role=\"separator\" style=\"margin-inline:0;\"></div>"
-    },
-    {
-      "id": "empty-label",
-      "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid\" role=\"separator\" style=\"\"></div>"
+      "id": "variant-3",
+      "html": "<div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid consumer\" role=\"separator\" style=\"margin-block:var(--st-spacing-3, 0.75rem);color:red;\"></div>"
     }
   ],
   "sourceSha256": "98acfefddbbbb4c4f397d80bf5782a738a1a7f6b685dd3f8f0d4e14c28bd3d5a",
-  "fixtureSha256": "d0eece3732080a19bfb77c38c66d3d8b26937cac28b32eb49cb69727c565bb34",
+  "fixtureSha256": "3e209ea70bec3ec3a240b1af895a79a6bf95524d147e58bbc4b5d9a3d051cd40",
   "publicExports": [
     {
       "name": "Divider",

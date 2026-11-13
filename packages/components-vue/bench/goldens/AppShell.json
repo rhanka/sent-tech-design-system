@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "component": "AppShell",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/AppShell.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-appShell st-appShell--workspace\" data-panel-collapse=\"stack\" data-st-app-shell-variant=\"workspace\" data-utility-mode=\"reserve\" data-utility-side=\"right\" style=\"\"><div class=\"st-appShell__body\"><main class=\"st-appShell__main\" id=\"main\"><p>Body</p></main></div></div>"
+    },
+    {
+      "id": "site",
+      "html": "<div class=\"st-appShell st-appShell--site consumer\" data-bench=\"shell\" data-st-app-shell-variant=\"site\"><p>Site body</p></div>"
+    },
+    {
+      "id": "panels",
+      "html": "<div class=\"st-appShell st-appShell--workspace\" data-panel-collapse=\"stack\" data-st-app-shell-variant=\"workspace\" data-utility-mode=\"reserve\" data-utility-side=\"right\" style=\"\"><div class=\"st-appShell__topChrome\"><header>Header</header></div><div class=\"st-appShell__body\"><aside aria-label=\"Primary rail\" class=\"st-appShell__primaryRail\"><nav>Rail</nav></aside><aside aria-label=\"Workspace navigation\" class=\"st-appShell__navigationPanel\"><p>Navigation</p></aside><main class=\"st-appShell__main\" id=\"main\"><article>Main</article></main><aside aria-label=\"Context panel\" class=\"st-appShell__contextPanel\"><p>Context</p></aside><aside aria-label=\"Utility panel\" class=\"st-appShell__utilityPanel\"><p>Utility</p></aside></div><section aria-label=\"Workspace tools\" class=\"st-appShell__bottomPanel\"><footer>Tools</footer></section></div>"
+    },
+    {
+      "id": "accordion",
+      "html": "<div class=\"st-appShell st-appShell--workspace\" data-panel-collapse=\"accordion\" data-st-app-shell-variant=\"workspace\" data-utility-mode=\"reserve\" data-utility-side=\"left\" style=\"--st-appShell-navigation-width:220px;--st-appShell-context-width:640px;\"><div class=\"st-appShell__topChrome\"><header>Header</header></div><div class=\"st-appShell__body\"><aside aria-label=\"Primary rail\" class=\"st-appShell__primaryRail\"><button aria-controls=\"st-appShell-primaryRail-region\" aria-expanded=\"false\" class=\"st-appShell__panelDisclosure\" id=\"st-appShell-primaryRail-trigger\" type=\"button\"><span class=\"st-appShell__panelDisclosureLabel\">Primary rail</span><span class=\"st-appShell__panelDisclosureIcon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-appShell-primaryRail-trigger\" class=\"st-appShell__panelRegion st-appShell__panelRegion--collapsed\" id=\"st-appShell-primaryRail-region\" role=\"region\"><nav>Rail</nav></div></aside><aside aria-label=\"Workspace navigation\" class=\"st-appShell__navigationPanel\"><button aria-controls=\"st-appShell-navigationPanel-region\" aria-expanded=\"false\" class=\"st-appShell__panelDisclosure\" id=\"st-appShell-navigationPanel-trigger\" type=\"button\"><span class=\"st-appShell__panelDisclosureLabel\">Workspace navigation</span><span class=\"st-appShell__panelDisclosureIcon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-appShell-navigationPanel-trigger\" class=\"st-appShell__panelRegion st-appShell__panelRegion--collapsed\" id=\"st-appShell-navigationPanel-region\" role=\"region\"><p>Navigation</p></div><div aria-label=\"Resize Workspace navigation\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"220\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><main class=\"st-appShell__main\" id=\"main\"><article>Main</article></main><aside aria-label=\"Context panel\" class=\"st-appShell__contextPanel\"><button aria-controls=\"st-appShell-contextPanel-region\" aria-expanded=\"false\" class=\"st-appShell__panelDisclosure\" id=\"st-appShell-contextPanel-trigger\" type=\"button\"><span class=\"st-appShell__panelDisclosureLabel\">Context panel</span><span class=\"st-appShell__panelDisclosureIcon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-appShell-contextPanel-trigger\" class=\"st-appShell__panelRegion st-appShell__panelRegion--collapsed\" id=\"st-appShell-contextPanel-region\" role=\"region\"><p>Context</p></div><div aria-label=\"Resize Context panel\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"640\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><aside aria-label=\"Utility panel\" class=\"st-appShell__utilityPanel\"><button aria-controls=\"st-appShell-utilityPanel-region\" aria-expanded=\"false\" class=\"st-appShell__panelDisclosure\" id=\"st-appShell-utilityPanel-trigger\" type=\"button\"><span class=\"st-appShell__panelDisclosureLabel\">Utility panel</span><span class=\"st-appShell__panelDisclosureIcon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-appShell-utilityPanel-trigger\" class=\"st-appShell__panelRegion st-appShell__panelRegion--collapsed\" id=\"st-appShell-utilityPanel-region\" role=\"region\"><p>Utility</p></div><div aria-label=\"Resize Utility panel\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"384\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside></div><section aria-label=\"Workspace tools\" class=\"st-appShell__bottomPanel\"><footer>Tools</footer></section></div>"
+    },
+    {
+      "id": "controlled",
+      "html": "<div class=\"st-appShell st-appShell--workspace consumer\" data-bench=\"shell\" data-panel-collapse=\"stack\" data-st-app-shell-variant=\"workspace\" data-utility-mode=\"floating\" data-utility-side=\"bottom\" style=\"color:red;\"><div class=\"st-appShell__topChrome\"><header>Header</header></div><div class=\"st-appShell__body\"><aside aria-label=\"Primary rail\" class=\"st-appShell__primaryRail\"><nav>Rail</nav></aside><aside aria-label=\"Workspace navigation\" class=\"st-appShell__navigationPanel\"><p>Navigation</p><div aria-label=\"Resize Workspace navigation\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"320\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><main class=\"st-appShell__main\" id=\"content\"><article>Main</article></main><aside aria-label=\"Context panel\" class=\"st-appShell__contextPanel\"><p>Context</p><div aria-label=\"Resize Context panel\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"352\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><aside aria-label=\"Utility panel\" class=\"st-appShell__utilityPanel\"><p>Utility</p></aside></div><section aria-label=\"Workspace tools\" class=\"st-appShell__bottomPanel\"><footer>Tools</footer></section></div>"
+    },
+    {
+      "id": "controlled-widths",
+      "html": "<div class=\"st-appShell st-appShell--workspace\" data-panel-collapse=\"stack\" data-st-app-shell-variant=\"workspace\" data-utility-mode=\"overlay\" data-utility-side=\"right\" style=\"--st-appShell-navigation-width:320px;--st-appShell-utility-width:400px;\"><div class=\"st-appShell__topChrome\"><header>Header</header></div><div class=\"st-appShell__body\"><aside aria-label=\"Primary rail\" class=\"st-appShell__primaryRail\"><nav>Rail</nav></aside><aside aria-label=\"Workspace navigation\" class=\"st-appShell__navigationPanel\"><p>Navigation</p><div aria-label=\"Resize Workspace navigation\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"320\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><main class=\"st-appShell__main\" id=\"main\"><article>Main</article></main><aside aria-label=\"Context panel\" class=\"st-appShell__contextPanel\"><p>Context</p><div aria-label=\"Resize Context panel\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"352\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside><aside aria-label=\"Utility panel\" class=\"st-appShell__utilityPanel\"><p>Utility</p><div aria-label=\"Resize Utility panel\" aria-orientation=\"vertical\" aria-valuemax=\"640\" aria-valuemin=\"180\" aria-valuenow=\"400\" class=\"st-appShell__resizeHandle\" role=\"separator\" tabindex=\"0\"></div></aside></div><section aria-label=\"Workspace tools\" class=\"st-appShell__bottomPanel\"><footer>Tools</footer></section></div>"
+    }
+  ],
+  "sourceSha256": "4a6736611bc5bff1d86944bb675d31d07e22c89221dd8a840d74e49b9126b088",
+  "fixtureSha256": "181dcd2a429016fa279294fb887b3cef49a94e0f67b31cd71a0dcf9273e51aca",
+  "publicExports": [
+    {
+      "name": "AppShell",
+      "typeOnly": false
+    },
+    {
+      "name": "AppShellPanelCollapse",
+      "typeOnly": true
+    },
+    {
+      "name": "AppShellPanelKey",
+      "typeOnly": true
+    },
+    {
+      "name": "AppShellProps",
+      "typeOnly": true
+    },
+    {
+      "name": "AppShellUtilityMode",
+      "typeOnly": true
+    },
+    {
+      "name": "AppShellUtilitySide",
+      "typeOnly": true
+    },
+    {
+      "name": "AppShellVariant",
+      "typeOnly": true
+    }
+  ]
+}

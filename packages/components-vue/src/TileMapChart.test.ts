@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { TileMapChart } from "./TileMapChart.js";
-import type { TileMapChartTile } from "./TileMapChart.js";
+import TileMapChart from "./TileMapChart.vue";
+import type { TileMapChartTile } from "./TileMapChart.vue";
 
 const data: TileMapChartTile[] = [
   { label: "AB", col: 0, row: 0, value: 10 },

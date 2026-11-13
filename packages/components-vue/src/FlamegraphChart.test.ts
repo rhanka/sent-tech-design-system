@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { FlamegraphChart } from "./FlamegraphChart.js";
+import FlamegraphChart from "./FlamegraphChart.vue";
 
 const tree = {
   name: "root",

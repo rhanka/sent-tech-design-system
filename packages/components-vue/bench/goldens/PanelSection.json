@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "PanelSection",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/PanelSection.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-panelSection st-panelSection--scrollOwner\" data-panel-section-id=\"one\"><div class=\"st-panelSection__header\"><h3 class=\"st-panelSection__heading\"><button aria-controls=\"st-panelSection-region-one\" aria-expanded=\"true\" class=\"st-panelSection__trigger\" id=\"st-panelSection-trigger-one\" type=\"button\"><span class=\"st-panelSection__title\">Section</span><span aria-hidden=\"true\" class=\"st-panelSection__icon st-panelSection__icon--expanded\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div><div aria-labelledby=\"st-panelSection-trigger-one\" class=\"st-panelSection__body st-panelSection__body--scrollOwner\" id=\"st-panelSection-region-one\" role=\"region\"><p>Body</p></div></div>"
+    },
+    {
+      "id": "actions",
+      "html": "<div class=\"st-panelSection st-panelSection--scrollOwner\" data-panel-section-id=\"two\"><div class=\"st-panelSection__header\"><h3 class=\"st-panelSection__heading\"><button aria-controls=\"st-panelSection-region-two\" aria-expanded=\"true\" class=\"st-panelSection__trigger\" id=\"st-panelSection-trigger-two\" type=\"button\"><span class=\"st-panelSection__title\">Actions</span><span aria-hidden=\"true\" class=\"st-panelSection__icon st-panelSection__icon--expanded\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div class=\"st-panelSection__actions\"><button>Add</button></div></div><div aria-labelledby=\"st-panelSection-trigger-two\" class=\"st-panelSection__body st-panelSection__body--scrollOwner\" id=\"st-panelSection-region-two\" role=\"region\">Body</div></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-panelSection st-panelSection--scrollOwner consumer\" data-bench=\"section\" data-panel-section-id=\"custom\" style=\"color:red;\"><div class=\"st-panelSection__header\"><h3 class=\"st-panelSection__heading\"><button aria-controls=\"st-panelSection-region-custom\" aria-expanded=\"true\" class=\"st-panelSection__trigger\" id=\"st-panelSection-trigger-custom\" type=\"button\"><span class=\"st-panelSection__title\">Custom</span><span aria-hidden=\"true\" class=\"st-panelSection__icon st-panelSection__icon--expanded\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div><div aria-labelledby=\"st-panelSection-trigger-custom\" class=\"st-panelSection__body st-panelSection__body--scrollOwner\" id=\"st-panelSection-region-custom\" role=\"region\"></div></div>"
+    },
+    {
+      "id": "escaped",
+      "html": "<div class=\"st-panelSection st-panelSection--scrollOwner\" data-panel-section-id=\"escaped\"><div class=\"st-panelSection__header\"><h3 class=\"st-panelSection__heading\"><button aria-controls=\"st-panelSection-region-escaped\" aria-expanded=\"true\" class=\"st-panelSection__trigger\" id=\"st-panelSection-trigger-escaped\" type=\"button\"><span class=\"st-panelSection__title\">&lt;Title&gt;</span><span aria-hidden=\"true\" class=\"st-panelSection__icon st-panelSection__icon--expanded\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div><div aria-labelledby=\"st-panelSection-trigger-escaped\" class=\"st-panelSection__body st-panelSection__body--scrollOwner\" id=\"st-panelSection-region-escaped\" role=\"region\"><input value=\"State survives\"></div></div>"
+    }
+  ],
+  "sourceSha256": "6c25fd6747158091fb32822c3e422c13f2c66988fcd8be4b99b4e8ee528af203",
+  "fixtureSha256": "9f5ebad362c34330a9deb030684717120d42d452d4c4a631e146ab6c60399d9a",
+  "publicExports": [
+    {
+      "name": "PanelSection",
+      "typeOnly": false
+    },
+    {
+      "name": "PanelSectionProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,32 +1,28 @@
 {
   "schema": 1,
   "component": "Collapsible",
-  "sourceRevision": "57666c886f1ff8bdd7b2911b934b44879120cac3",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
   "source": "src/Collapsible.ts",
   "fixtures": [
     {
       "id": "default",
-      "html": "<div class=\"st-collapsible\"><button aria-controls=\"st-collapsible-1-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" id=\"st-collapsible-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Details</span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
+      "html": "<div class=\"st-collapsible\"><button aria-controls=\"generated-1-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Title</span><span class=\"st-collapsible__trailing\"><span>Count</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
     },
     {
-      "id": "open",
-      "html": "<div class=\"st-collapsible st-collapsible--open\"><button aria-controls=\"st-collapsible-2-region\" aria-expanded=\"true\" class=\"st-collapsible__trigger\" id=\"st-collapsible-2-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Details</span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-collapsible-2-trigger\" class=\"st-collapsible__region\" id=\"st-collapsible-2-region\" role=\"region\"><p>Visible body</p></div></div>"
+      "id": "variant-1",
+      "html": "<div class=\"st-collapsible st-collapsible--open\"><button aria-controls=\"generated-1-region\" aria-expanded=\"true\" class=\"st-collapsible__trigger\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Title</span><span class=\"st-collapsible__trailing\"><span>Count</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"generated-1-trigger\" class=\"st-collapsible__region\" id=\"generated-1-region\" role=\"region\"><p>Body</p></div></div>"
     },
     {
-      "id": "closed",
-      "html": "<div class=\"st-collapsible\"><button aria-controls=\"st-collapsible-3-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" id=\"st-collapsible-3-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Details</span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
+      "id": "variant-2",
+      "html": "<div class=\"st-collapsible\"><button aria-controls=\"generated-1-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" disabled=\"\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Title</span><span class=\"st-collapsible__trailing\"><span>Count</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
     },
     {
-      "id": "trailing",
-      "html": "<div class=\"st-collapsible st-collapsible--open\"><button aria-controls=\"st-collapsible-4-region\" aria-expanded=\"true\" class=\"st-collapsible__trigger\" id=\"st-collapsible-4-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Details</span><span class=\"st-collapsible__trailing\"><span class=\"badge\">3</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"st-collapsible-4-trigger\" class=\"st-collapsible__region\" id=\"st-collapsible-4-region\" role=\"region\"><p>Body</p></div></div>"
-    },
-    {
-      "id": "custom",
-      "html": "<div class=\"st-collapsible consumer\" data-bench=\"coll\" style=\"color:red;\"><button aria-controls=\"st-collapsible-5-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" disabled=\"\" id=\"st-collapsible-5-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Details</span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
+      "id": "variant-3",
+      "html": "<div class=\"st-collapsible st-collapsible--open consumer\" data-bench=\"collapse\"><button aria-controls=\"generated-1-region\" aria-expanded=\"true\" class=\"st-collapsible__trigger\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Title</span><span class=\"st-collapsible__trailing\"><span>Count</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"generated-1-trigger\" class=\"st-collapsible__region\" id=\"generated-1-region\" role=\"region\"><p>Body</p></div></div>"
     }
   ],
   "sourceSha256": "b7e53bdec8b631eaa33f81397f6bcee57dd81e09636455cdfcc17d59eda67b70",
-  "fixtureSha256": "a307ff5b5e2c558a09ccbdb755f69c6659ebb72ffafc8eb53dda864ca153e2ac",
+  "fixtureSha256": "7baed1d69af6b52a910772fd2c608e7983faa42be2edd7015501c6ff98cc6ea4",
   "publicExports": [
     {
       "name": "Collapsible",

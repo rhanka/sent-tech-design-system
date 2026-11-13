@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
-import type { ChatMessageStatus } from './ChatMessage.js';
+import type { ChatMessageStatus } from './ChatMessage.vue';
 
 export type MessageStatusBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'error';
 

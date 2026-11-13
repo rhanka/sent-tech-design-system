@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { LineChart } from "./index.js";
-import type { LineChartDatum } from "./LineChart.js";
+import type { LineChartDatum } from "./LineChart.vue";
 
 const data: LineChartDatum[] = [
   { x: 0, y: 2 },

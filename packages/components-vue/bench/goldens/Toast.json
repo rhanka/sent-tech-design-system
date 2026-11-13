@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Toast",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/Toast.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-toast st-toast--info\" role=\"status\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\">Saved</h2><p class=\"st-toast__message\">Done</p></div><button type=\"button\">Fermer</button></section>"
+    },
+    {
+      "id": "no-listener",
+      "html": "<section class=\"st-toast st-toast--error\" role=\"alert\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\">Error</h2><p>Details</p></div><div class=\"st-toast__actions\"><button>Retry</button></div></section>"
+    },
+    {
+      "id": "queue",
+      "html": "<div class=\"st-toastQueue consumer\" data-bench=\"toast\"><section class=\"st-toast st-toast--warning\" role=\"status\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\">One</h2><p class=\"st-toast__message\">First</p></div><div class=\"st-toast__actions\">Undo</div><button aria-label=\"Fermer One\" type=\"button\">Dismiss</button></section><section class=\"st-toast st-toast--error\" role=\"alert\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\">Two</h2></div><button aria-label=\"Fermer Two\" type=\"button\">Dismiss</button></section></div>"
+    },
+    {
+      "id": "empty-queue",
+      "html": "<section class=\"st-toast st-toast--info\" role=\"status\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\">Fallback</h2></div></section>"
+    },
+    {
+      "id": "rich-single",
+      "html": "<section class=\"st-toast st-toast--info\" role=\"status\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\"><strong>Saved</strong></h2><p class=\"st-toast__message\"><em>Done</em></p></div></section>"
+    },
+    {
+      "id": "rich-queue",
+      "html": "<div class=\"st-toastQueue\"><section class=\"st-toast st-toast--info\" role=\"status\"><div class=\"st-toast__content\"><h2 class=\"st-toast__title\"><strong>One</strong></h2><p class=\"st-toast__message\"><em>First</em></p></div><div class=\"st-toast__actions\"><button>Undo</button></div></section></div>"
+    }
+  ],
+  "sourceSha256": "44d733c5cf753667d177b70b08733357ee07294680cc7614ffe8d51f9a54118c",
+  "fixtureSha256": "5bf7a24d44fe62f42a2786737904b505adcd90772e287fcf1b26e58a2c0a3608",
+  "publicExports": [
+    {
+      "name": "Toast",
+      "typeOnly": false
+    },
+    {
+      "name": "ToastProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ToastItem",
+      "typeOnly": true
+    },
+    {
+      "name": "ToastTone",
+      "typeOnly": true
+    }
+  ]
+}

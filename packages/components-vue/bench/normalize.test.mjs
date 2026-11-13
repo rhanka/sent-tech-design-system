@@ -26,6 +26,19 @@ test('static IDs, classes, text, styles, attributes and element order remain sig
   }
   assert.equal(normalize('<span>st-input-99</span>'), '<span>st-input-99</span>');
 });
+test('HARD generated identities normalize while explicit names and relationships remain distinct', () => {
+  assert.equal(normalize('<input name="st-tileGroup-21"><input name="st-tileGroup-21">'),
+    normalize('<input name="st-tileGroup-v-0"><input name="st-tileGroup-v-0">'));
+  assert.notEqual(normalize('<input name="st-tileGroup-21"><input name="st-tileGroup-21">'),
+    normalize('<input name="st-tileGroup-v-0"><input name="st-tileGroup-v-1">'));
+  assert.notEqual(normalize('<input name="consumer-one">'), normalize('<input name="consumer-two">'));
+  assert.equal(normalize('<button aria-controls="st-appChrome-drawer-3"></button><nav id="st-appChrome-drawer-3"></nav>'),
+    normalize('<button aria-controls="st-appChrome-drawer-v-0"></button><nav id="st-appChrome-drawer-v-0"></nav>'));
+  assert.notEqual(normalize('<section aria-labelledby="st-navSection-3-label"></section>'),
+    normalize('<section aria-labelledby="st-navSection-v-0-other"></section>'));
+  assert.equal(normalize('<div data-name="st-tileGroup-9">st-navSection-3</div>'),
+    '<div data-name="st-tileGroup-9">st-navSection-3</div>');
+});
 test('SVG geometry and namespaced attributes survive normalization', () => {
   const a = '<svg viewBox="0 0 10 10"><use xlink:href="#glyph"/><rect x="1" width="2"/></svg>';
   assert.match(normalize(a), /viewBox="0 0 10 10"/);

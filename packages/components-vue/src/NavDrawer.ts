@@ -1,5 +1,6 @@
 import { defineComponent, h } from "vue";
-import { NavShell, type NavShellProps } from "./NavShell.js";
+import NavShell from "./NavShell.vue";
+import { type NavShellProps } from "./NavShell.vue";
 
 export type NavDrawerProps = Omit<NavShellProps, "variant">;
 

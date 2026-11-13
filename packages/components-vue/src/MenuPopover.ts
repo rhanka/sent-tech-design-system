@@ -1,4 +1,4 @@
-import type { MenuItem } from "./Menu.js";
+import type { MenuItem } from "./Menu.vue";
 import type { SubMenuSide } from "./menu-cascade.js";
 
 export type MenuPopoverPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
