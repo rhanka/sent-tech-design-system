@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:859dc0e8b1ccbc72fc56dfc593779ffbe0d882f849a44feab5f9d74b3b2d42c5",
+      "digest": "sha256:24edd3a981db9652f9e9cfe62f610d2c98c833bd166890ac04e17cb99ff1b1c8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Hidden.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Hidden.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:14021bf36327045f03324b4b68569abbf66508441423648c00a444b166dbe00b",
+  "digest": "sha256:0eceba12a9a69b5ba3cceac2ab46c358ac5dcf306e9193cfcba362b81255e5e9",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [

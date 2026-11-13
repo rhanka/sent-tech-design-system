@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:d5a2ed7da6bb5e91f8d5dcc5d2ddd25f418cb7cdbcb1ccb72137ebcb7cf8d6a3",
-  "entryDigest": "sha256:00fc20951fc6e55006a333c841338310f49455120b51817fe65c71efa29c22b4",
+  "digest": "sha256:3a0ec32300c942ea7d5d443410db00b56133bb09de8ebbf4bb1789499a977f6b",
+  "entryDigest": "sha256:04fd1168313793f7fe101877e6a3178a4b5bc3553e2ff3617f3f0757deda878c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -305,28 +305,24 @@
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "select",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -342,7 +338,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -386,33 +381,35 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "select.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "option": {
+                "$ref": "#/$defs/DropdownOption"
+              }
+            },
+            "required": [
+              "index",
+              "option"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3606aa0eb8fb6ab8eaa2142158d862eec95e8007cd67942b3f7b421b51eeb607",
-        "declarationPath": "packages/components-vue/dist/Dropdown.d.ts",
+        "declarationDigest": "sha256:5c080c4d70013b492cd8bcaf12c18989405134182a0ddd8505ae19bd6f1d2748",
+        "declarationPath": "packages/components-vue/dist/Dropdown.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DropdownProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Transcription",
+  "sourceRevision": "ee8d57fc26d0b7d2410add29ba302d59f5ddffcf",
+  "source": "src/Transcription.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<details class=\"st-transcription\"><summary>Transcription</summary><div class=\"st-transcription__content\"><p class=\"st-transcription__text\">Aucun contenu de transcription fourni.</p></div></details>"
+    },
+    {
+      "id": "open-text",
+      "html": "<details class=\"st-transcription\" open=\"\"><summary>Transcription</summary><div class=\"st-transcription__content\"><p class=\"st-transcription__text\">Hello world</p></div></details>"
+    },
+    {
+      "id": "segments",
+      "html": "<details class=\"st-transcription\" open=\"\"><summary>Meeting</summary><div class=\"st-transcription__content\"><ol class=\"st-transcription__list\"><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"><span class=\"st-transcription__speaker\">Alice</span><span aria-hidden=\"true\"> • </span><time><span class=\"st-transcription__sr-only\">Horodatage 00:02 - 00:05</span><span aria-hidden=\"true\">00:02 - 00:05</span></time></p><p class=\"st-transcription__text\">Welcome everyone.</p></li><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"><span class=\"st-transcription__speaker\">Bob</span><span aria-hidden=\"true\"> • </span><time><span class=\"st-transcription__sr-only\">Horodatage 00:06 - 00:10</span><span aria-hidden=\"true\">00:06 - 00:10</span></time></p><p class=\"st-transcription__text\">Thanks Alice.</p></li></ol></div></details>"
+    },
+    {
+      "id": "segments-no-timestamps",
+      "html": "<details class=\"st-transcription\"><summary>Transcription</summary><div class=\"st-transcription__content\"><ol class=\"st-transcription__list\"><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"><span class=\"st-transcription__speaker\">Alice</span></p><p class=\"st-transcription__text\">Welcome.</p></li></ol></div></details>"
+    },
+    {
+      "id": "segment-partial",
+      "html": "<details class=\"st-transcription\"><summary>Transcription</summary><div class=\"st-transcription__content\"><ol class=\"st-transcription__list\"><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"><span class=\"st-transcription__speaker\">Alice</span><span aria-hidden=\"true\"> • </span><time><span class=\"st-transcription__sr-only\">Horodatage - 00:05</span><span aria-hidden=\"true\">- 00:05</span></time></p><p class=\"st-transcription__text\">Started earlier.</p></li><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"><time><span class=\"st-transcription__sr-only\">Horodatage 00:06 -</span><span aria-hidden=\"true\">00:06 -</span></time></p><p class=\"st-transcription__text\">No speaker.</p></li><li class=\"st-transcription__item\"><p class=\"st-transcription__meta\"></p><p class=\"st-transcription__text\">No times at all.</p></li></ol></div></details>"
+    },
+    {
+      "id": "blank-text",
+      "html": "<details class=\"st-transcription\"><summary>Transcription</summary><div class=\"st-transcription__content\"><p class=\"st-transcription__text\">Aucun contenu de transcription fourni.</p></div></details>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<details class=\"st-transcription consumer\" data-bench=\"transcription\" open=\"\" style=\"color:red;\"><summary>Recording</summary><div class=\"st-transcription__content\"><p class=\"st-transcription__text\">Transcript body</p></div></details>"
+    }
+  ],
+  "sourceSha256": "66f02d2574c027a3e53a979bfd611ee3dac582ac465a110bfb7c76232795854a",
+  "fixtureSha256": "d3e05f2bac6660d60ef94f99666fbec449274415ec547174e576f76394c4f849",
+  "publicExports": [
+    {
+      "name": "Transcription",
+      "typeOnly": false
+    },
+    {
+      "name": "TranscriptionProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TranscriptionSegment",
+      "typeOnly": true
+    }
+  ]
+}

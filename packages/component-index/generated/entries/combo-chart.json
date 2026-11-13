@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:5aa96a91b3ea2a16acca4a4afd732b22c8eea6bc40ea2fd98753ce684a529b8b",
+      "digest": "sha256:18d0344c3cc4f91fc4c962c9ed04de12438c34968d0a13282f04c3ad365a526f",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ComboChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/ComboChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Combo chart with bars and lines, dual Y axis, and legend.",
     "fr": "Graphique combiné barres + courbes, double axe Y, légende."
   },
-  "digest": "sha256:e559949842c12f428d1e8e74267cf9b211ff7d51587ccdeb373a970805c91914",
+  "digest": "sha256:aa0bc5cbcbd906962e528ba4c2447675b21d8706440810de81cf71b980289f79",
   "displayName": "ComboChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:76faa4113b5782a67f14387b601f8ab1382d6c3e24f485ecef45a92d377453d3",
+      "digest": "sha256:9de4c6c90a2256aaf756f7377bddeb93d15b18c992f53c83b13686933d917eb6",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/RadarChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/RadarChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Polar radar chart for comparing series across shared axes.",
     "fr": "Radar polaire pour comparer plusieurs séries sur des axes communs."
   },
-  "digest": "sha256:10f4af715b21b7ca0e2a4b8ed2c5e5cb2d4e6b4376a0632c1f74646054da5361",
+  "digest": "sha256:f7bb57e1f031d237c7150c02315ac767e55a8cad28e75fb0d245a75ae44fef5d",
   "displayName": "RadarChart",
   "format": "component-entry/v1",
   "frameworks": [

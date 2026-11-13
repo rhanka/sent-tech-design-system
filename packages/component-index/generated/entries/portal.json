@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:8d4f2a2c2a2f3badb4bb9ac014eeb96c7993170795252d5869e73b9da7d93a76",
+      "digest": "sha256:c28422a8e57c1146843da49f309d244640583263e245c64c4ef0cd46f3b0699e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Portal.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Portal.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:17c75b30b983334b85491c43481ef4eea655b4f2ed7a980c411cb360eaee6cfb",
+  "digest": "sha256:5ea314154df81b91abcac3168c960f46df8e50b2d1bc1c5f42b9a36863bc33ff",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

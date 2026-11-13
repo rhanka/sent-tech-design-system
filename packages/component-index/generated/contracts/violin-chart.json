@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:d13a45b38b1c8e59cb6390280ff127c2516bb32271143422c9b0910c0af37d28",
-  "entryDigest": "sha256:c79930da1c39cde1f8e44c7dc1c41742baf28d61624afce31e2f74b5775be434",
+  "digest": "sha256:ca6cbdaa99c549755de9c30d83a83917517614ef33dcbae37d0d5fa2ca814a6a",
+  "entryDigest": "sha256:b8be6168b5df5f210d6a2211d0813162897740014a1abb2d22af3552cd813991",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -346,11 +346,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b21913c3b412dcc7eaa31777beba451c79f95e5b9b6cdcfed1d98f46c298e861",
-        "declarationPath": "packages/components-vue/dist/ViolinChart.d.ts",
+        "declarationDigest": "sha256:7f6089eb7047982e89dd8b632230430a19f5f013aae16afafd3a67f9e4ccd685",
+        "declarationPath": "packages/components-vue/dist/ViolinChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ViolinChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

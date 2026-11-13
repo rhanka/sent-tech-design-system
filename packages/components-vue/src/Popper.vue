@@ -1,35 +1,85 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount, type PropType } from 'vue';
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue';
 import { classNames } from './classNames.js';
 import { computePosition, splitPlacement } from './popper-position.js';
-import type { PopperPlacement, PopperStrategy } from './Popper.js';
+export type PopperStrategy = "absolute" | "fixed";
+
+
+export type PopperPlacement =
+  | "top"
+  | "bottom"
+  | "left"
+  | "right"
+  | "top-start"
+  | "top-end"
+  | "bottom-start"
+  | "bottom-end"
+  | "left-start"
+  | "left-end"
+  | "right-start"
+  | "right-end";
+
+
+export type PopperSide = "top" | "bottom" | "left" | "right";
+
+export type PopperAlign = "start" | "center" | "end";
+
+
+export type PopperProps = {
+  /** Reference element the panel is positioned against. */
+  anchor: HTMLElement | null;
+  /** Controlled open state. When false (or no anchor) nothing renders. */
+  open?: boolean;
+  /** Wanted placement of the panel relative to the anchor. */
+  placement?: PopperPlacement;
+  /** Main-axis distance (px) between the anchor and the panel. */
+  offset?: number;
+  /** Flip to the opposite side when the panel would overflow the viewport. */
+  flip?: boolean;
+  /** Shift along the cross axis to keep the panel within the viewport. */
+  shift?: boolean;
+  /** Expose a positioned arrow element. */
+  arrow?: boolean;
+  /** CSS positioning strategy. */
+  strategy?: PopperStrategy;
+  /** Render the panel into `document.body` via a Teleport. */
+  portal?: boolean;
+  /** Optional class applied to the floating panel. */
+  class?: string;
+  /** Notified whenever the resolved placement changes (after flip). */
+  onPlacementChange?: (placement: PopperPlacement) => void;
+  /**
+   * (a11y, opt-in) When true, traps keyboard focus inside the panel while it
+   * is open (Tab cycles through focusable children; Shift+Tab cycles backward).
+   * Intended for modal overlays built on top of Popper. Non-modal usage (menus,
+   * tooltips) should leave this false (default) to keep the natural tab order.
+   */
+  trapFocus?: boolean;
+  /**
+   * (a11y) When true (default when open), pressing Escape calls `onClose` so
+   * the consumer can set `open = false`. Set to false to suppress this behavior.
+   */
+  closeOnEscape?: boolean;
+  /**
+   * Called when the panel requests closing (Escape key, or future outside-click).
+   * The consumer is responsible for updating `open` in response.
+   */
+  onClose?: () => void;
+};
+
+
+export type Rect = {
+  top: number;
+  left: number;
+  right: number;
+  bottom: number;
+  width: number;
+  height: number;
+};
 defineOptions({ name: 'Popper', inheritAttrs: false });
-const props = defineProps({
-    anchor: {
-      type: Object as PropType<HTMLElement | null>,
-      default: null,
-    },
-    open: { type: Boolean, default: false },
-    placement: { type: String as PropType<PopperPlacement>, default: "bottom" },
-    offset: { type: Number, default: 8 },
-    flip: { type: Boolean, default: true },
-    shift: { type: Boolean, default: true },
-    arrow: { type: Boolean, default: false },
-    strategy: { type: String as PropType<PopperStrategy>, default: "absolute" },
-    portal: { type: Boolean, default: true },
-    class: { type: String, default: undefined },
-    onPlacementChange: {
-      type: Function as PropType<(placement: PopperPlacement) => void>,
-      default: undefined,
-    },
-    trapFocus: { type: Boolean, default: false },
-    closeOnEscape: { type: Boolean, default: true },
-    onClose: {
-      type: Function as PropType<() => void>,
-      default: undefined,
-    },
-  });
-const emit = defineEmits({ placementChange: (_placement: PopperPlacement) => true });
+const props = withDefaults(defineProps<Omit<PopperProps, 'anchor'> & { anchor?: HTMLElement | null }>(), { anchor: null, open: false, placement: 'bottom', offset: 8, flip: true, shift: true, arrow: false, strategy: 'absolute', portal: true, class: undefined, onPlacementChange: undefined, trapFocus: false, closeOnEscape: true, onClose: undefined });
+defineSlots<{ default?: () => unknown }>();
+const emit = defineEmits<{ placementChange: [placement: PopperPlacement] }>();
 /** Returns all keyboard-focusable children of `container`. */
 function getFocusable(container: HTMLElement): HTMLElement[] {
   if (typeof window === "undefined") return [];
@@ -94,7 +144,7 @@ function reposition() {
   if (result.placement !== resolvedPlacement.value) {
     resolvedPlacement.value = result.placement;
     emit("placementChange", result.placement);
-    props.onPlacementChange?.(result.placement);
+
   }
 }
 
@@ -194,7 +244,10 @@ function stopFocusTrap() {
   preFocusEl = null;
 }
 
-onMounted(start);
+onMounted(() => {
+  start();
+  startA11y();
+});
 
 watch(
   () => [props.open, props.anchor] as const,
@@ -243,16 +296,19 @@ function handlePanelKeydown(e: KeyboardEvent) {
 }
 
 const side = computed(() => splitPlacement(resolvedPlacement.value).side);
+
 </script>
 
 <template>
+
   <Teleport v-if="props.open && props.anchor" to="body" :disabled="!props.portal">
-    <div ref="panel" :class="classNames('st-popper', props.class)" :data-popper-placement="resolvedPlacement"
-      :style="`position: ${props.strategy}; top: ${top}px; left: ${left}px;`"
+    <div ref="panel"  :data-popper-placement="resolvedPlacement"
+
       :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined"
-      v-bind="props.portal ? {} : $attrs">
+      v-bind="{ ...(props.portal ? {} : $attrs), class: (classNames('st-popper', props.class)), style: [`position: ${props.strategy}; top: ${top}px; left: ${left}px;`, props.portal ? undefined : $attrs.style] }">
       <slot />
       <span v-if="props.arrow" class="st-popper__arrow" :data-popper-side="side" aria-hidden="true" />
     </div>
   </Teleport>
+
 </template>

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:844374cedb2ab9dc1e5981643b49ca6b0c7ece3debe4740172f01ffc3a89ee60",
+      "digest": "sha256:6ab1f542a9627f025aaae2c6ba7db892061cb275860b720676434a0ccb5297e1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ChordDiagram.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/ChordDiagram.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Chord diagram: weighted flows between nodes laid out on a circle.",
     "fr": "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle."
   },
-  "digest": "sha256:1a748dadd427f29d888fd485f07314caae8eea5bd5f47790f47794aef2428182",
+  "digest": "sha256:57d1c4701205359b2883d5ee38129329125cf8bd4090e5514325e9ca73f37796",
   "displayName": "ChordDiagram",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:9ab05ce2d62bc664acfdcd4b4381d8b729a2558203720d0e6ca1764409abf65d",
-  "entryDigest": "sha256:08a8f0259868f020eeb17e8c501a8c0a496461ac216ee984ff66758e6f2278ac",
+  "digest": "sha256:afb15a79d07d53b45dd71fc0014fee1c3266c40f61cd216cccea9d5e0b7a64f4",
+  "entryDigest": "sha256:6f472ba4bf621fd881d486a20f6aa330ded43e67a1da7e0cc097dd0682cb97cf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -337,11 +337,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f68ea112ba7b3b2c56598bc806d8122e78a30df91301e1c8fe38866526c58ad7",
-        "declarationPath": "packages/components-vue/dist/ArcDiagramChart.d.ts",
+        "declarationDigest": "sha256:125e9c678b258b9f2b396551d420458620fe0e441f2b1db094ec6ebc223261aa",
+        "declarationPath": "packages/components-vue/dist/ArcDiagramChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

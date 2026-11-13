@@ -242,7 +242,7 @@ export const barChartContract: ContractModule = {
       note: "Reference pilot (§3.1); not mechanically generatable (Svelte file), mirrored here member for member.",
     },
     { framework: "react", file: "packages/components-react/src/BarChart.tsx", typeName: "BarChartProps", role: "compared" },
-    { framework: "vue", file: "packages/components-vue/src/BarChart.ts", typeName: "BarChartProps", role: "compared" },
+    { framework: "vue", file: "packages/components-vue/src/BarChart.vue", typeName: "BarChartProps", role: "compared" },
     { framework: "angular", file: "packages/components-angular/src/BarChart.ts", typeName: "BarChartProps", role: "compared" },
   ],
   metadata: {

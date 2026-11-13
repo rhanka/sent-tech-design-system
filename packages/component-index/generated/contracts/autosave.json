@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:8e027e7860696c01fca62b81434f3cd9df366c1ccf6e393b1e22e345b601b8d2",
-  "entryDigest": "sha256:c30210c5a328a6bbcbcd3be8f27b45741ccdf175556a024985e982db106d6258",
+  "digest": "sha256:70c9588bceae4d9eea14dd6df7dcb446d94e6a29377aed10eaf715ecca274736",
+  "entryDigest": "sha256:470427c66ff95ad4d9b0febd645282c5554350c0276e9cd8707cd7bd2867ffe1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -309,11 +309,7 @@
           "name": "onRetry"
         },
         {
-          "name": "retry",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "retry"
         }
       ],
       "limitations": [
@@ -386,21 +382,15 @@
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
           "sourceType": "Date"
-        },
-        {
-          "name": "retry.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:53978f73f86e3b60f33676555a954468cc4458c7130531a3a5697278d030d046",
-        "declarationPath": "packages/components-vue/dist/Autosave.d.ts",
+        "declarationDigest": "sha256:d5b10afe7bd53fee085ea4c41021bd344f4e7e0c3f7de5a673971a0b5c1972e9",
+        "declarationPath": "packages/components-vue/dist/Autosave.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

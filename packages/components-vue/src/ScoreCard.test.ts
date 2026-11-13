@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { mount, type VueWrapper } from "@vue/test-utils";
-import { ScoreCard } from "./ScoreCard.js";
+import ScoreCard from "./ScoreCard.vue";
 
 const mounted: VueWrapper[] = [];
 function track<T extends VueWrapper>(wrapper: T): T {

@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { OrganizationChart } from "./OrganizationChart.js";
-import type { OrganizationChartNode } from "./OrganizationChart.js";
+import OrganizationChart from "./OrganizationChart.vue";
+import type { OrganizationChartNode } from "./OrganizationChart.vue";
 
 const org: OrganizationChartNode[] = [
   { id: "ceo", label: "Direction" },

@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:719933589b6d6cb8ee3ac9b6d3963afbaa5e1770b576d9868d1765c40e723418",
-  "entryDigest": "sha256:de6cef2f8a746461e4cb9d53afc8b486eb7b811aae27c0ad8ed8ca95aab41c5e",
+  "digest": "sha256:be1b2a429e6d7fc89b54366e34f4e3029793fbf960400573720dcf92e7ff4be2",
+  "entryDigest": "sha256:1db1b234947ed072725d742d1596d84fd380e27b24896bd769d573eb37d21b2f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -164,8 +164,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -177,9 +176,6 @@
           "message": {},
           "title": {}
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -202,13 +198,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:cb11e160cbcced60a31bdae84c093dd75b7cd75675fdc119a82a4d48735aea65",
-        "declarationPath": "packages/components-vue/dist/EmptyState.d.ts",
+        "declarationDigest": "sha256:7fd317c1f570889d85282827b1f6f6a9adddf3809f1ccfac1a511f40c25b1905",
+        "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d29384f62afcb4a074f6c698cb7f68be7fcb4169d5167607dfb5afeafafd66ef",
+      "digest": "sha256:a138d407de15b13ab610a07b7068e9f36d4d5534494a2555f0ee11556a62ac84",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Search.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Search.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:9e538165939f2346fe468a2aca6d4c1084a53bb38d9321b095f65c7de38f10b6",
+  "digest": "sha256:4b5a71e6c8307dbb777e33ed8be2adfa8120d92043458031574b4d56109801a0",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:65d86ef8c0c775f83a44a0047a00b5b00f7658163c6bfa6b0ecc03d3960c2099",
+      "digest": "sha256:9cde39190b451aefcb84ac5ba2a2bff05e789335ef14213b4de035622ff0fef1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MultiSelect.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/MultiSelect.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:e008b68688af7e43ad92bea2f08aac163de58a608ca217ccf5f08bf61313e54d",
+  "digest": "sha256:14213587c41fc6dcca49cf66424e63b315ee0bfb4423984e40a9114ca6853cf9",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

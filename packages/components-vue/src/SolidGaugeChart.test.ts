@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { SolidGaugeChart } from "./SolidGaugeChart.js";
-import type { SolidGaugeThreshold } from "./SolidGaugeChart.js";
+import SolidGaugeChart from "./SolidGaugeChart.vue";
+import type { SolidGaugeThreshold } from "./SolidGaugeChart.vue";
 
 describe("SolidGaugeChart", () => {
   it("renders a meter with the correct aria value attributes", () => {
