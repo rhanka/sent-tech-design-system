@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import * as ts from "typescript";
+import { publicComponentBarrelPaths } from "../barrels.js";
 
 /**
  * Declaration file resolution (spec 6.1 step 2): committed source file to
@@ -110,11 +111,7 @@ export function barrelNamesForSource(
   sourceRepoPath: string,
   componentId: string,
 ): string | null {
-  const barrelAbs =
-    [join(packageDir, "src", "index.ts"), join(packageDir, "src", "lib", "index.ts")].find((candidate) =>
-      existsSync(candidate),
-    ) ?? null;
-  if (barrelAbs === null) return null;
+  const barrels = publicComponentBarrelPaths(packageDir);
   const repoRoot = join(packageDir, "..", "..");
   const wanted = join(repoRoot, sourceRepoPath).replace(/\\/g, "/");
   const collected: string[] = [];
@@ -126,13 +123,36 @@ export function barrelNamesForSource(
       fileCache.set(barrelFile, source);
     }
     const dir = dirname(barrelFile);
+    const imports = new Map<string, { specifier: string; name: string }>();
+    for (const statement of source.statements) {
+      if (!ts.isImportDeclaration(statement) || !ts.isStringLiteral(statement.moduleSpecifier) || statement.importClause?.isTypeOnly) continue;
+      const clause = statement.importClause;
+      if (clause?.name) imports.set(clause.name.text, { specifier: statement.moduleSpecifier.text, name: clause.name.text });
+      if (clause?.namedBindings && ts.isNamedImports(clause.namedBindings)) {
+        for (const element of clause.namedBindings.elements) {
+          if (!element.isTypeOnly) imports.set(element.name.text, { specifier: statement.moduleSpecifier.text, name: element.propertyName?.text ?? element.name.text });
+        }
+      }
+    }
     for (const statement of source.statements) {
       if (!ts.isExportDeclaration(statement)) continue;
       // Type-only re-exports (`export type { XProps }`) name types, not
       // the component value; only value exports elect the identifier.
       if (statement.isTypeOnly) continue;
       const specifier = moduleSpecifierText(statement);
-      if (specifier === null || !specifier.startsWith(".")) continue;
+      if (specifier === null) {
+        if (statement.exportClause && ts.isNamedExports(statement.exportClause)) {
+          for (const element of statement.exportClause.elements) {
+            if (element.isTypeOnly) continue;
+            const imported = imports.get(element.propertyName?.text ?? element.name.text);
+            if (imported === undefined || !imported.specifier.startsWith(".")) continue;
+            const resolved = resolveSourceSpecifierText(dir, imported.specifier);
+            if (resolved?.replace(/\\/g, "/") === wanted && !collected.includes(imported.name)) collected.push(imported.name);
+          }
+        }
+        continue;
+      }
+      if (!specifier.startsWith(".")) continue;
       const resolved = resolveSourceSpecifierText(dir, specifier);
       if (statement.exportClause === undefined) {
         // `export * from`: recurse into barrel-like targets.
@@ -148,7 +168,7 @@ export function barrelNamesForSource(
       }
     }
   };
-  visit(barrelAbs, 0);
+  for (const barrel of barrels) visit(barrel, 0);
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(componentId)) return null;
   const pascal = componentId
     .split("-")

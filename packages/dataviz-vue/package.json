@@ -27,18 +27,19 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs",
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/check-published-types.mjs",
     "check": "npm run check:types",
     "test": "vitest run",
     "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
     "check:types": "vue-tsc -p tsconfig.json --noEmit",
     "build:declarations": "vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly",
-    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
+    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable",
+    "check:published-types": "node scripts/check-published-types.mjs"
   },
   "dependencies": {
     "@sentropic/dataviz-core": "0.5.0",
     "@sentropic/design-system-themes": "0.14.0",
-    "@sentropic/design-system-vue": "0.41.0-next.1",
+    "@sentropic/design-system-vue": "0.41.0-next.2",
     "jspdf": "^4.2.1",
     "svg2pdf.js": "^2.7.0"
   },

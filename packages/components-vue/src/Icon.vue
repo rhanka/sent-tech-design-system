@@ -4,7 +4,10 @@ import { classNames } from './classNames.js';
 import { ICONS, type IconGlyph, type IconName } from './icon-data.js';
 import SvgNodes from './SvgNodes.vue';
 export type { IconGlyph, IconName } from './icon-data.js';
-export type IconProps = { size?: number; strokeWidth?: number; title?: string; class?: string; name?: IconName; glyph?: IconGlyph;
+export type IconProps = {
+  /** Complete SVG class list for DS controls preserving their reference markup. */
+  svgClass?: string;
+  size?: number; strokeWidth?: number; title?: string; class?: string; name?: IconName; glyph?: IconGlyph;
   /** Preserve the existing Lucide markup when composing DS controls. */
   bare?: boolean;
 };
@@ -23,7 +26,7 @@ function svgAttrs() {
 }
 const glyph = computed(() => props.glyph ?? (props.name ? ICONS[props.name] : undefined));
 const iconClass = computed(() => props.bare ? props.class : classNames('st-icon', props.class));
-const classes = computed(() => classNames('lucide', iconClass.value, glyph.value?.name ? `lucide-${glyph.value.name}-icon lucide-${glyph.value.name}` : 'lucide-icon'));
+const classes = computed(() => props.svgClass ?? classNames('lucide', iconClass.value, glyph.value?.name ? `lucide-${glyph.value.name}-icon lucide-${glyph.value.name}` : 'lucide-icon'));
 
 </script>
 

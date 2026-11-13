@@ -61,6 +61,26 @@ scene.setZoom('large');
 // @ts-expect-error Required component props must remain required.
 const missingLabel: InstanceType<typeof VaporForceGraph>['$props'] = { nodes: [], edges: [] };
 
+// V8 public subpaths retain props and exposed capture handles in both builds.
+import { RichTextEditor, ComposerEditor, type RichTextEditorProps, type ComposerEditorProps, type RichTextEditorHandle, type ComposerEditorHandle } from '@sentropic/design-system-vue/rich-text-editor';
+import { RichTextEditor as VaporRichTextEditor, ComposerEditor as VaporComposerEditor } from '@sentropic/design-system-vue/vapor/rich-text-editor';
+import { LockPresenceBadge, type LockPresenceBadgeProps } from '@sentropic/design-system-vue/presence-badge';
+import { LockPresenceBadge as VaporLockPresenceBadge } from '@sentropic/design-system-vue/vapor/presence-badge';
+import { LabelledIconButton, WebFrame, type LabelledIconButtonProps, type WebFrameProps } from '@sentropic/design-system-vue';
+import { LabelledIconButton as VaporLabelledIconButton, WebFrame as VaporWebFrame } from '@sentropic/design-system-vue/vapor';
+declare const rich: InstanceType<typeof RichTextEditor>;
+declare const composer: InstanceType<typeof ComposerEditor>;
+declare const vaporRich: InstanceType<typeof VaporRichTextEditor>;
+declare const vaporComposer: InstanceType<typeof VaporComposerEditor>;
+const richHandle: RichTextEditorHandle = rich;
+const vaporRichHandle: RichTextEditorHandle = vaporRich;
+const composerHandle: ComposerEditorHandle = composer;
+const vaporComposerHandle: ComposerEditorHandle = vaporComposer;
+type V8Props = [RichTextEditorProps, ComposerEditorProps, LockPresenceBadgeProps, LabelledIconButtonProps, WebFrameProps];
+type RichPropsParity = Assert<Equal<InstanceType<typeof RichTextEditor>['$props'], InstanceType<typeof VaporRichTextEditor>['$props']>>;
+type BadgePropsParity = Assert<Equal<InstanceType<typeof LockPresenceBadge>['$props'], InstanceType<typeof VaporLockPresenceBadge>['$props']>>;
+const v8VaporComponents = [VaporRichTextEditor, VaporComposerEditor, VaporLockPresenceBadge, VaporLabelledIconButton, VaporWebFrame] as const satisfies readonly VaporComponent[];
+void [richHandle, vaporRichHandle, composerHandle, vaporComposerHandle, v8VaporComponents, LabelledIconButton, WebFrame];
 // Rich-content migrations support slot-only callers in both published modes.
 import { Alert, Switch, Toggle, Toggletip, FormGroup, Tooltip } from '@sentropic/design-system-vue';
 import { Alert as VaporAlert, Switch as VaporSwitch, Toggle as VaporToggle, Toggletip as VaporToggletip, FormGroup as VaporFormGroup, Tooltip as VaporTooltip } from '@sentropic/design-system-vue/vapor';

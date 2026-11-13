@@ -1747,13 +1747,13 @@
         "gate": "G4",
         "title": "SSR golden parity",
         "status": "PASS",
-        "detail": "4/4 fixtures (vue implementation)"
+        "detail": "5/5 fixtures (vue implementation)"
       },
       {
         "gate": "G5",
         "title": "Vapor jsdom mount",
         "status": "PASS",
-        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, populated, empty; interop=false; mounted, flushed, unmounted"
       },
       {
         "gate": "G6",
