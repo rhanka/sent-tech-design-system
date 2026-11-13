@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Alert",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Alert.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-alert st-alert--info\" role=\"status\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\">Information</h2></div></section>"
+    },
+    {
+      "id": "success-message",
+      "html": "<section class=\"st-alert st-alert--success\" role=\"status\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\">Saved</h2><p class=\"st-alert__message\">All changes saved.</p><small>Updated now</small></div></section>"
+    },
+    {
+      "id": "warning-actions",
+      "html": "<section class=\"st-alert st-alert--warning\" role=\"alert\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\">Review</h2><p class=\"st-alert__message\">Check your input</p></div><div class=\"st-alert__actions\">Retry</div></section>"
+    },
+    {
+      "id": "error-custom",
+      "html": "<section aria-label=\"Error notice\" class=\"st-alert st-alert--error consumer\" role=\"alert\" style=\"color:red;\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\">Failure</h2></div></section>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<section class=\"st-alert st-alert--info\" role=\"status\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\"><strong>Review</strong></h2><p class=\"st-alert__message\"><em>Details</em></p><small>Context</small></div><div class=\"st-alert__actions\"><button type=\"button\">Retry</button></div></section>"
+    },
+    {
+      "id": "empty-message",
+      "html": "<section class=\"st-alert st-alert--info\" role=\"status\"><div class=\"st-alert__content\"><h2 class=\"st-alert__title\">Notice</h2></div></section>"
+    }
+  ],
+  "sourceSha256": "e857f3525fe1bae2e236d5e9dc2a85a51f9f73ef4cf2621b39b542b8a9cd0d1c",
+  "fixtureSha256": "10f31d914c3fb68a4b673ada168aa0344512af4ed8f70df732ef5c49af450d80",
+  "publicExports": [
+    {
+      "name": "Alert",
+      "typeOnly": false
+    },
+    {
+      "name": "AlertProps",
+      "typeOnly": true
+    },
+    {
+      "name": "AlertTone",
+      "typeOnly": true
+    }
+  ]
+}
