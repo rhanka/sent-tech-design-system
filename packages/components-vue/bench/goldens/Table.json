@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Table",
+  "sourceRevision": "bbc3a1f79f662f497a3fa0c04cfcf66dbfe88208",
+  "source": "src/Table.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-table-wrap\"><table class=\"st-table\"><caption>Table</caption><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody><tr><td class=\"\">Ann</td><td class=\"st-table__cell--right\">3</td></tr><tr><td class=\"\">Bob</td><td class=\"st-table__cell--right\">5</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "aligned-caption",
+      "html": "<div class=\"st-table-wrap\"><table class=\"st-table\"><caption>Cities</caption><thead><tr><th>City</th><th>Pop</th></tr></thead><tbody><tr><td class=\"st-table__cell--center\">Lyon</td><td class=\"st-table__cell--right\">500</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "rich-caption",
+      "html": "<div class=\"st-table-wrap\"><table class=\"st-table\"><caption><strong>Rich caption</strong></caption><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody><tr><td class=\"\">Ann</td><td class=\"st-table__cell--right\">3</td></tr><tr><td class=\"\">Bob</td><td class=\"st-table__cell--right\">5</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-table-wrap\"><table class=\"st-table\"><caption>Table</caption><thead><tr><th><strong>Name</strong></th><th><em>Score</em></th></tr></thead><tbody><tr><td class=\"\">Ann</td><td class=\"\">3</td></tr><tr><td class=\"\">Bob</td><td class=\"\">5</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div aria-label=\"People\" class=\"st-table-wrap\" data-bench=\"table\" style=\"color:red;\"><table aria-label=\"People\" class=\"st-table consumer\" data-bench=\"table\" style=\"color: red\"><caption>Data</caption><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody><tr><td class=\"\">Ann</td><td class=\"st-table__cell--right\">3</td></tr><tr><td class=\"\">Bob</td><td class=\"st-table__cell--right\">5</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "empty-rows",
+      "html": "<div class=\"st-table-wrap\"><table class=\"st-table\"><caption>Table</caption><thead><tr><th>Name</th><th>Score</th></tr></thead><tbody></tbody></table></div>"
+    }
+  ],
+  "sourceSha256": "13a5c77d2ee892b2c895160605d16274ae618e0f5b1879f6d2f5ee3c52c2eca5",
+  "fixtureSha256": "80504e832044d3ae0d7e73505c54d5a728ee21197dbdfe1b027732495889ffb5",
+  "publicExports": [
+    {
+      "name": "Table",
+      "typeOnly": false
+    },
+    {
+      "name": "TableProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TableColumn",
+      "typeOnly": true
+    },
+    {
+      "name": "TableRow",
+      "typeOnly": true
+    }
+  ]
+}
