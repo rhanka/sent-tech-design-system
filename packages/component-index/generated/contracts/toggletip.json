@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:63870613361f176e56ae883e331d6428b4f29508a16354499db6010a5f4df597",
-  "entryDigest": "sha256:978ee96e1ad0f1648983c77b127a17727474ae67cfdcc0d438eaf0ada72e0ec6",
+  "digest": "sha256:8dc66591e6404424bd4d7561952807ca87f94f9469f7e4956989a6a181177ba0",
+  "entryDigest": "sha256:cb6efeb33ced5598bf800a5d2fe49a172c1ccb6dafc4e88092d19879879104a3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

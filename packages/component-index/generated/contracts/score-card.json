@@ -1,8 +1,8 @@
 {
   "componentId": "score-card",
   "contractSource": "derived",
-  "digest": "sha256:cd28077203823d29c59182a67b03599295c804141d227bb7d9120c8acdd80d05",
-  "entryDigest": "sha256:ceeb22f2ff89bbaa7f01530d266dbf760f3c43d2f86712e97341276c1d92435c",
+  "digest": "sha256:71203622605e1858f3ade19e5a6fd6c42b880a99e6dbc3da6a1f97ecfd7d01b0",
+  "entryDigest": "sha256:752cfc7099318916b3d5aa35fc2823f9736e0396c40a6bdb43fce31a941bd263",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

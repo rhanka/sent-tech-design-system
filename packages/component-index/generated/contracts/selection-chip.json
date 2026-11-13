@@ -1,8 +1,8 @@
 {
   "componentId": "selection-chip",
   "contractSource": "derived",
-  "digest": "sha256:7ed3c0d205012e66c54560fe5f5e69b47d909e31c37d0ce615938bed0ba153ae",
-  "entryDigest": "sha256:aa535d00f02ef2091780f6bbb6bf7d2507133a305411a1b4a05214be8c6f4cf5",
+  "digest": "sha256:02fdfda2e247706e162de039614f4ad352260a3c67ee46c54688eb15728f3a0c",
+  "entryDigest": "sha256:ea13f6b2935d711f98ddbbfc0824f72f0c5069780a40285eae1d1379c591ecf8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { useSlots, useId, computed, ref } from 'vue';
 import { classNames } from './classNames.js';
-import { nextComboboxId } from './comboboxId.js';
 
 export type ComboboxOption = {
   value: string;
@@ -60,7 +60,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
-const instanceId = nextComboboxId();
+const instanceId = `st-combobox-${useId()}`;
 const inputId = `${instanceId}-input`;
 const listId = `${instanceId}-list`;
 
@@ -98,7 +98,8 @@ function selectOption(option: ComboboxOption) {
 
 const selected = computed(() => props.options.find((opt) => opt.value === props.value));
 const displayValue = computed(() => (selected.value ? String(selected.value.label) : inputValue.value));
-const isInvalid = computed(() => props.invalid || Boolean(props.errorText));
+const slots = useSlots();
+const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 const activeDescendant = computed(() =>
   activeIndex.value >= 0 && filtered.value[activeIndex.value]
     ? `${listId}-${filtered.value[activeIndex.value].value}`
@@ -108,7 +109,7 @@ const listLabel = computed(() => props.listLabel ?? (props.label ? String(props.
 const noResults = computed(() => String(props.noResultsLabel ?? 'No results'));
 const toggleIconClass = computed(() => {
   const cls = classNames('st-combobox__toggleIcon', open.value && 'st-combobox__toggleIcon--open');
-  return `lucide ${cls} lucide-chevron-down-icon lucide-chevron-down ${cls}`;
+  return `lucide ${cls} lucide-chevron-down-icon lucide-chevron-down`;
 });
 
 function onFocus() {
@@ -156,25 +157,31 @@ function onOptionMousedown(event: MouseEvent, option: ComboboxOption) {
   event.preventDefault();
   selectOption(option);
 }
+defineSlots<{
+  'option-label'?: (scope: { option: ComboboxOption }) => unknown;
+  'error-text'?: () => unknown;
+  'helper-text'?: () => unknown;
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-field', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-field', props.class)) }" >
     <label class="st-field__control" :for="inputId">
-      <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
+      <span v-if="$slots['label'] || props.label" class="st-field__label"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
       <span :class="classNames('st-combobox', `st-combobox--${props.size}`)">
-        <input :id="inputId" class="st-combobox__control" role="combobox" :aria-expanded="open" aria-autocomplete="list" :aria-controls="listId" :aria-invalid="isInvalid ? 'true' : undefined" :aria-activedescendant="activeDescendant" :placeholder="props.placeholder" :disabled="props.disabled" :value="displayValue" @focus="onFocus" @input="onInput" @keydown="onKeydown" />
+        <input :id="inputId" class="st-combobox__control" role="combobox" :aria-expanded="open" aria-autocomplete="list" :aria-controls="listId" :aria-invalid="isInvalid() ? 'true' : undefined" :aria-activedescendant="activeDescendant" :placeholder="props.placeholder" :disabled="props.disabled" :value="displayValue" @focus="onFocus" @input="onInput" @keydown="onKeydown" />
         <button v-if="displayValue" type="button" class="st-combobox__clear" :aria-label="props.clearLabel" :disabled="props.disabled" @click="onClear"><svg aria-hidden="true" class="lucide lucide-x-icon lucide-x" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
         <button type="button" class="st-combobox__toggle" :aria-label="props.toggleLabel" :aria-expanded="open" :disabled="props.disabled" @click="onToggle"><svg aria-hidden="true" :class="toggleIconClass" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m6 9 6 6 6-6"></path></svg></button>
       </span>
     </label>
     <div v-if="open" :id="listId" class="st-combobox__list" role="listbox" :aria-label="listLabel">
       <template v-if="filtered.length">
-        <button v-for="(option, index) in filtered" :key="option.value" :id="`${listId}-${option.value}`" type="button" :class="classNames('st-combobox__option', index === activeIndex && 'st-combobox__option--active')" role="option" :aria-selected="displayValue === String(option.label) ? 'true' : 'false'" :aria-disabled="option.disabled ? 'true' : undefined" :disabled="option.disabled" @mousedown="onOptionMousedown($event, option)">{{ String(option.label) }}</button>
+        <button v-for="(option, index) in filtered" :key="option.value" :id="`${listId}-${option.value}`" type="button" :class="classNames('st-combobox__option', index === activeIndex && 'st-combobox__option--active')" role="option" :aria-selected="displayValue === String(option.label) ? 'true' : 'false'" :aria-disabled="option.disabled ? 'true' : undefined" :disabled="option.disabled" @mousedown="onOptionMousedown($event, option)"><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(String(option.label)) }}</template></button>
       </template>
       <div v-else class="st-combobox__empty" role="option" aria-disabled="true" aria-selected="false">{{ noResults }}</div>
     </div>
-    <span v-if="props.errorText" class="st-field__error">{{ props.errorText }}</span>
-    <span v-else-if="props.helperText" class="st-field__help">{{ props.helperText }}</span>
+    <span v-if="$slots['error-text'] || props.errorText" class="st-field__error"><slot v-if="$slots['error-text']" name="error-text" /><template v-else>{{ scalarContent(props.errorText) }}</template></span>
+    <span v-else-if="$slots['helper-text'] || props.helperText" class="st-field__help"><slot v-if="$slots['helper-text']" name="helper-text" /><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </div>
 </template>

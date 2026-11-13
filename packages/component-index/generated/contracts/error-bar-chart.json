@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:111ccd9d3b73c4c42b1b9c9aab70cda0cac89553f76310498a95c4e64fa22b3b",
-  "entryDigest": "sha256:62b9a9445c66f69db8868d0fa60a5144d292a691e0d6759b8b79110fb63b3d73",
+  "digest": "sha256:d7488b0a2426b0d3d2c5a83d224bf1443ff1f26f27b1d7f566c98a0e59754c76",
+  "entryDigest": "sha256:da242386e57076991f8872858c45096727dc66b2654bec59137e1c61aeabe835",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -21,5 +21,5 @@ const props = withDefaults(defineProps<ContainerProps>(), {
 </script>
 
 <template>
-  <component :is="props.as" v-bind="$attrs" :class="classNames('st-container', `st-container--${props.size}`, props.padding && 'st-container--padded', props.class)"><slot /></component>
+  <component :is="props.as" v-bind="{ ...($attrs), class: (classNames('st-container', `st-container--${props.size}`, props.padding && 'st-container--padded', props.class)) }" ><slot /></component>
 </template>

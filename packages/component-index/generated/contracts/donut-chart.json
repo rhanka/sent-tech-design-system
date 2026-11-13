@@ -1,8 +1,8 @@
 {
   "componentId": "donut-chart",
   "contractSource": "derived",
-  "digest": "sha256:02196345914d84ba3063c715c5b4beefa97c23d22411089a45b29b18ae9bd3ea",
-  "entryDigest": "sha256:5984a3f57079a5eb932365f484689bd5e8697bcf88e5a06fbdf1eff269122448",
+  "digest": "sha256:5157ef6587098535cc0a64ae948054b4f3de053f779ff523de1263ebcb0ff84d",
+  "entryDigest": "sha256:1682bf61a5a947826e6d7eaf26be86e2e32c4e6e3e15a8d9e63295a9861c7a93",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

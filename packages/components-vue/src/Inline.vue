@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSlots, useAttrs } from 'vue';
+import { useAttrs } from 'vue';
 import { classNames } from './classNames.js';
 import Flex from './Flex.vue';
 import type { FlexAlign, FlexJustify } from './Flex.vue';
@@ -12,7 +12,7 @@ export type InlineProps = {
   as?: string;
   class?: string;
 };
-defineOptions({ name: 'Inline' });
+defineOptions({ name: 'Inline', inheritAttrs: false });
 const props = withDefaults(defineProps<InlineProps>(), {
   gap: undefined,
   align: undefined,
@@ -21,20 +21,19 @@ const props = withDefaults(defineProps<InlineProps>(), {
   as: 'div',
   class: undefined,
 });
-const slots = useSlots();
 const attrs = useAttrs();
 </script>
 
 <template>
   <Flex
-    v-bind="$attrs"
+    v-bind="{ ...($attrs), class: (classNames('st-inline', props.class)) }"
     :as="props.as"
     :gap="props.gap"
     :align="props.align"
     :justify="props.justify"
     :wrap="props.wrap"
     direction="row"
-    :class="classNames('st-inline', props.class)"
+
     ><slot
   /></Flex>
 </template>

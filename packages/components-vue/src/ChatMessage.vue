@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -35,7 +36,7 @@ const props = withDefaults(defineProps<ChatMessageProps>(), {
   avatar: undefined,
   class: undefined,
 });
-defineSlots<{
+defineSlots<{timestamp?: () => unknown;
   default?: () => unknown;
   avatar?: () => unknown;
   footer?: () => unknown;
@@ -55,13 +56,13 @@ const alignment = computed(() => (role.value === 'user' ? 'end' : 'start'));
 
 <template>
   <article
-    v-bind="$attrs"
-    :class="classNames(
+    v-bind="{ ...($attrs), class: (classNames(
       'st-chatMessage',
       `st-chatMessage--${role}`,
       normalizedStatus && `st-chatMessage--${normalizedStatus}`,
       props.class,
-    )"
+    )) }"
+
     :data-role="role"
     :data-status="normalizedStatus"
     :data-align="alignment"
@@ -69,23 +70,23 @@ const alignment = computed(() => (role.value === 'user' ? 'end' : 'start'));
   >
     <div v-if="$slots.avatar || props.avatar" class="st-chatMessage__avatar" aria-hidden="true">
       <template v-if="$slots.avatar"><slot name="avatar" /></template>
-      <template v-else>{{ props.avatar }}</template>
+      <template v-else>{{ scalarContent(props.avatar) }}</template>
     </div>
     <div class="st-chatMessage__body">
       <div class="st-chatMessage__bubble">
-        <div class="st-chatMessage__content"><template v-if="$slots.default"><slot /></template><template v-else>{{ props.content }}</template></div>
+        <div class="st-chatMessage__content"><template v-if="$slots.default"><slot /></template><template v-else>{{ scalarContent(props.content) }}</template></div>
         <span v-if="isStreaming" class="st-chatMessage__pulse" aria-hidden="true" />
       </div>
-      <div v-if="$slots.footer || props.footer || props.timestamp" class="st-chatMessage__footer">
+      <div v-if="$slots.footer || props.footer || props.timestamp || $slots.timestamp" class="st-chatMessage__footer">
         <template v-if="$slots.footer || props.footer">
           <template v-if="$slots.footer"><slot name="footer" /></template>
-          <template v-else>{{ props.footer }}</template>
+          <template v-else>{{ scalarContent(props.footer) }}</template>
         </template>
-        <span v-else class="st-chatMessage__timestamp">{{ props.timestamp }}</span>
+        <span v-else class="st-chatMessage__timestamp"><slot name="timestamp">{{ scalarContent(props.timestamp) }}</slot></span>
       </div>
       <div v-if="$slots.actions || props.actions" class="st-chatMessage__actions">
         <template v-if="$slots.actions"><slot name="actions" /></template>
-        <template v-else>{{ props.actions }}</template>
+        <template v-else>{{ scalarContent(props.actions) }}</template>
       </div>
     </div>
   </article>

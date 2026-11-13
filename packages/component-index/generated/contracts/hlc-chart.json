@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:5d04b8387c38ee6d0399b3d068986fc26c973af6b69e7c4c5c3cc9ffca59c80b",
-  "entryDigest": "sha256:54598823ce0277ec07c7c432e797014dca73b6baff255c28f2558f9462d8575a",
+  "digest": "sha256:7b65d7d59dfed9802f235a4384087d97254fbb9558622ea36704dc330fea9936",
+  "entryDigest": "sha256:a2f55089785d019bc0efa4944812c1635314ae1f31ef17d824943fed29d2c395",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

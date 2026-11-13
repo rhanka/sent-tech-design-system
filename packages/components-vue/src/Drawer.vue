@@ -13,7 +13,7 @@ export type DrawerProps = {
   closeLabel?: string;
 };
 
-defineOptions({ name: 'Drawer' });
+defineOptions({ name: 'Drawer', inheritAttrs: false });
 const props = withDefaults(defineProps<DrawerProps>(), {
   open: false,
   title: undefined,
@@ -29,7 +29,7 @@ defineSlots<{
 }>();
 
 const attrs = useAttrs();
-const asideProps = computed<Record<string, unknown>>(() => {
+const asideProps = () => {
   const { style: rawStyle, ...rest } = attrs;
   return {
     ...rest,
@@ -40,7 +40,7 @@ const asideProps = computed<Record<string, unknown>>(() => {
     'aria-label': props.title || 'Drawer',
     tabindex: -1,
   };
-});
+};
 
 const onKeyDown = (event: KeyboardEvent) => {
   if (event.key === 'Escape') {
@@ -75,7 +75,7 @@ const onCloseClick = () => emit('close');
 
 <template>
   <div v-if="props.open" class="st-drawer__backdrop" data-testid="st-drawer-backdrop" role="presentation" @click="onBackdropClick">
-    <aside v-bind="asideProps">
+    <aside v-bind="asideProps()">
       <div class="st-drawer__header">
         <h2 v-if="props.title" class="st-drawer__title">{{ props.title }}</h2>
         <button type="button" class="st-drawer__close" :aria-label="props.closeLabel" @click="onCloseClick">x</button>

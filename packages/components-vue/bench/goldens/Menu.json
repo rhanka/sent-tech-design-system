@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "Menu",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "src/Menu.vue",
+  "sourceSha256": "288dfc02d71826b2431e6cfd89a34d9320845b3566f14dcb233c6aa1fc4dc2ed",
+  "publicExports": [
+    {
+      "name": "Menu",
+      "typeOnly": false
+    },
+    {
+      "name": "MenuProps",
+      "typeOnly": true
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Alpha</span></button></div>"
+    },
+    {
+      "id": "groups",
+      "html": "<div class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\"><div class=\"st-menu__group\" id=\"generated-1--group-0-0\" role=\"presentation\">Group</div><button class=\"st-menu__item\" data-item-index=\"1\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Alpha</span></button></div>"
+    },
+    {
+      "id": "cascade",
+      "html": "<div class=\"st-menu st-menu--hasCascade\"><div class=\"st-menu__scroll\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\" style=\"\" tabindex=\"-1\"><div class=\"st-menu__itemWrap\" role=\"presentation\"><button aria-controls=\"generated-1--sub-0-0\" aria-expanded=\"false\" aria-haspopup=\"menu\" class=\"st-menu__item st-menu__item--hasSubmenu\" data-item-index=\"0\" id=\"generated-1--parent-0-0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Parent</span><span aria-hidden=\"true\" class=\"st-menu__itemChevron st-menu__itemChevron--end\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-right-icon lucide-chevron-right\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m9 18 6-6-6-6\"></path></svg></span></button></div></div></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\"><strong>Alpha</strong></span></button></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div aria-label=\"Actions\" class=\"st-menu consumer\" data-menu-level=\"0\" id=\"caller-menu\" role=\"menu\"></div>"
+    }
+  ],
+  "fixtureSha256": "fb54c7f10a49f9d5655a3c480c65603c10046c6cc38f617db3e47897b143df11"
+}

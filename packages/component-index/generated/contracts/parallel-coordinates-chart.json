@@ -1,8 +1,8 @@
 {
   "componentId": "parallel-coordinates-chart",
   "contractSource": "derived",
-  "digest": "sha256:d4cac25e1d0f4449904028b53f08318e1c4339ea3e56ab8bb413af535b58695f",
-  "entryDigest": "sha256:60a7bee5260b3822c0a55a7a5ae3f5f77d52064e0fa68e3bfaa9b8b27315f1c1",
+  "digest": "sha256:6e0663aae5c1ff4c14376e8911a48f8e373f15da076cdf8242b4599b28f8e8db",
+  "entryDigest": "sha256:c5a464d3a5affc7d9663778f6c48482afab9120781539ee32d72c333628fb8ec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

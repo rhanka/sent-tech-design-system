@@ -203,7 +203,7 @@ const dataValueItems = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-bumpChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-bumpChart', props.class)) }" >
     <div
       class="st-bumpChart__visual"
       role="img"

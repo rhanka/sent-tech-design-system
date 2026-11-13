@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:faf822b1693e6717dc116497580644b39df8e4f8169a1335e85df1705df2359d",
-  "entryDigest": "sha256:2f51bafda94b6ac6648fc7b35a133b899f76eea64609920ad072f85f6324bfcb",
+  "digest": "sha256:82a42bc94cfc194c4c47fb2554216b00da210583b12d2b722287339672e5f6f7",
+  "entryDigest": "sha256:b1c569a34b08a6d8e84c6228c2821ca2d4d09d7bd14163fdb32c628fd3abaa25",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

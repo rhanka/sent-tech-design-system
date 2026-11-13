@@ -1,8 +1,8 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:17ffdb221de5c57687bacd0b15f273e55b1f425c755f34fd9b11fda9499616bd",
-  "entryDigest": "sha256:cb0a33b51bcf3440fc28e315ba5cb271edd4d94557236a92353fc16a9834ca0c",
+  "digest": "sha256:0b246e6912a14cde01e1b149816ef03277887b1f261bc04396a82166bf855709",
+  "entryDigest": "sha256:f291e4165616e5bb412d5a32e41de5563a86f7aeb4b71d047a22f136711abd55",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

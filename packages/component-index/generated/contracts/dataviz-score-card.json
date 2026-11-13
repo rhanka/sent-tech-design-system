@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-score-card",
   "contractSource": "derived",
-  "digest": "sha256:89904dc6375c175f91321dc04727a5b65c67d92386e6af1d21470c29cbbb3051",
-  "entryDigest": "sha256:137935907b3d91cee530c6f3b9d04d14711d009d2670e638af71249b488eb2ad",
+  "digest": "sha256:55ef52f0e1abd62b24c9ac12f25656805e65acb911fb9d5a1114b985753ca0a8",
+  "entryDigest": "sha256:dafad460848afdb7516f97557f4a1d2b5f92ef2a66ce49ac2be2ebbefc222144",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

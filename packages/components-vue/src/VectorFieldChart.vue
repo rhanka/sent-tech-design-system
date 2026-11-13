@@ -44,14 +44,14 @@ const TONES: VectorFieldChartTone[] = [
   'category8',
 ];
 
-defineOptions({ name: 'VectorFieldChart' });
+defineOptions({ name: 'VectorFieldChart', inheritAttrs: false });
 const props = withDefaults(defineProps<VectorFieldChartProps>(), {
   width: 640, height: 320, size: 26, class: undefined, label: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-vectorFieldChart', props.class),
 }));
 
@@ -167,7 +167,7 @@ function arrowClass(a: { tone: string; key: string }) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-vectorFieldChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="t in yTicks" :key="`gy${t}`">

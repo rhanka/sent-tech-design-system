@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:6a72759eba002548d4f7f476d2cb7c5b16f7790330c27f6ba6ac269e34aafb64",
-  "entryDigest": "sha256:7cd9e05e1ee1eeaf2f2d8c2a3bc14511edd3922b4e3a1aae0e81fe7bdbc1b6ec",
+  "digest": "sha256:3c93ab9ee1d70708ddd05840ad0128b25a6363330dd2404bea095d0c09009398",
+  "entryDigest": "sha256:1304529ef2929b80ee6103ab57fe2bfe9e2e5160fea30f4bbe74f467996a02f7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:2e2f30c4b68bdbac773f58efb0427f5a6760cc7961d5d4834983280ef6a10a8b",
-  "entryDigest": "sha256:84c0f214686024125eff864905afe37dfdb994a68a2b2c6677ce1de308c73558",
+  "digest": "sha256:4712c5e7b461ed2191637e38ef2785d498cc2d221f59c8a805b1dd08155c9387",
+  "entryDigest": "sha256:8ae3b6d696b277984506f9556e3e9607feb2b42de0abb77eab45c325cdefe1c2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -300,18 +300,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.option",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "scope.option",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -320,11 +308,10 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "option": {}
+              "option": {
+                "$ref": "#/$defs/LanguageOption"
+              }
             },
-            "required": [
-              "option"
-            ],
             "type": "object"
           }
         },
@@ -333,17 +320,16 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "option": {}
+              "option": {
+                "$ref": "#/$defs/LanguageOption"
+              }
             },
-            "required": [
-              "option"
-            ],
             "type": "object"
           }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:ec7fd36bbe6147019cfb21e8a53838e0c656579bde8e639918a05bc857a6b571",
+        "declarationDigest": "sha256:7a163bd28ff5520f4c4a448bbb2beced569ac1afe7ea50163e43986b169ed593",
         "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",

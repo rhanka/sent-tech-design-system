@@ -1,8 +1,8 @@
 {
   "componentId": "pareto-chart",
   "contractSource": "derived",
-  "digest": "sha256:07a0810cf781381c3c06f29cdc6b0d839ad0b567ece29b8f889ede1f9376027b",
-  "entryDigest": "sha256:2b1927febc9be705b2a0465c4da7bdd219231f3e6d847ce2214f42b230c35c94",
+  "digest": "sha256:965f94c9ab3ab33aebd8a10912216309bf4f933830e292536d83c7f1cb4b3a8a",
+  "entryDigest": "sha256:f6d2b902c60685399b2905c9b328611b34978165a1e57322fa37aa42a3b623b8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

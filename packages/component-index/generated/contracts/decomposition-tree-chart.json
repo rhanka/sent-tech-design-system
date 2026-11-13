@@ -1,8 +1,8 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:0ee41ab7724e58b4c8559aa14ed9dcf8f7df0d1712b6dfd987c060725d00790e",
-  "entryDigest": "sha256:378530929a3826d7d9e9421ce56c288bfa4055706739ce94e1fe8fb8f58401e8",
+  "digest": "sha256:cda752040176266c401049a50861ce983043c8b919da5c0ca800504d9c37a7eb",
+  "entryDigest": "sha256:a3c8a902f1904145ec616bb06b75ff3bcbc7e8a180db374fce7ab503443feef4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

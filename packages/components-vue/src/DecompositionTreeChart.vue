@@ -218,7 +218,7 @@ const cellChars = (cell: Cell): number => charsFor(cell.barWidth);
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-decompositionTreeChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-decompositionTreeChart', props.class)) }" >
     <div class="st-decompositionTreeChart__visual" role="img" :aria-label="label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${computedWidth} ${computedHeight}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <path v-for="link in links" :key="link.key" :class="classNames('st-decompositionTreeChart__link', isLinkDim(link) ? 'st-decompositionTreeChart__link--dim' : undefined)" :d="linkPath(link)"></path>

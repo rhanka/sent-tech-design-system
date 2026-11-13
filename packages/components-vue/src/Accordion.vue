@@ -66,8 +66,8 @@ function contentText(item: AccordionItem): string {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-accordion', `st-accordion--${props.size}`, `st-accordion--align-${props.align}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-accordion', `st-accordion--${props.size}`, `st-accordion--align-${props.align}`, props.class)) }"
+
   >
     <div
       v-for="(item, index) in props.items"

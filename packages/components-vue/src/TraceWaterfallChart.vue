@@ -85,7 +85,7 @@ type Bar = {
   tone: string;
 };
 
-defineOptions({ name: 'TraceWaterfallChart' });
+defineOptions({ name: 'TraceWaterfallChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TraceWaterfallChartResolvedProps>(), {
   data: () => ({ spans: [] }), label: undefined, width: undefined, height: 320,
   size: undefined, class: undefined,
@@ -93,7 +93,7 @@ const props = withDefaults(defineProps<TraceWaterfallChartResolvedProps>(), {
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-traceWaterfallChart', props.class),
 }));
 
@@ -239,7 +239,7 @@ function barClass(bar: Bar) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-traceWaterfallChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${resolvedWidth} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="tick in ticks" :key="`g${tick}`">

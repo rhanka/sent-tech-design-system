@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:47fec110e3772cb727b833519518abb45e459fccc745f597827dc95956f8cd83",
-  "entryDigest": "sha256:4d8788df8e58d37fd4e2adc83544ccf3a0a4d1a76ec3b66e6413ee558b43e5e9",
+  "digest": "sha256:b7dadcf3e44a48bd220e6a06f34fe00d0584896b43da1c7f821543cd97d6443f",
+  "entryDigest": "sha256:e6344c7bbb77e6fbba65c369188ad459bbce020a19247c5db6c21966f5e12603",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -140,7 +140,7 @@ const progressClass = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-solidGaugeChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-solidGaugeChart', props.class)) }" >
     <div
       class="st-solidGaugeChart__visual"
       role="meter"

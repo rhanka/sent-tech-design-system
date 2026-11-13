@@ -167,7 +167,7 @@ const axisGeoms = computed(() => axes.value.map((axis, ai) => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-parallelCoordinatesChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-parallelCoordinatesChart', props.class)) }" >
     <div
       class="st-parallelCoordinatesChart__visual"
       role="img"

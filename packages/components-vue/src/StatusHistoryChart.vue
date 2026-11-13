@@ -201,7 +201,7 @@ function isDim(cell: RowCell): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-statusHistoryChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-statusHistoryChart', props.class)) }" >
     <div
       class="st-statusHistoryChart__visual"
       role="img"

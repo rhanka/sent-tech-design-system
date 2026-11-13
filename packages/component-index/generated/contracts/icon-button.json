@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:9ecd2974295d809a866795cfbae55e2b700c30c7a6feed08091c41d1f3b6050b",
-  "entryDigest": "sha256:298c9ef2852e90085c1855449b98f6a2d333f44c59d60dc64d6e0242ba3c6e1f",
+  "digest": "sha256:f7c958ab2fcb65ddfd44ef6fe13dea1da177baf11d15a3540ebb30ee064e2682",
+  "entryDigest": "sha256:7b3119f720c8c2b74203b44932d922f1bd48b0db8ab46de82627eadc45e66336",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
