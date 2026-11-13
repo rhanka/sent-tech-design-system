@@ -28,7 +28,15 @@
     },
     "./catalog.json": "./catalog.json",
     "./envelope.json": "./envelope.json",
-    "./schemas/*": "./schemas/*"
+    "./schemas/*": "./schemas/*",
+    "./bpmn": {
+      "types": "./dist/element/bpmn.d.ts",
+      "import": "./dist/element/bpmn.js"
+    },
+    "./bpmn-mount": {
+      "types": "./dist/element/bpmn-mount.d.ts",
+      "import": "./dist/element/bpmn-mount.js"
+    }
   },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",
