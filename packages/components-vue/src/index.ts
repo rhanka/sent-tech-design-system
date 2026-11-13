@@ -248,8 +248,8 @@ export type {
 } from "./ConfigItemCard.js";
 export { FieldCard } from "./FieldCard.js";
 export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.js";
-export { ScoreCard } from "./ScoreCard.js";
-export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.js";
+export { default as ScoreCard } from "./ScoreCard.vue";
+export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.vue";
 export { ComboChart } from "./ComboChart.js";
 export type {
   ComboChartProps,
