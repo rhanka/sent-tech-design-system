@@ -394,9 +394,11 @@ function stripProvenance(view: ViewDocument): ViewDocument {
     const stripped: RelationOccurrence = {
       ...occurrence,
       endpoints: occurrence.endpoints.map((endpoint) =>
-        endpoint.sourceOccurrence === undefined
-          ? { role: endpoint.role, occurrence: endpoint.occurrence }
-          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+        endpoint.chainProvenance !== undefined
+          ? endpoint
+          : endpoint.sourceOccurrence === undefined
+            ? { role: endpoint.role, occurrence: endpoint.occurrence }
+            : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
       ),
     };
     relationOccurrences = withKey(relationOccurrences, key, stripped);
