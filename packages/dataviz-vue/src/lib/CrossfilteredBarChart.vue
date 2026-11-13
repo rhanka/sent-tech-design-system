@@ -51,6 +51,6 @@ const onSelect = computed(() => props.selectable ? (key: string) => props.store.
 
 <template>
   <BarChart :data="data" :label="props.label" :orientation="props.orientation" :width="props.width" :height="props.height"
-    :domain="props.domain" :class="props.class" :selected-keys="selectedKeys" :on-select="onSelect"
-    :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey" />
+    :domain="props.domain" :class="props.class" :selected-keys="selectedKeys" @select="onSelect"
+    :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey" />
 </template>

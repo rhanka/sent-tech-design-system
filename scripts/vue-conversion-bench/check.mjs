@@ -4,7 +4,7 @@ import { resolve, relative, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-export function runCheck({ bench, pkg, src, packageSrc, names, modulePath, buildFiles, require, compilers, compileSfc, normalizeHtml }) {
+export function runCheck({ bench, pkg, src, packageSrc, names, modulePath, buildFiles, require, compilers, compileSfc, normalizeHtml, reviewCorrections }) {
 
 const args = process.argv.slice(2);
 const name = args[0];
@@ -78,7 +78,7 @@ try {
     const normalizeFixture = f => ({ ...f, html: normalizeHtml(f.html, JSDOM),
       ...(f.teleports ? { teleports: Object.fromEntries(Object.entries(f.teleports).map(([k, v]) => [k, normalizeHtml(v, JSDOM)])) } : {}) });
     // Frozen measurements remain untouched; normalize both sides at comparison time.
-    golden.fixtures = golden.fixtures.map(normalizeFixture);
+    golden.fixtures = golden.fixtures.map(f => reviewCorrections ? reviewCorrections(name, f, JSDOM) : f).map(normalizeFixture);
     const actual = worker('ssr');
     actual.fixtures = actual.fixtures.map(normalizeFixture);
     const differences = [];

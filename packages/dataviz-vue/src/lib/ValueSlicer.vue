@@ -48,5 +48,5 @@ function onChange(values: string[]) {
 </script>
 
 <template>
-  <CheckboxGroup :legend="resolvedLegend" :options="options" :value="value" :orientation="props.orientation" :class="props.class" :on-change="onChange" />
+  <CheckboxGroup :legend="resolvedLegend" :options="options" :value="value" :orientation="props.orientation" :class="props.class" @change="onChange" />
 </template>

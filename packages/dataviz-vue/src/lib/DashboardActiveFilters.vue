@@ -39,8 +39,8 @@ function fieldOf(dimensionId: string) {
 </script>
 
 <template>
-  <FilterBar :label="props.label" :clear-all-label="props.clearAllLabel" :class="props.class" :on-clear-all="onClearAll">
+  <FilterBar :label="props.label" :clear-all-label="props.clearAllLabel" :class="props.class" @clear-all="onClearAll">
     <FilterPill v-for="[dimensionId, spec] in entries" :key="dimensionId" :field="fieldOf(dimensionId)"
-      :value="describe(dimensionId, spec)" :on-remove="() => props.store.clearFilter(dimensionId)" />
+      :value="describe(dimensionId, spec)" @remove="() => props.store.clearFilter(dimensionId)" />
   </FilterBar>
 </template>

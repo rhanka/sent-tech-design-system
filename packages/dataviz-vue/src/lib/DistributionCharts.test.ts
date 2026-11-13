@@ -5,9 +5,9 @@ import { createDashboardStore, type DataModel, type Row } from '@sentropic/datav
 import BoxPlotChart from './BoxPlotChart.vue';
 import BulletChart from './BulletChart.vue';
 import CalendarHeatmapChart from './CalendarHeatmapChart.vue';
-import { GaugeChart } from './GaugeChart.js';
-import { HeatmapChart } from './HeatmapChart.js';
-import { HistogramChart } from './HistogramChart.js';
+import GaugeChart from './GaugeChart.vue';
+import HeatmapChart from './HeatmapChart.vue';
+import HistogramChart from './HistogramChart.vue';
 
 const model: DataModel = {
   dimensions: [

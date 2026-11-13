@@ -7,8 +7,8 @@ import ts from 'typescript';
 const vapor = process.env.VUE_PACKED_MODE === 'vapor';
 const suffix = vapor ? '/vapor' : '';
 writeFileSync('consumer.ts', `import { GraphLegend } from '@sentropic/design-system-vue${suffix}';
-import { useDashboard } from '@sentropic/dataviz-vue${suffix}';
-export { GraphLegend, useDashboard };\n`);
+import { useDashboard, DashboardGrid, CrossfilteredBarChart, ObjectLayerPanel, SelectionLegend, rowsToCsv, dateRangeToSpec } from '@sentropic/dataviz-vue${suffix}';
+export { GraphLegend, useDashboard, DashboardGrid, CrossfilteredBarChart, ObjectLayerPanel, SelectionLegend, rowsToCsv, dateRangeToSpec };\n`);
 const program = ts.createProgram(['consumer.ts'], { target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
   strict: true, skipLibCheck: false, noEmit: true, types: [] });

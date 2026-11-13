@@ -1,7 +1,7 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:c422f5b6cd29a4e4dfdd924ccd533533b475e743c8d8cbcf189fac34a9aa2e9e",
+  "digest": "sha256:94be7a16744cd068ea68ae96212e7381b4ac2bb4621a71553431901223ca8282",
   "entryDigest": "sha256:ec2ddca6456c78573ce2802dc5ef012948ada132803b73c3e90f30b99b6d19e2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -112,7 +112,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorSummaryProps",

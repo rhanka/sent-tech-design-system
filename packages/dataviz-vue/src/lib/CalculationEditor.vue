@@ -32,14 +32,6 @@ const AGGREGATION_OPTIONS = [
   { value: 'count', label: 'Count' },
 ];
 
-function eventValue(event: Event): string {
-  const target = event.currentTarget;
-  if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) {
-    return target.value;
-  }
-  return '';
-}
-
 function kindFrom(raw: string): CalculatedFieldKind {
   return raw === 'dimension' ? 'dimension' : 'measure';
 }
@@ -66,21 +58,16 @@ const update = (patch: Partial<CalculatedFieldConfig>) => {
 <template>
   <div role="group" :aria-label="props.label" :class="props.class">
     <Input label="Identifiant" aria-label="Identifiant" :model-value="props.value.id"
-      @update:model-value="(raw: string) => update({ id: raw })"
-      @input="(event: Event) => update({ id: eventValue(event) })" />
+      @update:model-value="(raw: string) => update({ id: raw })" />
     <Input label="Nom du calcul" aria-label="Nom du calcul" :model-value="props.value.label"
-      @update:model-value="(raw: string) => update({ label: raw })"
-      @input="(event: Event) => update({ label: eventValue(event) })" />
+      @update:model-value="(raw: string) => update({ label: raw })" />
     <Textarea label="Formule" aria-label="Formule" :rows="4" :model-value="props.value.expression"
-      @update:model-value="(raw: string) => update({ expression: raw })"
-      @input="(event: Event) => update({ expression: eventValue(event) })" />
+      @update:model-value="(raw: string) => update({ expression: raw })" />
     <Select label="Type" aria-label="Type" :model-value="props.value.kind" :options="KIND_OPTIONS"
-      @update:model-value="(raw: string) => update({ kind: kindFrom(raw) })"
-      @change="(event: Event) => update({ kind: kindFrom(eventValue(event)) })" />
+      @update:model-value="(raw: string) => update({ kind: kindFrom(raw) })" />
     <Select v-if="props.value.kind === 'measure'" label="Agregation" aria-label="Agregation"
       :model-value="props.value.aggregation ?? 'sum'" :options="AGGREGATION_OPTIONS"
-      @update:model-value="(raw: string) => update({ aggregation: aggregationFrom(raw) })"
-      @change="(event: Event) => update({ aggregation: aggregationFrom(eventValue(event)) })" />
+      @update:model-value="(raw: string) => update({ aggregation: aggregationFrom(raw) })" />
     <div role="list" aria-label="Suggestions">
       <Button v-for="suggestion in suggestions" :key="`${suggestion.kind}:${suggestion.value}`" type="button" size="sm"
         :aria-label="suggestion.label"
