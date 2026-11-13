@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DisplaySettings.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DisplaySettings.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Display preferences controls (font size, contrast, line spacing, motion).",
     "fr": "Préférences d’affichage (taille de texte, contraste, interligne, animations)."
   },
-  "digest": "sha256:1c1ed0b27347b3da0a5609831febd0ff8b56937df3275b079dc2f627f5815b12",
+  "digest": "sha256:1b43549a27eaf1c54caaf04b5744974384cbd72e5885b65aae8b715c805742bc",
   "displayName": "DisplaySettings",
   "format": "component-entry/v1",
   "frameworks": [

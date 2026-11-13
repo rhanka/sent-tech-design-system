@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:bca89ca21acc58543c8b7a145f89284a0784ebf72ab744eaedaf92e652caf663",
-  "entryDigest": "sha256:035ef2fb0a8d9e2dd1cc6f9fb9a60a25f934848df78c3ed665c19efe96d01bca",
+  "digest": "sha256:bafff1b251683279abe9cf23ef3fcc938e18e4b2861b705a5c729ea2fcdc366d",
+  "entryDigest": "sha256:076a85822c4bcaef52500ef5bf05d615454e18a452ce9c4873054932a7282d38",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -54,7 +54,7 @@
         "declarationPath": "packages/components-angular/dist/ButtonGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ButtonGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -115,7 +115,7 @@
         "declarationPath": "packages/components-react/dist/ButtonGroup.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ButtonGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

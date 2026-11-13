@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:0d98b7802fe96eaab5eb41b02809808ba3a633732a3ca61e76b48a80c3d44f90",
-  "entryDigest": "sha256:9bfe75680bfd24afd517aadc6bf5d86fac52d1a8385eb8241e0f72ec978c65b4",
+  "digest": "sha256:53611edc1812f513455b65062dfb196fc8a084c7ed5cc5b88131fd4a32393ba1",
+  "entryDigest": "sha256:02c2e3a76fb8259b26ead161f54fe59d4542bde5a1e22340f1293cdc7afe54b8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-angular/dist/DatePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DatePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -393,11 +393,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DatePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

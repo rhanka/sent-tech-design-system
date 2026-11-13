@@ -1,7 +1,7 @@
 {
   "componentId": "url-sync",
   "contractSource": "derived",
-  "digest": "sha256:daacec8acc53d56b64bdb046167a9bf0730e60973c9e3b038a2b3bd313a30fa6",
+  "digest": "sha256:ecba11fbb3acd9cd3a0b140dfc9cd82c2f393f2bad99a227acfa3a41ad1cc8c5",
   "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UrlSyncProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/UrlSync.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UrlSyncProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

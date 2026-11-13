@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Modal.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Modal.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:5f23138b28fa6abb118737ba2c41bf9aa255fff0cc06bf1e4bf62626c5aca843",
+  "digest": "sha256:f3b77a64eabb918d76a013530ffdc25dc157859d64bd475c3cd1c2b4f850342f",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

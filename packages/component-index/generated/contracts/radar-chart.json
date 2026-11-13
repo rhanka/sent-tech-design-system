@@ -1,8 +1,8 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:4b369ef9d97dcc3989dac31ba44175523aebcf9202a2f06533a71f666a3fc7a5",
-  "entryDigest": "sha256:931ff06724a08b84a176f14e44de9d44c470f5cc5cad4e5bd25d8e253ae0159f",
+  "digest": "sha256:94987f46e2e54901d6ac03d09af7ff04c830929f837c2df1fe9c809f5cdac2ac",
+  "entryDigest": "sha256:02f943eff481ee0d48d81868d87af8f9cc99a3631f0bcaca8ac123bf487750a6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/RadarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RadarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -195,7 +195,7 @@
         "declarationPath": "packages/components-react/dist/RadarChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RadarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

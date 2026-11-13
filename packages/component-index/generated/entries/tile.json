@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tile.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tile.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
     "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
   },
-  "digest": "sha256:b490619d049215b098d7720fb90f50a84daa118240a4d28f940c3cf9b014020a",
+  "digest": "sha256:808ab6762f8dbac8fa337937e87171d6377ed052e44fbe3279eb85d561d9f9d9",
   "displayName": "Tile",
   "format": "component-entry/v1",
   "frameworks": [

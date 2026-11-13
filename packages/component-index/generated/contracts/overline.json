@@ -1,8 +1,8 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:69edad021e8aa15eb76b2a382e197ba3c9123709b5406b44cd93a9c0ad3548df",
-  "entryDigest": "sha256:295a6b503652f88cb049a2bfd492d5fe3d9f9f085a7fea58654b821e1f5d2f1b",
+  "digest": "sha256:2f976d4573f289c89d60d99ef98d2b9e6060f1883eb4cecde31a9fe1f3cbc095",
+  "entryDigest": "sha256:a3e6e6d7eaccd15ee974b6fe14446129cf522acd319d3a93c0c0a9e00aa75c1b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -40,7 +40,7 @@
         "declarationPath": "packages/components-angular/dist/Overline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -88,7 +88,7 @@
         "declarationPath": "packages/components-react/dist/Overline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

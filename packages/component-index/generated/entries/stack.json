@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Stack.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Stack.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical stack with uniform gap (Flex column shorthand).",
     "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
   },
-  "digest": "sha256:67b312cce51b6f0240e56853431522512284dff43dfbc0762264c688329c2245",
+  "digest": "sha256:62553c3b6af96218063e5631c19ac2c50b800c8d0afac02973fd08dc9ceaa461",
   "displayName": "Stack",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:665998adf137ce51590216ff8da17357c0e8dd889bed0ca7fec4ce10687ec653",
-  "entryDigest": "sha256:63388e26a8f370b26132a1447635d841a72d03c759756423c074b332ca28047b",
+  "digest": "sha256:088b01187e5ddeb2c9f06d767ed3581b0482b48821f92d1410bca1b85882f7fd",
+  "entryDigest": "sha256:424a36c1e2fd67c62be4fd6dd54bd3be68c589d07e085ad96427083f9169b37d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -102,7 +102,7 @@
         "declarationPath": "packages/components-angular/dist/DecompositionTreeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-react/dist/DecompositionTreeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:15d1c0213813abbea53f76191bc430d384451a2b3756aeb410ed7ba765b56ab4",
-  "entryDigest": "sha256:00939d0fbd5ea25bbbf7c843656a25135dd9cf2ca6e89ab29ef6e4914fb66289",
+  "digest": "sha256:772e53b894abe053a1895cfafbe1eecf0b36c4f1abbf202cfc781195df136f75",
+  "entryDigest": "sha256:322a71ccd5a569b26b4ee35566e967f4ebebc09e68ae03fda7f01ad68b72f81c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/PointAndFigureChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-react/dist/PointAndFigureChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

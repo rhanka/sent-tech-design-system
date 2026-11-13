@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DatePicker.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DatePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Date picker, single or range mode.",
     "fr": "Sélecteur de date, mode simple ou plage."
   },
-  "digest": "sha256:9bfe75680bfd24afd517aadc6bf5d86fac52d1a8385eb8241e0f72ec978c65b4",
+  "digest": "sha256:02c2e3a76fb8259b26ead161f54fe59d4542bde5a1e22340f1293cdc7afe54b8",
   "displayName": "DatePicker",
   "format": "component-entry/v1",
   "frameworks": [

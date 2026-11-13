@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Button.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Button.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Primary, secondary, ghost, or destructive action.",
     "fr": "Action primaire, secondaire, fantôme ou destructive."
   },
-  "digest": "sha256:65cd4f4f1ae2db3431ea3f7fb26df2b455bb77135ebeb1e3155b2a0e222ac33a",
+  "digest": "sha256:ec4c54de5c12b652b20364e0987ee8151b0c9560b45378609d12781f61ecef8e",
   "displayName": "Button",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TimelineChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimelineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
     "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
   },
-  "digest": "sha256:35eb919a9b7c45015c6cc7884aebb232132a0f4dff510bc69ed980fd33c4af0f",
+  "digest": "sha256:c412ce22a9956d902fcc3ef0c00c52534af43a88c60f37f1a448a206af3a48e2",
   "displayName": "TimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

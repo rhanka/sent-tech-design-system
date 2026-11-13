@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Calendar.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Calendar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Monthly calendar: single date or range, with min/max bounds.",
     "fr": "Calendrier mensuel : date unique ou plage, bornes min/max."
   },
-  "digest": "sha256:bf346821d807f0d1569e3bbe4470d684cee0251437905e454cc4c7d03c821662",
+  "digest": "sha256:3b8353a2d129f14cb9668efc2e2bac7f4a446039f4af63d2d5d7ba535350606f",
   "displayName": "Calendar",
   "format": "component-entry/v1",
   "frameworks": [
