@@ -303,8 +303,8 @@ export type {
   WaffleTone,
   WaffleChartDatum,
 } from "./WaffleChart.js";
-export { ColorSwatch } from "./ColorSwatch.js";
-export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
+export { default as ColorSwatch } from "./ColorSwatch.vue";
+export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.vue";
 export { default as ColorScaleBar } from "./ColorScaleBar.vue";
 export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.vue";
 export { Timeline } from "./Timeline.js";
