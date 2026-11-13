@@ -3,6 +3,7 @@
   import { Minus, Plus } from "@lucide/svelte";
   import {
     clampZoom,
+    createLayoutCache,
     FIT_ASPECT,
     zoomReadout,
     type LayoutHints,
@@ -27,6 +28,9 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    sceneContentSize,
+    type DiagramSceneSize,
+    type SceneLayoutCache,
     DEFAULT_SCENE_TARGET_WIDTH,
     displayedRects,
     layoutScene,
@@ -49,7 +53,7 @@
     type SceneOrientations,
     type ScenePresentation,
     type SceneView,
-  } from "./diagramSceneModel.js";
+  } from "@sentropic/diagram-canvas/diagramSceneModel";
 
   /**
    * `DiagramSceneFigure` — the generic scene host (DC-2a lot L4,
@@ -148,6 +152,9 @@
     /** One call per layout pass, with the engine result (warnings, refusals, orientations). */
     onLayout?: (result: LayoutResult) => void;
     onCameraChange?: (camera: DiagramSceneCamera) => void;
+    layoutCache?: SceneLayoutCache;
+    contentSize?: DiagramSceneSize;
+    onSizeChange?: (size: DiagramSceneSize) => void;
   }
 
   const DEFAULT_LABELS: DiagramSceneFigureLabels = {
@@ -190,7 +197,13 @@
     onSelect,
     onLayout,
     onCameraChange,
+    layoutCache,
+    contentSize = $bindable({ width: 0, height: 0 }),
+    onSizeChange,
   }: DiagramSceneFigureProps = $props();
+
+  const ownedCache = createLayoutCache();
+  let publishedSize: DiagramSceneSize | undefined;
 
   const strings = $derived({ ...DEFAULT_LABELS, ...labels });
 
@@ -214,6 +227,7 @@
       previousOrientation = undefined;
     }
     const result = layoutScene({
+      cache: layoutCache ?? ownedCache,
       document: semanticDocument,
       ...(view === undefined ? {} : { view }),
       registry,
@@ -248,6 +262,14 @@
   $effect(() => {
     const result = layoutResult;
     untrack(() => onLayout?.(result));
+  });
+
+  $effect(() => {
+    const size = sceneContentSize(layoutResult);
+    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+    publishedSize = size;
+    contentSize = size;
+    untrack(() => onSizeChange?.(size));
   });
 
   /* ── measured frame and tokens (client only) ───────────────────── */
@@ -542,7 +564,12 @@
     shown = displayed;
   });
 
-  $effect(() => stopFrames);
+  $effect(() => () => {
+    stopFrames();
+    touches.clear();
+    pinch = undefined;
+    ownedCache.dispose();
+  });
 
   /* ── drawing ───────────────────────────────────────────────────── */
 

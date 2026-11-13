@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:02475ad9f481abc69e572970b33e883a07fd716098b0a7e2a7687f684b8004e9",
-  "entryDigest": "sha256:7ba49c98649d4d19e97abec15dd662ff8cd6d72ab43714796df9a7af20762ec2",
+  "digest": "sha256:9f5d5958e575965bd466d1325d2dcd73e133f1a24f1d7136235eb464faa1629a",
+  "entryDigest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -244,7 +244,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

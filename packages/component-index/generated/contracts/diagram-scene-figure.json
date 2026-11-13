@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:a72257604b9b9bf8785398594c59d3f8e01b3f094dfe45149dfe0d3cef35743f",
-  "entryDigest": "sha256:d1464d517c5951e18559112b437f962f39419cd400f3357f8a9e98d5191e91f9",
+  "digest": "sha256:68edb688923272275e2e2a7e0164fab607839b2284831721304786821bc23ace",
+  "entryDigest": "sha256:592bcd46508517a634a7149f627e2f8521177d66e3ef13b275cd0b265844ada0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -52,7 +52,9 @@
       ]
     },
     "svelte": {
-      "bindable": [],
+      "bindable": [
+        "contentSize"
+      ],
       "dropped": [
         {
           "kind": "function",
@@ -71,6 +73,42 @@
           "name": "ProfileRegistry.list",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => readonly `${string}@${number}`[]"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.clear",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.dispose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.has",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, options: LayoutOptions, sourceView?: ViewDocument | undefined) => boolean"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.layout",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, options: LayoutOptions, sourceView?: ViewDocument | undefined) => LayoutResult"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.layoutFolded",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, sourceView: ViewDocument, options: LayoutOptions) => LayoutResult"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.stats",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => LayoutCacheStats"
         },
         {
           "kind": "function",
@@ -1841,12 +1879,6 @@
           "name": "measure",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "CardLineMeasure"
-        },
-        {
-          "kind": "function",
-          "name": "measureLines",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "LineMeasurer"
         },
         {
           "kind": "function",
@@ -4980,6 +5012,12 @@
             ],
             "type": "object"
           }
+        },
+        {
+          "name": "onSizeChange",
+          "payload": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          }
         }
       ],
       "limitations": [
@@ -5212,6 +5250,22 @@
               "pans",
               "readout",
               "zoom"
+            ],
+            "type": "object"
+          },
+          "DiagramSceneSize": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "width"
             ],
             "type": "object"
           },
@@ -7055,6 +7109,11 @@
             },
             "type": "object"
           },
+          "SceneLayoutCache": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          },
           "SchemaVersion": {
             "additionalProperties": false,
             "properties": {
@@ -8445,6 +8504,9 @@
           "compact": {
             "type": "boolean"
           },
+          "contentSize": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          },
           "defaultFolds": {
             "description": "Initial collapsed occurrence ids when `collapsed` is not controlled.",
             "items": {
@@ -8478,6 +8540,19 @@
             "type": "string"
           },
           "labels": {},
+          "layoutCache": {
+            "$ref": "#/$defs/SceneLayoutCache"
+          },
+          "measureLines": {
+            "additionalProperties": false,
+            "description": "Layout line measurer. Defaults to the bridge over `measure`.",
+            "properties": {
+              "version": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
           "metrics": {
             "description": "Runtime token numbers for the engine (gaps, caps)."
           },
@@ -8627,11 +8702,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:616c529ca5937de64de611c576525f8b01180dde3734723229c4836f6b3a3849",
+        "declarationDigest": "sha256:6dc8ad953edc8f2f74493faa02eaa6f5f708f60a6dfb670aceae8597024ebdd7",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -10427,12 +10502,6 @@
           "name": "measure",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "CardLineMeasure"
-        },
-        {
-          "kind": "function",
-          "name": "measureLines",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "LineMeasurer"
         },
         {
           "kind": "function",
@@ -13421,7 +13490,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29292": {
+                    "__@refBrand@29340": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -13430,7 +13499,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29292",
+                    "__@refBrand@29340",
                     "length"
                   ],
                   "type": "object"
@@ -13446,7 +13515,7 @@
                   "occurrence": {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "occurrence"
                       },
                       "length": {
@@ -13455,7 +13524,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -13607,7 +13676,7 @@
               "legendRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "entity"
                   },
                   "length": {
@@ -13616,7 +13685,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14063,7 +14132,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "entity"
                   },
                   "length": {
@@ -14072,7 +14141,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14100,7 +14169,7 @@
               "entity": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "entity"
                   },
                   "length": {
@@ -14109,7 +14178,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14124,7 +14193,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14133,7 +14202,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14156,7 +14225,7 @@
               "categoryRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "entity"
                   },
                   "length": {
@@ -14165,7 +14234,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14270,7 +14339,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14279,7 +14348,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14364,7 +14433,7 @@
                     {
                       "additionalProperties": false,
                       "properties": {
-                        "__@refBrand@29292": {
+                        "__@refBrand@29340": {
                           "const": "entity"
                         },
                         "length": {
@@ -14373,7 +14442,7 @@
                         }
                       },
                       "required": [
-                        "__@refBrand@29292",
+                        "__@refBrand@29340",
                         "length"
                       ],
                       "type": "object"
@@ -14420,7 +14489,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29292": {
+                    "__@refBrand@29340": {
                       "const": "entity"
                     },
                     "length": {
@@ -14429,7 +14498,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29292",
+                    "__@refBrand@29340",
                     "length"
                   ],
                   "type": "object"
@@ -14566,7 +14635,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29292": {
+                    "__@refBrand@29340": {
                       "const": "entity"
                     },
                     "length": {
@@ -14575,7 +14644,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29292",
+                    "__@refBrand@29340",
                     "length"
                   ],
                   "type": "object"
@@ -14633,7 +14702,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14642,7 +14711,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14696,7 +14765,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14705,7 +14774,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14716,7 +14785,7 @@
               "ownerOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14725,7 +14794,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14733,7 +14802,7 @@
               "port": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "port"
                   },
                   "length": {
@@ -14742,7 +14811,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -14900,7 +14969,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29292": {
+                          "__@refBrand@29340": {
                             "const": "entity"
                           },
                           "length": {
@@ -14909,7 +14978,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29292",
+                          "__@refBrand@29340",
                           "length"
                         ],
                         "type": "object"
@@ -14930,7 +14999,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29292": {
+                          "__@refBrand@29340": {
                             "const": "relation"
                           },
                           "length": {
@@ -14939,7 +15008,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29292",
+                          "__@refBrand@29340",
                           "length"
                         ],
                         "type": "object"
@@ -14960,7 +15029,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29292": {
+                          "__@refBrand@29340": {
                             "const": "port"
                           },
                           "length": {
@@ -14969,7 +15038,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29292",
+                          "__@refBrand@29340",
                           "length"
                         ],
                         "type": "object"
@@ -15333,7 +15402,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "relation"
                   },
                   "length": {
@@ -15342,7 +15411,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15375,7 +15444,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "entity"
                       },
                       "length": {
@@ -15384,7 +15453,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15392,7 +15461,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "relation"
                       },
                       "length": {
@@ -15401,7 +15470,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15409,7 +15478,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "port"
                       },
                       "length": {
@@ -15418,7 +15487,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15445,7 +15514,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15454,7 +15523,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15462,7 +15531,7 @@
               "relation": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "relation"
                   },
                   "length": {
@@ -15471,7 +15540,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15505,7 +15574,7 @@
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15514,7 +15583,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15528,7 +15597,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "entity"
                       },
                       "length": {
@@ -15537,7 +15606,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15545,7 +15614,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "relation"
                       },
                       "length": {
@@ -15554,7 +15623,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15562,7 +15631,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29292": {
+                      "__@refBrand@29340": {
                         "const": "port"
                       },
                       "length": {
@@ -15571,7 +15640,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29292",
+                      "__@refBrand@29340",
                       "length"
                     ],
                     "type": "object"
@@ -15583,7 +15652,7 @@
                 "additionalProperties": false,
                 "description": "The original endpoint occurrence in the retained source view. Present iff\n`semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).",
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15592,7 +15661,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15616,7 +15685,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "resource"
                   },
                   "length": {
@@ -15625,7 +15694,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -15688,7 +15757,7 @@
               "documentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "document"
                   },
                   "length": {
@@ -15697,7 +15766,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16015,7 +16084,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "port"
                   },
                   "length": {
@@ -16024,7 +16093,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16035,7 +16104,7 @@
               "owner": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "entity"
                   },
                   "length": {
@@ -16044,7 +16113,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16076,7 +16145,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16085,7 +16154,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16372,7 +16441,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29292": {
+                    "__@refBrand@29340": {
                       "const": "relation"
                     },
                     "length": {
@@ -16381,7 +16450,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29292",
+                    "__@refBrand@29340",
                     "length"
                   ],
                   "type": "object"
@@ -16393,7 +16462,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29292": {
+                    "__@refBrand@29340": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -16402,7 +16471,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29292",
+                    "__@refBrand@29340",
                     "length"
                   ],
                   "type": "object"
@@ -16412,7 +16481,7 @@
               "sourceOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16421,7 +16490,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16436,7 +16505,7 @@
               "targetOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16445,7 +16514,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16937,7 +17006,7 @@
               "semanticDocumentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "document"
                   },
                   "length": {
@@ -16946,7 +17015,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -16962,7 +17031,7 @@
               "viewId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "view"
                   },
                   "length": {
@@ -16971,7 +17040,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -17006,7 +17075,7 @@
                 "additionalProperties": false,
                 "description": "The entity occurrence this group folds (M3 §4.1.1). Present on every fold\ngroup in a completed-profile view. Membership is still derived through\n`EntityOccurrence.group`, never stored here.",
                 "properties": {
-                  "__@refBrand@29292": {
+                  "__@refBrand@29340": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -17015,7 +17084,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29292",
+                  "__@refBrand@29340",
                   "length"
                 ],
                 "type": "object"
@@ -17037,7 +17106,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29292": {
+                "__@refBrand@29340": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17046,7 +17115,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29292",
+                "__@refBrand@29340",
                 "length"
               ],
               "type": "object"
@@ -17061,7 +17130,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29292": {
+                "__@refBrand@29340": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17070,7 +17139,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29292",
+                "__@refBrand@29340",
                 "length"
               ],
               "type": "object"
@@ -17089,6 +17158,16 @@
             "type": "string"
           },
           "labels": {},
+          "measureLines": {
+            "additionalProperties": false,
+            "description": "Layout line measurer. Defaults to the bridge over `measure`.",
+            "properties": {
+              "version": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
           "metrics": {
             "description": "Runtime token numbers for the engine (gaps, caps)."
           },

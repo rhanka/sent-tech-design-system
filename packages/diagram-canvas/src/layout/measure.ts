@@ -61,7 +61,7 @@ export interface LineLayout {
   readonly overflow: boolean;
 }
 
-export type LineMeasurer = (request: MeasureRequest) => LineLayout;
+export type LineMeasurer = ((request: MeasureRequest) => LineLayout) & { readonly version?: string };
 
 export interface EntityMeasurementInput {
   readonly entity: EntityRef;
