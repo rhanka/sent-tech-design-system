@@ -34,7 +34,7 @@ function onSearch(event: Event) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-lrp', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-lrp', props.class)) }" >
     <div class="st-lrp__body">
       <aside class="st-lrp__aside">
         <div v-if="props.appTitle" class="st-lrp__app-title">{{ props.appTitle }}</div>

@@ -59,14 +59,14 @@ function barbCounts(speed: number): { flags: number; full: number; half: number 
 
 type BarbTick = { x1: number; y1: number; x2: number; y2: number; kind: 'full' | 'half' | 'flag1' | 'flag2' };
 
-defineOptions({ name: 'WindBarbChart' });
+defineOptions({ name: 'WindBarbChart', inheritAttrs: false });
 const props = withDefaults(defineProps<WindBarbChartProps>(), {
   width: 640, height: 160, size: 32, class: undefined, label: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-windBarbChart', props.class),
 }));
 
@@ -190,7 +190,7 @@ function barbClass(b: { tone: string; key: string }) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-windBarbChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <text v-for="t in xTicks" :key="`tx${t}`" class="st-windBarbChart__tick" :x="xOf(t)" :y="height - MARGIN.bottom + 16" text-anchor="middle">{{ formatTick(t) }}</text>

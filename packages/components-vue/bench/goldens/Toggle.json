@@ -38,7 +38,7 @@
     }
   ],
   "sourceSha256": "5f492ea8f25baf7ac1198bc244bfd8a29f63a689e0b8161ef8ca69c033085f06",
-  "fixtureSha256": "18212d043ed5c4e917dd022f8aba625a0d49167b061a79361e186a20cf01e7a2",
+  "fixtureSha256": "f05487d222fba0f0cf18893686789b7db2fb5916859a99e1c3df09b3ed7e9bb6",
   "publicExports": [
     {
       "name": "Toggle",

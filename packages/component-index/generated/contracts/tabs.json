@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:c7061bb72e3e56a76e4e824b40c36dde861689a8c3c8f3b45f700c4eb33021bd",
-  "entryDigest": "sha256:089902352a9517e488f0ccea95cc0d67e2ca459493f35521c2f934e03f92b7fa",
+  "digest": "sha256:a04a185fd6086212c4127ca1cb6ebb553affafa15fd6c5ac263b226f2ce0bb0c",
+  "entryDigest": "sha256:f9e4bd07d8029b81b5fadc0b60ea0301a1a8184c6f318912cd3173f7a077e6f3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

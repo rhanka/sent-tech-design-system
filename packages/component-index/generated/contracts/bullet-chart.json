@@ -1,8 +1,8 @@
 {
   "componentId": "bullet-chart",
   "contractSource": "derived",
-  "digest": "sha256:ac867b71967f63aa49c89ba0da30635887637fe7c3d94c668d2644cb7185311e",
-  "entryDigest": "sha256:2f48b324d57660a93200e2f2c6ba328eb79c601989652b6fc90583ae21f39d14",
+  "digest": "sha256:c3381a24890f6a590031f802749cfe2f4534155679fd69e1cc17e0d772254df5",
+  "entryDigest": "sha256:24e99e4b3741b100331dcc5606ef343e526cd662d603afb06f6099b3522230ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -91,7 +91,7 @@ export function wrapperSource(name, fixture, legacy = false) {
 export function normalizeHtml(html, JSDOM) {
   const fragment = JSDOM.fragment(html);
   const idMap = new Map();
-  const generated = /\bst-(?:(?:input|select|checkbox|tabs|tooltip|search|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)|file-uploader-(?:v-\d+(?:-\d+)*|[a-z0-9]{7})|(?:areachart|arearangechart|areasplinerangechart|bellcurve)-gradient-(?:v-\d+(?:-\d+)*|[a-z0-9]+-[a-z0-9]{7})|treemap-clip-(?:v\d+|[a-z0-9]{7}))\b/g;
+  const generated = /\bst-(?:(?:input|select|checkbox|tabs|tooltip|search|combobox|datepicker|numberInput|passwordInput|textarea|timepicker|timerangepicker|menu|menupopover|overflowmenu|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)|file-uploader-(?:v-\d+(?:-\d+)*|[a-z0-9]{7})|(?:areachart|arearangechart|areasplinerangechart|bellcurve)-gradient-(?:v-\d+(?:-\d+)*|[a-z0-9]+-[a-z0-9]{7})|treemap-clip-(?:v\d+|[a-z0-9]{7}))\b/g;
   const mask = value => value.replace(generated, id => {
     if (!idMap.has(id)) idMap.set(id, `generated-${idMap.size + 1}`);
     return idMap.get(id);
@@ -100,10 +100,11 @@ export function normalizeHtml(html, JSDOM) {
   const voidTags = new Set(['area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input', 'link', 'meta', 'param', 'source', 'track', 'wbr']);
   const visit = node => {
     if (node.nodeType === 3) return escapeText(node.data.replace(/\s+/g, ' '));
-    if (node.nodeType === 8) return ['', '[', ']', 'v-if'].includes(node.data.trim()) ? '' : `<!--${node.data}-->`;
+    if (node.nodeType === 8) return ['', '[', ']', 'v-if', 'if', 'for', 'slot', 's', 'e', 'teleport start', 'teleport end', 'teleport start anchor', 'teleport anchor', 'dynamic-component', '(', ')', 'keyed'].includes(node.data.trim()) ? '' : `<!--${node.data}-->`;
     if (node.nodeType !== 1) return children(node);
-    const attrs = [...node.attributes].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
-      .map(a => ` ${a.name}="${escapeText(a.name === 'id' || a.name === 'for' || a.name === 'fill' || a.name === 'clip-path' || a.name.startsWith('aria-')
+    const styleValue = node.style ? Array.from(node.style).sort().map(name => name + ':' + node.style.getPropertyValue(name).trim() + (node.style.getPropertyPriority(name) ? '!important' : '')).join(';') : node.getAttribute('style');
+    const attrs = [...node.attributes].map(a => ({ name: a.name, value: a.name === 'style' ? styleValue : a.value })).filter(a => a.name !== 'style' || a.value).filter(a => a.name !== 'class' || a.value.trim()).sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
+      .map(a => ` ${a.name}="${escapeText(a.name === 'class' ? [...new Set(a.value.trim().split(/\s+/))].join(' ') : a.name === 'id' || a.name === 'for' || a.name === 'fill' || a.name === 'clip-path' || a.name.startsWith('aria-')
         || (a.name === 'name' && /^st-tileGroup-(?:\d+|v-\d+(?:-\d+)*)$/.test(a.value))
         ? mask(a.value) : a.value).replace(/"/g, '&quot;')}"`).join('');
     const tag = node.localName;
@@ -112,4 +113,22 @@ export function normalizeHtml(html, JSDOM) {
   // Ignore indentation-only text nodes; retain spaces inside meaningful text.
   const children = node => [...node.childNodes].filter(n => n.nodeType !== 3 || n.data.trim()).map(visit).join('');
   return children(fragment);
+}
+
+// DOM properties do not always reflect into HTML attributes (for example Vue
+// sets video.muted and input.value as properties). Serialize their live state
+// before comparing mounted trees, without altering the running application.
+export function mountedHtml(body, JSDOM) {
+  const clone = body.cloneNode(true);
+  const live = body.querySelectorAll('*'), copied = clone.querySelectorAll('*');
+  for (let i = 0; i < live.length; i++) {
+    const node = live[i], target = copied[i];
+    for (const key of ['checked', 'selected', 'muted']) if (key in node) {
+      const active = node[key] || (key === 'muted' && node.defaultMuted);
+      if (active) target.setAttribute(key, ''); else target.removeAttribute(key);
+    }
+    if (node.localName === 'input' && node.type !== 'file') target.setAttribute('value', node.value);
+    if (node.localName === 'textarea') target.textContent = node.value;
+  }
+  return normalizeHtml(clone.innerHTML, JSDOM);
 }

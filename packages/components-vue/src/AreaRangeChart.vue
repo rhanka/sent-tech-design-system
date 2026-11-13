@@ -49,7 +49,7 @@ function continuePath(
   const full = curve ? buildSmoothPath(pts) : buildLinearPath(pts);
   return `${prefix} L${full.slice(1)}`;
 }
-defineOptions({ name: 'AreaRangeChart' });
+defineOptions({ name: 'AreaRangeChart', inheritAttrs: false });
 const props = withDefaults(defineProps<AreaRangeChartProps>(), {
   data: () => [],
   width: 480,
@@ -238,14 +238,14 @@ const geometry = computed(() => {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="
+    v-bind="{ ...($attrs), class: (
       classNames(
         'st-areaRangeChart',
         'st-areaRangeChart--' + geometry.tone,
         props.class,
       )
-    "
+    ) }"
+
   >
     <div
       class="st-areaRangeChart__visual"

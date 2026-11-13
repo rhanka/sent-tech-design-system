@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:27fb6fddd63018bf03f304dd103540fb31655cb8ddd100c307524841ec577084",
-  "entryDigest": "sha256:61d8ad6562230ffa9ad8b644c086de9423c7290b8cc92818a78a05440f5f4440",
+  "digest": "sha256:b25795220c0715e5c49207ae9074fa89203d90b27328cf03f9efda18c6101c9f",
+  "entryDigest": "sha256:b74c06cea6f0cd13f899cf6f2ab359ba95d6bdfe8ac5597eb8fc99f7c165d32c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

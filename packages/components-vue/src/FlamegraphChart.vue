@@ -135,7 +135,7 @@ const cellChars = (cell: Cell): number => charsFor(cell.width);
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-flamegraphChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-flamegraphChart', props.class)) }" >
     <div class="st-flamegraphChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${resolvedWidth} ${computedHeight}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <g v-for="cell in cells" :key="cell.key" class="st-flamegraphChart__node">

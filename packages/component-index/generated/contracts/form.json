@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:f48fd708dd884dc7b703c8782913805d43c291571214afa15d06556389b3846a",
-  "entryDigest": "sha256:0c08ee111a8d9f71095422a89b2ae7d99ab2286b10d1d328c3dff434d6578e05",
+  "digest": "sha256:92ec3021ca721433a55b6c4efa51fb494287f456268f28f1e3ef25fac1a5c6eb",
+  "entryDigest": "sha256:d201a636d2bf13353aa32a2c86cee8b4d12018273e0e3a7a21b4976989f84e28",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

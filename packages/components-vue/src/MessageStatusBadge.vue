@@ -37,7 +37,7 @@ const label = computed(() =>
 </script>
 
 <template>
-  <span v-bind="$attrs" :class="classNames('st-messageStatusBadge', `st-badge st-badge--${resolvedTone}`, props.class)">
+  <span v-bind="{ ...($attrs), class: (classNames('st-messageStatusBadge', `st-badge st-badge--${resolvedTone}`, props.class)) }" >
     <span class="st-messageStatusBadge__dot" aria-hidden="true" />{{ label }}
   </span>
 </template>

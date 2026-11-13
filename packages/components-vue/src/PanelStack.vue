@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSlots, useAttrs } from 'vue';
+import { useAttrs } from 'vue';
 import {
   computed,
   onBeforeUnmount,
@@ -56,7 +56,7 @@ function sortByDom(list: Entry[]): Entry[] {
   });
 }
 
-defineOptions({ name: 'PanelStack' });
+defineOptions({ name: 'PanelStack', inheritAttrs: false });
 const props = withDefaults(defineProps<PanelStackProps>(), {
   shape: 'sticky-item',
   label: undefined,
@@ -68,7 +68,6 @@ const props = withDefaults(defineProps<PanelStackProps>(), {
   class: undefined,
 });
 const emit = defineEmits<{ expandedChange: [_id: string | null] }>();
-const slots = useSlots();
 const attrs = useAttrs();
 defineSlots<{ default?: () => unknown }>();
 const entries = ref<Entry[]>([]);
@@ -350,11 +349,11 @@ provide<PanelStackContext>(PANEL_STACK_KEY, {
 
 <template>
   <div
-    :style="{
+
+    v-bind="{ ...($attrs), style: [$attrs.style, ({
       '--st-component-panelStack-primaryMinBlockSize': `${effectivePrimaryMinHeight}px`,
-    }"
-    v-bind="$attrs"
-    :class="classNames('st-panelStack', props.class)"
+    })], class: (classNames('st-panelStack', props.class)) }"
+
     :role="'group'"
     :aria-label="props.label"
     ref="stackEl"

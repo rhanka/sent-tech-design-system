@@ -222,7 +222,7 @@ function onNavFocus(index: number) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-ohlcChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-ohlcChart', props.class)) }" >
     <div
       class="st-ohlcChart__visual"
       role="img"

@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d0bff8aefef7cf8582e6d6a3411dee7395cb6f43f53c0eec32e330a8481e149f",
+      "digest": "sha256:623cf50170a13309b48a5f19e6645f73a640abebdaf69eae2b0c4b29ca9487b6",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AspectRatio.vue",
@@ -40,7 +40,7 @@
     "en": "Fixed aspect-ratio container (media, embeds).",
     "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
   },
-  "digest": "sha256:d1faae2883a0b635ab54e202329c6de4731c2544f8e95a49dd5499e663e0b39a",
+  "digest": "sha256:42085d416ed94c652af4d58e2955c56fae61a13a5d413f5e040f321f7cb0f866",
   "displayName": "AspectRatio",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:3147f8da6f17e01734f7eddf2009897855bbcb7d3c3ccb0574b8e39d93a0f8c7",
-  "entryDigest": "sha256:68bd6ef865c659ea5beda5c31406707abdf22aa4304dbb76f8f7f0f8fcec3c0e",
+  "digest": "sha256:95400fde378a500340210959b3bbded6cb48b5a5b00470bf4cc019ac53649ada",
+  "entryDigest": "sha256:2fdcf206312040bbf707f48feab3bed408bc1a7eb4533cf0473de1bdf68323b6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

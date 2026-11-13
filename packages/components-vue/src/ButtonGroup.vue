@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { normalizeStyle, computed, useAttrs } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -19,7 +19,7 @@ export type ButtonGroupProps = {
   class?: string;
 };
 
-defineOptions({ name: 'ButtonGroup' });
+defineOptions({ name: 'ButtonGroup', inheritAttrs: false });
 const props = withDefaults(defineProps<ButtonGroupProps>(), {
   orientation: 'horizontal',
   attached: false,
@@ -35,13 +35,13 @@ const groupStyle = computed<CSSProperties | string | undefined>(() => {
       ? undefined
       : `var(--st-spacing-${props.gap}, ${props.gap * 0.25}rem)`;
   return gapValue != null
-    ? { ...(attrs.style as CSSProperties | undefined), gap: gapValue }
+    ? { ...(normalizeStyle([attrs.style]) as CSSProperties), gap: gapValue }
     : (attrs.style as CSSProperties | undefined);
 });
 </script>
 
 <template>
-  <div
+  <div v-bind="$attrs"
     :class="classNames(
       'st-buttonGroup',
       `st-buttonGroup--${props.orientation}`,

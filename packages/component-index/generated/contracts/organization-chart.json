@@ -1,8 +1,8 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:95aef6020d9d481df58dbe45a9ff36629fef328a30ba3357b5144cac94f6c5e8",
-  "entryDigest": "sha256:1f75c3d270099b8f17ca518bccc2c516640727db5d125a6027fc2e5f79786b5a",
+  "digest": "sha256:5ca2525bfbb9fc9f3759ebc6fb88d7ec1f69952026745d7b2a0904369061b0e7",
+  "entryDigest": "sha256:4786282c5b3a37c82ce880b983bb93958cfa008c0fb126c105beabb1a1e8cbed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

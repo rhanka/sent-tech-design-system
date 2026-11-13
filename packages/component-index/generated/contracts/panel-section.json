@@ -1,8 +1,8 @@
 {
   "componentId": "panel-section",
   "contractSource": "derived",
-  "digest": "sha256:6483b70eb9de098cb702889ebd517d6b56c4ef4490cbce277e512e3ead24e7dd",
-  "entryDigest": "sha256:08b5947c5ab72f22e7a688846da21af35c0dcc3fe5bc2f8b08a505f92f5089c8",
+  "digest": "sha256:dc24f0a39d95efc937124a3b606720cefa06a0394ba92cabb5d844dd84a251f7",
+  "entryDigest": "sha256:478074500129eec7856480d9a798ea51c20043900b722de15c64829dacb10859",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

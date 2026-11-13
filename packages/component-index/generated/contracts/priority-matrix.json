@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:148b28228f10d807367e030916ddc28e904925c51e5484df07a2b7e5d059fe8b",
-  "entryDigest": "sha256:cd954e05836ae9798317f6c660942d77f78e315cc68f2927b7dc69650cc8c04c",
+  "digest": "sha256:c2ae9a604d2f43a4d8bd34dceb352b522c06714ea8564cb7f23cd56bb8724ce1",
+  "entryDigest": "sha256:d9e804c89850b4b64f0185dedb2224bb7de0d03ed60b3885ae1f60c9706835b9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

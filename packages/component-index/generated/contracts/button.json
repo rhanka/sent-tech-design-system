@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:b6ddb6e5f52d521a03eb133f68955c5ee95bcbaa8b04b247424314cb76a6d1bd",
-  "entryDigest": "sha256:f615e2b7019c2a422a4a6ae8e26c75f9a0ffc92f15190def6e5a02ff7d4bbe4f",
+  "digest": "sha256:53239c09e6bbfd67f300b46f0332b058fc82184e85634bf4edbf3330ad8130a0",
+  "entryDigest": "sha256:6bff5487a999a7a51ce3c9c7fa2095d418fdcfebfecbd3252f9ea450bac74108",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

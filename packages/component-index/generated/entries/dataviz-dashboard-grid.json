@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f2faf1e2e3f55100be8ccffecd9ae1f10e29aa2d5083babb6cf72e7881a9e1ff",
+      "digest": "sha256:8248d54c5d857b8437c35791b618589217806997717dfb31f2b204babbd40119",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DashboardGrid.vue",
@@ -40,7 +40,7 @@
     "en": "Serializable panel grid on twelve columns.",
     "fr": "Grille de panneaux sérialisable sur douze colonnes."
   },
-  "digest": "sha256:f286e836cd4ed71f828e62b3eb6414491ae2e8a0c322f75d1e6419f7c407c131",
+  "digest": "sha256:5a1843d8a6d9512e97571bdd911911e24cc4bfd10a5a334356b93c426825a694",
   "displayName": "DashboardGrid (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

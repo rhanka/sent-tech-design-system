@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:2ed58428d8e68980d72dfab9c3b86bbbae639b882396305fdf19f55dab9f878f",
-  "entryDigest": "sha256:7c40872cc5e962114689275d8ca7f94ba969dcdedf8ca75676cdc79f86295631",
+  "digest": "sha256:0f9474d7fc6c7b5c87acba7da9169eced3a15723e3d44ced4b8c3b9c8a8efe6b",
+  "entryDigest": "sha256:beb710145ff324a8d9dc8ebe13ab065ed72fe8b4f989ea1cdfab693a88287c4c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

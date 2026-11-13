@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { normalizeStyle, computed, useAttrs } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
@@ -18,7 +18,7 @@ export type GridProps = {
 };
 
 import { gridTemplateColumns } from './grid-layout.js';
-defineOptions({ name: 'Grid' });
+defineOptions({ name: 'Grid', inheritAttrs: false });
 const props = withDefaults(defineProps<GridProps>(), {
   columns: undefined,
   minItemWidth: undefined,
@@ -33,13 +33,13 @@ const bindings = computed(() => {
     display: 'grid',
     gridTemplateColumns: gridTemplateColumns(props.columns, props.minItemWidth),
     gap: spacingToken(props.gap),
-    ...(attrs.style as CSSProperties | undefined),
+    ...(normalizeStyle([attrs.style]) as CSSProperties),
   };
 
-  return { ...attrs, class: classNames('st-grid', props.class), style };
+  return {  class: classNames('st-grid', props.class), style };
 });
 </script>
 
 <template>
-  <component :is="props.as" v-bind="bindings"><slot /></component>
+  <component :is="props.as" v-bind="{ ...$attrs, ...bindings }"><slot /></component>
 </template>

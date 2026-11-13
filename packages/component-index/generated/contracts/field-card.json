@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:1f308877adbde226f22140f453e59c0669c05be3612baa7d59363668c999c865",
-  "entryDigest": "sha256:a66d2f4cffe755712146168ecf5487cbff7a0fee68cac03653690058d8fd39e7",
+  "digest": "sha256:a93d8aa14b8e1eb9e77ab693703476cca720f32653c3bb2df50b07d52660e231",
+  "entryDigest": "sha256:f1b09aa1e23e171440625299edb55cc6bbaf0ea9c9eae2bd85941095fc2e7723",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

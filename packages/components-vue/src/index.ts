@@ -730,3 +730,5 @@ export type { GraphCanvasProps } from './GraphCanvas.vue';
 export { useGraphEngine } from './useGraphEngine.js';
 export type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec } from './diagramCardModel.js';
 export type { SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from './diagramSceneModel.js';
+
+export { default as CellDecorationIcon, type CellDecorationIconProps } from './CellDecorationIcon.vue';

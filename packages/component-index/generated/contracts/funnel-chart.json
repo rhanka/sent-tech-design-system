@@ -1,8 +1,8 @@
 {
   "componentId": "funnel-chart",
   "contractSource": "derived",
-  "digest": "sha256:92f188b9b8acdc9752504b180c3d133fb6c1c0611e864d6ad7684a47ae52f0c5",
-  "entryDigest": "sha256:10d1c2add761d74279f4351226f7a8d015a04752f7345e08dc7697143a77ee0b",
+  "digest": "sha256:1ea135129c2623fb6f0346e68bd2d82c9c04d2eb583160dcea78a1108137e096",
+  "entryDigest": "sha256:bc1da8d5b0155935ca1afc6ec8bc03e0a79b094234bd30e8d8084c3463f549f2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

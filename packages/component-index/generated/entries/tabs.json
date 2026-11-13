@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d5367f597080857e2d48f354b1b5d1234ca692bb7b884f5862b1e85490dd102f",
+      "digest": "sha256:71472ba79b6ccf365aa1c22d8263863b7fd7cce9ba39d52639bea03989bcd1a6",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tabs.vue",
@@ -40,7 +40,7 @@
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:089902352a9517e488f0ccea95cc0d67e2ca459493f35521c2f934e03f92b7fa",
+  "digest": "sha256:f9e4bd07d8029b81b5fadc0b60ea0301a1a8184c6f318912cd3173f7a077e6f3",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

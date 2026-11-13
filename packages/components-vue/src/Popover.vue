@@ -60,7 +60,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <span v-bind="$attrs" ref="hostRef" :class="classNames('st-popover-host', props.class)" @click="setOpen(true)">
+  <span v-bind="{ ...($attrs), class: (classNames('st-popover-host', props.class)) }" ref="hostRef"  @click="setOpen(true)">
     <slot v-if="$slots.trigger" name="trigger" />
     <slot v-else />
     <section
@@ -69,7 +69,7 @@ onUnmounted(() => {
       role="dialog"
       :aria-label="props.label ?? props.content ?? 'Popover'"
     >
-      <template v-if="props.content">{{ props.content }}</template>
+      <template v-if="props.content != null">{{ props.content }}</template>
       <slot v-else name="content" />
     </section>
   </span>

@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:683a448d8d51c9c874a925e750ccd86850687af0d482e0f898f1be520bb0ea25",
-  "entryDigest": "sha256:450fa4fcefafd7b65d22383095c8e7f6a40f075a78882b8a949deb4e41985ab5",
+  "digest": "sha256:d95f2abadbcd529ebaab7d1b7a291e67e8a232d5d398b4c5edf4fe987ea3127e",
+  "entryDigest": "sha256:d437fe5e13bad373ead8723bfc47b976425cf6cf8e8b49df733b59c4689e1d69",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -282,8 +282,7 @@
       ],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -345,9 +344,29 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/MessageAction"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "action",
+              "index"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d1dc61069f36e225eb90dc1a4d0a38527b1b2a699e271a609d511631369b0bea",
+        "declarationDigest": "sha256:875191c10b57aeb0579778726f088514777353f08f77a0265722a15edf76e65d",
         "declarationPath": "packages/components-vue/dist/MessageActions.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",

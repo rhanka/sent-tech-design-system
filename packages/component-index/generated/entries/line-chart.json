@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:0b4738aefafa3f15d4b65dc4611f4b7c92e60015eeb57ad0420454c50a3a1bac",
+      "digest": "sha256:65547804d3a5ec2674f30017e2993fd19fce372f04c31288be161be4444f4d24",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LineChart.vue",
@@ -40,7 +40,7 @@
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:12824cb4fbe76583979b7b78dfb22acd4cffd5a6a1451069be5ad86738de9a44",
+  "digest": "sha256:c9a878d64eddeedd7740eb1a2a26adf3b728cac754379a4c4fe8988da0f689d8",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

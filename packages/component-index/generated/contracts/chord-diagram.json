@@ -1,8 +1,8 @@
 {
   "componentId": "chord-diagram",
   "contractSource": "derived",
-  "digest": "sha256:505a1d07a158e3288165fb843a5e29b856f9c3d697103dc3e3f998fcf11039b1",
-  "entryDigest": "sha256:86dacf8fdb261637d97279b850a9d33de655db7117a37915160d9638d919ebaa",
+  "digest": "sha256:acb6a0dbde01f38bb184b9e3c11191f0cf2786e8dd34e65a60d4fc7f09d01bda",
+  "entryDigest": "sha256:e18ae0fbc3387a32adef9f9b4789ef812a71b950cf0ea898673cd07183f92232",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

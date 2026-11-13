@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:3e18dddcc6f79897f02fb9e05e1fef85fdbd67ce059a808ce86777810da1154a",
+      "digest": "sha256:3c1926d2e40bbfcacdb925c177b4bd001dada1781868ce0f96dd7e7f4a8360c7",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Quote.vue",
@@ -40,7 +40,7 @@
     "en": "Editorial blockquote with author and source.",
     "fr": "Citation éditoriale (blockquote) avec auteur et source."
   },
-  "digest": "sha256:b4ecb6990b64100bba1d59ac5995afb8ffcb4939c69e1095141a5dea6b66748c",
+  "digest": "sha256:edcbf521a090af93f00a6febfcdac6396ebb49b01d819ba02cb805da368396b1",
   "displayName": "Quote",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:0ddf3b35a5d1d24a33aa0e1ee2e46f729ce65eced0ca2c56550c67bcb9301916",
-  "entryDigest": "sha256:e29fda30c032c3882e966df1ac54cb1f870fea631becd415ba801e22c65c2384",
+  "digest": "sha256:ac2a449800624fc76db5504bd1a6822ed2b7d3fc6fb15364eac63c2be0231ea5",
+  "entryDigest": "sha256:5983c309b03288885afd5e9cb68ea53bc3b0fa71779dffcea4e004ae1ca73547",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

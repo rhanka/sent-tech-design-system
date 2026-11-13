@@ -1,8 +1,8 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:65a89d509baf3bdaad03eafa3deb45f1ba7ae67d5546d6304ff3f10d4f11e2e5",
-  "entryDigest": "sha256:347583326f11a82e272b9159632ceb094b43a0db25a9e8fd9ca584504bedc751",
+  "digest": "sha256:674f01e77ccabb26bfabefb638f36b92a81066dbeadb6374969e1289468f97f3",
+  "entryDigest": "sha256:fa614def8d2f93ed1067e333bc41db2be80918811ed7719f024e6ccbd7afc6ad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -19,5 +19,5 @@ const props = withDefaults(defineProps<HiddenProps>(), {
 </script>
 
 <template>
-  <component :is="props.as" v-bind="$attrs" :class="classNames('st-hidden', props.below && `st-hidden--below-${props.below}`, props.above && `st-hidden--above-${props.above}`, props.class)"><slot /></component>
+  <component :is="props.as" v-bind="{ ...($attrs), class: (classNames('st-hidden', props.below && `st-hidden--below-${props.below}`, props.above && `st-hidden--above-${props.above}`, props.class)) }" ><slot /></component>
 </template>

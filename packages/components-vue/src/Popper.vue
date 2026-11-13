@@ -302,10 +302,10 @@ const side = computed(() => splitPlacement(resolvedPlacement.value).side);
 <template>
 
   <Teleport v-if="props.open && props.anchor" to="body" :disabled="!props.portal">
-    <div ref="panel" :class="classNames('st-popper', props.class)" :data-popper-placement="resolvedPlacement"
-      :style="`position: ${props.strategy}; top: ${top}px; left: ${left}px;`"
+    <div ref="panel"  :data-popper-placement="resolvedPlacement"
+
       :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined"
-      v-bind="props.portal ? {} : $attrs">
+      v-bind="{ ...(props.portal ? {} : $attrs), class: (classNames('st-popper', props.class)), style: [props.portal ? undefined : $attrs.style, `position: ${props.strategy}; top: ${top}px; left: ${left}px;`] }">
       <slot />
       <span v-if="props.arrow" class="st-popper__arrow" :data-popper-side="side" aria-hidden="true" />
     </div>

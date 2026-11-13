@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:04258ff36bc378b374e037531465b7ea02aafdd87d0d78cb12822517109503ae",
-  "entryDigest": "sha256:730ed6ba074c070226e3b3d91cffab98b8daff95d19a40226172042309a7c7e4",
+  "digest": "sha256:ed810e80df08d1b5d47fac39af47e1ee0d060f9bd237747086c09af645d41bed",
+  "entryDigest": "sha256:e9b86885621be326e0f3c225866c9225a91b9304e3665e4ca747f66e330410a9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

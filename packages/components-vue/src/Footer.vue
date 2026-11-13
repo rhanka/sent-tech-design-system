@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -19,7 +20,9 @@ const props = withDefaults(defineProps<FooterProps>(), {
   brand: undefined, columns: undefined, links: undefined, legalLinks: undefined,
   copyright: undefined, class: undefined,
 });
-defineSlots<{ brand?: () => unknown; copyright?: () => unknown }>();
+defineSlots<{
+  'link-label'?: (scope: { link: FooterLink }) => unknown;
+  'column-title'?: (scope: { column: FooterColumn; index: number }) => unknown; brand?: () => unknown; copyright?: () => unknown }>();
 
 const groups = computed<FooterColumn[]>(() =>
   props.columns ?? (props.links ? [{ links: props.links }] : []),
@@ -31,20 +34,20 @@ const hasBottom = computed(() =>
 </script>
 
 <template>
-  <footer v-bind="$attrs" :class="classNames('st-footer', props.class)">
+  <footer v-bind="{ ...($attrs), class: (classNames('st-footer', props.class)) }" >
     <div v-if="hasTop || $slots.brand" class="st-footer__top">
-      <div v-if="$slots.brand || props.brand" class="st-footer__brand"><template v-if="$slots.brand"><slot name="brand" /></template><template v-else>{{ props.brand }}</template></div>
+      <div v-if="$slots.brand || props.brand" class="st-footer__brand"><template v-if="$slots.brand"><slot name="brand" /></template><template v-else>{{ scalarContent(props.brand) }}</template></div>
       <div class="st-footer__columns">
         <nav v-for="(group, index) in groups" :key="index">
-          <h2 v-if="group.title">{{ group.title }}</h2>
-          <a v-for="link in group.links" :key="link.href" :href="link.href">{{ link.label }}</a>
+          <h2 v-if="$slots['column-title'] || group.title"><slot v-if="$slots['column-title']" name="column-title" :column="group" :index="index" /><template v-else>{{ scalarContent(group.title) }}</template></h2>
+          <a v-for="link in group.links" :key="link.href" :href="link.href"><slot v-if="$slots['link-label']" name="link-label" :link="link" /><template v-else>{{ scalarContent(link.label) }}</template></a>
         </nav>
       </div>
     </div>
     <div v-if="hasBottom || $slots.copyright" class="st-footer__bottom">
-      <span v-if="$slots.copyright || props.copyright" class="st-footer__copyright"><template v-if="$slots.copyright"><slot name="copyright" /></template><template v-else>{{ props.copyright }}</template></span>
+      <span v-if="$slots.copyright || props.copyright" class="st-footer__copyright"><template v-if="$slots.copyright"><slot name="copyright" /></template><template v-else>{{ scalarContent(props.copyright) }}</template></span>
       <nav v-if="props.legalLinks && props.legalLinks.length > 0" class="st-footer__legal" aria-label="Legal links">
-        <a v-for="link in props.legalLinks" :key="link.href" :href="link.href">{{ link.label }}</a>
+        <a v-for="link in props.legalLinks" :key="link.href" :href="link.href"><slot v-if="$slots['link-label']" name="link-label" :link="link" /><template v-else>{{ scalarContent(link.label) }}</template></a>
       </nav>
     </div>
   </footer>

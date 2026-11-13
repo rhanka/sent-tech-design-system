@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:557a3db68d5e2b87c8801cb8c5de4fbc9babce33123aee0c7b573bfaa3497609",
+      "digest": "sha256:ee715c30aa00c857cb662d9f6dd4d0abbce6ceadf362bdd2894b69357f320145",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StatusHistoryChart.vue",
@@ -40,7 +40,7 @@
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:1c8eb8844f9b7d55bb131a03db6570b3db1e195a277077ab70d2ac470a76b2f6",
+  "digest": "sha256:9fae49cad4ebda2b578796f9b73811ad397f682e844b2e8904381b3417bcf0fa",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [

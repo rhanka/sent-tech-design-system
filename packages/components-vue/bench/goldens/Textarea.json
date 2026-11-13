@@ -30,7 +30,7 @@
     }
   ],
   "sourceSha256": "af543ca7056b3418f21dcdbd06fefa7f4cfae1fda9a998edd478d97a1b7be214",
-  "fixtureSha256": "b379d8c97a3c81afd8db39bd9d6255805c2a535ad46ddd8b01cc8f5005505ed5",
+  "fixtureSha256": "8f06ebd89cb9a863fe60b4f221ab27edf6514f9557de5c506b0a6b751237b2bd",
   "publicExports": [
     {
       "name": "Textarea",

@@ -1,8 +1,8 @@
 {
   "componentId": "geo-chart",
   "contractSource": "derived",
-  "digest": "sha256:74c8bbef8e2d8da72e7e2c472196917388e7dec41aa47bac585dd0bfa2553972",
-  "entryDigest": "sha256:25ab7b47b4a9141e077c729e6fd2095a7cfa9f1625b399f0d566b78a0c119298",
+  "digest": "sha256:047f350cf91d0bec47e454eb3ef99236dbcfdd6aa7a1b1c93aa797c02dac1423",
+  "entryDigest": "sha256:0b34371ddb726503bc4c48d3d3807d66bbcb7ff5974b9f6a2500b26fb1792e79",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

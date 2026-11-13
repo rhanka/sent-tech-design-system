@@ -21,7 +21,7 @@ export type WizardProps = {
   class?: string;
 };
 
-defineOptions({ name: 'Wizard' });
+defineOptions({ name: 'Wizard', inheritAttrs: false });
 const props = withDefaults(defineProps<WizardProps>(), {
   stepperLabel: 'Progress', currentStep: 0, stepTitle: undefined, cancelLabel: 'Cancel',
   backLabel: 'Back', nextLabel: 'Next', finishLabel: 'Finish', isLast: false,
@@ -32,7 +32,7 @@ defineSlots<{ default?: () => unknown }>();
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-wz', props.class),
 }));
 
@@ -56,7 +56,7 @@ function onFinish() {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-wz__stepper">
       <p class="st-wz__stepper-label">{{ props.stepperLabel ?? 'Progress' }}</p>
       <ol class="st-stepper" :aria-label="props.stepperLabel ?? 'Progress'">

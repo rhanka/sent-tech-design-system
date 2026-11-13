@@ -57,3 +57,13 @@ test('worked examples compile with the house options in classic and Vapor', () =
     for (const mode of ['classic', 'vapor']) assert(compileSfc(source, resolve(src, `${name}.vue`), mode).length > 0);
   }
 });
+test('Vue runtime markers, empty classes and duplicate tokens do not change rendered HTML',()=>{
+  assert.equal(normalize('<div class="a a"><!--if--><!--for--><!--slot--><!--keyed--><!--dynamic-component--><!--(--><!--)--></div>'),normalize('<div class="a"></div>'));
+  assert.equal(normalize('<td class=""></td>'),normalize('<td></td>'));
+  assert.notEqual(normalize('<div><!--caller-note--></div>'),normalize('<div></div>'));
+});
+test('CSS declarations compare by parsed values while changed properties and priorities remain significant',()=>{
+  assert.equal(normalize('<div style="color: red; display: flex;"></div>'),normalize('<div style="display:flex;color:red"></div>'));
+  assert.notEqual(normalize('<div style="color:red!important"></div>'),normalize('<div style="color:red"></div>'));
+  assert.notEqual(normalize('<div style="margin-left:1px"></div>'),normalize('<div style="margin-left:2px"></div>'));
+});

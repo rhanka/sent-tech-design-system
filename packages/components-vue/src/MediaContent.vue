@@ -34,7 +34,7 @@ const hasCaption = computed(() => Boolean(props.title || props.caption || props.
 </script>
 
 <template>
-  <figure v-bind="$attrs" :class="classNames('st-mediaContent', props.class)">
+  <figure v-bind="{ ...($attrs), class: (classNames('st-mediaContent', props.class)) }" >
     <div class="st-mediaContent__media" :style="{ '--st-mediaContent-ratio': props.aspectRatio }">
       <video
         v-if="hasMedia && props.mediaKind === 'video'"

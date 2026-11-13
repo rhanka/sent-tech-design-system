@@ -19,5 +19,5 @@ const props = withDefaults(defineProps<ButtonProps>(), {
 </script>
 
 <template>
-  <button v-bind="$attrs" :type="props.type" :disabled="props.disabled" :class="classNames('st-button', `st-button--${props.variant}`, `st-button--${props.size}`, props.class)"><slot /></button>
+  <button v-bind="{ ...($attrs), class: (classNames('st-button', `st-button--${props.variant}`, `st-button--${props.size}`, props.class)) }" :type="props.type" :disabled="props.disabled" ><slot /></button>
 </template>

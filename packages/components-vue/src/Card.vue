@@ -15,7 +15,7 @@ const props = withDefaults(defineProps<CardProps>(), {
 
 <template>
   <section
-    v-bind="$attrs"
-    :class="classNames('st-card', props.interactive && 'st-card--interactive', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-card', props.interactive && 'st-card--interactive', props.class)) }"
+
   ><slot /></section>
 </template>
