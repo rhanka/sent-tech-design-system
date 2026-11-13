@@ -142,7 +142,7 @@ describe("second cascade review regressions", () => {
     expect(menu.rootLabel).toBeNull();
     attrs.clear();
     expect(menu.rootLabel).toBe("Menu");
-    expect(Object.keys((Menu as any).ɵcmp.inputs).sort()).toEqual(["class", "dense", "id", "items", "role", "submenuSide"]);
+    expect(Object.keys((Menu as any).ɵcmp.inputs).sort()).toEqual(["class", "dense", "items", "role", "submenuSide"]);
   });
 
   it.each([0, 1, 2])("AC-13: Up/Down/Home/End wrap within level %i, skipping disabled rows", (depth) => {
