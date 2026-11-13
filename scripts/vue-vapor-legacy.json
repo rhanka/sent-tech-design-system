@@ -196,7 +196,6 @@
   "packages/components-vue/src/TreegraphChart.ts",
   "packages/components-vue/src/TreemapChart.ts",
   "packages/components-vue/src/Typography.ts",
-  "packages/components-vue/src/UnorderedList.ts",
   "packages/components-vue/src/UtilityPanel.ts",
   "packages/components-vue/src/VariablePieChart.ts",
   "packages/components-vue/src/VectorFieldChart.ts",
