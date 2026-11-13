@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:a0bbd07842f3c23441ac9f97310a675711c9b4da0f481143eeea263a6d0586b2",
+  "contractsRevision": "sha256:14c54d2ae288d1723b2f6d6cd981217d00cb9d805a47665afca48cbe00dec42b",
   "counts": {
     "byFramework": {
       "angular": {
@@ -2803,8 +2803,8 @@
         "vue": "complete"
       },
       "componentId": "web-frame",
-      "contractDigest": "sha256:9b88758183032eebaf25de1027070b51b415d66788422b8b19fb55e57f5b7693",
-      "entryDigest": "sha256:96c4605c19b1eeba62227e647fb163130afbd6f94847ff9770a429d1f3f2c01b",
+      "contractDigest": "sha256:79bb9f9116b35ec42e49f37444c0bd1d404aef7ee7c72d593e4430b544f75729",
+      "entryDigest": "sha256:85217da3f474fcda231d1e0b21faf279abbc38a7419f73166f6de353ecf819db",
       "path": "contracts/web-frame.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "501e02978f498193c52eda686c78dadd2ee7ebd8"
+  "sourceCommit": "d4486174252c0e4eb50cefdde1032f5182dc07d9"
 }
