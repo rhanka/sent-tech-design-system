@@ -83,12 +83,12 @@ export { default as PaginationNav } from "./PaginationNav.vue";
 export type { PaginationNavProps } from "./PaginationNav.vue";
 export { default as PasswordInput } from "./PasswordInput.vue";
 export type { PasswordInputProps, PasswordInputSize } from "./PasswordInput.vue";
-export { ProgressBar } from "./ProgressBar.js";
+export { default as ProgressBar } from "./ProgressBar.vue";
 export type {
   ProgressBarProps,
   ProgressBarTone,
   ProgressBarSize,
-} from "./ProgressBar.js";
+} from "./ProgressBar.vue";
 export { ProgressIndicator } from "./ProgressIndicator.js";
 export type {
   ProgressIndicatorProps,
