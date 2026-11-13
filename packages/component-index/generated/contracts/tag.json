@@ -1,7 +1,7 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:d5df73035cc8805b5dcb90d0952b69ba8f5fa2bdc8db3a478996723eb1b05f3e",
+  "digest": "sha256:d1944397b355dc649129002c6e1102bef7979466a665facd7b7d861563f3f336",
   "entryDigest": "sha256:02ae47fb688323c13e0f01fda3728d950b7149314ce8d0f9925deb10fa445016",
   "format": "component-contract/v1",
   "frameworks": {
@@ -234,7 +234,11 @@
       ],
       "events": [
         {
-          "name": "dismiss"
+          "name": "dismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onDismiss",
@@ -278,7 +282,14 @@
         },
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "dismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:549acd1db6013377420df3a0fab6269d40e6bbe0ccb0c171bfdb8421a428f699",
@@ -297,7 +308,6 @@
         }
       ],
       "warnings": [
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]
     }

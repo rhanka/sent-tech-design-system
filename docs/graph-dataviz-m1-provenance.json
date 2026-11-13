@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "54dd4b680a427edf8b2429eab26a0309822b6f8b7fdc0ea18ba138987ae4ad27",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci"
+      "destinationSha256": "aae9f63b6cfc276d363695071ea1c33596e9d5304d8e922ed873d282d5085b06",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release"
     },
     {
       "repository": "dataviz",
