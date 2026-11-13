@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "ChatComposer",
+  "sourceRevision": "24f81e3bbbf90ddb2f6ae54c8ad3812f83b68e4e",
+  "source": "src/ChatComposer.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<form class=\"st-chatComposer\"><div class=\"st-chatComposer__body\"><div class=\"st-chatComposer__inputShell\"><textarea class=\"st-chatComposer__textarea st-chatComposer__input\" placeholder=\"Message\"></textarea></div></div><div class=\"st-chatComposer__toolbar\"><div class=\"st-chatComposer__actions st-chatComposer__actions--left\"></div><div class=\"st-chatComposer__actions st-chatComposer__actions--right\"><button class=\"st-button st-button--primary st-button--md\" disabled=\"\" type=\"submit\"><svg aria-hidden=\"true\" class=\"lucide lucide-send-icon lucide-send\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>Send</button></div></div></form>"
+    },
+    {
+      "id": "with-value",
+      "html": "<form class=\"st-chatComposer\"><div class=\"st-chatComposer__body\"><div class=\"st-chatComposer__inputShell\"><textarea class=\"st-chatComposer__textarea st-chatComposer__input\" placeholder=\"Message\">Hello there</textarea></div></div><div class=\"st-chatComposer__toolbar\"><div class=\"st-chatComposer__actions st-chatComposer__actions--left\"></div><div class=\"st-chatComposer__actions st-chatComposer__actions--right\"><button class=\"st-button st-button--primary st-button--md\" type=\"submit\"><svg aria-hidden=\"true\" class=\"lucide lucide-send-icon lucide-send\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>Send</button></div></div></form>"
+    },
+    {
+      "id": "custom",
+      "html": "<form class=\"st-chatComposer consumer\" data-bench=\"composer\" style=\"color:red;\"><div class=\"st-chatComposer__body\"><div class=\"st-chatComposer__inputShell\"><textarea class=\"st-chatComposer__textarea st-chatComposer__input\" placeholder=\"Write…\">Draft</textarea></div></div><div class=\"st-chatComposer__toolbar\"><div class=\"st-chatComposer__actions st-chatComposer__actions--left\"></div><div class=\"st-chatComposer__actions st-chatComposer__actions--right\"><button class=\"st-button st-button--primary st-button--md\" type=\"submit\"><svg aria-hidden=\"true\" class=\"lucide lucide-send-icon lucide-send\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>Post</button></div></div></form>"
+    },
+    {
+      "id": "with-slot",
+      "html": "<form class=\"st-chatComposer\"><div class=\"st-chatComposer__body\"><div class=\"st-chatComposer__inputShell\"><textarea class=\"st-chatComposer__textarea st-chatComposer__input\" placeholder=\"Message\">Hi</textarea></div></div><div class=\"st-chatComposer__toolbar\"><div class=\"st-chatComposer__actions st-chatComposer__actions--left\"><button type=\"button\">Attach</button><button type=\"button\">Emoji</button></div><div class=\"st-chatComposer__actions st-chatComposer__actions--right\"><button class=\"st-button st-button--primary st-button--md\" type=\"submit\"><svg aria-hidden=\"true\" class=\"lucide lucide-send-icon lucide-send\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>Send</button></div></div></form>"
+    },
+    {
+      "id": "whitespace",
+      "html": "<form class=\"st-chatComposer\"><div class=\"st-chatComposer__body\"><div class=\"st-chatComposer__inputShell\"><textarea class=\"st-chatComposer__textarea st-chatComposer__input\" placeholder=\"Message\"></textarea></div></div><div class=\"st-chatComposer__toolbar\"><div class=\"st-chatComposer__actions st-chatComposer__actions--left\"></div><div class=\"st-chatComposer__actions st-chatComposer__actions--right\"><button class=\"st-button st-button--primary st-button--md\" disabled=\"\" type=\"submit\"><svg aria-hidden=\"true\" class=\"lucide lucide-send-icon lucide-send\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z\"></path><path d=\"m21.854 2.147-10.94 10.939\"></path></svg>Send</button></div></div></form>"
+    }
+  ],
+  "sourceSha256": "94461e05924f6b4860bff10e2a6608904a91bb5d681835ccf5121be21ededcb7",
+  "fixtureSha256": "e7225a40f655e1329187be4de34833a17b41f0a5cd1b8003334ca2d0b91e3d74",
+  "publicExports": [
+    {
+      "name": "ChatComposer",
+      "typeOnly": false
+    },
+    {
+      "name": "ChatComposerProps",
+      "typeOnly": true
+    }
+  ]
+}
