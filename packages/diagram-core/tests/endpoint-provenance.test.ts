@@ -119,10 +119,67 @@ describe("P2 ordered package lift", () => {
     link(f, "a-part", "partOf", "p", "nested"); link(f, "next", "partOf", "nested", "repo");
     link(f, "z-manage", "managedIn", "p", "repo"); expect(validate(f)).toEqual([]);
   });
+  it("revisits a cycle-pruned suffix when another branch permits its continuation", () => {
+    const f = single("p2", "repo", ["z", "bc", "ca", "exit"]);
+    for (const node of ["a", "b", "c"]) f.d.entities[entityRef(node)] = ent(node, f.profile.id, "package");
+    link(f, "a", "partOf", "p", "a"); link(f, "z", "partOf", "p", "b");
+    link(f, "ac", "managedIn", "a", "c"); link(f, "bc", "managedIn", "b", "c");
+    link(f, "ca", "managedIn", "c", "a"); link(f, "exit", "deployedAs", "a", "repo");
+    f.profile = { ...f.profile, chainPredicates: [{ ...f.profile.chainPredicates![1]!, alternatives: [{
+      steps: [
+        { relationTypes: ["partOf"], direction: "forward", repeat: "one" },
+        { relationTypes: ["managedIn"], direction: "forward", repeat: "oneOrMore" },
+        { relationTypes: ["deployedAs"], direction: "forward", repeat: "one" },
+      ], endTypes: ["repo"],
+    }] }] };
+    // a -> c -> a closes the first branch before its mandatory repeat can
+    // finish at a. b -> c -> a can finish there and take the exit to repo.
+    expect(validate(f)).toEqual([]);
+  });
+  it.each(["parallel", "diamond", "parallel-cycle", "diamond-cycle"])("bounds work on 30 layers of %s routes and keeps the first witness", (shape) => {
+    const f = single("p2", "repo", []);
+    const values: string[] = [];
+    const size = 30;
+    for (let i = 0; i < size; i++) {
+      const source = i === 0 ? "p" : `join${i - 1}`;
+      const target = i === size - 1 ? "repo" : `join${i}`;
+      if (target !== "repo") f.d.entities[entityRef(target)] = ent(target, f.profile.id, "package");
+      for (const branch of ["b", "a"]) {
+        const id = `${branch}${i}`;
+        const intermediate = `${branch}node${i}`;
+        if (shape.startsWith("diamond")) {
+          f.d.entities[entityRef(intermediate)] = ent(intermediate, f.profile.id, "package");
+          link(f, id, "partOf", source, intermediate);
+          link(f, `${id}end`, "partOf", intermediate, target);
+        } else link(f, id, "partOf", source, target);
+      }
+      values.push(`a${i}`);
+      if (shape.startsWith("diamond")) values.push(`a${i}end`);
+      if (shape.endsWith("cycle") && target !== "repo") link(f, `cycle${i}`, "partOf", target, "p");
+    }
+    hops(f, values);
+    // Count document reads rather than elapsed time; abort a regressed walk
+    // promptly instead of enumerating 2**30 successful routes.
+    let reads = 0;
+    const budget = size * 100;
+    f.d.entities = new Proxy(f.d.entities, {
+      get(target, key, receiver) {
+        if (++reads > budget) throw new Error("chain traversal exceeded entity-read budget");
+        return Reflect.get(target, key, receiver);
+      },
+    });
+    expect(validate(f)).toEqual([]);
+    expect(reads).toBeLessThanOrEqual(budget);
+  });
 });
 
 describe("P3 first drawn external API lift", () => {
   it("AC-09 accepts the drawn exposer on a proven external chain", () => expect(validate(single("p3"))).toEqual([]));
+  it("AC-09 accepts the drawn exposer without an onward external chain", () => {
+    const f = single("p3");
+    delete f.d.relations[relationRef("parent")];
+    expect(validate(f)).toEqual([]);
+  });
   it("AC-10 accepts the drawn external system when the exposer is undrawn", () => expect(validate(externalFixture())).toEqual([]));
   it("AC-11 refuses lifting past an earlier drawn exposer", () => {
     const f = externalFixture(); draw(f, "svc"); refusal(f, "chain-not-proven", { earlierDrawn: "entity:svc" });

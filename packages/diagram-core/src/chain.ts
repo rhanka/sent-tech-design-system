@@ -83,17 +83,29 @@ export function createChainValidator(
     }
   }
   /** Iterative DFS with branch-local (entity, step) visits and shared path trails. */
-  function* walk(profile: Profile, start: EntityRef, path: ChainPath, excluded: RelationRef): Generator<Walk> {
+  function* walk(profile: Profile, start: EntityRef, path: ChainPath, excluded: RelationRef, drawnPrefix = false): Generator<Walk> {
     if (document.entities[start]?.profile !== profile.id || path.steps.length === 0) return;
     interface Move { node: EntityRef; step: number; used: boolean; edge?: Edge; prefixEnd: boolean }
-    interface Frame extends Move { entered: boolean; moves?: Generator<Move>; key?: string }
+    interface Frame extends Move { entered: boolean; moves?: Generator<Move>; key?: string; memoKey?: string; blockers?: Set<string> }
     const frames: Frame[] = [{ node: start, step: 0, used: false, prefixEnd: false, entered: false }];
-    const visiting = new Map<number, Set<EntityRef>>();
+    const visiting = new Set<string>();
+    const completed = new Map<string, ReadonlySet<string>>();
     const hops: RelationRef[] = [];
     const nodes = [{ entity: start, prefixEnd: false }];
     const pop = (): void => {
       const frame = frames.pop()!;
-      if (frame.key !== undefined) visiting.get(frame.step)?.delete(frame.node);
+      if (frame.key !== undefined) {
+        visiting.delete(frame.key);
+        // A cycle back into this suffix is internal, not an external
+        // ancestor dependency of the completed suffix.
+        frame.blockers?.delete(frame.key);
+        completed.set(frame.memoKey!, frame.blockers ?? new Set());
+      }
+      const parent = frames[frames.length - 1];
+      if (parent !== undefined && frame.blockers !== undefined) {
+        parent.blockers ??= new Set();
+        for (const key of frame.blockers) if (key !== parent.key) parent.blockers.add(key);
+      }
       if (frame.edge !== undefined) { hops.pop(); nodes.pop(); }
     };
     function* moves(frame: Frame, step: ChainStep): Generator<Move> {
@@ -112,13 +124,23 @@ export function createChainValidator(
       const step = path.steps[frame.step]!;
       if (!frame.entered) {
         frame.entered = true;
-        const branch = visiting.get(frame.step) ?? new Set<EntityRef>();
-        if (branch.has(frame.node)) { pop(); continue; }
-        branch.add(frame.node);
-        visiting.set(frame.step, branch);
-        frame.key = frame.node;
+        const key = `${frame.step}:${frame.node}`;
+        if (visiting.has(key)) { frame.blockers = new Set([key]); pop(); continue; }
+        const memoKey = `${frame.used}:${key}`;
+        const blockers = completed.get(memoKey);
+        // All ends of this suffix were already emitted in canonical order.
+        // Reuse only if the ancestors that pruned it are still on this branch;
+        // otherwise another context may permit a previously blocked route.
+        if (blockers !== undefined && [...blockers].every((blocked) => visiting.has(blocked))) {
+          frame.blockers = new Set(blockers);
+          pop(); continue;
+        }
+        frame.memoKey = memoKey;
+        visiting.add(key);
+        frame.key = key;
         const mayStop = frame.used || step.repeat === "zeroOrMore";
-        if (mayStop && frame.step === path.steps.length - 1 && matches(profile, frame.node, path.endTypes, path.endConstraints)) {
+        if ((drawnPrefix && frame.prefixEnd && drawnEntities.has(frame.node)) ||
+            (mayStop && frame.step === path.steps.length - 1 && matches(profile, frame.node, path.endTypes, path.endConstraints))) {
           yield { end: frame.node, hops: [...hops], nodes: [...nodes] };
           pop();
           continue;
@@ -196,7 +218,7 @@ export function createChainValidator(
       expected = members[0]!.route;
     } else if (predicate.selection === "first-drawn") {
       search: for (const alternative of predicate.alternatives) {
-        for (const route of walk(profile, start, alternative, relation.id)) {
+        for (const route of walk(profile, start, alternative, relation.id, true)) {
           const index = route.nodes.findIndex((node) => drawnEntities.has(node.entity));
           if (index === -1) return fail("chain-not-proven");
           const node = route.nodes[index]!;
