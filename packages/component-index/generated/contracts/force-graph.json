@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:6d3eecb231bf382d4bc3ce10807fbd35c87f06a614e77a97d46a2a31b6a0860a",
-  "entryDigest": "sha256:118f3762b4981d8024bd4c420611510fd6650433c6648c44f0c84f9b15a4a5c0",
+  "digest": "sha256:abbcba9b18f93e2d035a0f49802680952f41b0f207ca9bca2b5532f7a46c7b59",
+  "entryDigest": "sha256:ced8097e53645810cb3fe78549b0cd1ae1dd59eb387a760413571d99518bcfdb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -1042,13 +1042,46 @@
       ],
       "events": [
         {
-          "name": "edgeHover"
+          "name": "edgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
         },
         {
-          "name": "mergeComplete"
+          "name": "mergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
         },
         {
-          "name": "nodeHover"
+          "name": "nodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
         },
         {
           "name": "onEdgeHover",
@@ -1105,10 +1138,16 @@
           }
         },
         {
-          "name": "openEntity"
+          "name": "openEntity",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
@@ -1182,10 +1221,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1248,10 +1287,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1386,16 +1425,11 @@
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"edgeHover\": payload not in declaration",
-        "emit \"mergeComplete\": payload not in declaration",
-        "emit \"nodeHover\": payload not in declaration",
-        "emit \"openEntity\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"edgeHover\" and prop \"onEdgeHover\" both listed verbatim",
         "event pair: emits \"mergeComplete\" and prop \"onMergeComplete\" both listed verbatim",
         "event pair: emits \"nodeHover\" and prop \"onNodeHover\" both listed verbatim",

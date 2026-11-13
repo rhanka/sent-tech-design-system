@@ -1,8 +1,8 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:5a057a9a73b93c357aacabb56e6a38a7871b6a88219b40358593bcd3b181619b",
-  "entryDigest": "sha256:29c1daf0bb5b0314dfbe3ca97026c98d5f70810c0b6ab5d779de927b0d44077b",
+  "digest": "sha256:2a8698706fc7a3933b3adbf8bd6a1f95fe8ff451e73ced7117fcc2e43e976676",
+  "entryDigest": "sha256:ea14b8e04206d1392c2cc87b5984374b81c4f85e6cfa31f65ac81a3a18ecddd0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -243,7 +243,7 @@
         "declarationPath": "packages/components-svelte/dist/Input.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InputProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -256,59 +256,52 @@
       "dropped": [],
       "events": [
         {
-          "name": "blur"
+          "name": "blur",
+          "payload": {}
         },
         {
-          "name": "change"
+          "name": "change",
+          "payload": {}
         },
         {
-          "name": "focus"
+          "name": "focus",
+          "payload": {}
         },
         {
-          "name": "input"
+          "name": "input",
+          "payload": {}
         },
         {
           "name": "onBlur",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onFocus",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onInput",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -353,54 +346,77 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onBlur.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "error-text"
         },
         {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "helper-text"
         },
         {
-          "name": "onFocus.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onInput.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "label"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:94a4aa5bfd85feddd4c73094a28df4f441b3eac216ea35f33d3f6f8f1f78cf0a",
-        "declarationPath": "packages/components-vue/dist/Input.d.ts",
+        "declarationDigest": "sha256:f299a190ad873263b5f822d8e87f02874a98e05702cc9794f0865905b53ffa6c",
+        "declarationPath": "packages/components-vue/dist/Input.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InputProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "blur.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "FocusEvent"
+        },
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "focus.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "FocusEvent"
+        },
+        {
+          "kind": "other",
+          "name": "input.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onBlur.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "FocusEvent"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onFocus.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "FocusEvent"
+        },
+        {
+          "kind": "other",
+          "name": "onInput.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
-        "emit \"blur\": payload not in declaration",
-        "emit \"change\": payload not in declaration",
-        "emit \"focus\": payload not in declaration",
-        "emit \"input\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"blur\" and prop \"onBlur\" both listed verbatim",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"focus\" and prop \"onFocus\" both listed verbatim",

@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { AreaRangeChart } from "./index.js";
-import type { AreaRangeChartDatum } from "./AreaRangeChart.js";
+import type { AreaRangeChartDatum } from "./AreaRangeChart.vue";
 
 const data: AreaRangeChartDatum[] = [
   { x: "Jan", low: -4, high: 3 },

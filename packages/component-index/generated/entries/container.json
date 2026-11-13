@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Container.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:a1be1de9c9e4e6d7764f2d9e871c637fcca605aaa64042f3c39b4ba4f545d3fa",
+      "digest": "sha256:0142454ce1090ead5ad3d6d7d24b846073ab3ad0c5ba52486e846886d86c1317",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Container.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Container.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:2ecd98245929958377a1790872df7aeeefc46994140f30af95d3d9d4410d938c",
+  "digest": "sha256:20285ca626b63944c85ce82d1550a0929faecd4918a73de4bd6b50034ad80780",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [

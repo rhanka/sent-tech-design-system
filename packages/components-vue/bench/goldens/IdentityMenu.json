@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "IdentityMenu",
+  "sourceRevision": "358c7b2f5f49556ccfca4bd1ecd0a9a641ddba96",
+  "source": "src/IdentityMenu.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button class=\"st-identityMenu__login\" type=\"button\">Se connecter</button>"
+    },
+    {
+      "id": "authenticated-closed",
+      "html": "<div class=\"st-identityMenu\"><button aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Compte de Jean Dupont\" class=\"st-identityMenu__trigger\" type=\"button\"><span aria-hidden=\"true\" class=\"st-identityMenu__avatar\">J</span><span class=\"st-identityMenu__meta\"><span class=\"st-identityMenu__name\">Jean Dupont</span></span><svg aria-hidden=\"true\" class=\"st-identityMenu__chevron\" fill=\"none\" focusable=\"false\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "authenticated-open",
+      "html": "<div class=\"st-identityMenu\"><button aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"Compte de Jean Dupont\" class=\"st-identityMenu__trigger\" type=\"button\"><span aria-hidden=\"true\" class=\"st-identityMenu__avatar\">J</span><span class=\"st-identityMenu__meta\"><span class=\"st-identityMenu__name\">Jean Dupont</span></span><svg aria-hidden=\"true\" class=\"st-identityMenu__chevron st-identityMenu__chevron--open\" fill=\"none\" focusable=\"false\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><div aria-label=\"Menu de Jean Dupont\" class=\"st-identityMenu__menu\" role=\"menu\" tabindex=\"-1\"><a class=\"st-identityMenu__item\" href=\"#\" role=\"menuitem\" tabindex=\"-1\">Appareils</a><a class=\"st-identityMenu__item\" href=\"#\" role=\"menuitem\" tabindex=\"-1\">Paramètres</a><div aria-hidden=\"true\" class=\"st-identityMenu__divider\" role=\"separator\"></div><button class=\"st-identityMenu__item st-identityMenu__item--danger\" role=\"menuitem\" tabindex=\"-1\" type=\"button\">Se déconnecter</button></div></div>"
+    },
+    {
+      "id": "accordion-email",
+      "html": "<div class=\"st-identityMenu st-identityMenu--accordion\"><button aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Compte de jean@acme.test\" class=\"st-identityMenu__trigger\" type=\"button\"><span aria-hidden=\"true\" class=\"st-identityMenu__avatar\">J</span><span class=\"st-identityMenu__meta\"><span class=\"st-identityMenu__name\">jean@acme.test</span><span class=\"st-identityMenu__email\">jean@acme.test</span></span><svg aria-hidden=\"true\" class=\"st-identityMenu__chevron\" fill=\"none\" focusable=\"false\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div class=\"st-identityMenu\"><button aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Compte de A\" class=\"st-identityMenu__trigger\" type=\"button\"><span aria-hidden=\"true\" class=\"st-identityMenu__avatar\">A</span><span class=\"st-identityMenu__meta\"><span class=\"st-identityMenu__name\">A</span></span><svg aria-hidden=\"true\" class=\"st-identityMenu__chevron\" fill=\"none\" focusable=\"false\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    }
+  ],
+  "sourceSha256": "a82cb06ffbd68dcac655f3b82203812b66415a357d83674a16aaded3e1ead3e8",
+  "fixtureSha256": "26494def0040b7758b41ce70e783bd704ea1fd81cdacef2d24e069f99de98c87",
+  "publicExports": [
+    {
+      "name": "IdentityMenu",
+      "typeOnly": false
+    },
+    {
+      "name": "identityInitial",
+      "typeOnly": false
+    },
+    {
+      "name": "IdentityMenuProps",
+      "typeOnly": true
+    },
+    {
+      "name": "IdentityUser",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:ea927706002b7931dcfb22c6a59c8346124d221f238206075dae4f45b06670ce",
-  "entryDigest": "sha256:a65680b677e47f1f0856c7befc3f593b15070dfb94b7ebfc5aff6eba55cf3302",
+  "digest": "sha256:a288bf54948cc9e3b50821409400dfb475d7c703eef52b98d7c1c612608df740",
+  "entryDigest": "sha256:dac2a164768629133d08786d11ba6dd12633a6636bb9c14d523d1282a2fb14ef",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/VectorFieldChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VectorFieldChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -309,11 +309,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:fd38dea36fe0565ceb4e7ee0030ccc0d53701db75f12ff4eacc5f7392327e1ba",
-        "declarationPath": "packages/components-vue/dist/VectorFieldChart.d.ts",
+        "declarationDigest": "sha256:2496d818123b80174f69f4841c8d2b19265fce695393f00542e23ed3661a040c",
+        "declarationPath": "packages/components-vue/dist/VectorFieldChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VectorFieldChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

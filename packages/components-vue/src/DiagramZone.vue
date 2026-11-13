@@ -146,6 +146,7 @@ onMounted(() => {
     }, { immediate: true });
 });
 const descriptionId = useId();
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

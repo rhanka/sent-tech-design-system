@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:f3a6cc8a6fdca734e6a284e8b6aeb3c32eb560ed525a776fc7bd63e7a2e1d874",
-  "entryDigest": "sha256:0f175d5a171602b78f8e3c80f55bf4eef2756646dff2f2737621c5892dbd224d",
+  "digest": "sha256:c910ca9bbe3dd5cc50ed7f2d26297a2fc95af23051a7f776bad38e059ea05858",
+  "entryDigest": "sha256:f45cccabea8fdc9dec00a66466ac51094bc9b1a45800d6982505c28b215a66a0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageActions.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageActionsProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -282,8 +282,7 @@
       ],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -300,8 +299,8 @@
               "label": {},
               "variant": {
                 "enum": [
-                  "default",
-                  "danger"
+                  "danger",
+                  "default"
                 ]
               }
             },
@@ -345,13 +344,33 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/MessageAction"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "action",
+              "index"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:4bdb3ca9f11f6330a050d785ba3478086bd924a4a78693c2e0e79444fd5c0188",
-        "declarationPath": "packages/components-vue/dist/MessageActions.d.ts",
+        "declarationDigest": "sha256:64dff000870941fe4754b15c9e2565a9fdbe5c6c525de9d1862a0bb2146fbdbd",
+        "declarationPath": "packages/components-vue/dist/MessageActions.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

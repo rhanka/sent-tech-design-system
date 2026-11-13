@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/GanttChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:8d2926cc14433211a2e9758ed6f84138516ed73e714d1abaae0beb09e1a5b0bf",
+      "digest": "sha256:6d68470c2be3a8fa6797f394f172899ee26a28b964cc1d0adef1dd6636605293",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/GanttChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/GanttChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category.",
     "fr": "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie."
   },
-  "digest": "sha256:1948964ead4bce8049a04a467e48b130f9a9749283970fdc0dc3bdefbcb969d1",
+  "digest": "sha256:5c4700a8b9191319eef08a7f27a3d10fc76ec1db257c4ab83fbef65446d3b28b",
   "displayName": "GanttChart",
   "format": "component-entry/v1",
   "frameworks": [

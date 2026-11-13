@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { PolygonChart } from "./PolygonChart.js";
+import PolygonChart from "./PolygonChart.vue";
 
 // Polygone fermé rempli reliant des points x/y dans l'ordre fourni.
 const cluster = [

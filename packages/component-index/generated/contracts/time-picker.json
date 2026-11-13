@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:40a6b591289d371c5ac1c7e47c79ebc39ef40ced9b773f1dfcfcbd3ea5be1f67",
-  "entryDigest": "sha256:9393dd331ad177a2f032e087c31939a0d407b6806c8ef38cece10b44bba622df",
+  "digest": "sha256:e9c72d257874c39dd8c2c753ea663a19e5d753918882d397a9f7f968829d0ed8",
+  "entryDigest": "sha256:5fde084735516338c79e5ec303234b5b8212c2e90f750490bc9e1e69c3f711db",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/TimePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimePickerProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -260,7 +260,10 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "type": "string"
+          }
         },
         {
           "name": "onChange",
@@ -271,12 +274,14 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
@@ -331,27 +336,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:232ea2eb2c42852089818ca59b0f3141d635a2240e38a8d814c6bf21a4808f25",
-        "declarationPath": "packages/components-vue/dist/TimePicker.d.ts",
+        "declarationDigest": "sha256:052beb985a9036b181cf71f8970081dcbc6ee0b85032c03d18a4a006f123fc72",
+        "declarationPath": "packages/components-vue/dist/TimePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimePickerProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
       ]

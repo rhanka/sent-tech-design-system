@@ -98,3 +98,5 @@ export {
 } from "./labels.js";
 export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";
+
+export { FLOW_BADGE_FONT_SIZE, FLOW_BADGE_LINE_HEIGHT, DEFAULT_FLOW_TOKENS, type FlowTokens, type FlowArrow, type FlowBundle, type FlowVisibleTarget } from "./flows.js";

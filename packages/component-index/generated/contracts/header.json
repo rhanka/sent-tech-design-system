@@ -1,8 +1,8 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:b7c48e5918198c853415d99e313b3c351716b85ef07092f7a9574ed29dc516e9",
-  "entryDigest": "sha256:2640137461cc7c353f6b6c29cb47b477025201388590eb98c34513bf7ff46476",
+  "digest": "sha256:fedac530c656b938b917123718f159380a0184d334b06766f7b9f3317475eda1",
+  "entryDigest": "sha256:444326d620e7a35ec23e4d10f6936544053d7cda42f8951be45958779382c268",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -321,7 +321,7 @@
         "declarationPath": "packages/components-svelte/dist/Header.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HeaderProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -332,8 +332,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -361,8 +360,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -415,13 +413,35 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "brand"
+        },
+        {
+          "name": "nav-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/HeaderNavItem"
+              }
+            },
+            "required": [
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:70b70036d3f3da71b0fc6868a4a46451aa89aab325df9a65cd8282df9ba6b70b",
-        "declarationPath": "packages/components-vue/dist/Header.d.ts",
+        "declarationDigest": "sha256:12bef03f9fb1dc1ee582c343db1114b7075679ab7753b3c723b4f35e56e7d567",
+        "declarationPath": "packages/components-vue/dist/Header.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeaderProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

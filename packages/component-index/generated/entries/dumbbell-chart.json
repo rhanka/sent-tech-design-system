@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DumbbellChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1fdae4e9871c141d3c7c7fdd200e09d5b0fe7b604d36d9d51022bc7da2f2a43f",
+      "digest": "sha256:2628c42e71bf676c7107f0bf05637051442d07766bee684377bbf3426e886585",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/DumbbellChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/DumbbellChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Per category, a line connecting a low to a high value with a coloured dot at each end (e.g. before/after, min/max).",
     "fr": "Pour chaque catégorie, une ligne reliant une valeur basse à une valeur haute, avec un cercle teinté à chaque extrémité (ex. avant/après, min/max)."
   },
-  "digest": "sha256:375be5cfde50bec5a8de11fd4bb398e10729fd07063717fae20c6476ac58b62d",
+  "digest": "sha256:feebc48831d7c567d6c80460b35bb4e9d79f8d39ad2dd70c1dcdc8522223989b",
   "displayName": "DumbbellChart",
   "format": "component-entry/v1",
   "frameworks": [

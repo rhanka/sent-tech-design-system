@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:4402fe6c6b18821112f93c859e7299ea8793890e25f7b6e3a1812388c9026242",
-  "entryDigest": "sha256:5ed8d572985f3dd9380713a87723bb25c277cbd3f687393f848b7f4e170610fb",
+  "digest": "sha256:ab3b2d6a340e043cbc6e073fb2d861f4eabd0381b7fc66e1b2777e650f80fb0e",
+  "entryDigest": "sha256:e21e295050edd2ffc81287017cad21112b0b19d9492797be98da9190bd4e3a46",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -225,7 +225,7 @@
         "declarationPath": "packages/components-svelte/dist/Flex.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlexProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -236,8 +236,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -289,13 +288,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:bca532af6ff1dc7cf1466d57cafbd1855eef0083f7896ff3504e5981cc0636d0",
-        "declarationPath": "packages/components-vue/dist/Flex.d.ts",
+        "declarationDigest": "sha256:a8ebd1642a24e31bacb2ae67ccbc305057bb7db6522fa88ea6ec58c07c02ec67",
+        "declarationPath": "packages/components-vue/dist/Flex.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlexProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

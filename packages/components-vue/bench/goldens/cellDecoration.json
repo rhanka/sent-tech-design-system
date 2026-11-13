@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "cellDecoration",
+  "sourceRevision": "9b57d6b7f892a0ff819c97546c9eb000b5a3b520",
+  "source": "src/cellDecoration.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<svg aria-hidden=\"true\" class=\"st-cell__icon\" fill=\"none\" focusable=\"false\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\"><path d=\"M16 7h6v6\"></path><path d=\"m22 7-8.5 8.5-5-5L2 17\"></path></svg>"
+    },
+    {
+      "id": "circle-lines",
+      "html": "<svg aria-hidden=\"true\" class=\"st-cell__icon\" fill=\"none\" focusable=\"false\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"12\"></line><line x1=\"12\" x2=\"12.01\" y1=\"16\" y2=\"16\"></line></svg>"
+    },
+    {
+      "id": "unknown",
+      "html": ""
+    },
+    {
+      "id": "absent",
+      "html": ""
+    }
+  ],
+  "sourceSha256": "59dbfc76d92751fb454ba55d7053e26fed6121c8dda07929a3188991005da3d4",
+  "fixtureSha256": "c3d5a55f718c6cb1b5dbbbf7a8baf953aa4c4cfb933ead58bb663597936782a0",
+  "publicExports": [
+    {
+      "name": "CellDecoration",
+      "typeOnly": true
+    },
+    {
+      "name": "CellDecorationIntent",
+      "typeOnly": true
+    }
+  ]
+}

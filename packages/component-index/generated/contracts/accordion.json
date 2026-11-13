@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:2e835af23cfee8b9ff623f4e085d400217ee6198436e036a0e4fcedbbf9302cb",
-  "entryDigest": "sha256:0d625777489d0c959af067fc7adc31f59ae9c9e2445adacdf1992b14e624cff2",
+  "digest": "sha256:fac4451d975743d00ebaa3184b58f8a5ff3c263c83355bac648fdead62b84ac2",
+  "entryDigest": "sha256:77df2b70f1bdfa13de6b443a7028f63036b53ceacd2162d2e294e531c6df8191",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/Accordion.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AccordionProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -345,19 +345,26 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -436,26 +443,38 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "item-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/AccordionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:f4ff86c237520d074f5570f4d7284fdf78d7418af19a0f3d445007d68e8e636f",
-        "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
+        "declarationDigest": "sha256:1181bd8cc3556129717d691ab501ae435c3529b432e02153918b69d6d34d9483",
+        "declarationPath": "packages/components-vue/dist/Accordion.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

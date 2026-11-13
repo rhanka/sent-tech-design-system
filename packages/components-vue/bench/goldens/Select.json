@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Select",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Select.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><select class=\"st-select st-select--md\" id=\"generated-1\"><option value=\"a\">Alpha</option><option disabled=\"\" value=\"b\">Beta</option><option value=\"c\">Gamma</option></select></label></div>"
+    },
+    {
+      "id": "label-help-selected",
+      "html": "<div class=\"st-field\" name=\"letter\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Letter</span><select class=\"st-select st-select--md\" id=\"generated-1\" name=\"letter\" value=\"c\"><option value=\"a\">Alpha</option><option disabled=\"\" value=\"b\">Beta</option><option value=\"c\">Gamma</option></select></label><span class=\"st-field__help\">Choose one</span></div>"
+    },
+    {
+      "id": "error-small",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Letter</span><select aria-invalid=\"true\" class=\"st-select st-select--sm\" id=\"generated-1\"><option value=\"a\">Alpha</option><option disabled=\"\" value=\"b\">Beta</option><option value=\"c\">Gamma</option></select></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "disabled-large",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Disabled</span><select class=\"st-select st-select--lg\" disabled=\"\" id=\"generated-1\" value=\"a\"><option value=\"a\">Alpha</option><option disabled=\"\" value=\"b\">Beta</option><option value=\"c\">Gamma</option></select></label></div>"
+    },
+    {
+      "id": "default-slot-overrides-options",
+      "html": "<div aria-label=\"Custom letters\" class=\"st-field consumer\" style=\"color:red;\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Grouped</span><select aria-label=\"Custom letters\" class=\"st-select st-select--md\" id=\"generated-1\" style=\"color: red\" value=\"x\"><optgroup label=\"Group\"><option value=\"x\">Extra</option><option disabled=\"\" value=\"y\">Unavailable</option></optgroup></select></label></div>"
+    },
+    {
+      "id": "empty-invalid",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><select aria-invalid=\"true\" class=\"st-select st-select--md\" id=\"generated-1\"></select></label></div>"
+    }
+  ],
+  "sourceSha256": "870e88022b0baa8a0458fea7819cba125bed51d4219657eafb98db91483018dc",
+  "fixtureSha256": "c0e45cfd629f2864604412aaf18c14b241ea3abbdcc8435b8fcb965e97fdf008",
+  "publicExports": [
+    {
+      "name": "Select",
+      "typeOnly": false
+    },
+    {
+      "name": "SelectProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SelectSize",
+      "typeOnly": true
+    },
+    {
+      "name": "SelectOption",
+      "typeOnly": true
+    }
+  ]
+}

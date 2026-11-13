@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:bf4d4be86c08bac3bbf206cd314d2a16b040e6d8ec75ac38ec784083b7563838",
-  "entryDigest": "sha256:ec4c54de5c12b652b20364e0987ee8151b0c9560b45378609d12781f61ecef8e",
+  "digest": "sha256:d3ef7b5d6d05e467f44d3d32282998d824d27f156a0425bdfb6893b9f77860aa",
+  "entryDigest": "sha256:9fb14871d957f94e2bb048d4495e99d7f4574e9e27621d2550b54c852b895a0f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Button.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ButtonProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -204,8 +204,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -242,13 +241,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:99162332f338de33d267748a42e3e68ff92fd98b3efeebec0680539c55e90f26",
-        "declarationPath": "packages/components-vue/dist/Button.d.ts",
+        "declarationDigest": "sha256:bcdf565febd821954fc664333c90281b8129cc4d4494f4f4d2469f34c9e2c26e",
+        "declarationPath": "packages/components-vue/dist/Button.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

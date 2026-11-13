@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WordCloudChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ded5f14232b0c15e8409f704d0971a63c377b5060efd3ddb986b4a46101d8d4a",
+      "digest": "sha256:29dfe91879f4c104c5aa922a9ada35f92e3a22124a48698001f8cb403fd5f7e3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/WordCloudChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/WordCloudChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap.",
     "fr": "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement."
   },
-  "digest": "sha256:553c69ac9b6dcd655802035ee4e785897544a83fb6969b447332c6002fe896d0",
+  "digest": "sha256:8af4d0c386a44b6cef9347f296f6f953ecce2df119341d4abea5837783523b00",
   "displayName": "WordCloudChart",
   "format": "component-entry/v1",
   "frameworks": [

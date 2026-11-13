@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:14b01569b99847751271713012cb3d2f006f58af1f5b41e80da0a1ff69471182",
-  "entryDigest": "sha256:fa5886e672b3dde69ccf65388935f41609416c1c1dc2f63323f9bdb9e9535c0b",
+  "digest": "sha256:37972781454bfb8b7422d0b2a777b17a6b5dd7107d0df6086c15ced5ea0d2a5c",
+  "entryDigest": "sha256:40ce764abb3e91d4707eb61b334e09a89659cff2c6e5679fe5bad260a44f4d53",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-svelte/dist/Breadcrumb.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BreadcrumbProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -207,8 +207,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -223,9 +222,6 @@
               },
               "label": {}
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -257,13 +253,33 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/BreadcrumbItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:66aafe729a2fe165321ef345bccf96a90e8c6baa07f1d3db4123699cf493a038",
-        "declarationPath": "packages/components-vue/dist/Breadcrumb.d.ts",
+        "declarationDigest": "sha256:3a6c5473a914869d9d4aa2645c179194c17a54b74e1ec53dfdcd2a7e2b8abf14",
+        "declarationPath": "packages/components-vue/dist/Breadcrumb.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BreadcrumbProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

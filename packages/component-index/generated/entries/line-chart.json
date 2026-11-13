@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LineChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:41379119d4720faadfbb89855ca803f8083a8d5198fe05ef078f9ec4c0918ff6",
+      "digest": "sha256:65547804d3a5ec2674f30017e2993fd19fce372f04c31288be161be4444f4d24",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/LineChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/LineChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:d4151da28f51dc8e2944af856160684e031812888b0e8ad5dc8525c9debec194",
+  "digest": "sha256:9b955d28e7dc6c99136129f824426430ad668410281907154db12b01424792d9",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

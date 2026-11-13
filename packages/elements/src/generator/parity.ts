@@ -227,7 +227,12 @@ export function runParityGuard(
       continue;
     }
 
-    const frameworkPath = `${repoRoot}/${source.file}`;
+    // SFC props are exported by vue-tsc's declarations; keep the recorded
+    // source path pointing at the component consumers and reviewers compare.
+    const schemaFile = source.framework === "vue" && source.file.endsWith(".vue")
+      ? source.file.replace("/src/", "/dist/") + ".d.ts"
+      : source.file;
+    const frameworkPath = `${repoRoot}/${schemaFile}`;
     if (source.role === "no-counterpart") {
       rows[source.framework] = {
         status: "no-counterpart",

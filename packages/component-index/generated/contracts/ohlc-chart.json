@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:0f2ceb6138502cc1572a5505fdbc7a0226b590b530ebd7a7c426b0ab1a161c79",
-  "entryDigest": "sha256:fea8fda3feaa8de7e10b221a02130ccc99e15b26ad437ba6e2c9366f2b2480f7",
+  "digest": "sha256:90a5a0ed9ef53799773af60214a8b0b6c491f751b77aaf3e31bdedfdf1672e6b",
+  "entryDigest": "sha256:efe765983e172e733d398ae0c8cfcf6f64110a1039c12a5fd2a4fcb10577ea3e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/OHLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OHLCChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -1283,11 +1283,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:010932e9ec6a27ff6bd5514ce2b44df57418666f562d1d88ed94c46bda664963",
-        "declarationPath": "packages/components-vue/dist/OHLCChart.d.ts",
+        "declarationDigest": "sha256:0fbd76ceaa82f2f099d605e03755afc0d7388c34b553d39b70f07c050122008e",
+        "declarationPath": "packages/components-vue/dist/OHLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OHLCChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:cc6a8fb7297bd03be82a832036df2adf65f8531744b4fb7e2bdd0430865405f6",
-  "entryDigest": "sha256:1b43549a27eaf1c54caaf04b5744974384cbd72e5885b65aae8b715c805742bc",
+  "digest": "sha256:eaf94c72a32428e61f20365d53674021a99df89d899eca3e0ff6f91f0d3dac01",
+  "entryDigest": "sha256:df94b9da7589e69109282f1a339cc8e5dcfe0741337b554e768b066af550994c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DisplaySettingsProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -310,13 +310,15 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "$ref": "#/$defs/DisplaySettingsState"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/DisplaySettingsState"
           }
         }
       ],
@@ -325,6 +327,42 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "additionalProperties": false,
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
           "class": {
@@ -351,12 +389,6 @@
       },
       "replaced": [
         {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "values",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -365,16 +397,15 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d00fd788c74b4b3fc93d52f8aadb8562f6a6cdb5f8c1d2e89c036371932dd7f3",
-        "declarationPath": "packages/components-vue/dist/DisplaySettings.d.ts",
+        "declarationDigest": "sha256:435420b4dbf43050955c97a0585844eeb8c33017dd11022841b17392a1d6ccb1",
+        "declarationPath": "packages/components-vue/dist/DisplaySettings.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DisplaySettingsProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

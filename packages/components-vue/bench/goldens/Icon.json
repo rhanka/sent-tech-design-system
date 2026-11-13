@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Icon",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "source": "src/Icon.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-chevron-down-icon lucide-chevron-down st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg>"
+    },
+    {
+      "id": "variant-1",
+      "html": "<svg aria-label=\"Settings\" class=\"lucide st-icon consumer lucide-settings-icon lucide-settings st-icon consumer\" data-st-icon-stroke=\"prop\" fill=\"none\" focusable=\"false\" height=\"24\" role=\"img\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"3\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg>"
+    },
+    {
+      "id": "variant-2",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-x-icon lucide-x st-icon\" data-bench=\"icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg>"
+    },
+    {
+      "id": "variant-3",
+      "html": "<svg aria-hidden=\"true\" aria-label=\"\" class=\"lucide st-icon lucide-circle-dashed-icon lucide-circle-dashed st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M10.1 2.182a10 10 0 0 1 3.8 0\"></path><path d=\"M13.9 21.818a10 10 0 0 1-3.8 0\"></path><path d=\"M17.609 3.721a10 10 0 0 1 2.69 2.7\"></path><path d=\"M2.182 13.9a10 10 0 0 1 0-3.8\"></path><path d=\"M20.279 17.609a10 10 0 0 1-2.7 2.69\"></path><path d=\"M21.818 10.1a10 10 0 0 1 0 3.8\"></path><path d=\"M3.721 6.391a10 10 0 0 1 2.7-2.69\"></path><path d=\"M6.391 20.279a10 10 0 0 1-2.69-2.7\"></path></svg>"
+    }
+  ],
+  "sourceSha256": "d901c6fa88e17a4eb02c38b056f8590af75dde5da5ec9e8a50a21441cf01c7fd",
+  "fixtureSha256": "717e924c9087ce36af5d351ebb2d3416ebd9e8e7efcb5468697e4f049385c0f8",
+  "publicExports": [
+    {
+      "name": "Icon",
+      "typeOnly": false
+    },
+    {
+      "name": "ICONS",
+      "typeOnly": false
+    },
+    {
+      "name": "ICON_NAMES",
+      "typeOnly": false
+    },
+    {
+      "name": "IconGlyph",
+      "typeOnly": true
+    },
+    {
+      "name": "IconName",
+      "typeOnly": true
+    },
+    {
+      "name": "IconProps",
+      "typeOnly": true
+    }
+  ]
+}

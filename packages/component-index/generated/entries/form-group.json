@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FormGroup.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:250c3853c81bed8c6b26318e7dec9936e163d7c1cb81777c7fecbaf0730c506a",
+      "digest": "sha256:23581f5b8fad69f557fcb0bf2d25f534ec0d6261a7fdaabf107c4402e73c4970",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FormGroup.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/FormGroup.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:dd03146a3b9bf7f932296b0a3b31902eae7e8e43d5b0114575fc8a688f69a7ed",
+  "digest": "sha256:e941c468afcbf163f4e45e2903b3af205ebe6cf52a4453ed1a1e589e73800566",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:f859e95f157df7ad66c40fd0af0cf2775ffd42b02ff9734a85b3f84d4450978f",
-  "entryDigest": "sha256:1948964ead4bce8049a04a467e48b130f9a9749283970fdc0dc3bdefbcb969d1",
+  "digest": "sha256:f36cc8b88c3b4298dd3e0a141d47d5269a2a10148e28b41333bc8c068e7e7ec4",
+  "entryDigest": "sha256:5c4700a8b9191319eef08a7f27a3d10fc76ec1db257c4ab83fbef65446d3b28b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -229,7 +229,7 @@
         "declarationPath": "packages/components-svelte/dist/GanttChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GanttChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -302,11 +302,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:43b01dcec776e38a00a44940f38b1a1a0128553591250e4d20092231772cf5e3",
-        "declarationPath": "packages/components-vue/dist/GanttChart.d.ts",
+        "declarationDigest": "sha256:fa9523452af0e2c77e4d4b38a44a9445e75de4844d2327986f10e089f1268bf7",
+        "declarationPath": "packages/components-vue/dist/GanttChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GanttChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

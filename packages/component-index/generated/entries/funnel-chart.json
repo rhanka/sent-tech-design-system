@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FunnelChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:138b9b77efea72489df348bc3f2162e0f3362f6c8f60a57140d69249ebd8f277",
+      "digest": "sha256:0cfdbb1a10cf6654cadb57712c88826851e2990cbbdf7c126370dcbb3e06c204",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FunnelChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/FunnelChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical or horizontal funnel with per-step conversion percentages.",
     "fr": "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape."
   },
-  "digest": "sha256:43e1a603359846c93aec3ec6f468de3ca8f317826e8dd896cc2981c6eef8e049",
+  "digest": "sha256:ebd855c833f1956e5fac97278ba16256cd7aad956b2f2853fbb582a28ad81439",
   "displayName": "FunnelChart",
   "format": "component-entry/v1",
   "frameworks": [

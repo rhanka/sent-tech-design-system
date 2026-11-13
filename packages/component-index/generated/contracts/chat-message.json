@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:988456722338a24e891931e96215b77bacb6e6230987ac8b7cb42a0703cdc688",
-  "entryDigest": "sha256:9f9e4b04fd7c096850e455b5f27ce0ea6292a759ef829ce27d04ad24ef05c10f",
+  "digest": "sha256:df9ad41a72c3e33060abe1f44e49ca34e8bf311b846085ecd596c57487751510",
+  "entryDigest": "sha256:6dd1d08afb8c5825b683dc53d150869ae41984fe20c31b5330cc68044a7a9a2e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -256,8 +256,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -325,13 +324,32 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "avatar"
+        },
+        {
+          "name": "content"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "footer"
+        },
+        {
+          "name": "timestamp"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:4d3faec3f8457e6b0a86cf0fca5f955e29911c8691be95b998335b221278c60c",
-        "declarationPath": "packages/components-vue/dist/ChatMessage.d.ts",
+        "declarationDigest": "sha256:2d092e5ca35dda144930524da38406ab71f67d463eb1f06acd2d8d8673fb3cec",
+        "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

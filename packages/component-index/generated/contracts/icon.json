@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:abbb6669b1dc0af939f1d73811c2c93dd560979345519ccc623b0a737ddaf3b7",
-  "entryDigest": "sha256:06db37669379b99416dfb213180802f0ff6044c4e7c341a579898e79c18d7aa3",
+  "digest": "sha256:998d5a59f4c38e8e6b7925423df04c59508803840253b286b050127574c646f4",
+  "entryDigest": "sha256:53328b94b779f07e91d13ade9b0208f68751cf235400ef484d2d196cda6c857b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4044,7 +4044,7 @@
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -4052,27 +4052,65 @@
     },
     "vue": {
       "bindable": [],
-      "dropped": [
-        {
-          "kind": "function",
-          "name": "glyph",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "FunctionalComponent<any, {}, any, {}>"
-        }
-      ],
+      "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "$defs": {
+          "IconGlyph": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "items": false,
+                  "prefixItems": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ]
+                      },
+                      "properties": {},
+                      "type": "object"
+                    }
+                  ],
+                  "type": "array"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "nodes"
+            ],
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
+          "bare": {
+            "description": "Preserve the existing Lucide markup when composing DS controls.",
+            "type": "boolean"
+          },
           "class": {
             "type": "string"
           },
+          "glyph": {
+            "$ref": "#/$defs/IconGlyph"
+          },
           "name": {
-            "description": "Canonical DS icon name.\n\nExactly one of `name` or `glyph` is expected: `glyph` wins when both\nare set, and neither renders nothing (null).",
             "enum": [
               "close",
               "layers",
@@ -4099,19 +4137,23 @@
       },
       "replaced": [
         {
-          "name": "glyph",
-          "reason": "library type not expanded",
-          "replacement": "{}",
-          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+          "name": "IconGlyph.nodes[][1]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"}]}",
+          "sourceType": "Readonly<Record<string, string | number>>"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:6f49825e3c33c5f5f40e9f3f01655cbfbd8b733bb5122d796b375cfed8d88d14",
-        "declarationPath": "packages/components-vue/dist/Icon.d.ts",
+        "declarationDigest": "sha256:acc5a7eed879c9e59fdb5cdfd82cb867d18b73c7889082f576dba7b704ee998c",
+        "declarationPath": "packages/components-vue/dist/Icon.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

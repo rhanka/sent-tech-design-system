@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:05fb95fcfe6f4c859d0977895fef9863ffa5818fc41e21559061993cc5a980f0",
-  "entryDigest": "sha256:b2ee927e867bb9b1e2024e092ddfb184ce14a61a46a54319fcf80d523afe7f88",
+  "digest": "sha256:10d1ed041129c6c23267d9ea27d0b9d09ed688fb9ad99abb4ecac541e2680587",
+  "entryDigest": "sha256:c1ae852bf3ebc20e59528609b71fff8f19f374576de825a33ec79dcef610731c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TextareaProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -229,39 +229,36 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {}
         },
         {
-          "name": "input"
+          "name": "input",
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onInput",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -311,40 +308,54 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onInput.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:f902b88f005f32193b41c122f8732eccf961bbd52f70013be9e5e49272bef699",
-        "declarationPath": "packages/components-vue/dist/Textarea.d.ts",
+        "declarationDigest": "sha256:0f2d5be6bd3715ca27557fbf5bb4ab9e0972e856e372e5f7c50499e93fca3556",
+        "declarationPath": "packages/components-vue/dist/Textarea.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TextareaProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "input.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onInput.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"input\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"input\" and prop \"onInput\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",

@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:fbe76fe386be3c8a2323c2e1efc96fabad95126a9868570a6443c4214367af3d",
-  "entryDigest": "sha256:67a84bce63ee28ea9795d5a1b9eaf95675a9edd61f5b1c54c3420a0da2ec0183",
+  "digest": "sha256:a43dcb6607e462a2d9066d1263730564f29216e5e948f72e7648bf41800047f5",
+  "entryDigest": "sha256:f318e32dfde719f5419873615493bf7d0da6ccc65cb7a902a92249df8022088d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,7 @@
         "declarationPath": "packages/components-svelte/dist/MediaContent.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MediaContentProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -231,8 +231,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -280,13 +279,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:0d2f5a4d88490ae59c821842099850468d6652d12865987d1bb835b2abd96f64",
-        "declarationPath": "packages/components-vue/dist/MediaContent.d.ts",
+        "declarationDigest": "sha256:7d1dc2ab89a1a850a78730fd24b8194c2fb700e63beb50e3a4eca9a211bf5a8a",
+        "declarationPath": "packages/components-vue/dist/MediaContent.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MediaContentProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Search",
+  "sourceRevision": "479eb8d448c301ef77df1184aa571bb5b8ef5ec8",
+  "source": "src/Search.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-search st-search--md\"><label class=\"st-field__label\" for=\"st-search-1\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-1\" type=\"search\" value=\"hello\"><button aria-label=\"Clear search\" class=\"st-search__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div>"
+    },
+    {
+      "id": "empty-small",
+      "html": "<div class=\"st-search st-search--sm\"><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-2\" placeholder=\"Find\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "fluid-large",
+      "html": "<div class=\"st-search st-search--lg st-search--fluid\"><label class=\"st-field__label\" for=\"st-search-3\">Query</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-3\" type=\"search\" value=\"Ada\"><button aria-label=\"Clear\" class=\"st-search__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div>"
+    },
+    {
+      "id": "disabled-custom",
+      "html": "<div class=\"st-search st-search--md consumer\" data-bench=\"search\" style=\"color:red;\"><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" data-bench=\"search\" disabled=\"\" id=\"consumer-search\" placeholder=\"x\" style=\"color: red\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "no-label",
+      "html": "<div aria-label=\"Search input\" class=\"st-search st-search--md\"><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input aria-label=\"Search input\" class=\"st-search__control st-search__input\" id=\"st-search-5\" type=\"search\" value=\"test\"><button aria-label=\"Clear search\" class=\"st-search__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div>"
+    }
+  ],
+  "sourceSha256": "d29384f62afcb4a074f6c698cb7f68be7fcb4169d5167607dfb5afeafafd66ef",
+  "fixtureSha256": "71305670fe58e4e10fadadd2e6027f4d8049545184242f5728ff08f456953846",
+  "publicExports": [
+    {
+      "name": "Search",
+      "typeOnly": false
+    },
+    {
+      "name": "SearchProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SearchSize",
+      "typeOnly": true
+    }
+  ]
+}

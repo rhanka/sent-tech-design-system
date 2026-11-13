@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "FormGroup",
+  "sourceRevision": "375cc47d1decc64403b794ef64dd0be34125b2b5",
+  "source": "src/FormGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<fieldset class=\"st-form-group st-formGroup\"><legend class=\"st-form-group__legend st-formGroup__legend\">Contact</legend><div class=\"st-form-group__body st-formGroup__body\"><input></div></fieldset>"
+    },
+    {
+      "id": "with-helper",
+      "html": "<fieldset class=\"st-form-group st-formGroup\"><legend class=\"st-form-group__legend st-formGroup__legend\">Contact</legend><div class=\"st-form-group__body st-formGroup__body\"><input></div><p class=\"st-form-group__help st-formGroup__help\">We never share it.</p></fieldset>"
+    },
+    {
+      "id": "empty-legend",
+      "html": "<fieldset class=\"st-form-group st-formGroup\"><div class=\"st-form-group__body st-formGroup__body\">Body</div></fieldset>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<fieldset class=\"st-form-group st-formGroup\"><legend class=\"st-form-group__legend st-formGroup__legend\"><strong>Contact</strong></legend><div class=\"st-form-group__body st-formGroup__body\"><input></div><p class=\"st-form-group__help st-formGroup__help\"><em>Help</em></p></fieldset>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<fieldset class=\"st-form-group st-formGroup consumer\" data-bench=\"form-group\" style=\"color:red;\"><legend class=\"st-form-group__legend st-formGroup__legend\">Contact</legend><div class=\"st-form-group__body st-formGroup__body\">X</div></fieldset>"
+    }
+  ],
+  "sourceSha256": "250c3853c81bed8c6b26318e7dec9936e163d7c1cb81777c7fecbaf0730c506a",
+  "fixtureSha256": "a44c6143236e6a8584de16e633b19c41b752931920d3071e0c3e4b2d32c2170e",
+  "publicExports": [
+    {
+      "name": "FormGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "FormGroupProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:68ff13357b9c34b499e4aaaea5deab950249e7521abbf5eafb79f4c6c53fef0b",
-  "entryDigest": "sha256:35ff75090eb13ac69ff6e4de1fde3f031201005f0911821bcc1be6ebc4b7b00c",
+  "digest": "sha256:6899724fe36a67efd41a009d38496dd866955f698e4168c070e4fe6d1586347a",
+  "entryDigest": "sha256:ad816e94cd95d8844dc3ef82986759c12398274806337366709aa40f88d2de79",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/NavSection.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavSectionProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -205,12 +205,14 @@
           }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -248,18 +250,24 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:f7a299287c946dce717ebfbf84a5bc698983be6922154a1392d273c7dd5a3661",
-        "declarationPath": "packages/components-vue/dist/NavSection.d.ts",
+        "declarationDigest": "sha256:ca5ad6a310d77d1784d997b0bf6a64e9b063f76f18b9434247b708d1dfe3f90f",
+        "declarationPath": "packages/components-vue/dist/NavSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavSectionProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
       ]
     }

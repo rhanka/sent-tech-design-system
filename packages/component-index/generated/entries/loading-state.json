@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LoadingState.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:82e645e674a795f4201f82ead36f80a64d819399b3eabc3998c08db1f4c1d702",
+      "digest": "sha256:7f724260ff14c7b23516f75900c0dcdf71a03b2c960001e036ba2b8075c649cc",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/LoadingState.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/LoadingState.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full loading indicator or skeleton.",
     "fr": "Indicateur de chargement plein ou skeleton."
   },
-  "digest": "sha256:b3bf96ffc9a10013e8547395101e18aadfa2edead88122cec6609de20ddefaf8",
+  "digest": "sha256:1ea2dc0f540baf5b7efc10ad2ec582d461babf0515ed671fdd21c35f5e7099cd",
   "displayName": "LoadingState",
   "format": "component-entry/v1",
   "frameworks": [

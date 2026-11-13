@@ -1,4 +1,3 @@
-import { h } from "vue";
 
 export const CHART_MARGIN = { top: 12, right: 16, bottom: 32, left: 44 } as const;
 
@@ -320,11 +319,7 @@ export function overlayDataListItems(overlays: {
   return items;
 }
 
+/** Accessible-list data; chart SFC templates own all markup. */
 export function chartDataList(label: string, items: string[]) {
-  if (items.length === 0) return null;
-  return h(
-    "ul",
-    { class: "st-chartDataList", "aria-label": `Data values for ${label}` },
-    items.map((item, i) => h("li", { key: i }, item)),
-  );
+  return items.length ? { label: `Data values for ${label}`, items } : null;
 }

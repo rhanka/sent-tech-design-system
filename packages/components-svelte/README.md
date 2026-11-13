@@ -90,3 +90,10 @@ This bites hardest under **vitest with jsdom**, where dependencies are externali
 
 Our own packaging test preprocesses and compiles all 220 published `.svelte` files on every release (`scripts/smoke-pack.mjs`), so a genuinely unparseable file cannot ship. What that test does *not* do is reproduce every consumer bundler configuration — if you find an arrangement where a correct tarball still fails to build, that is worth reporting, and please include the `sha256sum` above.
 
+
+## DiagramSceneFigure numbered flows
+
+DC-2c.1 supports authored flow badges, hover/focus highlighting, logical step
+and node selection, scenario filtering and keyboard navigation. Controlled
+`activeStep`/`scenario` props wait for their parent; hover and focus are immediate.
+See [the reference and interaction contract](../../docs/DC2C_NUMBERED_FLOWS.md).

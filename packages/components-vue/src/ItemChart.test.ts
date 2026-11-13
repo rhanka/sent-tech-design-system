@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ItemChart } from "./ItemChart.js";
+import ItemChart from "./ItemChart.vue";
 
 // Hémicycle « parlement » : chaque groupe apporte `value` sièges (pastilles),
 // les sièges d'un même groupe sont contigus et colorés par ton catégoriel.
