@@ -37,8 +37,8 @@
     "note": "Current implementation file hashes after endpoint provenance; @1/@2 canonical schemas and presentation pin remain unchanged.",
     "files": {
       "packages/diagram-core/src/view.ts": "4115f3f9c16cb7d734fcb0103610e3c8921d143d65c68f1af81738c68ac3edb5",
-      "packages/diagram-core/src/fold.ts": "0fa909b4da7e436abb54f3279f2c66a9ca91101368026419a60f298751f6618d",
-      "packages/diagram-core/src/validate.ts": "7ea7ff8001cadcb5f189ddefa6352948ada3d4104bc89a4d4084140b51d1820a"
+      "packages/diagram-core/src/fold.ts": "dc37adc1312c0c339573fdfc310ee503909dd3bdb056b9903d05c111d0cf8009",
+      "packages/diagram-core/src/validate.ts": "ee45a8cbb4f5445be33a3c9d30e9ac6c29bee6efac65a2f105e52eb63131c17e"
     }
   },
   "presentation": {
