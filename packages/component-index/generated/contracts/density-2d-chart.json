@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:da52e1ce219492ba083afe86ee63f6b51cf96a22b19b695782cbee3e854a7e37",
-  "entryDigest": "sha256:dfc3cac8903682e76b51b3953d3acddbaa761fffaebf3a0704350ace2f5996d2",
+  "digest": "sha256:83f53bf8ed80fb4f3104c595399a921f6e46a0125931d2520663b32a8b9f06ed",
+  "entryDigest": "sha256:63fe5c8ad63c02bba612c88eabd42e2aa1259733c27455c4db85e1562de88df8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/Density2DChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "Density2DChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

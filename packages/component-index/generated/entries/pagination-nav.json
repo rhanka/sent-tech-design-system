@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PaginationNav.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:d9a1ca06e2fd42e623a635402c1960e77f68074c2366dcd47a51ee4889ade990",
+  "digest": "sha256:d1dd4703db1907e646b281274500be865d6dcf6fb99b7db782020b8e7b4794d2",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

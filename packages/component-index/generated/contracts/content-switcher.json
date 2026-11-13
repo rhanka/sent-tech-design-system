@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:b423886ace4c78336918933fff7eab3406d75c6d2a0b39afa13dc44bd9614a63",
-  "entryDigest": "sha256:ff7d093c32986706dddff2d0694253c11095f1a3580940fc94d86178fd0a684f",
+  "digest": "sha256:ca1077858e2791a8a0d272c059948392b152cd3b2aed368e0fd8461af2c127a0",
+  "entryDigest": "sha256:f3a9a144d0cacd31dc923d08281a0a54f155586530c03a7f6747558fcb7d05a8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ContentSwitcher.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContentSwitcherProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
