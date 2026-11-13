@@ -162,7 +162,6 @@
   "packages/components-vue/src/Stack.ts",
   "packages/components-vue/src/StackedBarChart.ts",
   "packages/components-vue/src/StateTimelineChart.ts",
-  "packages/components-vue/src/StatusDot.ts",
   "packages/components-vue/src/StatusHistoryChart.ts",
   "packages/components-vue/src/StepLineChart.ts",
   "packages/components-vue/src/Stepper.ts",
