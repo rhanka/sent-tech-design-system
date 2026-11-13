@@ -13,15 +13,20 @@ installSourceLoader('vapor');
 const { createVaporApp, nextTick } = await import('vue');
 const { newStore } = await import('./fixtures/store.ts');
 const entry = await import('@sentropic/dataviz-vue/vapor');
-const names = ['CrossfilteredBarChart', 'DrillBarChart', 'SmallMultiples'];
+const cases = [
+  { name: 'CrossfilteredBarChart', selectable: true },
+  { name: 'CrossfilteredBarChart', selectable: false },
+  { name: 'DrillBarChart' },
+  { name: 'SmallMultiples' },
+];
 const temporary = mkdtempSync(resolve(bench, '.tmp-package-'));
 try {
-  for (const name of names) {
+  for (const { name, selectable } of cases) {
     assert.equal(entry[name]?.__vapor, true, `${name} must ship through the native package entry`);
     const store = newStore();
-    const props = { store, viewId: 'proof', dimension: 'region', facetBy: 'region', hierarchy: ['region', 'city'], measure: 'sales', label: 'Proof' };
+    const props = { store, viewId: 'proof', dimension: 'region', facetBy: 'region', hierarchy: ['region', 'city'], measure: 'sales', label: 'Proof', ...(selectable === undefined ? {} : { selectable }) };
     globalThis.__datavizPackageProps = props;
-    const file = resolve(temporary, name + '.vue');
+    const file = resolve(temporary, name + (selectable === false ? '-output' : '') + '.vue');
     writeFileSync(file, `<script setup lang="ts">import { ${name} as Target } from '@sentropic/dataviz-vue/vapor'; const props = (globalThis as any).__datavizPackageProps;</script><template><Target v-bind="props" /></template>`);
     const { default: Wrapper } = await import(pathToFileURL(file).href);
     const app = createVaporApp(Wrapper);
@@ -48,6 +53,11 @@ try {
         document.querySelector('.st-barChart__filterChip').click();
         await nextTick();
         assert.deepEqual(store.getState().selections.proof, ['A']);
+      } else if (selectable === false) {
+        assert.equal(document.querySelectorAll('.st-barChart__filterChip').length, 0);
+        store.setFilter('region', { kind: 'include', values: ['North'] });
+        await nextTick();
+        assert.equal(document.querySelectorAll('.st-barChart__bar').length, 1);
       } else {
         document.querySelector('.st-barChart__filterChip').click();
         await nextTick();
@@ -62,7 +72,7 @@ try {
     }
     assert.equal(subscriptions, 0, 'store subscription must be disposed');
     assert.deepEqual(errors, []);
-    console.log(`${name}: published Vapor export, interaction/update and subscription cleanup PASS`);
+    console.log(`${name}${selectable === false ? ' output-only' : ''}: published Vapor export, interaction/update and subscription cleanup PASS`);
   }
 } finally {
   delete globalThis.__datavizPackageProps;
