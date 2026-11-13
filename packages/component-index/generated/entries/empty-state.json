@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/EmptyState.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:1db1b234947ed072725d742d1596d84fd380e27b24896bd769d573eb37d21b2f",
+  "digest": "sha256:9e41dbdb85a4f1cc504d5ba5fa8b8e02ab6f7f4f48e7490cf980050dae0ff557",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

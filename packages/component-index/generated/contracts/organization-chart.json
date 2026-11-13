@@ -1,8 +1,8 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:24052e3a9aaf6d191efd625dd4cfb8d5aa4dccbb0d9aedbc4c5c7b9b87824215",
-  "entryDigest": "sha256:2dda2753ba5c3d2b43c279c2949ce297bfa1dd673af8514da26c755622a8c4f3",
+  "digest": "sha256:b19760cfd39c72c2b0100f4234c2e9164acb5caa43dabcea3fd708133f2ceeed",
+  "entryDigest": "sha256:c212e36e1e7995736f7cc085383c17d5a3d59bde2c37288aa7d9d5c6e36247df",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -340,7 +340,7 @@
         "declarationPath": "packages/components-vue/dist/OrganizationChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrganizationChartProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.1"
       },
       "status": "complete",
       "unresolved": [],

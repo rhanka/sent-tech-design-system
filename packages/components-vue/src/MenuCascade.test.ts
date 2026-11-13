@@ -1671,7 +1671,7 @@ describe("control review regressions", () => {
   it("ships the required Vue minor version with matching lock metadata", () => {
     const manifest = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
     const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
-    expect(manifest.version).toBe("0.41.0-next.0");
+    expect(manifest.version).toBe("0.41.0-next.1");
     expect(manifest.publishConfig.tag).toBe("next");
     expect(lock.packages["packages/components-vue"].version).toBe(manifest.version);
     expect(version).toMatch(/^3\.6\./);
