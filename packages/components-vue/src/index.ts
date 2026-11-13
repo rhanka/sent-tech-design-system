@@ -89,13 +89,13 @@ export type {
   ProgressBarTone,
   ProgressBarSize,
 } from "./ProgressBar.vue";
-export { ProgressIndicator } from "./ProgressIndicator.js";
+export { default as ProgressIndicator } from "./ProgressIndicator.vue";
 export type {
   ProgressIndicatorProps,
   ProgressIndicatorItem,
   ProgressIndicatorStatus,
   ProgressIndicatorOrientation,
-} from "./ProgressIndicator.js";
+} from "./ProgressIndicator.vue";
 export { Quote } from "./Quote.js";
 export type { QuoteProps } from "./Quote.js";
 export { Radio } from "./Radio.js";
