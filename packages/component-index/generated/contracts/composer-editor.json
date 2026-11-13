@@ -1,8 +1,8 @@
 {
   "componentId": "composer-editor",
   "contractSource": "derived",
-  "digest": "sha256:64d980b9d282225c171cc55b92967826a6661a34af25ccaaaa652e7791223d81",
-  "entryDigest": "sha256:64ed0b93ac0adae3716ac9777e82113991e0a07548a30f1cecc328b12edc98e0",
+  "digest": "sha256:7221891043a605b617397b3183df1fddfd7f76b306a665be02bede63277b2462",
+  "entryDigest": "sha256:9a0389710765ca5ffc2477daced61bac813a05166315030610db253ca1af9fe2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -526,7 +526,7 @@
         "declarationPath": "packages/components-vue/dist/rich-text-editor/ComposerEditor.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComposerEditorProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],
