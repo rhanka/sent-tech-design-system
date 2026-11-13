@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "MasterDetail",
+  "sourceRevision": "150ac19d05724d0245c20c3dbf21e5e24eb8024e",
+  "source": "src/MasterDetail.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-md\"><div class=\"st-md__split\"><aside class=\"st-md__list\"><div class=\"st-md__list-header\"><h2 class=\"st-md__list-title\">Orders</h2><input class=\"st-md__search\" placeholder=\"Search…\" type=\"search\"></div><ul class=\"st-md__list-items\"></ul></aside><main class=\"st-md__detail\"><div class=\"st-md__detail-header\"><h1 class=\"st-md__detail-title\">Order 1</h1></div></main></div></div>"
+    },
+    {
+      "id": "full",
+      "html": "<div class=\"st-md\"><div class=\"st-md__split\"><aside class=\"st-md__list\"><div class=\"st-md__list-header\"><h2 class=\"st-md__list-title\">Orders</h2><input class=\"st-md__search\" placeholder=\"Search…\" type=\"search\"></div><ul class=\"st-md__list-items\"><li class=\"st-md__list-item st-md__list-item--active\"><span class=\"st-md__item-primary\">Order 1</span><span class=\"st-md__item-secondary\">Paid</span><span class=\"st-md__item-status\">Active</span></li><li class=\"st-md__list-item\"><span class=\"st-md__item-primary\">Order 2</span></li></ul></aside><main class=\"st-md__detail\"><div class=\"st-md__detail-header\"><h1 class=\"st-md__detail-title\">Order 1</h1><span class=\"st-badge st-badge--success\">Active</span><div class=\"st-md__detail-actions\"><button class=\"st-button st-button--secondary\" type=\"button\">Edit</button><button class=\"st-button st-button--secondary\" type=\"button\">Export</button></div></div><dl class=\"st-md__detail-fields\"><dt>Total</dt><dd>42 €</dd><dt>Date</dt><dd>2025-01-01</dd></dl></main></div></div>"
+    },
+    {
+      "id": "with-content",
+      "html": "<div class=\"st-md\"><div class=\"st-md__split\"><aside class=\"st-md__list\"><div class=\"st-md__list-header\"><h2 class=\"st-md__list-title\">L</h2><input class=\"st-md__search\" placeholder=\"Search…\" type=\"search\"></div><ul class=\"st-md__list-items\"></ul></aside><main class=\"st-md__detail\"><div class=\"st-md__detail-header\"><h1 class=\"st-md__detail-title\">D</h1></div><div class=\"st-md__detail-content\"><p>Details</p></div></main></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-md consumer\" data-bench=\"master-detail\" style=\"color:red;\"><div class=\"st-md__split\"><aside class=\"st-md__list\"><div class=\"st-md__list-header\"><h2 class=\"st-md__list-title\">L</h2><input class=\"st-md__search\" placeholder=\"Find…\" type=\"search\"></div><ul class=\"st-md__list-items\"></ul></aside><main class=\"st-md__detail\"><div class=\"st-md__detail-header\"><h1 class=\"st-md__detail-title\">D</h1></div></main></div></div>"
+    }
+  ],
+  "sourceSha256": "076e10b5bf510bbe849e4af8f793d3fc6b9533c0f815f145108c2a5ca851aecd",
+  "fixtureSha256": "305562238245636db8e50896a338b4969a22cbec79efadbcf5f16879874172f9",
+  "publicExports": [
+    {
+      "name": "MasterDetail",
+      "typeOnly": false
+    },
+    {
+      "name": "MasterDetailProps",
+      "typeOnly": true
+    },
+    {
+      "name": "MasterDetailNavItem",
+      "typeOnly": true
+    },
+    {
+      "name": "MasterDetailItem",
+      "typeOnly": true
+    },
+    {
+      "name": "MasterDetailField",
+      "typeOnly": true
+    }
+  ]
+}
