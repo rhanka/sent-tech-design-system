@@ -559,8 +559,8 @@ export type {
   MarimekkoChartSegment,
   MarimekkoChartTone,
 } from "./MarimekkoChart.js";
-export { CandlestickChart } from "./CandlestickChart.js";
-export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.js";
+export { default as CandlestickChart } from "./CandlestickChart.vue";
+export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.vue";
 export { OHLCChart } from "./OHLCChart.js";
 export type { OHLCChartProps, OHLCChartDatum } from "./OHLCChart.js";
 export { HLCChart } from "./HLCChart.js";
