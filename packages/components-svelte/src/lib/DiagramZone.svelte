@@ -50,6 +50,7 @@
 
   let {
     entityId,
+    autoSize,
     kicker,
     title,
     subtitle,
@@ -74,6 +75,7 @@
 
   const zoneProps = $derived({
     entityId,
+    ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     ...(subtitle === undefined ? {} : { subtitle }),
@@ -171,24 +173,6 @@
     for (const diagnostic of layout.diagnostics) onDiagnostic(diagnostic);
   });
 
-  function remapDiagnostic(diagnostic: {
-    code: string;
-    slot: string;
-    entityId: string;
-    neededPx: number;
-    allocatedPx: number;
-    text?: string;
-  }): void {
-    if (onDiagnostic === undefined) return;
-    onDiagnostic({
-      code: diagnostic.code === "card-icon-unknown" ? "zone-icon-unknown" : "zone-overflow",
-      slot: diagnostic.slot,
-      entityId: diagnostic.entityId,
-      neededPx: diagnostic.neededPx,
-      allocatedPx: diagnostic.allocatedPx,
-      ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
-    });
-  }
 </script>
 
 <!-- One positioning wrapper in BOTH states (second review, blocking): the
@@ -216,7 +200,6 @@
       {...cardProps}
       measure={measure}
       onSelect={onSelect === undefined ? undefined : (event) => onSelect(event)}
-      onDiagnostic={onDiagnostic === undefined ? undefined : remapDiagnostic}
     />
   {:else}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -300,7 +283,7 @@
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramZone--center {
     /* Owner variant: every text slot centred inside its allocation. */
