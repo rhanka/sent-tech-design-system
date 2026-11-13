@@ -408,8 +408,8 @@ export { default as VariablePieChart } from "./VariablePieChart.vue";
 export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.vue";
 export { VennChart } from "./VennChart.js";
 export type { VennChartProps, VennChartArea, VennChartTone } from "./VennChart.js";
-export { ViolinChart } from "./ViolinChart.js";
-export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.js";
+export { default as ViolinChart } from "./ViolinChart.vue";
+export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.vue";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.js";
 export type {
   ForceGraphProps,
