@@ -5,11 +5,11 @@ import { createDashboardStore, type DataModel, type Row } from '@sentropic/datav
 import ChordChart from './ChordChart.vue';
 import { DonutChart } from './DonutChart.js';
 import { FunnelChart } from './FunnelChart.js';
-import { MekkoChart } from './MekkoChart.js';
-import { PackedBubbleChart } from './PackedBubbleChart.js';
-import { RadarChart } from './RadarChart.js';
-import { RoseChart } from './RoseChart.js';
-import { SankeyChart } from './SankeyChart.js';
+import MekkoChart from './MekkoChart.vue';
+import PackedBubbleChart from './PackedBubbleChart.vue';
+import RadarChart from './RadarChart.vue';
+import RoseChart from './RoseChart.vue';
+import SankeyChart from './SankeyChart.vue';
 import { SunburstChart } from './SunburstChart.js';
 import { TreemapChart } from './TreemapChart.js';
 import { WaterfallChart } from './WaterfallChart.js';
