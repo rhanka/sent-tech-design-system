@@ -1,7 +1,7 @@
 import { defineComponent, h } from "vue";
 import type { Component, VNodeChild } from "vue";
 import { classNames } from "./classNames.js";
-import { Button } from "./Button.js";
+import Button from "./Button.vue";
 import { Divider } from "./Divider.js";
 
 /** Hiérarchie ENCODÉE DANS LE TYPE : une seule action `primary` est légitime
