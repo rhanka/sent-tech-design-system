@@ -504,8 +504,8 @@ export { Rating } from "./Rating.js";
 export type { RatingProps, RatingSize } from "./Rating.js";
 export { TimePicker } from "./TimePicker.js";
 export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
-export { Calendar } from "./Calendar.js";
-export type { CalendarProps, CalendarValue } from "./Calendar.js";
+export { default as Calendar } from "./Calendar.vue";
+export type { CalendarProps, CalendarValue } from "./Calendar.vue";
 export { SlideIndicator } from "./SlideIndicator.js";
 export type {
   SlideIndicatorProps,
