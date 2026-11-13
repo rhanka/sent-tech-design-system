@@ -232,8 +232,8 @@ export { ValueSlicer } from './lib/ValueSlicer.js';
 export type { ValueSlicerProps } from './lib/ValueSlicer.js';
 export { ExportMenu, rowsToCsv } from './lib/ExportMenu.js';
 export type { ExportMenuProps } from './lib/ExportMenu.js';
-export { DateRangeFilter, dateRangeToSpec } from './lib/DateRangeFilter.js';
-export type { DateRangeFilterProps } from './lib/DateRangeFilter.js';
+export { default as DateRangeFilter, dateRangeToSpec } from './lib/DateRangeFilter.vue';
+export type { DateRangeFilterProps } from './lib/DateRangeFilter.vue';
 export {
   RelativeDateFilter,
   relativeRangeToSpec,
