@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './diagramSpacing.js';
 import { describe, expect, it } from "vitest";
 import { component, createComponent } from "./component.js";
 import { foundation } from "./foundation.js";
@@ -7,7 +8,7 @@ import { componentDark } from "./component.dark.js";
 import { semanticDark } from "./semantic.dark.js";
 
 /**
- * DC-1 CA-DC1-1: every Appendix A token exists with its frozen value.
+ * DC-1 CA-DC1-1: every Appendix A token exists with its owner-amended value.
  *
  * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md Appendix A (§5.3, §6.4, §9.1).
  * Geometry leaves are frozen literals; colour leaves alias the semantic
@@ -52,6 +53,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     footerBottomInset: "9.25px",
     toggleAllocation: "66px",
     toggleBoxSize: "32px",
+    toggleInset: "8px",
     foldedHeaderTextWidth: "290px",
     proposedDashArray: "4 5",
     fontFamily: "var(--st-font-sans)",
@@ -78,9 +80,9 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     subtitleLineHeight: "1.3",
     subtitleGap: "var(--st-component-diagramCard-gap)",
     headerRuleGap: "4px",
-    contentInsetTop: "16px",
-    contentInsetBottom: "16px",
-    contentInsetInline: "16px",
+    contentInsetTop: "var(--st-component-diagramScene-containerPadding)",
+    contentInsetBottom: "var(--st-component-diagramScene-containerPadding)",
+    contentInsetInline: "var(--st-component-diagramScene-containerPadding)",
     collapsedWidth: "460px",
     collapsedHeight: "200px",
     collapsedInset: "16px",
@@ -88,21 +90,32 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
     toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
     headerTextInset: "178px",
-    toggleTopInset: "10px",
+    toggleInset: "8px",
+    toggleTopInset: "var(--st-component-diagramZone-toggleInset)",
     footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
     proposedDashArray: "4 5",
     // DC-2a row-pack spacing (SPEC_EVOL_DC2A §3.5).
-    childGapInline: "24px",
-    childGapBlock: "24px",
-    gapInlineMax: "32px",
-    gapBlockMax: "32px",
+    childGapInline: "var(--st-component-diagramScene-gapMin)",
+    childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+    gapInlineMax: "var(--st-component-diagramScene-gapMax)",
+    gapBlockMax: "var(--st-component-diagramScene-gapMax)",
     rowPackTargetAspect: "1.78",
   },
   // DC-2a scene camera, transition and edge-label typography (§5, §4.3).
   diagramScene: {
+    containerPadding: `${spacing.containerPadding}px`,
     maxDisplayScale: "0.62",
     minReadableScale: "0.45",
     transitionDuration: "240ms",
+    gapMin: `${spacing.gapMin}px`,
+    gapBase: `${spacing.gapBase}px`,
+    trackSpacing: `${spacing.trackSpacing}px`,
+    gapMinBlock: `${spacing.gapMinBlock}px`,
+    gapBaseBlock: `${spacing.gapBaseBlock}px`,
+    trackSpacingBlock: `${spacing.trackSpacingBlock}px`,
+    labelBand: `${spacing.labelBand}px`,
+    gapMax: `${spacing.gapMax}px`,
+    bundleLabelMaxWidth: "320px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
   },
@@ -133,7 +146,7 @@ describe("diagram tokens — frozen Appendix A values", () => {
 
   it("diagram colour leaves alias the semantic layer (no own raw value)", () => {
     expect(component.diagramCard.border).toBe(semantic.border.strong);
-    expect(component.diagramCard.accent).toBe(semantic.data.category1);
+    expect(component.diagramCard.accent).toBe(semantic.border.strong);
     expect(component.diagramCard.surface).toBe(semantic.surface.raised);
     expect(component.diagramCard.text).toBe(semantic.text.primary);
     expect(component.diagramCard.secondaryText).toBe(semantic.text.secondary);

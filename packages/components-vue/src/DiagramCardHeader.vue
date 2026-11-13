@@ -1,5 +1,8 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramCardHeader' });
+import { computed } from 'vue';
+import { getDiagramGlyph } from './diagram-icons/registry.js';
 import DiagramControlGlyph from "./DiagramControlGlyph.vue";
 import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
 /**
@@ -35,34 +38,35 @@ interface DiagramCardHeaderProps {
     toggleTopOffset?: number;
 }
 const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
+const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown")));
 </script>
 
 <template>
 <div class="st-diagramCardHeader" :style="`height:${headerBlockHeight}px`">
-  <template v-if="iconName !== undefined && iconGlyph !== undefined">
+  <template v-if="iconName !== undefined && iconName !== 'none' && glyph !== undefined">
     <svg class="st-diagramCardHeader-icon" :data-diagram-icon="iconName" viewBox="0 0 64 64" width="70" height="70" aria-hidden="true" focusable="false">
       <path d="M8 53L32 44L56 53L32 62Z" fill="var(--st-component-diagramIcon-baseFill, color-mix(in srgb, var(--st-semantic-feedback-info) 18%, var(--st-semantic-surface-raised)))"></path>
-      <path :d="iconGlyph.face" fill="var(--st-component-diagramIcon-faceFill, color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised)))" stroke="var(--st-component-diagramIcon-faceStroke, var(--st-semantic-feedback-info))" stroke-width="1.5" stroke-linejoin="round"></path>
-      <template v-if="iconGlyph.line !== undefined">
-        <path :d="iconGlyph.line" fill="none" :stroke="iconGlyph.darkLine === true
+      <path :d="glyph.face" fill="var(--st-component-diagramIcon-faceFill, color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised)))" stroke="var(--st-component-diagramIcon-faceStroke, var(--st-semantic-feedback-info))" stroke-width="1.5" stroke-linejoin="round"></path>
+      <template v-if="glyph.line !== undefined">
+        <path :d="glyph.line" fill="none" :stroke="glyph.darkLine === true
             ? 'var(--st-component-diagramIcon-lineDarkStroke, var(--st-semantic-feedback-info))'
             : 'var(--st-component-diagramIcon-lineStroke, var(--st-semantic-surface-raised))'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path>
       </template>
-      <template v-if="iconGlyph.text !== undefined">
-        <text x="32" y="47" text-anchor="middle" fill="var(--st-component-diagramIcon-lineStroke, var(--st-semantic-surface-raised))" font-size="13" font-weight="750">{{ iconGlyph.text }}</text>
+      <template v-if="glyph.text !== undefined">
+        <text x="32" y="47" text-anchor="middle" fill="var(--st-component-diagramIcon-lineStroke, var(--st-semantic-surface-raised))" font-size="13" font-weight="750">{{ glyph.text }}</text>
       </template>
     </svg>
   </template>
   <div class="st-diagramCardHeader-text" :style="`width:${headerTextWidth}px`">
     <template v-for="(line, kickerIndex) in kicker" :key="kickerIndex">
-      <span class="st-diagramCard-kicker">{{ line.text }}</span>
+      <span class="st-diagramCard-kicker" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
     <template v-for="(line, titleIndex) in title" :key="titleIndex">
-      <span class="st-diagramCard-title">{{ line.text }}</span>
+      <span class="st-diagramCard-title" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
   </div>
   <template v-if="toggle !== undefined">
-    <div class="st-diagramCard-toggle" :style="toggleTopOffset === undefined ? undefined : `margin-top:${toggleTopOffset}px`">
+    <div class="st-diagramCard-toggle" :style="{ top: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))', right: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))' }">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--ghost" :aria-label="toggle.label" :aria-expanded="!toggle.collapsed" @click="toggle.onToggle">
         <template v-if="toggle.collapsed">
           <DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" aria-hidden="true"></DiagramControlGlyph>
@@ -120,11 +124,9 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
     word-break: normal;
   }
   .st-diagramCard-toggle {
-    flex: 0 0 auto;
-    margin-left: auto;
-    /* Top right of the header row with the card's own top margin
-       (hrpn folded-card placement), not vertically centred. */
-    align-self: flex-start;
+    position: absolute;
+    width: var(--st-component-diagramCard-toggleBoxSize, 32px);
+    height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }
 
 </style>
