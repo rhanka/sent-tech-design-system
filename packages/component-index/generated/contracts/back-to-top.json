@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:9e6336a9b43546c0138d4931bfbb089e897e9d43c6b2df0e859d4d8bf7b5b50e",
-  "entryDigest": "sha256:6d65846c4ec9bc8a2ad85834c1aa9e328cc590a1a611e13f888a4b8f2264f9ae",
+  "digest": "sha256:48efdefe4aed191f2e158f29c51deba49ada5ef79b0e27bd424ba38cc0a53c44",
+  "entryDigest": "sha256:7cee6eb357469ea7722795f0cb7aa8f9c14bce43f1a2ab66e53edf5546063de6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,11 +196,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:e5bf7f6f8c360cee47fefcd82cbc13e92619e09713472cfab74c0fe3faf0a969",
-        "declarationPath": "packages/components-vue/dist/BackToTop.d.ts",
+        "declarationDigest": "sha256:94b5f52cccfcc2137aca3ac8f02c3518bdf77cf1e1c44d98c21feb7532d41c77",
+        "declarationPath": "packages/components-vue/dist/BackToTop.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BackToTopProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

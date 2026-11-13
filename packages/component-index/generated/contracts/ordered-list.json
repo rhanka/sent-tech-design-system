@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:5a788ffc321070e06b5b450962b5afaa88d27e2f0c9f24212aec63b082113fbb",
-  "entryDigest": "sha256:f6a8ef5f14cd1898a9ab810ba94682019d03bbbe5393577c75aa34b67c3ede09",
+  "digest": "sha256:0cdf892a647e742cff57ac70e3cd20904482ec5da536e3cdabb70979c96a6ddc",
+  "entryDigest": "sha256:aff148e12241cb2599e4c3755d1098a41af7da24286c3eb51879ecba4c32dc4f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,8 +215,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -230,6 +229,13 @@
           },
           "nested": {
             "type": "boolean"
+          },
+          "path": {
+            "description": "Internal recursive slot address.",
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -243,15 +249,46 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "scope.item",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {},
+              "path": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "index",
+              "item",
+              "path"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d4481f85e838c7c5bc62b3cad0fd19f269358249dfd52ec27232f7cc543d7d3e",
-        "declarationPath": "packages/components-vue/dist/OrderedList.d.ts",
+        "declarationDigest": "sha256:3fb51e9311682677f30b18c66a4131e29d5d4c02c98109d90c32c495961c9028",
+        "declarationPath": "packages/components-vue/dist/OrderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrderedListProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,4 +1,4 @@
-import type { MenuItem } from "./Menu.vue";
+import type { MenuItem } from "./Menu.js";
 import type { SubMenuSide } from "./menu-cascade.js";
 
 export type OverflowMenuPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";

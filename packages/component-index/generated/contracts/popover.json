@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:8f2c662d395b8a3b8afbcba6850d2a16ce2dc1cee74ab13a0177525f5782d668",
-  "entryDigest": "sha256:7d9e5a91c687d1bf5c33887d2bc9556306ed3b062f239c04131a41730c649181",
+  "digest": "sha256:eae5029505176581974363ff30141591c6089e42a6cd9768443c95e1aa3c6f27",
+  "entryDigest": "sha256:67a456138e490b3c04555862c7f61fc5f3435ed6ecd57e459f1b51d74961995e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -205,21 +205,18 @@
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "update:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -247,29 +244,41 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         },
         {
-          "name": "update:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        },
+        {
+          "name": "trigger",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:86920c299665657bcb3c6e54cc7d53babc7d108404b8f740111cec9da91e8c72",
-        "declarationPath": "packages/components-vue/dist/Popover.d.ts",
+        "declarationDigest": "sha256:f1b732f71c5a035811bc95c7c66276ea752538d3c87cef02fda8a2bc963e3f3b",
+        "declarationPath": "packages/components-vue/dist/Popover.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopoverProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",

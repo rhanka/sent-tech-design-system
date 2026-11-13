@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:f129f362d912f21273e191c13172401c6fbae20d064c5911d8431afc12b69a17",
-  "entryDigest": "sha256:da3dd3d8791b16c29d66c9241e9a17ad5fc2ae4187d3fa245f124627dcf68f9a",
+  "digest": "sha256:e6edaa0e25d4fbba2e0d4c7a1bccbb832b73456ed2515958f5923f56106ff91a",
+  "entryDigest": "sha256:5b79f4311c4a8a4430212836b324754d92385529ca07be1887d2bb5ead691126",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,20 +204,15 @@
       ],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:85ca15d1c17ea143c25582cd3dba3b75e7eafe99d27d8f67e068108b34e881c3",
-        "declarationPath": "packages/components-vue/dist/Portal.d.ts",
+        "declarationDigest": "sha256:59b85eb979491d2efa3dc14f9bdb6636ec49264a47fe54670608c1238f7a2315",
+        "declarationPath": "packages/components-vue/dist/Portal.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PortalProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

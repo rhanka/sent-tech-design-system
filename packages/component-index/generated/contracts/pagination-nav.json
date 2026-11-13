@@ -1,8 +1,8 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:0980714dd819234a9386cc800fcb2052e7bd09a718d2a253fdd6dfe4f9b586e5",
-  "entryDigest": "sha256:682c26cf3437f886c2a7d96930659a041e1cd606a408fe4e507dd0e4a077575f",
+  "digest": "sha256:ea13c6fa679fa64f14e3d74eea3aee3c96c1970b0546f4278bcc568e7a901c19",
+  "entryDigest": "sha256:998909b3f119aee4f73ef042ff1dca936c2e5f5d887a869fc8437277aa760bb8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,15 +206,13 @@
         {
           "name": "onPage-change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "page-change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         }
       ],
@@ -258,29 +256,16 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onPage-change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "page-change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:923c29f4db3c026a5907de8e785365086c0d6818848df7b8273cf5507f389fe2",
-        "declarationPath": "packages/components-vue/dist/PaginationNav.d.ts",
+        "declarationDigest": "sha256:d902c9a445b330c6107004c591219fc7f3e2ed15212e2ab84b4b8fea2af90b13",
+        "declarationPath": "packages/components-vue/dist/PaginationNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationNavProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"page-change\" and prop \"onPage-change\" both listed verbatim"

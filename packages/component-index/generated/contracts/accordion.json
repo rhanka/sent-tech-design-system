@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:31dc4b9b325ac0e7644153bf47cfea1cbc2c331ef038834f5379fdefd1f6cd0a",
-  "entryDigest": "sha256:97feed61fbbacd2daf505770fb0cfc9fe6e550ab5643db0cecbdc6053441be80",
+  "digest": "sha256:634c3b4a12fdcf67b9eeff7b42efbf151e85b081b5bb4dad52d5de923b0e3e91",
+  "entryDigest": "sha256:4a7adbcc46aace17b4f3eca81a2bd49440170e7a59b941ebe190320bab8012c4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -347,14 +347,18 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         }
@@ -440,27 +444,14 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f4ff86c237520d074f5570f4d7284fdf78d7418af19a0f3d445007d68e8e636f",
-        "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
+        "declarationDigest": "sha256:1f8ee5816d120a9e611cb348bb1a19057882a5fbd5246fa1e7f010340a2921e4",
+        "declarationPath": "packages/components-vue/dist/Accordion.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

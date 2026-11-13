@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:6ce800685a5ced504c917f746fbd1456f4a8ff29af6a72401442675cfa5b9b4f",
-  "entryDigest": "sha256:ca4226b003718c4ae9d8dea6d83f10261343d30422923910ef7cc68f0f3c8c84",
+  "digest": "sha256:8c3f724980a94fc230dbc7cf25cd74b3de855335e7ffdd14d35f5fd5ac252441",
+  "entryDigest": "sha256:4ba6e364c442c9757f345691b9ede73310bb5f94ae169c01aabb835a5ed7d485",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -162,36 +162,27 @@
       "events": [
         {
           "name": "change",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -224,12 +215,6 @@
       },
       "replaced": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "helperText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -240,36 +225,38 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b38d6e053a437d512d390f9f6bdcc459e828923e00a338d2e69989b8fe4cb271",
-        "declarationPath": "packages/components-vue/dist/Switch.d.ts",
+        "declarationDigest": "sha256:763c3e4c83d424f1771dcd29e906ed540ea70b36e2c357ffd721ca600201aa3b",
+        "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",

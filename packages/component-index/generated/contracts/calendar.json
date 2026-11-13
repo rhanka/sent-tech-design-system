@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:f82e3f87d12f738892212b88d755712f6be0c246d1a7c7f4e416d4039751466d",
-  "entryDigest": "sha256:49262947506834ff35e6cd4ada2fdeba8e9da16132535f1763adee535bc040d5",
+  "digest": "sha256:81f94386e8a82c587b4fc6ad0bf09f5270af14cffb7e2e3073ed42d92f86b82a",
+  "entryDigest": "sha256:5766c95385b87ad6030ad1291ddfa16b23078e07da24b9a4f08c864ab6ad799b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -430,15 +430,38 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
           }
         },
         {
           "name": "monthChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
@@ -481,15 +504,63 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
           }
         }
       ],
@@ -567,39 +638,14 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "monthChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2036c4c5e1dfcdb063f1c284f08738ddb04be3bff3a5e59004bac13440b8e17e",
-        "declarationPath": "packages/components-vue/dist/Calendar.d.ts",
+        "declarationDigest": "sha256:ad78162e357245b7e9259dda1794bead0840dc78c05b31da7f91cee57fae5118",
+        "declarationPath": "packages/components-vue/dist/Calendar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CalendarProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

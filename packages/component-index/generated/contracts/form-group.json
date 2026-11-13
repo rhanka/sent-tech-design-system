@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:f0ce9f2dce76e96958233c6c268741732a19385c99f6d8e8f411efbd9730e4e4",
-  "entryDigest": "sha256:2a61c551f8c7493ed6cc2ba73c199f371986d35ffe2f6c5eec46a0a191cdc951",
+  "digest": "sha256:0dcfe09e4b3a783b13175864574c94c6d2f24cfbc6ace8e3a27132809d2c6c6a",
+  "entryDigest": "sha256:5d952fc89fd77e945599d03b2e646e8d7e4b576ea78365607d1b75325577334f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -152,8 +152,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -183,13 +182,23 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "helperText"
+        },
+        {
+          "name": "legend"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:65441387835a8c524ad1a3dc7c00b9999aa264bc5afa0a3b94cc0e3559cd7f61",
-        "declarationPath": "packages/components-vue/dist/FormGroup.d.ts",
+        "declarationDigest": "sha256:604432699de0203598fdd0163e43040c2aaf3438f7dcf9ae040af3d31a0f347e",
+        "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

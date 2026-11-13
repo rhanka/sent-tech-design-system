@@ -1,8 +1,8 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:d1ddbd1c6fd639b3bb0d17679fd3a1095654a20e9a94e8d76196704e19ce9859",
-  "entryDigest": "sha256:7e22a7be5400cbafa95ebba8415ad3a6c5b4e1a01a13ad1a7f11964b06f9252e",
+  "digest": "sha256:b4393a5eabec925e47490ebd5d68f2999450b2dd0f8e171becf8e172855ad2cf",
+  "entryDigest": "sha256:07f23c58bd11e0914b21b36c2fb541c851c6dee6b3599f95cc62518358124e46",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -302,11 +302,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:43b01dcec776e38a00a44940f38b1a1a0128553591250e4d20092231772cf5e3",
-        "declarationPath": "packages/components-vue/dist/GanttChart.d.ts",
+        "declarationDigest": "sha256:fa9523452af0e2c77e4d4b38a44a9445e75de4844d2327986f10e089f1268bf7",
+        "declarationPath": "packages/components-vue/dist/GanttChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GanttChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

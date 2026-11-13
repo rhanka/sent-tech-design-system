@@ -4,10 +4,10 @@ let menuPopoverInstanceCounter = 0;
 
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
-import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.vue";
+import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import Menu from "./Menu.vue";
-import type { MenuActionItem, MenuItem } from "./Menu.vue";
+import type { MenuActionItem, MenuItem } from "./Menu.js";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
 // Anchor spacing between panel and trigger.

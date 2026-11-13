@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:a7948475f5cc88743cccd55cb157332cdf7f26214c67efc467148ad37bd116e3",
-  "entryDigest": "sha256:aa148bfefc4bc261421081f27d7bce9e59e47428f5574b05e6d8cf79503be906",
+  "digest": "sha256:187be567a64e45fa52f068f84b222037e52fb9029cda4927e90483093b143556",
+  "entryDigest": "sha256:d0f4b79ffa337373674a9ca7567c939314a2388c8d2ba44fc0a361a499806493",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -248,21 +248,18 @@
         {
           "name": "onSelect",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
           "name": "select",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -301,31 +298,29 @@
           "sourceType": "unknown"
         },
         {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "select.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "title",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3f7c039ea59bad00791090d2b4ec0f3019fd8c55bc24b2ea351caed9f3a9bc56",
-        "declarationPath": "packages/components-vue/dist/Tile.d.ts",
+        "declarationDigest": "sha256:770522f79049ca6b3761c25aa54319f490663f57b0ff18b656c95d72ea9fbb82",
+        "declarationPath": "packages/components-vue/dist/Tile.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

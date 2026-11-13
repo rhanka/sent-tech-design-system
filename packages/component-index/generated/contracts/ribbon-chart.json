@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:0548dc1c02cff4dfd89950e3a54cee70faf108c6245555b2f640d380de4b59b4",
-  "entryDigest": "sha256:b7c2f72caf834d60d7a9246b24b6d8623922ebfe1c4bc6d6c53907ed83051f04",
+  "digest": "sha256:5752634e257c11c14502e99367eb2b4a4e1c463d1ba24c5d3234fe7cd5c5985c",
+  "entryDigest": "sha256:002a14535e41ccdbf2c6ca61200662cfe5bfb6d9abdffdcafc48bcca4b1a834f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -363,11 +363,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:25ebc15a9683234b45c919b328f7b00d73eb6d3e5bf4bc5b0d09912c457438e1",
-        "declarationPath": "packages/components-vue/dist/RibbonChart.d.ts",
+        "declarationDigest": "sha256:ed9abe683eab8ab4a79061d9e3acc0b337ce39d0299ec311dfdb66501c62e3a7",
+        "declarationPath": "packages/components-vue/dist/RibbonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RibbonChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

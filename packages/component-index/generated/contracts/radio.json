@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:0cc4d3e9b5116e2f6c79713d5fb1c1b5c906df0510b866343d7b5fb9cd2ff9a8",
-  "entryDigest": "sha256:6e2778238a19f578da93b40e7e353636704305082eb5cb8cfd4107ba835e700f",
+  "digest": "sha256:6aa32e4b42af4b687e29559e4c0ef7d98255412002c808f85edc967eab4ae9d3",
+  "entryDigest": "sha256:da2e563bcb228246f7a0daf88104c9a9613da728d8e7524d98202361be2e0dbc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -198,30 +198,22 @@
       "events": [
         {
           "name": "change",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
@@ -265,42 +257,30 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7af31e8a6af0e22c88c6df6974255257479ca49c0ab37d4c166ff5aa796755f8",
-        "declarationPath": "packages/components-vue/dist/Radio.d.ts",
+        "declarationDigest": "sha256:0a50328d2c2ecce1b963dd342da002706c5d85b883c423df208f963ce0861cfa",
+        "declarationPath": "packages/components-vue/dist/Radio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
