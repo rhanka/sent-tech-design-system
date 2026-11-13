@@ -475,8 +475,8 @@ export { deriveInitials } from "./Header.js";
 
 export { default as Avatar } from "./Avatar.vue";
 export type { AvatarProps, AvatarSize, AvatarShape, AvatarTone } from "./Avatar.vue";
-export { AvatarGroup } from "./AvatarGroup.js";
-export type { AvatarGroupProps } from "./AvatarGroup.js";
+export { default as AvatarGroup } from "./AvatarGroup.vue";
+export type { AvatarGroupProps } from "./AvatarGroup.vue";
 export { ButtonGroup } from "./ButtonGroup.js";
 export type {
   ButtonGroupProps,
