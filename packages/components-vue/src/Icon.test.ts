@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import { mount } from "@vue/test-utils";
 import { EyeOff, Rocket } from "lucide-vue-next";
 import { describe, expect, it, vi } from "vitest";
-import { Icon, ICON_NAMES } from "./Icon.js";
+import { Icon, ICON_NAMES } from './Icon.vue';
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
 // as [{ selector, declarations }]. Empty when the block is absent.
