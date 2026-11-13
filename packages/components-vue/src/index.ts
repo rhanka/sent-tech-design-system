@@ -1,7 +1,7 @@
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
-export { Accordion } from "./Accordion.js";
-export type { AccordionProps, AccordionItem } from "./Accordion.js";
+export { default as Accordion } from "./Accordion.vue";
+export type { AccordionProps, AccordionItem } from "./Accordion.vue";
 export { default as Alert } from "./Alert.vue";
 export type { AlertProps, AlertTone } from "./Alert.vue";
 export { default as Badge } from "./Badge.vue";
