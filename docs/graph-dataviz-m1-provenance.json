@@ -47,8 +47,8 @@
       "gitBlob": "ace049eeddcc4467ac0e103cde9466d7eb0805aa",
       "sha256": "2e336ec40b2a4febb1b1cef53ca2e411fb6817fbb55ba9fe99ace6db83949092",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "fdd335a94be57b9962ca9e84e232398e900eed776a2b93103686e4643b134f51",
-      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
+      "destinationSha256": "8654ff2838fac72b83751e190a2d1ae54e07ba1dad25393a8c840fed0def19f9",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
       "repository": "graphify",
@@ -564,8 +564,8 @@
       "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
       "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "b5998854dff99644dd3e3a7a43e9f35729bc57a0dbbce38d0df6d439e905e169",
-      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256"
+      "destinationSha256": "c20a3c677c8eee22244c315c4a2220a00be1df412a629ba51132aafee9788798",
+      "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
       "repository": "graphify",
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "36d3b0e843933415c189f4ec5f770a3d2b106c9dc38dfc9ac6faa311f4229896",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only)"
+      "destinationSha256": "54dd4b680a427edf8b2429eab26a0309822b6f8b7fdc0ea18ba138987ae4ad27",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci"
     },
     {
       "repository": "dataviz",
@@ -7840,6 +7840,18 @@
       "status": "local-monorepo-helper",
       "sha256": "442eef729c39853d43798ef83c834c9331a3739f12475008423ca7002d0114f9",
       "note": "GD-M2-PARITY lot 11: monorepo-authored dedicated test for FormatPanel (field rendering, axis/legend/marker edits); its DS inputs render no value list, so it is not a row in generated-adapters.test.ts, per PATTERN.md; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/src/engine.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "a42d483c678e004afc7bdaf8c0abf5aee34892dddb6181d30ae8949c5088bd03",
+      "note": "diagram-vue: monorepo-authored engine dirty-frame loop and host intents, introduced in 9c5d044d; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/graph/src/presentation.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "0a74070c45c74ef34188cd4eeb52dcd858e419a223b7b399d947c046480cd1bc",
+      "note": "diagram-vue: shared presentation helpers extracted from monorepo components-svelte ForceGraph.svelte in 9c5d044d; no upstream source; hash-pinned"
     }
   ]
 }
