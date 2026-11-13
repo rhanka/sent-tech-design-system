@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Embed.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Controlled iframe wrapper with strict sandbox, ratio, and loading control.",
     "fr": "Iframe contrôlée avec sandbox strict, ratio et chargement configurable."
   },
-  "digest": "sha256:f4a5004301c3f6efeb07386081a1ca5a1ca3a059d147ba65e22e8449e54ba470",
+  "digest": "sha256:1abe8c36301b2e542294ae1d6b2c0821cd57ad8042591326fc14efd634a239b4",
   "displayName": "Embed",
   "format": "component-entry/v1",
   "frameworks": [

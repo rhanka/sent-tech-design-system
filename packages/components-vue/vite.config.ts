@@ -15,7 +15,14 @@ export default defineConfig({
     environment: "jsdom",
     testTimeout: 20000,
     projects: [
-      { extends: true, test: { name: 'components', exclude: [...configDefaults.exclude, 'src/vapor-runtime.test.ts'] } },
+      {
+        extends: true,
+        resolve: { alias: [
+          { find: /^vue$/, replacement: require.resolve('vue/dist/vue.esm-bundler.js') },
+          { find: /^@vue\/test-utils$/, replacement: require.resolve('@vue/test-utils').replace('vue-test-utils.cjs.js', 'vue-test-utils.esm-bundler.mjs') },
+        ] },
+        test: { name: 'components', exclude: [...configDefaults.exclude, 'src/vapor-runtime.test.ts'], server: { deps: { inline: [/@vue\/test-utils/] } } },
+      },
       {
         extends: true,
         // Vapor ships in Vue's browser ESM runtime; its Node CJS entry omits it.

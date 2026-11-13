@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:4309756055fa8b0a5448dd2bbce880c91c4c832d59b79ddfbae662e64a8d45ab",
-  "entryDigest": "sha256:64c70dfa575a25092b5c9e8965625d6ad89274a61abe930429f8626a2a45d198",
+  "digest": "sha256:4051d871434ccbfed3f6ccfe6c4bc38f8dde2bf07356040955b44a627fc2ee07",
+  "entryDigest": "sha256:87afbe8ed11bf8f8548e5212976ee2034d33c365953198ea5d8bdbbb82d090c7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -643,11 +643,21 @@
       ],
       "events": [
         {
+          "name": "onSelect",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
+        },
+        {
           "name": "onUpdate:open",
           "payload": {
             "items": {},
             "type": "array"
           }
+        },
+        {
+          "name": "select"
         },
         {
           "name": "update:open"
@@ -662,6 +672,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -672,6 +698,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -765,6 +794,13 @@
               "bottom-start",
               "bottom-end"
             ]
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -792,6 +828,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "onSelect.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onUpdate:open.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -800,16 +842,18 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:26584591fad4fd1965531f9d543471ce0fba823a2003f4fa99b71000bbed1390",
+        "declarationDigest": "sha256:d250788123278c1e6efcc6bb6b4b087395c71a693f39176f41911095bf75f891",
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
+        "emit \"select\": payload not in declaration",
         "emit \"update:open\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
       ]

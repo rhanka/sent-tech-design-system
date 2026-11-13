@@ -287,12 +287,13 @@
 
   $effect(() => {
     const element = frameEl;
-    if (element === undefined || measureLines !== undefined || measure !== defaultCardMeasure) return;
+    const current = scene;
+    if (element === undefined || current === undefined || browserMeasure !== undefined
+      || measureLines !== undefined || measure !== defaultCardMeasure) return;
     let active = true;
     void document.fonts?.ready.then(() => {
       if (!active) return;
-      const current = untrack(() => scene);
-      if (current !== undefined) browserMeasure = measureRenderedSceneFont(element, current, measure);
+      browserMeasure = measureRenderedSceneFont(element, current, measure);
     });
     return () => { active = false; };
   });

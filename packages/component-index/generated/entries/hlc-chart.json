@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/HLCChart.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "HLC bars: a vertical low→high bar with a right close tick (an OHLC variant without an open tick).",
     "fr": "Bâtons HLC : barre verticale low→high, tick droite à la clôture (variante d'OHLC sans tick d'ouverture)."
   },
-  "digest": "sha256:c1b4b7b7f154a1eece2144f7c80b8fdc52791ace50a0b0c4810e7317452fd8b1",
+  "digest": "sha256:1504d870f4396600054fa5dcf375d18913ee3622277bd517ff3e5ec3a67bdec6",
   "displayName": "HLCChart",
   "format": "component-entry/v1",
   "frameworks": [

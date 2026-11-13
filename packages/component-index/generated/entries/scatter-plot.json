@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ScatterPlot.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scatter plot (two numeric axes), tooltip and accessible value list.",
     "fr": "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible."
   },
-  "digest": "sha256:07e28cd9efdf7f6bbc29d2e92e94aaa9acfd24cab3b69a4e9700a647bd2aac74",
+  "digest": "sha256:a386ed7dcc34c469b8cf20f6e435065a676edf51abdd2247278c848b2463d53b",
   "displayName": "ScatterPlot",
   "format": "component-entry/v1",
   "frameworks": [

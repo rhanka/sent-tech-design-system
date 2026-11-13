@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SideNav.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical side navigation.",
     "fr": "Navigation latérale verticale."
   },
-  "digest": "sha256:921627a9083d74ae5f9c8980fcffcb47d42acb2015ece765c387d46786903d25",
+  "digest": "sha256:413f0e4e788c90142da115a67cdd8c313b11b7b7a246916e52d1089c1606101a",
   "displayName": "SideNav",
   "format": "component-entry/v1",
   "frameworks": [

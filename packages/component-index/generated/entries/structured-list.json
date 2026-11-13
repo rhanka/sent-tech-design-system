@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StructuredList.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Structured key/value list (term/definition pairs).",
     "fr": "Liste clé/valeur structurée (paires terme/définition)."
   },
-  "digest": "sha256:c4a8b67e7d0e20d4a75cc680ba6bef1176243eaf94aa832c558508ade7e6c23e",
+  "digest": "sha256:697bcd2dd6eaeff63043bc138a1d1b356be64f5915dbb8b08a6aea86a9c5aba2",
   "displayName": "StructuredList",
   "format": "component-entry/v1",
   "frameworks": [

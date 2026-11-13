@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Badge.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact label with tone (success/warning/...).",
     "fr": "Étiquette compacte avec tonalité (success/warning/...)."
   },
-  "digest": "sha256:0939116077cf5f568eed40c2022ec7bdfeca003df0e0ce8d08d6fbc28adbe7e9",
+  "digest": "sha256:371e0b95d08c4143a59a8c8ffdeeec37eda5d0438908dcc95c42a153c9d9d6e6",
   "displayName": "Badge",
   "format": "component-entry/v1",
   "frameworks": [

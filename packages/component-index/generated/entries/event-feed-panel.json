@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/EventFeedPanel.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message.",
     "fr": "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message."
   },
-  "digest": "sha256:2aad70971f5742884088a9a089dc65d3eb476ffd0b67e98f53c4a9d647fd4feb",
+  "digest": "sha256:fdaea7482d9ac9ce3c81b12b4e18ec51a6810a62e7a134cb51ab34ba8236aece",
   "displayName": "EventFeedPanel",
   "format": "component-entry/v1",
   "frameworks": [

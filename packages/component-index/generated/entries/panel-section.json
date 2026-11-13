@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PanelSection.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "One PanelStack section: collapsible header and scroll-owning body.",
     "fr": "Section d'un PanelStack : en-tête repliable et corps propriétaire du défilement."
   },
-  "digest": "sha256:351ce866ee7c1384b8be4f071044544b1b4ca10c2902ba5348e89695c32c4cd3",
+  "digest": "sha256:44b837e2e2bd6aa1c939710f1eb63f8687b8a17cd6d78a4b3e14b1bbfdbdf170",
   "displayName": "PanelSection",
   "format": "component-entry/v1",
   "frameworks": [

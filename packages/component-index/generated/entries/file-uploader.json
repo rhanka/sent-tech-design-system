@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FileUploader.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:ff4f69856ab417dbc3d85abce4a02f6d8e6b4cbff9e3d4ed4488c690890f9328",
+  "digest": "sha256:8624d853e5947d129f50ff0da286b06731f8e126269a554d9cfd338440c48c2b",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

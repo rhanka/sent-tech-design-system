@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:a76772344fae0c4ddd5c6230cafddae806cc05f90c8b86f6f2409852b5f1af82",
-  "entryDigest": "sha256:1262103874371ce12c0bc48acd47670c9158ea33a2a4ab7f67a10c83d355d185",
+  "digest": "sha256:a814357f7b5e4be9548a23e7138f8f85f060ea48fde8b4f5655264bc48be4659",
+  "entryDigest": "sha256:136d0256ffae48b3ea67f67bd548109fca73c60fe363726005b1d2a5379e4e3b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/Breadcrumb.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BreadcrumbProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],

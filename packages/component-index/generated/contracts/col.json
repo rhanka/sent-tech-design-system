@@ -1,8 +1,8 @@
 {
   "componentId": "col",
   "contractSource": "derived",
-  "digest": "sha256:ca9c679caf142535634d58bc6020021e535d883d92d840a3f5e6ff5b927295c7",
-  "entryDigest": "sha256:a8c1d1e50c1284742e51fe302a0ff3f046933041b29569515595dd4b20f3a85f",
+  "digest": "sha256:9b6e866ac87cb14c764e6c52361102d7deb3d1ba216aeadad3518b0225dd833d",
+  "entryDigest": "sha256:163259a6432625d5f33b055e539ff8b5bbc5fe1320fbf956c2c5740aee989031",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-vue/dist/Col.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],

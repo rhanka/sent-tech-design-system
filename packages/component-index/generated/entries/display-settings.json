@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DisplaySettings.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Display preferences controls (font size, contrast, line spacing, motion).",
     "fr": "Préférences d’affichage (taille de texte, contraste, interligne, animations)."
   },
-  "digest": "sha256:4f0aedc67e80b9fa44873f192d1658f537528f5916b074952b1223ecd5fe8c7a",
+  "digest": "sha256:1c1ed0b27347b3da0a5609831febd0ff8b56937df3275b079dc2f627f5815b12",
   "displayName": "DisplaySettings",
   "format": "component-entry/v1",
   "frameworks": [

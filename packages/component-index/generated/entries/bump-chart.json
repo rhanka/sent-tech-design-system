@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BumpChart.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Rankings over time: rising and falling rank lines.",
     "fr": "Classements dans le temps : lignes qui montent et descendent."
   },
-  "digest": "sha256:47186be9ba837ee04af586419f9d20c546d75522b178a0209d673020bde6bc70",
+  "digest": "sha256:b7e8a3549bbb7d1678f82f00e51dbc8ae30b23c6fbf676b04d516ead791028bd",
   "displayName": "BumpChart",
   "format": "component-entry/v1",
   "frameworks": [

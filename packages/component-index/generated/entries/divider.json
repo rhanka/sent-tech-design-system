@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Divider.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Horizontal/vertical separator, optionally with a label.",
     "fr": "Séparateur horizontal/vertical, optionnellement avec libellé."
   },
-  "digest": "sha256:18ef48e0b3dc6100dd7b643c5d6424d51354dac215de33bab0f77acb3ce05060",
+  "digest": "sha256:79f9948cbed6969ef29f3e6314505c1b4921470ac97f6a85c5631038ab9e63e4",
   "displayName": "Divider",
   "format": "component-entry/v1",
   "frameworks": [

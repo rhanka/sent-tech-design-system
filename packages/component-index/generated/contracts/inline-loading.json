@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:4d00373733876e423643486753d8dcd2a68fe7087f65e8a98c86f3276062b813",
-  "entryDigest": "sha256:bf68860ea82b603fbf938bd9bc8bf74f8f84fcf0ff6b9dfe4fc81d4d198e73b7",
+  "digest": "sha256:e04683c4e39ae8a87486fdf6e7e2a9da7a05881b844296ddfbf4cf7d654b9ef1",
+  "entryDigest": "sha256:662d6ce2f52a73a03f634350f80cc9c840f0787114ccb2262e0ed8747a420b0e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-vue/dist/InlineLoading.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineLoadingProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],
