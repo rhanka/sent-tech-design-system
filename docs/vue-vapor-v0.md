@@ -72,8 +72,11 @@ dataviz 0/115 (0%), 115 render-function modules; total 14/347 (4%), 333 remainin
 
 ## Fan-out boundaries
 
-V0b still owns SFC contract extraction (including slots), exported props,
-generic declarations, the VNode classification and semantic mappings. Existing
+V0b supplies SFC contract extraction (including slots), exported props,
+generic declarations, the VNode classification and semantic mappings. See the
+[conversion guide](vue-vapor-conversion-guide.md),
+[semantic mapping](vue-vapor-semantic-mapping.md) and
+[per-module CSV](vue-vapor-classification.csv). Existing
 menu SFCs depend on legacy children/Lucide; being an SFC does not make them
 native. V1–V9 remain subject to V0b/V0c and the plan's manifest/reference gates.
 No full fan-out clearance is inferred from this foundation alone.
@@ -129,11 +132,11 @@ TOTAL           Vapor-ready   16 /  347  (  4 %)   still h(): 331
   regenerating the declaration/source digests. Shared compiler/lint inputs are
   part of the Vue build cache key; rebuild-then-skip behavior was verified.
 
-V0b must address constructor/re-export visibility, slots and generic contract
-completeness, and the VNode semantic mapping. The existing extractor serializes
-TypeScript internal branded-symbol ids, so declaration graph changes can
-renumber those keys in the generated scene contract. The regeneration here
-retains that existing behavior; no extractor redesign is included.
+V0b addresses constructor/re-export visibility, slots, generic defaults and
+the VNode semantic mapping. Branded primitives now retain their JSON scalar
+form with an explicit loss record, and symbol-keyed properties are omitted with
+stable diagnostics. Generated contracts no longer contain TypeScript symbol
+allocation ids. Declaration-only losses still keep affected contracts partial.
 
 V1–V9 remain gated: 331 legacy modules remain, the menu SFCs have legacy
 dependencies, Dropdown needs its contract mapping, and Lucide removal is V9.
