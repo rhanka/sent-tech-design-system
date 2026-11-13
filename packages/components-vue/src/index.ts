@@ -163,8 +163,8 @@ export type {
   DataTableSort,
 } from "./DataTable.js";
 export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
-export { DatePicker } from "./DatePicker.js";
-export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.js";
+export { default as DatePicker } from "./DatePicker.vue";
+export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.vue";
 export { Menu } from "./Menu.js";
 export type { MenuProps, MenuItem, MenuActionItem, MenuDividerItem, MenuGroupItem, MenuSubmenuSide } from "./Menu.js";
 export {
