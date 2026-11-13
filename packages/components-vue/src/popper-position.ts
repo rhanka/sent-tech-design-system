@@ -101,4 +101,3 @@ export function computePosition(
 
   return { placement: joinPlacement(side, align), top, left };
 }
-
