@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Combobox",
+  "sourceRevision": "856d0d61536865951737ac36c3359defd0af9be9",
+  "source": "src/Combobox.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-combobox-1-input\"><span class=\"st-field__label\">Fruit</span><span class=\"st-combobox st-combobox--md\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-1-list\" aria-expanded=\"false\" class=\"st-combobox__control\" id=\"st-combobox-1-input\" placeholder=\"Select or type\" role=\"combobox\" value=\"\"><button aria-expanded=\"false\" aria-label=\"Toggle options\" class=\"st-combobox__toggle\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label></div>"
+    },
+    {
+      "id": "selected-small",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-combobox-2-input\"><span class=\"st-field__label\">Fruit</span><span class=\"st-combobox st-combobox--sm\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-2-list\" aria-expanded=\"false\" class=\"st-combobox__control\" id=\"st-combobox-2-input\" placeholder=\"Select or type\" role=\"combobox\" value=\"Beta\"><button aria-label=\"Clear selection\" class=\"st-combobox__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button><button aria-expanded=\"false\" aria-label=\"Toggle options\" class=\"st-combobox__toggle\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label></div>"
+    },
+    {
+      "id": "open-custom-value",
+      "html": "<div class=\"st-field consumer\" data-bench=\"combo\" style=\"color:red;\"><label class=\"st-field__control\" for=\"st-combobox-3-input\"><span class=\"st-field__label\">Fruit</span><span class=\"st-combobox st-combobox--md\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-3-list\" aria-expanded=\"true\" class=\"st-combobox__control\" id=\"st-combobox-3-input\" placeholder=\"Type fruit\" role=\"combobox\" value=\"custom\"><button aria-label=\"Clear selection\" class=\"st-combobox__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button><button aria-expanded=\"true\" aria-label=\"Toggle options\" class=\"st-combobox__toggle\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon st-combobox__toggleIcon--open lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon st-combobox__toggleIcon--open\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label><div aria-label=\"Fruit\" class=\"st-combobox__list\" id=\"st-combobox-3-list\" role=\"listbox\"><div aria-disabled=\"true\" aria-selected=\"false\" class=\"st-combobox__empty\" role=\"option\">No results</div></div></div>"
+    },
+    {
+      "id": "invalid-disabled",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-combobox-4-input\"><span class=\"st-field__label\">Fruit</span><span class=\"st-combobox st-combobox--lg\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-4-list\" aria-expanded=\"false\" aria-invalid=\"true\" class=\"st-combobox__control\" disabled=\"\" id=\"st-combobox-4-input\" placeholder=\"Select or type\" role=\"combobox\" value=\"\"><button aria-expanded=\"false\" aria-label=\"Show fruits\" class=\"st-combobox__toggle\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "helper-no-results",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-combobox-5-input\"><span class=\"st-combobox st-combobox--md\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-5-list\" aria-expanded=\"true\" class=\"st-combobox__control\" id=\"st-combobox-5-input\" placeholder=\"Select or type\" role=\"combobox\" value=\"\"><button aria-expanded=\"true\" aria-label=\"Toggle options\" class=\"st-combobox__toggle\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon st-combobox__toggleIcon--open lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon st-combobox__toggleIcon--open\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label><div aria-label=\"Options\" class=\"st-combobox__list\" id=\"st-combobox-5-list\" role=\"listbox\"><button aria-selected=\"false\" class=\"st-combobox__option\" id=\"st-combobox-5-list-alpha\" role=\"option\" type=\"button\">Alpha</button><button aria-selected=\"false\" class=\"st-combobox__option\" id=\"st-combobox-5-list-beta\" role=\"option\" type=\"button\">Beta</button><button aria-disabled=\"true\" aria-selected=\"false\" class=\"st-combobox__option\" disabled=\"\" id=\"st-combobox-5-list-gamma\" role=\"option\" type=\"button\">Gamma</button></div><span class=\"st-field__help\">Pick one</span></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-combobox-6-input\"><span class=\"st-field__label\">Fruit</span><span class=\"st-combobox st-combobox--md\"><input aria-autocomplete=\"list\" aria-controls=\"st-combobox-6-list\" aria-expanded=\"true\" class=\"st-combobox__control\" id=\"st-combobox-6-input\" placeholder=\"Select or type\" role=\"combobox\" value=\"\"><button aria-expanded=\"true\" aria-label=\"Toggle options\" class=\"st-combobox__toggle\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide st-combobox__toggleIcon st-combobox__toggleIcon--open lucide-chevron-down-icon lucide-chevron-down st-combobox__toggleIcon st-combobox__toggleIcon--open\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></span></label><div aria-label=\"Fruit\" class=\"st-combobox__list\" id=\"st-combobox-6-list\" role=\"listbox\"><div aria-disabled=\"true\" aria-selected=\"false\" class=\"st-combobox__empty\" role=\"option\">No results</div></div></div>"
+    }
+  ],
+  "sourceSha256": "bcbe16dc2401e896afb46be55e6089b789e9e87ef0ec10750017963d5011da15",
+  "fixtureSha256": "6977e7da386b40a2e466cc8fe9a6911d540f733e439d6bcfb31b59445b48826c",
+  "publicExports": [
+    {
+      "name": "Combobox",
+      "typeOnly": false
+    },
+    {
+      "name": "ComboboxProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ComboboxOption",
+      "typeOnly": true
+    },
+    {
+      "name": "ComboboxSize",
+      "typeOnly": true
+    }
+  ]
+}
