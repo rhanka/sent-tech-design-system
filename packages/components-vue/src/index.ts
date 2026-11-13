@@ -388,8 +388,8 @@ export type {
 } from "./TreegraphChart.js";
 export { DashboardGrid } from "./DashboardGrid.js";
 export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.js";
-export { HeatmapChart } from "./HeatmapChart.js";
-export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.js";
+export { default as HeatmapChart } from "./HeatmapChart.vue";
+export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.vue";
 export { HistogramChart } from "./HistogramChart.js";
 export type { HistogramChartProps, HistogramChartDatum, HistogramChartBin, HistogramChartTone } from "./HistogramChart.js";
 export { BoxPlotChart } from "./BoxPlotChart.js";
