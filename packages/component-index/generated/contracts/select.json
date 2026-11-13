@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:a881fff9dea1add7dc08caa8e2bd4a33a5dd24760f39dff256f656ce06a8daa8",
-  "entryDigest": "sha256:695203368bdaa231799a7300daad7147909057cd1543fdfb023adeeea1fc36ab",
+  "digest": "sha256:55621595da5627c9ccdf3a255c68ab729384a09b3173715dae6e94d9d967c667",
+  "entryDigest": "sha256:b4558f19c4a9edbd5093db8151c696ac4f11d256435637895b8326aab86b1473",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Select.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectProps",
-        "version": "0.41.1"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -436,7 +436,7 @@
         "declarationPath": "packages/components-vue/dist/Select.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectProps",
-        "version": "0.41.1-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ParetoChart.svelte",
-      "version": "0.41.1"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ParetoChart.vue",
-      "version": "0.41.1-next.1"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Descending bars with a cumulative percentage curve (Pareto principle).",
     "fr": "Barres triées décroissantes avec courbe cumulée en pourcentage (loi de Pareto)."
   },
-  "digest": "sha256:c45efd55b8a36cceb5b75289c34729d1d484f888029bebe9bdead69628f1e761",
+  "digest": "sha256:4c7c864ac99d1c3747d1e4322d22204de64ff633b7ab8fd3ccfd2686f9207f23",
   "displayName": "ParetoChart",
   "format": "component-entry/v1",
   "frameworks": [

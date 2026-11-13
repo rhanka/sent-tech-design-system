@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AnomalySwimLaneChart.svelte",
-      "version": "0.41.1"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AnomalySwimLaneChart.vue",
-      "version": "0.41.1-next.1"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time × job heatmap: color encodes a continuous anomaly score (intensity gradient).",
     "fr": "Heatmap temps × job : la couleur encode un score d'anomalie continu (gradient d'intensité)."
   },
-  "digest": "sha256:fc58f73ec04871bcb6459a46b823d9b1acdbe65a8b4025ab40014c7a938b3e6c",
+  "digest": "sha256:6f11ab620e4d1a9b8fcd840bf74b83538c37ab187f1789f4bc5f6856d2b863aa",
   "displayName": "AnomalySwimLaneChart",
   "format": "component-entry/v1",
   "frameworks": [

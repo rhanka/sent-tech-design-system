@@ -1,8 +1,8 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:0d332e1877555e0ff2471fc19f919c204f3a90b55c488c1c8d512443d93ee958",
-  "entryDigest": "sha256:5351bdcbb85a117820462da485f4e5115b2eea7bf054ec09712a94492227fc3a",
+  "digest": "sha256:0ad6550ae1e02d00c8c9de4f21b611e4ad5074630a1beb1d2e7ee34e6f7c9c52",
+  "entryDigest": "sha256:fa9217e7d0479100cd73efe69b7fa2773548ebdd7eb9c23f765164212ee8be3a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,7 +310,7 @@
         "declarationPath": "packages/components-svelte/dist/NumberInput.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NumberInputProps",
-        "version": "0.41.1"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -481,7 +481,7 @@
         "declarationPath": "packages/components-vue/dist/NumberInput.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NumberInputProps",
-        "version": "0.41.1-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [

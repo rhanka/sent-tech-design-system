@@ -234,7 +234,12 @@ describe("Menu cascade — parents (AC-02, AC-03, AC-10)", () => {
     expect(parent.attributes("aria-haspopup")).toBe("menu");
     expect(parent.attributes("aria-expanded")).toBe("false");
     expect(parent.find(".st-menu__itemChevron--end").exists()).toBe(true);
-    expect(parent.find("svg").exists()).toBe(true);
+    const chevron = parent.find("svg");
+    expect(chevron.attributes()).toMatchObject({
+      class: "lucide lucide-chevron-right-icon lucide-chevron-right",
+      width: "16", height: "16", "stroke-width": "2", "aria-hidden": "true",
+    });
+    expect(chevron.find("path").attributes("d")).toBe("m9 18 6-6-6-6");
     expect(document.body.querySelector('[data-menu-level="1"]')).toBeNull();
   });
 
@@ -766,6 +771,11 @@ describe("Menu cascade — sides, groups, items change (AC-19, AC-20, AC-21, AC-
     const parent = buttonByText(wrapper, "Class A");
     expect(parent.find(".st-menu__itemChevron--start").exists()).toBe(true);
     expect(parent.find(".st-menu__itemChevron--end").exists()).toBe(false);
+    expect(parent.find("svg").attributes()).toMatchObject({
+      class: "lucide lucide-chevron-left-icon lucide-chevron-left",
+      width: "16", height: "16", "stroke-width": "2", "aria-hidden": "true",
+    });
+    expect(parent.find("svg path").attributes("d")).toBe("m15 18-6-6 6-6");
     const panel = document.body.querySelector('[data-menu-level="1"]') as HTMLElement;
     expect(panel.style.left).toBe("508px");
     (parent.element as HTMLButtonElement).focus();
@@ -1158,7 +1168,16 @@ describe("Menu cascade — OverflowMenu flat regression (AC-37 Vue parity)", () 
     const trigger = wrapper.find(".st-overflowMenu__trigger");
     expect(trigger.attributes("aria-haspopup")).toBe("menu");
     expect(trigger.attributes("aria-expanded")).toBe("false");
-    expect(trigger.find("svg").exists()).toBe(true);
+    const ellipsis = trigger.find("svg");
+    expect(ellipsis.attributes()).toMatchObject({
+      class: "lucide lucide-ellipsis-icon lucide-ellipsis",
+      width: "18", height: "18", "stroke-width": "2.25", "aria-hidden": "true",
+    });
+    expect(ellipsis.findAll("circle").map((circle) => circle.attributes())).toEqual([
+      { cx: "12", cy: "12", r: "1" },
+      { cx: "19", cy: "12", r: "1" },
+      { cx: "5", cy: "12", r: "1" },
+    ]);
     expect(wrapper.find(".st-overflowMenu__list").exists()).toBe(false);
     await trigger.trigger("click");
     expect(trigger.attributes("aria-expanded")).toBe("true");
@@ -1671,7 +1690,7 @@ describe("control review regressions", () => {
   it("ships the required Vue minor version with matching lock metadata", () => {
     const manifest = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
     const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
-    expect(manifest.version).toBe("0.41.1-next.1");
+    expect(manifest.version).toBe("0.41.0-next.2");
     expect(manifest.publishConfig.tag).toBe("next");
     expect(lock.packages["packages/components-vue"].version).toBe(manifest.version);
     expect(version).toMatch(/^3\.6\./);
