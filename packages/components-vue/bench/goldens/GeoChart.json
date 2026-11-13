@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "component": "GeoChart",
+  "sourceRevision": "07fdc1b6dfe5b649afb832d35a657f4158b4bf32",
+  "source": "src/GeoChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap\"><div aria-label=\"Cities\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"129.35714285714283\" cy=\"77.43811394891941\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category2\" cx=\"390.6428571428571\" cy=\"242.5618860510806\" r=\"9.5\"></circle></g></svg></div><ul aria-label=\"Data values for Cities\" class=\"st-chartDataList\"><li>Points: 2</li><li>Paris: 10</li><li>Lyon: 5</li></ul></div>"
+    },
+    {
+      "id": "geojson-polygon",
+      "html": "<div class=\"st-geoMap\"><div aria-label=\"Map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--geojson\"></g></svg></div><ul aria-label=\"Data values for Map\" class=\"st-chartDataList\"><li>Zone: 0 entités</li></ul></div>"
+    },
+    {
+      "id": "choropleth",
+      "html": "<div class=\"st-geoMap\"><div aria-label=\"Regions\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Regions\" class=\"st-chartDataList\"><li>Choroplèthe: 0 régions</li></ul></div>"
+    },
+    {
+      "id": "flow",
+      "html": "<div class=\"st-geoMap\"><div aria-label=\"Routes\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--flow\"><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 118.02390438247012 60.02649006622514 Q 224.00953642384104 211.11139442231075 401.97609561752984 259.97350993377484\" stroke-width=\"9\"></path></g></svg></div><ul aria-label=\"Data values for Routes\" class=\"st-chartDataList\"><li>Flux: 1</li><li>(48.85, 2.35) → (43.3, 5.37): 7</li></ul></div>"
+    },
+    {
+      "id": "multi-layer",
+      "html": "<div class=\"st-geoMap\"><div aria-label=\"Overlays\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--density\"><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"254.24390243902442\" cy=\"163.31707317073173\" r=\"12\" style=\"--st-geoMap-mix: 41%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"265.7560975609756\" cy=\"150.04878048780472\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle></g><g class=\"st-geoMap__layer st-geoMap__layer--hexbin\"><polygon class=\"st-geoMap__hexbin st-geoMap__hexbin--category1\" points=\"388.4184125417943,119.31732915986123 388.4184125417943,141.31732915986123 369.36585365853665,152.31732915986123 350.313294775279,141.31732915986123 350.313294775279,119.31732915986123 369.36585365853665,108.31732915986123\" style=\"--st-geoMap-mix: 85%\"></polygon></g><g class=\"st-geoMap__layer st-geoMap__layer--cluster\"><g class=\"st-geoMap__cluster st-geoMap__cluster--category1\"><circle class=\"st-geoMap__clusterDot\" cx=\"142\" cy=\"228.0000000000001\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"142\" cy=\"228.0000000000001\" r=\"27\"></circle></g></g></svg></div><ul aria-label=\"Data values for Overlays\" class=\"st-chartDataList\"><li>Densité: 2 points</li><li>(48, 2): 4</li><li>(48.2, 2.1): 9</li><li>Hexbin: 1 alvéoles</li><li>3:56: 5</li><li>Clusters: 1</li><li>cluster:0: 2</li></ul></div>"
+    },
+    {
+      "id": "mercator-custom",
+      "html": "<div class=\"st-geoMap consumer\" data-bench=\"geo\" style=\"color:red;\"><div aria-label=\"Sized\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"639\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"320\" cy=\"200.00000000000009\" r=\"14\"></circle></g></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>Points: 1</li><li>(0, 0): 1</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "dac9b1c9a22ffb53cb9875e8188be71809bc38dce3361819ea0554b0ebef8f46",
+  "fixtureSha256": "fc9d86a78b4003edd9cfa3e213cb3afa4c511133e306dd1ab6ca0b4d6a4479be",
+  "publicExports": [
+    {
+      "name": "GeoChart",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartTone",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartCoordinate",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartBounds",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartProjection",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartGeometryType",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartGeometry",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartFeature",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartPoint",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartFlow",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartGeojsonLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartChoroplethLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartPointsLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartDensityLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartFlowLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartHexbinLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartClusterLayer",
+      "typeOnly": true
+    },
+    {
+      "name": "GeoChartLayer",
+      "typeOnly": true
+    }
+  ]
+}

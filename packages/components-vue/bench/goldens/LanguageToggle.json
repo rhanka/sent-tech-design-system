@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "LanguageToggle",
+  "sourceRevision": "8d0a320f877d137001f6a421df2d0a3e0fc5ea4c",
+  "source": "src/LanguageToggle.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<label class=\"st-visually-hidden st-languageToggle__srLabel\" for=\"lang-select\">Langue</label><select aria-label=\"Langue\" class=\"st-languageToggle__select\" id=\"lang-select\" value=\"fr\"><option value=\"fr\">FR</option><option value=\"en\">EN</option></select>"
+    },
+    {
+      "id": "english",
+      "html": "<label class=\"st-visually-hidden st-languageToggle__srLabel\" for=\"lang-select\">Langue</label><select aria-label=\"Langue\" class=\"st-languageToggle__select\" id=\"lang-select\" value=\"en\"><option value=\"fr\">FR</option><option value=\"en\">EN</option></select>"
+    },
+    {
+      "id": "accordion",
+      "html": "<div class=\"st-languageToggle\"><button aria-expanded=\"false\" class=\"st-languageToggle__accordionTrigger\" type=\"button\"><span>Language</span><svg aria-hidden=\"true\" class=\"lucide st-languageToggle__chevron lucide-chevron-down-icon lucide-chevron-down st-languageToggle__chevron\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<label class=\"st-visually-hidden st-languageToggle__srLabel\" for=\"lang-select\">Choose</label><select aria-label=\"Choose\" class=\"st-languageToggle__select\" id=\"lang-select\" value=\"fr\"><option value=\"fr\">Français</option><option value=\"en\">English</option></select>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-languageToggle consumer\" data-bench=\"lang-toggle\" style=\"color:red;\"><button aria-expanded=\"false\" class=\"st-languageToggle__accordionTrigger\" type=\"button\"><span>Langue</span><svg aria-hidden=\"true\" class=\"lucide st-languageToggle__chevron lucide-chevron-down-icon lucide-chevron-down st-languageToggle__chevron\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    }
+  ],
+  "sourceSha256": "417e3381e4d5b5c1a001304a6aab0218b88dbb18e6049382513d947c0bd0e7f7",
+  "fixtureSha256": "60e0d0c01061b80acadfea93024923a30d7abe2c199520186c736085f6cda433",
+  "publicExports": [
+    {
+      "name": "LanguageToggle",
+      "typeOnly": false
+    },
+    {
+      "name": "LanguageToggleProps",
+      "typeOnly": true
+    },
+    {
+      "name": "LanguageToggleLocale",
+      "typeOnly": true
+    }
+  ]
+}

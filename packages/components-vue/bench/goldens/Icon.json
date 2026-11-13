@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "component": "Icon",
+  "sourceRevision": "1f48f1421e05fc51e91bbf0f284018728fc034d1",
+  "source": "src/Icon.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-eye-icon lucide-eye st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg>"
+    },
+    {
+      "id": "settings-sized",
+      "html": "<svg aria-label=\"Settings\" class=\"lucide st-icon lucide-settings-icon lucide-settings st-icon\" data-st-icon-stroke=\"prop\" fill=\"none\" focusable=\"false\" height=\"24\" role=\"img\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\" viewBox=\"0 0 24 24\" width=\"24\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg>"
+    },
+    {
+      "id": "glyph-rocket",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-rocket-icon lucide-rocket st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z\"></path><path d=\"m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z\"></path><path d=\"M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0\"></path><path d=\"M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5\"></path></svg>"
+    },
+    {
+      "id": "glyph-wins",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-rocket-icon lucide-rocket st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z\"></path><path d=\"m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z\"></path><path d=\"M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0\"></path><path d=\"M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5\"></path></svg>"
+    },
+    {
+      "id": "decorative",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon lucide-x-icon lucide-x st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<svg aria-hidden=\"true\" class=\"lucide st-icon consumer lucide-layers-icon lucide-layers st-icon consumer\" data-bench=\"icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" style=\"color:red;\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z\"></path><path d=\"M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12\"></path><path d=\"M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17\"></path></svg>"
+    }
+  ],
+  "sourceSha256": "d901c6fa88e17a4eb02c38b056f8590af75dde5da5ec9e8a50a21441cf01c7fd",
+  "fixtureSha256": "c2f6a3cb3225e384fbf5e0dd1909cc9f4aab0a5fd7a70234751946eb98dd18a9",
+  "publicExports": [
+    {
+      "name": "Icon",
+      "typeOnly": false
+    },
+    {
+      "name": "ICONS",
+      "typeOnly": false
+    },
+    {
+      "name": "ICON_NAMES",
+      "typeOnly": false
+    },
+    {
+      "name": "IconGlyph",
+      "typeOnly": true
+    },
+    {
+      "name": "IconName",
+      "typeOnly": true
+    },
+    {
+      "name": "IconProps",
+      "typeOnly": true
+    }
+  ]
+}

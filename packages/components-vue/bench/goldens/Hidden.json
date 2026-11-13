@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Hidden",
+  "sourceRevision": "c220159fd56a2596e4c56fbf35aaad8168b95447",
+  "source": "src/Hidden.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-hidden\">Hidden?</div>"
+    },
+    {
+      "id": "below-md",
+      "html": "<div class=\"st-hidden st-hidden--below-md\"><span>XS</span></div>"
+    },
+    {
+      "id": "above-lg",
+      "html": "<div class=\"st-hidden st-hidden--above-lg\">Wide</div>"
+    },
+    {
+      "id": "both-attrs",
+      "html": "<section class=\"st-hidden st-hidden--below-sm st-hidden--above-xl\">Mid</section>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-hidden st-hidden--below-md consumer\" data-bench=\"hidden\" style=\"color:red;\" title=\"Box\"><em>X</em></div>"
+    }
+  ],
+  "sourceSha256": "859dc0e8b1ccbc72fc56dfc593779ffbe0d882f849a44feab5f9d74b3b2d42c5",
+  "fixtureSha256": "583a778d4e3bfcd4967840c5deeb1b1b0d57e25560093e65ce75b2ebd2d2efa3",
+  "publicExports": [
+    {
+      "name": "Hidden",
+      "typeOnly": false
+    },
+    {
+      "name": "HiddenProps",
+      "typeOnly": true
+    },
+    {
+      "name": "HiddenBreakpoint",
+      "typeOnly": true
+    }
+  ]
+}

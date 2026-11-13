@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "LoadingState",
+  "sourceRevision": "e3a62c86631e2f85437aa7afeeb905a8107b04a5",
+  "source": "src/LoadingState.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--spinner\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\">Loading</span></section>"
+    },
+    {
+      "id": "label",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--spinner\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\">Please wait</span></section>"
+    },
+    {
+      "id": "title-fallback",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--spinner\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\">Loading data</span></section>"
+    },
+    {
+      "id": "skeleton",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--skeleton\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\">Fetching</span></section>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--spinner\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\"><strong>Loading</strong></span></section>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<section aria-live=\"polite\" class=\"st-loading st-loading--spinner consumer\" data-bench=\"loading\" style=\"color:red;\"><span aria-hidden=\"true\" class=\"st-loading__spinner\"></span><span class=\"st-loading__label\">Wait</span></section>"
+    }
+  ],
+  "sourceSha256": "82e645e674a795f4201f82ead36f80a64d819399b3eabc3998c08db1f4c1d702",
+  "fixtureSha256": "743c538e261e52c9f548e5b4919ec7920eea451d73d2b51896b332cd0a974b58",
+  "publicExports": [
+    {
+      "name": "LoadingState",
+      "typeOnly": false
+    },
+    {
+      "name": "LoadingStateProps",
+      "typeOnly": true
+    },
+    {
+      "name": "LoadingStateVariant",
+      "typeOnly": true
+    }
+  ]
+}
