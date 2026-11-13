@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "SelectableList",
+  "sourceRevision": "1838011e937338dc434b49cb08750e84bc376a65",
+  "source": "src/SelectableList.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Choose\" class=\"st-selectableList\" role=\"listbox\"><div role=\"option\">A</div><div role=\"option\">B</div></div>"
+    },
+    {
+      "id": "labelledby-multiple",
+      "html": "<div aria-labelledby=\"ext-label\" aria-multiselectable=\"true\" class=\"st-selectableList\" role=\"listbox\"><div role=\"option\">A</div></div>"
+    },
+    {
+      "id": "controlled-single",
+      "html": "<div aria-label=\"Single\" class=\"st-selectableList\" role=\"listbox\"><div role=\"option\">A</div></div>"
+    },
+    {
+      "id": "null-value",
+      "html": "<div aria-label=\"Empty\" class=\"st-selectableList\" role=\"listbox\"><div role=\"option\">A</div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div aria-label=\"Custom\" class=\"st-selectableList consumer\" data-bench=\"selectable\" role=\"listbox\" style=\"color:red;\"><div role=\"option\">X</div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div aria-label=\"Empty list\" class=\"st-selectableList\" role=\"listbox\"></div>"
+    }
+  ],
+  "sourceSha256": "92a16c8ae391ca1fcfd5f1f91d3e31d42188485c409cf07786cd0bb831830330",
+  "fixtureSha256": "aa62603c49290ed757569b2a4c7ae2bc78794eb4ecce9555e65c51bbab0e044f",
+  "publicExports": [
+    {
+      "name": "SelectableList",
+      "typeOnly": false
+    },
+    {
+      "name": "SelectableListProps",
+      "typeOnly": true
+    }
+  ]
+}
