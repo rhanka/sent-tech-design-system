@@ -1752,6 +1752,27 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // text (DC-D4 zero-ellipsis). Colours alias the semantic layer only;
     // per-tone accent/fill resolution arrives with the L-R17 tone tokens
     // (DC-2); `tone` is carried as a `data-tone` attribute until then.
+    diagramErd: {
+      fontFamily: "var(--st-font-mono)",
+      "width": "460px",
+      "headerHeight": "64px",
+      "rowHeight": "32px",
+      "lineHeight": "24px",
+      "padding": "12px",
+      "keyWidth": "56px",
+      "nameWidth": "170px",
+      "typeWidth": "170px",
+      "fontSize": "18px",
+      "titleFontSize": "24px",
+      "markerLength": "24px",
+      "markerHalfWidth": "8px",
+      "markerRadius": "4px",
+      "markerGap": "4px",
+      "strokeWidth": "1.5px",
+      "gapInline": "160px",
+      "gapBlock": "120px",
+      "labelWidth": "240px"
+    },
     diagramCard: {
       width: "460px",
       height: "200px",

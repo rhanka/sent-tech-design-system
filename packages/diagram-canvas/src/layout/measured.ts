@@ -1,3 +1,4 @@
+import { layoutErd } from "./erd.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -254,6 +255,7 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
     return {
       status: "refused",
