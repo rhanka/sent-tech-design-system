@@ -36,8 +36,8 @@
   let {
     kicker,
     title,
-    iconName = "base",
-    iconGlyph = getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
+    iconName,
+    iconGlyph = iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
     headerTextWidth,
     headerBlockHeight,
     toggle,
@@ -46,7 +46,7 @@
 </script>
 
 <div class="st-diagramCardHeader" style={`height:${headerBlockHeight}px`}>
-  {#if iconName !== undefined && iconGlyph !== undefined}
+  {#if iconName !== undefined && iconName !== "none" && iconGlyph !== undefined}
     <svg
       class="st-diagramCardHeader-icon"
       data-diagram-icon={iconName}
@@ -102,7 +102,7 @@
   {#if toggle !== undefined}
     <div
       class="st-diagramCard-toggle"
-      style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"}`}
+      style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'}`}
 
     >
       <IconButton
@@ -167,8 +167,6 @@
   }
   .st-diagramCard-toggle {
     position: absolute;
-    top: var(--st-component-diagramZone-toggleInset, 8px);
-    right: var(--st-component-diagramZone-toggleInset, 8px);
     width: var(--st-component-diagramCard-toggleBoxSize, 32px);
     height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }

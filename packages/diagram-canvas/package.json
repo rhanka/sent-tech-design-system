@@ -56,7 +56,7 @@
     "@sentropic/diagram-core": "0.1.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node ../../scripts/sync-diagram-spacing.mjs && tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.check.json",
     "test": "vitest run"
   }

@@ -39,7 +39,7 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { autoSize = true, entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -66,6 +66,7 @@ const onSelect = (event: {
 const onDiagnostic = (event: ZoneDiagnostic) => emit('diagnostic', event);
 const zoneProps = computed(() => ({
     entityId,
+    containerPadding,
     ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
@@ -124,19 +125,19 @@ const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})
 // inline insets, as tall as the layout's header block + subtitle.
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};height:${header.value.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`);
+    : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.value.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
 const contentStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(header.value.contentTop)};left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(ZONE_GEOMETRY.contentInsetBottom)}`);
+    : `top:${frameTop(header.value.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`);
 const footerRuleStyle = computed(() => header.value?.footerRuleY === undefined
     ? undefined
     : `top:${frameTop(header.value.footerRuleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
 const footerStyle = computed(() => header.value === undefined
     ? undefined
-    : `left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
+    : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
 onMounted(() => {
     watch(layout, value => {
         for (const diagnostic of value.diagnostics)

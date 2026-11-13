@@ -11,11 +11,15 @@ export function measureRenderedSceneFont(frame: HTMLElement, scene: SceneModel, 
   if (context === null) return undefined;
   const root = getComputedStyle(card);
   const selectors = { kicker: '.st-diagramCard-kicker', title: '.st-diagramCard-title',
-    body: '.st-diagramCard-line, .st-diagramZone-subtitle', footer: '.st-diagramCard-footer' };
+    body: '.st-diagramCard-line, .st-diagramZone-subtitle', footer: '.st-diagramCard-footer, .st-diagramZone-footer' };
   const fonts = Object.fromEntries(Object.entries(selectors).map(([role, selector]) => {
-    const element = frame.querySelector<HTMLElement>(selector) ?? card;
-    const style = getComputedStyle(element);
+    const element = frame.querySelector<HTMLElement>(selector);
     const geometry = CARD_GEOMETRY[role as keyof typeof selectors];
+    if (element === null) return [role, {
+      font: geometry.weight + ' ' + geometry.size + 'px ' + (root.fontFamily || 'Inter, system-ui, sans-serif'),
+      spacing: role === 'kicker' ? 0.04 * geometry.size : 0,
+    }];
+    const style = getComputedStyle(element);
     return [role, { font: style.font || (style.fontWeight || geometry.weight) + ' ' +
       (style.fontSize || geometry.size + 'px') + ' ' + (style.fontFamily || root.fontFamily || 'Inter, system-ui, sans-serif'),
       spacing: parseFloat(style.letterSpacing) || (role === 'kicker' ? 0.04 * geometry.size : 0) }];

@@ -4,9 +4,18 @@ import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, vali
 import { buildScene, layoutMeasured, layoutFolded, relationRoute, portAnchorPoint, ERD_GEOMETRY, measureErdCard, renderErdCardSvg, renderErdTable, erdMarkerGeometry, renderErdMarkerSvg } from '../src/index.js';
 import { cardLineMeasurer } from '../src/presentation/index.js';
 import { resolveScene } from '../src/presentation/diagramSceneModel.js';
+import { renderSceneSvg } from '../src/presentation/renderSceneSvg.js';
 const scenes = JSON.parse(readFileSync(new URL('../../diagram-core/tests/fixtures/erd/ERD-SCENES.json', import.meta.url), 'utf8')).ontologies as EngramErdScene[];
 const options = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings, measureText: () => ({ width: 1, height: 1 }), measureLines: cardLineMeasurer(), targetWidth: 1440, rowPack: {} };
 describe('ERD measured layout and SVG', () => {
+  it('should retain ERD fields, cardinalities and leaders in standalone scene SVG (Carbon M4)', () => {
+    const data = convertEngramErdScene(scenes[0]!);
+    const rendered = renderSceneSvg({ ...data, collapsed: [], registry: m3ProfileRegistry, bindings: shippedExecutorBindings, measureLines: options.measureLines });
+    expect(rendered.svg.match(/data-erd-field=/g)).toHaveLength(Object.keys(data.document.ports).length);
+    expect(rendered.svg.match(/data-erd-marker=/g)).toHaveLength(2 * scenes[0]!.relations.length);
+    expect(rendered.svg).not.toContain('marker-end="url(#scene-arrow)"');
+    for (const label of rendered.scene.labels.filter(label => label.leader)) expect(rendered.svg).toContain(label.leader!.map(p => p.x + ',' + p.y).join(' '));
+  });
   for (const source of scenes)
     it('should validate and render every row and relation in ' + source.id, () => {
       const { document, view, presentation } = convertEngramErdScene(source);

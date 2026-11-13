@@ -246,8 +246,8 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(ZONE_GEOMETRY.contentInsetInline).toBe(CONTENT_INSET);
     expect(ZONE_GEOMETRY.contentInsetTop).toBe(RULE_TO_FIRST_CHILD_GAP);
     expect(ZONE_GEOMETRY.contentInsetBottom).toBe(LAST_CHILD_TO_BOTTOM_GAP);
-    expect(component.diagramZone.contentInsetTop).toBe("16px");
-    expect(component.diagramZone.contentInsetInline).toBe("16px");
+    expect(component.diagramZone.contentInsetTop).toBe("var(--st-component-diagramScene-containerPadding)");
+    expect(component.diagramZone.contentInsetInline).toBe("var(--st-component-diagramScene-containerPadding)");
 
     expect(RULE_GAP).toBe(4);
     expect(SUBTITLE_TO_RULE_GAP).toBe(4);
@@ -911,9 +911,9 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
     }
   });
 
-  it("the shared model still imports nothing", () => {
+  it("the shared model imports only static spacing and glyph data", () => {
     const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
-    expect(model.match(/^import .*$/gm)).toEqual(['import { getDiagramGlyph } from "./registry.js";']);
+    expect(model.match(/^import .*$/gm)).toEqual(["import { DIAGRAM_SCENE_SPACING as spacing } from '../layout/spacing.generated.js';", 'import { getDiagramGlyph } from "./registry.js";']);
   });
 
   it("the barrel graph still resolves neither subpath (zone added)", () => {

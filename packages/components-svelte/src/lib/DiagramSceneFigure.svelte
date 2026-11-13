@@ -221,8 +221,10 @@
     untrack(() => defaultFolds ?? collapsedOccurrencesOf(view)),
   );
   const collapsedNow = $derived(collapsed ?? foldState);
+  const arrowInstance = $props.id();
+  const arrowId = "diagram-arrow-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
-  const effectiveMeasure = $derived(sceneCardMeasure(browserMeasure ?? measure));
+  const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
   const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
   const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
@@ -308,7 +310,7 @@
     let active = true;
     void document.fonts?.ready.then(() => {
       if (!active) return;
-      browserMeasure = measureRenderedSceneFont(element, current, measure);
+      browserMeasure = measureRenderedSceneFont(element, current, effectiveMeasure);
     });
     return () => { active = false; };
   });
@@ -328,7 +330,7 @@
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
     const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth"]) {
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
       const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
       if (Number.isFinite(value)) values[key] = value;
     }
@@ -390,6 +392,7 @@
     if (cameraDocument !== undefined && cameraDocument !== id) {
       atFit = true;
       requestedZoom = undefined;
+      browserMeasure = undefined;
     }
     cameraDocument = id;
   });
@@ -643,6 +646,7 @@
   const zonePropsOf = (node: SceneNodeModel, rect: Rect) => {
     const zoneTitle = node.presentation?.text.title ?? "";
     const projected = projectZoneProps(node.presentation, {
+      containerPadding: effectiveMetrics.containerPadding,
       entityId: node.entity,
       collapsed: node.collapsed,
       toggleLabel: node.collapsed ? strings.expand(zoneTitle) : strings.collapse(zoneTitle),
@@ -727,8 +731,9 @@
               aria-hidden="true"
               style={animating ? `opacity:${eased}` : undefined}
             >
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
               {#each scene.edges as edge (edge.occurrence)}
-                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
+                <polyline marker-end={edge.markers === undefined ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} points={pointsOf(edge.points)} />
               {/each}
               {#each scene.edges as edge (edge.occurrence)}
                 {#if edge.markers}<g>{@html edge.markers}</g>{/if}

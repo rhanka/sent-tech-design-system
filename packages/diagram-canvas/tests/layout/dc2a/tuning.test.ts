@@ -162,7 +162,7 @@ describe("DC-2a §7.5 tuning grid on the 31 views", () => {
     );
     // Card/footer growth changes this observational ranking. The hard
     // collision, containment, gap and readability gates above still hold.
-    expect(winners.map((cell) => `${String(cell.tallBias)} / ${String(cell.emptyPenaltyWeight)}`)).toEqual(["1 / 0","1 / 0.4","1 / 0.8","2.2 / 0.4"]);
+    expect(winners.map((cell) => `${String(cell.tallBias)} / ${String(cell.emptyPenaltyWeight)}`)).toEqual(["1 / 0","1 / 0.4","1 / 0.8","1.6 / 0","2.2 / 0.4"]);
   });
 
   it("hysteresis: every band of the grid gives the same toggles on the scenes; the default band is retained", () => {

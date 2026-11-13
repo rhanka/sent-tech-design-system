@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from '../../../dist/layout/spacing.generated.js';
 /**
  * Appendix E proof, independent of the layout engine and after.json.
  * Run: node tests/layout/dc2a/fill-feasibility.mjs
@@ -20,8 +21,8 @@ import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 const baseline = JSON.parse(readFileSync(new URL("./baseline.json", import.meta.url)));
-const GAP_X = 96, GAP_Y = 72, GAP_CAP = 240, WIDTH = 460, HEIGHT = 200;
-const INSET = 16, TOGGLE = 66, RULE_GAP = 4, RULE_TO_CHILD = 16, BOTTOM = 16;
+const GAP_X = spacing.gapMin, GAP_Y = spacing.gapMinBlock, GAP_CAP = spacing.gapMax, WIDTH = 460, HEIGHT = 200;
+const INSET = spacing.containerPadding, TOGGLE = 66, RULE_GAP = 4, RULE_TO_CHILD = INSET, BOTTOM = INSET;
 const TARGET = 1.78, TALL_BIAS = 1.6, EMPTY_WEIGHT = 0.4, EPSILON = 1e-9;
 
 /** Independent exhaustive P-1 enumeration; no import of pack.ts. */

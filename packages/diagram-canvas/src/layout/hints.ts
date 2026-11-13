@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * Recursive authored layout hints (M3 §4.7).
  *
@@ -211,9 +212,9 @@ export interface ResolvedRowGaps {
 export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
   return {
     cardX: hints?.cardGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
-    cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? metrics.gapMin ?? 72,
+    cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
     zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
-    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? metrics.gapMin ?? 72,
+    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
     maxX: metrics.gapInlineMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
     maxY: metrics.gapBlockMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
   };

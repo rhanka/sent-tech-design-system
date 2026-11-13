@@ -42,21 +42,21 @@
   "vue-globale/intermediate": {
     "visible": 29,
     "visibleLeaves": 18,
-    "bboxWidth": 5237,
+    "bboxWidth": 5385,
     "bboxHeight": 2313.313,
-    "aspectRatio": 2.264,
-    "logAspectError": 0.24,
-    "fillRatio": 0.146,
-    "frameFillRatio": 0.785,
-    "frameScale": 0.275,
+    "aspectRatio": 2.328,
+    "logAspectError": 0.268,
+    "fillRatio": 0.142,
+    "frameFillRatio": 0.764,
+    "frameScale": 0.267,
     "displayScale": 0.45,
     "pans": true,
     "edgeLabelCssPx": 8.1,
     "gapX": {
       "count": 12,
       "min": 96,
-      "max": 178,
-      "mean": 108.833
+      "max": 228,
+      "mean": 121.167
     },
     "gapY": {
       "count": 8,
@@ -69,7 +69,7 @@
     "widenedWithoutLabel": 0,
     "misalignedLevels": 0,
     "singleColumnLevels": 0,
-    "sceneBandX": 120,
+    "sceneBandX": 213,
     "sceneBandY": 0,
     "edgesOutsideContainer": 5,
     "edgeContainerEscapes": 0,
@@ -82,9 +82,9 @@
   "vue-globale/after": {
     "visible": 32,
     "visibleLeaves": 19,
-    "bboxWidth": 5320,
+    "bboxWidth": 5322,
     "bboxHeight": 2435.75,
-    "aspectRatio": 2.184,
+    "aspectRatio": 2.185,
     "logAspectError": 0.205,
     "fillRatio": 0.147,
     "frameFillRatio": 0.814,
@@ -95,8 +95,8 @@
     "gapX": {
       "count": 14,
       "min": 96,
-      "max": 206,
-      "mean": 111.143
+      "max": 208,
+      "mean": 111.286
     },
     "gapY": {
       "count": 7,
@@ -109,7 +109,7 @@
     "widenedWithoutLabel": 0,
     "misalignedLevels": 0,
     "singleColumnLevels": 0,
-    "sceneBandX": 186,
+    "sceneBandX": 187,
     "sceneBandY": 0,
     "edgesOutsideContainer": 3,
     "edgeContainerEscapes": 0,
@@ -122,12 +122,12 @@
   "vue-globale/folded": {
     "visible": 7,
     "visibleLeaves": 7,
-    "bboxWidth": 1722,
+    "bboxWidth": 1758,
     "bboxHeight": 816,
-    "aspectRatio": 2.11,
-    "logAspectError": 0.17,
-    "fillRatio": 0.479,
-    "frameFillRatio": 0.463,
+    "aspectRatio": 2.154,
+    "logAspectError": 0.191,
+    "fillRatio": 0.469,
+    "frameFillRatio": 0.473,
     "frameScale": 0.62,
     "displayScale": 0.62,
     "pans": false,
@@ -135,22 +135,22 @@
     "gapX": {
       "count": 2,
       "min": 150,
-      "max": 192,
-      "mean": 171
+      "max": 228,
+      "mean": 189
     },
     "gapY": {
       "count": 4,
       "min": 72,
       "max": 80,
-      "mean": 74.25
+      "mean": 74
     },
     "emptyLanes": 0,
-    "widenedGutters": 4,
+    "widenedGutters": 3,
     "widenedWithoutLabel": 0,
     "misalignedLevels": 0,
     "singleColumnLevels": 0,
-    "sceneBandX": 0,
-    "sceneBandY": 9,
+    "sceneBandX": 14,
+    "sceneBandY": 8,
     "edgesOutsideContainer": 3,
     "edgeContainerEscapes": 0,
     "titleBandCrossings": 0,
@@ -162,21 +162,21 @@
   "ajout-preprod/before": {
     "visible": 10,
     "visibleLeaves": 6,
-    "bboxWidth": 2804,
+    "bboxWidth": 2924,
     "bboxHeight": 806.438,
-    "aspectRatio": 3.477,
-    "logAspectError": 0.67,
-    "fillRatio": 0.27,
-    "frameFillRatio": 0.511,
-    "frameScale": 0.514,
-    "displayScale": 0.514,
+    "aspectRatio": 3.626,
+    "logAspectError": 0.711,
+    "fillRatio": 0.259,
+    "frameFillRatio": 0.49,
+    "frameScale": 0.492,
+    "displayScale": 0.492,
     "pans": false,
-    "edgeLabelCssPx": 9.244,
+    "edgeLabelCssPx": 8.865,
     "gapX": {
       "count": 5,
       "min": 96,
-      "max": 108,
-      "mean": 100.8
+      "max": 228,
+      "mean": 124.8
     },
     "gapY": {
       "count": 1,
@@ -375,8 +375,8 @@
     "gapX": {
       "count": 11,
       "min": 96,
-      "max": 206,
-      "mean": 111.818
+      "max": 228,
+      "mean": 123.818
     },
     "gapY": {
       "count": 6,
@@ -385,7 +385,7 @@
       "mean": 79.833
     },
     "emptyLanes": 0,
-    "widenedGutters": 8,
+    "widenedGutters": 9,
     "widenedWithoutLabel": 0,
     "misalignedLevels": 0,
     "singleColumnLevels": 0,
@@ -402,27 +402,27 @@
   "migration-cluster-mesh/after": {
     "visible": 26,
     "visibleLeaves": 17,
-    "bboxWidth": 3478,
-    "bboxHeight": 2233.75,
-    "aspectRatio": 1.557,
-    "logAspectError": 0.134,
-    "fillRatio": 0.229,
-    "frameFillRatio": 0.876,
-    "frameScale": 0.363,
+    "bboxWidth": 3578,
+    "bboxHeight": 2240.75,
+    "aspectRatio": 1.597,
+    "logAspectError": 0.109,
+    "fillRatio": 0.222,
+    "frameFillRatio": 0.898,
+    "frameScale": 0.361,
     "displayScale": 0.45,
     "pans": true,
     "edgeLabelCssPx": 8.1,
     "gapX": {
       "count": 13,
       "min": 96,
-      "max": 206,
-      "mean": 107.231
+      "max": 238,
+      "mean": 120.615
     },
     "gapY": {
       "count": 4,
       "min": 72,
-      "max": 80,
-      "mean": 74
+      "max": 87,
+      "mean": 75.75
     },
     "emptyLanes": 0,
     "widenedGutters": 4,
@@ -430,8 +430,8 @@
     "misalignedLevels": 0,
     "singleColumnLevels": 0,
     "sceneBandX": 0,
-    "sceneBandY": 50.5,
-    "edgesOutsideContainer": 2,
+    "sceneBandY": 61,
+    "edgesOutsideContainer": 0,
     "edgeContainerEscapes": 0,
     "titleBandCrossings": 0,
     "edgeCardCrossings": 0,

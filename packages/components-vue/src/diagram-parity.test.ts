@@ -38,7 +38,7 @@ export function dom(node: Element): unknown {
       const style = (node as HTMLElement).style;
       return [a.name, Array.from({ length: style.length }, (_, index) => style.item(index)).sort().map(key => [key, style.getPropertyValue(key).trim()])];
     }
-    return [a.name, a.value];
+    return [a.name, a.value.replace(/diagram-arrow-[^\s)]+/g, 'diagram-arrow-instance')];
   }).filter(([name, value]) => !(name === 'class' && value === '')).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
   return { tag: node.tagName, attrs, children: [...node.childNodes].flatMap(child => {
     if (child.nodeType === 1) return [dom(child as Element)];

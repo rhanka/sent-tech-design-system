@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:ebad8af0d60cfeefcbb96d7464199c665dd6f530fa8e5e9a8f3e33202e7f8f50",
-  "entryDigest": "sha256:d392484249ac38ea7271fa63439506294c1bcfd36e3f7175947650aea43a10d7",
+  "digest": "sha256:d6c0b60b4eb1f1f58a1adf9717c89c821f01575e1ab32f4efd0bd17cf7c1ac49",
+  "entryDigest": "sha256:72d78b789eb9e932ed2ad7081077e0513df7b41e0442641e712b3bb8b1d1c94a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -185,6 +185,9 @@
           },
           "collapsed": {
             "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
           },
           "entityId": {
             "type": "string"
@@ -418,6 +421,9 @@
           },
           "collapsed": {
             "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
           },
           "entityId": {
             "type": "string"

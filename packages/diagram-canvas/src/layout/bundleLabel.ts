@@ -1,9 +1,9 @@
 import type { LineLayout, LineMeasurer } from './measure.js';
 export interface BundleLabelGroup { readonly lines: readonly string[]; readonly top: number; readonly height: number }
-export function measureBundleLabel(relations: readonly string[], measure: LineMeasurer, maxWidth = 320) {
+export function measureBundleLabel(relations: readonly string[], measure: LineMeasurer, maxWidth = 320, relationCount = relations.length) {
   const line = (text: string, width: number) => measure({ text, role: 'edge-label', availableWidth: width,
     allocatedLines: Number.MAX_SAFE_INTEGER, folded: false });
-  const header = `${relations.length} liaisons`;
+  const header = `${relationCount} liaisons`;
   const heading = line(header, maxWidth - 8);
   let top = heading.height + 8;
   const groups: BundleLabelGroup[] = relations.map(text => {

@@ -19,7 +19,7 @@ for(const [name,input] of scenes)it(`should render ${name} as a complete standal
  expect(dom.querySelectorAll('[data-scene-occurrence]')).toHaveLength(rendered.scene.nodes.length);
  expect(dom.querySelectorAll('[data-diagram-icon]')).toHaveLength(rendered.scene.nodes.filter(n=>n.kind==='card'||n.kind==='zone').length);
  for(const label of dom.querySelectorAll('[data-scene-label]'))expect(label.querySelector('text')?.textContent?.trim()).toBeTruthy();
- for(const edge of dom.querySelectorAll('[data-scene-edge]'))expect(edge.getAttribute('stroke')).toBe('#64748b');
+ for(const edge of dom.querySelectorAll('[data-scene-edge]'))expect(edge.getAttribute('stroke')).toBe('var(--st-component-diagramScene-edgeStroke, #64748b)');
  expect(rendered.svg).not.toMatch(/semantic-data-category|semantic-accent|#(?:f97316|ea580c|ff6b00)/i);
  if(process.env.DC2A_WRITE_RENDERS==='1'){
   const folder=process.env.DC2A_RENDER_DIR??'/tmp/dc2a-owner-renders';mkdirSync(folder,{recursive:true});writeFileSync(folder+'/'+name+'.svg',rendered.svg+'\n');
