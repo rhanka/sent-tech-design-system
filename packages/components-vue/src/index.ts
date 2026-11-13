@@ -54,12 +54,12 @@ export { default as Highlight } from "./Highlight.vue";
 export type { HighlightProps, HighlightTone } from "./Highlight.vue";
 export { Icon, ICONS, ICON_NAMES } from "./Icon.js";
 export type { IconGlyph, IconName, IconProps } from "./Icon.js";
-export { IconButton } from "./IconButton.js";
+export { default as IconButton } from "./IconButton.vue";
 export type {
   IconButtonProps,
   IconButtonSize,
   IconButtonVariant,
-} from "./IconButton.js";
+} from "./IconButton.vue";
 export { InlineLoading } from "./InlineLoading.js";
 export type {
   InlineLoadingProps,
