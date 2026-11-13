@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramIcon' });
-import { computed, watchEffect } from "vue";
-import { DIAGRAM_GLYPHS, DIAGRAM_GLYPH_VIEWBOX, getDiagramGlyph } from "./registry.js";
-interface DiagramIconProps {
+import { computed } from "vue";
+import { DIAGRAM_GLYPH_VIEWBOX, getDiagramGlyph } from "./registry.js";
+export interface DiagramIconProps {
     /** A §9 glyph name. An unmapped name draws nothing (DIF-14). */
     name: string;
     /** Square box in px the 64-unit viewBox scales into. Default 70. */

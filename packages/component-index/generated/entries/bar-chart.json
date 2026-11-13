@@ -15,7 +15,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BarChart.svelte",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -54,7 +54,7 @@
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:1043503fb3a54d7874b186a87cbf01c457450a3d669cb313db7be56b427b9515",
+  "digest": "sha256:5bbb0e875bf31551fbcf08e2c891616be0f8baa379321df8f7e8254a627b5b43",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

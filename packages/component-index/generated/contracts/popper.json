@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:ff3c3225f861604a29f7fd982e960e21ec38741719ce831ce2ae6f6d74aa4d23",
-  "entryDigest": "sha256:4d63ce8832961233d82be04df157c06edc8060a4255956bf329d1bff3a1fc6c8",
+  "digest": "sha256:1b627c6dff3b120077402e2ca03228c9461174513761e3409482f70998cbf043",
+  "entryDigest": "sha256:5b7aaad90c09bccd849825c47d078a852d341ac3e2dcaf15b36ef1cd8f937a8e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-svelte/dist/Popper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopperProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

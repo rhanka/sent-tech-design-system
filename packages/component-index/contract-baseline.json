@@ -425,6 +425,22 @@
     "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
    }
   },
+  "diagram-scene-figure": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"DiagramSceneFigure\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"DiagramSceneFigure\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
   "diagram-zone": {
    "svelte": {
     "status": "partial"

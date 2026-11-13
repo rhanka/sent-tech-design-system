@@ -291,47 +291,136 @@ floor of its own.
 
 ## Row-pack placement (DC-2a)
 
-Spec: `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`. Measured views
-(`layoutMeasured` / `layoutFolded`) take an optional `rowPack` option. When it
-is present — an empty object selects the DS defaults — every level, the root
-and each expanded zone alike, is shelf-packed toward a 16:9 outer aspect
-instead of being stacked in one column:
+Spec: `spec/SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT.md`. Every measured view
+(`layoutMeasured` / `layoutFolded`) is row-packed: every level, the root and
+each expanded zone alike, is shelf-packed toward a 16:9 outer aspect. The
+optional `rowPack` option only tunes the objective (target aspect, tall bias,
+empty penalty, hysteresis); absent or empty, the DS defaults apply.
 
 - `packRows` / `packColumns` (`layout/pack.ts`) fill boxes into shelves in
   declaration order, score each candidate on its distance to the target aspect
   (taller than target is penalised more) plus a shelf-slack term, and never
-  reorder siblings. With two boxes or more, the candidate whose every shelf
-  holds a single box is inadmissible.
+  reorder siblings. With two boxes or more, the candidate that stacks every
+  box in one single vertical column is inadmissible in both forms.
 - `chooseOrientation` scores both forms per level and keeps the lower total
   score, so the orientation follows the fold state. The result reports
   `orientations` per level key (`"root"` or the placement-parent representative
   occurrence id); a host feeds it back as `previousOrientation`, and a level
   whose two scores are closer than `orientationHysteresis` keeps its previous
   orientation.
+- Authored `hints.grouping` partitions a level before packing: each group is
+  its own sub-level packed in its authored direction — `rows` = horizontal
+  shelves read left to right then down, `columns` = vertical shelves read top
+  to bottom then right — and the ungrouped siblings form one more packed run
+  (orientation key `<level>#rest`). Both directions changed meaning with
+  DC-2a: `rows` used to be one vertical stack and `columns` one horizontal
+  row. `gapAfter` replaces the base gap after its group.
 - Sibling gaps are the base gap on both axes (`metrics.rowGapInline` /
   `rowGapBlock`, default 24, tokens `diagramZone.childGapInline` /
-  `childGapBlock`). A gutter widens only where a labelled link joins the two
-  neighbours (or two adjacent shelves), only by the label thickness plus its
-  margins, and never past `metrics.gapInlineMax` / `gapBlockMax` (default 32).
-  The root uses the same gaps and never `rankGap`. A gap hint above the cap
-  refuses as `layout-hint-invalid`; an invalid objective refuses as
-  `row-pack-invalid`.
+  `childGapBlock`). Placement is two-pass: pass 1 packs at the base gaps,
+  routes and places labels, and its shelves are frozen; later passes widen
+  only the gutters in which a label had no room — by the label thickness plus
+  its two margins, never past `metrics.gapInlineMax` / `gapBlockMax`
+  (default 32) — and release every widened gutter that ends up holding no
+  label. The root uses the same gaps and never `rankGap`. A gap hint (or a
+  `gapAfter`) above the cap refuses as `layout-hint-invalid`; an invalid
+  objective refuses as `row-pack-invalid`.
 - `hints.rootOrder` gives the root reading order; `hints.ordering` keeps
   giving it per zone.
-
-Without `rowPack`, measured views keep the column placement byte for byte, so
-existing pins are untouched; making row-pack the default for every measured
-view, packing authored `grouping` sub-levels and the scene host are later lots
-of the same spec. Authored `grouping` is ignored by the row-pack path today.
+- Routes: an edge whose two ends share an expanded container stays inside the
+  content box of that container (`RouteRequest.within`); the title band of an
+  expanded container is an obstacle for every route. A labelled edge between
+  two side-by-side boxes docks both ends on one same side and runs along the
+  lane under (or over) them, where its label fits.
+- Labels: the result carries `labelBoxes`, the box of every placed edge
+  label by relation occurrence id. A label sits on its route but not
+  necessarily centred on it (`placePackedLabel`); one the capped gutters
+  cannot hold has no box and one `label-unplaced` warning. A host draws labels
+  from `labelBoxes` and unions them into its fit bounds.
+- `layoutFingerprint` (`layout/fingerprint.ts`) is the cache-key digest of a
+  measured call over resolved numbers: fold state, row-pack objective, gaps
+  and caps, previous-orientation map, hints, token numbers, engine version.
+  `createLayoutCache` wraps the complete call using this fingerprint (DC-2b).
 
 `camera.ts` holds the pure half of the camera contract (spec §5):
 `cameraFit` frames the scene bounds on both axes against the 16:9 fit box
 (`fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`), never above the
 maximum display scale (0.62: readout 100 %, a card renders at about
-285 × 124 CSS px) and holds a fit at the readability floor (0.42) when the
-drawing is larger, reporting `pans`; `clampZoom` and `zoomReadout` complete it.
-No DOM lives here: a scene host passes its measured sizes in.
+285 × 124 CSS px) and holds a fit at the readability floor (0.45: an 18 px
+edge label renders at 8.1 CSS px) when the drawing is larger, reporting
+`pans`; `clampZoom` and `zoomReadout` complete it. No DOM lives here: a scene
+host passes its measured sizes in.
 
-The acceptance scenes, the §7 metrics helper, the column baseline
-(`baseline.json`) and the row-pack numbers (`after.json`) are under
-`tests/layout/dc2a/`.
+The acceptance scenes, the §7 metrics helper, the column baseline as recorded
+before the placement changed (`baseline.json`), the numbers of the shipped
+engine (`after.json`), the gates it misses by name (`misses.json`), the fold
+stability pins (`stability.json`) and the §7.5 tuning grid (`tuning.json`)
+are under `tests/layout/dc2a/`. Measured-path timings: the three cluster
+scenes (25–32 boxes, 20–23 links) lay out in a median of 112–176 ms, against
+the 1000 ms budget of `tests/layout/performance.test.ts`.
+
+## DC-2b performance
+
+`createLayoutCache()` is an opt-in, framework-neutral wrapper over the complete
+layout and routing pipeline. Each host owns one instance, or receives a cache
+from its caller. Defaults are **32 entries** and **16 MiB** of estimated UTF-8
+view, measurement and label-box bytes, with LRU eviction. Refusals and oversized
+results are returned without retention. `has()` leaves counters and recency
+unchanged; `clear()` releases entries; idempotent `dispose()` permanently disables
+hits and insertion. Statistics remain cumulative after either operation.
+
+Keys consume the DC-2a fingerprint and include target width, compatibility
+metrics (including the effective `hints.rankGap` override), document/presentation/source-view content, profile declarations and
+bindings, and a version plus role probe of the injected measurer. Effective
+folds are sorted and deduplicated. Compatible previous-orientation fixed points
+reuse the original entry; a genuine hysteresis flip misses. Orientation aliases
+are bounded too. Camera and motion tokens are excluded; layout tokens invalidate.
+Documents, views, presentations and profile declarations must remain immutable:
+their content digests use per-instance weak keys. Replace a measurer reference
+or update its optional `version` when its metrics change. Production hits return
+the original result by reference; `verifyImmutability: true` additionally checks
+the stored view on every hit and throws on caller mutation.
+
+The `@sentropic/diagram-canvas/diagramSceneModel` subpath exports the shared
+presentation model and the named `SceneLayoutCache` host type. `LayoutCacheConfig`
+aliases the existing cache options. `layoutScene({ cache, ...input })` uses that same seam for
+both hosts; `resolveScene` reads emitted label boxes and measured label lines
+without repeating placement or measurement. `sceneContentSize(result)` and
+`SceneModel.contentSize` expose the union size at zoom 1 (zero when absent,
+refused or empty). Camera fit, zoom and placement remain pure calculations over
+the current scene, including on container resize. No scene frames are retained
+per fold state, and the engine creates no background work or rendering resources.
+
+Measured in Vitest/Node 22.22.1 on 2026-11-12, with the existing 10 s timeout:
+
+| Gate | Witness/test | Measured | Bound |
+| --- | --- | --- | --- |
+| AC-P1 stress heap | `cache-performance.test.ts`, cache + `resolveScene`, 240 complete fold/unfold cycles after two warm-up cycles | 0.239 MiB | ≤ 5 MiB |
+| AC-P1 idle heap | Same, 60 s virtual time + 500 ms real drain | −0.003 MiB | ≤ 1 MiB |
+| AC-P2 idle | `diagramSceneModel.test.ts`, 60 s virtual + 1 s real drain; source guard | 0 timer/frame/observer/worker/layout calls | 0 |
+| AC-P3 revisit | `vue-globale/after`, 240 hits | 0.098 ms p95; 2 entries, 91,807 bytes | ≤ 5 ms; ≤ 32 / 16 MiB |
+| AC-P3 capacity | `cache.test.ts`, two passes over 32 states, then a separate 40-state sequence | 32 hits / 0 evictions; 8 oldest evicted for 40 states | 32 retained states |
+| AC-P4 model camera | 120 pan + 120 zoom steps and resize | 0.025 ms p95; 0 cache/scene/measurement calls | ≤ 16.7 ms; 0 calls |
+| AC-P5 engine disposal | Ten create/fold/dispose cycles per sample | 0.194 MiB; 0 retained entries/bytes | ≤ 2 MiB |
+| AC-P6 shared size | Refused, empty and laid-out results | Exact `fit.width` × `fit.height`, or 0 × 0 | Exact equality |
+| M3 engine/model | 600 actions, including 240 stress toggles | Worst 184.849 ms | < 1800 ms |
+
+Heap numbers use V8 forced GC before each reading, an event-loop turn between
+two collections, and median-of-three samples. The ten-cycle disposal samples
+are separate tests so each fits the unchanged timeout. Cold cache calls have
+median/worst **198.878/245.786 ms** on `vue-globale/after`, and
+**61.465/64.943 ms** on `largeDocumentSpec()`; neither reaches the 900 ms worker
+follow-up trigger. These are engine/model measurements; host integration gates
+are listed in [the host handoff](../../patches/DC2B_HOST_WIRING.md).
+
+Reproduce from `packages/diagram-canvas`:
+
+```sh
+rtk npx vitest run --maxWorkers=1
+rtk npx tsc -p tsconfig.check.json
+rtk npm run build
+```
+
+For printed measurements, use `rtk proxy node ../../node_modules/vitest/vitest.mjs
+run tests/layout/cache-performance.test.ts tests/presentation/diagramSceneModel.test.ts
+--disableConsoleIntercept --reporter=verbose --maxWorkers=1` (one shell command).

@@ -3,7 +3,7 @@ defineOptions({ name: 'GraphCanvas' });
 import { shallowRef, toRaw, watch } from 'vue';
 import type { GraphEngineData, GraphIntent } from '@sentropic/graph/engine';
 import type { GraphRendererOptions } from '@sentropic/graph';
-import { useGraphEngine } from './useGraphEngine.js';
+import { EMPTY_GRAPH_SELECTION, useGraphEngine } from './useGraphEngine.js';
 export interface GraphCanvasProps {
     graph: GraphEngineData['graph'];
     /** Resolved theme buffers, including colours and dimensions; no palette in this wrapper. */
@@ -21,7 +21,7 @@ const canvas = shallowRef<HTMLCanvasElement>();
 const graph = useGraphEngine(canvas, props.options);
 watch([() => toRaw(props.graph), () => toRaw(props.styles), () => props.version], () => graph.setGraph({ graph: props.graph, style: props.styles }), { immediate: true });
 watch(() => [props.selection, props.hover, props.viewport, props.filters] as const, () => {
-    graph.selection.value = props.selection ?? [];
+    graph.selection.value = props.selection ?? EMPTY_GRAPH_SELECTION;
     graph.hover.value = props.hover ?? null;
     graph.viewport.value = props.viewport;
     graph.filters.value = props.filters;

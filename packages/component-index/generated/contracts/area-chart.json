@@ -1,8 +1,8 @@
 {
   "componentId": "area-chart",
   "contractSource": "derived",
-  "digest": "sha256:9809a74935fd500fa6bdb6301f574326874f2ae1e1098e9af6a83c64b712c8fc",
-  "entryDigest": "sha256:22a9a1400495b48117d1cd22d36059ec6a2632599cc7fe4358d220f53ffa6da5",
+  "digest": "sha256:5efb7a79729d6262fc4e768f508f4ceb66177418fa52952493c8ab88f7942fff",
+  "entryDigest": "sha256:f88a658cf97b1049bdb272f8229c62b6081a005e6abbe315a94d1eee71eaf206",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1010,7 +1010,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

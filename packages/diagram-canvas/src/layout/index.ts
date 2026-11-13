@@ -16,11 +16,20 @@ export {
   type SegmentResidual,
 } from "./engine.js";
 export { layoutFolded, layoutMeasured } from "./measured.js";
+export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export {
+  digestOf,
+  LAYOUT_ENGINE_VERSION,
+  layoutFingerprint,
+  layoutFingerprintInputs,
+  type LayoutFingerprintInput,
+} from "./fingerprint.js";
 export {
   chooseOrientation,
   packColumns,
   packRows,
   packScore,
+  seatShelves,
   PACK_FILL_TOLERANCE,
   PACK_SCORE_EPSILON,
   type OrientationChoice,
@@ -29,6 +38,7 @@ export {
   type PackOrientation,
   type PackPosition,
   type PackResult,
+  type SeatedShelves,
 } from "./pack.js";
 export {
   effectiveStretch,
@@ -36,11 +46,13 @@ export {
   isLayoutGroup,
   resolveGaps,
   resolveOrder,
+  resolveRowGaps,
   validateHints,
   type HintScope,
   type LayoutGroup,
   type LayoutHints,
   type ResolvedGaps,
+  type ResolvedRowGaps,
 } from "./hints.js";
 export {
   CONTENT_INSET,
@@ -75,9 +87,12 @@ export {
   edgeLabelPlacement,
   labelBoxOnSegment,
   placeEdgeLabels,
+  placeEdgeLabelsPacked,
+  placePackedLabel,
   relationRoute,
   type LabelEntry,
   type LabelPlacement,
+  type PackedLabelEntry,
 } from "./labels.js";
 export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";

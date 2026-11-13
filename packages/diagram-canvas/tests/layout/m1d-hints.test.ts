@@ -20,6 +20,7 @@ import {
 import { describe, expect, it } from "vitest";
 
 import { layoutDocument, type LayoutHints } from "../../src/index.js";
+type Geometry = { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
 import { measure } from "./fixtures.js";
 import {
   asGeneric2Document,
@@ -79,10 +80,14 @@ describe("ordering", () => {
     const forms = { P: "card" as const, a: "card" as const, b: "card" as const, c: "card" as const };
     const hints: LayoutHints = { ordering: { [entityRef("P")]: [entityRef("c"), entityRef("a")] } };
     const measured = layMeasured(document, makePresentation({ forms }), wordWrapMeasurer(), { hints });
-    const ys = ["c", "a", "b"].map((local) => geometryOf(measured.view, local).y);
-    expect(ys).toEqual([...ys].sort((left, right) => left - right));
-    expect(ys[0]!).toBeLessThan(ys[1]!);
-    expect(ys[1]!).toBeLessThan(ys[2]!);
+    // DC-2a re-pin (AC-2, AC-4): three siblings pack as 2 + 1 instead of one
+    // column; the authored order is the reading order, rows left to right
+    // then top to bottom.
+    const [c, a, b] = ["c", "a", "b"].map((local) => geometryOf(measured.view, local)) as [Geometry, Geometry, Geometry];
+    expect(a.y).toBe(c.y);
+    expect(a.x).toBeGreaterThan(c.x);
+    expect(b.y).toBeGreaterThan(c.y);
+    expect(b.x).toBe(c.x);
   });
 
   it("feeds the A2 RUNZ ordering as input data with UTF-16 fallback", () => {
@@ -276,18 +281,28 @@ describe("oracle A5 grouping", () => {
       expect(geometryOf(measured.view, local)).toMatchObject({ width: 460, height: 200 });
     }
     expect(geometryOf(measured.view, "LEGEND")).toMatchObject({ width: 460, height: 200 });
-    // Root interleaving: one shared x per column, right of left.
-    expect(geometryOf(measured.view, "PEOPLE").x).toBe(geometryOf(measured.view, "WS").x);
-    expect(geometryOf(measured.view, "GCP").x).toBe(geometryOf(measured.view, "OUT").x);
-    expect(geometryOf(measured.view, "GCP").x).toBeGreaterThan(geometryOf(measured.view, "PEOPLE").x);
-    // PPROZ interleaving: RUNZ between the left and right columns.
-    expect(geometryOf(measured.view, "MSGZ").x).toBe(geometryOf(measured.view, "INGZ").x);
-    expect(geometryOf(measured.view, "STATEZ").x).toBe(geometryOf(measured.view, "VERTEXZ").x);
-    expect(geometryOf(measured.view, "RUNZ").x).toBeGreaterThan(geometryOf(measured.view, "MSGZ").x);
-    expect(geometryOf(measured.view, "RUNZ").x).toBeLessThan(geometryOf(measured.view, "STATEZ").x);
-    // OUT columns run horizontally.
-    expect(geometryOf(measured.view, "GITHUBZ").x).toBeLessThan(geometryOf(measured.view, "GITLABZ").x);
-    expect(geometryOf(measured.view, "GITLABZ").x).toBeLessThan(geometryOf(measured.view, "AWSCI").x);
+    // DC-2a re-pin (§3.7, both redefinitions): a `rows` group is packed
+    // horizontal shelves read left to right then top to bottom, a `columns`
+    // group packed vertical shelves read top to bottom then left to right —
+    // no longer one vertical stack and one horizontal row. Every group keeps
+    // its authored reading order (AC-4).
+    const at = (local: string): Geometry => geometryOf(measured.view, local);
+    const readsAsRows = (locals: readonly string[]): void => {
+      const read = [...locals].sort((left, right) => at(left).y - at(right).y || at(left).x - at(right).x);
+      expect(read).toEqual(locals);
+    };
+    const readsAsColumns = (locals: readonly string[]): void => {
+      const read = [...locals].sort((left, right) => at(left).x - at(right).x || at(left).y - at(right).y);
+      expect(read).toEqual(locals);
+    };
+    readsAsRows(["PEOPLE", "WS", "LEGEND"]);
+    readsAsRows(["GCP", "OUT"]);
+    // The root group is `columns`: its two sub-groups never stack in one single column (BF-1).
+    expect(at("GCP").x).toBeGreaterThan(at("PEOPLE").x);
+    readsAsRows(["MSGZ", "INGZ"]);
+    readsAsRows(["STATEZ", "VERTEXZ"]);
+    readsAsColumns(["MSGZ", "RUNZ", "STATEZ"]);
+    readsAsColumns(["GITHUBZ", "GITLABZ", "AWSCI"]);
     // PRODZ local stretch widens the expanded PSHARED to PPROZ, never the cards.
     expect(geometryOf(measured.view, "PSHARED").width).toBe(geometryOf(measured.view, "PPROZ").width);
     expect(geometryOf(measured.view, "PPROZ").width).toBeGreaterThan(460);
@@ -428,10 +443,15 @@ describe("recursive grouping with local stretch", () => {
     for (const local of ["PEOPLE", "WS", "GCP", "OUT", "k"]) {
       expect(geometryOf(measured.view, local)).toMatchObject({ width: 460, height: 200 });
     }
-    // Columns interleave: one shared x per column.
-    expect(geometryOf(measured.view, "PEOPLE").x).toBe(geometryOf(measured.view, "WS").x);
-    expect(geometryOf(measured.view, "GCP").x).toBe(geometryOf(measured.view, "G").x);
-    expect(geometryOf(measured.view, "GCP").x).toBeGreaterThan(geometryOf(measured.view, "PEOPLE").x);
+    // DC-2a re-pin (§3.7): the `rows` groups are horizontal shelves read
+    // left to right then top to bottom, no longer vertical stacks; the root
+    // `columns` group keeps its two sub-groups out of one single column (BF-1).
+    const at = (local: string): Geometry => geometryOf(measured.view, local);
+    for (const locals of [["PEOPLE", "WS"], ["GCP", "G", "OUT"]]) {
+      expect([...locals].sort((left, right) => at(left).y - at(right).y || at(left).x - at(right).x)).toEqual(locals);
+    }
+    expect(at("WS").y).toBe(at("PEOPLE").y);
+    expect(at("GCP").x).toBeGreaterThan(at("PEOPLE").x);
     // Local stretch widens the childless expanded E1 to E2, never the cards.
     expect(geometryOf(measured.view, "E1").width).toBe(geometryOf(measured.view, "E2").width);
     expect(geometryOf(measured.view, "E2").width).toBeGreaterThan(460);
@@ -473,7 +493,9 @@ describe("independent axis gaps", () => {
       buildColumnsDocument(),
       makePresentation({ forms: columnsForms }),
       wordWrapMeasurer(),
-      { hints: { ...a5RootHints(), cardGapX: 160, zoneGapX: 160 } },
+      // DC-2a re-pin (AC-3, DEC-6): sibling gaps are capped at 32 px on both
+      // axes and an override above the cap refuses, so the wide gap is 32.
+      { hints: { ...a5RootHints(), cardGapX: 32, zoneGapX: 32 } },
     );
     for (const local of ["PEOPLE", "WS", "GCP", "OUT", "G", "E1", "E2", "k"]) {
       expect(geometryOf(wideX.view, local).y).toBe(geometryOf(base.view, local).y);
@@ -485,27 +507,47 @@ describe("independent axis gaps", () => {
       buildColumnsDocument(),
       makePresentation({ forms: columnsForms }),
       wordWrapMeasurer(),
-      { hints: { ...a5RootHints(), cardGapY: 160, zoneGapY: 160 } },
+      { hints: { ...a5RootHints(), cardGapY: 32, zoneGapY: 32 } },
     );
     for (const local of ["PEOPLE", "WS", "GCP", "OUT", "G", "E1", "E2", "k"]) {
       expect(geometryOf(tallY.view, local).x).toBe(geometryOf(base.view, local).x);
     }
-    expect(geometryOf(tallY.view, "WS").y - geometryOf(tallY.view, "PEOPLE").y).toBeGreaterThan(
-      geometryOf(base.view, "WS").y - geometryOf(base.view, "PEOPLE").y,
+    // DC-2a re-pin: PEOPLE and WS now share a row; the y gap shows between
+    // the two rows of the stretched right group (G wraps under GCP).
+    expect(geometryOf(tallY.view, "OUT").y - geometryOf(tallY.view, "GCP").y).toBeGreaterThan(
+      geometryOf(base.view, "OUT").y - geometryOf(base.view, "GCP").y,
     );
   });
 
-  it("drives bands from rankGap with absent values inheriting metrics", () => {
+  it("refuses a sibling gap above the axis cap instead of capping it (AC-3)", () => {
+    const result = layoutDocument(buildColumnsDocument(), {
+      registry: defaultProfileRegistry,
+      measureText: measure,
+      targetWidth: 4000,
+      presentation: makePresentation({ forms: columnsForms }),
+      measureLines: wordWrapMeasurer(),
+      hints: { cardGapY: 160 },
+    });
+    expect(result.status).toBe("refused");
+    if (result.status !== "refused") return;
+    expect(result.refusals.map((refusal) => [refusal.code, refusal.path])).toEqual([["layout-hint-invalid", "hints.cardGapY"]]);
+  });
+
+  // DC-2a re-pin (§3.5): measured roots are seated with the token gaps of the
+  // packer, never with `rankGap`, which belongs to the compatibility path.
+  it("ignores rankGap on the measured path: roots take the token gaps", () => {
     const narrow = layMeasured(buildMeasuredDocument(), makePresentation({
       forms: { C: "card", a: "card", b: "card", lone: "card" },
     }), wordWrapMeasurer(), { hints: { rankGap: 40 } });
     const wide = layMeasured(buildMeasuredDocument(), makePresentation({
       forms: { C: "card", a: "card", b: "card", lone: "card" },
     }), wordWrapMeasurer(), { hints: { rankGap: 200 } });
-    expect(geometryOf(wide.view, "lone").y - geometryOf(wide.view, "C").y).toBeGreaterThan(
-      geometryOf(narrow.view, "lone").y - geometryOf(narrow.view, "C").y,
-    );
-    expect(geometryOf(wide.view, "lone").x).toBe(geometryOf(narrow.view, "lone").x);
+    expect(serialiseView(wide.view)).toBe(serialiseView(narrow.view));
+    const c = geometryOf(wide.view, "C");
+    const lone = geometryOf(wide.view, "lone");
+    // Two roots on one row, 24 px apart.
+    expect(lone.y).toBe(c.y);
+    expect(lone.x - (c.x + c.width)).toBe(24);
   });
 });
 

@@ -55,7 +55,7 @@ export interface TextSize {
  * Kept only as the compatibility path for views with no
  * `presentation.diagram` (§4.8). Measured diagram views use `LineMeasurer`.
  */
-export type TextMeasurer = (text: string, role: TextRole | LegacyTextRole) => TextSize;
+export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => TextSize) & { readonly version?: string };
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
@@ -199,12 +199,12 @@ export interface LayoutOptions {
   readonly viewId?: ViewRef;
   readonly metrics?: Partial<LayoutMetrics>;
   /**
-   * DC-2a row-pack placement for measured views (SPEC_EVOL_DC2A §3–§4). When
-   * present (an empty object selects the DS defaults) every level — the root
-   * and each expanded zone — is shelf-packed toward the target aspect, with a
-   * per-level orientation derived from the fold state and token gaps capped on
-   * both axes. When absent, measured views keep the column placement, byte for
-   * byte. Ignored by the compatibility path.
+   * DC-2a row-pack objective for measured views (SPEC_EVOL_DC2A §3–§4, §6.1).
+   * Every measured view is row-packed (AC-1): every level — the root and each
+   * expanded zone — is shelf-packed toward the target aspect, with a per-level
+   * orientation derived from the fold state and token gaps capped on both
+   * axes. Absent or empty selects the DS defaults (16:9). Ignored by the
+   * compatibility path.
    */
   readonly rowPack?: RowPackOptions;
   /**
@@ -278,10 +278,18 @@ export type LayoutResult =
        */
       readonly measurements?: import("./measure.js").LayoutMeasurements;
       /**
-       * Orientation chosen per packed level (§4.1, §6.1). Present on row-packed
-       * measured views only; the host feeds it back as `previousOrientation`.
+       * Orientation chosen per packed level (§4.1, §6.1). Present on measured
+       * views only; the host feeds it back as `previousOrientation`.
        */
       readonly orientations?: Readonly<Record<string, LevelOrientation>>;
+      /**
+       * Box of every placed edge label, keyed by relation occurrence id, in
+       * world units. Present on measured views only. A label the capped
+       * gutters cannot hold has no box and one `label-unplaced` warning. A
+       * host draws labels from these boxes and unions them into its fit
+       * bounds (DEC-5, BF-7).
+       */
+      readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
     }
   | {
       readonly status: "refused";

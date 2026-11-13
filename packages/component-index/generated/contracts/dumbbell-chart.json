@@ -1,8 +1,8 @@
 {
   "componentId": "dumbbell-chart",
   "contractSource": "derived",
-  "digest": "sha256:11d1811111c30d9d25a9d0b5acb313439b681ea1a4d9ba8ec0853fafdf64a778",
-  "entryDigest": "sha256:387d93e68dad0f37936cea4d32c006b60ba7b7956936535c32b5b62c8cf988c9",
+  "digest": "sha256:1e015ba302f5df1f34b3deb4e582fc6687144c1fe8f9e4cc397603dc368692f7",
+  "entryDigest": "sha256:d45ca432aac585d2ad9c23d38ebc82a7696f3e447c34b13152635f3b484656c3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -301,7 +301,7 @@
         "declarationPath": "packages/components-svelte/dist/DumbbellChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DumbbellChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

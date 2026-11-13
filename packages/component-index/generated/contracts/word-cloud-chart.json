@@ -1,8 +1,8 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:c6aa9cd4ff155c78209be08b8ab986bf17fcfd2bd03cc9b8094c360452d3afd8",
-  "entryDigest": "sha256:18864d815802546165e62d6549322e8739d18a1c246bccbdcee568473fc9cfdd",
+  "digest": "sha256:0b419bb4f6cd3c5fc802053a84aef8ddf8527e89f519582a8ede656157dada63",
+  "entryDigest": "sha256:131b1641fc68018d6ba9e6daeac9f9584cdbbe7c999fbfde6aa3c427b6e82918",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/WordCloudChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WordCloudChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

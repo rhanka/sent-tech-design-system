@@ -7,21 +7,29 @@
  */
 import type { EntityRef } from "@sentropic/diagram-core";
 
-import type { LayoutMetrics, LayoutRefusal } from "./types.js";
+import { DEFAULT_ROW_GAP, DEFAULT_ROW_GAP_MAX, type LayoutMetrics, type LayoutRefusal } from "./types.js";
 
 export interface LayoutGroup {
   readonly id: string;
+  /**
+   * How the group packs its items on a measured view (DC-2a §3.7): `rows` =
+   * horizontal shelves filled left to right and wrapping downward, `columns` =
+   * vertical shelves filled top to bottom and wrapping rightward. Before
+   * DC-2a `rows` was one vertical stack and `columns` one horizontal row.
+   */
   readonly direction: "rows" | "columns";
   readonly items: readonly (EntityRef | LayoutGroup)[];
   readonly stretch?: boolean;
+  /** Gap after this group inside its level, replacing the base gap; refused above the axis cap. */
   readonly gapAfter?: number;
 }
 
 export interface LayoutHints {
   readonly ordering?: Readonly<Record<EntityRef, readonly EntityRef[]>>;
   /**
-   * Declaration order of the root level (DC-2a §6.4), read by the row-pack
-   * path: listed roots first, unlisted visible roots after in UTF-16 order.
+   * Declaration order of the root level (DC-2a §6.4) of a measured view:
+   * listed roots first, unlisted visible roots after in UTF-16 order (the
+   * documented degraded mode — a host supplies the full order).
    */
   readonly rootOrder?: readonly EntityRef[];
   readonly grouping?: readonly LayoutGroup[];
@@ -82,6 +90,14 @@ export function validateHints(hints: LayoutHints, scope: HintScope): LayoutRefus
         refuse(`hints.ordering.${parent}`, `member ${member} is outside the sibling context of ${parent}`, [member]);
       }
     }
+  }
+  // §6.4: `rootOrder` lists root entities only, each once.
+  const seenRoots = new Set<string>();
+  for (const member of hints.rootOrder ?? []) {
+    if (!scope.roots.has(member) || seenRoots.has(member)) {
+      refuse("hints.rootOrder", `${member} is not a root entity listed once in hints.rootOrder`, [member]);
+    }
+    seenRoots.add(member);
   }
   const visitGroup = (group: LayoutGroup, path: string): void => {
     const leaves = groupLeaves(group);
@@ -174,6 +190,32 @@ export function resolveGaps(hints: LayoutHints | undefined, metrics: LayoutMetri
     zoneGapX: hints?.zoneGapX ?? metrics.nodeGap,
     zoneGapY: hints?.zoneGapY ?? metrics.nodeGap,
     rankGap: hints?.rankGap ?? metrics.rankGap,
+  };
+}
+
+/** Sibling gaps of the measured path (DC-2a §3.5), resolved: base gap per box kind and axis, and the axis caps. */
+export interface ResolvedRowGaps {
+  readonly cardX: number;
+  readonly cardY: number;
+  readonly zoneX: number;
+  readonly zoneY: number;
+  readonly maxX: number;
+  readonly maxY: number;
+}
+
+/**
+ * One place where the measured sibling gaps resolve: a hint override, else
+ * the token number passed as a metric, else the engine default mirroring the
+ * token. The caps come from the metrics only: no hint raises a cap.
+ */
+export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
+  return {
+    cardX: hints?.cardGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
+    cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
+    zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
+    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
+    maxX: metrics.gapInlineMax ?? DEFAULT_ROW_GAP_MAX,
+    maxY: metrics.gapBlockMax ?? DEFAULT_ROW_GAP_MAX,
   };
 }
 

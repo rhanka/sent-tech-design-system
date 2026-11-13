@@ -4,6 +4,7 @@
   import {
     renderErdCardSvg, renderErdTable,
     clampZoom,
+    createLayoutCache,
     FIT_ASPECT,
     zoomReadout,
     type LayoutHints,
@@ -28,6 +29,9 @@
   } from "./diagramCardModel.js";
   import {
     collapsedOccurrencesOf,
+    sceneContentSize,
+    type DiagramSceneSize,
+    type SceneLayoutCache,
     DEFAULT_SCENE_TARGET_WIDTH,
     displayedRects,
     layoutScene,
@@ -50,7 +54,7 @@
     type SceneOrientations,
     type ScenePresentation,
     type SceneView,
-  } from "./diagramSceneModel.js";
+  } from "@sentropic/diagram-canvas/diagramSceneModel";
 
   /**
    * `DiagramSceneFigure` — the generic scene host (DC-2a lot L4,
@@ -149,6 +153,9 @@
     /** One call per layout pass, with the engine result (warnings, refusals, orientations). */
     onLayout?: (result: LayoutResult) => void;
     onCameraChange?: (camera: DiagramSceneCamera) => void;
+    layoutCache?: SceneLayoutCache;
+    contentSize?: DiagramSceneSize;
+    onSizeChange?: (size: DiagramSceneSize) => void;
   }
 
   const DEFAULT_LABELS: DiagramSceneFigureLabels = {
@@ -191,7 +198,13 @@
     onSelect,
     onLayout,
     onCameraChange,
+    layoutCache,
+    contentSize = $bindable({ width: 0, height: 0 }),
+    onSizeChange,
   }: DiagramSceneFigureProps = $props();
+
+  const ownedCache = createLayoutCache();
+  let publishedSize: DiagramSceneSize | undefined;
 
   const strings = $derived({ ...DEFAULT_LABELS, ...labels });
 
@@ -215,6 +228,7 @@
       previousOrientation = undefined;
     }
     const result = layoutScene({
+      cache: layoutCache ?? ownedCache,
       document: semanticDocument,
       ...(view === undefined ? {} : { view }),
       registry,
@@ -249,6 +263,14 @@
   $effect(() => {
     const result = layoutResult;
     untrack(() => onLayout?.(result));
+  });
+
+  $effect(() => {
+    const size = sceneContentSize(layoutResult);
+    if (publishedSize?.width === size.width && publishedSize?.height === size.height) return;
+    publishedSize = size;
+    contentSize = size;
+    untrack(() => onSizeChange?.(size));
   });
 
   /* ── measured frame and tokens (client only) ───────────────────── */
@@ -543,7 +565,12 @@
     shown = displayed;
   });
 
-  $effect(() => stopFrames);
+  $effect(() => () => {
+    stopFrames();
+    touches.clear();
+    pinch = undefined;
+    ownedCache.dispose();
+  });
 
   /* ── drawing ───────────────────────────────────────────────────── */
 
@@ -730,13 +757,13 @@
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
     display: grid;
-    gap: var(--st-spacing-2);
+    gap: var(--st-spacing-2, 0.5rem);
     grid-template-columns: minmax(0, 1fr) auto;
     margin: 0;
     min-width: 0;
   }
   .st-diagramSceneFigure--compact {
-    gap: var(--st-spacing-1);
+    gap: var(--st-spacing-1, 0.25rem);
   }
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
@@ -744,17 +771,17 @@
     font-weight: var(--st-component-button-anatomy-typography-weight);
   }
   .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
   }
   .st-diagramSceneFigure-controls {
     align-items: center;
     display: inline-flex;
-    gap: var(--st-spacing-1);
+    gap: var(--st-spacing-1, 0.25rem);
     grid-column: 2;
   }
   .st-diagramSceneFigure-readout {
     color: var(--st-semantic-text-secondary);
-    font-size: var(--st-component-button-anatomy-density-sm-fontSize);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
     font-variant-numeric: tabular-nums;
     min-width: var(--st-component-diagramScene-readoutMinWidth);
     text-align: center;
@@ -796,10 +823,10 @@
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily);
-    font-size: var(--st-component-diagramCard-bodyFontSize);
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
-    line-height: var(--st-component-diagramCard-bodyLineHeight);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
     width: 100%;
   }
   .st-diagramSceneFigure-edges {
@@ -815,7 +842,7 @@
     fill: none;
     stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     stroke-linejoin: round;
-    stroke-width: var(--st-component-diagramZone-borderWidth);
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edgeLabel {
@@ -823,10 +850,10 @@
     color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily);
-    font-size: var(--st-component-diagramScene-edgeLabelFontSize);
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramCard-bodyLineHeight);
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
