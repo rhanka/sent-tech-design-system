@@ -58,6 +58,16 @@ describe('CrossfilteredBarChart (vue)', () => {
     expect(w.findAll('button.st-barChart__filterChip')).toHaveLength(0);
   });
 
+  it('updates an output-only facet when the shared store filter changes', async () => {
+    const store = newStore();
+    const w = mount(CrossfilteredBarChart, { props: { store, ...base, selectable: false } });
+    expect(w.findAll('.st-barChart__bar')).toHaveLength(2);
+    store.setFilter('country', { kind: 'include', values: ['FR'] });
+    await nextTick();
+    expect(w.findAll('.st-barChart__bar')).toHaveLength(1);
+    expect(w.findAll('button.st-barChart__filterChip')).toHaveLength(0);
+  });
+
   it('renders no bars when the measure or dimension is unknown', () => {
     const w1 = mount(CrossfilteredBarChart, {
       props: { store: newStore(), viewId: 'v', dimension: 'country', measure: 'nope', label: 'Vide' },

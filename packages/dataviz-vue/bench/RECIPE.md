@@ -26,6 +26,8 @@ The wrappers in this directory and components-vue/bench use `scripts/vue-convers
 
 Use Node 22.15+ and the lockfile. Build only required workspaces (tokens, themes, diagram-core, diagram-canvas, graph, components-vue and dataviz-core) before package checks. Never run the root test script or launch a browser. Existing `node --test packages/components-vue/bench/normalize.test.mjs` checks the shared normalizer. Capture names are discovered from fixture files; multiple names may be passed in one call. Already converted targets never prevent another original's capture.
 
+`node --test scripts/vue-conversion-bench/capture.test.mjs` verifies capture safeguards in disposable directories. After building dataviz-vue, `node packages/dataviz-vue/bench/check-package.mjs` checks the three proof charts through the published Vapor export, updates/selection/drill and subscription cleanup. `node packages/dataviz-vue/bench/check-rich.mjs` mounts every FieldPane/PalettePicker fixture through the same export and checks reactive branch/content changes. These are additional package witnesses; G1–G6 retain their original boundaries.
+
 ## Multiple exports in one module
 
 ObjectLayers.ts exports WebFrame, DataImage and ObjectLayerPanel. Split its runtime components into same-named SFCs and retain pure helper exports separately; capture fixtures/goldens for each public component from the original module before removing it. The bench factory supports a `modules` name-to-original-path mapping for this case. Keep every original public type and helper export.
