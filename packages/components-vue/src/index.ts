@@ -582,12 +582,12 @@ export type {
 } from "./StreamgraphChart.js";
 export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
 export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.js";
-export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";
+export { default as ParallelCoordinatesChart } from "./ParallelCoordinatesChart.vue";
 export type {
   ParallelCoordinatesChartProps,
   ParallelCoordinatesChartTone,
   ParallelAxis,
-} from "./ParallelCoordinatesChart.js";
+} from "./ParallelCoordinatesChart.vue";
 export { BumpChart } from "./BumpChart.js";
 export type {
   BumpChartProps,
