@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "ButtonGroup",
+  "sourceRevision": "f8815e2d78e878d2ac8e861aea30be5246bd34c7",
+  "source": "src/ButtonGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-buttonGroup st-buttonGroup--horizontal\" data-size=\"md\" role=\"group\" style=\"\"><button type=\"button\">A</button><button type=\"button\">B</button><button type=\"button\">C</button></div>"
+    },
+    {
+      "id": "vertical-attached",
+      "html": "<div class=\"st-buttonGroup st-buttonGroup--vertical st-buttonGroup--attached\" data-size=\"md\" role=\"group\" style=\"\"><button type=\"button\">A</button><button type=\"button\">B</button><button type=\"button\">C</button></div>"
+    },
+    {
+      "id": "gap",
+      "html": "<div class=\"st-buttonGroup st-buttonGroup--horizontal\" data-size=\"md\" role=\"group\" style=\"gap:var(--st-spacing-3, 0.75rem);\"><button type=\"button\">A</button><button type=\"button\">B</button><button type=\"button\">C</button></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div aria-label=\"Actions\" class=\"st-buttonGroup st-buttonGroup--horizontal\" data-size=\"sm\" role=\"group\" style=\"\"><button type=\"button\">A</button><button type=\"button\">B</button><button type=\"button\">C</button></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-buttonGroup st-buttonGroup--horizontal consumer\" data-bench=\"group\" data-size=\"md\" role=\"group\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;gap:var(--st-spacing-2, 0.5rem);color:red;\"><button type=\"button\">A</button><button type=\"button\">B</button><button type=\"button\">C</button></div>"
+    }
+  ],
+  "sourceSha256": "18563f0f78b0093564de61e5b6e6a594b5ce9877c6d59ec43fe6d4553e3936ef",
+  "fixtureSha256": "42ecf4838b5502b7437012bf35ee55df3a61a2ad75946e398ffc46ac5bcf1d43",
+  "publicExports": [
+    {
+      "name": "ButtonGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "ButtonGroupProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ButtonGroupOrientation",
+      "typeOnly": true
+    },
+    {
+      "name": "ButtonGroupSize",
+      "typeOnly": true
+    }
+  ]
+}
