@@ -601,7 +601,7 @@ describe("Menu cascade — hosts (AC-14, AC-15, AC-33, AC-34, AC-35)", () => {
     const source = readFileSync(join(here, "OverflowMenu.ts"), "utf8");
     expect(source).toContain("[attr.aria-controls]");
     expect(source).toContain("rootMenuId");
-    expect(source).toContain('[id]="rootMenuId"');
+    expect(source).not.toContain('[id]="rootMenuId"');
     const overflow = new OverflowMenu();
     overflow.items = cascadeItems;
     expect(overflow.rootMenuId).toMatch(/^st-overflowmenu-\d+$/);

@@ -78,7 +78,6 @@ export type MenuProps = {
   role?: string;
   class?: string;
   submenuSide?: SubMenuSide;
-  id?: string;
 };
 
 function itemKind(item: MenuItem): string | undefined {
@@ -448,7 +447,6 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   @NgInput() role?: string;
   @NgInput("class") classInput?: string;
   @NgInput() submenuSide: SubMenuSide = "auto";
-  @NgInput() id?: string;
 
   @Output() readonly select = new EventEmitter<MenuActionItem>();
   @Output() readonly selectPath = new EventEmitter<MenuSelectPath>();
@@ -480,7 +478,7 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   };
 
   get rootMenuId(): string {
-    return this.menuHost?.rootMenuId ?? this.id ?? this.fallbackRootId;
+    return this.menuHost?.rootMenuId ?? this.fallbackRootId;
   }
 
   // Forward native naming attributes to the actual menu level. The host's
@@ -1067,24 +1065,28 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     this.closeTimer = setTimeout(() => {
       const active =
         typeof document !== "undefined" ? document.activeElement : null;
+      // Panels are DOM siblings; closing a branch removes every deeper panel.
+      const closingSelector = Array.from(
+        { length: this.openPath.length - level },
+        (_, index) => `[data-menu-level="${level + index + 1}"]`,
+      ).join(", ");
+      const host = this.hostEl();
       const closingRoots =
-        this.hostEl() && typeof this.hostEl()?.querySelectorAll === "function"
-          ? this.hostEl()?.querySelectorAll(`[data-menu-level="${level + 1}"]`)
+        closingSelector && typeof host?.querySelectorAll === "function"
+          ? host.querySelectorAll(closingSelector)
           : null;
+      const restoreFocus = active && closingRoots && Array.from(closingRoots).some(root => {
+        try {
+          return root.contains(active);
+        } catch {
+          return false;
+        }
+      });
       this.openPath = this.openPath.slice(0, level);
       this.safeApex = null;
       this.safeLevel = -1;
-      if (active && closingRoots) {
-        for (const root of Array.from(closingRoots)) {
-          try {
-            if (root.contains(active)) {
-              if (parentIndex !== undefined) this.focusButton(level, parentIndex);
-              break;
-            }
-          } catch {
-            break;
-          }
-        }
+      if (restoreFocus && parentIndex !== undefined) {
+        this.focusButton(level, parentIndex);
       }
       this.closeTimer = undefined;
       this.closeLevel = -1;

@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:c9341a568d6480c518642119cbc93a46ed4cdebe9aced83eab68327c05be82de",
-  "entryDigest": "sha256:943294d3f49c25db7b6099c4f0f75e003c58a1808f29f5c66df6d370509015c2",
+  "digest": "sha256:51980a58637de41d8b6dfd409583e7aad38bcb63ecdd8b56eb4eac10e0897297",
+  "entryDigest": "sha256:87345247f27219bcde59897ceb184f244260d668dff6004a725fcb9bd8c575dc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

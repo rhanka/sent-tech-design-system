@@ -69,7 +69,6 @@ function overflowIsAction(item: MenuItem): item is MenuActionItem {
         <div [class]="listClass">
           <st-menu
             [items]="items"
-            [id]="rootMenuId"
             [dense]="dense"
             [submenuSide]="submenuSide"
             (select)="onMenuSelect($event)"

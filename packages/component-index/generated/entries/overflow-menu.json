@@ -29,7 +29,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d57d23fe6952ca48185a6484aed853a2726ac1c8281059121d95d477aa1e041c",
+      "digest": "sha256:3859619d886ce2e4f177a8de3730341258c5029f6630a69890fb74a32c65309d",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OverflowMenu.ts",
@@ -40,7 +40,7 @@
     "en": "Secondary actions menu accessible through a compact trigger.",
     "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
   },
-  "digest": "sha256:943294d3f49c25db7b6099c4f0f75e003c58a1808f29f5c66df6d370509015c2",
+  "digest": "sha256:87345247f27219bcde59897ceb184f244260d668dff6004a725fcb9bd8c575dc",
   "displayName": "OverflowMenu",
   "format": "component-entry/v1",
   "frameworks": [

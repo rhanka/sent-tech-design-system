@@ -29,7 +29,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d487d7e957f3c728f859da6b3dba13999534681129d74eccea7365f73530051a",
+      "digest": "sha256:b78564e76d93d43f6572a282e2f872274b4e5efb93c50c9b2dbe01cb448366f7",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Menu.ts",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:52670992b9194dcf332acc41b53ec90949cbc0e622f0457085afec4c09cefe20",
+  "digest": "sha256:e697c656387e1647eb527cb411ca45f5433c6a587f453a8b41704f80e2d2e9f8",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [
