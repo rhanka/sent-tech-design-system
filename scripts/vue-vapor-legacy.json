@@ -189,7 +189,6 @@
   "packages/components-vue/src/TimeRangePicker.ts",
   "packages/components-vue/src/Timeline.ts",
   "packages/components-vue/src/TimelineChart.ts",
-  "packages/components-vue/src/Toast.ts",
   "packages/components-vue/src/Toggle.ts",
   "packages/components-vue/src/Toggletip.ts",
   "packages/components-vue/src/Tooltip.ts",
