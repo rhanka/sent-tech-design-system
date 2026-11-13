@@ -151,7 +151,7 @@ describe("legend keys", () => {
 });
 
 describe("measurement overflow", () => {
-  it("grows the card and reports the allocation overflow with every character kept", () => {
+  it("keeps fixed card geometry and reports informational truncation with full text retained", () => {
     const longBody = Array.from({ length: 50 }, (_, index) => `word${index}`).join(" ");
     const overflowing = makePresentation({
       forms: { C: "card", a: "card", b: "card", lone: "card" },
@@ -166,8 +166,9 @@ describe("measurement overflow", () => {
     const codes = measured.warnings.map((warning) => warning.code);
     expect(codes).toContain("card-overflow");
     expect(geometryOf(measured.view, "a").width).toBe(460);
-    expect(geometryOf(measured.view, "a").height).toBeGreaterThan(200);
-    expect(codes).toContain("card-grown");
+    expect(geometryOf(measured.view, "a").height).toBe(200);
+    expect(codes).not.toContain("card-grown");
+    expect(measured.warnings.find(w=>w.code==="card-overflow")?.severity).toBe("info");
     const body = measured.slots.find((slot) => slot.role === "body")!;
     expect(body.layout.overflow).toBe(true);
     expect(body.layout.lines.join(" ")).toBe(longBody);
@@ -187,8 +188,10 @@ describe("measurement overflow", () => {
     const measured = layMeasured2(asGeneric2Document(buildMeasuredDocument()), overflowing, wordWrapMeasurer({ charWidth: 8 }));
     expect(measured.warnings.map((warning) => warning.code)).toContain("zone-overflow");
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
-    expect(header.overflow).toBe(true);
-    expect(header.subtitle!.lines.join(" ")).toBe(longSubtitle);
+    expect(header.overflow).toBe(false);
+    expect(header.subtitle!.lines).toHaveLength(2);
+    expect(header.subtitle!.lines.at(-1)).toMatch(/…$/u);
+    expect(measured.warnings.find(w=>w.code==="zone-overflow")?.details?.hiddenLength).toBeGreaterThan(0);
   });
 });
 

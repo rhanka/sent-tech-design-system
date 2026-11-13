@@ -33,6 +33,7 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
  * Only framework markers, comments and equivalent CSS serialization differ. */
 export function dom(node: Element): unknown {
   const attrs = [...node.attributes].filter(a => !/^data-v-/.test(a.name)).map(a => {
+    if (a.name === 'aria-describedby' || a.name === 'id' && node.hasAttribute('hidden')) return [a.name, 'description'];
     if (a.name === 'class') return [a.name, a.value.split(/\s+/).filter(c => c && !c.startsWith('svelte-')).sort().join(' ')];
     if (a.name === 'style') {
       const style = (node as HTMLElement).style;

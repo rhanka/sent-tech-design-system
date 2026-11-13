@@ -283,20 +283,20 @@ describe("item 9 — expanded-zone vertical overflow: auto height covers header+
     const layout = layoutZone(reviewerZone(), defaultCardMeasure, []);
     const header = layout.header;
     if (header === undefined) throw new Error("fixture-error");
-    // The reviewer's measured content start: 214.98125 (header 111.78125 +
+    // The reviewer's measured content start: 216.15625 (header 111.78125 +
     // subtitle 2 lines + rule + 16), beyond the old auto-sized 200 px frame.
-    expect(header.contentTop).toBe(214.98125);
+    expect(header.contentTop).toBe(216.15625);
     expect(layout.diagnostics).toEqual([]);
     // Auto height = contentTop + bottom inset + footer reserve (49.4375).
-    expect(layout.box.height).toBe(214.98125 + 16 + 49.4375);
+    expect(layout.box.height).toBe(216.15625 + 16 + 49.4375);
     // The footer rule clears the content top: nothing overlaps.
     expect(header.footerRuleY).toBeGreaterThanOrEqual(header.contentTop);
-    expect(header.footer[0]?.baseline).toBe(260.48125);
+    expect(header.footer[0]?.baseline).toBe(261.65625);
     const rendered = renderZoneSvg(reviewerZone(), { measure: defaultCardMeasure });
     expect(rendered.kind).toBe("rendered");
     if (rendered.kind === "rendered") {
       expect(rendered.diagnostics).toEqual([]);
-      expect(rendered.svg).toContain('height="280.41875"');
+      expect(rendered.svg).toContain('height="281.59375"');
     }
   });
 
@@ -316,8 +316,8 @@ describe("item 9 — expanded-zone vertical overflow: auto height covers header+
  * itself from each child's RECURSIVELY computed layout height — a child
  * zone without an explicit height is laid out (header + its own children
  * + footer), never assumed 200 px. The reviewer's case: the pass-2 item-9
- * child (auto 280.41875 px) placed at y=100 needs a 396.41875 px parent
- * (100 + 280.41875 + 16 bottom inset); an explicitly smaller parent
+ * child (auto 281.59375 px) placed at y=100 needs a 397.59375 px parent
+ * (100 + 281.59375 + 16 bottom inset); an explicitly smaller parent
  * refuses with zone-overflow on the frame slot.
  */
 describe("pass 3 item 9 — nested automatic heights use each child's computed layout height", () => {
@@ -350,22 +350,22 @@ describe("pass 3 item 9 — nested automatic heights use each child's computed l
     };
   }
 
-  it("the child alone auto-sizes to 280.41875 px", () => {
+  it("the child alone auto-sizes to 281.59375 px", () => {
     const child = layoutZone(autoChildZone(), defaultCardMeasure, []);
     expect(child.diagnostics).toEqual([]);
-    expect(child.box.height).toBe(280.41875);
+    expect(child.box.height).toBe(281.59375);
   });
 
-  it("the reviewer's case: child at y=100 needs a 396.41875 px parent, no diagnostics", () => {
+  it("the reviewer's case: child at y=100 needs a 397.59375 px parent, no diagnostics", () => {
     const children: readonly ZoneChildSpec[] = [{ kind: "zone", x: 16, y: 100, zone: autoChildZone() }];
     const layout = layoutZone(parentZone(), defaultCardMeasure, children);
     expect(layout.diagnostics).toEqual([]);
-    // 100 (child y) + 280.41875 (child's own computed height) + 16 (bottom inset).
-    expect(layout.box.height).toBe(396.41875);
+    // 100 (child y) + 281.59375 (child's own computed height) + 16 (bottom inset).
+    expect(layout.box.height).toBe(397.59375);
     const rendered = renderZoneSvg(parentZone(), { measure: defaultCardMeasure, children });
     expect(rendered.kind).toBe("rendered");
     if (rendered.kind === "rendered") {
-      expect(rendered.svg).toContain('height="396.41875"');
+      expect(rendered.svg).toContain('height="397.59375"');
       expect(rendered.diagnostics).toEqual([]);
     }
   });
@@ -377,15 +377,15 @@ describe("pass 3 item 9 — nested automatic heights use each child's computed l
     const childZone: DiagramZoneProps = { ...parentZone({ entityId: "grp.mid" }), width: 492 };
     const childrenOfChild: readonly ZoneChildSpec[] = [grandchild];
     const mid = layoutZone(childZone, defaultCardMeasure, childrenOfChild);
-    // mid auto height: 40 + 280.41875 + 16 = 336.41875.
-    expect(mid.box.height).toBe(336.41875);
+    // mid auto height: 40 + 281.59375 + 16 = 337.59375.
+    expect(mid.box.height).toBe(337.59375);
     const children: readonly ZoneChildSpec[] = [
       { kind: "zone", x: 16, y: 60, zone: childZone, children: childrenOfChild },
     ];
     const layout = layoutZone(parentZone(), defaultCardMeasure, children);
     expect(layout.diagnostics).toEqual([]);
-    // 60 + 336.41875 + 16 = 412.41875.
-    expect(layout.box.height).toBe(412.41875);
+    // 60 + 337.59375 + 16 = 413.59375.
+    expect(layout.box.height).toBe(413.59375);
   });
 });
 
@@ -555,7 +555,8 @@ function assertOwnerSvgRetention(kind: 'card'|'zone'|'nested') {
  const content='Every content word stays visible '.repeat(12);
  const card={entityId:'retained-child',title:'Users and operators',kicker:'K',body:[content],footer:'repo: sentropic · @sentropic/cluster-mesh'};
  const cardResult=renderCardSvg(card);expect(cardResult.kind).toBe('rendered');if(cardResult.kind!=='rendered')throw new Error('card refused');
- expect(cardResult.layout.bodyBottom).toBeLessThanOrEqual(cardResult.layout.bodyArea.bottom);expect(cardResult.layout.box.height).toBeGreaterThan(200);
+ expect(cardResult.layout.bodyBottom).toBeLessThanOrEqual(cardResult.layout.bodyArea.bottom);expect(cardResult.layout.box).toEqual({width:460,height:200});
  if(kind==='card')expect(cardResult.svg.replace(/<[^>]+>/g,'').replace(/\s+/g,'')).toContain(content.replace(/\s+/g,''));
- else { const result=renderZoneSvg({entityId:'retained-zone',title:'Zone',subtitle:content,footer:'Footer',collapsed:false,height:200},{children:kind==='nested'?[{kind:'card',x:16,y:250,card}]:[]});expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('zone refused');expect(result.layout.box.height).toBeGreaterThan(200);if(kind==='nested'){expect(result.svg.replace(/<[^>]+>/g,'').replace(/\s+/g,'')).toContain(content.replace(/\s+/g,''));expect(result.layout.box.height).toBeGreaterThan(250+cardResult.layout.box.height);} }
+ else { const result=renderZoneSvg({entityId:'retained-zone',title:'Zone',subtitle:content,footer:'Footer',collapsed:false,height:200},{children:kind==='nested'?[{kind:'card',x:16,y:250,card}]:[]});expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('zone refused');expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);if(kind==='nested'){expect(result.svg.replace(/<[^>]+>/g,'').replace(/\s+/g,'')).toContain(content.replace(/\s+/g,''));expect(result.layout.box.height).toBeGreaterThan(250+cardResult.layout.box.height);} }
 }

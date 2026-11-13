@@ -108,14 +108,8 @@ function prove(view) {
     }
     return lines;
   };
-  const cardSize = card => {
-    const headerWidth = card.folded ? 290 : 358;
-    const header = Math.max(70, wrap(card.kicker, 12, headerWidth) * 28.59375 + wrap(card.title, 17, headerWidth) * 41.59375);
-    const body = card.container ? wrap(card.purpose,13,396) : wrap(card.purpose, 13, 436) + wrap(card.detail, 13, 436);
-    const footer = wrap(card.footer, 13, card.folded ? 434 : 436);
-    const bottom = footer ? footer * 31.1875 + 20.25 : 10;
-    return { width: WIDTH, height: Math.max(HEIGHT, Math.ceil(10 + header + 6 + body * 31.1875 + bottom)) };
-  };
+  // A14: all component cards are fixed, irrespective of their text.
+  const cardSize = () => ({ width: WIDTH, height: HEIGHT });
   const level = (id, children, chromeWidth, chromeHeight) => {
     const choice = pack(children.map(size), chromeWidth, chromeHeight);
     levels.push({ level: id, rows: choice.rows, shelves: choice.shelves.map((shelf) => shelf.map((i) => children[i].id)), candidates: choice.candidates, score: choice.score });
@@ -127,8 +121,8 @@ function prove(view) {
     // The header-driven floor fits the unwrapped title/kicker, so heights
     // stay fixed as children or gaps grow. Empty zones retain their floor.
     const floor = Math.max(WIDTH, Math.max((card.kicker ?? "").length * 12, (card.title ?? "").length * 17) + 178);
-    const subtitleLines = wrap(card.purpose,13,Math.min(floor,460)-26);
-    const headerHeight = Math.max(70,42 + (card.kicker === null ? 0 : 29)) + RULE_GAP + (subtitleLines ? 6 + subtitleLines * 31 : 0);
+    const subtitleLines = Math.min(2, wrap(card.purpose,13,Math.min(floor,460)-26));
+    const headerHeight = Math.max(70,41.59375 + (card.kicker === null ? 0 : 28.59375)) + RULE_GAP + (subtitleLines ? 6 + subtitleLines * 31.1875 : 0);
     const chromeHeight = INSET + headerHeight + RULE_TO_CHILD + BOTTOM;
     const choice = level(card.id, children, 2 * INSET, chromeHeight);
     let headroom = 0;
@@ -140,7 +134,7 @@ function prove(view) {
       if ((choice.rows ? label.width : label.height) + 8 > (choice.rows ? GAP_X : GAP_Y)) headroom += label.height + 8;
     }
     const width = Math.max(floor, choice.width + (children.length ? 2 * INSET : 0));
-    const footerLines = wrap(card.footer, 13, width - 32);
+    const footerLines = Math.min(1, wrap(card.footer, 13, width - 32));
     const footerReserve = footerLines ? footerLines * 31.1875 + 18.25 : 0;
     return { width, height: choice.height + chromeHeight + headroom + footerReserve };
   }
