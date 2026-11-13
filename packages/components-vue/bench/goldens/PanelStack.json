@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "PanelStack",
+  "sourceRevision": "4384e9075ea14e309fb04375c7f23b92819840f7",
+  "source": "src/PanelStack.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-panelStack\" role=\"group\" style=\"--st-component-panelStack-primaryMinBlockSize:160px;\"><p>One</p></div>"
+    },
+    {
+      "id": "labeled",
+      "html": "<div aria-label=\"Sections\" class=\"st-panelStack\" role=\"group\" style=\"--st-component-panelStack-primaryMinBlockSize:160px;\"><p>One</p><p>Two</p></div>"
+    },
+    {
+      "id": "controlled-expanded",
+      "html": "<div class=\"st-panelStack\" role=\"group\" style=\"--st-component-panelStack-primaryMinBlockSize:160px;\"><p>A</p></div>"
+    },
+    {
+      "id": "split-primary",
+      "html": "<div class=\"st-panelStack\" role=\"group\" style=\"--st-component-panelStack-primaryMinBlockSize:200px;\"><p>A</p></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div aria-label=\"Attrs\" class=\"st-panelStack consumer\" data-bench=\"stack\" role=\"group\" style=\"--st-component-panelStack-primaryMinBlockSize:160px;color:red;\"><p>A</p></div>"
+    }
+  ],
+  "sourceSha256": "c9b645ae32a75d82e5ff81b1839cb5a9b3f07830824d58a2051fd4c5761eb775",
+  "fixtureSha256": "ff9735fc60372092f684ada5fa7ad400dadf0857ee43063392f8dc9a2f16f1ba",
+  "publicExports": [
+    {
+      "name": "PanelStack",
+      "typeOnly": false
+    },
+    {
+      "name": "PANEL_STACK_MAX_SECTIONS",
+      "typeOnly": false
+    },
+    {
+      "name": "PanelStackShape",
+      "typeOnly": true
+    },
+    {
+      "name": "PanelStackProps",
+      "typeOnly": true
+    }
+  ]
+}
