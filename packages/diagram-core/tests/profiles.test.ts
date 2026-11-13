@@ -21,8 +21,43 @@ import {
   type SemanticDocument,
 } from "../src/index.js";
 import { distinctErrorCodes, readFixture, stateOf } from "./fixtures.js";
+import { chainProfile, predicates } from "./endpoint-provenance-fixtures.js";
+import { tryCanonicalise, type ChainPredicate } from "../src/index.js";
 
 const registry = defaultProfileRegistry;
+
+describe("AC-20 chain declaration DATA gate", () => {
+  const base = predicates[0]!;
+  const path = `profiles.${chainProfile.id}.chainPredicates[0]`;
+  it("accepts all four DATA predicates", () => expect(validateProfile(chainProfile)).toEqual([]));
+  it.each([
+    ["chain-duplicate-id", { ...base, id: "" }, ".id"],
+    ["chain-unknown-type", { ...base, appliesTo: { ...base.appliesTo, startTypes: ["missing"] } }, ".appliesTo.startTypes"],
+    ["chain-unknown-type", { ...base, alternatives: [] }, ".alternatives"],
+    ["chain-unknown-type", { ...base, alternatives: [{ ...base.alternatives[0], steps: [] }] }, ".alternatives[0].steps"],
+    ["chain-unknown-type", { ...base, startConstraints: [{ attribute: "absent", equals: true }] }, ".startConstraints[0].attribute"],
+    ["chain-invalid-direction", { ...base, alternatives: [{ ...base.alternatives[0], steps: [{ ...base.alternatives[0]!.steps[0], direction: "sideways" }] }] }, ".alternatives[0].steps[0].direction"],
+    ["chain-invalid-repeat", { ...base, alternatives: [{ ...base.alternatives[0], steps: [{ ...base.alternatives[0]!.steps[0], repeat: "many" }] }] }, ".alternatives[0].steps[0].repeat"],
+    ["chain-members-not-aggregate", { ...base, aggregation: predicates[3]!.aggregation }, ".aggregation"],
+    ["chain-members-not-aggregate", { ...predicates[3], aggregation: undefined }, ".aggregation"],
+    ["chain-members-not-aggregate", { ...predicates[3], aggregation: { ...predicates[3]!.aggregation, sort: "locale" } }, ".aggregation.sort"],
+    ["chain-unknown-type", { ...predicates[3], aggregation: { ...predicates[3]!.aggregation, memberRelationTypes: ["missing"] } }, ".aggregation.memberRelationTypes"],
+    ["chain-unknown-type", { ...predicates[3], aggregation: { ...predicates[3]!.aggregation, memberTargetChain: { ...predicates[3]!.aggregation!.memberTargetChain, endTypes: ["missing"] } } }, ".aggregation.memberTargetChain.endTypes"],
+  ] as const)("refuses %s at %s", (check, predicate, field) => {
+    expect(validateProfile({ ...chainProfile, chainPredicates: [predicate as unknown as ChainPredicate] })).toEqual([{
+      code: "type-definition-conflict", severity: "error", path: path + field,
+      message: `chain predicate ${predicate.id} fails check ${check}`, details: { check },
+    }]);
+  });
+  it("refuses duplicate ids and function values", () => {
+    expect(validateProfile({ ...chainProfile, chainPredicates: [base, base] })).toMatchObject([
+      { code: "type-definition-conflict", path: `profiles.${chainProfile.id}.chainPredicates[1].id`, details: { check: "chain-duplicate-id" } },
+    ]);
+    const malformed = { ...chainProfile, chainPredicates: [{ ...base, callback: () => true }] };
+    expect(validateProfile(malformed)).toMatchObject([{ code: "value-not-serialisable" }]);
+    expect(tryCanonicalise(malformed)).toMatchObject({ ok: false, diagnostics: [{ code: "value-not-serialisable" }] });
+  });
+});
 
 describe("the registry", () => {
   it("holds the four declared profiles and nothing else", () => {
