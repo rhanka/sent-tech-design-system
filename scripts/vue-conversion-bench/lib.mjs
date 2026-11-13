@@ -94,7 +94,7 @@ function wrapperSource(name, fixture, legacy = false) {
 function normalizeHtml(html, JSDOM) {
   const fragment = JSDOM.fragment(html);
   const idMap = new Map();
-  const generated = /\bst-(?:input|select|checkbox|tabs|tooltip)-(?:\d+|v-\d+(?:-\d+)*)\b/g;
+  const generated = /\bgenerated-\d+\b|\bst-(?:(?:input|select|checkbox|tabs|tooltip|search|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)|file-uploader-(?:v-\d+(?:-\d+)*|[a-z0-9]{7})|(?:areachart|arearangechart|areasplinerangechart|bellcurve)-gradient-(?:v-\d+(?:-\d+)*|[a-z0-9]+-[a-z0-9]{7})|treemap-clip-(?:v\d+|[a-z0-9]{7}))\b/g;
   const mask = value => value.replace(generated, id => {
     if (!idMap.has(id)) idMap.set(id, `generated-${idMap.size + 1}`);
     return idMap.get(id);
@@ -106,7 +106,8 @@ function normalizeHtml(html, JSDOM) {
     if (node.nodeType === 8) return ['', '[', ']', 'v-if'].includes(node.data.trim()) ? '' : `<!--${node.data}-->`;
     if (node.nodeType !== 1) return children(node);
     const attrs = [...node.attributes].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
-      .map(a => ` ${a.name}="${escapeText(a.name === 'id' || a.name === 'for' || a.name.startsWith('aria-')
+      .map(a => ` ${a.name}="${escapeText(a.name === 'id' || a.name === 'for' || a.name === 'fill' || a.name === 'clip-path' || a.name.startsWith('aria-')
+        || (a.name === 'name' && /^st-tileGroup-(?:\d+|v-\d+(?:-\d+)*)$/.test(a.value))
         ? mask(a.value) : a.value).replace(/"/g, '&quot;')}"`).join('');
     const tag = node.localName;
     return `<${tag}${attrs}>` + (voidTags.has(tag) ? '' : `${children(node.content ?? node)}</${tag}>`);
