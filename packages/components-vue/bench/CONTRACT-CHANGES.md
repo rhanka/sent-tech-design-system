@@ -71,7 +71,7 @@ ThemeProvider's original SSR reference was captured under Node/JSDOM because
 its style-injection effect requires document. This preserves that existing
 environment requirement. This port does not add server-only document support.
 
-The release is prepared as `0.41.0-next.0` under npm's `next` dist-tag. Publishing
+The release is prepared as `0.41.0-next.2` under npm's `next` dist-tag. Publishing
 and any release tag remain with the owner. Dataviz-vue conversion follows in a
 second PR.
 

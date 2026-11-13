@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/presence-badge/LockPresenceBadge.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.2"
     }
   ],
   "description": {
     "en": "Collaborator presence and lock state with capability-controlled unlock actions.",
     "fr": "Présence des collaborateurs et état du verrou, avec actions de déverrouillage autorisées."
   },
-  "digest": "sha256:20dc17afd0af7cb768f6ec2e01f574b1116998629109b45a0df5b68db5613e7b",
+  "digest": "sha256:00aa8eb92116e414de537a44ac09111400ac68b3a8200872ec6c3e2520027dd4",
   "displayName": "LockPresenceBadge",
   "format": "component-entry/v1",
   "frameworks": [
