@@ -271,13 +271,13 @@ export type {
   SolidGaugeThreshold,
   SolidGaugeFormat,
 } from "./SolidGaugeChart.vue";
-export { StateTimelineChart } from "./StateTimelineChart.js";
+export { default as StateTimelineChart } from "./StateTimelineChart.vue";
 export type {
   StateTimelineChartProps,
   StateTimelineTone,
   StateTimelineSegment,
   StateTimelineSeries,
-} from "./StateTimelineChart.js";
+} from "./StateTimelineChart.vue";
 export { StatusHistoryChart } from "./StatusHistoryChart.js";
 export type {
   StatusHistoryChartProps,
