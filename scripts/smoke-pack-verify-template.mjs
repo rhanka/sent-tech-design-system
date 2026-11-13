@@ -2,7 +2,7 @@
 // the throwaway install project and runs there with `node`.
 //
 // This file is never executed from the repo directly. smoke-pack.mjs reads
-// it as text and replaces the two placeholder tokens below with real JSON
+// it as text and replaces the placeholder tokens below with real JSON
 // before writing it into the throwaway project, so it is kept here as a real
 // syntactically-valid module (readable, lintable) instead of being built as
 // an escaped string literal inside smoke-pack.mjs.
@@ -14,18 +14,20 @@
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
 //                                 angular (design-system and dataviz)
 //                                 package names to the minimum number of
-//                                 named exports their locally built dist/
-//                                 had at pack time. Ties the runtime import
-//                                 check to the same ground truth as the
-//                                 tarball file-list check, so neither can
-//                                 silently drift stale as components are
-//                                 added.
+//                                 named exports required at pack time. Vue
+//                                 uses its public source barrel; other
+//                                 frameworks use their built module lists.
+// SMOKE_REQUIRED_EXPORTS placeholder -> public Vue names from source barrels,
+//                                 each required in the installed package.
 import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const targets = new Set(__SMOKE_TARGETS_JSON__);
 const minExportCounts = __SMOKE_MIN_EXPORT_COUNTS_JSON__;
+// Vue's public runtime names come from source barrels, independently of how
+// many Classic, stable-compiler or Vapor files happen to be in dist/.
+const requiredExports = __SMOKE_REQUIRED_EXPORTS_JSON__;
 const failures = [];
 
 function fail(label, message) {
@@ -187,6 +189,11 @@ async function verifySvelte() {
 // that resolves but is undefined, null, or an implausible type.
 function assertModuleExports(label, mod, minCount) {
   const keys = Object.keys(mod);
+  const missing = (requiredExports[label] ?? []).filter(name => !Object.hasOwn(mod, name));
+  if (missing.length) {
+    fail(label, "missing public exports: " + missing.join(", "));
+    return;
+  }
   if (keys.length < minCount) {
     fail(label, "expected at least " + minCount + " named exports, got " + keys.length);
     return;
