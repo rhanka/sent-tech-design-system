@@ -43,6 +43,14 @@ export interface EntityOccurrence {
   readonly z?: number;
 }
 
+export interface ChainProvenance {
+  readonly predicateId: string;
+  /** Semantic relation refs in walk order from semanticTarget to the drawn entity. */
+  readonly hops: readonly RelationRef[];
+  /** Aggregate only: complete carrier set in fixed source/target/relation order. */
+  readonly members?: readonly RelationRef[];
+}
+
 export interface RelationOccurrenceEndpoint {
   /** The role of the relation this end draws. Matched against the relation's own endpoints. */
   readonly role: string;
@@ -54,16 +62,18 @@ export interface RelationOccurrenceEndpoint {
   readonly occurrence: OccurrenceRef;
   /**
    * The semantic endpoint target for this role, copied verbatim. Present iff
-   * the drawn `occurrence` does not itself draw that target (folded
-   * projection, §4.4.2). A RelationRef is permitted only where the semantic
+   * the drawn `occurrence` does not itself draw that target (fold or chain
+   * provenance). A RelationRef is permitted only where the semantic
    * role admits relation targets.
    */
   readonly semanticTarget?: EntityRef | PortRef | RelationRef;
   /**
    * The original endpoint occurrence in the retained source view. Present iff
-   * `semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).
+   * fold provenance is used; mutually exclusive with `chainProvenance`.
    */
   readonly sourceOccurrence?: OccurrenceRef;
+  /** Document-proven chain: requires semanticTarget and excludes sourceOccurrence. */
+  readonly chainProvenance?: ChainProvenance;
 }
 
 export interface RelationOccurrence {

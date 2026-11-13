@@ -38,3 +38,21 @@
 - [x] Gates: core 556; canvas 481 plus one later four-flow regression (482), one existing skip; targeted Svelte 301; tokens 20; tsc, both Svelte checks, builds, 430 index artifacts, notices and licensing pass.
 - [x] Independent review corrections: all five verdict findings addressed. See docs/DC2C_RESULTS.md for the failing-first evidence, added coverage and current gate results.
 - [x] Final package suites: core 556, canvas 486 (1 skip), Svelte 2149, Vue 1642, tokens 20, themes 7, component-index 136; 52 shared host cases and 53 DOM parity cases.
+
+## Main integration — PR #270 endpoint provenance
+
+The owner authorizes this merge commit and push to update PR #272; earlier no-push guardrails above describe the prior implementation phase. The DC-2c objective and completed lots are retained.
+
+- [x] Merge origin/main 00900974 into feat/dc2c-numbered-flows, preserving endpoint provenance and numbered parallel flows.
+- [x] Resolve BRANCH.md with this branch’s DC-2c content, recompute receipt hashes from merged UTF-8 file contents, and regenerate the three conflicting component-index artifacts.
+- [x] npm ci and ensure-theme-dists; no lockfile repair required.
+- [x] Core, canvas, Svelte, Vue and component-index builds, plus unpublished canvas test/host support builds.
+- [x] notices:generate, index:generate, index:check and licensing:check (22 publishable packages).
+- [x] diagram-core: 45 files / 657 passed, including receipt, provenance and flow validation.
+- [x] diagram-canvas: 45 files / 486 passed, 1 existing skip, including DC-2c flow tests.
+- [x] Svelte diagram/flow selection: 9 files / 468 passed, including shared host and cross-framework parity.
+- [x] Full Vue suite: 110 files / 1,805 passed.
+- [x] Core/canvas type checks, both svelte-check configurations and Vue published-type build; Svelte main has 0 errors / 26 warnings, parity has 0 errors / 0 warnings.
+- [x] Component-index: 15 files / 138 passed.
+- [x] node --test scripts/component-index.test.mjs scripts/verify-deps-published.test.mjs: 22 passed.
+- [x] git diff --check.
