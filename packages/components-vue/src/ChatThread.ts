@@ -1,7 +1,7 @@
 import { defineComponent, h, ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { classNames } from "./classNames.js";
-import { ChatMessage } from "./ChatMessage.js";
-import type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.js";
+import ChatMessage from "./ChatMessage.vue";
+import type { ChatMessageRole, ChatMessageStatus } from "./ChatMessage.vue";
 
 export type ChatThreadProps = {
   label?: string;
