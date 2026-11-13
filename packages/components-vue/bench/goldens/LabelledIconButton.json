@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "component": "LabelledIconButton",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "packages/components-svelte/src/lib/LabelledIconButton.svelte",
+  "referenceFramework": "svelte",
+  "sourceSha256": "4b2062acba35473b38b1583fbcfcb45676de38866b042438b98bdb1eff8173b6",
+  "fixtureSha256": "19a58c4e5342ada8deffdb68bbc33d06e43abee169e5d6ed2edf05dde5859152",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\"><button aria-label=\"SENTINEL-LABEL\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide-icon lucide lucide-message-square st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z\"></path></svg></button></span><span class=\"st-tooltip__content\" role=\"tooltip\">SENTINEL-LABEL</span></span>"
+    },
+    {
+      "id": "danger-small-disabled",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\"><button aria-label=\"Delete\" class=\"st-iconButton st-iconButton--sm st-iconButton--danger\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide-icon lucide lucide-x st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span><span class=\"st-tooltip__content\" role=\"tooltip\">Delete</span></span>"
+    },
+    {
+      "id": "pressed-shortcut",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\"><button aria-keyshortcuts=\"Alt+Shift+Z\" aria-label=\"Show\" aria-pressed=\"true\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide-icon lucide lucide-eye st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button></span><span class=\"st-tooltip__content\" role=\"tooltip\">Show details (Alt+Shift+Z)</span></span>"
+    },
+    {
+      "id": "bottom-custom-unpressed",
+      "html": "<span class=\"st-tooltip st-tooltip--bottom consumer\"><span class=\"st-tooltip__trigger\"><button aria-label=\"&lt;b&gt;Settings&lt;/b&gt;\" aria-pressed=\"false\" class=\"st-iconButton st-iconButton--lg st-iconButton--secondary\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide-icon lucide lucide-settings st-icon\" fill=\"none\" focusable=\"false\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"></path><circle cx=\"12\" cy=\"12\" r=\"3\"></circle></svg></button></span><span class=\"st-tooltip__content\" role=\"tooltip\">&lt;b&gt;Settings&lt;/b&gt;</span></span>"
+    }
+  ],
+  "publicExports": [
+    {
+      "name": "LabelledIconButton",
+      "typeOnly": false
+    },
+    {
+      "name": "LabelledIconButtonProps",
+      "typeOnly": true
+    }
+  ]
+}
