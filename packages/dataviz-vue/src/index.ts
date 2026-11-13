@@ -96,8 +96,8 @@ export { default as AnalyticsClusterPlot } from './lib/AnalyticsClusterPlot.vue'
 export type { AnalyticsClusterPlotProps } from './lib/AnalyticsClusterPlot.vue';
 export { ScatterPlot } from './lib/ScatterPlot.js';
 export type { ScatterPlotProps } from './lib/ScatterPlot.js';
-export { CandlestickChart } from './lib/CandlestickChart.js';
-export type { CandlestickChartProps } from './lib/CandlestickChart.js';
+export { default as CandlestickChart } from './lib/CandlestickChart.vue';
+export type { CandlestickChartProps } from './lib/CandlestickChart.vue';
 export { StreamgraphChart } from './lib/StreamgraphChart.js';
 export type { StreamgraphChartProps } from './lib/StreamgraphChart.js';
 export { TileMapChart } from './lib/TileMapChart.js';
