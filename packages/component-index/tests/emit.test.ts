@@ -192,6 +192,31 @@ function mutatePkg(tree: MiniTree, relative: string, text: string): void {
 }
 
 describe("emit on a miniature tree", () => {
+  it("retains dataviz reference deliveries when a native port exists in another framework", () => {
+    const tree = scaffold();
+    writeFile(tree.root, "packages/components-vue/src/index.ts", 'export { Widget } from "./Widget.js";\nexport { Gadget } from "./Gadget.js";\n');
+    writeFile(tree.root, "packages/components-vue/src/Gadget.ts", "export const Gadget = 1;\n");
+    writeFile(tree.root, "packages/components-vue/dist/Gadget.d.ts", "export type GadgetProps = { label?: string };\nexport declare const Gadget: new () => { $props: GadgetProps; $slots: {}; $emit: () => void };\n");
+    const parity = JSON.parse(readFileSync(join(tree.pkg, "parity-baseline.json"), "utf8"));
+    parity.expectedParity.gadget.vue = "match";
+    parity.gaps[0].parity.vue = "match";
+    writeFile(tree.pkg, "parity-baseline.json", JSON.stringify(parity));
+    const contracts = JSON.parse(readFileSync(join(tree.pkg, "contract-baseline.json"), "utf8"));
+    contracts.components.gadget.vue.status = "complete";
+    writeFile(tree.pkg, "contract-baseline.json", JSON.stringify(contracts));
+
+    const { files } = buildArtifacts(tree.root, tree.pkg, { sourceCommit: "0".repeat(40) });
+    const entry = JSON.parse(files.find((file) => file.path === "generated/entries/gadget.json")!.text);
+    expect(entry.delivery.map((delivery: { framework: string; package: string }) => [delivery.framework, delivery.package])).toEqual([
+      ["svelte", "@mini/dataviz-svelte"],
+      ["vue", "@mini/vue"],
+    ]);
+    expect(entry.parity).toEqual({ svelte: "missing", react: "missing", vue: "match", angular: "missing" });
+    const contract = JSON.parse(files.find((file) => file.path === "generated/contracts/gadget.json")!.text);
+    expect(contract.frameworks.svelte.status).toBe("complete");
+    expect(contract.frameworks.vue.status).toBe("complete");
+  });
+
   it("emits two entries with exact-version pins and sums counts", () => {
     const tree = scaffold();
     const { files, log } = buildArtifacts(tree.root, tree.pkg, { sourceCommit: "0".repeat(40) });

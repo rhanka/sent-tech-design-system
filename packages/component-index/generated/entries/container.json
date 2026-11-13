@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Container.vue",
-      "version": "0.41.0-next.1"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:c47a7ca4b22c3d7d9221f0b9a78f658ddf5c1723e574009de241910d5629a67d",
+  "digest": "sha256:ba8a93437f9919fc33a45953c74171d571b3380066c889760fc49e5dee05b78e",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [
