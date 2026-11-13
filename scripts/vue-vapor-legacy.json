@@ -30,7 +30,6 @@
   "packages/dataviz-vue/src/lib/DateHistogramChart.ts",
   "packages/dataviz-vue/src/lib/DateRangeFilter.ts",
   "packages/dataviz-vue/src/lib/DrillBarChart.ts",
-  "packages/dataviz-vue/src/lib/DrillBreadcrumb.ts",
   "packages/dataviz-vue/src/lib/DrillChart.ts",
   "packages/dataviz-vue/src/lib/DumbbellChart.ts",
   "packages/dataviz-vue/src/lib/ErrorBarsChart.ts",
