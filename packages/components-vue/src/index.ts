@@ -250,13 +250,13 @@ export { FieldCard } from "./FieldCard.js";
 export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.js";
 export { ScoreCard } from "./ScoreCard.js";
 export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.js";
-export { ComboChart } from "./ComboChart.js";
+export { default as ComboChart } from "./ComboChart.vue";
 export type {
   ComboChartProps,
   ComboChartTone,
   ComboChartBarSeries,
   ComboChartLineSeries,
-} from "./ComboChart.js";
+} from "./ComboChart.vue";
 export { GaugeChart } from "./GaugeChart.js";
 export type {
   GaugeChartProps,
