@@ -5,7 +5,7 @@ import { createDashboardStore, type DataModel, type Row } from '@sentropic/datav
 import { ChordChart } from './ChordChart.js';
 import { DonutChart } from './DonutChart.js';
 import { FunnelChart } from './FunnelChart.js';
-import { MekkoChart } from './MekkoChart.js';
+import MekkoChart from './MekkoChart.vue';
 import { PackedBubbleChart } from './PackedBubbleChart.js';
 import { RadarChart } from './RadarChart.js';
 import { RoseChart } from './RoseChart.js';
