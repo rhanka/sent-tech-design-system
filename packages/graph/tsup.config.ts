@@ -17,13 +17,16 @@ import { defineConfig } from "tsup";
 // computation subpath synchronously, which needs no URL. Both entries land at
 // the dist root so `./worker.js` resolves next to `layout-client.js` inside the
 // tarball.
+// tsup runs these configs concurrently. Clean once in the build script before
+// either starts: clean:true here also deletes every declaration in dist when
+// its DTS worker starts, which can erase the other config's completed output.
 export default defineConfig([
   {
     entry: { index: "src/index.ts", presentation: "src/presentation.ts", engine: "src/engine.ts", "processing/index": "src/processing/index.ts" },
     format: ["esm", "cjs"],
     dts: true,
     sourcemap: true,
-    clean: true,
+    clean: false,
     target: "es2022",
     splitting: false,
     outDir: "dist",
@@ -34,7 +37,7 @@ export default defineConfig([
     format: ["esm"],
     dts: true,
     sourcemap: true,
-    // NEVER clean here: this config runs after the one above and would wipe it.
+    // Both configs share dist; the build script owns cleanup.
     clean: false,
     target: "es2022",
     splitting: false,
