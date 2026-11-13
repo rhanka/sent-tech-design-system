@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:65c95e884fc8b0f557babedc86cc8549d957ec9da43dcf8fa58c086403f502c3",
-  "entryDigest": "sha256:ff7e2c2c21f79440a437472ee72e6d151953b856838a02175f0a53eb3ed0fec4",
+  "digest": "sha256:ec620eedc743afa3c008370ae1fec1c27be955c0a443391218a5c2d0c5c1c63a",
+  "entryDigest": "sha256:da3dd3d8791b16c29d66c9241e9a17ad5fc2ae4187d3fa245f124627dcf68f9a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -205,7 +205,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ce6cf9abdcf774b55dcfc75462c4f251ae17b5fc32880c39bc68dc66cd082d0b",
+        "declarationDigest": "sha256:85ca15d1c17ea143c25582cd3dba3b75e7eafe99d27d8f67e068108b34e881c3",
         "declarationPath": "packages/components-vue/dist/Portal.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PortalProps",
