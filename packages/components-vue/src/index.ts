@@ -315,14 +315,14 @@ export type {
   RibbonChartTone,
   RibbonChartDatum,
 } from "./RibbonChart.js";
-export { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
+export { default as AnomalySwimLaneChart } from "./AnomalySwimLaneChart.vue";
 export type {
   AnomalySwimLaneChartProps,
   AnomalySwimLaneTone,
   AnomalySwimLaneBucket,
   AnomalySwimLaneSeries,
   AnomalySwimLaneChartScale,
-} from "./AnomalySwimLaneChart.js";
+} from "./AnomalySwimLaneChart.vue";
 export { FlamegraphChart } from "./FlamegraphChart.js";
 export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
 export { TraceWaterfallChart } from "./TraceWaterfallChart.js";
