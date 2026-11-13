@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "Modal",
+  "sourceRevision": "261323d56adc3bd4623637457bc9caa93f48607e",
+  "source": "src/Modal.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-modal__backdrop\"><section aria-label=\"Delete item\" aria-modal=\"true\" class=\"st-modal\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-modal__header\"><h2 class=\"st-modal__title\">Delete item</h2><button aria-label=\"Close\" class=\"st-modal__close\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div><div class=\"st-modal__body\">This action cannot be undone.</div></section></div>"
+    },
+    {
+      "id": "description",
+      "html": "<div class=\"st-modal__backdrop\"><section aria-label=\"Settings\" aria-modal=\"true\" class=\"st-modal\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-modal__header\"><h2 class=\"st-modal__title\">Settings</h2><button aria-label=\"Close\" class=\"st-modal__close\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div><p class=\"st-modal__description\">Changes apply immediately.</p><div class=\"st-modal__body\"><p>Details</p></div></section></div>"
+    },
+    {
+      "id": "footer-actions",
+      "html": "<div class=\"st-modal__backdrop\"><section aria-label=\"Confirm\" aria-modal=\"true\" class=\"st-modal\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-modal__header\"><h2 class=\"st-modal__title\">Confirm</h2><button aria-label=\"Close\" class=\"st-modal__close\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div><div class=\"st-modal__body\">Are you sure?</div><div class=\"st-modal__footer\"><button>Cancel</button><button>OK</button></div></section></div>"
+    },
+    {
+      "id": "closed",
+      "html": ""
+    },
+    {
+      "id": "custom-close",
+      "html": "<div class=\"st-modal__backdrop\" data-bench=\"modal\" style=\"color:red;\"><section aria-label=\"Localized\" aria-modal=\"true\" class=\"st-modal consumer\" data-bench=\"modal\" role=\"dialog\" style=\"color: red\" tabindex=\"-1\"><div class=\"st-modal__header\"><h2 class=\"st-modal__title\">Localized</h2><button aria-label=\"Fermer\" class=\"st-modal__close\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div><div class=\"st-modal__body\">Body</div></section></div>"
+    }
+  ],
+  "sourceSha256": "d588d093854b5e951fcc758c86d96f10cc58e746e7d4f9a6c33bd66c13384618",
+  "fixtureSha256": "eed0e659acc73ed3f0810df1a815fd1d44811bc3e2ceef31ccc9da1d8e2b1665",
+  "publicExports": [
+    {
+      "name": "Modal",
+      "typeOnly": false
+    },
+    {
+      "name": "ModalProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "MenuTriggerButton",
+  "sourceRevision": "9ec33d19661a387918abcf362ccd8866a469e05b",
+  "source": "src/MenuTriggerButton.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button aria-expanded=\"false\" aria-haspopup=\"menu\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\">Menu</button>"
+    },
+    {
+      "id": "open",
+      "html": "<button aria-expanded=\"true\" aria-haspopup=\"menu\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\">Menu</button>"
+    },
+    {
+      "id": "expanded-alias",
+      "html": "<button aria-expanded=\"true\" aria-haspopup=\"menu\" class=\"st-iconButton st-iconButton--md st-iconButton--ghost\" type=\"button\">Account</button>"
+    },
+    {
+      "id": "secondary-large-disabled",
+      "html": "<button aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Actions\" class=\"st-iconButton st-iconButton--lg st-iconButton--secondary consumer\" disabled=\"\" style=\"color:red;\" type=\"button\"><strong>Actions</strong></button>"
+    },
+    {
+      "id": "fallback-icon",
+      "html": "<button aria-expanded=\"false\" aria-haspopup=\"menu\" class=\"st-iconButton st-iconButton--sm st-iconButton--secondary\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-circle-chevron-down-icon lucide-circle-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m16 10-4 4-4-4\"></path></svg></button>"
+    }
+  ],
+  "sourceSha256": "b5ea70b949ce4e0c34eabf107a40c7687ae38708f678071db293a6d0bfe143c6",
+  "fixtureSha256": "22a27c74eea8785d7ded567c0439af2f1beea0823e1f02233b1a7860ce0a0bda",
+  "publicExports": [
+    {
+      "name": "MenuTriggerButton",
+      "typeOnly": false
+    },
+    {
+      "name": "MenuTriggerButtonProps",
+      "typeOnly": true
+    }
+  ]
+}

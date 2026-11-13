@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "component": "ObjectPage",
+  "sourceRevision": "16d43556ca163e1d23713e4ffb37a1de868e9bdf",
+  "source": "src/ObjectPage.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-op\"><header class=\"st-op__header\"><div class=\"st-op__title-row\"><h1 class=\"st-op__title\">Order 123</h1></div><div class=\"st-op__header-actions\"></div></header></div>"
+    },
+    {
+      "id": "header-actions",
+      "html": "<div class=\"st-op\"><header class=\"st-op__header\"><nav class=\"st-breadcrumb\"><a class=\"st-breadcrumb__item\" href=\"/\">Home</a><span class=\"st-breadcrumb__item\">Accounts</span></nav><div class=\"st-op__title-row\"><h1 class=\"st-op__title\">Account</h1><span class=\"st-badge st-badge--success\">Active</span></div><div class=\"st-op__header-actions\"><button class=\"st-button st-button--secondary\" type=\"button\">Cancel</button><button class=\"st-button st-button--primary\" type=\"button\">Save</button></div></header></div>"
+    },
+    {
+      "id": "kpis-fields",
+      "html": "<div class=\"st-op\"><header class=\"st-op__header\"><div class=\"st-op__title-row\"><h1 class=\"st-op__title\">Dashboard</h1></div><div class=\"st-op__header-actions\"></div></header><div class=\"st-op__kpi-row\"><div class=\"st-kpi-card\"><span class=\"st-kpi-card__label\">Revenue</span><span class=\"st-kpi-card__value\">12k</span><span class=\"st-kpi-card__delta\">+3%</span></div><div class=\"st-kpi-card\"><span class=\"st-kpi-card__label\">Users</span><span class=\"st-kpi-card__value\">921</span></div></div><section class=\"st-op__fields\"><h2 class=\"st-op__section-title\">Details</h2><dl class=\"st-op__field-list\"><dt>Owner</dt><dd>Ana</dd><dt>Plan</dt><dd>Pro</dd></dl></section></div>"
+    },
+    {
+      "id": "related-table",
+      "html": "<div class=\"st-op\"><header class=\"st-op__header\"><div class=\"st-op__title-row\"><h1 class=\"st-op__title\">Orders</h1></div><div class=\"st-op__header-actions\"></div></header><section class=\"st-op__related\"><h2 class=\"st-op__section-title\">Lines</h2><table class=\"st-table\"><thead><tr><th>ID</th><th>Qty</th></tr></thead><tbody><tr><td>r1</td><td>2</td></tr><tr><td>r2</td><td>5</td></tr></tbody></table></section></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-op consumer\" data-bench=\"op\" style=\"color:red;\"><header class=\"st-op__header\"><div class=\"st-op__title-row\"><h1 class=\"st-op__title\">Attrs</h1></div><div class=\"st-op__header-actions\"></div></header></div>"
+    }
+  ],
+  "sourceSha256": "028dbe370c9690508aef5379a422f0dee5a93bff1149e468d62b7574fb65f86c",
+  "fixtureSha256": "73e34df049751726243ce9a43a50c18b2fc2bc17b53586e1a625eb03bd9902d0",
+  "publicExports": [
+    {
+      "name": "ObjectPage",
+      "typeOnly": false
+    },
+    {
+      "name": "ObjectPageProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ObjectPageBreadcrumbItem",
+      "typeOnly": true
+    },
+    {
+      "name": "ObjectPageKpi",
+      "typeOnly": true
+    },
+    {
+      "name": "ObjectPageField",
+      "typeOnly": true
+    },
+    {
+      "name": "ObjectPageColumn",
+      "typeOnly": true
+    },
+    {
+      "name": "ObjectPageRow",
+      "typeOnly": true
+    }
+  ]
+}

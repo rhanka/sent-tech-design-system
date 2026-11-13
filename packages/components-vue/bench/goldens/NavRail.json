@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "NavRail",
+  "sourceRevision": "e71b431a02ed4470086161aa6e2a8689aad64f8a",
+  "source": "src/NavRail.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<nav aria-label=\"Primary navigation\" class=\"st-navRail\"><div class=\"st-navRail__items\"><a aria-current=\"page\" class=\"st-navRail__item st-navRail__item--active\" href=\"/\"><span class=\"st-navRail__label\">Home</span></a><a class=\"st-navRail__item\" href=\"/docs\"><span class=\"st-navRail__label\">Docs</span></a></div></nav>"
+    },
+    {
+      "id": "active-by-id",
+      "html": "<nav aria-label=\"Primary navigation\" class=\"st-navRail\"><div class=\"st-navRail__items\"><button class=\"st-navRail__item\" type=\"button\"><span class=\"st-navRail__label\">Alpha</span></button><button aria-current=\"page\" class=\"st-navRail__item st-navRail__item--active\" type=\"button\"><span class=\"st-navRail__label\">Beta</span></button></div></nav>"
+    },
+    {
+      "id": "badge-disabled",
+      "html": "<nav aria-label=\"Primary navigation\" class=\"st-navRail\"><div class=\"st-navRail__items\"><button class=\"st-navRail__item\" type=\"button\"><span class=\"st-navRail__label\">X</span><span class=\"st-navRail__badge\">3</span></button><button class=\"st-navRail__item\" disabled=\"\" type=\"button\"><span class=\"st-navRail__icon\">Icon</span><span class=\"st-navRail__label\">Y</span></button></div></nav>"
+    },
+    {
+      "id": "footer-slot",
+      "html": "<nav aria-label=\"Sections\" class=\"st-navRail consumer\" data-bench=\"rail\" style=\"color:red;\"><div class=\"st-navRail__items\"><button class=\"st-navRail__item\" type=\"button\"><span class=\"st-navRail__label\">Alpha</span></button></div><footer class=\"st-navRail__footer\"><button>Settings</button></footer></nav>"
+    },
+    {
+      "id": "empty-with-default",
+      "html": "<nav aria-label=\"Primary navigation\" class=\"st-navRail\"><div class=\"st-navRail__items\"><span>Custom</span></div></nav>"
+    }
+  ],
+  "sourceSha256": "3fcf389ca0786d89388aa2e0405748c763bef98275aaec2a93bc64870145b6ef",
+  "fixtureSha256": "b41de8dda306745631d4e96e447e09cfa3210b0b57e3aa9145246cdce9544c28",
+  "publicExports": [
+    {
+      "name": "NavRail",
+      "typeOnly": false
+    },
+    {
+      "name": "NavRailItem",
+      "typeOnly": true
+    },
+    {
+      "name": "NavRailProps",
+      "typeOnly": true
+    }
+  ]
+}

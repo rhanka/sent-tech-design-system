@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "MessageStatusBadge",
+  "sourceRevision": "6c8d9329a6ce51840bfac5f9acb834412ed2f6da",
+  "source": "src/MessageStatusBadge.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--success\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Completed</span>"
+    },
+    {
+      "id": "sending",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--neutral\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Sending</span>"
+    },
+    {
+      "id": "streaming",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--info\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Processing</span>"
+    },
+    {
+      "id": "error-tone",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--warning consumer\" data-bench=\"status\" style=\"color:red;\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Failed</span>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--success\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Done</span>"
+    },
+    {
+      "id": "normalized-label",
+      "html": "<span class=\"st-messageStatusBadge st-badge st-badge--error\"><span aria-hidden=\"true\" class=\"st-messageStatusBadge__dot\"></span>Échec</span>"
+    }
+  ],
+  "sourceSha256": "0462df72846d12d01130519b10cb2454401e3fe222dea9549bfb8a14800b9300",
+  "fixtureSha256": "12540833d0298d7c6b930281644703cc40adbbd80845ca608a336a1644f8d1e7",
+  "publicExports": [
+    {
+      "name": "MessageStatusBadge",
+      "typeOnly": false
+    },
+    {
+      "name": "MessageStatusBadgeProps",
+      "typeOnly": true
+    }
+  ]
+}
