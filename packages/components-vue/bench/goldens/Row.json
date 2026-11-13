@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "Row",
+  "sourceRevision": "c91b97eb83faef48b2c9c83b3392728e9570b978",
+  "source": "src/Row.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-row\" style=\"flex-wrap:wrap;gap:var(--st-spacing-4, 1rem);--st-row-gutter:var(--st-spacing-4, 1rem);\"><span>A</span><span>B</span></div>"
+    },
+    {
+      "id": "gutter-wrap",
+      "html": "<div class=\"st-row\" style=\"flex-wrap:wrap;gap:var(--st-spacing-8, 2rem);--st-row-gutter:var(--st-spacing-8, 2rem);\">Items</div>"
+    },
+    {
+      "id": "center-between",
+      "html": "<div class=\"st-row\" style=\"flex-wrap:nowrap;align-items:center;gap:var(--st-spacing-2, 0.5rem);--st-row-gutter:var(--st-spacing-2, 0.5rem);\"><strong>Hi</strong></div>"
+    },
+    {
+      "id": "as-section",
+      "html": "<section class=\"st-row consumer\" data-bench=\"row\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;flex-wrap:wrap;justify-content:center;gap:var(--st-spacing-4, 1rem);--st-row-gutter:var(--st-spacing-4, 1rem);color:red;\">Section</section>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-row\" style=\"flex-wrap:wrap;gap:var(--st-spacing-4, 1rem);--st-row-gutter:var(--st-spacing-4, 1rem);\"></div>"
+    }
+  ],
+  "sourceSha256": "581ecf8d953aedefbcd2bb86d7d50e1336afd0b3defcfe5756febf8143172fe4",
+  "fixtureSha256": "a31ed2292c0301b33c7ca97f1007e45843e2b02550f2b2d8c453fdf26858fe9e",
+  "publicExports": [
+    {
+      "name": "Row",
+      "typeOnly": false
+    },
+    {
+      "name": "RowProps",
+      "typeOnly": true
+    }
+  ]
+}
