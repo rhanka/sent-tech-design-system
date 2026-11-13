@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './RangeSliderFilter.js';
+import RangeSliderFilter, { numericDomain, rangeBoundsToSpec } from './RangeSliderFilter.vue';
 
 describe('numericDomain (vue)', () => {
   it('computes [min,max] over finite numeric cells', () => {

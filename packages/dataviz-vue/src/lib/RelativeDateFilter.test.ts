@@ -1,11 +1,10 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import {
-  RelativeDateFilter,
+import RelativeDateFilter, {
   relativeRangeToSpec,
   DEFAULT_RELATIVE_PRESETS,
-} from './RelativeDateFilter.js';
+} from './RelativeDateFilter.vue';
 
 const NOW = new Date('2026-06-06T00:00:00Z');
 const DAY = 24 * 60 * 60 * 1000;
