@@ -26,19 +26,17 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      # Match Vue CI: build the full workspace dependency closure in dependency
+      # order, including the Vue classic and Vapor SFC outputs.
       - name: Build Vue dependencies
-        run: |
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/design-system-themes run build
+        run: node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-vue
       - name: Verify Vue package
         run: |
           npm --workspace @sentropic/design-system-vue run build
           npm --workspace @sentropic/design-system-vue run check
           npm --workspace @sentropic/design-system-vue run test
-      - name: Build workspace for package smoke
-        run: npm run build
-      - name: Smoke packed packages
-        run: npm run pack:smoke
+      - name: Smoke packed Vue package
+        run: npm run pack:smoke -- --workspaces=@sentropic/design-system-vue
 
   release-guard:
     needs: verify
@@ -88,9 +86,8 @@ jobs:
       - name: Install and build
         run: |
           npm ci
-          npm --workspace @sentropic/design-system-tokens run build
-          npm --workspace @sentropic/design-system-themes run build
-          npm --workspace @sentropic/design-system-vue run build
+          # Rebuild the same closure without shipping dist/.srchash markers.
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-vue
       - name: Publish Vue package
         id: publish
         run: |
