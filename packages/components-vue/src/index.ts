@@ -610,8 +610,8 @@ export type {
   AppChromeColorMode,
   AppChromeLocale
 } from "./AppChrome.js";
-export { LanguageToggle } from "./LanguageToggle.js";
-export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.js";
+export { default as LanguageToggle } from "./LanguageToggle.vue";
+export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.vue";
 export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
 export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
 export { Overline } from "./Overline.js";
