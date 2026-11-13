@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:523c1eb3d25b57503b1a5f6a08cd68be1fd51f52ca36372ee3232217ec9341f3",
-  "entryDigest": "sha256:ebcc042eb1c302b771fbaffee8030ff35a022781e7a4e48a70249c8c8f548970",
+  "digest": "sha256:f953ed7be36ae58989ef3769b1cdfcbee1b63b104c8649d45ca6c53a430e996e",
+  "entryDigest": "sha256:a0a198b6972789d754a0c568591a3d14be5f2ff34a0823c93b4703c9fa2f7597",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-angular/dist/Combobox.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ComboboxProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

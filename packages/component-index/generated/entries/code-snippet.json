@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CodeSnippet.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:c131281451ecdd0e51594170b7cece01fdf1c130b343c2fed836298c3387dd86",
+  "digest": "sha256:3f6db76600870e2935fdbc80c93a37f14464ade3300846865b5ba3ce5468616a",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

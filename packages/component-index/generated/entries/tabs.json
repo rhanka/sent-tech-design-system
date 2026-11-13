@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tabs.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:c01dbfc4b65aa5ea29dc9f0af5548ded5fba06c242e7e8019cffaaa2f46f8dd7",
+  "digest": "sha256:aa3712853656a4157c560b9996016c98b1eb748f4011410340f487f90336ecb1",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

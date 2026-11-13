@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageSelector.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:1832396cd0b7ad293a3637186514db5ba85a017cfd404e0d17fc057b4f6d38fe",
+  "digest": "sha256:4a02e4ab8fdeaffdac55b8ea281638d5e8f6394cd42db67fb077b3ec14aadd45",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

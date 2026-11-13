@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RangeSlider.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Two-handle slider for selecting a value range.",
     "fr": "Curseur à deux poignées pour sélectionner une plage de valeurs."
   },
-  "digest": "sha256:0a481b198f6ec8738cc2751b8c0d6ebc1d9938bf496ff49cb39a7f2b46b32385",
+  "digest": "sha256:6899d36c0f5929b0f7c6127f9ae705b46bdc45876233c35568dda031d83ee3d7",
   "displayName": "RangeSlider",
   "format": "component-entry/v1",
   "frameworks": [

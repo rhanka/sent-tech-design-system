@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:f94264bdcac3491c90e58db77d214e75a64fd6af6d8cafabd5b1276664b11c49",
+  "digest": "sha256:192f4a47c75ffffae2d8eed4a298cfe6ef340b92ae8110313381b63054488fa1",
   "entryDigest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:1e88411dffd25225fd287bd21543524daaa9546154c81567d29be70693494179",
-  "entryDigest": "sha256:181331864c1f5885145271460ddba83df76d61f37fe0ca6d28a00ae111543493",
+  "digest": "sha256:39340772b6d9a52948972731d7c7129e6c5bb316fb6ba124f2eb10a7a1ab76bf",
+  "entryDigest": "sha256:d69bffe91af62d122da1c78abd1608de3bf8e929d959fac7eedc603640d1a991",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -96,7 +96,7 @@
         "declarationPath": "packages/components-angular/dist/RadioGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RadioGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

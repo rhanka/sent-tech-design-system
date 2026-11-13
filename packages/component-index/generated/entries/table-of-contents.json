@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TableOfContents.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:26f08c5929e25f3c694485786d2143ea72a0257077b1615c04ca4ecb1f3eb37b",
+  "digest": "sha256:484e7733bbc587e55ba488e4bd4ab3ef843406c43248c6df820b32bf34195611",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

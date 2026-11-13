@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Autosave.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Autosave indicator: saving, saved, or failed states.",
     "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
   },
-  "digest": "sha256:0bd4f71be50157043addf1d62fa58feb1fdf88d516fc6372edfb7b9f6eca1172",
+  "digest": "sha256:c5ea87e33da320a888b40aaf2d408395c577b307da31789d0d460bdd5682060c",
   "displayName": "Autosave",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Radio.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:d1125021036019ed3caa15b76d552692e4b75a5367099a4aa981741fa605e5da",
+  "digest": "sha256:7d582f3a9f09023ae554736d3828e55ad67b89d45507f1063cf259b41f6a9598",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

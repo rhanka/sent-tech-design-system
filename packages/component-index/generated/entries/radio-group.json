@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RadioGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Exclusive choice among options, with legend and a11y.",
     "fr": "Choix exclusif parmi plusieurs options, légende et a11y."
   },
-  "digest": "sha256:181331864c1f5885145271460ddba83df76d61f37fe0ca6d28a00ae111543493",
+  "digest": "sha256:d69bffe91af62d122da1c78abd1608de3bf8e929d959fac7eedc603640d1a991",
   "displayName": "RadioGroup",
   "format": "component-entry/v1",
   "frameworks": [

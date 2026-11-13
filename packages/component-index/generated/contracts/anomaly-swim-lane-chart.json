@@ -1,8 +1,8 @@
 {
   "componentId": "anomaly-swim-lane-chart",
   "contractSource": "derived",
-  "digest": "sha256:07cd2b50b07ad294ed6610bb5b14bf2ed43cbe3a3ded435e1ad3ac737a1ec970",
-  "entryDigest": "sha256:610d93a65e37b12fbbac22869f258822432c359f3a52d7318e12df7cbe7127e0",
+  "digest": "sha256:23dd006f2ea072353b4a56f964f0b91f2f218a6264410640280d7da7dfd92b90",
+  "entryDigest": "sha256:55b011533dba3e165b581922fdb4e7e819905f211e14ab2785ba7b4cac03159c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -92,7 +92,7 @@
         "declarationPath": "packages/components-angular/dist/AnomalySwimLaneChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

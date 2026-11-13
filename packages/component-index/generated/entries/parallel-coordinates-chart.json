@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ParallelCoordinatesChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Parallel coordinates for comparing multi-dimensional records.",
     "fr": "Axes parallèles pour comparer des enregistrements multidimensionnels."
   },
-  "digest": "sha256:487d4f75c18141b8c8d153b78ab7236597b2e928bf5ce1dbb4b3bedaa59678c8",
+  "digest": "sha256:53c501024e2d8bab242452518a844b408f8267e594f57cd471ce45785d978d2e",
   "displayName": "ParallelCoordinatesChart",
   "format": "component-entry/v1",
   "frameworks": [

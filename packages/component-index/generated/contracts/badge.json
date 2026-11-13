@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:d3de94d19c3dd0f8396c476e0e7fe8916fc45af59022be8a1a183964ba53e047",
-  "entryDigest": "sha256:c215dc7d50dd4d033021de59391bab28d29911f9b8dfde2a4b6b77fd539843d1",
+  "digest": "sha256:99337f18cb3ac3130bf3f77c8730808fa7b5859da98f858b0ad1f30b3467ceee",
+  "entryDigest": "sha256:2ef9ceb4888543d6da0b3584594cfde28fccb97b0f43716c53100bb21cfbbf78",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/Badge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

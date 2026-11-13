@@ -1,8 +1,8 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:459eb32a811ad3a42504e82efbc7e4e13311be26da5ae8aa0b50253e22c49adf",
-  "entryDigest": "sha256:425594ff22a8f1408a375de345d595032434c30c5564d64a88e619f3328307e1",
+  "digest": "sha256:fb69eed58010f665bb8710a338d2bd216aae4e845c510fa5cf883eaec4c56b9a",
+  "entryDigest": "sha256:530f52605536d2468a1c5bbe9806f82b20127779afafb7c0b0e2269589e39eb7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/Divider.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DividerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

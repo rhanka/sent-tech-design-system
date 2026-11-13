@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Col.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:6e1b50a83bdd30f8a9cbdbdf54378a691d095979df206c18cd386be43cf175d4",
+  "digest": "sha256:037f97014323e6a1d79b4809aa78235161dcdc72ee304b18cf8008553b0a0320",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

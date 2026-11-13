@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DecompositionTreeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Hierarchical decomposition tree: a total measure broken down level by level into columns of bars linked to their parent.",
     "fr": "Arbre de décomposition hiérarchique : une mesure totale éclatée niveau par niveau en colonnes de barres reliées au parent."
   },
-  "digest": "sha256:eb0737043cc5112117fb1f184c18baca4a3f9fba1080689c3a0a6bb8c22dbcac",
+  "digest": "sha256:f49e355232f986bfbd99f082327392105e84468873da49af65799c4747702fd4",
   "displayName": "DecompositionTreeChart",
   "format": "component-entry/v1",
   "frameworks": [

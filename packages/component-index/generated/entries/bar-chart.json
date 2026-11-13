@@ -39,7 +39,7 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "element",
@@ -54,7 +54,7 @@
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:b22c7e6e58ae5d90755823fcc7faa6c5f695e74007c133d65a32d89ebea2896b",
+  "digest": "sha256:5d7d5c440d211642a89a8923e833a6fdad9281cde584e28ee58abefce98fdf1a",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

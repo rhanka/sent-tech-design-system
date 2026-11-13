@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:0d63eb9208d2b359df0eb70a81d99c3e5a953b70142c44187576ca8788e3e2a8",
-  "entryDigest": "sha256:6c718dfc28622f747bb99a7a317453011f6b8e12c36ad12737a3e0986c037666",
+  "digest": "sha256:915752fd829b41167de2ece2aa1d99f2f891c34cd18ba3a4da5a181be883ada8",
+  "entryDigest": "sha256:3580ef5d31b68a30dae62ef05940a093b45cb7d117add88a52f380ea03a20ede",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -66,7 +66,7 @@
         "declarationPath": "packages/components-angular/dist/Drawer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

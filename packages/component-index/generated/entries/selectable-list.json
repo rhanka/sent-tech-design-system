@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SelectableList.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Accessible listbox driving its rows: single or multiple selection, keyboard navigation.",
     "fr": "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier."
   },
-  "digest": "sha256:cb3032fac83f6233b672ca1fbccaab3b31af842d5b13338e229f711678acde0e",
+  "digest": "sha256:6293bde808756a59e70777dab9cfc36ec555cd648f426d640ac55abc33663cff",
   "displayName": "SelectableList",
   "format": "component-entry/v1",
   "frameworks": [

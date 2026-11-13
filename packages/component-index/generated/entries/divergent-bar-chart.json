@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DivergentBarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Divergent bars (positive, negative, neutral) around a shared zero axis.",
     "fr": "Barres divergentes positives, négatives et neutres autour d'un axe zéro."
   },
-  "digest": "sha256:ca43974c3b2cd4a7270e04e600879d3339603b800ff62be629eb96ddfec3b46c",
+  "digest": "sha256:34eba130d1a66e04a0900da0ac07b1e7fce13d3cef058ac9185f9df6e3d9ea6d",
   "displayName": "DivergentBarChart",
   "format": "component-entry/v1",
   "frameworks": [
