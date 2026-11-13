@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { type DataModel } from '@sentropic/dataviz-core';
-import { FieldPane } from './FieldPane.js';
+import FieldPane from './FieldPane.vue';
 
 const model: DataModel = {
   dimensions: [
