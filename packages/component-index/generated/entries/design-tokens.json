@@ -7,49 +7,49 @@
       "digest": "sha256:6528544449048222a8e3459271b20fb1787e86fccc276ad4e6b8bd7c534dceec",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/foundation.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:0885b6e16c0ad293cf3bc6f18f264a50e5182fb6c9e0108f4ff5601c1ad679de",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/semantic.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:78c711ecb45c07f1275e520468b9a6cd7db5dd4601500c31d138d7f33caed96a",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/component.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:25af025bc8c0327ec5f59bb7c1a26422ec7b2e877abf1f0d48de1774a74cbeea",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/sent-tech.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:fab01fa96e61c304fd294c7073cb83f422089497720f63ffc0f8fcaaf3f6b31e",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/forge.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:d9fb6362ceacc4f04794d8ca54c11575d6dafc1a714c61fd203013f14d522e26",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/entropic.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     }
   ],
   "description": {
     "en": "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens.",
     "fr": "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens."
   },
-  "digest": "sha256:e8484daa403dcdabb1c32888e653c377acaf004b31fdd4d438f15fed634fb49a",
+  "digest": "sha256:1b9bbad49ff07ed3288c9046b8ccceacaa0e44dafe260729f33d7fc4b157164d",
   "displayName": "DesignTokens",
   "format": "component-entry/v1",
   "frameworks": [],

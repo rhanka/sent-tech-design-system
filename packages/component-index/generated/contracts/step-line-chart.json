@@ -1,8 +1,8 @@
 {
   "componentId": "step-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:eae93d5651a3d5f317f3cbfe647b4514d911ecb328d1fd05c88e6f5d7710901f",
-  "entryDigest": "sha256:be4099a3ad5ebee7f4f0cc0014eec36f1726e0de7b5cd3a4f37795da0d8c53dc",
+  "digest": "sha256:cb1e5528dcd957f4d239c9e940bf8024e710f55b64a25e81f3117526a50b16bb",
+  "entryDigest": "sha256:a2bd3e1bec77bcbdfcae5a3eea0eb15950f40a91d6d2e009dcf9e2f1e96b9a7d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/StepLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepLineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
