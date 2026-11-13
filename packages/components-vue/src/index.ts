@@ -107,7 +107,7 @@ export { default as Select } from "./Select.vue";
 export type { SelectProps, SelectSize, SelectOption } from "./Select.vue";
 export { SideNav } from "./SideNav.js";
 export type { SideNavProps, SideNavItem } from "./SideNav.js";
-export { AppShell } from "./AppShell.js";
+export { default as AppShell } from './AppShell.vue';
 export type {
   AppShellPanelCollapse,
   AppShellPanelKey,
@@ -115,7 +115,7 @@ export type {
   AppShellUtilityMode,
   AppShellUtilitySide,
   AppShellVariant,
-} from "./AppShell.js";
+} from './AppShell.vue';
 export { NavShell } from "./NavShell.js";
 export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
 export { NavRail } from "./NavRail.js";
