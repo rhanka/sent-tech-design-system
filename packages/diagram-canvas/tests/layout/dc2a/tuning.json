@@ -3,37 +3,37 @@
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0,
-      "rank": 14.919,
+      "rank": 14.918,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.542,
+      "meanDisplayScale": 0.564,
       "meanFrameFill": 0.481
     },
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0.4,
-      "rank": 15.273,
-      "gapViolations": 0,
-      "singleColumnLevels": 0,
-      "aspectOver035": 0,
-      "labelUnplaced": 0,
-      "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.539,
-      "meanFrameFill": 0.473
-    },
-    {
-      "tallBias": 1,
-      "emptyPenaltyWeight": 0.8,
       "rank": 15.274,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.54,
+      "meanDisplayScale": 0.564,
+      "meanFrameFill": 0.473
+    },
+    {
+      "tallBias": 1,
+      "emptyPenaltyWeight": 0.8,
+      "rank": 15.275,
+      "gapViolations": 0,
+      "singleColumnLevels": 0,
+      "aspectOver035": 0,
+      "labelUnplaced": 0,
+      "edgeContainerEscapes": 0,
+      "meanDisplayScale": 0.564,
       "meanFrameFill": 0.472
     },
     {
@@ -45,7 +45,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.534,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.458
     },
     {
@@ -57,7 +57,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.535,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.457
     },
     {
@@ -69,7 +69,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.535,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.457
     },
     {
@@ -81,7 +81,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.533,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.451
     },
     {
@@ -93,7 +93,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.534,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.456
     },
     {
@@ -105,7 +105,7 @@
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.534,
+      "meanDisplayScale": 0.559,
       "meanFrameFill": 0.456
     }
   ],

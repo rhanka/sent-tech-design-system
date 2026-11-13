@@ -5,14 +5,14 @@
     "browserWidth": 1440,
     "viewportWidth": 1206,
     "viewportHeight": 678.375,
-    "zoom": 0.2755148615325006,
+    "zoom": 0.45,
     "bboxWidth": 4370.0002,
     "bboxHeight": 2256,
     "margins": {
-      "left": 0.25,
-      "top": 27.65673619133935,
-      "right": 0.25,
-      "bottom": 27.65673619133929
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 16,
     "fixedCards": 16,
@@ -23,6 +23,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 16,
     "icons": 23,
     "nodes": 23
   },
@@ -32,14 +36,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.07734553421759569,
+    "zoom": 0.45,
     "bboxWidth": 4370.0002,
     "bboxHeight": 2256,
     "margins": {
-      "left": 0.25,
-      "top": 7.629237402552064,
-      "right": 0.25,
-      "bottom": 7.629237402552064
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 16,
     "fixedCards": 16,
@@ -50,6 +54,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 16,
     "icons": 23,
     "nodes": 23
   },
@@ -63,10 +71,10 @@
     "bboxWidth": 1340,
     "bboxHeight": 664,
     "margins": {
-      "left": 186.85000000000002,
-      "top": 0.2537499999999966,
-      "right": 186.85000000000002,
-      "bottom": 0.253750000000025
+      "left": 187.60000000000002,
+      "top": 1.0037499999999966,
+      "right": 187.60000000000002,
+      "bottom": 1.003750000000025
     },
     "cards": 4,
     "fixedCards": 4,
@@ -77,6 +85,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 44.64,
+    "minHorizontalScreenGap": 59.519999999999996,
+    "pans": false,
+    "fullAccessibleCards": 4,
     "icons": 4,
     "nodes": 4
   },
@@ -86,14 +98,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.25223880597014925,
+    "zoom": 0.45,
     "bboxWidth": 1340,
     "bboxHeight": 664,
     "margins": {
-      "left": 0.25,
-      "top": 11.131716417910454,
-      "right": 0.25,
-      "bottom": 11.13171641791044
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 4,
     "fixedCards": 4,
@@ -104,6 +116,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 4,
     "icons": 4,
     "nodes": 4
   },
@@ -113,14 +129,14 @@
     "browserWidth": 1440,
     "viewportWidth": 1206,
     "viewportHeight": 678.375,
-    "zoom": 0.32843594825565287,
+    "zoom": 0.45,
     "bboxWidth": 3665.859375,
     "bboxHeight": 1572,
     "margins": {
-      "left": 0.25,
-      "top": 80.28684467105683,
-      "right": 0.2500000000002274,
-      "bottom": 80.28684467105688
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 14,
     "fixedCards": 14,
@@ -131,6 +147,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 14,
     "icons": 19,
     "nodes": 19
   },
@@ -140,14 +160,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.09220211836412846,
+    "zoom": 0.45,
     "bboxWidth": 3665.859375,
     "bboxHeight": 1572,
     "margins": {
-      "left": 0.25,
-      "top": 22.404134965795024,
-      "right": 0.25,
-      "bottom": 22.40413496579501
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 14,
     "fixedCards": 14,
@@ -158,6 +178,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 14,
     "icons": 19,
     "nodes": 19
   },
@@ -171,10 +195,10 @@
     "bboxWidth": 1664,
     "bboxHeight": 808,
     "margins": {
-      "left": 86.40999999999997,
-      "top": 0.25437500000001023,
-      "right": 86.41000000000008,
-      "bottom": 0.25437500000003865
+      "left": 87.15999999999997,
+      "top": 1.0043750000000102,
+      "right": 87.16000000000008,
+      "bottom": 1.0043750000000387
     },
     "cards": 5,
     "fixedCards": 5,
@@ -185,6 +209,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 44.64,
+    "minHorizontalScreenGap": 59.519999999999996,
+    "pans": false,
+    "fullAccessibleCards": 5,
     "icons": 5,
     "nodes": 5
   },
@@ -194,14 +222,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.203125,
+    "zoom": 0.45,
     "bboxWidth": 1664,
     "bboxHeight": 808,
     "margins": {
-      "left": 0.25,
-      "top": 12.8125,
-      "right": 0.25,
-      "bottom": 12.8125
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 5,
     "fixedCards": 5,
@@ -212,6 +240,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 5,
     "icons": 5,
     "nodes": 5
   },
@@ -221,14 +253,14 @@
     "browserWidth": 1440,
     "viewportWidth": 1206,
     "viewportHeight": 678.375,
-    "zoom": 0.2755148615325006,
+    "zoom": 0.45,
     "bboxWidth": 4370.0002,
     "bboxHeight": 2256,
     "margins": {
-      "left": 0.25,
-      "top": 27.65673619133935,
-      "right": 0.25,
-      "bottom": 27.65673619133929
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 16,
     "fixedCards": 16,
@@ -239,6 +271,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 16,
     "icons": 23,
     "nodes": 23
   },
@@ -248,14 +284,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.07734553421759569,
+    "zoom": 0.45,
     "bboxWidth": 4370.0002,
     "bboxHeight": 2256,
     "margins": {
-      "left": 0.25,
-      "top": 7.629237402552064,
-      "right": 0.25,
-      "bottom": 7.629237402552064
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 16,
     "fixedCards": 16,
@@ -266,6 +302,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 16,
     "icons": 23,
     "nodes": 23
   },
@@ -279,10 +319,10 @@
     "bboxWidth": 1340,
     "bboxHeight": 664,
     "margins": {
-      "left": 186.85000000000002,
-      "top": 0.2537499999999966,
-      "right": 186.85000000000002,
-      "bottom": 0.253750000000025
+      "left": 187.60000000000002,
+      "top": 1.0037499999999966,
+      "right": 187.60000000000002,
+      "bottom": 1.003750000000025
     },
     "cards": 4,
     "fixedCards": 4,
@@ -293,6 +333,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 44.64,
+    "minHorizontalScreenGap": 59.519999999999996,
+    "pans": false,
+    "fullAccessibleCards": 4,
     "icons": 4,
     "nodes": 4
   },
@@ -302,14 +346,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.25223880597014925,
+    "zoom": 0.45,
     "bboxWidth": 1340,
     "bboxHeight": 664,
     "margins": {
-      "left": 0.25,
-      "top": 11.131716417910454,
-      "right": 0.25,
-      "bottom": 11.13171641791044
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 4,
     "fixedCards": 4,
@@ -320,6 +364,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 4,
     "icons": 4,
     "nodes": 4
   },
@@ -329,14 +377,14 @@
     "browserWidth": 1440,
     "viewportWidth": 1206,
     "viewportHeight": 678.375,
-    "zoom": 0.32843594825565287,
+    "zoom": 0.45,
     "bboxWidth": 3665.859375,
     "bboxHeight": 1572,
     "margins": {
-      "left": 0.25,
-      "top": 80.28684467105683,
-      "right": 0.2500000000002274,
-      "bottom": 80.28684467105688
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 14,
     "fixedCards": 14,
@@ -347,6 +395,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 14,
     "icons": 19,
     "nodes": 19
   },
@@ -356,14 +408,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.09220211836412846,
+    "zoom": 0.45,
     "bboxWidth": 3665.859375,
     "bboxHeight": 1572,
     "margins": {
-      "left": 0.25,
-      "top": 22.404134965795024,
-      "right": 0.25,
-      "bottom": 22.40413496579501
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 14,
     "fixedCards": 14,
@@ -374,6 +426,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 14,
     "icons": 19,
     "nodes": 19
   },
@@ -387,10 +443,10 @@
     "bboxWidth": 1664,
     "bboxHeight": 808,
     "margins": {
-      "left": 86.40999999999997,
-      "top": 0.25437500000001023,
-      "right": 86.41000000000008,
-      "bottom": 0.25437500000003865
+      "left": 87.15999999999997,
+      "top": 1.0043750000000102,
+      "right": 87.16000000000008,
+      "bottom": 1.0043750000000387
     },
     "cards": 5,
     "fixedCards": 5,
@@ -401,6 +457,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 44.64,
+    "minHorizontalScreenGap": 59.519999999999996,
+    "pans": false,
+    "fullAccessibleCards": 5,
     "icons": 5,
     "nodes": 5
   },
@@ -410,14 +470,14 @@
     "browserWidth": 390,
     "viewportWidth": 340,
     "viewportHeight": 191.25,
-    "zoom": 0.203125,
+    "zoom": 0.45,
     "bboxWidth": 1664,
     "bboxHeight": 808,
     "margins": {
-      "left": 0.25,
-      "top": 12.8125,
-      "right": 0.25,
-      "bottom": 12.8125
+      "left": 0,
+      "top": 0,
+      "right": 0,
+      "bottom": 0
     },
     "cards": 5,
     "fixedCards": 5,
@@ -428,6 +488,10 @@
     "labelLabelCollisions": 0,
     "textSpills": 0,
     "minGap": 72,
+    "minVerticalScreenGap": 32.4,
+    "minHorizontalScreenGap": 43.2,
+    "pans": true,
+    "fullAccessibleCards": 5,
     "icons": 5,
     "nodes": 5
   }
