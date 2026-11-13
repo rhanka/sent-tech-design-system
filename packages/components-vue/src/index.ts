@@ -287,8 +287,8 @@ export type {
 } from "./StatusHistoryChart.js";
 export { EventFeedPanel } from "./EventFeedPanel.js";
 export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
-export { VectorFieldChart } from "./VectorFieldChart.js";
-export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.js";
+export { default as VectorFieldChart } from "./VectorFieldChart.vue";
+export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.vue";
 export { ContourChart } from "./ContourChart.js";
 export type { ContourChartProps, ContourChartDatum, ContourChartTone, ContourChartScale } from "./ContourChart.js";
 export { WindBarbChart } from "./WindBarbChart.js";
