@@ -709,8 +709,8 @@ export type {
 } from "./timeRange.js";
 export { PanelStack, PANEL_STACK_MAX_SECTIONS } from "./PanelStack.js";
 export type { PanelStackShape, PanelStackProps } from "./PanelStack.js";
-export { PanelSection } from "./PanelSection.js";
-export type { PanelSectionProps } from "./PanelSection.js";
+export { default as PanelSection } from './PanelSection.vue';
+export type { PanelSectionProps } from './PanelSection.vue';
 
 export { default as DiagramCard } from './DiagramCard.vue';
 export type { DiagramIconProps } from './diagram-icons/index.js';
