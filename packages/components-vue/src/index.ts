@@ -502,8 +502,8 @@ export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js
 
 export { Rating } from "./Rating.js";
 export type { RatingProps, RatingSize } from "./Rating.js";
-export { TimePicker } from "./TimePicker.js";
-export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
+export { default as TimePicker } from "./TimePicker.vue";
+export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.vue";
 export { Calendar } from "./Calendar.js";
 export type { CalendarProps, CalendarValue } from "./Calendar.js";
 export { SlideIndicator } from "./SlideIndicator.js";
