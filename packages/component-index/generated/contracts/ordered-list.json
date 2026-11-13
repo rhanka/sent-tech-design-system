@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:aa2716f3dc566c176a4c96b9f9b7b489ec17ca3af7291fca68e4a5633907d9f9",
-  "entryDigest": "sha256:d6d59b2a03b192f6152ce12df70b0a2380d192e70e1d4f185185449a62f37b0f",
+  "digest": "sha256:95dba850c153d41151e934941408643e48bc9b8954c7f5b74cf057e657b6a08e",
+  "entryDigest": "sha256:6550598c5bada9d9048baa8c5f48c7b26bce0d4817741c154cdd6ecbe3811100",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/OrderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OrderedListProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:242c27825d747685f1705abcdb55389c2262e9cd0b783eef88d599dead332ca9",
-  "entryDigest": "sha256:135af85c6cc5381be9b0c52f0570681678d46c2f3cfe4f2363e8b1cdc5357866",
+  "digest": "sha256:f019792fe12238aafe673ef9df019abb48a70b93539b6f05142b3fcd079cf4f6",
+  "entryDigest": "sha256:6bb6eb4c7b365c9c5e6b0b54524b149df672dc1e3f7a0c8a4eb284e30315ef69",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -162,14 +162,125 @@
           }
         },
         {
+          "name": "onHighlightChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EffectiveTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
           "name": "onLayout",
           "payload": {
             "anyOf": [
               {
                 "additionalProperties": false,
                 "properties": {
+                  "arrowBoxes": {
+                    "additionalProperties": {
+                      "items": {
+                        "$ref": "#/$defs/FlowArrow"
+                      },
+                      "type": "array"
+                    },
+                    "properties": {},
+                    "type": "object"
+                  },
+                  "badgeBoxes": {
+                    "additionalProperties": {
+                      "$ref": "#/$defs/Rect"
+                    },
+                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
+                  },
+                  "flowBundles": {
+                    "items": {
+                      "$ref": "#/$defs/FlowBundle"
+                    },
+                    "type": "array"
+                  },
+                  "flowRepairPasses": {
+                    "enum": [
+                      0,
+                      1
+                    ]
+                  },
+                  "flowTargets": {
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "kind": {
+                              "const": "edge"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "id": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "bundle"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "id",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "box": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "internal"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "kind"
+                          ],
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "properties": {},
+                    "type": "object"
                   },
                   "labelBoxes": {
                     "additionalProperties": {
@@ -201,8 +312,7 @@
                     "type": "object"
                   },
                   "measurements": {
-                    "$ref": "#/$defs/LayoutMeasurements",
-                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key."
+                    "$ref": "#/$defs/LayoutMeasurements"
                   },
                   "orientations": {
                     "additionalProperties": {
@@ -267,6 +377,15 @@
           }
         },
         {
+          "name": "onScenarioChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
           "name": "onSelect",
           "payload": {
             "additionalProperties": false,
@@ -285,6 +404,19 @@
           "name": "onSizeChange",
           "payload": {
             "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "onStepChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/StepChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       ],
@@ -371,7 +503,18 @@
                   "unknown-entity-type",
                   "unknown-relation-type",
                   "unknown-port-type",
+                  "flow-types-conflict",
+                  "flow-step-missing",
+                  "flow-step-duplicate",
+                  "flow-branch-overflow",
+                  "flow-scenario-unknown",
+                  "flow-scenario-misused",
+                  "flow-step-end-invalid",
+                  "flow-branch-without-sibling",
+                  "flow-step-gap",
                   "type-definition-conflict",
+                  "type-definition-reserved",
+                  "type-definition-ambiguous",
                   "attribute-type-mismatch",
                   "attribute-required-missing",
                   "enum-value-not-allowed",
@@ -553,6 +696,70 @@
             "required": [
               "height",
               "width"
+            ],
+            "type": "object"
+          },
+          "EffectiveTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "step": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "visible"
             ],
             "type": "object"
           },
@@ -908,6 +1115,105 @@
             ],
             "type": "object"
           },
+          "FlowArrow": {
+            "additionalProperties": false,
+            "properties": {
+              "angle": {
+                "enum": [
+                  0,
+                  90,
+                  180,
+                  270
+                ]
+              },
+              "box": {
+                "$ref": "#/$defs/Rect"
+              },
+              "tip": {
+                "$ref": "#/$defs/Vec2"
+              }
+            },
+            "required": [
+              "angle",
+              "box",
+              "tip"
+            ],
+            "type": "object"
+          },
+          "FlowBundle": {
+            "additionalProperties": false,
+            "properties": {
+              "backward": {
+                "type": "number"
+              },
+              "carrier": {
+                "type": "string"
+              },
+              "forward": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "members": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "direction": {
+                      "enum": [
+                        "forward",
+                        "backward"
+                      ]
+                    },
+                    "occurrence": {
+                      "type": "string"
+                    },
+                    "relation": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "target": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "direction",
+                    "occurrence",
+                    "relation",
+                    "source",
+                    "target"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "reason": {
+                "enum": [
+                  "fold",
+                  "fan-out",
+                  "obstructed"
+                ]
+              },
+              "summaries": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "backward",
+              "carrier",
+              "forward",
+              "id",
+              "members",
+              "reason",
+              "summaries"
+            ],
+            "type": "object"
+          },
           "Geometry": {
             "additionalProperties": false,
             "properties": {
@@ -1151,6 +1457,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "flow-bundled",
+                  "badge-unplaced",
+                  "flow-layout-unsupported",
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
@@ -1260,7 +1569,8 @@
                   "detail",
                   "footer",
                   "legend-label",
-                  "edge-label"
+                  "edge-label",
+                  "flow-badge"
                 ]
               }
             },
@@ -1575,6 +1885,30 @@
             "required": [
               "kind",
               "units"
+            ],
+            "type": "object"
+          },
+          "Rect": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "width",
+              "x",
+              "y"
             ],
             "type": "object"
           },
@@ -2384,7 +2718,8 @@
                   "detail",
                   "footer",
                   "legend-label",
-                  "edge-label"
+                  "edge-label",
+                  "flow-badge"
                 ]
               }
             },
@@ -2392,6 +2727,82 @@
               "layout",
               "occurrence",
               "role"
+            ],
+            "type": "object"
+          },
+          "StepChange": {
+            "additionalProperties": false,
+            "properties": {
+              "ordinal": {
+                "type": "number"
+              },
+              "realises": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              },
+              "scenario": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "ordinal",
+              "relation",
+              "scenario",
+              "visible"
             ],
             "type": "object"
           },
@@ -3026,6 +3437,22 @@
             ],
             "type": "object"
           },
+          "Vec2": {
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
           "ViewDocument": {
             "additionalProperties": false,
             "properties": {
@@ -3216,6 +3643,12 @@
         },
         "additionalProperties": false,
         "properties": {
+          "activeStep": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "bindings": {
             "$ref": "#/$defs/ExecutorProfileBindings"
           },
@@ -3232,6 +3665,9 @@
           "contentSize": {
             "$ref": "#/$defs/DiagramSceneSize"
           },
+          "defaultActiveStep": {
+            "type": "string"
+          },
           "defaultFolds": {
             "description": "Initial collapsed occurrence ids when `collapsed` is not controlled.",
             "items": {
@@ -3239,8 +3675,20 @@
             },
             "type": "array"
           },
+          "defaultScenario": {
+            "type": "string"
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
+          },
+          "flows": {
+            "additionalProperties": false,
+            "properties": {
+              "fanOutMax": {
+                "type": "number"
+              }
+            },
+            "type": "object"
           },
           "hints": {
             "$ref": "#/$defs/LayoutHints",
@@ -3275,6 +3723,12 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "scenario": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -3319,6 +3773,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
           "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
+          "name": "FlowBundle.carrier",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
         },
         {
           "name": "HeaderMeasurement.occurrence",
@@ -3465,6 +3925,12 @@
           "sourceType": "Partial<DiagramSceneFigureLabels>"
         },
         {
+          "name": "members[].occurrence",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
           "name": "metrics",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -3475,6 +3941,24 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "result.arrowBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/FlowArrow\"}}",
+          "sourceType": "Readonly<Record<string, readonly FlowArrow[]>>"
+        },
+        {
+          "name": "result.badgeBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/Rect\"}",
+          "sourceType": "Readonly<Record<string, Rect>>"
+        },
+        {
+          "name": "result.flowTargets",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"kind\":{\"const\":\"edge\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"id\":{\"type\":\"string\"},\"kind\":{\"const\":\"bundle\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"id\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"box\":{\"type\":\"string\"},\"kind\":{\"const\":\"internal\"}},\"additionalProperties\":false,\"required\":[\"box\",\"kind\"]}]}",
+          "sourceType": "Readonly<Record<string, FlowVisibleTarget>>"
         },
         {
           "name": "result.labelBoxes",
@@ -3509,18 +3993,20 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6dc8ad953edc8f2f74493faa02eaa6f5f708f60a6dfb670aceae8597024ebdd7",
+        "declarationDigest": "sha256:ce10739046de5b434488f9a5ab9f57a111d4d83e12868ae8050f4e1de36cd9c6",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": []
     },
     "vue": {
-      "bindable": [],
+      "bindable": [
+        "contentSize"
+      ],
       "dropped": [
         {
           "kind": "function",
@@ -3692,6 +4178,42 @@
         },
         {
           "kind": "function",
+          "name": "SceneLayoutCache.clear",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.dispose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.has",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, options: LayoutOptions, sourceView?: ViewDocument | undefined) => boolean"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.layout",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, options: LayoutOptions, sourceView?: ViewDocument | undefined) => LayoutResult"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.layoutFolded",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(document: SemanticDocument, sourceView: ViewDocument, options: LayoutOptions) => LayoutResult"
+        },
+        {
+          "kind": "function",
+          "name": "SceneLayoutCache.stats",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => LayoutCacheStats"
+        },
+        {
+          "kind": "function",
           "name": "measure",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "CardLineMeasure"
@@ -3710,15 +4232,39 @@
         },
         {
           "kind": "function",
+          "name": "onHighlightChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(target: EffectiveTarget | null) => void"
+        },
+        {
+          "kind": "function",
           "name": "onLayout",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(result: LayoutResult) => void"
         },
         {
           "kind": "function",
+          "name": "onScenarioChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scenario: string | null) => void"
+        },
+        {
+          "kind": "function",
           "name": "onSelect",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(event: { entityId: string; }) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSizeChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(size: DiagramSceneSize) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onStepChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(change: StepChange | null) => void"
         },
         {
           "kind": "function",
@@ -3763,14 +4309,125 @@
           }
         },
         {
+          "name": "highlightChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EffectiveTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
           "name": "layout",
           "payload": {
             "anyOf": [
               {
                 "additionalProperties": false,
                 "properties": {
+                  "arrowBoxes": {
+                    "additionalProperties": {
+                      "items": {
+                        "$ref": "#/$defs/FlowArrow"
+                      },
+                      "type": "array"
+                    },
+                    "properties": {},
+                    "type": "object"
+                  },
+                  "badgeBoxes": {
+                    "additionalProperties": {
+                      "$ref": "#/$defs/Rect"
+                    },
+                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
+                  },
+                  "flowBundles": {
+                    "items": {
+                      "$ref": "#/$defs/FlowBundle"
+                    },
+                    "type": "array"
+                  },
+                  "flowRepairPasses": {
+                    "enum": [
+                      0,
+                      1
+                    ]
+                  },
+                  "flowTargets": {
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "kind": {
+                              "const": "edge"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "id": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "bundle"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "id",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "box": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "internal"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "kind"
+                          ],
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "properties": {},
+                    "type": "object"
                   },
                   "labelBoxes": {
                     "additionalProperties": {
@@ -3802,8 +4459,7 @@
                     "type": "object"
                   },
                   "measurements": {
-                    "$ref": "#/$defs/LayoutMeasurements",
-                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key."
+                    "$ref": "#/$defs/LayoutMeasurements"
                   },
                   "orientations": {
                     "additionalProperties": {
@@ -3905,14 +4561,125 @@
           }
         },
         {
+          "name": "onHighlightChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EffectiveTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
           "name": "onLayout",
           "payload": {
             "anyOf": [
               {
                 "additionalProperties": false,
                 "properties": {
+                  "arrowBoxes": {
+                    "additionalProperties": {
+                      "items": {
+                        "$ref": "#/$defs/FlowArrow"
+                      },
+                      "type": "array"
+                    },
+                    "properties": {},
+                    "type": "object"
+                  },
+                  "badgeBoxes": {
+                    "additionalProperties": {
+                      "$ref": "#/$defs/Rect"
+                    },
+                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
+                  },
+                  "flowBundles": {
+                    "items": {
+                      "$ref": "#/$defs/FlowBundle"
+                    },
+                    "type": "array"
+                  },
+                  "flowRepairPasses": {
+                    "enum": [
+                      0,
+                      1
+                    ]
+                  },
+                  "flowTargets": {
+                    "additionalProperties": {
+                      "anyOf": [
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "kind": {
+                              "const": "edge"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "badge": {
+                              "type": "boolean"
+                            },
+                            "id": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "bundle"
+                            },
+                            "occurrence": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "badge",
+                            "id",
+                            "kind",
+                            "occurrence"
+                          ],
+                          "type": "object"
+                        },
+                        {
+                          "additionalProperties": false,
+                          "properties": {
+                            "box": {
+                              "type": "string"
+                            },
+                            "kind": {
+                              "const": "internal"
+                            }
+                          },
+                          "required": [
+                            "box",
+                            "kind"
+                          ],
+                          "type": "object"
+                        }
+                      ]
+                    },
+                    "properties": {},
+                    "type": "object"
                   },
                   "labelBoxes": {
                     "additionalProperties": {
@@ -3944,8 +4711,7 @@
                     "type": "object"
                   },
                   "measurements": {
-                    "$ref": "#/$defs/LayoutMeasurements",
-                    "description": "Shared line-layout output (M3 §4.6.3/§5.6). Present on measured\nviews only; the compatibility path carries no `measurements` key."
+                    "$ref": "#/$defs/LayoutMeasurements"
                   },
                   "orientations": {
                     "additionalProperties": {
@@ -4010,6 +4776,15 @@
           }
         },
         {
+          "name": "onScenarioChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
           "name": "onSelect",
           "payload": {
             "additionalProperties": false,
@@ -4025,6 +4800,40 @@
           }
         },
         {
+          "name": "onSizeChange",
+          "payload": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "onStepChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/StepChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "name": "onUpdate:contentSize",
+          "payload": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "scenarioChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
           "name": "select",
           "payload": {
             "additionalProperties": false,
@@ -4037,6 +4846,31 @@
               "entityId"
             ],
             "type": "object"
+          }
+        },
+        {
+          "name": "sizeChange",
+          "payload": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "stepChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/StepChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        {
+          "name": "update:contentSize",
+          "payload": {
+            "$ref": "#/$defs/DiagramSceneSize"
           }
         }
       ],
@@ -4124,7 +4958,18 @@
                   "unknown-entity-type",
                   "unknown-relation-type",
                   "unknown-port-type",
+                  "flow-types-conflict",
+                  "flow-step-missing",
+                  "flow-step-duplicate",
+                  "flow-branch-overflow",
+                  "flow-scenario-unknown",
+                  "flow-scenario-misused",
+                  "flow-step-end-invalid",
+                  "flow-branch-without-sibling",
+                  "flow-step-gap",
                   "type-definition-conflict",
+                  "type-definition-reserved",
+                  "type-definition-ambiguous",
                   "attribute-type-mismatch",
                   "attribute-required-missing",
                   "enum-value-not-allowed",
@@ -4290,6 +5135,86 @@
               "pans",
               "readout",
               "zoom"
+            ],
+            "type": "object"
+          },
+          "DiagramSceneSize": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "width"
+            ],
+            "type": "object"
+          },
+          "EffectiveTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "step": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "visible"
             ],
             "type": "object"
           },
@@ -4645,6 +5570,105 @@
             ],
             "type": "object"
           },
+          "FlowArrow": {
+            "additionalProperties": false,
+            "properties": {
+              "angle": {
+                "enum": [
+                  0,
+                  90,
+                  180,
+                  270
+                ]
+              },
+              "box": {
+                "$ref": "#/$defs/Rect"
+              },
+              "tip": {
+                "$ref": "#/$defs/Vec2"
+              }
+            },
+            "required": [
+              "angle",
+              "box",
+              "tip"
+            ],
+            "type": "object"
+          },
+          "FlowBundle": {
+            "additionalProperties": false,
+            "properties": {
+              "backward": {
+                "type": "number"
+              },
+              "carrier": {
+                "type": "string"
+              },
+              "forward": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "members": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "direction": {
+                      "enum": [
+                        "forward",
+                        "backward"
+                      ]
+                    },
+                    "occurrence": {
+                      "type": "string"
+                    },
+                    "relation": {
+                      "type": "string"
+                    },
+                    "source": {
+                      "type": "string"
+                    },
+                    "target": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "direction",
+                    "occurrence",
+                    "relation",
+                    "source",
+                    "target"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "reason": {
+                "enum": [
+                  "fold",
+                  "fan-out",
+                  "obstructed"
+                ]
+              },
+              "summaries": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "backward",
+              "carrier",
+              "forward",
+              "id",
+              "members",
+              "reason",
+              "summaries"
+            ],
+            "type": "object"
+          },
           "Geometry": {
             "additionalProperties": false,
             "properties": {
@@ -4888,6 +5912,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "flow-bundled",
+                  "badge-unplaced",
+                  "flow-layout-unsupported",
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
@@ -4997,7 +6024,8 @@
                   "body",
                   "detail",
                   "legend-label",
-                  "edge-label"
+                  "edge-label",
+                  "flow-badge"
                 ]
               }
             },
@@ -5312,6 +6340,30 @@
             "required": [
               "kind",
               "units"
+            ],
+            "type": "object"
+          },
+          "Rect": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "width": {
+                "type": "number"
+              },
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "width",
+              "x",
+              "y"
             ],
             "type": "object"
           },
@@ -5752,6 +6804,11 @@
             ],
             "type": "object"
           },
+          "SceneLayoutCache": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          },
           "SchemaVersion": {
             "additionalProperties": false,
             "properties": {
@@ -6129,7 +7186,8 @@
                   "body",
                   "detail",
                   "legend-label",
-                  "edge-label"
+                  "edge-label",
+                  "flow-badge"
                 ]
               }
             },
@@ -6137,6 +7195,82 @@
               "layout",
               "occurrence",
               "role"
+            ],
+            "type": "object"
+          },
+          "StepChange": {
+            "additionalProperties": false,
+            "properties": {
+              "ordinal": {
+                "type": "number"
+              },
+              "realises": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              },
+              "scenario": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "ordinal",
+              "relation",
+              "scenario",
+              "visible"
             ],
             "type": "object"
           },
@@ -6771,6 +7905,22 @@
             ],
             "type": "object"
           },
+          "Vec2": {
+            "additionalProperties": false,
+            "properties": {
+              "x": {
+                "type": "number"
+              },
+              "y": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "x",
+              "y"
+            ],
+            "type": "object"
+          },
           "ViewDocument": {
             "additionalProperties": false,
             "properties": {
@@ -6961,6 +8111,12 @@
         },
         "additionalProperties": false,
         "properties": {
+          "activeStep": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "bindings": {
             "$ref": "#/$defs/ExecutorProfileBindings"
           },
@@ -6974,6 +8130,12 @@
           "compact": {
             "type": "boolean"
           },
+          "contentSize": {
+            "$ref": "#/$defs/DiagramSceneSize"
+          },
+          "defaultActiveStep": {
+            "type": "string"
+          },
           "defaultFolds": {
             "description": "Initial collapsed occurrence ids when `collapsed` is not controlled.",
             "items": {
@@ -6981,8 +8143,20 @@
             },
             "type": "array"
           },
+          "defaultScenario": {
+            "type": "string"
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
+          },
+          "flows": {
+            "additionalProperties": false,
+            "properties": {
+              "fanOutMax": {
+                "type": "number"
+              }
+            },
+            "type": "object"
           },
           "hints": {
             "$ref": "#/$defs/LayoutHints",
@@ -6993,6 +8167,9 @@
             "type": "string"
           },
           "labels": {},
+          "layoutCache": {
+            "$ref": "#/$defs/SceneLayoutCache"
+          },
           "measureLines": {
             "additionalProperties": false,
             "description": "Layout line measurer. Defaults to the bridge over `measure`.",
@@ -7014,6 +8191,12 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "scenario": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -7058,6 +8241,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/LegendPresentation\"}",
           "sourceType": "Readonly<Record<string, LegendPresentation>>"
+        },
+        {
+          "name": "FlowBundle.carrier",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
         },
         {
           "name": "HeaderMeasurement.occurrence",
@@ -7180,6 +8369,24 @@
           "sourceType": "ViewRef"
         },
         {
+          "name": "args.arrowBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/FlowArrow\"}}",
+          "sourceType": "Readonly<Record<string, readonly FlowArrow[]>>"
+        },
+        {
+          "name": "args.badgeBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/Rect\"}",
+          "sourceType": "Readonly<Record<string, Rect>>"
+        },
+        {
+          "name": "args.flowTargets",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"kind\":{\"const\":\"edge\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"id\":{\"type\":\"string\"},\"kind\":{\"const\":\"bundle\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"id\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"box\":{\"type\":\"string\"},\"kind\":{\"const\":\"internal\"}},\"additionalProperties\":false,\"required\":[\"box\",\"kind\"]}]}",
+          "sourceType": "Readonly<Record<string, FlowVisibleTarget>>"
+        },
+        {
           "name": "args.labelBoxes",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"object\",\"properties\":{\"height\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"x\":{\"type\":\"number\"},\"y\":{\"type\":\"number\"}},\"additionalProperties\":false,\"required\":[\"height\",\"width\",\"x\",\"y\"]}",
@@ -7222,6 +8429,12 @@
           "sourceType": "Partial<DiagramSceneFigureLabels>"
         },
         {
+          "name": "members[].occurrence",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "OccurrenceRef"
+        },
+        {
           "name": "metrics",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -7232,6 +8445,24 @@
           "reason": "primitive intersection constraints (including brands) are not represented in JSON",
           "replacement": "{\"type\":\"string\"}",
           "sourceType": "OccurrenceRef"
+        },
+        {
+          "name": "result.arrowBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/FlowArrow\"}}",
+          "sourceType": "Readonly<Record<string, readonly FlowArrow[]>>"
+        },
+        {
+          "name": "result.badgeBoxes",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"$ref\":\"#/$defs/Rect\"}",
+          "sourceType": "Readonly<Record<string, Rect>>"
+        },
+        {
+          "name": "result.flowTargets",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"kind\":{\"const\":\"edge\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"id\":{\"type\":\"string\"},\"kind\":{\"const\":\"bundle\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"id\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"box\":{\"type\":\"string\"},\"kind\":{\"const\":\"internal\"}},\"additionalProperties\":false,\"required\":[\"box\",\"kind\"]}]}",
+          "sourceType": "Readonly<Record<string, FlowVisibleTarget>>"
         },
         {
           "name": "result.labelBoxes",
@@ -7266,7 +8497,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:231e4d492b071bb6ac2728fd8b0bd8884921a5ad92c94847a7ec34e2c5b4fb12",
+        "declarationDigest": "sha256:f92f4b8285ccd141340f0bd98f400f3f0251025909347abe5d126abee608be27",
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
@@ -7277,8 +8508,14 @@
       "warnings": [
         "event pair: emits \"cameraChange\" and prop \"onCameraChange\" both listed verbatim",
         "event pair: emits \"foldChange\" and prop \"onFoldChange\" both listed verbatim",
+        "event pair: emits \"highlightChange\" and prop \"onHighlightChange\" both listed verbatim",
         "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim",
-        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+        "event pair: emits \"scenarioChange\" and prop \"onScenarioChange\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"sizeChange\" and prop \"onSizeChange\" both listed verbatim",
+        "event pair: emits \"stepChange\" and prop \"onStepChange\" both listed verbatim",
+        "event pair: emits \"update:contentSize\" and prop \"onUpdate:contentSize\" both listed verbatim",
+        "two-way binding: prop \"contentSize\" paired with emit \"update:contentSize\""
       ]
     }
   },

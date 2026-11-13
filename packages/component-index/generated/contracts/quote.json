@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:df55880630d64586ae6f2f4920fc6d98c41332109032b52245544a7c8d35c93b",
-  "entryDigest": "sha256:cbdaaee8da31fb63e30a964604be5dd9bfcf35128cbd52f25fbbea9d0cf1867d",
+  "digest": "sha256:85fa766aea57b6c6023827281f892a70092f0a86cecf3f76468faaa2f9b631cd",
+  "entryDigest": "sha256:44bdbd9accfc9b58c4e881284ec4ba1bacbdb4725c5417352d889755282d3404",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/Quote.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "QuoteProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

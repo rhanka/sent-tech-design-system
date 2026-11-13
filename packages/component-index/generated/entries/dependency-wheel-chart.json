@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DependencyWheelChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Dependency wheel: nodes on a circle, weighted ribbons coloured by source.",
     "fr": "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source."
   },
-  "digest": "sha256:46005d70fd65ada76ecc86e7a37ada6d034f8038e22d5100b5a0e1dd6d7d3ec7",
+  "digest": "sha256:b3ff910165f8ab2ff4a749f81973c78354f2ac5bc3cd1e0dc611ed47c1fc1f92",
   "displayName": "DependencyWheelChart",
   "format": "component-entry/v1",
   "frameworks": [

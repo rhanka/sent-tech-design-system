@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MediaContent.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:9e640c97be3d41183a86cf4c127e529f0a70471f5fc99f1296b5ee727f294c5d",
+  "digest": "sha256:6c6900e529a3c1675daec7fd43d179fcdc89989121d3501ead1ca6ea9a8dda5b",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

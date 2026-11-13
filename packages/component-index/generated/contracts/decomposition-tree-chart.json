@@ -1,8 +1,8 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:ab06466b4c11ae5711e4926392c992edeab2cfe12536eed2365d54cdc094aa47",
-  "entryDigest": "sha256:b3206698c74d87cdae9d6382068593aeabb13d29baa423715bd1dbf2c9265284",
+  "digest": "sha256:5d644697766b19bdc66c5f60877b40d99e4f4248a2782b9e0ed95f9996006d7a",
+  "entryDigest": "sha256:ccd325709644e5b5af4bcc5b4c5bcf8b229d7417b8f61c5173924b7b2a7e60fc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -320,7 +320,7 @@
         "declarationPath": "packages/components-svelte/dist/DecompositionTreeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

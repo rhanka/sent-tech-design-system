@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:79de19b0e5c8977f4cb5fb1f64b5811eb5d9583787e5df7d830535618319ed6d",
-  "entryDigest": "sha256:c96774e12fdbb727b2571045449b7715416d6152072ade353f5d61c42be06230",
+  "digest": "sha256:f2e64150c5d49dd7aadcd31c83cc5aa73c2b97219c98a27496cd7139b81e02fc",
+  "entryDigest": "sha256:e5c41bfd7df78c56678a9a53f56b0d7945ab7bf111cb6c3a9ec63f840e7c8926",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/Accordion.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AccordionProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
