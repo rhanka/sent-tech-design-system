@@ -6,9 +6,12 @@ import ts from 'typescript';
 
 const vapor = process.env.VUE_PACKED_MODE === 'vapor';
 const suffix = vapor ? '/vapor' : '';
-writeFileSync('consumer.ts', `import { GraphLegend } from '@sentropic/design-system-vue${suffix}';
+writeFileSync('consumer.ts', `import { GraphLegend, LabelledIconButton, WebFrame } from '@sentropic/design-system-vue${suffix}';
+import { RichTextEditor, ComposerEditor, type RichTextEditorProps, type ComposerEditorProps } from '@sentropic/design-system-vue${suffix}/rich-text-editor';
+import { LockPresenceBadge, type LockPresenceBadgeProps } from '@sentropic/design-system-vue${suffix}/presence-badge';
 import { useDashboard } from '@sentropic/dataviz-vue${suffix}';
-export { GraphLegend, useDashboard };\n`);
+export { GraphLegend, LabelledIconButton, WebFrame, RichTextEditor, ComposerEditor, LockPresenceBadge, useDashboard };
+export type { RichTextEditorProps, ComposerEditorProps, LockPresenceBadgeProps };\n`);
 const program = ts.createProgram(['consumer.ts'], { target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,
   strict: true, skipLibCheck: false, noEmit: true, types: [] });

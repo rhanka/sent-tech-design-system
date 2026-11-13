@@ -82,3 +82,76 @@ Eight derived Vue contract cells move from partial to complete without losses:
 AppHeader, Drawer, LanguageToggle, Modal, Notification, Pagination,
 PaginationNav and Popover. The contract baseline records those measured
 changes; source-conversion progress remains a separate metric.
+
+## V8 missing ports: badge, labelled icon button and web frame
+
+These three components had no original Vue render module. Their frozen G4
+references come from Svelte SSR via `capture-svelte-goldens.mjs`, with source
+revision, source digest and fixture digest recorded in each golden. The script
+removes only Svelte compiler scope-class tokens and hydration markers before
+applying the shared DOM normalizer. The badge tooltip ID uses Vue useId rather
+than the Svelte module counter; the normalizer masks that registered prefix
+while retaining its aria-describedby relationship. Fourteen fixtures cover
+unlocked, locked, expired, requested, read-only, live-binding, activity and
+missing-message badge states; labelled-button variants; and frame attributes.
+
+LockPresenceBadge reuses the framework-neutral rich-text collaboration state
+and color validation. Its four callbacks become typed requestUnlock,
+acceptUnlock, forceUnlock and releaseLock events; existing onX listeners remain
+supported and run once. Presence totals include the current actor while the
+avatar/roster list excludes them; holder order, inert labels, untranslated
+markers and keyboard tooltip linkage follow the Svelte contract. It exposes
+no slots and does not control editor editability.
+
+LabelledIconButton keeps its scalar label, tooltip-content override, pressed
+state and key-shortcut attributes. Svelte onclick remains a compatibility
+callback; Vue consumers can use the click event with the same MouseEvent. If
+both are provided, the callback runs before the listener, once each. Its local
+tooltip template preserves the Svelte Tooltip DOM; it uses the shared global
+DS tooltip styles. The additive Icon svgClass prop lets this DS composition
+retain the complete reference SVG class list without changing existing Icon
+output. An absent pressed prop omits aria-pressed; false is rendered verbatim.
+There are no public slots.
+
+WebFrame's Svelte reference lives in dataviz-svelte, which owns that framework's
+implementation. The new components-vue export delegates to the same
+framework-neutral dataviz-core resolveWebFrame function. It retains iframe
+src/title, sandbox array-or-string handling, loading/referrer-policy defaults,
+allow and optional class, with no events or slots. The Svelte object-layer
+iframe witness is ported alongside attribute/default/update checks.
+
+## V8 editors and V9 completion
+
+RichTextEditor and ComposerEditor also had no historical Vue render module.
+Nine additional fixture goldens are captured from their Svelte SSR output,
+using the same source/fixture provenance and normalization above. SSR renders
+an empty editor surface (plus RichTextEditor's status/live facts); the engine
+mounts only on the client, matching Svelte. Snapshot notifications are also
+client-only, covered by an SSR regression. The full profile is asynchronous:
+capture waits for it, pending prop changes reconcile on settlement, and a
+late instance is destroyed when its host has already unmounted.
+
+Both Vue adapters reuse @sentropic/design-system-rich-text/editor, the same
+neutral Tiptap engine as Svelte. No framework-specific engine or duplicate
+schema is added. RichTextEditor exposes captureDocument/readiness;
+ComposerEditor exposes captureComposer/readiness. Notification callbacks map
+to typed Vue events with identical payloads and one delivery per listener.
+ComposerEditor onKeyDown remains a synchronous policy callback because its
+return value or preventDefault controls the engine's keyboard handling.
+Neither editor exposes slots. Document fingerprints preserve nested reactive
+updates without replaying unchanged values on locale switches; full composer
+seeds preserve untouched Markdown bytes and elide synthetic trailing blocks.
+
+The rich-text-editor and presence-badge subpaths, including their default and
+named exports, mirror Svelte; parallel vapor subpaths expose native compiled
+SFCs with the same Props and capture handles. The editor engine stays out of
+the root barrel. rich-text-editor.css is available as a separate stylesheet.
+The shared build's added subpath emission does not change compiler options;
+the bench compiler pin was refreshed after checking the matching options.
+
+V9 replaces the two remaining lucide-vue-next consumers (Menu/OverflowMenu)
+with DS Icon on neutral node data. Their prior SVG classes, geometry, sizing,
+stroke and decorative ARIA are preserved. The comment/message-square glyph
+also matches Svelte's registry. lucide-vue-next is removed from the Vue package
+and lockfile. K25 regeneration retains 115 dataviz legacy modules and adds no
+entries; these missing ports did not have legacy render functions to remove.

@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:545aa207ba4c354973c7c3b06d8534c710b190bb9a39e3378565fa323ef2f356",
-  "entryDigest": "sha256:39596381b6dd87c96eec6ff89ed7470ab73df58b1fb6d6e2ead8be590a158f0a",
+  "digest": "sha256:18f5374d8d1079c5a34e60c1dfa422dc1588b067f86ab38afb979557de3dc15a",
+  "entryDigest": "sha256:51d98d1072fbb53f12b02f3fd97f2937421fee6e4b7210412d69a44081464e9d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4120,6 +4120,7 @@
               "target",
               "chevron-down",
               "chevron-right",
+              "comment",
               "circle-dashed"
             ]
           },
@@ -4128,6 +4129,10 @@
           },
           "strokeWidth": {
             "type": "number"
+          },
+          "svgClass": {
+            "description": "Complete SVG class list for DS controls preserving their reference markup.",
+            "type": "string"
           },
           "title": {
             "type": "string"
@@ -4149,7 +4154,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:acc5a7eed879c9e59fdb5cdfd82cb867d18b73c7889082f576dba7b704ee998c",
+        "declarationDigest": "sha256:0e07c9e0baa57ac2b3f3aae0d04788cb3a59fc4b19bbb5bbe6c2a1baab52f640",
         "declarationPath": "packages/components-vue/dist/Icon.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",

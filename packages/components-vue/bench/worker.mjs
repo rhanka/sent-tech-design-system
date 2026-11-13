@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { bench, src, names, installSourceLoader, wrapperSource, normalizeHtml } from './lib.mjs';
+import { bench, src, names, installSourceLoader, wrapperSource, normalizeHtml, componentPath } from './lib.mjs';
 
 const [operation, name] = process.argv.slice(2);
 // Keep stdout as a single JSON record, including when Vue's development runtime
@@ -50,7 +50,7 @@ try {
     if (legacy) throw new Error('G5 requires the converted .vue');
     const { createVaporApp, nextTick } = await import('vue');
     if (typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
-    const { default: Target } = await import(pathToFileURL(resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`)).href);
+    const { default: Target } = await import(pathToFileURL((name === 'cellDecoration' ? resolve(src, 'CellDecorationIcon.vue') : componentPath(name))).href);
     if (Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
     const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', name + '.json'), 'utf8'));
     const errors = [];

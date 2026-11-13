@@ -114,6 +114,18 @@ if (!stable) {
     writeFileSync('dist/vapor/diagram-icons/index.js', "export { default, default as DiagramIcon } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
     writeFileSync('dist/vapor/diagram-icons/index.d.ts', "export { default, default as DiagramIcon, type DiagramIconProps } from './DiagramIcon.vue.js';\nexport * from '../../diagram-icons/registry.js';\n");
   }
+  // Editor engines and collaboration UI retain their public subpath boundaries.
+  for (const subpath of ['rich-text-editor', 'presence-badge']) {
+    const entry = join('src', subpath, 'index.ts');
+    if (!existsSync(entry)) continue;
+    const target = join('dist/vapor', subpath);
+    mkdirSync(target, { recursive: true });
+    const exports = readFileSync(entry, 'utf8');
+    writeFileSync(join(target, 'index.js'), ts.transpileModule(exports, {
+      compilerOptions: { module: ts.ModuleKind.ESNext },
+    }).outputText);
+    writeFileSync(join(target, 'index.d.ts'), exports);
+  }
   if (existsSync('src/BpmnCanvas.vue')) {
     mkdirSync('dist/vapor/bpmn', { recursive: true });
     writeFileSync('dist/vapor/bpmn/index.js', "export { default, default as BpmnCanvas } from '../BpmnCanvas.vue.js';\n");

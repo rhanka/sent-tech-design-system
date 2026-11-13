@@ -1,0 +1,3472 @@
+{
+  "componentId": "rich-text-editor",
+  "contractSource": "derived",
+  "digest": "sha256:3e940cf12afa896714d1139c7ab0ae43879cb04b3d9bbd104234770473c7b859",
+  "entryDigest": "sha256:23a024f0f82e90c202e21bb09214414ded13bdf871cf9afdea3c5fa0f46e0903",
+  "format": "component-contract/v1",
+  "frameworks": {
+    "angular": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationPath": "packages/components-angular/dist/RichTextEditor.d.ts",
+        "package": "@sentropic/design-system-angular",
+        "propsType": "RichTextEditorProps",
+        "version": "0.39.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-angular/src/index.ts), not a declaration"
+      ]
+    },
+    "react": {
+      "bindable": [],
+      "dropped": [],
+      "events": [],
+      "limitations": [
+        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      ],
+      "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+      "replaced": [],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationPath": "packages/components-react/dist/RichTextEditor.d.ts",
+        "package": "@sentropic/design-system-react",
+        "propsType": "RichTextEditorProps",
+        "version": "0.39.0"
+      },
+      "status": "none",
+      "unresolved": [],
+      "warnings": [
+        "absent: declarationDigest pins the searched barrel (packages/components-react/src/index.ts), not a declaration"
+      ]
+    },
+    "svelte": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.acceptUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.acquireLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<{ acquired: boolean; lock: LockSnapshot; }>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.applyAgentPatch",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(patch: AgentPatch) => Promise<AgentPatchReceipt>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.forceUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.getPatchReceipt",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: AgentPatchKey) => Promise<AgentPatchReceipt | null>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.leavePresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.openLiveSession",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { binding: Omit<FieldBindingIdentity, \"sessionId\"> & { sessionId?: string | undefined; }; actor: CollaborationActor; profileId: string; schemaEpoch: string; }) => Promise<...>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.publishAgentCursor",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { binding: FieldBindingIdentity; actorId: string; selection: { anchor: RelativeAnchor; head: RelativeAnchor; } | null; }) => Promise<...>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.readAgentState",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(request: AgentReadRequest) => Promise<AgentDocumentState>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.readAwareness",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(binding: FieldBindingIdentity) => Promise<PresenceSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.recordPresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string) => Promise<PresenceSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.refreshLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.releaseLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.requestUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.revertAgentPatch",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { key: AgentPatchKey; requestedBy: string; reason?: string | undefined; }) => Promise<AgentPatchReceipt>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.subscribeLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef, cb: (s: LockSnapshot) => void) => () => void"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.subscribePresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string, cb: (s: PresenceSnapshot) => void) => () => void"
+        },
+        {
+          "kind": "function",
+          "name": "allocateId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => string"
+        }
+      ],
+      "events": [
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/RichTextChangeEvent"
+          }
+        },
+        {
+          "name": "onExternalConflict",
+          "payload": {
+            "$ref": "#/$defs/RichTextExternalConflictEvent"
+          }
+        },
+        {
+          "name": "onLockChange",
+          "payload": {
+            "$ref": "#/$defs/LockSnapshot"
+          }
+        },
+        {
+          "name": "onPresenceChange",
+          "payload": {
+            "$ref": "#/$defs/PresenceSnapshot"
+          }
+        },
+        {
+          "name": "onReadinessChange",
+          "payload": {
+            "$ref": "#/$defs/RichTextReadiness"
+          }
+        },
+        {
+          "name": "onRequestUnlock"
+        },
+        {
+          "name": "onUnsupportedPaste",
+          "payload": {
+            "$ref": "#/$defs/RichTextUnsupportedPasteEvent"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "AwarenessCursor": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "head": {
+                "type": "string"
+              },
+              "paragraphId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "fieldKey",
+              "head",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "CollaborationActor": {
+            "additionalProperties": false,
+            "properties": {
+              "activity": {
+                "additionalProperties": false,
+                "properties": {
+                  "scopeRef": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "enum": [
+                      "viewing",
+                      "holding",
+                      "planned",
+                      "yielded"
+                    ]
+                  }
+                },
+                "required": [
+                  "scopeRef",
+                  "since",
+                  "state"
+                ],
+                "type": "object"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "cursor": {
+                "$ref": "#/$defs/AwarenessCursor",
+                "description": "Present iff the actor has published a caret (§5.6). Anchors, never offsets."
+              },
+              "displayLabel": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "human",
+                  "agent",
+                  "nhi"
+                ]
+              }
+            },
+            "required": [
+              "actorId",
+              "color",
+              "displayLabel",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "CollaborationCapabilities": {
+            "additionalProperties": false,
+            "properties": {
+              "canAcquire": {
+                "type": "boolean"
+              },
+              "canForceUnlock": {
+                "type": "boolean"
+              },
+              "canRequestUnlock": {
+                "type": "boolean"
+              },
+              "currentActorId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "canAcquire",
+              "canForceUnlock",
+              "canRequestUnlock",
+              "currentActorId"
+            ],
+            "type": "object"
+          },
+          "CollaborationProvider": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          },
+          "FieldBindingIdentity": {
+            "additionalProperties": false,
+            "properties": {
+              "documentId": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "documentId",
+              "fieldKey",
+              "sessionId"
+            ],
+            "type": "object"
+          },
+          "LockSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "expiresAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "holder": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unit": {
+                "$ref": "#/$defs/LockUnitRef"
+              },
+              "unlockRequestedBy": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expiresAt",
+              "holder",
+              "unit"
+            ],
+            "type": "object"
+          },
+          "LockUnitRef": {
+            "additionalProperties": false,
+            "properties": {
+              "scopeRef": {
+                "type": "string"
+              },
+              "unitRef": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "scopeRef"
+            ],
+            "type": "object"
+          },
+          "PresenceSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "actors": {
+                "description": "Co-viewers; current actor excluded by the host (B2 §5.1).",
+                "items": {
+                  "$ref": "#/$defs/CollaborationActor"
+                },
+                "type": "array"
+              },
+              "scopeRef": {
+                "type": "string"
+              },
+              "total": {
+                "description": "Count including the current actor (B2 §5.1; restored in r2).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "actors",
+              "scopeRef",
+              "total"
+            ],
+            "type": "object"
+          },
+          "RetainedRunMetadata": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "paragraph"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "list",
+                          "quote"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "heading"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "list",
+                          "quote"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "headingLevel": {
+                      "enum": [
+                        2,
+                        1,
+                        3,
+                        4,
+                        5,
+                        6
+                      ]
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "headingLevel",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "codeBlock"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "codeLanguage": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "list",
+                          "quote"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "codeLanguage",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {},
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "list",
+                          "quote"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "RichTextBlock": {
+            "additionalProperties": false,
+            "properties": {
+              "hrMetadata": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "paragraph"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "heading"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "headingLevel": {
+                        "enum": [
+                          2,
+                          1,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "headingLevel",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "codeBlock"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "codeLanguage": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "codeLanguage",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {},
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "description": "Full wrapper metadata of a horizontal-rule atom (spec R-FULL-HR-1).\nWrapper/grouping keys only; never `blockKind`, `headingLevel` or\n`codeLanguage`. Absent materializes the canonical defaults."
+              },
+              "kind": {
+                "enum": [
+                  "paragraph",
+                  "preserved",
+                  "horizontalRule"
+                ]
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "paragraph"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "heading"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "headingLevel": {
+                        "enum": [
+                          2,
+                          1,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "headingLevel",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "codeBlock"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "codeLanguage": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "codeLanguage",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {},
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "list",
+                            "quote"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "description": "Full text-block metadata (spec R-FULL-META-1). Present iff this block\nbelongs to a `ds.markdown.full@1` document and kind is \"paragraph\".\nAbsent materializes the canonical plain defaults on capture."
+              },
+              "paragraphId": {
+                "description": "Opaque per-block identity, host-supplied. See spec §5.2.",
+                "type": "string"
+              },
+              "preservedKind": {
+                "description": "Preserved block kind as segmented host-side (e.g. \"heading\",\n\"list\", \"table\", \"codeBlock\", \"diagram\"). Display only.",
+                "type": "string"
+              },
+              "raw": {
+                "description": "Verbatim source slice of a preserved block. Present iff\nkind === \"preserved\". Never edited, never reserialised.",
+                "type": "string"
+              },
+              "segments": {
+                "description": "Ordered inline runs of a full text block (spec §4.3.2). Present iff\nthis block belongs to a `ds.markdown.full@1` document and kind is\n\"paragraph\". Code lines are `hardBreak` segments per R-FULL-CODE-1.",
+                "items": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "marks": {
+                          "$ref": "#/$defs/RichTextInlineMarks"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "text"
+                        }
+                      },
+                      "required": [
+                        "marks",
+                        "text",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "const": "hardBreak"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "text": {
+                "description": "Editable paragraph text (Markdown inline source for\n`focus.markdown.p0@1`, literal text for `text/plain`).\nPresent iff kind === \"paragraph\" on a P0 document. Full text blocks\ncarry `segments`/`metadata` instead and never use this field.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "RichTextChangeEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "document": {
+                "$ref": "#/$defs/RichTextDocument",
+                "description": "The complete new controlled value. The only content the component emits."
+              },
+              "gesture": {
+                "$ref": "#/$defs/RichTextGesture",
+                "description": "Provenance of the single completed gesture that produced `document`."
+              },
+              "representability": {
+                "$ref": "#/$defs/RichTextRepresentability",
+                "description": "Paragraphs of `document` whose wire is non-representable (§6.6)."
+              }
+            },
+            "required": [
+              "document",
+              "gesture",
+              "representability"
+            ],
+            "type": "object"
+          },
+          "RichTextDocument": {
+            "additionalProperties": false,
+            "properties": {
+              "blocks": {
+                "items": {
+                  "$ref": "#/$defs/RichTextBlock"
+                },
+                "type": "array"
+              },
+              "format": {
+                "enum": [
+                  "focus.markdown.p0@1",
+                  "text/plain",
+                  "ds.markdown.full@1"
+                ]
+              },
+              "retainedRunMetadata": {
+                "$ref": "#/$defs/RetainedRunMetadata",
+                "description": "Full-profile only (`ds.markdown.full@1`): the §4.3.2 run-source\nretention map. Absent (or empty) when every referenced run source is\nlive on its own block; present entries survive capture, copy and\nremount so promotion never transfers run ownership."
+              }
+            },
+            "required": [
+              "blocks",
+              "format"
+            ],
+            "type": "object"
+          },
+          "RichTextExternalConflictEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "incoming": {
+                "$ref": "#/$defs/RichTextDocument"
+              },
+              "local": {
+                "$ref": "#/$defs/RichTextDocument"
+              }
+            },
+            "required": [
+              "incoming",
+              "local"
+            ],
+            "type": "object"
+          },
+          "RichTextGesture": {
+            "additionalProperties": false,
+            "properties": {
+              "affectedParagraphIds": {
+                "description": "Ordered `paragraphId` values of the blocks the gesture touched,\nin resulting document order.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "gestureId": {
+                "description": "Opaque identifier of this completed gesture, allocated by the component.",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "type",
+                  "split",
+                  "merge",
+                  "paste",
+                  "delete",
+                  "undo",
+                  "redo",
+                  "composition-commit"
+                ]
+              },
+              "merge": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"merge\": the surviving identity and the identities\nconsumed by the merge, which the component never reallocates.",
+                "properties": {
+                  "retiredParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "survivingParagraphId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "retiredParagraphIds",
+                  "survivingParagraphId"
+                ],
+                "type": "object"
+              },
+              "paste": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"paste\": the freshly allocated identities of the\ninserted blocks and whether the paste entered from inside this editor\nsession or from outside it.",
+                "properties": {
+                  "insertedParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "origin": {
+                    "enum": [
+                      "internal",
+                      "external"
+                    ]
+                  }
+                },
+                "required": [
+                  "insertedParagraphIds",
+                  "origin"
+                ],
+                "type": "object"
+              },
+              "split": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"split\": the block that was split and the fresh\nidentities allocated for the tail blocks, in document order.",
+                "properties": {
+                  "newParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "sourceParagraphId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "newParagraphIds",
+                  "sourceParagraphId"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "affectedParagraphIds",
+              "gestureId",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "RichTextInlineMarks": {
+            "additionalProperties": false,
+            "properties": {
+              "bold": {
+                "const": true
+              },
+              "code": {
+                "const": true
+              },
+              "italic": {
+                "const": true
+              },
+              "link": {
+                "type": "string"
+              },
+              "linkTitle": {
+                "type": "string"
+              },
+              "strike": {
+                "const": true
+              },
+              "underline": {
+                "const": true
+              }
+            },
+            "type": "object"
+          },
+          "RichTextMessages": {
+            "additionalProperties": false,
+            "properties": {
+              "editorLabel": {
+                "type": "string"
+              },
+              "externalConflictLabel": {
+                "type": "string"
+              },
+              "lockLabel": {
+                "description": "CL-2 live composition seam (§6.4): lock summary template, \"{holder}\"\ninterpolated with the holder display label.",
+                "type": "string"
+              },
+              "noLockLabel": {
+                "description": "CL-2 live composition seam (§6.4): no-lock summary text.",
+                "type": "string"
+              },
+              "placeholder": {
+                "type": "string"
+              },
+              "presenceLabel": {
+                "description": "CL-2 live composition seam (§6.4): presence summary template,\n\"{count}\" interpolated with the co-viewer total. Optional: a missing\nkey renders the `⟦untranslated:collab.presenceLabel⟧` marker.",
+                "type": "string"
+              },
+              "preservedBlockLabel": {
+                "type": "string"
+              },
+              "requesterKeyLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the requester key overlay,\n\"{label}\" interpolated with the requester display label.",
+                "type": "string"
+              },
+              "rosterLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the avatar roster.",
+                "type": "string"
+              },
+              "tooltipLockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked, \"{holder}\"\ninterpolated with the holder display label. Carries the request\nwording; the read-only variant omits it.",
+                "type": "string"
+              },
+              "tooltipLockedReadOnlyLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked in read-only mode,\n\"{holder}\" interpolated. Omits the request wording.",
+                "type": "string"
+              },
+              "tooltipUnlockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip text when no lock is active.",
+                "type": "string"
+              },
+              "unlockAcceptLabel": {
+                "description": "CL-1B badge (§6.4): accept-unlock action text.",
+                "type": "string"
+              },
+              "unlockForceLabel": {
+                "description": "CL-1B badge (§6.4): force-unlock action text.",
+                "type": "string"
+              },
+              "unlockReleaseLabel": {
+                "description": "CL-1B badge (§6.4): release-lock action text.",
+                "type": "string"
+              },
+              "unlockRequestLabel": {
+                "description": "CL-2 live composition seam (§6.4): request-unlock action text.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "editorLabel",
+              "externalConflictLabel",
+              "placeholder",
+              "preservedBlockLabel"
+            ],
+            "type": "object"
+          },
+          "RichTextReadiness": {
+            "additionalProperties": false,
+            "properties": {
+              "composing": {
+                "description": "True while an IME composition is in progress in the editor.",
+                "type": "boolean"
+              },
+              "ready": {
+                "description": "True iff no composition is in progress and the last emitted document\nis the displayed revision. The host captures only when ready.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "composing",
+              "ready"
+            ],
+            "type": "object"
+          },
+          "RichTextRepresentability": {
+            "additionalProperties": false,
+            "properties": {
+              "nonRepresentableParagraphIds": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "nonRepresentableParagraphIds"
+            ],
+            "type": "object"
+          },
+          "RichTextUnsupportedPasteEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "clipboardFormats": {
+                "items": {
+                  "enum": [
+                    "text/plain",
+                    "text/html"
+                  ]
+                },
+                "type": "array"
+              },
+              "rejectedKinds": {
+                "description": "Non-paragraph block kinds the paste would have created, in clipboard\norder, deduplicated (e.g. \"table\", \"codeBlock\", \"heading\", \"list\",\n\"blockquote\", \"image\", \"horizontalRule\", \"rawHtml\").",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "clipboardFormats",
+              "rejectedKinds"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The local actor for this binding."
+          },
+          "binding": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FieldBindingIdentity"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Full binding identity of the live field, if any. Present ⇒ live\n(L2) surface: admission decides, the L0 lock snapshot below stays\ninformation only and never drives `editable` (R-API-2)."
+          },
+          "capabilities": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationCapabilities"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Badge derivation facts (B2 §5.1)."
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "lock": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/LockSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "L0 lock snapshot. Drives inertness only on controlled surfaces\n(holder held by another actor ⇒ read-only); information only when\n`binding` is present. An expired lock is passed as `null`."
+          },
+          "messages": {
+            "$ref": "#/$defs/RichTextMessages"
+          },
+          "presence": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresenceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Co-viewer presence snapshot (host-authoritative)."
+          },
+          "profile": {
+            "description": "Content profile (R-FULL-PROFILE-1): `p0` (default) or the CL-2F\n`full` profile. `full` requires `value.format` to be\n`ds.markdown.full@1`; a mismatch refuses the mount.",
+            "enum": [
+              "full",
+              "p0"
+            ]
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationProvider"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Injected collaboration provider. Accepted beside the editor; no\nprovider call happens in CL-2. Absent ⇒ controlled mode."
+          },
+          "value": {
+            "$ref": "#/$defs/RichTextDocument"
+          }
+        },
+        "required": [
+          "messages",
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "AwarenessCursor.anchor",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "AwarenessCursor.head",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "RetainedRunMetadata",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"list\",\"quote\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"paragraph\"}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"containerOrder\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"list\",\"quote\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"heading\"},\"headingLevel\":{\"enum\":[2,1,3,4,5,6]}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"containerOrder\",\"headingLevel\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"list\",\"quote\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"codeBlock\"},\"codeLanguage\":{\"type\":[\"string\",\"null\"]}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"codeLanguage\",\"containerOrder\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"list\",\"quote\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{}},\"additionalProperties\":false,\"required\":[\"blockquoteDepth\",\"containerOrder\",\"listDepth\",\"listKind\"]}]}",
+          "sourceType": "RetainedRunMetadata"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:6fe1d399ce5ce35ac10e428e010eed66c581444841a7b2e50fe326ead8c6858c",
+        "declarationPath": "packages/components-svelte/dist/rich-text-editor/RichTextEditor.svelte.d.ts",
+        "package": "@sentropic/design-system-svelte",
+        "propsType": "RichTextEditorProps",
+        "version": "0.40.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": []
+    },
+    "vue": {
+      "bindable": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.acceptUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.acquireLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<{ acquired: boolean; lock: LockSnapshot; }>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.applyAgentPatch",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(patch: AgentPatch) => Promise<AgentPatchReceipt>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.forceUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.getPatchReceipt",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(key: AgentPatchKey) => Promise<AgentPatchReceipt | null>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.leavePresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.openLiveSession",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { binding: Omit<FieldBindingIdentity, \"sessionId\"> & { sessionId?: string | undefined; }; actor: CollaborationActor; profileId: string; schemaEpoch: string; }) => Promise<...>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.publishAgentCursor",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { binding: FieldBindingIdentity; actorId: string; selection: { anchor: RelativeAnchor; head: RelativeAnchor; } | null; }) => Promise<...>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.readAgentState",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(request: AgentReadRequest) => Promise<AgentDocumentState>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.readAwareness",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(binding: FieldBindingIdentity) => Promise<PresenceSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.recordPresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string) => Promise<PresenceSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.refreshLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.releaseLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<void>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.requestUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef) => Promise<LockSnapshot>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.revertAgentPatch",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(input: { key: AgentPatchKey; requestedBy: string; reason?: string | undefined; }) => Promise<AgentPatchReceipt>"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.subscribeLock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(u: LockUnitRef, cb: (s: LockSnapshot) => void) => () => void"
+        },
+        {
+          "kind": "function",
+          "name": "CollaborationProvider.subscribePresence",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(scopeRef: string, cb: (s: PresenceSnapshot) => void) => () => void"
+        },
+        {
+          "kind": "function",
+          "name": "allocateId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => string"
+        },
+        {
+          "kind": "function",
+          "name": "onChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: RichTextChangeEvent) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onExternalConflict",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: RichTextExternalConflictEvent) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onLockChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(snapshot: LockSnapshot) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onPresenceChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(snapshot: PresenceSnapshot) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onReadinessChange",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: RichTextReadiness) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onRequestUnlock",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUnsupportedPaste",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: RichTextUnsupportedPasteEvent) => void"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "payload": {
+            "$ref": "#/$defs/RichTextChangeEvent"
+          }
+        },
+        {
+          "name": "externalConflict",
+          "payload": {
+            "$ref": "#/$defs/RichTextExternalConflictEvent"
+          }
+        },
+        {
+          "name": "lockChange",
+          "payload": {
+            "$ref": "#/$defs/LockSnapshot"
+          }
+        },
+        {
+          "name": "onChange",
+          "payload": {
+            "$ref": "#/$defs/RichTextChangeEvent"
+          }
+        },
+        {
+          "name": "onExternalConflict",
+          "payload": {
+            "$ref": "#/$defs/RichTextExternalConflictEvent"
+          }
+        },
+        {
+          "name": "onLockChange",
+          "payload": {
+            "$ref": "#/$defs/LockSnapshot"
+          }
+        },
+        {
+          "name": "onPresenceChange",
+          "payload": {
+            "$ref": "#/$defs/PresenceSnapshot"
+          }
+        },
+        {
+          "name": "onReadinessChange",
+          "payload": {
+            "$ref": "#/$defs/RichTextReadiness"
+          }
+        },
+        {
+          "name": "onRequestUnlock"
+        },
+        {
+          "name": "onUnsupportedPaste",
+          "payload": {
+            "$ref": "#/$defs/RichTextUnsupportedPasteEvent"
+          }
+        },
+        {
+          "name": "presenceChange",
+          "payload": {
+            "$ref": "#/$defs/PresenceSnapshot"
+          }
+        },
+        {
+          "name": "readinessChange",
+          "payload": {
+            "$ref": "#/$defs/RichTextReadiness"
+          }
+        },
+        {
+          "name": "requestUnlock"
+        },
+        {
+          "name": "unsupportedPaste",
+          "payload": {
+            "$ref": "#/$defs/RichTextUnsupportedPasteEvent"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "AwarenessCursor": {
+            "additionalProperties": false,
+            "properties": {
+              "anchor": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "head": {
+                "type": "string"
+              },
+              "paragraphId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "anchor",
+              "fieldKey",
+              "head",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "CollaborationActor": {
+            "additionalProperties": false,
+            "properties": {
+              "activity": {
+                "additionalProperties": false,
+                "properties": {
+                  "scopeRef": {
+                    "type": "string"
+                  },
+                  "since": {
+                    "type": "string"
+                  },
+                  "state": {
+                    "enum": [
+                      "viewing",
+                      "holding",
+                      "planned",
+                      "yielded"
+                    ]
+                  }
+                },
+                "required": [
+                  "scopeRef",
+                  "since",
+                  "state"
+                ],
+                "type": "object"
+              },
+              "actorId": {
+                "type": "string"
+              },
+              "color": {
+                "type": "string"
+              },
+              "cursor": {
+                "$ref": "#/$defs/AwarenessCursor",
+                "description": "Present iff the actor has published a caret (§5.6). Anchors, never offsets."
+              },
+              "displayLabel": {
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "human",
+                  "agent",
+                  "nhi"
+                ]
+              }
+            },
+            "required": [
+              "actorId",
+              "color",
+              "displayLabel",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "CollaborationCapabilities": {
+            "additionalProperties": false,
+            "properties": {
+              "canAcquire": {
+                "type": "boolean"
+              },
+              "canForceUnlock": {
+                "type": "boolean"
+              },
+              "canRequestUnlock": {
+                "type": "boolean"
+              },
+              "currentActorId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "canAcquire",
+              "canForceUnlock",
+              "canRequestUnlock",
+              "currentActorId"
+            ],
+            "type": "object"
+          },
+          "CollaborationProvider": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          },
+          "FieldBindingIdentity": {
+            "additionalProperties": false,
+            "properties": {
+              "documentId": {
+                "type": "string"
+              },
+              "fieldKey": {
+                "type": "string"
+              },
+              "sessionId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "documentId",
+              "fieldKey",
+              "sessionId"
+            ],
+            "type": "object"
+          },
+          "LockSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "expiresAt": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "holder": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "unit": {
+                "$ref": "#/$defs/LockUnitRef"
+              },
+              "unlockRequestedBy": {
+                "anyOf": [
+                  {
+                    "$ref": "#/$defs/CollaborationActor"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expiresAt",
+              "holder",
+              "unit"
+            ],
+            "type": "object"
+          },
+          "LockUnitRef": {
+            "additionalProperties": false,
+            "properties": {
+              "scopeRef": {
+                "type": "string"
+              },
+              "unitRef": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "scopeRef"
+            ],
+            "type": "object"
+          },
+          "PresenceSnapshot": {
+            "additionalProperties": false,
+            "properties": {
+              "actors": {
+                "description": "Co-viewers; current actor excluded by the host (B2 §5.1).",
+                "items": {
+                  "$ref": "#/$defs/CollaborationActor"
+                },
+                "type": "array"
+              },
+              "scopeRef": {
+                "type": "string"
+              },
+              "total": {
+                "description": "Count including the current actor (B2 §5.1; restored in r2).",
+                "type": "number"
+              }
+            },
+            "required": [
+              "actors",
+              "scopeRef",
+              "total"
+            ],
+            "type": "object"
+          },
+          "RetainedRunMetadata": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "paragraph"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "quote",
+                          "list"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "heading"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "quote",
+                          "list"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "headingLevel": {
+                      "enum": [
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6
+                      ]
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "headingLevel",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {
+                      "const": "codeBlock"
+                    },
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "codeLanguage": {
+                      "type": [
+                        "string",
+                        "null"
+                      ]
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "quote",
+                          "list"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockKind",
+                    "blockquoteDepth",
+                    "codeLanguage",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                },
+                {
+                  "additionalProperties": false,
+                  "properties": {
+                    "blockKind": {},
+                    "blockquoteDepth": {
+                      "type": "number"
+                    },
+                    "containerOrder": {
+                      "items": {
+                        "enum": [
+                          "quote",
+                          "list"
+                        ]
+                      },
+                      "type": "array"
+                    },
+                    "listDepth": {
+                      "type": "number"
+                    },
+                    "listItemId": {
+                      "type": "string"
+                    },
+                    "listKind": {
+                      "enum": [
+                        "none",
+                        "bullet",
+                        "ordered"
+                      ]
+                    },
+                    "listRunId": {
+                      "type": "string"
+                    },
+                    "listTight": {
+                      "type": "boolean"
+                    },
+                    "orderedStart": {
+                      "type": "number"
+                    },
+                    "orderedType": {
+                      "enum": [
+                        "1",
+                        "a",
+                        "A",
+                        "i",
+                        "I"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "blockquoteDepth",
+                    "containerOrder",
+                    "listDepth",
+                    "listKind"
+                  ],
+                  "type": "object"
+                }
+              ]
+            },
+            "properties": {},
+            "type": "object"
+          },
+          "RichTextBlock": {
+            "additionalProperties": false,
+            "properties": {
+              "hrMetadata": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "paragraph"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "heading"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "headingLevel": {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "headingLevel",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "codeBlock"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "codeLanguage": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "codeLanguage",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {},
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "description": "Full wrapper metadata of a horizontal-rule atom (spec R-FULL-HR-1).\nWrapper/grouping keys only; never `blockKind`, `headingLevel` or\n`codeLanguage`. Absent materializes the canonical defaults."
+              },
+              "kind": {
+                "enum": [
+                  "paragraph",
+                  "preserved",
+                  "horizontalRule"
+                ]
+              },
+              "metadata": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "paragraph"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "heading"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "headingLevel": {
+                        "enum": [
+                          1,
+                          2,
+                          3,
+                          4,
+                          5,
+                          6
+                        ]
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "headingLevel",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {
+                        "const": "codeBlock"
+                      },
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "codeLanguage": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockKind",
+                      "blockquoteDepth",
+                      "codeLanguage",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "blockKind": {},
+                      "blockquoteDepth": {
+                        "type": "number"
+                      },
+                      "containerOrder": {
+                        "items": {
+                          "enum": [
+                            "quote",
+                            "list"
+                          ]
+                        },
+                        "type": "array"
+                      },
+                      "listDepth": {
+                        "type": "number"
+                      },
+                      "listItemId": {
+                        "type": "string"
+                      },
+                      "listKind": {
+                        "enum": [
+                          "none",
+                          "bullet",
+                          "ordered"
+                        ]
+                      },
+                      "listRunId": {
+                        "type": "string"
+                      },
+                      "listTight": {
+                        "type": "boolean"
+                      },
+                      "orderedStart": {
+                        "type": "number"
+                      },
+                      "orderedType": {
+                        "enum": [
+                          "1",
+                          "a",
+                          "A",
+                          "i",
+                          "I"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "blockquoteDepth",
+                      "containerOrder",
+                      "listDepth",
+                      "listKind"
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "description": "Full text-block metadata (spec R-FULL-META-1). Present iff this block\nbelongs to a `ds.markdown.full@1` document and kind is \"paragraph\".\nAbsent materializes the canonical plain defaults on capture."
+              },
+              "paragraphId": {
+                "description": "Opaque per-block identity, host-supplied. See spec §5.2.",
+                "type": "string"
+              },
+              "preservedKind": {
+                "description": "Preserved block kind as segmented host-side (e.g. \"heading\",\n\"list\", \"table\", \"codeBlock\", \"diagram\"). Display only.",
+                "type": "string"
+              },
+              "raw": {
+                "description": "Verbatim source slice of a preserved block. Present iff\nkind === \"preserved\". Never edited, never reserialised.",
+                "type": "string"
+              },
+              "segments": {
+                "description": "Ordered inline runs of a full text block (spec §4.3.2). Present iff\nthis block belongs to a `ds.markdown.full@1` document and kind is\n\"paragraph\". Code lines are `hardBreak` segments per R-FULL-CODE-1.",
+                "items": {
+                  "anyOf": [
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "marks": {
+                          "$ref": "#/$defs/RichTextInlineMarks"
+                        },
+                        "text": {
+                          "type": "string"
+                        },
+                        "type": {
+                          "const": "text"
+                        }
+                      },
+                      "required": [
+                        "marks",
+                        "text",
+                        "type"
+                      ],
+                      "type": "object"
+                    },
+                    {
+                      "additionalProperties": false,
+                      "properties": {
+                        "type": {
+                          "const": "hardBreak"
+                        }
+                      },
+                      "required": [
+                        "type"
+                      ],
+                      "type": "object"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "text": {
+                "description": "Editable paragraph text (Markdown inline source for\n`focus.markdown.p0@1`, literal text for `text/plain`).\nPresent iff kind === \"paragraph\" on a P0 document. Full text blocks\ncarry `segments`/`metadata` instead and never use this field.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "paragraphId"
+            ],
+            "type": "object"
+          },
+          "RichTextChangeEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "document": {
+                "$ref": "#/$defs/RichTextDocument",
+                "description": "The complete new controlled value. The only content the component emits."
+              },
+              "gesture": {
+                "$ref": "#/$defs/RichTextGesture",
+                "description": "Provenance of the single completed gesture that produced `document`."
+              },
+              "representability": {
+                "$ref": "#/$defs/RichTextRepresentability",
+                "description": "Paragraphs of `document` whose wire is non-representable (§6.6)."
+              }
+            },
+            "required": [
+              "document",
+              "gesture",
+              "representability"
+            ],
+            "type": "object"
+          },
+          "RichTextDocument": {
+            "additionalProperties": false,
+            "properties": {
+              "blocks": {
+                "items": {
+                  "$ref": "#/$defs/RichTextBlock"
+                },
+                "type": "array"
+              },
+              "format": {
+                "enum": [
+                  "focus.markdown.p0@1",
+                  "text/plain",
+                  "ds.markdown.full@1"
+                ]
+              },
+              "retainedRunMetadata": {
+                "$ref": "#/$defs/RetainedRunMetadata",
+                "description": "Full-profile only (`ds.markdown.full@1`): the §4.3.2 run-source\nretention map. Absent (or empty) when every referenced run source is\nlive on its own block; present entries survive capture, copy and\nremount so promotion never transfers run ownership."
+              }
+            },
+            "required": [
+              "blocks",
+              "format"
+            ],
+            "type": "object"
+          },
+          "RichTextExternalConflictEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "incoming": {
+                "$ref": "#/$defs/RichTextDocument"
+              },
+              "local": {
+                "$ref": "#/$defs/RichTextDocument"
+              }
+            },
+            "required": [
+              "incoming",
+              "local"
+            ],
+            "type": "object"
+          },
+          "RichTextGesture": {
+            "additionalProperties": false,
+            "properties": {
+              "affectedParagraphIds": {
+                "description": "Ordered `paragraphId` values of the blocks the gesture touched,\nin resulting document order.",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "gestureId": {
+                "description": "Opaque identifier of this completed gesture, allocated by the component.",
+                "type": "string"
+              },
+              "kind": {
+                "enum": [
+                  "type",
+                  "delete",
+                  "split",
+                  "merge",
+                  "paste",
+                  "undo",
+                  "redo",
+                  "composition-commit"
+                ]
+              },
+              "merge": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"merge\": the surviving identity and the identities\nconsumed by the merge, which the component never reallocates.",
+                "properties": {
+                  "retiredParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "survivingParagraphId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "retiredParagraphIds",
+                  "survivingParagraphId"
+                ],
+                "type": "object"
+              },
+              "paste": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"paste\": the freshly allocated identities of the\ninserted blocks and whether the paste entered from inside this editor\nsession or from outside it.",
+                "properties": {
+                  "insertedParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "origin": {
+                    "enum": [
+                      "external",
+                      "internal"
+                    ]
+                  }
+                },
+                "required": [
+                  "insertedParagraphIds",
+                  "origin"
+                ],
+                "type": "object"
+              },
+              "split": {
+                "additionalProperties": false,
+                "description": "Present iff kind === \"split\": the block that was split and the fresh\nidentities allocated for the tail blocks, in document order.",
+                "properties": {
+                  "newParagraphIds": {
+                    "items": {
+                      "type": "string"
+                    },
+                    "type": "array"
+                  },
+                  "sourceParagraphId": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "newParagraphIds",
+                  "sourceParagraphId"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "affectedParagraphIds",
+              "gestureId",
+              "kind"
+            ],
+            "type": "object"
+          },
+          "RichTextInlineMarks": {
+            "additionalProperties": false,
+            "properties": {
+              "bold": {
+                "const": true
+              },
+              "code": {
+                "const": true
+              },
+              "italic": {
+                "const": true
+              },
+              "link": {
+                "type": "string"
+              },
+              "linkTitle": {
+                "type": "string"
+              },
+              "strike": {
+                "const": true
+              },
+              "underline": {
+                "const": true
+              }
+            },
+            "type": "object"
+          },
+          "RichTextMessages": {
+            "additionalProperties": false,
+            "properties": {
+              "editorLabel": {
+                "type": "string"
+              },
+              "externalConflictLabel": {
+                "type": "string"
+              },
+              "lockLabel": {
+                "description": "CL-2 live composition seam (§6.4): lock summary template, \"{holder}\"\ninterpolated with the holder display label.",
+                "type": "string"
+              },
+              "noLockLabel": {
+                "description": "CL-2 live composition seam (§6.4): no-lock summary text.",
+                "type": "string"
+              },
+              "placeholder": {
+                "type": "string"
+              },
+              "presenceLabel": {
+                "description": "CL-2 live composition seam (§6.4): presence summary template,\n\"{count}\" interpolated with the co-viewer total. Optional: a missing\nkey renders the `⟦untranslated:collab.presenceLabel⟧` marker.",
+                "type": "string"
+              },
+              "preservedBlockLabel": {
+                "type": "string"
+              },
+              "requesterKeyLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the requester key overlay,\n\"{label}\" interpolated with the requester display label.",
+                "type": "string"
+              },
+              "rosterLabel": {
+                "description": "CL-1B badge (§6.4): accessible label of the avatar roster.",
+                "type": "string"
+              },
+              "tooltipLockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked, \"{holder}\"\ninterpolated with the holder display label. Carries the request\nwording; the read-only variant omits it.",
+                "type": "string"
+              },
+              "tooltipLockedReadOnlyLabel": {
+                "description": "CL-1B badge (§6.4): tooltip template when locked in read-only mode,\n\"{holder}\" interpolated. Omits the request wording.",
+                "type": "string"
+              },
+              "tooltipUnlockedLabel": {
+                "description": "CL-1B badge (§6.4): tooltip text when no lock is active.",
+                "type": "string"
+              },
+              "unlockAcceptLabel": {
+                "description": "CL-1B badge (§6.4): accept-unlock action text.",
+                "type": "string"
+              },
+              "unlockForceLabel": {
+                "description": "CL-1B badge (§6.4): force-unlock action text.",
+                "type": "string"
+              },
+              "unlockReleaseLabel": {
+                "description": "CL-1B badge (§6.4): release-lock action text.",
+                "type": "string"
+              },
+              "unlockRequestLabel": {
+                "description": "CL-2 live composition seam (§6.4): request-unlock action text.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "editorLabel",
+              "externalConflictLabel",
+              "placeholder",
+              "preservedBlockLabel"
+            ],
+            "type": "object"
+          },
+          "RichTextReadiness": {
+            "additionalProperties": false,
+            "properties": {
+              "composing": {
+                "description": "True while an IME composition is in progress in the editor.",
+                "type": "boolean"
+              },
+              "ready": {
+                "description": "True iff no composition is in progress and the last emitted document\nis the displayed revision. The host captures only when ready.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "composing",
+              "ready"
+            ],
+            "type": "object"
+          },
+          "RichTextRepresentability": {
+            "additionalProperties": false,
+            "properties": {
+              "nonRepresentableParagraphIds": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "nonRepresentableParagraphIds"
+            ],
+            "type": "object"
+          },
+          "RichTextUnsupportedPasteEvent": {
+            "additionalProperties": false,
+            "properties": {
+              "clipboardFormats": {
+                "items": {
+                  "enum": [
+                    "text/plain",
+                    "text/html"
+                  ]
+                },
+                "type": "array"
+              },
+              "rejectedKinds": {
+                "description": "Non-paragraph block kinds the paste would have created, in clipboard\norder, deduplicated (e.g. \"table\", \"codeBlock\", \"heading\", \"list\",\n\"blockquote\", \"image\", \"horizontalRule\", \"rawHtml\").",
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "clipboardFormats",
+              "rejectedKinds"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "actor": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationActor"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The local actor for this binding."
+          },
+          "binding": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/FieldBindingIdentity"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Full binding identity of the live field, if any. Present ⇒ live\n(L2) surface: admission decides, the L0 lock snapshot below stays\ninformation only and never drives `editable` (R-API-2)."
+          },
+          "capabilities": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationCapabilities"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Badge derivation facts (B2 §5.1)."
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "editable": {
+            "type": "boolean"
+          },
+          "lock": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/LockSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "L0 lock snapshot. Drives inertness only on controlled surfaces\n(holder held by another actor ⇒ read-only); information only when\n`binding` is present. An expired lock is passed as `null`."
+          },
+          "messages": {
+            "$ref": "#/$defs/RichTextMessages"
+          },
+          "presence": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/PresenceSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Co-viewer presence snapshot (host-authoritative)."
+          },
+          "profile": {
+            "description": "Content profile (R-FULL-PROFILE-1): `p0` (default) or the CL-2F\n`full` profile. `full` requires `value.format` to be\n`ds.markdown.full@1`; a mismatch refuses the mount.",
+            "enum": [
+              "p0",
+              "full"
+            ]
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/CollaborationProvider"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Injected collaboration provider. Accepted beside the editor; no\nprovider call happens in CL-2. Absent ⇒ controlled mode."
+          },
+          "value": {
+            "$ref": "#/$defs/RichTextDocument"
+          }
+        },
+        "required": [
+          "messages",
+          "value"
+        ],
+        "type": "object"
+      },
+      "replaced": [
+        {
+          "name": "AwarenessCursor.anchor",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "AwarenessCursor.head",
+          "reason": "primitive intersection constraints (including brands) are not represented in JSON",
+          "replacement": "{\"type\":\"string\"}",
+          "sourceType": "RelativeAnchor"
+        },
+        {
+          "name": "RetainedRunMetadata",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"quote\",\"list\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"paragraph\"}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"containerOrder\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"quote\",\"list\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"heading\"},\"headingLevel\":{\"enum\":[1,2,3,4,5,6]}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"containerOrder\",\"headingLevel\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"quote\",\"list\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{\"const\":\"codeBlock\"},\"codeLanguage\":{\"type\":[\"string\",\"null\"]}},\"additionalProperties\":false,\"required\":[\"blockKind\",\"blockquoteDepth\",\"codeLanguage\",\"containerOrder\",\"listDepth\",\"listKind\"]},{\"type\":\"object\",\"properties\":{\"blockquoteDepth\":{\"type\":\"number\"},\"containerOrder\":{\"type\":\"array\",\"items\":{\"enum\":[\"quote\",\"list\"]}},\"listDepth\":{\"type\":\"number\"},\"listItemId\":{\"type\":\"string\"},\"listKind\":{\"enum\":[\"none\",\"bullet\",\"ordered\"]},\"listRunId\":{\"type\":\"string\"},\"listTight\":{\"type\":\"boolean\"},\"orderedStart\":{\"type\":\"number\"},\"orderedType\":{\"enum\":[\"1\",\"a\",\"A\",\"i\",\"I\"]},\"blockKind\":{}},\"additionalProperties\":false,\"required\":[\"blockquoteDepth\",\"containerOrder\",\"listDepth\",\"listKind\"]}]}",
+          "sourceType": "RetainedRunMetadata"
+        }
+      ],
+      "slots": [],
+      "source": {
+        "declarationDigest": "sha256:695ee75b55421f71264e0115a06c13cfd5b1ea4ec5ad86703913d3d836a5a065",
+        "declarationPath": "packages/components-vue/dist/rich-text-editor/RichTextEditor.vue.d.ts",
+        "package": "@sentropic/design-system-vue",
+        "propsType": "RichTextEditorProps",
+        "version": "0.41.0-next.0"
+      },
+      "status": "partial",
+      "unresolved": [],
+      "warnings": [
+        "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"externalConflict\" and prop \"onExternalConflict\" both listed verbatim",
+        "event pair: emits \"lockChange\" and prop \"onLockChange\" both listed verbatim",
+        "event pair: emits \"presenceChange\" and prop \"onPresenceChange\" both listed verbatim",
+        "event pair: emits \"readinessChange\" and prop \"onReadinessChange\" both listed verbatim",
+        "event pair: emits \"requestUnlock\" and prop \"onRequestUnlock\" both listed verbatim",
+        "event pair: emits \"unsupportedPaste\" and prop \"onUnsupportedPaste\" both listed verbatim"
+      ]
+    }
+  },
+  "producerId": "sentropic-ds"
+}
