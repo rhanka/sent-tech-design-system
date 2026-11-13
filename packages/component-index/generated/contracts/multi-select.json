@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:93fdb2237f81664972a4dcf7b380f1fbaa7ae1f8ddb43077714e83e724033e1f",
-  "entryDigest": "sha256:14213587c41fc6dcca49cf66424e63b315ee0bfb4423984e40a9114ca6853cf9",
+  "digest": "sha256:7795000b8d9782d3d6ca5b140763be9f4c7eabd8e490e6cbe06afcfd27f89a8a",
+  "entryDigest": "sha256:a6d5b3f146415e18112cf0888f62b1635949128f9c0924fd7da9778476268392",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -647,7 +647,7 @@
         "declarationPath": "packages/components-vue/dist/MultiSelect.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MultiSelectProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.1"
       },
       "status": "partial",
       "unresolved": [],
