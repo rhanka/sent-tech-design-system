@@ -67,8 +67,8 @@ export type {
 } from "./InlineLoading.vue";
 export { default as Input } from "./Input.vue";
 export type { InputProps, InputSize } from "./Input.vue";
-export { LanguageSelector } from "./LanguageSelector.js";
-export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
+export { default as LanguageSelector } from "./LanguageSelector.vue";
+export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.vue";
 export { Link } from "./Link.js";
 export type { LinkProps } from "./Link.js";
 export { LoadingState } from "./LoadingState.js";
