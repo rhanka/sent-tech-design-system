@@ -470,8 +470,8 @@ export { Grid, gridTemplateColumns } from "./Grid.js";
 export type { GridProps } from "./Grid.js";
 export { Hidden } from "./Hidden.js";
 export type { HiddenProps, HiddenBreakpoint } from "./Hidden.js";
-export { Divider } from "./Divider.js";
-export type { DividerProps, DividerOrientation, DividerVariant } from "./Divider.js";
+export { default as Divider } from './Divider.vue';
+export type { DividerProps, DividerOrientation, DividerVariant } from './Divider.vue';
 export { deriveInitials } from "./Header.js";
 
 export { Avatar } from "./Avatar.js";
