@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:eb40b3d16e979da26f66422fe9f4634cc7ab4a9a265039cd1c780f1c452aee97",
-  "entryDigest": "sha256:9fab4c06eadcf25b1038629433df7f82fb0ea0427106686fe43eeb5fdd8adecd",
+  "digest": "sha256:088cefda8fd1dff0975896da70725a5e27840ae372e2e5df1f8a503afefa9a51",
+  "entryDigest": "sha256:2f9dde737bf408bc24ab6036fa1bba80d385afcfc1d1c438e06d7bbe548d084f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/TimePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "stack",
   "contractSource": "derived",
-  "digest": "sha256:8ec10741bcbc30113d953bad2be8ccbfa9a9dac03d7472bdc24911b3b4530757",
-  "entryDigest": "sha256:7fcefbd15609c93d1be10247b840fce9d2168cd6a26ca9e65381408a56675a62",
+  "digest": "sha256:a2637cc27324f0d5494ae17657d8e206e7b9b03692f011d8eaeb698b860bbc2e",
+  "entryDigest": "sha256:e3308d75b9010e9c82c261ce349dff697d4da2f2dd5901344198f24bcfe46f10",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Stack.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

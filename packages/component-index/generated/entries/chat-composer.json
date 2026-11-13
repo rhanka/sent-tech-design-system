@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ChatComposer.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Composer with action slots and send/stop handling.",
     "fr": "Barre de rédaction avec slots d’actions et envoi/arrêt."
   },
-  "digest": "sha256:8472ea4d77a8960e995775384a0480a08c26827d65c6824eeda7befd3e54e28f",
+  "digest": "sha256:2ddeaf37a3fff95aba5793c5e452709cc2370f9f9b3378d93bc12a1bc9e7d78c",
   "displayName": "ChatComposer",
   "format": "component-entry/v1",
   "frameworks": [

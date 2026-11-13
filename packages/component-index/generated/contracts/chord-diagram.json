@@ -1,8 +1,8 @@
 {
   "componentId": "chord-diagram",
   "contractSource": "derived",
-  "digest": "sha256:e09301d9fd480995baa729e8184e3a6954cd86748999fa2373810b033763fb49",
-  "entryDigest": "sha256:ac615546e0d5a11c8938bd67c3fe53586fae11e06f78493199a39615e7109f99",
+  "digest": "sha256:01475d41104996795ae842162c2a6389b86f3b138adbf7fb39edcddb965836a7",
+  "entryDigest": "sha256:6320bdcd85e2f9f6cd440c547da5e6db094371b06ad5e2e89df0ff56408e30f5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ChordDiagram.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChordDiagramProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:183f7f92686709fc686c71c97c1af286ae91dd1d47022812150ba9f75c3325f4",
-  "entryDigest": "sha256:d9b4770bf35f6aae9e72b199e3225c888162f50ee8bd7fb59ba2db41c338be54",
+  "digest": "sha256:30ac22a33b949b17f4f160663279156623829fe740d3781f9951e16c6017b210",
+  "entryDigest": "sha256:578b6a1a2b70c089ffcdc1f7f7c450b2b1036687bb7ae095442f4d7a8c72d98c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -178,7 +178,7 @@
         "declarationPath": "packages/components-svelte/dist/Toggletip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToggletipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
