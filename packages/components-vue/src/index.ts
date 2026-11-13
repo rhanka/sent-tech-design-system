@@ -305,8 +305,8 @@ export type {
 } from "./WaffleChart.js";
 export { ColorSwatch } from "./ColorSwatch.js";
 export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
-export { ColorScaleBar } from "./ColorScaleBar.js";
-export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.js";
+export { default as ColorScaleBar } from "./ColorScaleBar.vue";
+export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.vue";
 export { Timeline } from "./Timeline.js";
 export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.js";
 export { RibbonChart } from "./RibbonChart.js";
