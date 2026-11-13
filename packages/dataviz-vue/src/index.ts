@@ -240,8 +240,8 @@ export {
   DEFAULT_RELATIVE_PRESETS,
 } from './lib/RelativeDateFilter.js';
 export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
-export { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.js';
-export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.js';
+export { default as RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.vue';
+export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.vue';
 export { ChartExport } from './lib/ChartExport.js';
 export type { ChartExportProps, ChartExportTarget } from './lib/ChartExport.js';
 export {
