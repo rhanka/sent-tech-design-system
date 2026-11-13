@@ -123,7 +123,6 @@
   "packages/components-vue/src/NumberInput.ts",
   "packages/components-vue/src/OHLCChart.ts",
   "packages/components-vue/src/ObjectPage.ts",
-  "packages/components-vue/src/OrderedList.ts",
   "packages/components-vue/src/OrganizationChart.ts",
   "packages/components-vue/src/Overline.ts",
   "packages/components-vue/src/PackedBubblesChart.ts",
