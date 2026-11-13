@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Stepper",
+  "sourceRevision": "4963c16432a4f9f458d4d51e58143a184bba94e4",
+  "source": "src/Stepper.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<ol aria-label=\"Progression\" class=\"st-stepper st-stepper--horizontal\"><li class=\"st-stepper__step st-stepper__step--complete\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><svg aria-hidden=\"true\" class=\"lucide lucide-check-icon lucide-check\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 6 9 17l-5-5\"></path></svg></span><span class=\"st-stepper__connector\"></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">One</span></span></li><li aria-current=\"step\" class=\"st-stepper__step st-stepper__step--current\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><span class=\"st-stepper__index\">2</span></span><span class=\"st-stepper__connector\"></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">Two</span></span></li><li class=\"st-stepper__step st-stepper__step--upcoming\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><span class=\"st-stepper__index\">3</span></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">Three</span></span></li></ol>"
+    },
+    {
+      "id": "vertical-clickable",
+      "html": "<ol aria-label=\"Steps\" class=\"st-stepper st-stepper--vertical\"><li aria-current=\"step\" class=\"st-stepper__step st-stepper__step--current\"><span class=\"st-stepper__indicator\"><button aria-label=\"A\" class=\"st-stepper__circle st-stepper__circle--button\" type=\"button\"><span class=\"st-stepper__index\">1</span></button><span class=\"st-stepper__connector\"></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">A</span><span class=\"st-stepper__description\">First</span></span></li><li class=\"st-stepper__step st-stepper__step--upcoming\"><span class=\"st-stepper__indicator\"><button aria-label=\"B\" class=\"st-stepper__circle st-stepper__circle--button\" type=\"button\"><span class=\"st-stepper__index\">2</span></button></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">B</span></span></li></ol>"
+    },
+    {
+      "id": "empty",
+      "html": "<ol aria-label=\"Progression\" class=\"st-stepper st-stepper--horizontal\"></ol>"
+    },
+    {
+      "id": "custom",
+      "html": "<ol aria-label=\"Progression\" class=\"st-stepper st-stepper--horizontal consumer\" data-bench=\"stepper\" style=\"color:red;\"><li aria-current=\"step\" class=\"st-stepper__step st-stepper__step--current\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><span class=\"st-stepper__index\">1</span></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">Solo</span><span class=\"st-stepper__description\">Only</span></span></li></ol>"
+    },
+    {
+      "id": "complete",
+      "html": "<ol aria-label=\"Progression\" class=\"st-stepper st-stepper--horizontal\"><li class=\"st-stepper__step st-stepper__step--complete\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><svg aria-hidden=\"true\" class=\"lucide lucide-check-icon lucide-check\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 6 9 17l-5-5\"></path></svg></span><span class=\"st-stepper__connector\"></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">A</span></span></li><li class=\"st-stepper__step st-stepper__step--complete\"><span class=\"st-stepper__indicator\"><span class=\"st-stepper__circle\"><svg aria-hidden=\"true\" class=\"lucide lucide-check-icon lucide-check\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 6 9 17l-5-5\"></path></svg></span></span><span class=\"st-stepper__text\"><span class=\"st-stepper__label\">B</span></span></li></ol>"
+    }
+  ],
+  "sourceSha256": "5e87da346811b154ef9354c1131efc376951a1c5e09fbf32d779eaafe7e07fb2",
+  "fixtureSha256": "92dee5a526708bb5bc042e6208bb8e4e688bc94b951d66924338f5b0466fb523",
+  "publicExports": [
+    {
+      "name": "Stepper",
+      "typeOnly": false
+    },
+    {
+      "name": "StepperProps",
+      "typeOnly": true
+    },
+    {
+      "name": "StepperStep",
+      "typeOnly": true
+    },
+    {
+      "name": "StepperOrientation",
+      "typeOnly": true
+    }
+  ]
+}
