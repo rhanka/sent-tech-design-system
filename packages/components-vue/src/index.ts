@@ -386,8 +386,8 @@ export type {
   TreegraphChartNode,
   TreegraphChartTone,
 } from "./TreegraphChart.js";
-export { DashboardGrid } from "./DashboardGrid.js";
-export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.js";
+export { default as DashboardGrid } from "./DashboardGrid.vue";
+export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.vue";
 export { HeatmapChart } from "./HeatmapChart.js";
 export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.js";
 export { HistogramChart } from "./HistogramChart.js";
