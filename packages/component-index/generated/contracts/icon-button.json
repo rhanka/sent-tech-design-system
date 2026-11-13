@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:198975645bc984ba96dce8976acb5b9bc62055134e004d16eb7b1070fcb49464",
-  "entryDigest": "sha256:56f1a9b29f0cc892ef5e5ca5a20286c7fb5643b3a47eb28eb38fe065f71f1d94",
+  "digest": "sha256:5b23472978c81db301dca943eb54a751802d5a1d08f4f9b39aa2d8f1a4215979",
+  "entryDigest": "sha256:e48ce5b918902658a9cc39fc82a779810dfd4a321d7658c7741322e8c5ca6cf1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-svelte/dist/IconButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

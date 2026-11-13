@@ -81,6 +81,7 @@ export const CARD_GEOMETRY = {
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
  * gap cap; at the 0.45 readability floor it renders at 8.1 CSS px.
  */
+export const FLOW_BADGE_GEOMETRY = { size: 16, lineHeight: 20 } as const;
 export const EDGE_LABEL_GEOMETRY = { size: 18, weight: 400, lineHeight: 22 } as const;
 
 /** Line box height for a size at 1.3, on the 1/64 px grid. */
@@ -552,7 +553,7 @@ export function defaultCardMeasure(
  */
 export interface CardMeasureRequest {
   readonly text: string;
-  readonly role: "kicker" | "title" | "body" | "footer" | "subtitle" | "detail" | "legend-label" | "edge-label";
+  readonly role: "kicker" | "title" | "body" | "footer" | "subtitle" | "detail" | "legend-label" | "edge-label" | "flow-badge";
   readonly availableWidth: number;
   readonly allocatedLines: number;
   readonly folded?: boolean;
@@ -565,6 +566,8 @@ export interface CardLineLayout {
   readonly height: number;
   readonly overflow: boolean;
 }
+
+export const DEFAULT_CARD_MEASURER_VERSION = "pinned-kit-1px";
 
 /**
  * Bridge from the card measurer to the canvas `LineMeasurer` shape: a host
@@ -583,20 +586,22 @@ export interface CardLineLayout {
  */
 export function cardLineMeasurer(
   measure: CardLineMeasure = defaultCardMeasure,
-): (request: CardMeasureRequest) => CardLineLayout {
-  return (request) => {
+): ((request: CardMeasureRequest) => CardLineLayout) & { readonly version?: string } {
+  const measureLines = (request: CardMeasureRequest): CardLineLayout => {
     const role: "kicker" | "title" | "body" | "footer" =
       request.role === "kicker" || request.role === "title" || request.role === "footer"
         ? request.role
         : "body";
-    if (request.role === "edge-label") {
-      const scale = EDGE_LABEL_GEOMETRY.size / CARD_GEOMETRY.body.size;
+    if (request.role === "edge-label" || request.role === "flow-badge") {
+      const labelSize = request.role === "flow-badge" ? FLOW_BADGE_GEOMETRY.size : EDGE_LABEL_GEOMETRY.size;
+      const labelHeight = request.role === "flow-badge" ? FLOW_BADGE_GEOMETRY.lineHeight : EDGE_LABEL_GEOMETRY.lineHeight;
+      const scale = labelSize / CARD_GEOMETRY.body.size;
       const label = measure(request.text, "body", request.availableWidth / scale, request.allocatedLines);
       return {
         lines: label.lines,
         width:
           label.lineWidths === undefined ? request.availableWidth : Math.max(0, ...label.lineWidths) * scale,
-        height: label.lines.length * EDGE_LABEL_GEOMETRY.lineHeight,
+        height: label.lines.length * labelHeight,
         overflow: label.tooWide || label.lines.length > request.allocatedLines,
       };
     }
@@ -618,6 +623,7 @@ export function cardLineMeasurer(
       overflow: measured.tooWide || measured.lines.length > request.allocatedLines,
     };
   };
+  return Object.assign(measureLines, { version: DEFAULT_CARD_MEASURER_VERSION });
 }
 
 export interface LaidOutLine {

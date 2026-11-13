@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:7f69dba57e36dfc5d4d5bb7e2034320c03fe661a6943e3702d71b569eab0d039",
-  "entryDigest": "sha256:78e1d90a11bf01653a3236b3d37568b3d118360fc69c1605d46fb2b00d9dedfd",
+  "digest": "sha256:4cd9e01dc163665cfbcb4f6a599203ef190c0ea93bff54edb2e3dfa39e57f0bc",
+  "entryDigest": "sha256:6c7ada6754f0ba76b79548db77ccacb797daac8ae4a78226c68f25eb5cabb431",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressBarProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

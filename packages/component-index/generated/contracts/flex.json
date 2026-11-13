@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:08ab04d20aee7f7226ff82369f0232989b6a3ed3d3800f82a27095313dcc3914",
-  "entryDigest": "sha256:6f2475540be0b2d9bb5e589674b78046bda53b7e8eb2e07d38c610b7e3052374",
+  "digest": "sha256:a97e63ebf9356d28e8d1a1d9fb4336b4b4aa7e735916a82c55d1fccff4641d23",
+  "entryDigest": "sha256:fb60543b6f9ff13783112fd7c413e7872bf182aa206616e53b409b2e0e8aa176",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -225,7 +225,7 @@
         "declarationPath": "packages/components-svelte/dist/Flex.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlexProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -6,5 +6,11 @@
     "types": ["svelte", "vitest/globals", "node"]
   },
   "include": ["src/**/*.ts", "src/**/*.svelte"],
-  "exclude": ["src/lib/diagram-card-parity", "src/lib/diagram-zone-parity"]
+  "exclude": [
+    "src/lib/diagram-card-parity",
+    "src/lib/diagram-zone-parity",
+    "src/lib/DiagramSceneFigure.flow-parity.test.ts",
+    "src/lib/DiagramSceneFigure.flows.test.ts",
+    "src/lib/DiagramSceneFigure.ssr.test.ts"
+  ]
 }
