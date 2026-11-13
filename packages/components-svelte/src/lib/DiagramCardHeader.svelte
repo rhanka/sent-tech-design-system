@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
   import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import IconButton from "./IconButton.svelte";
   import { Minus, Plus } from "@lucide/svelte";
@@ -93,10 +94,10 @@
   {/if}
   <div class="st-diagramCardHeader-text" style={`width:${headerTextWidth}px`}>
     {#each kicker as line, kickerIndex (kickerIndex)}
-      <span class="st-diagramCard-kicker">{line.text}</span>
+      <span class="st-diagramCard-kicker" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
     {#each title as line, titleIndex (titleIndex)}
-      <span class="st-diagramCard-title">{line.text}</span>
+      <span class="st-diagramCard-title" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
   </div>
   {#if toggle !== undefined}

@@ -1042,11 +1042,15 @@ export function layoutMeasured(
     }
     for (const id of headerIds) {
       const size = packedSizes.get(id);
-      if (!isStretchedBox(id) && size !== undefined && size.height > FIXED_CARD_HEIGHT) {
-        warnings.push({ code: "card-grown", refs: [representativeOf(id)],
-          message: `card grew from ${FIXED_CARD_HEIGHT} to ${size.height} px to contain its measured content` });
-      }
-      for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
+      const occurrence = representativeOf(id);
+      if (presentation.entities[occurrence] !== undefined && size !== undefined) {
+        for (const diagnostic of sceneBoxAt(occurrence, size.width, isCollapsed(id)).diagnostics) {
+          if (diagnostic.reason !== "truncated") continue;
+          warnings.push({ code: kinds.get(id) === "leaf" ? "card-overflow" : "zone-overflow", severity: "info",
+            refs: [occurrence, diagnostic.slot], message: "truncated " + diagnostic.slot + ": " + diagnostic.hiddenLength + " hidden characters; full text in title/aria",
+            details: { slot: diagnostic.slot, reason: "truncated", hiddenLength: diagnostic.hiddenLength!, neededHeight: diagnostic.neededPx, allocatedHeight: diagnostic.allocatedPx } });
+        }
+      } else for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
         warnOverflow(overflow, kinds.get(id) !== "leaf");
       }
     }
@@ -1055,6 +1059,7 @@ export function layoutMeasured(
     // with zero chrome and the same token gaps — never `rankGap` (§3.5).
     const rects = new Map<EntityRef, Rect>();
     const titleBands = new Map<EntityRef, Rect>();
+    const footerBands = new Map<EntityRef, Rect>();
     const legendInner = new Map<EntityRef, number>();
     const seatedBoxes = new Map<string, Rect[]>();
     const seatRun = (run: Run, originX: number, originY: number): void => {
@@ -1086,6 +1091,11 @@ export function layoutMeasured(
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
       titleBands.set(id, { x, y, width: size.width, height: ZONE_GEOMETRY.headerInset + header.height });
+      const footerReserve = sceneBoxAt(representativeOf(id), size.width, false).footerReserve;
+      if (footerReserve > 0) footerBands.set(id, {
+        x, y: y + size.height - footerReserve - ZONE_GEOMETRY.borderWidth,
+        width: size.width, height: footerReserve + ZONE_GEOMETRY.borderWidth,
+      });
       const contentX = x + contentInset;
       const contentY = y + ZONE_GEOMETRY.headerInset + header.height + contentInset;
       if (kind === "legend-expanded") {
@@ -1124,7 +1134,7 @@ export function layoutMeasured(
         );
         return;
       }
-      if (layout.overflow) {
+      if (layout.overflow && (role === "edge-label" || presentation.entities[occurrence] === undefined)) {
         const allocatedLines = DEFAULT_ALLOCATED_LINES[role];
         warnOverflow(
           {
@@ -1190,10 +1200,13 @@ export function layoutMeasured(
     // collapsed boxes, legend keys and the title bands, plus every expanded
     // zone the edge has no end in. The interior of the zones an edge starts
     // or ends in is free (BF-6): a label may sit inside its own zone.
-    const fixedShapes: Rect[] = [
+    const routeShapes: Rect[] = [
       ...[...rects].filter(([id]) => !isStretchedBox(id)).map(([, rect]) => rect),
       ...titleBands.values(),
     ];
+    // Footer bands constrain text placement. Routes may cross a zone's
+    // footer while leaving it; a label on that route still has to clear it.
+    const fixedShapes: Rect[] = [...routeShapes, ...footerBands.values()];
     const zoneShapes = [...rects].filter(([id]) => isStretchedBox(id));
     const shapesByEdge = new Map<RelationRef, Rect[]>();
     for (const edge of drawnEdges) {
@@ -1202,11 +1215,11 @@ export function layoutMeasured(
         for (let current = placementParentOf(end); current !== undefined; current = placementParentOf(current)) own.add(current);
       }
       shapesByEdge.set(edge.occurrence as unknown as RelationRef, [
-        ...fixedShapes,
+        ...routeShapes,
         ...zoneShapes.filter(([id]) => !own.has(id)).map(([, rect]) => rect),
       ]);
     }
-    const shapesOf = (id: RelationRef): readonly Rect[] => shapesByEdge.get(id) ?? fixedShapes;
+    const shapesOf = (id: RelationRef): readonly Rect[] => shapesByEdge.get(id) ?? routeShapes;
     /** BF-3 `inner(C)`: the routable interior of an expanded container (BLK-3). */
     const innerOf = (container: EntityRef): Rect | undefined => {
       const rect = rects.get(container);

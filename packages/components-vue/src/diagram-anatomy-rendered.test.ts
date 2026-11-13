@@ -17,7 +17,7 @@ function anatomy(element: Element): unknown {
   const style = getComputedStyle(element);
   return { ...(element.tagName === 'BUTTON' ? { buttonSize: { width: style.width, height: style.height, padding: style.padding, border: style.border, radius: style.borderRadius } } : {}), tag: element.tagName.toLowerCase(), attributes: Object.fromEntries([...element.attributes]
     .filter(a => !a.name.startsWith('data-v-'))
-    .map(a => [a.name, a.name === 'class' ? a.value.split(/\s+/).filter(c => !/^svelte-/.test(c)).join(' ') : a.value])
+    .map(a => [a.name, a.name === 'id' || a.name === 'aria-describedby' ? 'description' : a.name === 'class' ? a.value.split(/\s+/).filter(c => !/^svelte-/.test(c)).join(' ') : a.value])
     .sort(([a], [b]) => a!.localeCompare(b!))),
     children: [...element.childNodes].filter(n => n.nodeType === 1 || n.nodeType === 3 && n.textContent?.trim())
       .map(n => n.nodeType === 1 ? anatomy(n as Element) : n.textContent!.trim()) };
@@ -67,7 +67,7 @@ for (const host of ['svelte', 'vue'] as const) for (const variant of ['card', 'f
 }
 
 for (const host of ['svelte', 'vue'] as const) for (const variant of ['card', 'folded', 'expanded'] as const) {
-  it(`should keep every long identifier in default ${host}/${variant} text slots (A11)`, () => {
+  it(`should truncate every long identifier and retain full accessible text in default ${host}/${variant} text slots (A11)`, () => {
     const text = 'W'.repeat(100);
     const props = variant === 'card' ? { entityId: 'long', title: text, body: [text], footer: text }
       : { entityId: 'long', title: text, subtitle: text, footer: text, collapsed: variant === 'folded', width: 600 };
@@ -76,7 +76,10 @@ for (const host of ['svelte', 'vue'] as const) for (const variant of ['card', 'f
     const root = 'container' in view ? view.container : view.element;
     for (const [selector, role, width] of [['.st-diagramCard-title', 'title', variant === 'expanded' ? 492 : 358], ['.st-diagramCard-line,.st-diagramZone-subtitle', 'body', variant === 'expanded' ? 434 : variant === 'folded' ? 396 : 436], ['.st-diagramCard-footerLine,.st-diagramZone-footerLine', 'footer', variant === 'expanded' ? 568 : 434]] as const) {
       const lines = [...root.querySelectorAll(selector)].map(line => line.textContent!);
-      expect(lines.join('')).toBe(text);
+      expect(lines.at(-1)).toMatch(/…$/u);
+      const group = root.matches('[role=group]') ? root : root.querySelector('[role=group]')!;
+      expect(group.getAttribute('title')).toContain(text);
+      expect(root.querySelector('[id]')?.textContent).toContain(text);
       for (const line of lines) expect(defaultCardMeasure(line, role, 10000).lineWidths![0]).toBeLessThanOrEqual(width);
     }
     view.unmount();

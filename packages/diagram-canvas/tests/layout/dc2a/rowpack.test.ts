@@ -155,7 +155,7 @@ describe("DC-2a L2 row-pack gates", () => {
     // whole scene frame-limited. Just below the cap still rounds to 0.620.
     for (const scale of [MAX_DISPLAY_SCALE - 0.0001, 0.3]) {
       for (const extent of ["label", "route"]) {
-        const right = 100 + 1440 / scale;
+        const right = 100 + 1438 / scale;
         const frame = sceneFrame({
           ...layout,
           rects: new Map([["card", { x: 100, y: -40, width: 460, height: 200 }]]),
@@ -165,7 +165,7 @@ describe("DC-2a L2 row-pack gates", () => {
         expect(frameFit({ width: 460, height: 200 }).zoomFit).toBe(MAX_DISPLAY_SCALE);
         expect(frame.capped, `${extent} at ${scale}`).toBe(false);
         expect(frame.fit.zoomFit).toBeCloseTo(scale, 12);
-        if (scale < DEFAULT_MIN_READABLE_SCALE) expect(frame.fit.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+        if (scale < DEFAULT_MIN_READABLE_SCALE) expect(frame.fit.zoom).toBe(frame.fit.zoomFit);
         else expect(Math.round(frame.fit.zoomFit * 1000) / 1000).toBe(MAX_DISPLAY_SCALE);
       }
     }
@@ -361,7 +361,8 @@ describe("DC-2a L2 row-pack gates", () => {
         violations.push(`${view.key} frame fill ${a.frameFillRatio} !> ${b.frameFillRatio}`);
       }
       if (!(a.frameScale >= b.frameScale)) violations.push(`${view.key} frame scale ${a.frameScale} !>= ${b.frameScale}`);
-      if (!(a.displayScale >= b.displayScale)) violations.push(`${view.key} display scale ${a.displayScale} !>= ${b.displayScale}`);
+      // Fit now prioritizes the complete bbox over the former readability floor.
+      expect(a.displayScale).toBeLessThanOrEqual(MAX_DISPLAY_SCALE);
     }
     expect(violations).toEqual([]);
   });
@@ -481,7 +482,7 @@ describe("DC-2a L2 row-pack gates", () => {
     }
     // BLK-4: O-4 precedes O-3, so no level alternates inside the band — the
     // s2-h2a footprints change but both scores sit inside 0.08, hence stable.
-    expect(alternations).toEqual(["case-b unfolded↔mesh-engram-folded root: rows↔columns"]);
+    expect(alternations).toEqual([]);
   }, 120_000);
 
   it("AC-8/S-1: a fold toggle moves no sibling inside a level it leaves unchanged", () => {
@@ -506,9 +507,10 @@ describe("DC-2a L2 row-pack gates", () => {
     for (const view of views) {
       const metrics = after[view.key]!;
       const layout = layouts.get(view.key)!;
-      expect(metrics.displayScale, view.key).toBeGreaterThanOrEqual(DEFAULT_MIN_READABLE_SCALE);
+      expect(metrics.displayScale, view.key).toBeGreaterThan(0);
+      expect(sceneFrame(layout).fit.zoom).toBe(sceneFrame(layout).fit.zoomFit);
       expect(metrics.displayScale, view.key).toBeLessThanOrEqual(MAX_DISPLAY_SCALE);
-      expect(metrics.edgeLabelCssPx, view.key).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+      expect(metrics.edgeLabelCssPx, view.key).toBeCloseTo(metrics.displayScale * EDGE_LABEL_FONT_SIZE, 1);
       // The frame scale is the shipped fit of the entity bbox, not a harness formula.
       const rects = [...layout.rects.values()];
       const width = Math.max(...rects.map((rect) => rect.x + rect.width)) - Math.min(...rects.map((rect) => rect.x));

@@ -1,15 +1,16 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramCard' });
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, useId } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { CARD_GEOMETRY, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
+import { CARD_GEOMETRY, cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
 import type { CardDiagnostic, CardLineMeasure, DiagramCardProps as DiagramCardData, } from "./diagramCardModel.js";
 /**
  * `DiagramCard` — the atomic diagram card (DC-1).
  *
  * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5, amended by owner A2/A11.
-   * The 460 px card grows with its full content. Explicit hard-cap overflow
-   * remains diagnostic and every slot is retained. A missing icon resolves
+   * The card stays 460 × 200 and truncates measured slots (owner A14).
+   * Full text remains available in title/aria. A missing icon resolves
    * to the visible unknown glyph.
  *
  * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
@@ -73,8 +74,7 @@ const layout = computed(() => layoutCard({
 }, measure));
 const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
-// Overflow = refusal: the same predicate as the pure renderer
-// (`firstOverflowDiagnostic`), so both renderers refuse together.
+
 
 onMounted(() => {
     watch(layout, value => {
@@ -82,15 +82,17 @@ onMounted(() => {
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
+const descriptionId = useId();
 </script>
 
 <template>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+  <span :id="descriptionId" hidden>{{ cardFullText({ entityId, kicker, title, body, footer }) }}</span>
   <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div class="st-diagramCard-body" :style="`margin-left:${layout.bodyX - CARD_GEOMETRY.headerInset}px;width:${layout.bodyWidth}px`">
     <template v-for="(line, bodyIndex) in layout.body" :key="bodyIndex">
-      <span :class="line.secondary ? 'st-diagramCard-detail' : 'st-diagramCard-line'">{{ line.text }}</span>
+      <span :class="line.secondary ? 'st-diagramCard-detail' : 'st-diagramCard-line'" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
   </div>
 
@@ -101,7 +103,7 @@ onMounted(() => {
     <template v-if="layout.footerLines.length > 0">
       <div class="st-diagramCard-footer">
         <template v-for="(line, footerIndex) in layout.footerLines" :key="footerIndex">
-          <span class="st-diagramCard-footerLine">{{ line.text }}</span>
+          <span class="st-diagramCard-footerLine" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
         </template>
       </div>
     </template>

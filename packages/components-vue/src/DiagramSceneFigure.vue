@@ -3,6 +3,8 @@ defineOptions({ name: 'DiagramSceneFigure' });
 import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, useId, watch } from 'vue';
 import { renderErdCardSvg, renderErdTable, clampZoom, createLayoutCache, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+import { measureRenderedBounds } from './diagramRenderedBounds.js';
+import type { SceneModel } from './diagramSceneModel.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { CardLineMeasure } from './diagramCardModel.js';
 import { sceneContentSize, type DiagramSceneSize } from './diagramSceneModel.js';
@@ -10,7 +12,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, sceneTextRows, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -104,6 +106,17 @@ const maxDisplayScale = shallowRef<number>();
 const minReadableScale = shallowRef<number>();
 const requestedZoom = shallowRef<number>();
 let atFit = true;
+const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
+const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
+function readRenderedBounds() {
+    if (frameEl.value === undefined || scene.value === undefined) return;
+    const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
+    if (bounds !== undefined && bounds !== scene.value.bounds) {
+        if (atFit && (renderedBounds.value === undefined || renderedBounds.value.scene === scene.value)) requestedZoom.value = undefined;
+        renderedBounds.value = { scene: scene.value, bounds };
+    }
+}
+onMounted(() => { watch(scene, () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
 function token(name: string) {
     return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
 }
@@ -129,7 +142,7 @@ function measureFrame() {
 }
 const measured = computed(() => viewWidth.value !== undefined && windowHeight.value !== undefined);
 const fit = computed(() => sceneFit({
-    ...(scene.value?.bounds === undefined ? {} : { bounds: scene.value.bounds }),
+    ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
     viewWidth: viewWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
     ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
@@ -137,13 +150,13 @@ const fit = computed(() => sceneFit({
 }));
 const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
 const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
-const placement = computed(() => scenePlacement(scene.value?.bounds, zoom.value, fit.value));
+const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
 const camera = computed<DiagramSceneCamera>(() => ({
     zoom: zoom.value, readout: readout.value, minZoom: fit.value.minZoom,
     maxZoom: fit.value.maxZoom, fitZoom: fit.value.zoom,
     pans: placement.value.overflowX || placement.value.overflowY,
 }));
-watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; browserMeasure.value = undefined; });
+watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; browserMeasure.value = undefined; renderedBounds.value = undefined; });
 watch([measured, zoom, fit], () => {
     if (!measured.value)
         return;
@@ -179,6 +192,7 @@ function zoomIn() { setZoom(zoom.value * ZOOM_STEP_RATIO); }
 function zoomOut() { setZoom(zoom.value / ZOOM_STEP_RATIO); }
 function fitToFrame() {
     readCameraTokens();
+    readRenderedBounds();
     atFit = true;
     requestedZoom.value = fit.value.zoom;
     void nextTick(() => {
@@ -372,7 +386,8 @@ const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
-const viewportStyle = computed(() => `${measured.value ? `height:${fit.value.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom.value}`);
+const edgeLabelLineHeight = computed(() => measureLines.value({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
+const viewportStyle = computed(() => `${measured.value ? `height:${fit.value.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
@@ -434,11 +449,14 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         </div>
       </div>
     </div>
-    <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
+  <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in sceneTextRows(scene, props.document)" :key="i">{{ row }}</p></div>
+  <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
   </figure>
 </template>
 
 <style>
+  .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
   .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
   .st-diagramErd-svg { height: 100%; width: 100%; }
 
@@ -548,11 +566,12 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }

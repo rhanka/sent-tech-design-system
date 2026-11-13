@@ -58,7 +58,10 @@ describe("h-cond golden scenes", () => {
         const measured = layoutCard({ ...props, autoSize: true, height: card.rect.height }, sceneCardMeasure(defaultCardMeasure));
         expect(measured.box.height, card.occurrence).toBeLessThanOrEqual(card.rect.height);
         expect(measured.bodyBottom, card.occurrence).toBeLessThanOrEqual(measured.bodyArea.bottom);
-        expect(measured.diagnostics.filter(diagnostic => diagnostic.code === "card-overflow"), card.occurrence).toEqual([]);
+        expect(measured.box).toEqual({width:460,height:200});
+        for (const diagnostic of measured.diagnostics.filter(diagnostic => diagnostic.code === "card-overflow")) {
+          expect(diagnostic.severity).toBe("info");expect(diagnostic.reason).toBe("truncated");expect(diagnostic.hiddenLength).toBeGreaterThan(0);
+        }
       }
       const blockers = scene.nodes.map(node => node.kind !== "zone" || node.collapsed ? node.rect
         : { ...node.rect, height: 16 + headers.get(node.occurrence)! });
