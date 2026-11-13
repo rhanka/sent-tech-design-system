@@ -527,11 +527,12 @@ export type {
   PopperAlign,
   Rect,
 } from './Popper.vue';
-export { SelectableRow, SELECTABLE_LIST_KEY } from "./SelectableRow.js";
+export { default as SelectableRow } from './SelectableRow.vue';
+export { SELECTABLE_LIST_KEY } from './selectable-list-context.js';
 export type {
   SelectableRowProps,
   SelectableListContext,
-} from "./SelectableRow.js";
+} from './SelectableRow.vue';
 export { SelectableList } from "./SelectableList.js";
 export type { SelectableListProps } from "./SelectableList.js";
 export { BulletChart } from "./BulletChart.js";
