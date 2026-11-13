@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:95757e058b4a4d7d3e9e71c425e79e9d821d7682e7cbf0b16e3c395b3781676a",
-  "entryDigest": "sha256:dc2e603859fb22f14f3ed1bbacb3996ab3cb3b8c85b8f4cd3cc829a5cfc02beb",
+  "digest": "sha256:bad661e60bcb626a8b5e5fd577741319fb618b9ef560e593bafb505b28d5db11",
+  "entryDigest": "sha256:cee70cad48d357d02796473854ec66b18847a1abb3b8be38cb3d38f68b48124d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -301,7 +301,7 @@
         "declarationPath": "packages/components-svelte/dist/RadioGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadioGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

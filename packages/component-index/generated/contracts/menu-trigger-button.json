@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:151da1721b12e4cd415b5d2fb6d7426d42c2113acc60ddf83f5d2e83c0759fa3",
-  "entryDigest": "sha256:dba144889d396c41ebe1af70c636a119f2fa2876f757177c0be12ebd3fd6e6c4",
+  "digest": "sha256:864eeaf0955dd248dc4aed9797b3e7534fc74f8d8140100c96eb81bfd476c445",
+  "entryDigest": "sha256:45f99b4c3216172efa39c5a73fc8a5d55099f1eb4b90b33b6c0efcf0e596f2ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -179,7 +179,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuTriggerButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuTriggerButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
