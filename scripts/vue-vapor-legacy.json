@@ -33,7 +33,6 @@
   "packages/dataviz-vue/src/lib/ErrorBarsChart.ts",
   "packages/dataviz-vue/src/lib/FieldPane.ts",
   "packages/dataviz-vue/src/lib/ForceGraph.ts",
-  "packages/dataviz-vue/src/lib/HeikinAshiChart.ts",
   "packages/dataviz-vue/src/lib/HistogramChart.ts",
   "packages/dataviz-vue/src/lib/HollowCandlestickChart.ts",
   "packages/dataviz-vue/src/lib/ItemChart.ts",
