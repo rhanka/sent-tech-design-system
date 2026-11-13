@@ -2,10 +2,10 @@ name: Vue classic and Vapor
 
 on:
   pull_request:
-    paths: ['packages/**', 'scripts/**', 'package*.json', '.github/workflows/vue-vapor.yml']
+    paths: ['packages/**', 'scripts/**', 'package*.json', 'tsconfig.base.json', '.github/workflows/vue-vapor.yml']
   push:
     branches: [main]
-    paths: ['packages/**', 'scripts/**', 'package*.json', '.github/workflows/vue-vapor.yml']
+    paths: ['packages/**', 'scripts/**', 'package*.json', 'tsconfig.base.json', '.github/workflows/vue-vapor.yml']
   workflow_dispatch:
 
 permissions:
