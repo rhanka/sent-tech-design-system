@@ -1,0 +1,83 @@
+{
+  "id": "readme-frame-cat-mcp",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "cat-mcp"
+  },
+  "cards": [
+    {
+      "id": "cat-mcp",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "MCP · Connectors",
+      "purpose": "Resources · connectors · synchronous registry",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 898,
+        "y": 937.7562500000001,
+        "width": 1732,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "mcp-comments",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Harness · h2a tools",
+      "purpose": "annotate, Track, Focus, sessions, etc.",
+      "detail": "h2a tools · annotation via comments",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 914,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "mcp-tools",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Memories/ontologies",
+      "purpose": "6 memory tools · ontology_call",
+      "detail": "Memory and ontology contracts",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 1534,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "mcp-connectors",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Connectors to broker",
+      "purpose": "Gmail · GChat · Atlassian · GitHub",
+      "detail": "Notion·Slack·OpenERP·WaveApps·Stripe",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 2154,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": []
+}

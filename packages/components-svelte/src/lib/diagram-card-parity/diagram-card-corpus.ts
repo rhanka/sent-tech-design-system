@@ -36,7 +36,7 @@ export const DIAGRAM_PRESENTATION_PIN = {
   schemaDigest: "f13d595793e17e1e4740c9203b19d8381fc55b90e37121d61f5037cb79f0281a",
 };
 /** Canonical-JSON sha256 of the 28-glyph registry (drift detector). */
-export const DIAGRAM_REGISTRY_SHA256 = "bc8639a1e3416615bc78725344d71f66ca28d38b99df8611877d43d27f82af3e";
+export const DIAGRAM_REGISTRY_SHA256 = "211a146b8ef6bfadd063424ed78bb931bee7d3a105f78d3f22e7e666c8b28d25";
 export const CORPUS_NODES: readonly CorpusCard[] = [
   { id: "h2a-roles", parentId: "h2a", width: 460, height: 200,
     fr: { kicker: "ORGANISATION", title: "Rôles et mandats", fn: "Organisation humains-agents · C01", detail: "RACI · acteurs vérifiés · scope-guard", footer: "service: h2a" },

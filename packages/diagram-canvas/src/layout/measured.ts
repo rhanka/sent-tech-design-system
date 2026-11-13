@@ -92,6 +92,8 @@ import {
   type MeasureRequest,
   type SlotMeasurement,
 } from "./measure.js";
+import { measureBundleLabel } from "./bundleLabel.js";
+import { channelGap, channelMetrics, type LayoutChannel } from "./channels.js";
 import { chooseOrientation, packColumns, packRows, seatShelves, type PackBox } from "./pack.js";
 import { labelDetour, routeEdges, routesConflict } from "./route.js";
 import { rectsIntersect } from "../geometry.js";
@@ -318,7 +320,7 @@ export function layoutMeasured(
   const read = readMeasuredGraph(document, options.registry);
   if ("refusals" in read) return { status: "refused", refusals: read.refusals, diagnostics: [] };
   const graph = read.graph;
-  const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics };
+  const metrics: LayoutMetrics = { ...DEFAULT_LAYOUT_METRICS, ...options.metrics, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? 14 };
   const hints: LayoutHints = options.hints ?? {};
   const gaps = resolveGaps(options.hints, metrics);
   const globalStretch = hints.stretch ?? false;
@@ -686,7 +688,7 @@ export function layoutMeasured(
     if (source === undefined || target === undefined) continue;
     drawnEdges.push({ occurrence: occurrence.id, relation: occurrence.relation, source, target });
   }
-  const edgeBundles: Record<string, { members: string[]; label: string; title: string }> = {};
+  const edgeBundles: Record<string, { members: string[]; label: string; title: string; relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }> = {};
   const liftedPairs = new Map<string, DrawnEdge[]>();
   for (const edge of drawnEdges) {
     const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
@@ -701,7 +703,8 @@ export function layoutMeasured(
     if (pair.length < 2) continue;
     const first = pair[0]!;
     edgeBundles[first.occurrence] = { members: pair.map(edge => edge.occurrence),
-      label: `${pair.length} relations`,
+      label: `${pair.length} liaisons`,
+      relations: pair.map(edge => edgeLabelOf(document, edge.relation) ?? edge.relation),
       title: pair.map(edge => edgeLabelOf(document, edge.relation) ?? edge.relation).join("\n") };
     pair.slice(1).forEach(edge => bundled.add(edge.occurrence));
   }
@@ -729,13 +732,15 @@ export function layoutMeasured(
   for (const edge of drawnEdges) {
     const label = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
-    const layout = measure({
+    const bundle = edgeBundles[edge.occurrence];
+    const layout = bundle?.relations === undefined ? measure({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_WIDTH,
       allocatedLines: DEFAULT_ALLOCATED_LINES["edge-label"],
       folded: false,
-    });
+    }) : measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth).layout;
+    if (bundle?.relations !== undefined) bundle.chip = measureBundleLabel(bundle.relations, measure, metrics.bundleLabelMaxWidth);
     const occurrenceId = edge.occurrence as unknown as RelationRef;
     edgeLayouts.set(occurrenceId, layout);
     labelSizes.set(occurrenceId, { width: layout.width, height: layout.height });
@@ -777,6 +782,7 @@ export function layoutMeasured(
     readonly frozen: ReadonlyMap<string, FrozenRun>;
     /** Gutter id → gap asked for it (label thickness plus its two margins), within the axis cap. */
     readonly widen: ReadonlyMap<string, number>;
+    readonly external: ReadonlySet<string>;
   }
   interface PassOutcome {
     readonly result: LayoutResult;
@@ -904,6 +910,13 @@ export function layoutMeasured(
         orientation = run.mode;
         shelves = (run.mode === "rows" ? packRows : packColumns)(boxes, packOptions).rows;
       }
+      // A column shelf containing one box per column paints the same single
+      // row. Canonicalize that equivalent arrangement before feeding fold
+      // hysteresis back; otherwise the metadata can alternate without a move.
+      if (run.mode === "auto" && orientation === "columns" && shelves.every(shelf => shelf.length === 1)) {
+        orientation = "rows";
+        shelves = [shelves.flat()];
+      }
       chosen.set(run.key, { orientation, shelves });
       if (run.mode === "auto" && boxes.length > 0) orientationRecord.set(run.key, orientation);
       const rows = orientation === "rows";
@@ -946,7 +959,7 @@ export function layoutMeasured(
         return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
-      const hasIcon = presentation.entities[representativeOf(id)]?.icon !== undefined;
+      const hasIcon = true;
       const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
       const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
       const floor = Math.max(FIXED_CARD_WIDTH, headerDriven);
@@ -1486,6 +1499,34 @@ export function layoutMeasured(
     // A retry that finds a clean A* route replaces the obstructed elbow.
     const retryRoutes = new Map(routed.routes);
     const retryObstructed = new Set(routed.obstructed);
+    // Parallel unlabelled bridges use a centred comb. Docks and the middle
+    // legs share the same pitch; the obstacle check remains authoritative.
+    const parallel = new Map<string, typeof requests>();
+    for (const request of requests) {
+      if (edgeLayouts.has(request.id)) continue;
+      const pair = parallel.get(request.pairKey) ?? [];
+      pair.push(request);
+      parallel.set(request.pairKey, pair);
+    }
+    for (const pair of parallel.values()) {
+      if (pair.length < 2) continue;
+      pair.sort((a, b) => byString(a.id, b.id));
+      const first = pair[0]!;
+      const horizontal = Math.abs(first.start.x - first.end.x) >= Math.abs(first.start.y - first.end.y);
+      const center = horizontal ? (first.start.x + first.end.x) / 2 : (first.start.y + first.end.y) / 2;
+      pair.forEach((request, index) => {
+        const lane = center + (index - (pair.length - 1) / 2) * ((horizontal ? metrics.trackSpacing : metrics.trackSpacingBlock) ?? (horizontal ? 14 : 7));
+        const points = horizontal
+          ? [request.start, { x: lane, y: request.start.y }, { x: lane, y: request.end.y }, request.end]
+          : [request.start, { x: request.start.x, y: lane }, { x: request.end.x, y: lane }, request.end];
+        if (points.slice(1).some((point, i) => shapesOf(request.id).some(shape => rectsIntersect(shape, {
+          x: Math.min(point.x, points[i]!.x), y: Math.min(point.y, points[i]!.y),
+          width: Math.abs(point.x - points[i]!.x), height: Math.abs(point.y - points[i]!.y),
+        })))) return;
+        retryRoutes.set(request.id, points);
+        retryObstructed.delete(request.id);
+      });
+    }
     if (retryObstructed.size > 0) {
       const failed = new Set(retryObstructed);
       const retryRequests = requests.filter((request) => failed.has(request.id));
@@ -1539,6 +1580,24 @@ export function layoutMeasured(
     for (const entry of entries) {
       const edge = drawnEdges.find((candidate) => (candidate.occurrence as string) === entry.id)!;
       let choice = placePackedLabel(entry, fixedShapes, taken, metrics.labelMargin);
+      if (plan?.external.has(entry.id) && sharedContainerOf(edge.source.entity, edge.target.entity) === undefined) {
+        const request = requests.find(candidate => candidate.id === entry.id)!;
+        const { limit: _limit, ...unbounded } = entry;
+        const route = labelDetour({ request, shapes: shapesOf(entry.id),
+          earlier: requests.filter(other => other.id !== request.id && other.pairKey === request.pairKey).map(other => retryRoutes.get(other.id)!),
+          xs: [...new Set([request.start.x, request.end.x, ...outerLanesX])].sort((a, b) => a - b),
+          ys: [...new Set([request.start.y, request.end.y, ...outerLanes])].sort((a, b) => a - b),
+          accepts: points => {
+            const label = placePackedLabel({ ...unbounded, route: points }, fixedShapes, taken, metrics.labelMargin);
+            return label !== undefined && (label.box.y >= drawingBottom || label.box.y + label.box.height <= drawingTop);
+          },
+        });
+        if (route !== undefined) {
+          retryRoutes.set(entry.id, route);
+          retryObstructed.delete(entry.id);
+          choice = placePackedLabel({ ...unbounded, route }, fixedShapes, taken, metrics.labelMargin);
+        }
+      }
       const probeMargin = probeMarginOf(entry.size.height);
       // Prefer the existing bridge in a capped, label-bearing gutter to an
       // exterior detour. Pass 2 will supply its measured transverse margin.
@@ -1668,6 +1727,7 @@ export function layoutMeasured(
       readonly horizontal: boolean;
       readonly strips: readonly Rect[];
       readonly gap: number;
+      readonly base: number;
       readonly max: number;
     }
     const gutters: Gutter[] = [];
@@ -1697,6 +1757,7 @@ export function layoutMeasured(
             horizontal: rows,
             strips: [stripOf(extent, [end, nextStart])],
             gap: nextStart - end,
+            base: packed.acrossBase,
             max: rows ? rowGaps.maxY : rowGaps.maxX,
           });
         }
@@ -1722,24 +1783,37 @@ export function layoutMeasured(
             horizontal: !rows,
             strips: strips.map(({ strip }) => strip),
             gap: Math.max(...strips.map(({ strip }) => thickness(strip))),
+            base: packed.alongBase,
             max,
           });
         } else {
           for (const { shelf, strip } of strips) {
-            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), max });
+            gutters.push({ id: `${key}|along|${String(index)}|${String(shelf)}`, horizontal: !rows, strips: [strip], gap: thickness(strip), base: packed.alongBase, max });
           }
         }
       }
     }
+    // Count each routed occurrence once in the physical channel, including lifted bundle traffic.
+    const channels: LayoutChannel[] = gutters.map(gutter => {
+      const edges = [...retryRoutes].filter(([, route]) => gutter.strips.some(strip => route.some((point, i) => {
+        const next = route[i + 1];
+        if (next === undefined) return false;
+        return rectsIntersect(strip, { x: Math.min(point.x, next.x), y: Math.min(point.y, next.y),
+          width: Math.abs(point.x - next.x), height: Math.abs(point.y - next.y) });
+      }))).map(([id]) => String(id)).sort(byString);
+      const n = edges.reduce((sum, id) => sum + (edgeBundles[id]?.members.length ?? 1), 0);
+      const labelled = [...labelBoxes.values()].some(box => gutter.strips.some(strip => rectsIntersect(strip, box)));
+      const axis = gutter.horizontal ? 'vertical' as const : 'horizontal' as const;
+      const parameters = channelMetrics(metrics, axis === 'horizontal');
+      return { id: gutter.id, axis, edges, strips: gutter.strips, n, labelled, gap: gutter.gap,
+        expected: channelGap(n, labelled, { ...parameters, gapMin: Math.max(parameters.gapMin, gutter.base) }) };
+    });
     // A widened gutter in which no placed label sits is an empty lane: a bare
     // route needs no more than the base gap (two clearances).
     const unused: string[] = [];
     const gutterIds = new Set(gutters.map((gutter) => gutter.id));
     for (const id of [...(plan?.widen.keys() ?? [])].sort(byString)) if (!gutterIds.has(id)) unused.push(id);
-    for (const gutter of gutters) {
-      if (plan?.widen.get(gutter.id) === undefined) continue;
-      if (![...labelBoxes.values()].some((box) => gutter.strips.some((strip) => rectsIntersect(strip, box)))) unused.push(gutter.id);
-    }
+
     // A label with no room is probed with the free space of a base gap above
     // and under it: where it then fits, the lanes it sits in are asked to
     // widen to its thickness plus its two margins — never past the axis cap.
@@ -1764,6 +1838,9 @@ export function layoutMeasured(
         requested.set(gutter.id, Math.max(requested.get(gutter.id) ?? 0, needed));
       }
     }
+
+    requested.clear();
+    channels.forEach(channel => { if (Math.abs(channel.expected - channel.gap) > 0.5) requested.set(channel.id, channel.expected); });
 
     // Emit the view plus measurements.
     const placedView = buildMeasuredView(
@@ -1812,6 +1889,7 @@ export function layoutMeasured(
       orientations: Object.fromEntries(
         [...orientationRecord].sort(([left], [right]) => byString(left, right)),
       ) as Readonly<Record<string, LevelOrientation>>,
+      channels,
       labelBoxes: Object.fromEntries(
         [...labelBoxes]
           .sort(([left], [right]) => byString(left, right))
@@ -1822,31 +1900,42 @@ export function layoutMeasured(
     return { result, chosen, requested, unused, unplaced: unplaced.length };
   };
 
-  // BF-6 two-pass placement. Pass 1 packs every level at its base gaps,
-  // routes, and places the labels; its shelves and orientations are frozen.
-  // Later passes only widen the gutters in which a label of pass 1 had no
-  // room, then drop every widened gutter that ends up holding no label: the
-  // asked set grows at most `WIDEN_ROUNDS` times and then only shrinks, so
-  // the sequence ends. A drawing never keeps a lane no label sits in.
+  // Freeze the figure arrangement, then solve channel demand from actual routes and labels.
   const first = runPass(undefined);
-  if (first.requested.size === 0) return first.result;
   const frozen = first.chosen;
-  const widen = new Map(first.requested);
-  let outcome = runPass({ frozen, widen });
-  for (let round = 1; round < WIDEN_ROUNDS; round += 1) {
-    const more = [...outcome.requested].filter(([id, gap]) => (widen.get(id) ?? 0) < gap);
-    if (more.length === 0) break;
-    for (const [id, gap] of more) widen.set(id, gap);
-    outcome = runPass({ frozen, widen });
-  }
-  while (outcome.unused.length > 0) {
+  const widen = new Map<string, number>();
+  const external = new Set<string>();
+  const seen = new Map<string, PassOutcome>();
+  let outcome = first;
+  let previous: PassOutcome | undefined;
+  for (let round = 0; round < 24 && (outcome.requested.size > 0 || outcome.unused.length > 0); round += 1) {
+    const signature = JSON.stringify(outcome.result.status === "laid-out" ? outcome.result.channels?.map(channel => [channel.id, channel.gap, channel.n, channel.labelled]) : []);
+    const repeated = seen.get(signature);
+    if (repeated !== undefined && outcome.result.status === "laid-out") {
+      // A label switching between two available U channels can otherwise
+      // oscillate with their demands. Give that root-level relation an
+      // exterior comb slot; cards and headers remain routing obstacles.
+      const current = outcome.result.channels ?? [];
+      for (const edge of drawnEdges) {
+        if (sharedContainerOf(edge.source.entity, edge.target.entity) !== undefined) continue;
+        const id = edge.occurrence;
+        const memberships = previous?.result.status === "laid-out"
+          ? (previous.result.channels ?? []).filter(channel => channel.edges.includes(id)).map(channel => channel.id) : [];
+        const now = current.filter(channel => channel.edges.includes(id)).map(channel => channel.id);
+        if (memberships.some(channel => !now.includes(channel))) external.add(id);
+      }
+      seen.clear();
+    }
+    seen.set(signature, outcome);
     for (const id of outcome.unused) widen.delete(id);
-    if (widen.size === 0) return first.result;
-    outcome = runPass({ frozen, widen });
+    for (const [id, gap] of outcome.requested) widen.set(id, gap);
+    previous = outcome;
+    outcome = runPass({ frozen, widen, external });
   }
-  // Widening never costs a label: the wider drawing is kept only when it
-  // places at least as many labels as the base one.
-  return outcome.unplaced <= first.unplaced ? outcome.result : first.result;
+  if (outcome.result.status === "laid-out" && outcome.requested.size > 0) return { ...outcome.result,
+    warnings: [...outcome.result.warnings, { code: "channel-unresolved", refs: [...outcome.requested.keys()],
+      message: "Channel demands did not settle within the bounded routing pass" }] };
+  return outcome.result;
 }
 
 function unionOf(
