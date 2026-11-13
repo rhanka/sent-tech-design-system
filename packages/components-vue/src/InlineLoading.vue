@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { computed, useAttrs, useSlots } from 'vue';
+import { useAttrs, useSlots } from 'vue';
 import { classNames } from './classNames.js';
 
 export type InlineLoadingStatus = 'active' | 'inactive' | 'success' | 'error';

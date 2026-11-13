@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:b91cd4118424466759ea1b180579719401d3740071c471b250fd63470f2f6ab4",
-  "entryDigest": "sha256:da292137eb16914e9d2d11e3f12888c64356c08b1c00db250225a9aa7bedd166",
+  "digest": "sha256:93fdb2237f81664972a4dcf7b380f1fbaa7ae1f8ddb43077714e83e724033e1f",
+  "entryDigest": "sha256:14213587c41fc6dcca49cf66424e63b315ee0bfb4423984e40a9114ca6853cf9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -431,7 +431,7 @@
         "declarationPath": "packages/components-svelte/dist/MultiSelect.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MultiSelectProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -509,7 +509,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -644,7 +643,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:f3a4a3fec25357618742b2b3a2462ad0833fb393729da50dfd6223ee657a1be5",
+        "declarationDigest": "sha256:41bfa6958e6e94c7021a83fe6bb8df959fe273615931ed4de96684d8fc9fc00b",
         "declarationPath": "packages/components-vue/dist/MultiSelect.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MultiSelectProps",

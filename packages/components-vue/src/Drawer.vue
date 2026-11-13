@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, useAttrs, watch } from 'vue';
+import { onUnmounted, useAttrs, watch } from 'vue';
 import { classNames } from './classNames.js';
 
 export type DrawerPlacement = 'left' | 'right' | 'bottom';

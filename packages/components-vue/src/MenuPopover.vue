@@ -65,6 +65,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
 
 defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 
+/** @attrsStyle owned-last */
+// Positioning follows caller styles, matching the original explicit SFC merge.
 defineOptions({ name: "MenuPopover", inheritAttrs: false });
 const props = defineProps({
   items: { type: Array as () => MenuItem[], default: () => [] },
@@ -396,11 +398,11 @@ onUnmounted(teardown);
         'st-menuPopover--alignCenter': alignCenter,
       },
       props.class,
-    ]), style: ({
+    ]), style: [attrs.style, {
       top: top + 'px',
       left: left + 'px',
       maxHeight: maxHeight ? maxHeight + 'px' : undefined,
-    }) }"
+    }] }"
     ref="panelRef"
     role="dialog"
     :aria-label="props.label"

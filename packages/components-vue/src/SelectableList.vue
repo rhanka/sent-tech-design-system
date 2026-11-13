@@ -211,6 +211,7 @@ const context: SelectableListContext = {
   navigate,
 };
 provide(SELECTABLE_LIST_KEY, context);
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

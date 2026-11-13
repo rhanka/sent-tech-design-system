@@ -3,8 +3,12 @@ import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
-export type FooterLink = { label: unknown; href: string };
-export type FooterColumn = { title?: unknown; links: FooterLink[] };
+export type FooterLink = {
+  /** @slot link-label */
+  label?: unknown; href: string };
+export type FooterColumn = {
+  /** @slot column-title */
+  title?: unknown; links: FooterLink[] };
 
 export type FooterProps = {
   brand?: unknown;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue';
+
 import {
   computed,
   onBeforeUnmount,
@@ -68,7 +68,7 @@ const props = withDefaults(defineProps<PanelStackProps>(), {
   class: undefined,
 });
 const emit = defineEmits<{ expandedChange: [_id: string | null] }>();
-const attrs = useAttrs();
+
 defineSlots<{ default?: () => unknown }>();
 const entries = ref<Entry[]>([]);
 const orderedEntries = computed(() => sortByDom(entries.value));
@@ -350,9 +350,9 @@ provide<PanelStackContext>(PANEL_STACK_KEY, {
 <template>
   <div
 
-    v-bind="{ ...($attrs), style: [$attrs.style, ({
+    v-bind="{ ...($attrs), style: [({
       '--st-component-panelStack-primaryMinBlockSize': `${effectivePrimaryMinHeight}px`,
-    })], class: (classNames('st-panelStack', props.class)) }"
+    }), $attrs.style], class: (classNames('st-panelStack', props.class)) }"
 
     :role="'group'"
     :aria-label="props.label"

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TileMapChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:611c3d5858e852bc26136be074559607b9ff4ed4d6b4788598a9abcaff358f46",
+      "digest": "sha256:f1d5f1a57768de543315afe4c9fc2542bac778e3a8fca64d49e1cad44c83db29",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TileMapChart.vue",
@@ -40,7 +40,7 @@
     "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
     "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
   },
-  "digest": "sha256:bb32affe6ab84ba1b9f01200c3424f4e387ad8c316f889c816e6c1e2525a5d74",
+  "digest": "sha256:1575993bff4b48c59e1cada3c3a113f60d4f391026ba5006e7118bc558487e48",
   "displayName": "TileMapChart",
   "format": "component-entry/v1",
   "frameworks": [

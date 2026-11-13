@@ -93,6 +93,7 @@ const isInvalid = computed(() => props.invalid || Boolean(props.errorText));
 const effectiveTriggerLabel = computed(
   () => props.triggerLabel ?? (props.multiple ? 'Choose files' : 'Choose file'),
 );
+const fileRows = computed(() => props.items.map((item, index) => ({ item, index, name: fileItemName(item), sizeLabel: formatFileSize(fileItemSize(item)) })));
 </script>
 
 <template>
@@ -169,10 +170,8 @@ const effectiveTriggerLabel = computed(
     ></template>
     <template v-if="props.items.length > 0"
       ><ul :class="'st-fileUploader__list'">
-        <template v-for="(item, index) in props.items" :key="item.id ?? fileItemName(item) ?? index"
-          ><template v-for="name in [fileItemName(item)]"
-            ><template v-for="sizeLabel in [formatFileSize(fileItemSize(item))]"
-              ><li
+        <template v-for="({ item, index, name, sizeLabel }) in fileRows" :key="item.id ?? fileItemName(item) ?? index"
+          ><li
                 :class="
                   classNames(
                     'st-fileUploader__item',
@@ -299,8 +298,7 @@ const effectiveTriggerLabel = computed(
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
                   </svg>
-                </button></li></template></template
-        ></template></ul></template
+                </button></li></template></ul></template
     ><template v-else></template>
   </div>
 </template>

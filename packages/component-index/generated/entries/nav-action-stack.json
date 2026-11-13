@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NavActionStack.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone.",
     "fr": "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée."
   },
-  "digest": "sha256:eceba177dfaa48b01cc12d1c359deda330b22317c0fe9dd7e2dd0b96da6eaadd",
+  "digest": "sha256:63570994a3a68462232c4b96939faa6782ab3d97e54a49c098b30345c51f7e07",
   "displayName": "NavActionStack",
   "format": "component-entry/v1",
   "frameworks": [

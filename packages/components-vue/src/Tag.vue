@@ -33,6 +33,7 @@ function handleDismiss(event: MouseEvent) {
 
   emit('dismiss', event);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

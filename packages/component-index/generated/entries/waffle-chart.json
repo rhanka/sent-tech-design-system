@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WaffleChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b31d7d38a62fc589070f41f193612d5bc53469ca3ef927f9c9e2b59959b28eb8",
+      "digest": "sha256:5748b0205aff554f9139a3a310b30cf1933f6094a9590949e8cf36f09b6131d2",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WaffleChart.vue",
@@ -40,7 +40,7 @@
     "en": "N×M cell grid: the share of colored cells encodes each category's proportion.",
     "fr": "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie."
   },
-  "digest": "sha256:7f342109f97119b09b41832a550fac47cea836251be6b67b5eebc5057811a82d",
+  "digest": "sha256:b5acfdee72c7a9b49a272d618132334e42019521a4b293b6957f2047448c1cb6",
   "displayName": "WaffleChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-data-image",
   "contractSource": "derived",
-  "digest": "sha256:392c73cc0e6d804edbf5146990fb89378b2f120c560a76a4c49885a46e6be4b6",
-  "entryDigest": "sha256:77107de9081efd6d81a239775647271a987e423d9d4e4850465710332e1b36d8",
+  "digest": "sha256:774ad82c27112474f27171756a3770eda779985c9310905bb757ebdb8f96f4ba",
+  "entryDigest": "sha256:3d36db7bdadb71dc49354ff65099b36d99e82e1a4962b785c459259ee0efe9dc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -265,7 +265,7 @@
         "declarationPath": "packages/components-svelte/dist/DataImage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataImageProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

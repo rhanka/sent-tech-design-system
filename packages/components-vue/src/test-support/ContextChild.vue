@@ -4,6 +4,7 @@ const state = inject<Ref<string>>('v0c-state')!;
 const id = useId();
 const legacy = getCurrentInstance();
 const emit = defineEmits<{ change: [value: string] }>();
+defineSlots<{ label?: (scope: {id: string}) => unknown; "default"?: () => unknown }>();
 </script>
 
 <template>

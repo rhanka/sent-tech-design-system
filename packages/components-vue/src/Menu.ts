@@ -14,6 +14,7 @@ export type MenuActionItem = {
   variant?: "default" | "danger";
   danger?: boolean;
   /** Optional leading icon component or string character (rendered in `.st-menu__itemIcon`). */
+  /** Component icons require the item-icon slot in both compiled modes. */
   icon?: Component | string;
   onClick?: () => void;
   children?: MenuItem[];

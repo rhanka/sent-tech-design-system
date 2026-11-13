@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { computed, useId, useAttrs } from 'vue';
+import { computed, useId } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -39,7 +39,7 @@ const emit = defineEmits<{
   input: [event: Event];
   clear: [];
 }>();
-const attrs = useAttrs();
+
 
 const autoId = ref(`st-search-${useId()}`);
 const controlBindings = computed(() => ({

@@ -5,7 +5,9 @@ import { classNames } from './classNames.js';
 
 export type LanguageOption = {
   value: string;
-  label: unknown;
+
+  /** @slot option-label */
+  label?: unknown;
 };
 
 export type LanguageSelectorProps = {

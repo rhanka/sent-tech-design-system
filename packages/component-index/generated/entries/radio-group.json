@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RadioGroup.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c8e57ff876e336aaa28fb6e1d6f601c2d5a0dfa95df75624d267a00a77214d7f",
+      "digest": "sha256:5d7d472e78adb0f95395ddbd6f3bf4a56be01dac273bb2e0e69a5af1a00ffebc",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RadioGroup.vue",
@@ -40,7 +40,7 @@
     "en": "Exclusive choice among options, with legend and a11y.",
     "fr": "Choix exclusif parmi plusieurs options, légende et a11y."
   },
-  "digest": "sha256:dc2e603859fb22f14f3ed1bbacb3996ab3cb3b8c85b8f4cd3cc829a5cfc02beb",
+  "digest": "sha256:7e1ec58497066d22891bcee85cd406ed82f5d7580dcd9af62da9a416e88a7fd7",
   "displayName": "RadioGroup",
   "format": "component-entry/v1",
   "frameworks": [

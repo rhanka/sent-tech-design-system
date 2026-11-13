@@ -7,7 +7,7 @@ export type SelectSize = 'sm' | 'md' | 'lg';
 
 export type SelectOption = {
   value: string;
-  label: unknown;
+  label?: unknown;
   disabled?: boolean;
 };
 

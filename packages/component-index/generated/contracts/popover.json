@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:b5c6442c0e5c13eb677a37f4c5749ea5cc4f47e761516e22da7ea5d73c9070d3",
-  "entryDigest": "sha256:115ff77544868dffc8fbcd32f2ec69569bfcda0a0c3ec11b0ba2ee3af1e23ec7",
+  "digest": "sha256:e5cf42e40250223c0e1166ef98826c7ccc0012c3d1f983a8582e6adbbf0d5555",
+  "entryDigest": "sha256:2371709c28943f75f0838d82e1a3b778d0f38f67e3a4dd8364dd1d159f442d5b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -190,7 +190,7 @@
         "declarationPath": "packages/components-svelte/dist/Popover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopoverProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -247,32 +247,17 @@
       "replaced": [],
       "slots": [
         {
-          "name": "content",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "content"
         },
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         },
         {
-          "name": "trigger",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "trigger"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:f1b732f71c5a035811bc95c7c66276ea752538d3c87cef02fda8a2bc963e3f3b",
+        "declarationDigest": "sha256:ee510146e1a503cda5694848da93ed3ba6be4f931d85448e58cd293c0b9a833f",
         "declarationPath": "packages/components-vue/dist/Popover.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopoverProps",

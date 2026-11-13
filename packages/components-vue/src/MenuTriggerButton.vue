@@ -20,6 +20,7 @@ const props = withDefaults(defineProps<MenuTriggerButtonProps>(), {
 });
 
 const isOpen = computed(() => props.open ?? props.expanded ?? false);
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

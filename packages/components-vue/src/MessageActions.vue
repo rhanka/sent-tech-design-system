@@ -5,7 +5,11 @@ import { classNames } from './classNames.js';
 export type MessageActionVariant = 'default' | 'danger';
 export type MessageAction = {
   id?: string;
+
+  /** @slot action-content */
   label?: unknown;
+
+  /** @slot action-content */
   icon?: unknown;
   disabled?: boolean;
   variant?: MessageActionVariant;

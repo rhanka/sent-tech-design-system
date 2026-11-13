@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:c1f72b658839443ff944d7bb9ced317416079a60ccd8bdbf5bb4d39682d3f758",
-  "entryDigest": "sha256:a9b1f09d3c5d26e47908d28c82925156c4d3f2205223528e4aaded15fb701d32",
+  "digest": "sha256:03a641cf250622c5c079dd3cd00a055a990982c8592bad72eb4af1de0bef8a03",
+  "entryDigest": "sha256:14ba59cb92fa8d3245b6f13d5dce3b55a305cafab755802494a521148a61fa09",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -332,6 +332,9 @@
           "name": "avatar"
         },
         {
+          "name": "content"
+        },
+        {
           "name": "default"
         },
         {
@@ -342,7 +345,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:981a46ce11d65bd178b5a83aa9de937ec8cfc72c3d94d3bfd827c358aa47199d",
+        "declarationDigest": "sha256:2d092e5ca35dda144930524da38406ab71f67d463eb1f06acd2d8d8673fb3cec",
         "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",

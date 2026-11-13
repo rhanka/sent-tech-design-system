@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:309d65ed503d7d0561c577eeff3c928ce967decf33d6a8d9abd80271ff9564ab",
-  "entryDigest": "sha256:49b7141501d90b1f0a752fad4f94b980bed90b0fc672e2620298597a76788cb3",
+  "digest": "sha256:0579b478a9a04d4aa70523e27cc09b397c784a2e5b55e470f30333d4c8185fff",
+  "entryDigest": "sha256:e53ecebb4142a93ed54a08ddaf18fdecf0236c507e7fe6d8c8af38ccaa11a328",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -306,9 +306,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -397,7 +394,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:40e02cf5df312c26bdef3b1b0a26002aab9dccafbe17898a1887c49cfa4a0a82",
+        "declarationDigest": "sha256:0680fec0db062f95728162395f65550726d500ec70f65c2e0cdb73ea7f2b39f1",
         "declarationPath": "packages/components-vue/dist/ProgressIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressIndicatorProps",

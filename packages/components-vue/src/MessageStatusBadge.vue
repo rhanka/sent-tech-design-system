@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
+import { scalarContent } from './slotContent.js';
 import type { ChatMessageStatus } from './ChatMessage.vue';
 
 export type MessageStatusBadgeTone = 'neutral' | 'info' | 'success' | 'warning' | 'error';
@@ -8,6 +9,7 @@ export type MessageStatusBadgeTone = 'neutral' | 'info' | 'success' | 'warning' 
 export type MessageStatusBadgeProps = {
   status: ChatMessageStatus;
   tone?: MessageStatusBadgeTone;
+  /** @slot label */
   labels?: Partial<Record<ChatMessageStatus, unknown>>;
   class?: string;
 };
@@ -16,6 +18,7 @@ defineOptions({ name: 'MessageStatusBadge', inheritAttrs: false });
 const props = withDefaults(defineProps<MessageStatusBadgeProps>(), {
   tone: undefined, labels: undefined, class: undefined,
 });
+defineSlots<{ label?: (scope: { status: ChatMessageStatus; label: unknown }) => unknown }>();
 
 const normalized = computed(() =>
   props.status === 'sent' ? 'completed'
@@ -38,6 +41,6 @@ const label = computed(() =>
 
 <template>
   <span v-bind="{ ...($attrs), class: (classNames('st-messageStatusBadge', `st-badge st-badge--${resolvedTone}`, props.class)) }" >
-    <span class="st-messageStatusBadge__dot" aria-hidden="true" />{{ label }}
+    <span class="st-messageStatusBadge__dot" aria-hidden="true" /><slot name="label" :status="props.status" :label="label">{{ scalarContent(label) }}</slot>
   </span>
 </template>

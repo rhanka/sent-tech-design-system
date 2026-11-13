@@ -1000,7 +1000,7 @@
           },
           "vue": {
             "comparedProps": 17,
-            "file": "packages/components-vue/src/BarChart.ts",
+            "file": "packages/components-vue/src/BarChart.vue",
             "status": "match",
             "type": "BarChartProps"
           }

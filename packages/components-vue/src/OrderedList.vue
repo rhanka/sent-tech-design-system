@@ -4,7 +4,9 @@ import { scalarContent } from './slotContent.js';
 
 
 // Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
-export type OrderedListItem = { content?: unknown; children?: OrderedListInput[] };
+export type OrderedListItem = {
+  /** @slot item */
+  content?: unknown; children?: OrderedListInput[] };
 
 export type OrderedListInput = unknown;
 
@@ -21,7 +23,7 @@ defineOptions({ name: 'OrderedList', inheritAttrs: false });
 const props = withDefaults(defineProps<OrderedListProps>(), { nested: false, class: undefined, path: () => [] });
 defineSlots<{ item?: (scope: { item: OrderedListInput; index: number; path: number[] }) => unknown }>();
 
-function isItem(item: unknown): item is OrderedListItem { return typeof item === 'object' && item !== null && 'content' in item; }
+function isItem(item: unknown): item is OrderedListItem { return typeof item === 'object' && item !== null && ('content' in item || 'children' in item); }
 function children(item: unknown): OrderedListInput[] { return isItem(item) && Array.isArray(item.children) ? item.children : []; }
 </script>
 

@@ -316,6 +316,7 @@ describe("one geometry source — token, canvas and renderer agree", () => {
       subtitle: 2,
       "legend-label": 2,
       "edge-label": 1,
+      "flow-badge": 1,
     });
   });
 });
@@ -773,7 +774,7 @@ describe("slot mechanics — both renderers", () => {
 
 describe("zero-ellipsis and token discipline — shipped sources", () => {
   const SOURCES = [
-    "../diagramCardModel.ts",
+    "../../../../diagram-canvas/src/presentation/diagramCardModel.ts",
     "../DiagramCard.svelte",
     "../DiagramCardHeader.svelte",
     "../diagram-icons/registry.ts",
@@ -823,7 +824,7 @@ describe("zero-ellipsis and token discipline — shipped sources", () => {
   });
 
   it("the shared model imports nothing (one geometry source leaf)", () => {
-    const model = readFileSync(resolve(HERE, "../diagramCardModel.ts"), "utf8");
+    const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
     expect(model).not.toMatch(/^import /m);
     expect(model).not.toMatch(/from ["']/);
   });

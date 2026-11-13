@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { useSlots, useAttrs } from 'vue';
+import { computed, useSlots, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
-export type HeaderNavItem = { label: unknown; href: string };
+export type HeaderNavItem = {
+  /** @slot nav-label */
+  label?: unknown; href: string };
 export type HeaderAccount = {
   name?: string;
   email?: string;
@@ -35,11 +37,11 @@ defineSlots<{
   'nav-label'?: (scope: { item: HeaderNavItem }) => unknown;
 }>();
 const attrs = useAttrs();
+const links = computed(() => props.navigation ?? props.navItems ?? []);
 </script>
 
 <template>
-  <template v-for="links in [props.navigation ?? props.navItems ?? []]"
-    ><header
+  <header
       v-bind="{ ...(attrs), class: (
         classNames(
           'st-header',
@@ -91,5 +93,5 @@ const attrs = useAttrs();
             }}</span></template
           ><template v-else></template></div></template
       ><template v-else></template></header
-  ></template>
+  >
 </template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type RadioProps = {
@@ -24,7 +24,7 @@ const emit = defineEmits<{
   change: [event: Event];
 }>();
 
-const attrs = useAttrs();
+
 const isChecked = computed(() =>
   props.checked ?? (props.modelValue !== undefined && props.modelValue === props.value),
 );

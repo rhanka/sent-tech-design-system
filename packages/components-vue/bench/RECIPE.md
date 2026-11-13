@@ -583,6 +583,16 @@ Badge keeps all public types and its span, classes, slot and attrs. Tabs keeps s
   duplicate callback/emit paths and new slot spelling with the TypeScript AST.
   Its checks apply to all SFCs and to extracted TypeScript helpers, including
   dataviz. The legacy renderer allow-list cannot grow.
+- K25 also checks optional rich props/item fields, declared and rendered slots,
+  local rich-type aliases, VNode import aliases, render callbacks, String-before-
+  scalarContent mistakes, unused Vue setup bindings/imports and explicit style
+  composition. Use @slot only to document an existing scoped/alias slot name;
+  @vaporData marks an input that the original consumes as data, never children.
+  Keep caller styles last when the h() root inherited attrs. The two original
+  explicit positioning SFCs document @attrsStyle owned-last. Compare conflicting
+  properties, late updates, string/object/array styles and caller class order.
+  Published type checks compare the complete Classic/Vapor type surface and each
+  resolved declaration; runtime export-name parity alone is insufficient.
 - G5 compares complete mounted DOM, including teleports and live form/media
   properties, against the independently mounted Classic fixture. It canonicalizes
   Vue markers, generated IDs, CSS declarations and class token redundancy; text,

@@ -119,11 +119,13 @@ if (!stable) {
         continue;
       }
       const name = basename(component, '.vue');
+      const typeNames = node.exportClause?.elements.filter(item => item.isTypeOnly).map(item => item.getText(index)) ?? [];
+      if (typeNames.length) entries.push(`export { ${typeNames.join(', ')} } from '${shared}';`);
       for (const item of node.exportClause?.elements ?? []) {
         if (item.isTypeOnly) continue;
         if ((item.propertyName ?? item.name).text === 'default' || (item.propertyName ?? item.name).text === name)
           entries.push(`export { default as ${item.name.text} } from '${specifier(relative(resolve('src'), component))}.js';`);
-        else entries.push(`export { ${item.getText(index)} } from '${specifier(relative(resolve('src'), component))}.js';`);
+        else if (path.endsWith('.vue')) entries.push(`export { ${item.getText(index)} } from '${specifier(relative(resolve('src'), component))}.js';`);
       }
     } else if (!path.startsWith('.') || native(resolve('src', path.replace(/\.js$/, '.ts')))) {
       entries.push(node.getText(index).replace(path, shared));

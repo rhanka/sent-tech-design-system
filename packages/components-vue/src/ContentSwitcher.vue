@@ -8,7 +8,9 @@ export type ContentSwitcherSize = 'sm' | 'md' | 'lg';
 export type ContentSwitcherItem = {
   id?: string;
   value?: string;
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
   disabled?: boolean;
 };
 

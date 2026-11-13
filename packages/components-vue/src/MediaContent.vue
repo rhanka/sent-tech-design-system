@@ -31,6 +31,7 @@ const props = withDefaults(defineProps<MediaContentProps>(), {
 
 const hasMedia = computed(() => Boolean(props.media?.trim()));
 const hasCaption = computed(() => Boolean(props.title || props.caption || props.byline));
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

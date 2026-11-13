@@ -66,6 +66,30 @@ import { ForceGraph as Presenter } from '@sentropic/design-system-vue';
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
+it('should keep compatibility helpers separate from native SFC named exports', () => {
+  const root = mkdtempSync(join(tmpdir(), 'vue-native-exports-'));
+  try {
+    symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
+    const pkg = join(root, 'packages/components-vue');
+    mkdirSync(join(pkg, 'src'), { recursive: true });
+    writeFileSync(join(pkg, 'package.json'), '{"type":"module"}');
+    writeFileSync(join(pkg, 'src/ForceGraph.ts'), "export { default as ForceGraph } from './ForceGraph.vue'; export { nodeShapePath, edgeDashArray } from '@sentropic/graph/presentation';");
+    writeFileSync(join(pkg, 'src/ForceGraph.vue'), '<script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/Filter.vue'), '<script lang="ts">export const toSpec = (value: string) => value;</script><script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/index.ts'), "export { ForceGraph, nodeShapePath, edgeDashArray } from './ForceGraph.js';\nexport { default as Filter, toSpec } from './Filter.vue';");
+    const build = spawnSync(process.execPath, [resolve('scripts/vue-sfc-build.mjs')], { cwd: pkg, encoding: 'utf8' });
+    expect(build.status, build.stdout + build.stderr).toBe(0);
+    for (const file of ['index.js', 'index.d.ts']) {
+      const entry = readFileSync(join(pkg, 'dist/vapor', file), 'utf8');
+      expect(entry.match(/nodeShapePath/g)).toHaveLength(1);
+      expect(entry.match(/edgeDashArray/g)).toHaveLength(1);
+      expect(entry).toContain("from '@sentropic/graph/presentation'");
+      expect(entry).toContain("export { toSpec } from './Filter.vue.js'");
+      expect(entry).not.toMatch(/export \{ (?:nodeShapePath|edgeDashArray) \} from '.\/ForceGraph/);
+    }
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 it('should compile a future dataviz SFC with imported props, slots and declarations in both modes', () => {
   const root = mkdtempSync(join(tmpdir(), 'dataviz-sfc-'));
   try {

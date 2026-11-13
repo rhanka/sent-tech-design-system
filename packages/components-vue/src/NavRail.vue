@@ -4,11 +4,17 @@ import { classNames } from './classNames.js';
 
 export interface NavRailItem {
   id: string;
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
   href?: string;
   active?: boolean;
   disabled?: boolean;
+
+  /** @slot item-badge */
   badge?: unknown;
+
+  /** @slot item-icon */
   icon?: unknown;
 }
 

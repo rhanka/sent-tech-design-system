@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Badge.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1d0b6df57724e45c4577076042ad36cf1ae4d0af5d1620f6cf3febee6b0f5436",
+      "digest": "sha256:c2bd8e7bb2d7b5315a85da2d9c300fc38db250d1e0f34003f8453cdf003ee84b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Badge.vue",
@@ -40,7 +40,7 @@
     "en": "Compact label with tone (success/warning/...).",
     "fr": "Étiquette compacte avec tonalité (success/warning/...)."
   },
-  "digest": "sha256:1304529ef2929b80ee6103ab57fe2bfe9e2e5160fea30f4bbe74f467996a02f7",
+  "digest": "sha256:758d78f404d3e5c3216cb8231e6cb4d146f8634a27d1172d19c94fb2d1d65a58",
   "displayName": "Badge",
   "format": "component-entry/v1",
   "frameworks": [

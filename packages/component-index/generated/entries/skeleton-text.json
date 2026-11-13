@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkeletonText.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:07d1598e18e73ef4900dcab16d2f72b361cbef74bacb9fa47a87b3d7ef92aea2",
+  "digest": "sha256:dedbad17ed52752297ee493c262d07d673d6ab35271585de4e3481507a1acdea",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [

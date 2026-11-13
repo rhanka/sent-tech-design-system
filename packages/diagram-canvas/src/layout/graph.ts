@@ -1,3 +1,4 @@
+import { relationBaseType, genericProfile } from "@sentropic/diagram-core";
 /**
  * Reading a `generic@1` `SemanticDocument` into the engine's working graph.
  *
@@ -42,12 +43,14 @@ export interface LayoutNode {
 }
 
 export interface LayoutEnd {
+  readonly slot?: string;
   readonly entity: EntityRef;
   /** Set when the link endpoint targets a semantic port: the view then gets a port occurrence for it. */
   readonly port?: PortRef;
 }
 
 export interface LayoutEdge {
+  readonly flowRank?: number;
   readonly id: RelationRef;
   readonly source: LayoutEnd;
   readonly target: LayoutEnd;
@@ -83,6 +86,7 @@ export function readGraph(
 
   for (const key of Object.keys(document.entities).sort(byString)) {
     const entity = document.entities[key]!;
+    if (entity.type === "flow-scenario") continue;
     if (entity.profile !== GENERIC_PROFILE_ID) {
       refusals.push({
         code: "entity-profile-unsupported",
@@ -111,13 +115,13 @@ export function readGraph(
   for (const key of Object.keys(document.relations).sort(byString)) {
     const relation = document.relations[key]!;
     const role = (name: string) => relation.endpoints.find((endpoint) => endpoint.role === name)?.target;
-    if (relation.profile === GENERIC_PROFILE_ID && relation.type === "contains") {
+    if (relation.profile === GENERIC_PROFILE_ID && relationBaseType(document, genericProfile, relation) === "contains") {
       const parent = role("parent") as EntityRef | undefined;
       const child = role("child") as EntityRef | undefined;
       if (parent !== undefined && child !== undefined) parentOf.set(child, parent);
       continue;
     }
-    if (relation.profile !== GENERIC_PROFILE_ID || relation.type !== "link") {
+    if (relation.profile !== GENERIC_PROFILE_ID || relationBaseType(document, genericProfile, relation) !== "link") {
       refusals.push({
         code: "relation-type-unsupported",
         path: `relations.${key}.type`,

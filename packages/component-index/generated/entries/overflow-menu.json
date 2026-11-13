@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OverflowMenu.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,10 +21,10 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:74972d536161e29a031a8bc75c8240afafa11029c870467249cfb4a4f1cb297a",
+      "digest": "sha256:b5b89df30ba8a82a364c92508c1ef90239360346da585f2c183e44b03f09dd4e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/OverflowMenu.ts",
+      "path": "packages/components-vue/src/OverflowMenu.vue",
       "version": "0.41.0-next.0"
     },
     {
@@ -40,7 +40,7 @@
     "en": "Secondary actions menu accessible through a compact trigger.",
     "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
   },
-  "digest": "sha256:83c7378a179faa881b8bbabf1f79eb4672d0eddd2d8dee9ddd28b0162ab03337",
+  "digest": "sha256:760ba410733ecde53d94366c2f9f81cb832b214ee6dedafc4caebf0ca8f0b8f0",
   "displayName": "OverflowMenu",
   "format": "component-entry/v1",
   "frameworks": [

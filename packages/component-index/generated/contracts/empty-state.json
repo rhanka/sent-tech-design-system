@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:1fa9d9b09d94ded65d8e474f3231f066001e1b2eb676be7721addfea27b0962f",
-  "entryDigest": "sha256:a90d55e9656e9785d026f02176e80003192b2551985f4b9e21f9cb0bc5f2f937",
+  "digest": "sha256:be1b2a429e6d7fc89b54366e34f4e3029793fbf960400573720dcf92e7ff4be2",
+  "entryDigest": "sha256:1db1b234947ed072725d742d1596d84fd380e27b24896bd769d573eb37d21b2f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -176,9 +176,6 @@
           "message": {},
           "title": {}
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -203,11 +200,20 @@
       ],
       "slots": [
         {
+          "name": "action"
+        },
+        {
           "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:e8feb7656ace4d37ba62fdf83ea7f04d3fcf3c045502780ed9109ffe3facccab",
+        "declarationDigest": "sha256:7fd317c1f570889d85282827b1f6f6a9adddf3809f1ccfac1a511f40c25b1905",
         "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",

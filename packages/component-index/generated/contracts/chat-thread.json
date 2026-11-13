@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:4b6067b5b16de06c2da39f0c30c65c1da24958db27d09c1ef5f86652bc6b7525",
-  "entryDigest": "sha256:cfe7bfe63a83ed2ccb1dd9c16b88144a61e72ba6b111a951e08542a1dc0f9e82",
+  "digest": "sha256:6064a2181d0a3a693b7f3e6dab037a29bb858ed598760872cef66a38f79e1f36",
+  "entryDigest": "sha256:26461d9f2da9e8260d9435612bfa6ab9a566321bdb25aaa06f47069cbc972ebb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatThreadProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -324,7 +324,6 @@
                 }
               },
               "required": [
-                "content",
                 "id"
               ],
               "type": "object"
@@ -395,7 +394,6 @@
                   }
                 },
                 "required": [
-                  "content",
                   "id"
                 ],
                 "type": "object"
@@ -409,7 +407,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:9b21278f5af526fda1c24bafc20590720a8ecdd71558fad267c0ec290bb40608",
+        "declarationDigest": "sha256:30e6203e3e0d2568dd171a92596e898b2a69e87bcf5cc3e5d682771b3c27fb58",
         "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",

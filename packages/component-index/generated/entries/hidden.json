@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Hidden.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4a6cb6f9dfb479fff3695459036fd0ad875e9e6eb3a6734e51cb2de77b8676f9",
+      "digest": "sha256:24edd3a981db9652f9e9cfe62f610d2c98c833bd166890ac04e17cb99ff1b1c8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Hidden.vue",
@@ -40,7 +40,7 @@
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:f0c1e8cb8333c5c636056fed9deddd6cb448f5fa6d5f72710f3320f6de5f1b9e",
+  "digest": "sha256:0eceba12a9a69b5ba3cceac2ab46c358ac5dcf306e9193cfcba362b81255e5e9",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [
