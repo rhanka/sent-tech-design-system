@@ -3,10 +3,16 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { parseBarrelFile, parseBarrelText } from "../../src/generator/barrels.js";
+import { parseBarrelFile, parseBarrelText, resolveModuleFile } from "../../src/generator/barrels.js";
 import { loadBaseline } from "../../src/generator/emit.js";
 
 const PACKAGE_DIR = join(import.meta.dirname, "..", "..");
+
+it("resolves template SFCs directly and keeps JS shims unambiguous", () => {
+  const source = join(PACKAGE_DIR, "..", "components-vue", "src");
+  expect(resolveModuleFile(source, "./DiagramCard.vue")).toBe(join(source, "DiagramCard.vue"));
+  expect(resolveModuleFile(source, "./ForceGraph.js")).toBe(join(source, "ForceGraph.ts"));
+});
 
 describe("K1b barrel enum/namespace/interface forms", () => {
   const fakeBarrel = [
