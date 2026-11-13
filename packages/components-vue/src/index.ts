@@ -42,8 +42,8 @@ export type {
   FileUploadItem,
   FileUploadStatus,
 } from "./FileUploader.js";
-export { Footer } from "./Footer.js";
-export type { FooterProps, FooterLink, FooterColumn } from "./Footer.js";
+export { default as Footer } from "./Footer.vue";
+export type { FooterProps, FooterLink, FooterColumn } from "./Footer.vue";
 export { Form } from "./Form.js";
 export type { FormProps, FormStatus } from "./Form.js";
 export { FormGroup } from "./FormGroup.js";
