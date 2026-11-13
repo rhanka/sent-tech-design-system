@@ -10,14 +10,10 @@
   /**
    * `DiagramCard` — the atomic diagram card (DC-1).
    *
-   * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5. Fixed 460 × 200 box, square
-   * corners, footer pinned at 9.25, one 1 px rule, no shortening. Overflow
-   * = refusal (owner criterion): any `card-overflow` — a too-wide line, a
-   * line-count overflow, or a header+body height that does not fit above the
-   * pinned rule — renders NO normal card; the root carries the host-visible
-   * refusal state `data-card-refused="<slot>"` and the diagnostics keep the
-   * original slot text. An icon name with no glyph data raises
-   * `card-icon-unknown` and the slot collapses (DIF-14).
+   * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5, amended by owner A2/A11.
+   * The 460 px card grows with its full content. Explicit hard-cap overflow
+   * remains diagnostic and every slot is retained. A missing icon resolves
+   * to the visible unknown glyph.
    *
    * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
    * host publishes the current camera zoom as `--st-diagram-zoom` on the

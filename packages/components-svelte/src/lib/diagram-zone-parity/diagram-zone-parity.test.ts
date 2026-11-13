@@ -265,7 +265,8 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(component.diagramZone.toggleAllocation).toBe("var(--st-component-diagramCard-toggleAllocation)");
     expect(component.diagramZone.toggleBoxSize).toBe("var(--st-component-diagramCard-toggleBoxSize)");
     expect(component.diagramZone.headerTextInset).toBe("178px");
-    expect(component.diagramZone.toggleTopInset).toBe("10px");
+    expect(component.diagramZone.toggleTopInset).toBe("var(--st-component-diagramZone-toggleInset)");
+    expect(component.diagramZone.toggleInset).toBe("8px");
     expect(component.diagramZone.footerBottomInset).toBe("var(--st-component-diagramCard-footerBottomInset)");
     expect(component.diagramZone.proposedDashArray).toBe("4 5");
 

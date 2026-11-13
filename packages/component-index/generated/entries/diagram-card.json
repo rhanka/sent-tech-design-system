@@ -1,11 +1,16 @@
 {
+  "anatomy": {
+    "contractId": "diagram-anatomy/v1",
+    "digest": "sha256:01764a400554321c2e426833d3a0e5bd84d910ff0eb3f22bd1ce5311581cb47d",
+    "path": "packages/diagram-canvas/contracts/diagram-anatomy.v1.json"
+  },
   "category": "layout",
   "componentId": "diagram-card",
   "dataClass": "public-safe",
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:77b34f36fb6b24ebc718651959dbe4f7a9d540e4db985b80b506b9174d24d33d",
+      "digest": "sha256:cbff6b040ea76c647a4cabfdc65b3e2bbf94bd86f7c9e84b858c069154accba0",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramCard.svelte",
@@ -13,7 +18,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:0dc7eea5c17645ecd9e83dd110d57f38e36250a57da30c9ee3a2d81fd7e593f0",
+      "digest": "sha256:bcf566b6d0acdb97580ae0cd9611101aff322df111b6a95ba1ac1484a84bcd61",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramCard.vue",
@@ -24,7 +29,7 @@
     "en": "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit.",
     "fr": "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn."
   },
-  "digest": "sha256:87ef21a88b1e7b53eeb065d3c7a6c23fae65515b06b67f5f04c6de746c993ab3",
+  "digest": "sha256:df2aa7609bc69e4f9ad49b97bb94ed974c76d80bb8a2bafb773209a511cd2d8e",
   "displayName": "DiagramCard",
   "format": "component-entry/v1",
   "frameworks": [

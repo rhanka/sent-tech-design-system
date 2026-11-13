@@ -1752,6 +1752,27 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // text (DC-D4 zero-ellipsis). Colours alias the semantic layer only;
     // per-tone accent/fill resolution arrives with the L-R17 tone tokens
     // (DC-2); `tone` is carried as a `data-tone` attribute until then.
+    diagramErd: {
+      fontFamily: "var(--st-font-mono)",
+      "width": "460px",
+      "headerHeight": "64px",
+      "rowHeight": "32px",
+      "lineHeight": "24px",
+      "padding": "12px",
+      "keyWidth": "56px",
+      "nameWidth": "170px",
+      "typeWidth": "170px",
+      "fontSize": "18px",
+      "titleFontSize": "24px",
+      "markerLength": "24px",
+      "markerHalfWidth": "8px",
+      "markerRadius": "4px",
+      "markerGap": "4px",
+      "strokeWidth": "1.5px",
+      "gapInline": "160px",
+      "gapBlock": "120px",
+      "labelWidth": "240px"
+    },
     diagramCard: {
       width: "460px",
       height: "200px",
@@ -1785,6 +1806,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       footerBottomInset: "9.25px",
       toggleAllocation: "66px",
       toggleBoxSize: "32px",
+      toggleInset: "8px",
       foldedHeaderTextWidth: "290px",
       // DC-2a — root-level sibling gaps of a packed scene (spec
       // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5): aliases of the zone gaps.
@@ -1833,7 +1855,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
       toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
       headerTextInset: "178px",
-      toggleTopInset: "10px",
+      toggleTopInset: "var(--st-component-diagramZone-toggleInset)",
       footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
       proposedDashArray: "4 5",
       // DC-2a — row-pack autolayout spacing (spec

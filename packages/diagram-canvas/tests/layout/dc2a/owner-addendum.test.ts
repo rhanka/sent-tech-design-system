@@ -27,8 +27,18 @@ describe('Owner addendum A1–A13',()=>{
  });
  for(const name of ownerFixtureNames())it(`should retain all ${name} cards, icons and complete text (A2/A5/A11)`,()=>{
   const input=ownerInput(name),result=layoutScene(input);
+  if(result.status!=='laid-out')throw new Error(JSON.stringify(result));
   const scene=resolveScene(result,input),fixture=ownerFixture(name);
   for(const channel of result.channels??[])expect(channel.gap, name+' '+channel.id).toBeCloseTo(channel.expected,0);
+  for(const edge of scene.edges)for(const node of scene.nodes.filter(node=>node.kind==='card'||node.kind==='zone'&&node.collapsed)){
+   const box=node.rect;
+   for(let i=1;i<edge.points.length;i++){
+    const a=edge.points[i-1]!,b=edge.points[i]!;
+    const intersects=a.y===b.y?a.y>box.y&&a.y<box.y+box.height&&Math.max(Math.min(a.x,b.x),box.x)<Math.min(Math.max(a.x,b.x),box.x+box.width)
+      :a.x>box.x&&a.x<box.x+box.width&&Math.max(Math.min(a.y,b.y),box.y)<Math.min(Math.max(a.y,b.y),box.y+box.height);
+    expect(intersects,name+' '+edge.occurrence+' over '+node.occurrence).toBe(false);
+   }
+  }
   let refused=0;
   for(const node of scene.nodes){
    const source=fixture.cards.find(c=>'entity:'+c.id===node.entity)!;
@@ -56,6 +66,18 @@ describe('Owner addendum A1–A13',()=>{
  });
  it('should preserve explicit→binding→role order and diagnose unresolved icons (A2)',()=>{
   const input=ownerInput('vue-globale');const [id,entry]=Object.entries(input.presentation.entities)[0]!;
+  const entity=input.document.entities[id.replace(/^occurrence:e\./,'entity:')]!;
+  const bindingKey=entity.profile+':'+entity.type;
+  const {icon:_icon,...withoutIcon}=entry;
+  const bare:Parameters<typeof resolveScenePresentation>[1]={...input.presentation,entities:{[id]:withoutIcon}};
+  const icon=(presentation:typeof bare,bindings:Parameters<typeof resolveScenePresentation>[2]={})=>resolveScenePresentation(input.document,presentation,bindings).presentation.entities[id]!.icon;
+  expect(icon({...bare,entities:{[id]:{...entry,icon:'api'}}},{[bindingKey]:{icon:'db'}})).toBe('api');
+  expect(icon(bare,{[bindingKey]:{icon:'db',role:'runtime'}})).toBe('db');
+  expect(icon(bare,{[bindingKey]:{role:'runtime'}})).toBe('server');
+  expect(icon(bare)).toBe(entry.form==='card'?'base':'cluster');
+  const missing=resolveScenePresentation(input.document,bare,{[bindingKey]:{role:'unbound-role'}});
+  expect(missing.missing).toEqual([id]);expect(missing.presentation.entities[id]!.icon).toBe('unknown');
+  for(const shape of ['flow','erd','note'] as const)expect(resolveScenePresentation(input.document,bare,{[bindingKey]:{shape}}).missing).toEqual([]);
   const presentation={...input.presentation,entities:{[id]:{...entry,icon:'not-a-glyph'}}};
   const result=layoutScene({...input,presentation});if(result.status!=='laid-out')throw new Error('refused');
   expect(result.warnings.some(w=>w.code==='card-icon-missing')).toBe(true);
@@ -88,7 +110,7 @@ it('should comb three parallel routes at the channel pitch and centre them (A1)'
  const seed=ownerInput('vue-globale');const ids=Object.entries(seed.document.entities).filter(([,entity])=>entity.type==='node').slice(0,2).map(([id])=>id);
  const occurrence=(id:string)=>'occurrence:e.'+id.slice('entity:'.length);
  const document={...seed.document,entities:Object.fromEntries(ids.map(id=>[id,seed.document.entities[id]])),relations:Object.fromEntries([0,1,2].map(i=>['relation:parallel'+i,{id:'relation:parallel'+i,profile:'generic@2',type:'link',endpoints:[{role:'source',target:ids[0]},{role:'target',target:ids[1]}],attributes:{}}]))};
- const input={...seed,document:document as typeof seed.document,presentation:{...seed.presentation,entities:Object.fromEntries(ids.map(id=>[occurrence(id),seed.presentation.entities[occurrence(id)]!]))},collapsed:[],hints:{rootOrder:ids} as never};
+ const input={...seed,document:document as unknown as typeof seed.document,presentation:{...seed.presentation,entities:Object.fromEntries(ids.map(id=>[occurrence(id),seed.presentation.entities[occurrence(id)]!]))},collapsed:[],hints:{rootOrder:ids} as never};
  const result=layoutScene(input);if(result.status!=='laid-out')throw new Error('fixture refused');const scene=resolveScene(result,input);
  expect(scene.edges).toHaveLength(3);const lanes=scene.edges.map(edge=>edge.points[1]!.x).sort((a,b)=>a-b);
  expect(lanes[1]!-lanes[0]!).toBe(14);expect(lanes[2]!-lanes[1]!).toBe(14);

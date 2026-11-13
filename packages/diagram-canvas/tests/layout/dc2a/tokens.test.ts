@@ -75,13 +75,14 @@ describe("DC-2a tokens (AC-6)", () => {
     const input = sceneInput("case-skills-r9", "unfolded");
     const hints = { rootOrder: input.rootOrder };
     const base = layScene(input, {}, hints);
-    const tight = layScene(input, { metrics: { rowGapInline: 16, rowGapBlock: 16 } }, hints);
-    const first = base.rects.get("harness-router")!;
-    const second = base.rects.get("method-using-harness")!;
-    const tightFirst = tight.rects.get("harness-router")!;
-    const tightSecond = tight.rects.get("method-plan")!;
-    expect(second.x - (first.x + first.width)).toBeGreaterThanOrEqual(24);
-    expect(tightSecond.x - (tightFirst.x + tightFirst.width)).toBeLessThan(24);
+    const wider = layScene(input, { metrics: { gapMin: 150, gapBase: 150, gapMinBlock: 120, gapBaseBlock: 120 } }, hints);
+    const baseHorizontal = base.channels!.filter(channel => channel.axis === "horizontal");
+    const widerHorizontal = wider.channels!.filter(channel => channel.axis === "horizontal");
+    expect(baseHorizontal.length).toBeGreaterThan(0);
+    expect(widerHorizontal.length).toBeGreaterThan(0);
+    expect(Math.min(...baseHorizontal.map(channel => channel.gap))).toBeLessThan(150);
+    expect(widerHorizontal.every(channel => channel.gap >= 150 && Math.abs(channel.gap - channel.expected) <= 1)).toBe(true);
+    expect(wider.channels!.filter(channel => channel.axis === "vertical").every(channel => channel.gap >= 120)).toBe(true);
   });
 
   it("a sibling-gap override above the axis cap refuses; an invalid objective refuses", () => {

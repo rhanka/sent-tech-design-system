@@ -4,6 +4,7 @@ import {
   documentRef, entityRef, occurrenceRef, relationRef, type Entity, type Relation, type SemanticDocument,
 } from "@sentropic/diagram-core";
 import { rectsIntersect } from "../../src/index.js";
+import { routesConflict } from "../../src/layout/route.js";
 import { layoutScene, resolveScene } from "../../src/presentation/diagramSceneModel.js";
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "../../src/presentation/diagramCardModel.js";
 
@@ -30,6 +31,9 @@ it("should comb a saturated labelled channel without losing labels or covering c
   const scene = resolveScene(result, input);
   expect(scene.labels).toHaveLength(14);
   expect(result.warnings.filter(warning => warning.code === "label-unplaced" || warning.code === "route-obstructed")).toEqual([]);
+  for (const [index, edge] of scene.edges.entries()) {
+    for (const other of scene.edges.slice(index + 1)) expect(routesConflict(edge.points, other.points)).toBe(false);
+  }
   for (const [index, label] of scene.labels.entries()) {
     for (const node of scene.nodes) expect(rectsIntersect(label.box, node.rect)).toBe(false);
     for (const other of scene.labels.slice(index + 1)) expect(rectsIntersect(label.box, other.box)).toBe(false);

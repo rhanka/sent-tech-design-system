@@ -245,7 +245,8 @@ export function evaluateVisibility({ document, view }: VisibilityInput): Visibil
       });
       continue;
     }
-    if (!visible.has(occurrence.ownerOccurrence)) {
+    const foldedErd = document.ports[occurrence.port]?.profile === 'erd@1' && Object.values(view.groups).some(group => group.occurrence === occurrence.ownerOccurrence && group.collapsed);
+    if (foldedErd || !visible.has(occurrence.ownerOccurrence)) {
       exclusions.push({
         occurrence: occurrence.id,
         kind: "port",

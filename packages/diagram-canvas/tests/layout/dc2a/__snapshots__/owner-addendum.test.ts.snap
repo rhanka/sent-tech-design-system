@@ -1,0 +1,3210 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Owner addendum A1–A13 > should retain all memory cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.ac-control-events",
+      [
+        "2 liaisons",
+        "lit · valide avant fusion",
+        "ajoute à · aujourd'hui",
+      ],
+      {
+        "height": 90,
+        "width": 320,
+        "x": 757,
+        "y": 263,
+      },
+    ],
+    [
+      "occurrence:r.link.ac-live-events",
+      [
+        "écrit · cible, à chaque PR",
+      ],
+      {
+        "height": 22,
+        "width": 220.5029184,
+        "x": 112.7485408,
+        "y": 582,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-claude",
+      [
+        "9 liaisons",
+        "appelle · outils h2a_*",
+        "sondage",
+        "lance · hooks de session",
+        "lance · app-server",
+        "lance · hooks Gemini",
+        "lance · hooks Hermes",
+        "sondage · cycle de vie Muse",
+        "lance · plugin OpenCode",
+        "lance · post_agent Vibe",
+      ],
+      {
+        "height": 300,
+        "width": 320,
+        "x": 360,
+        "y": -304,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-h2a-mesh",
+      [
+        "3 liaisons",
+        "appelle · mémoire (propositions,",
+        "questions)",
+        "appelle · mandats et rôles",
+        "déployé comme",
+      ],
+      {
+        "height": 142,
+        "width": 320,
+        "x": 433,
+        "y": 204,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-mcp-agy",
+      [
+        "8 liaisons",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+        "appelle · outils MCP",
+      ],
+      {
+        "height": 270,
+        "width": 320,
+        "x": -324,
+        "y": 75,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-memctl",
+      [
+        "appelle · liste noire",
+      ],
+      {
+        "height": 22,
+        "width": 169.72935360000005,
+        "x": 716.6353232,
+        "y": 582,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-track-mesh",
+      [
+        "appelle · vérifie le mandat",
+      ],
+      {
+        "height": 22,
+        "width": 229.32312000000005,
+        "x": 987.33844,
+        "y": 204,
+      },
+    ],
+    [
+      "occurrence:r.link.do-h2a-track",
+      [
+        "dépend de",
+      ],
+      {
+        "height": 22,
+        "width": 94.48356479999998,
+        "x": 1040.7582176,
+        "y": -26,
+      },
+    ],
+    [
+      "occurrence:r.link.eb-track-in-h2a",
+      [
+        "exécuté par",
+      ],
+      {
+        "height": 22,
+        "width": 104.1502848,
+        "x": 1081,
+        "y": 267.5,
+      },
+    ],
+    [
+      "occurrence:r.link.in-track",
+      [
+        "lance · écritures du suivi",
+      ],
+      {
+        "height": 22,
+        "width": 216.053808,
+        "x": 689.9730959999999,
+        "y": -327,
+      },
+    ],
+    [
+      "occurrence:r.link.op-live",
+      [
+        "2 liaisons",
+        "opère · sert la mémoire",
+        "route · engram_memory_*",
+      ],
+      {
+        "height": 90,
+        "width": 320,
+        "x": 360,
+        "y": -398,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.host-poste",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.sys-engram",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 0,
+        "y": 357,
+      },
+    ],
+    [
+      "occurrence:e.sys-h2a",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 580,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.sys-mesh",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 580,
+        "y": 357,
+      },
+    ],
+    [
+      "occurrence:e.sys-track",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1136,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.act-memctl",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1136,
+        "y": 357,
+      },
+    ],
+    [
+      "occurrence:e.st-events",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 0,
+        "y": 629,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cat-mcp cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [],
+  "nodes": [
+    [
+      "occurrence:e.cat-mcp",
+      {
+        "height": 736.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.mcp-comments",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.mcp-connectors",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.mcp-tools",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 16,
+        "y": 478.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-central cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-ai-api",
+      [
+        "MCP via façade",
+      ],
+      {
+        "height": 22,
+        "width": 137.59915200000003,
+        "x": 4671.200424,
+        "y": 1444.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ai-cowork",
+      [
+        "Cowork connection",
+      ],
+      {
+        "height": 22,
+        "width": 167.36680320000002,
+        "x": 2236.3165984,
+        "y": 410.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ai-sec",
+      [
+        "Custody and rights",
+      ],
+      {
+        "height": 22,
+        "width": 165.7721472,
+        "x": 5603.6139264,
+        "y": 640.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-ai",
+      [
+        "Exposes AI",
+      ],
+      {
+        "height": 22,
+        "width": 97.75190400000002,
+        "x": 5633.124048,
+        "y": 1190.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-catalog",
+      [
+        "Exposes catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 166.57915200000008,
+        "x": 5902.710424,
+        "y": 1201.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-cluster",
+      [
+        "Integration",
+      ],
+      {
+        "height": 22,
+        "width": 95.291376,
+        "x": 6324.354312,
+        "y": 1227.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-comments",
+      [
+        "Exposes MCP harness",
+      ],
+      {
+        "height": 22,
+        "width": 198.41380800000002,
+        "x": 5118.793096,
+        "y": 1212.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-connectors",
+      [
+        "MCP broker",
+      ],
+      {
+        "height": 22,
+        "width": 103.38279359999999,
+        "x": 5344.3086032,
+        "y": 1258.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-mcp",
+      [
+        "Exposes MCP tools",
+      ],
+      {
+        "height": 22,
+        "width": 171.02866560000004,
+        "x": 4943.7644304,
+        "y": 1201.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-provider",
+      [
+        "Provider integrations",
+      ],
+      {
+        "height": 22,
+        "width": 181.83744960000004,
+        "x": 6549.5812752,
+        "y": 1181.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-sec",
+      [
+        "Authorisation",
+      ],
+      {
+        "height": 22,
+        "width": 117.41999999999999,
+        "x": 5980.58,
+        "y": 952.09375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-apis-wf",
+      [
+        "Calls",
+      ],
+      {
+        "height": 22,
+        "width": 44.970000000000006,
+        "x": 6293.515,
+        "y": 1586.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-artifacts-infra",
+      [
+        "Release to deploy",
+      ],
+      {
+        "height": 22,
+        "width": 158.90101440000004,
+        "x": 5706.0494928,
+        "y": 1551.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-canvas-mcp",
+      [
+        "MCP / ui:// connection",
+      ],
+      {
+        "height": 22,
+        "width": 208.86777600000008,
+        "x": 3768.566112,
+        "y": 1159.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-catalog-artifacts",
+      [
+        "References / hosting",
+      ],
+      {
+        "height": 22,
+        "width": 187.92032640000008,
+        "x": 4924.0398368,
+        "y": 1690.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-cli-api",
+      [
+        "CLI access",
+      ],
+      {
+        "height": 22,
+        "width": 97.35817920000001,
+        "x": 4514.8209104,
+        "y": 1480.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-cloud-api",
+      [
+        "Cloud access",
+      ],
+      {
+        "height": 22,
+        "width": 119.4670464,
+        "x": 3996.7664768,
+        "y": 1508.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-cloud-catalog",
+      [
+        "Syncs catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 144.84425280000005,
+        "x": 2884.5778736,
+        "y": 603.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-inbox",
+      [
+        "Authorised delivery",
+      ],
+      {
+        "height": 22,
+        "width": 167.34724800000004,
+        "x": 5414.826376,
+        "y": 1629.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-sec",
+      [
+        "Authorisation",
+      ],
+      {
+        "height": 22,
+        "width": 117.41999999999999,
+        "x": 4972.29,
+        "y": 824.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-store",
+      [
+        "Persists annotation",
+      ],
+      {
+        "height": 22,
+        "width": 172.58421120000008,
+        "x": 3622,
+        "y": 1205.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-cowork-api",
+      [
+        "Cowork access",
+      ],
+      {
+        "height": 22,
+        "width": 133.58307839999998,
+        "x": 4516.2084608000005,
+        "y": 1954.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-dossier-annotations",
+      [
+        "Feedback",
+      ],
+      {
+        "height": 22,
+        "width": 85.25028479999999,
+        "x": 1943.8748576,
+        "y": 2471,
+      },
+    ],
+    [
+      "occurrence:r.link.e-dossier-diagram",
+      [
+        "Central diagram",
+      ],
+      {
+        "height": 22,
+        "width": 140.78906880000002,
+        "x": 2207.1054656,
+        "y": 2479,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-catalog",
+      [
+        "Canvas / UI descriptors",
+      ],
+      {
+        "height": 22,
+        "width": 210.87611520000007,
+        "x": 1728.9987423999999,
+        "y": 2487,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-comments",
+      [
+        "Annotate via MCP façade",
+      ],
+      {
+        "height": 22,
+        "width": 222.137088,
+        "x": 2709.931456,
+        "y": 1503.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-components",
+      [
+        "UI rendering",
+      ],
+      {
+        "height": 22,
+        "width": 107.79279359999998,
+        "x": 1648,
+        "y": 2439,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-store",
+      [
+        "Neutral serialization",
+      ],
+      {
+        "height": 22,
+        "width": 176.58093120000007,
+        "x": 2972.2095344,
+        "y": 2507.5,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-ds",
+      [
+        "Diagram Graphs",
+      ],
+      {
+        "height": 22,
+        "width": 143.23024320000002,
+        "x": 1320.3848784,
+        "y": 2455,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-mem",
+      [
+        "Memory contracts",
+      ],
+      {
+        "height": 22,
+        "width": 158.9409312,
+        "x": 2386.0295344,
+        "y": 1105.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-observe",
+      [
+        "Logs and metrics",
+      ],
+      {
+        "height": 22,
+        "width": 152.9163168,
+        "x": 3394.5418416,
+        "y": 2048.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-onto",
+      [
+        "Ontology contracts",
+      ],
+      {
+        "height": 22,
+        "width": 164.96514240000005,
+        "x": 2548.9704656,
+        "y": 1113.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-store",
+      [
+        "Declares surface",
+      ],
+      {
+        "height": 22,
+        "width": 150.0614592,
+        "x": 1857.4692704,
+        "y": 1906.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-focus-agent",
+      [
+        "Focus dossiers",
+      ],
+      {
+        "height": 22,
+        "width": 134.37052800000004,
+        "x": 433.62947199999996,
+        "y": 403.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-focus-dossier",
+      [
+        "Schema and skill",
+      ],
+      {
+        "height": 22,
+        "width": 152.4830784,
+        "x": 1746.2584608,
+        "y": 2009.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-chat",
+      [
+        "Harness and collaboration",
+      ],
+      {
+        "height": 22,
+        "width": 232.55194560000007,
+        "x": 1020.7240271999999,
+        "y": 439.0625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-cli",
+      [
+        "Harness and collaboration",
+      ],
+      {
+        "height": 22,
+        "width": 232.55194560000007,
+        "x": 1594.2240272,
+        "y": 462.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-cowork",
+      [
+        "Harness and collaboration",
+      ],
+      {
+        "height": 22,
+        "width": 232.55194560000007,
+        "x": 1312.7240272,
+        "y": 474.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-tools",
+      [
+        "Publishes its tools",
+      ],
+      {
+        "height": 22,
+        "width": 164.13817920000002,
+        "x": 1978.4309104,
+        "y": 804.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-infra-cloud",
+      [
+        "Application deployment",
+      ],
+      {
+        "height": 22,
+        "width": 205.18656000000004,
+        "x": 4206.90672,
+        "y": 1962.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-infra-observe",
+      [
+        "Deployment receipts",
+      ],
+      {
+        "height": 22,
+        "width": 181.85700480000006,
+        "x": 6964.1429952,
+        "y": 745.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-mesh-h2a",
+      [
+        "A2a messages",
+      ],
+      {
+        "height": 22,
+        "width": 132.401904,
+        "x": 2403.299048,
+        "y": 1970.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-roles-track",
+      [
+        "Mandates and WPs",
+      ],
+      {
+        "height": 22,
+        "width": 172.22959680000002,
+        "x": 712.3852016,
+        "y": 410.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-sec-observe",
+      [
+        "Access audit",
+      ],
+      {
+        "height": 22,
+        "width": 113.83655999999999,
+        "x": 6540.16344,
+        "y": 650.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-track-agent",
+      [
+        "Items",
+      ],
+      {
+        "height": 22,
+        "width": 51.033926400000006,
+        "x": 772.9830368,
+        "y": 462.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-artifacts",
+      [
+        "UI / app hosting",
+      ],
+      {
+        "height": 22,
+        "width": 145.25773440000003,
+        "x": 4224.8711328,
+        "y": 1436.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-resources",
+      [
+        "Logical catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 154.09749120000004,
+        "x": 4659.4512544,
+        "y": 1128.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-ai",
+      [
+        "AI calls",
+      ],
+      {
+        "height": 22,
+        "width": 64.71651840000001,
+        "x": 5642.6417408,
+        "y": 1629.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-observe",
+      [
+        "Traces and receipts",
+      ],
+      {
+        "height": 22,
+        "width": 175.02518400000002,
+        "x": 6970.974816,
+        "y": 1181.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-store",
+      [
+        "Session states",
+      ],
+      {
+        "height": 22,
+        "width": 133.957248,
+        "x": 5313.021376,
+        "y": 1737.875,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.cluster-mesh",
+      {
+        "height": 1973.4375,
+        "width": 3532,
+        "x": 3618,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.design-system",
+      {
+        "height": 798.5625,
+        "width": 1630,
+        "x": 1168,
+        "y": 2067.4375,
+      },
+    ],
+    [
+      "occurrence:e.engram",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 2067.4375,
+      },
+    ],
+    [
+      "occurrence:e.h2a",
+      {
+        "height": 781.5625,
+        "width": 1604,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.legend",
+      {
+        "height": 159.375,
+        "width": 460,
+        "x": 2918,
+        "y": 2067.4375,
+      },
+    ],
+    [
+      "occurrence:e.surfaces",
+      {
+        "height": 781.5625,
+        "width": 1604,
+        "x": 1796,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.cm-catalog",
+      {
+        "height": 1242.125,
+        "width": 2212,
+        "x": 3634,
+        "y": 205.75,
+      },
+    ],
+    [
+      "occurrence:e.cm-cluster",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 6086,
+        "y": 771.3125,
+      },
+    ],
+    [
+      "occurrence:e.cm-security",
+      {
+        "height": 493.5625,
+        "width": 1048,
+        "x": 6086,
+        "y": 205.75,
+      },
+    ],
+    [
+      "occurrence:e.cm-storage",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 3634,
+        "y": 1534.875,
+      },
+    ],
+    [
+      "occurrence:e.cat-mcp",
+      {
+        "height": 736.5625,
+        "width": 1058,
+        "x": 3650,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-ai",
+      {
+        "height": 263,
+        "width": 460,
+        "x": 4804,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-resources",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 5370,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-ui",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 3650,
+        "y": 1231.875,
+      },
+    ],
+    [
+      "occurrence:e.cluster-infra",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 6658,
+        "y": 945.875,
+      },
+    ],
+    [
+      "occurrence:e.cluster-instances",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 6102,
+        "y": 945.875,
+      },
+    ],
+    [
+      "occurrence:e.cm-apis",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 6086,
+        "y": 1322.875,
+      },
+    ],
+    [
+      "occurrence:e.cm-workflow",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 6086,
+        "y": 1648.875,
+      },
+    ],
+    [
+      "occurrence:e.ds-annotations",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1184,
+        "y": 2242,
+      },
+    ],
+    [
+      "occurrence:e.ds-components",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 1184,
+        "y": 2547,
+      },
+    ],
+    [
+      "occurrence:e.ds-diagram",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1766,
+        "y": 2242,
+      },
+    ],
+    [
+      "occurrence:e.ds-dossier",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 2322,
+        "y": 2242,
+      },
+    ],
+    [
+      "occurrence:e.eng-memory",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 16,
+        "y": 2242,
+      },
+    ],
+    [
+      "occurrence:e.eng-ontologies",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 572,
+        "y": 2242,
+      },
+    ],
+    [
+      "occurrence:e.h2a-agent",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 16,
+        "y": 493.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-focus",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-roles",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-track",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1128,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.mcp-comments",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 3666,
+        "y": 554.875,
+      },
+    ],
+    [
+      "occurrence:e.mcp-connectors",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 4232,
+        "y": 554.875,
+      },
+    ],
+    [
+      "occurrence:e.mcp-tools",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 3666,
+        "y": 858.875,
+      },
+    ],
+    [
+      "occurrence:e.sec-access",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 6102,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.sec-observe",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 6658,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.store-artifacts",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 4206,
+        "y": 1709.4375,
+      },
+    ],
+    [
+      "occurrence:e.store-models",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 3650,
+        "y": 1709.4375,
+      },
+    ],
+    [
+      "occurrence:e.surf-ai",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1812,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cli",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2924,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cloud",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 1812,
+        "y": 493.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cowork",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2368,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cluster-mesh cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-ai-sec",
+      [
+        "Custody and rights",
+      ],
+      {
+        "height": 22,
+        "width": 165.7721472,
+        "x": 1992.6139264,
+        "y": 640.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-ai",
+      [
+        "Exposes AI",
+      ],
+      {
+        "height": 22,
+        "width": 97.75190400000002,
+        "x": 2008.124048,
+        "y": 1190.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-catalog",
+      [
+        "Exposes catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 166.57915200000008,
+        "x": 2272.710424,
+        "y": 1198.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-cluster",
+      [
+        "Integration",
+      ],
+      {
+        "height": 22,
+        "width": 95.291376,
+        "x": 2680.354312,
+        "y": 1209.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-comments",
+      [
+        "Exposes MCP harness",
+      ],
+      {
+        "height": 22,
+        "width": 198.41380800000002,
+        "x": 1487.7930959999999,
+        "y": 1205.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-connectors",
+      [
+        "MCP broker",
+      ],
+      {
+        "height": 22,
+        "width": 103.38279359999999,
+        "x": 1713.3086032,
+        "y": 1237.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-mcp",
+      [
+        "Exposes MCP tools",
+      ],
+      {
+        "height": 22,
+        "width": 171.02866560000004,
+        "x": 1690.206904,
+        "y": 1198.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-provider",
+      [
+        "Provider integrations",
+      ],
+      {
+        "height": 22,
+        "width": 181.83744960000004,
+        "x": 2919.5812752,
+        "y": 1181.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-api-sec",
+      [
+        "Authorisation",
+      ],
+      {
+        "height": 22,
+        "width": 117.41999999999999,
+        "x": 2364.58,
+        "y": 934.59375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-apis-wf",
+      [
+        "Calls",
+      ],
+      {
+        "height": 22,
+        "width": 44.970000000000006,
+        "x": 2677.515,
+        "y": 1541.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-artifacts-infra",
+      [
+        "Release to deploy",
+      ],
+      {
+        "height": 22,
+        "width": 158.90101440000004,
+        "x": 2089.0494928,
+        "y": 1516.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-canvas-mcp",
+      [
+        "MCP / ui:// connection",
+      ],
+      {
+        "height": 22,
+        "width": 208.86777600000008,
+        "x": 150.56611199999998,
+        "y": 1155.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-catalog-artifacts",
+      [
+        "References / hosting",
+      ],
+      {
+        "height": 22,
+        "width": 187.92032640000008,
+        "x": 1307.0398367999999,
+        "y": 1668.4375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-inbox",
+      [
+        "Authorised delivery",
+      ],
+      {
+        "height": 22,
+        "width": 167.34724800000004,
+        "x": 1794.326376,
+        "y": 1573.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-sec",
+      [
+        "Authorisation",
+      ],
+      {
+        "height": 22,
+        "width": 117.41999999999999,
+        "x": 1355.29,
+        "y": 824.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-store",
+      [
+        "Persists annotation",
+      ],
+      {
+        "height": 22,
+        "width": 172.58421120000008,
+        "x": 4,
+        "y": 1198.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-infra-observe",
+      [
+        "Deployment receipts",
+      ],
+      {
+        "height": 22,
+        "width": 181.85700480000006,
+        "x": 3348.1429952,
+        "y": 745.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-sec-observe",
+      [
+        "Access audit",
+      ],
+      {
+        "height": 22,
+        "width": 113.83655999999999,
+        "x": 2933.58172,
+        "y": 657.3125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-artifacts",
+      [
+        "UI / app hosting",
+      ],
+      {
+        "height": 22,
+        "width": 145.25773440000003,
+        "x": 599.3711327999999,
+        "y": 1486.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-resources",
+      [
+        "Logical catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 154.09749120000004,
+        "x": 1042.4512544,
+        "y": 1113.875,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-ai",
+      [
+        "AI calls",
+      ],
+      {
+        "height": 22,
+        "width": 64.71651840000001,
+        "x": 2028.1417408,
+        "y": 1545.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-observe",
+      [
+        "Traces and receipts",
+      ],
+      {
+        "height": 22,
+        "width": 175.02518400000002,
+        "x": 3035.987408,
+        "y": 1545.375,
+      },
+    ],
+    [
+      "occurrence:r.link.e-wf-store",
+      [
+        "Session states",
+      ],
+      {
+        "height": 22,
+        "width": 133.957248,
+        "x": 1696.021376,
+        "y": 1681.875,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.cluster-mesh",
+      {
+        "height": 1951.4375,
+        "width": 3534,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.cm-catalog",
+      {
+        "height": 1235.125,
+        "width": 2214,
+        "x": 16,
+        "y": 205.75,
+      },
+    ],
+    [
+      "occurrence:e.cm-cluster",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 2470,
+        "y": 771.3125,
+      },
+    ],
+    [
+      "occurrence:e.cm-security",
+      {
+        "height": 493.5625,
+        "width": 1048,
+        "x": 2470,
+        "y": 205.75,
+      },
+    ],
+    [
+      "occurrence:e.cm-storage",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 16,
+        "y": 1512.875,
+      },
+    ],
+    [
+      "occurrence:e.cat-mcp",
+      {
+        "height": 736.5625,
+        "width": 1058,
+        "x": 32,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-ai",
+      {
+        "height": 263,
+        "width": 460,
+        "x": 1198,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-resources",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1754,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.cat-ui",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 32,
+        "y": 1224.875,
+      },
+    ],
+    [
+      "occurrence:e.cluster-infra",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 3042,
+        "y": 945.875,
+      },
+    ],
+    [
+      "occurrence:e.cluster-instances",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2486,
+        "y": 945.875,
+      },
+    ],
+    [
+      "occurrence:e.cm-apis",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 2470,
+        "y": 1287.875,
+      },
+    ],
+    [
+      "occurrence:e.cm-workflow",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2470,
+        "y": 1592.875,
+      },
+    ],
+    [
+      "occurrence:e.mcp-comments",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 48,
+        "y": 554.875,
+      },
+    ],
+    [
+      "occurrence:e.mcp-connectors",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 614,
+        "y": 554.875,
+      },
+    ],
+    [
+      "occurrence:e.mcp-tools",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 48,
+        "y": 858.875,
+      },
+    ],
+    [
+      "occurrence:e.sec-access",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2486,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.sec-observe",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 3042,
+        "y": 380.3125,
+      },
+    ],
+    [
+      "occurrence:e.store-artifacts",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 588,
+        "y": 1687.4375,
+      },
+    ],
+    [
+      "occurrence:e.store-models",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 32,
+        "y": 1687.4375,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-catalog cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-canvas-mcp",
+      [
+        "MCP / ui:// connection",
+      ],
+      {
+        "height": 22,
+        "width": 208.86777600000008,
+        "x": 134.56611199999998,
+        "y": 932.125,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-resources",
+      [
+        "Logical catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 154.09749120000004,
+        "x": 1022.4512543999999,
+        "y": 908.125,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.cm-catalog",
+      {
+        "height": 1199.125,
+        "width": 2192,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.cat-mcp",
+      {
+        "height": 736.5625,
+        "width": 1048,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.cat-ai",
+      {
+        "height": 263,
+        "width": 460,
+        "x": 1160,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.cat-resources",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1716,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.cat-ui",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 983.125,
+      },
+    ],
+    [
+      "occurrence:e.mcp-comments",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 32,
+        "y": 349.125,
+      },
+    ],
+    [
+      "occurrence:e.mcp-connectors",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 588,
+        "y": 349.125,
+      },
+    ],
+    [
+      "occurrence:e.mcp-tools",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 32,
+        "y": 653.125,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-cluster cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [],
+  "nodes": [
+    [
+      "occurrence:e.cm-cluster",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.cluster-infra",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.cluster-instances",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-security cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-sec-observe",
+      [
+        "Access audit",
+      ],
+      {
+        "height": 22,
+        "width": 113.83655999999999,
+        "x": 467.08172,
+        "y": 451.5625,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.cm-security",
+      {
+        "height": 493.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.sec-access",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.sec-observe",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-cm-storage cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [],
+  "nodes": [
+    [
+      "occurrence:e.cm-storage",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.store-artifacts",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.store-models",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-design-system cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-dossier-annotations",
+      [
+        "Feedback",
+      ],
+      {
+        "height": 22,
+        "width": 85.25028479999999,
+        "x": 762.8748576,
+        "y": 403.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-dossier-diagram",
+      [
+        "Central diagram",
+      ],
+      {
+        "height": 22,
+        "width": 140.78906880000002,
+        "x": 1009.6054656,
+        "y": 431.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-components",
+      [
+        "UI rendering",
+      ],
+      {
+        "height": 22,
+        "width": 107.79279359999998,
+        "x": 466.6036032,
+        "y": 431.5625,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.design-system",
+      {
+        "height": 797.5625,
+        "width": 1604,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.ds-annotations",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.ds-components",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 16,
+        "y": 478.5625,
+      },
+    ],
+    [
+      "occurrence:e.ds-diagram",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.ds-dossier",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1128,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-engram cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [],
+  "nodes": [
+    [
+      "occurrence:e.engram",
+      {
+        "height": 422.5625,
+        "width": 1048,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.eng-memory",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.eng-ontologies",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-h2a cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-focus-agent",
+      [
+        "Focus dossiers",
+      ],
+      {
+        "height": 22,
+        "width": 134.37052800000004,
+        "x": 453.314736,
+        "y": 410.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-roles-track",
+      [
+        "Mandates and WPs",
+      ],
+      {
+        "height": 22,
+        "width": 172.22959680000002,
+        "x": 712.3852016,
+        "y": 431.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-track-agent",
+      [
+        "Items",
+      ],
+      {
+        "height": 22,
+        "width": 51.033926400000006,
+        "x": 783.4830368,
+        "y": 459.5625,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.h2a",
+      {
+        "height": 766.5625,
+        "width": 1604,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.h2a-agent",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 16,
+        "y": 478.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-focus",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-roles",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.h2a-track",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1128,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-frame-surfaces cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-ai-cowork",
+      [
+        "Cowork connection",
+      ],
+      {
+        "height": 22,
+        "width": 167.36680320000002,
+        "x": 440.3165984,
+        "y": 410.5625,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.surfaces",
+      {
+        "height": 766.5625,
+        "width": 1604,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.surf-ai",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 16,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cli",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1128,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cloud",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 16,
+        "y": 478.5625,
+      },
+    ],
+    [
+      "occurrence:e.surf-cowork",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 572,
+        "y": 174.5625,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all readme-overview cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.e-ai-api",
+      [
+        "5 liaisons",
+        "MCP via façade",
+        "CLI access",
+        "Cloud access",
+        "Syncs catalogue",
+        "Cowork access",
+      ],
+      {
+        "height": 180,
+        "width": 320,
+        "x": -324,
+        "y": 468.5,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ai-sec",
+      [
+        "Custody and rights",
+      ],
+      {
+        "height": 22,
+        "width": 165.7721472,
+        "x": 1136.1139264,
+        "y": 581,
+      },
+    ],
+    [
+      "occurrence:r.link.e-artifacts-infra",
+      [
+        "Release to deploy",
+      ],
+      {
+        "height": 22,
+        "width": 158.90101440000004,
+        "x": 2182.5494928,
+        "y": 550,
+      },
+    ],
+    [
+      "occurrence:r.link.e-canvas-mcp",
+      [
+        "MCP / ui:// connection",
+      ],
+      {
+        "height": 22,
+        "width": 208.86777600000008,
+        "x": 1156.066112,
+        "y": 1058.5625,
+      },
+    ],
+    [
+      "occurrence:r.link.e-catalog-artifacts",
+      [
+        "References / hosting",
+      ],
+      {
+        "height": 22,
+        "width": 187.92032640000008,
+        "x": 2258,
+        "y": 285,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-sec",
+      [
+        "Authorisation",
+      ],
+      {
+        "height": 22,
+        "width": 117.41999999999999,
+        "x": 1473.29,
+        "y": 1105,
+      },
+    ],
+    [
+      "occurrence:r.link.e-comments-store",
+      [
+        "Persists annotation",
+      ],
+      {
+        "height": 22,
+        "width": 172.58421120000008,
+        "x": 1624.7078944,
+        "y": 1084,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ds-catalog",
+      [
+        "3 liaisons",
+        "Canvas / UI descriptors",
+        "Annotate via MCP façade",
+        "Neutral serialization",
+      ],
+      {
+        "height": 120,
+        "width": 320,
+        "x": -324,
+        "y": 996.5,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-ds",
+      [
+        "Diagram Graphs",
+      ],
+      {
+        "height": 22,
+        "width": 143.23024320000002,
+        "x": 158.3848784,
+        "y": 1199,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-mem",
+      [
+        "3 liaisons",
+        "Memory contracts",
+        "Ontology contracts",
+        "Declares surface",
+      ],
+      {
+        "height": 120,
+        "width": 320,
+        "x": -324,
+        "y": 842.25,
+      },
+    ],
+    [
+      "occurrence:r.link.e-eng-observe",
+      [
+        "Logs and metrics",
+      ],
+      {
+        "height": 22,
+        "width": 152.9163168,
+        "x": 153.5418416,
+        "y": 885,
+      },
+    ],
+    [
+      "occurrence:r.link.e-focus-dossier",
+      [
+        "Schema and skill",
+      ],
+      {
+        "height": 22,
+        "width": 152.4830784,
+        "x": -244.2415392,
+        "y": 89,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-chat",
+      [
+        "3 liaisons",
+        "Harness and collaboration",
+        "Harness and collaboration",
+        "Harness and collaboration",
+      ],
+      {
+        "height": 120,
+        "width": 320,
+        "x": -324,
+        "y": 214.75,
+      },
+    ],
+    [
+      "occurrence:r.link.e-h2a-tools",
+      [
+        "Publishes its tools",
+      ],
+      {
+        "height": 22,
+        "width": 164.13817920000002,
+        "x": -168.13817920000002,
+        "y": 407.75,
+      },
+    ],
+    [
+      "occurrence:r.link.e-infra-cloud",
+      [
+        "Application deployment",
+      ],
+      {
+        "height": 22,
+        "width": 205.18656000000004,
+        "x": 127.40671999999998,
+        "y": 540,
+      },
+    ],
+    [
+      "occurrence:r.link.e-infra-observe",
+      [
+        "Deployment receipts",
+      ],
+      {
+        "height": 22,
+        "width": 181.85700480000006,
+        "x": 1996.6924879999997,
+        "y": 550,
+      },
+    ],
+    [
+      "occurrence:r.link.e-mesh-h2a",
+      [
+        "A2a messages",
+      ],
+      {
+        "height": 22,
+        "width": 132.401904,
+        "x": -234.200952,
+        "y": 712.5,
+      },
+    ],
+    [
+      "occurrence:r.link.e-sec-observe",
+      [
+        "Access audit",
+      ],
+      {
+        "height": 22,
+        "width": 113.83655999999999,
+        "x": 2367.08172,
+        "y": 623,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-artifacts",
+      [
+        "UI / app hosting",
+      ],
+      {
+        "height": 22,
+        "width": 145.25773440000003,
+        "x": 2274.3711328,
+        "y": 443,
+      },
+    ],
+    [
+      "occurrence:r.link.e-ui-resources",
+      [
+        "Logical catalogue",
+      ],
+      {
+        "height": 22,
+        "width": 154.09749120000004,
+        "x": 1946.9512544,
+        "y": 261,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.cluster-mesh",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 0,
+        "y": 587,
+      },
+    ],
+    [
+      "occurrence:e.design-system",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 0,
+        "y": 1246,
+      },
+    ],
+    [
+      "occurrence:e.engram",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 0,
+        "y": 932,
+      },
+    ],
+    [
+      "occurrence:e.h2a",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.legend",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 556,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.surfaces",
+      {
+        "height": 201,
+        "width": 460,
+        "x": 0,
+        "y": 314,
+      },
+    ],
+    [
+      "occurrence:e.cat-mcp",
+      {
+        "height": 736.5625,
+        "width": 1088,
+        "x": 556,
+        "y": 607,
+      },
+    ],
+    [
+      "occurrence:e.cat-ai",
+      {
+        "height": 263,
+        "width": 460,
+        "x": 556,
+        "y": 272,
+      },
+    ],
+    [
+      "occurrence:e.cat-resources",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1794,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.cat-ui",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1794,
+        "y": 304,
+      },
+    ],
+    [
+      "occurrence:e.cluster-infra",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1794,
+        "y": 576,
+      },
+    ],
+    [
+      "occurrence:e.cluster-instances",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1794,
+        "y": 880,
+      },
+    ],
+    [
+      "occurrence:e.mcp-comments",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 572,
+        "y": 781.5625,
+      },
+    ],
+    [
+      "occurrence:e.mcp-connectors",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 1168,
+        "y": 781.5625,
+      },
+    ],
+    [
+      "occurrence:e.mcp-tools",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 572,
+        "y": 1085.5625,
+      },
+    ],
+    [
+      "occurrence:e.sec-access",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1794,
+        "y": 1152,
+      },
+    ],
+    [
+      "occurrence:e.sec-observe",
+      {
+        "height": 273,
+        "width": 460,
+        "x": 2432,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.store-artifacts",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 2432,
+        "y": 345,
+      },
+    ],
+    [
+      "occurrence:e.store-models",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2432,
+        "y": 649,
+      },
+    ],
+  ],
+}
+`;
+
+exports[`Owner addendum A1–A13 > should retain all vue-globale cards, icons and complete text (A2/A5/A11) 1`] = `
+{
+  "labels": [
+    [
+      "occurrence:r.link.ac-track-events-w",
+      [
+        "ajoute à · événements validés",
+      ],
+      {
+        "height": 22,
+        "width": 264.78012479999995,
+        "x": 3921.1099376,
+        "y": 347.375,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-claude-h2a-local",
+      [
+        "appelle · outils h2a_* locaux",
+      ],
+      {
+        "height": 22,
+        "width": 254.71988160000006,
+        "x": 978.1400592,
+        "y": 720.375,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-claude-reg",
+      [
+        "appelle · outils MCP",
+      ],
+      {
+        "height": 22,
+        "width": 177.0137664,
+        "x": 134.4931168,
+        "y": 665.40625,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-codex-reg",
+      [
+        "appelle · outils MCP",
+      ],
+      {
+        "height": 22,
+        "width": 177.0137664,
+        "x": 707.4931168,
+        "y": 649.40625,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-h2a-reg",
+      [
+        "appelle · registre MCP",
+      ],
+      {
+        "height": 22,
+        "width": 195.14607360000002,
+        "x": 2024.3325632,
+        "y": 1102.8125,
+      },
+    ],
+    [
+      "occurrence:r.link.ca-mem-access-engram",
+      [
+        "appelle · requêtes mémoire",
+      ],
+      {
+        "height": 22,
+        "width": 243.02587200000005,
+        "x": 1627.6094640000001,
+        "y": 1758.1875,
+      },
+    ],
+    [
+      "occurrence:r.link.da-mesh-mem-access",
+      [
+        "déployé comme · relais mémoire",
+      ],
+      {
+        "height": 22,
+        "width": 287.75587199999995,
+        "x": 678.8388640000002,
+        "y": 1532.375,
+      },
+    ],
+    [
+      "occurrence:r.link.da-pkg-artifacts",
+      [
+        "déployé comme · serveur contenu",
+      ],
+      {
+        "height": 22,
+        "width": 297.81571199999996,
+        "x": 401.4033440000001,
+        "y": 1506.375,
+      },
+    ],
+    [
+      "occurrence:r.link.da-rt-engram",
+      [
+        "déployé comme · validateur local",
+      ],
+      {
+        "height": 22,
+        "width": 289.33056960000005,
+        "x": 2248.4571152000003,
+        "y": 1709.1875,
+      },
+    ],
+    [
+      "occurrence:r.link.da-rt-h2a",
+      [
+        "déployé comme · binaire h2a",
+      ],
+      {
+        "height": 22,
+        "width": 255.94056960000006,
+        "x": 2022.5297152,
+        "y": 642.375,
+      },
+    ],
+    [
+      "occurrence:r.link.da-rt-track",
+      [
+        "déployé comme · binaire track",
+      ],
+      {
+        "height": 22,
+        "width": 265.60728960000006,
+        "x": 3341.1963551999997,
+        "y": 549.1875,
+      },
+    ],
+    [
+      "occurrence:r.link.dc-skill-focus",
+      [
+        "documente · règles archi-cards@1",
+      ],
+      {
+        "height": 22,
+        "width": 301.06429440000005,
+        "x": 1551.4678528,
+        "y": 553.9375,
+      },
+    ],
+    [
+      "occurrence:r.link.do-canvas-core",
+      [
+        "dépend de · modèle de vue",
+      ],
+      {
+        "height": 22,
+        "width": 240.62320320000003,
+        "x": 415.1883984,
+        "y": 2763.1875,
+      },
+    ],
+    [
+      "occurrence:r.link.do-engram-ds-core",
+      [
+        "dépend de · contrat diagram-core",
+      ],
+      {
+        "height": 22,
+        "width": 293.3664,
+        "x": 1529.3168,
+        "y": 2022.1875,
+      },
+    ],
+    [
+      "occurrence:r.link.do-h2a-ds-canvas",
+      [
+        "dépend de · placement DC-2a",
+      ],
+      {
+        "height": 22,
+        "width": 263.99247360000004,
+        "x": 1556.0037631999999,
+        "y": 1539.375,
+      },
+    ],
+    [
+      "occurrence:r.link.do-h2a-ds-core",
+      [
+        "dépend de · validation et pliage",
+      ],
+      {
+        "height": 22,
+        "width": 277.2224736,
+        "x": 694.3887632,
+        "y": 2125.625,
+      },
+    ],
+    [
+      "occurrence:r.link.do-h2a-ds-svelte",
+      [
+        "dépend de · rendu SVG",
+      ],
+      {
+        "height": 22,
+        "width": 204.39850560000005,
+        "x": 1637.6224000000002,
+        "y": 1470.78125,
+      },
+    ],
+    [
+      "occurrence:r.link.do-h2a-track",
+      [
+        "dépend de · lecture du suivi",
+      ],
+      {
+        "height": 22,
+        "width": 245.03340480000003,
+        "x": 2322.9832976,
+        "y": 658.5,
+      },
+    ],
+    [
+      "occurrence:r.link.do-mesh-artifacts",
+      [
+        "dépend de · feuille artifacts",
+      ],
+      {
+        "height": 22,
+        "width": 242.6119872000001,
+        "x": 80.85220959999995,
+        "y": 1520.78125,
+      },
+    ],
+    [
+      "occurrence:r.link.do-svelte-core",
+      [
+        "dépend de · contrat présentation",
+      ],
+      {
+        "height": 22,
+        "width": 289.7045375999999,
+        "x": 677.6477312000001,
+        "y": 2825.90625,
+      },
+    ],
+    [
+      "occurrence:r.link.in-claude-h2a",
+      [
+        "lance · hooks et mcp-serve",
+      ],
+      {
+        "height": 22,
+        "width": 238.65478080000003,
+        "x": 1276.6726096,
+        "y": 674.625,
+      },
+    ],
+    [
+      "occurrence:r.link.in-claude-track",
+      [
+        "lance · écritures du suivi",
+      ],
+      {
+        "height": 22,
+        "width": 216.053808,
+        "x": 1875.378696,
+        "y": 1038.8125,
+      },
+    ],
+    [
+      "occurrence:r.link.in-codex-h2a",
+      [
+        "lance · mcp-serve local",
+      ],
+      {
+        "height": 22,
+        "width": 203.19777600000003,
+        "x": 1585.401112,
+        "y": 649.375,
+      },
+    ],
+  ],
+  "nodes": [
+    [
+      "occurrence:e.sys-ds",
+      {
+        "height": 740,
+        "width": 1668,
+        "x": 0,
+        "y": 2151.625,
+      },
+    ],
+    [
+      "occurrence:e.sys-engram",
+      {
+        "height": 950.8125,
+        "width": 1636,
+        "x": 1841.6224000000002,
+        "y": 1128.8125,
+      },
+    ],
+    [
+      "occurrence:e.sys-h2a",
+      {
+        "height": 1041.8125,
+        "width": 1662,
+        "x": 1162,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.sys-sentropic",
+      {
+        "height": 854,
+        "width": 1649.6224000000002,
+        "x": 0,
+        "y": 1128.8125,
+      },
+    ],
+    [
+      "occurrence:e.sys-track",
+      {
+        "height": 677.625,
+        "width": 1660,
+        "x": 2920,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.pkg-artifacts",
+      {
+        "height": 208.8125,
+        "width": 460,
+        "x": 617.6224000000001,
+        "y": 1303.375,
+      },
+    ],
+    [
+      "occurrence:e.pkg-ds-canvas",
+      {
+        "height": 440,
+        "width": 492,
+        "x": 572,
+        "y": 2326.1875,
+      },
+    ],
+    [
+      "occurrence:e.pkg-ds-core",
+      {
+        "height": 208.8125,
+        "width": 460,
+        "x": 16,
+        "y": 2326.1875,
+      },
+    ],
+    [
+      "occurrence:e.pkg-ds-svelte",
+      {
+        "height": 440,
+        "width": 492,
+        "x": 1160,
+        "y": 2326.1875,
+      },
+    ],
+    [
+      "occurrence:e.pkg-engram",
+      {
+        "height": 408.8125,
+        "width": 492,
+        "x": 1857.6224000000002,
+        "y": 1303.375,
+      },
+    ],
+    [
+      "occurrence:e.pkg-h2a",
+      {
+        "height": 470.8125,
+        "width": 1048,
+        "x": 1178,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.pkg-mesh",
+      {
+        "height": 208.8125,
+        "width": 479.6224000000001,
+        "x": 16,
+        "y": 1303.375,
+      },
+    ],
+    [
+      "occurrence:e.pkg-track",
+      {
+        "height": 408.8125,
+        "width": 492,
+        "x": 2936,
+        "y": 143.375,
+      },
+    ],
+    [
+      "occurrence:e.api-h2a",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1744,
+        "y": 746.375,
+      },
+    ],
+    [
+      "occurrence:e.api-mcp-registry",
+      {
+        "height": 242,
+        "width": 460,
+        "x": 572,
+        "y": 1615.375,
+      },
+    ],
+    [
+      "occurrence:e.api-memory",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1857.6224000000002,
+        "y": 1784.1875,
+      },
+    ],
+    [
+      "occurrence:e.art-skill-archi",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1750,
+        "y": 317.9375,
+      },
+    ],
+    [
+      "occurrence:e.cmp-archi-guardian",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1873.6224000000002,
+        "y": 1446.75,
+      },
+    ],
+    [
+      "occurrence:e.cmp-card-render",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1176,
+        "y": 2500.75,
+      },
+    ],
+    [
+      "occurrence:e.cmp-control",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2952,
+        "y": 286.75,
+      },
+    ],
+    [
+      "occurrence:e.cmp-dc2a",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 588,
+        "y": 2500.75,
+      },
+    ],
+    [
+      "occurrence:e.cmp-focus",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1194,
+        "y": 317.9375,
+      },
+    ],
+    [
+      "occurrence:e.rt-claude",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 0,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.rt-codex",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 566,
+        "y": 0,
+      },
+    ],
+    [
+      "occurrence:e.rt-engram-cli",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2445.6224,
+        "y": 1303.375,
+      },
+    ],
+    [
+      "occurrence:e.rt-h2a",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 2348,
+        "y": 174.5625,
+      },
+    ],
+    [
+      "occurrence:e.rt-track",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 3536,
+        "y": 143.375,
+      },
+    ],
+    [
+      "occurrence:e.st-events",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 4104,
+        "y": 143.375,
+      },
+    ],
+    [
+      "occurrence:e.svc-artifacts",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 16,
+        "y": 1615.375,
+      },
+    ],
+    [
+      "occurrence:e.svc-engram-live",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 3001.6224,
+        "y": 1303.375,
+      },
+    ],
+    [
+      "occurrence:e.svc-h2a-mcp",
+      {
+        "height": 200,
+        "width": 460,
+        "x": 1178,
+        "y": 746.375,
+      },
+    ],
+    [
+      "occurrence:e.svc-memory-access",
+      {
+        "height": 232,
+        "width": 460,
+        "x": 1173.6224000000002,
+        "y": 1303.375,
+      },
+    ],
+  ],
+}
+`;

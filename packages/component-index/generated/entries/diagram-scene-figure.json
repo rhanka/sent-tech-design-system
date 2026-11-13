@@ -1,11 +1,16 @@
 {
+  "anatomy": {
+    "contractId": "diagram-anatomy/v1",
+    "digest": "sha256:01764a400554321c2e426833d3a0e5bd84d910ff0eb3f22bd1ce5311581cb47d",
+    "path": "packages/diagram-canvas/contracts/diagram-anatomy.v1.json"
+  },
   "category": "layout",
   "componentId": "diagram-scene-figure",
   "dataClass": "public-safe",
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:a6d3b96d571a848cd7512b72ebe4345fea7015de6c6411a60f207d1722987e68",
+      "digest": "sha256:0bf089b6423c6abcbf737993075437e328394d85a1be2f31bf29d9eff5ed06af",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramSceneFigure.svelte",
@@ -13,7 +18,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c8583d657ca123956181b656df20ec1b4c3fcf4e2bb7c83e8f42504e79ea1aef",
+      "digest": "sha256:55631860770788da9b7691f753fb58816e2ef44712c2f7a983732ff5fccba0ae",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramSceneFigure.vue",
@@ -24,7 +29,7 @@
     "en": "Diagram scene: measured diagram view with 16:9 row-pack autolayout, zoom capped at the maximum display size, fit to frame and fold transition.",
     "fr": "Scène de diagramme : vue mesurée avec disposition automatique en rangées au format 16:9, zoom plafonné à la taille maximale d’affichage, ajustement au cadre et transition de repli."
   },
-  "digest": "sha256:dc45ca2473004252c5d51757085a1d55eb716e8e925c823779d8adfc23d92121",
+  "digest": "sha256:e5940a25a08ada4d2ed8de01c6ad1f82eda22fba91ee3ef204f46adf157bf50b",
   "displayName": "DiagramSceneFigure",
   "format": "component-entry/v1",
   "frameworks": [

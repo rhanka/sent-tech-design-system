@@ -103,7 +103,7 @@
     <div
       class="st-diagramCard-toggle"
       style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"}`}
-      
+
     >
       <IconButton
         size="sm"

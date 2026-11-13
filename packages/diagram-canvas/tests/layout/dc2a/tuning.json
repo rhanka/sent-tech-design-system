@@ -3,7 +3,7 @@
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0,
-      "rank": 14.452,
+      "rank": 14.456,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
@@ -15,7 +15,7 @@
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0.4,
-      "rank": 14.79,
+      "rank": 14.794,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
@@ -27,7 +27,7 @@
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0.8,
-      "rank": 14.644,
+      "rank": 14.648,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
@@ -39,7 +39,7 @@
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0,
-      "rank": 15.697,
+      "rank": 15.701,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
@@ -51,7 +51,7 @@
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0.4,
-      "rank": 15.691,
+      "rank": 15.695,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
@@ -63,7 +63,7 @@
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0.8,
-      "rank": 15.564,
+      "rank": 15.568,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
@@ -75,7 +75,7 @@
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0,
-      "rank": 16.082,
+      "rank": 16.086,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 3,
@@ -87,7 +87,7 @@
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0.4,
-      "rank": 15.6,
+      "rank": 15.604,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
@@ -99,14 +99,14 @@
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0.8,
-      "rank": 15.78,
+      "rank": 15.784,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
       "meanDisplayScale": 0.56,
-      "meanFrameFill": 0.455
+      "meanFrameFill": 0.454
     }
   ],
   "hysteresis": [

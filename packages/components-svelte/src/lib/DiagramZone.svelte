@@ -26,10 +26,8 @@
    *
    * Both states render inside the SAME positioning wrapper
    * (`.st-diagramZone-pos`, absolute at `x`/`y`): folding never moves the
-   * zone occurrence. Overflow = refusal (owner criterion): a `zone-overflow`
-   * renders no normal zone — the wrapper carries the host-visible refusal
-   * state `data-zone-refused="<slot>"`, matching the pure renderer's refused
-   * result.
+   * zone occurrence. Owner A11 keeps all content visible and grows the zone;
+   * explicit hard-cap overflow remains diagnostic.
    *
    * The component owns no view state: `collapsed` is a prop (§4.3) and
    * activating the toggle emits the §7.2 intent through `onToggle`.
@@ -284,12 +282,6 @@
      independently of the tint (owner criterion 5). */
   .st-diagramZone--proposed {
     border-style: dashed;
-  }
-  /* Refusal state (overflow = refusal): no normal frame, a dashed
-     placeholder the host can see via data-zone-refused on the wrapper. */
-  .st-diagramZone--refused {
-    border-style: dashed;
-    background: transparent;
   }
   .st-diagramZone-header {
     /* top/left/right/height come from the shared layout inline; the CSS

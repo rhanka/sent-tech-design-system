@@ -1,3 +1,4 @@
+import { layoutErd } from "./erd.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -258,6 +259,7 @@ export function layoutMeasured(
   options: LayoutOptions,
   sourceView?: ViewDocument,
 ): LayoutResult {
+  if (document.profileRefs.length === 1 && document.profileRefs[0] === "erd@1") return layoutErd(document, options, sourceView);
   if (!Number.isFinite(options.targetWidth) || options.targetWidth <= 0) {
     return {
       status: "refused",
@@ -1500,7 +1502,7 @@ export function layoutMeasured(
     const retryRoutes = new Map(routed.routes);
     const retryObstructed = new Set(routed.obstructed);
     // Parallel unlabelled bridges use a centred comb. Docks and the middle
-    // legs share the same pitch; the obstacle check remains authoritative.
+    // legs share the same pitch. Preserve every constraint of the router.
     const parallel = new Map<string, typeof requests>();
     for (const request of requests) {
       if (edgeLayouts.has(request.id)) continue;
@@ -1519,6 +1521,16 @@ export function layoutMeasured(
         const points = horizontal
           ? [request.start, { x: lane, y: request.start.y }, { x: lane, y: request.end.y }, request.end]
           : [request.start, { x: request.start.x, y: lane }, { x: request.end.x, y: lane }, request.end];
+        const firstLeg = points.find(point => point.x !== request.start.x || point.y !== request.start.y);
+        const lastLeg = [...points].reverse().find(point => point.x !== request.end.x || point.y !== request.end.y);
+        if (firstLeg === undefined || lastLeg === undefined
+          || (firstLeg.x - request.start.x) * request.startExit.x + (firstLeg.y - request.start.y) * request.startExit.y <= 0
+          || (lastLeg.x - request.end.x) * request.endExit.x + (lastLeg.y - request.end.y) * request.endExit.y <= 0) return;
+        const within = request.within;
+        if (within !== undefined && points.some(point => point.x < within.x || point.y < within.y
+          || point.x > within.x + within.width || point.y > within.y + within.height)) return;
+        if (requests.some(other => other.id !== request.id && other.pairKey === request.pairKey
+          && routesConflict(points, retryRoutes.get(other.id)!))) return;
         if (points.slice(1).some((point, i) => shapesOf(request.id).some(shape => rectsIntersect(shape, {
           x: Math.min(point.x, points[i]!.x), y: Math.min(point.y, points[i]!.y),
           width: Math.abs(point.x - points[i]!.x), height: Math.abs(point.y - points[i]!.y),
@@ -1584,7 +1596,7 @@ export function layoutMeasured(
         const request = requests.find(candidate => candidate.id === entry.id)!;
         const { limit: _limit, ...unbounded } = entry;
         const route = labelDetour({ request, shapes: shapesOf(entry.id),
-          earlier: requests.filter(other => other.id !== request.id && other.pairKey === request.pairKey).map(other => retryRoutes.get(other.id)!),
+          earlier: requests.filter(other => other.id !== request.id && other.pairKey === request.pairKey && !retryObstructed.has(other.id)).map(other => retryRoutes.get(other.id)!),
           xs: [...new Set([request.start.x, request.end.x, ...outerLanesX])].sort((a, b) => a - b),
           ys: [...new Set([request.start.y, request.end.y, ...outerLanes])].sort((a, b) => a - b),
           accepts: points => {
@@ -1610,7 +1622,7 @@ export function layoutMeasured(
       if (choice === undefined || retryObstructed.has(entry.id)) {
         choice = undefined;
         const request = requests.find((candidate) => candidate.id === entry.id)!;
-        const samePair = requests.filter((candidate) => candidate.id !== entry.id && candidate.pairKey === request.pairKey)
+        const samePair = requests.filter((candidate) => candidate.id !== entry.id && candidate.pairKey === request.pairKey && !retryObstructed.has(candidate.id))
           .map((candidate) => retryRoutes.get(candidate.id)!);
         const shapes = shapesOf(entry.id);
         const margin = probeMargin;
@@ -1686,17 +1698,18 @@ export function layoutMeasured(
           const pitch = Math.max(...[...labelSizes.values()].map(size => size.height)) + 2 * metrics.labelMargin;
           const column = right + Math.max(...[...labelSizes.values()].map(size => size.width)) / 2 + metrics.clearance;
           const row = drawingBottom + metrics.clearance + (entries.indexOf(entry) + 1) * pitch;
+          const upperRow = drawingTop - metrics.clearance - (entries.indexOf(entry) + 1) * pitch;
           const { limit: _limit, ...unbounded } = entry;
-          const samePair = requests.filter(candidate => candidate.id !== entry.id && candidate.pairKey === request.pairKey)
+          const samePair = requests.filter(candidate => candidate.id !== entry.id && candidate.pairKey === request.pairKey && !retryObstructed.has(candidate.id))
             .map(candidate => retryRoutes.get(candidate.id)!);
           const comb = (earlier: readonly (readonly Vec2[])[]) => labelDetour({ request, shapes: shapesOf(entry.id), earlier,
             xs: [...new Set([request.start.x, request.end.x, column, ...outerLanesX])].sort((a, b) => a - b),
-            ys: [...new Set([request.start.y, request.end.y, row, ...outerLanes])].sort((a, b) => a - b),
+            ys: [...new Set([request.start.y, request.end.y, upperRow, row, ...outerLanes])].sort((a, b) => a - b),
             accepts: points => placePackedLabel({ ...unbounded, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
           });
-          // Once a channel is saturated, its comb may share a trunk. Card
-          // and header obstacles remain mandatory; label rows stay distinct.
-          const route = comb(samePair) ?? comb([]);
+          // A saturated channel still reserves every parallel route. If no
+          // exterior lane is safe, retain the explicit placement diagnostic.
+          const route = comb(samePair);
           if (route !== undefined) {
             retryRoutes.set(entry.id, route);
             retryObstructed.delete(entry.id);
@@ -1919,10 +1932,17 @@ export function layoutMeasured(
       for (const edge of drawnEdges) {
         if (sharedContainerOf(edge.source.entity, edge.target.entity) !== undefined) continue;
         const id = edge.occurrence;
+        if (!edgeLayouts.has(id as unknown as RelationRef)) continue;
         const memberships = previous?.result.status === "laid-out"
           ? (previous.result.channels ?? []).filter(channel => channel.edges.includes(id)).map(channel => channel.id) : [];
         const now = current.filter(channel => channel.edges.includes(id)).map(channel => channel.id);
-        if (memberships.some(channel => !now.includes(channel))) external.add(id);
+        const oldBox = previous?.result.status === "laid-out" ? previous.result.labelBoxes?.[id] : undefined;
+        const newBox = outcome.result.labelBoxes?.[id];
+        const oldLabels = previous?.result.status === "laid-out" && oldBox !== undefined
+          ? (previous.result.channels ?? []).filter(channel => channel.strips.some(strip => rectsIntersect(strip, oldBox))).map(channel => channel.id) : [];
+        const newLabels = newBox === undefined ? []
+          : current.filter(channel => channel.strips.some(strip => rectsIntersect(strip, newBox))).map(channel => channel.id);
+        if (JSON.stringify(memberships) !== JSON.stringify(now) || JSON.stringify(oldLabels) !== JSON.stringify(newLabels)) external.add(id);
       }
       seen.clear();
     }
