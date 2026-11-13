@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StackedBarChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked bar chart (series), legend, per-segment tooltip.",
     "fr": "Barres empilées (séries), légende, tooltip par segment."
   },
-  "digest": "sha256:ff628977765c6c2878d5dec9ca5af0ca70fdd2396c793aba0232eb3580ab1ecb",
+  "digest": "sha256:b8809368463539a687a3ce501ddab205c0d51340938d66e0268ee7c17db1ecb0",
   "displayName": "StackedBarChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ScatterPlot.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scatter plot (two numeric axes), tooltip and accessible value list.",
     "fr": "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible."
   },
-  "digest": "sha256:3e978a1d513bcff44d4d0174bf114cc078691170dbc44fa842e37cef00cce8be",
+  "digest": "sha256:24db556e312eccd946587674d757a39103475e45ecb06bbe2f7461a56772ade0",
   "displayName": "ScatterPlot",
   "format": "component-entry/v1",
   "frameworks": [
