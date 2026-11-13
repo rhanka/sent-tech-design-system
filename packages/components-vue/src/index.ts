@@ -571,8 +571,8 @@ export { HeikinAshiChart } from "./HeikinAshiChart.js";
 export type { HeikinAshiChartProps, HeikinAshiChartDatum } from "./HeikinAshiChart.js";
 export { TimelineChart } from "./TimelineChart.js";
 export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
-export { GanttChart } from "./GanttChart.js";
-export type { GanttChartProps, GanttChartTask } from "./GanttChart.js";
+export { default as GanttChart } from "./GanttChart.vue";
+export type { GanttChartProps, GanttChartTask } from "./GanttChart.vue";
 export { StreamgraphChart } from "./StreamgraphChart.js";
 export type {
   StreamgraphChartProps,
