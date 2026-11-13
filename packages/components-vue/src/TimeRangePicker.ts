@@ -16,7 +16,7 @@ import { SelectableList } from "./SelectableList.js";
 import { SelectableRow } from "./SelectableRow.js";
 import { Calendar } from "./Calendar.js";
 import type { CalendarValue } from "./Calendar.js";
-import { TimePicker } from "./TimePicker.js";
+import TimePicker from "./TimePicker.vue";
 import Input from "./Input.vue";
 import Button from "./Button.vue";
 import {
