@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Quote.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Quote.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Editorial blockquote with author and source.",
     "fr": "Citation éditoriale (blockquote) avec auteur et source."
   },
-  "digest": "sha256:b2c50af9b3642cabae57addf520e7637ac77bd59d9118998af20efef85bd235c",
+  "digest": "sha256:61807a19da70c008e85d712205d035cc8b5ec009d1ce107704d85d68cb0c6c74",
   "displayName": "Quote",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SelectableRow.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SelectableRow.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
     "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
   },
-  "digest": "sha256:2a21228d15786d81c6159289f0b74c497b6c88936f749549350cd10a1d2e77f1",
+  "digest": "sha256:c30965719d9a244717afe872a658ddc25e062454e9db1383f287a8c59ab32099",
   "displayName": "SelectableRow",
   "format": "component-entry/v1",
   "frameworks": [

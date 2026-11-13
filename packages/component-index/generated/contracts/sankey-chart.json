@@ -1,8 +1,8 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:d9a2cba419bff47d8abe516067c486bbdc5e11569c99d95454d329f422d34f87",
-  "entryDigest": "sha256:35cb8870474adff56a3aaabc95f93f3192d896a0b04e131d14bbb8f58d605b47",
+  "digest": "sha256:803c96deb7decbf384127cf4ff2b066569cb2fb7250a3d1075c3cecc30ff86dc",
+  "entryDigest": "sha256:39d0986922a2c288e82dfaf418231b96a46fce0efe70f5fc03366045013031fd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/SankeyChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SankeyChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-react/dist/SankeyChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SankeyChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

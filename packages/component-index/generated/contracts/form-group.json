@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:561c17fe881fecff68d401fbb6088cd74217a9e6cb2483229a02092b0cf4f212",
-  "entryDigest": "sha256:36f25dd19fb3ceb19c56642bcd61165768225e29a4026c96a5975c437cfa6a1f",
+  "digest": "sha256:2d041b4a7128944dad8dfc153c519673625498ab3adc4c6a7a0b8a4fdd5d8be4",
+  "entryDigest": "sha256:dd03146a3b9bf7f932296b0a3b31902eae7e8e43d5b0114575fc8a688f69a7ed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/FormGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -88,11 +88,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:7dc58805d863d21ded772717ecf0ccc410aa5846f8dba95e71ecd3225b95eac8",
-  "entryDigest": "sha256:cbbf3430804c3df32b1f0887f29eb952f0bfdf630b86c0e0af60e5b4c38f1dfd",
+  "digest": "sha256:fad1ba02feed72ac0cfd9e18066910ac75bf720507c3abea5b88d1360c65a23a",
+  "entryDigest": "sha256:c6533545152e08ee4e30402c52b37470c578bdfbd8341ca6e1ad7feb3e54a1e8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/Typography.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TypographyProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/Typography.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TypographyProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

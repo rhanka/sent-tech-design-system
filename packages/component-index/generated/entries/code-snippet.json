@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CodeSnippet.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CodeSnippet.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:55efba2ce28d0e881ba371ac1d185960dd5522a11d66f5bde6621181211179ad",
+  "digest": "sha256:c088c41334ee65d154ac05d3794127ca5a98399e3430bc6346048822bcfd11d2",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

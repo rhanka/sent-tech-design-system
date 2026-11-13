@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:bbbc66ff113810a8f21c9b15922f319253d879c3141ffbc6f4820ee37cf1d4cd",
-  "entryDigest": "sha256:8c7e15837cd04758b64b1b976d8e30c2575150aae8143ffb0533310370c45e41",
+  "digest": "sha256:67b5f4e50566e5fcfdc1d5588f0891ad276cf664c5230e9bca033fec0e8ff743",
+  "entryDigest": "sha256:c3459ab7ce2d5ad5a5e0b04721c70312aa4cb44f227879245f0db6ed4b609982",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/SlideIndicator.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SlideIndicatorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -131,11 +131,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SlideIndicatorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

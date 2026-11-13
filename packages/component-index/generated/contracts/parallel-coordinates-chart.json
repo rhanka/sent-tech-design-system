@@ -1,8 +1,8 @@
 {
   "componentId": "parallel-coordinates-chart",
   "contractSource": "derived",
-  "digest": "sha256:cc111e931a867f1b678e0c7f119a89a53579e00fa83c8630340fada8d60e434c",
-  "entryDigest": "sha256:61ccf61ef72afd3178249ab3df7d4222f9dc0d311798a4dbb93b49790fea0025",
+  "digest": "sha256:89a70291ce558f3d0ba85632bf8098ba0978fc0469d2135cc51d084ec3290e4d",
+  "entryDigest": "sha256:2db0a1148dc2c4f82c6ed2c66706203fa02ab71176be3eef7a9501848731b5cd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -97,7 +97,7 @@
         "declarationPath": "packages/components-angular/dist/ParallelCoordinatesChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-react/dist/ParallelCoordinatesChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

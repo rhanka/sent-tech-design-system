@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TimePicker.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time selection from slots generated at a fixed step.",
     "fr": "Sélection d'une heure parmi des créneaux générés par pas."
   },
-  "digest": "sha256:a0d993f86ba5201bc22b5fe4431cc077c2b65b0b7677795686ae69d1d32aca9a",
+  "digest": "sha256:9393dd331ad177a2f032e087c31939a0d407b6806c8ef38cece10b44bba622df",
   "displayName": "TimePicker",
   "format": "component-entry/v1",
   "frameworks": [

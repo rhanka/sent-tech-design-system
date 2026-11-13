@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SkipLink.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkipLink.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:ad5d63c4b1772d8c24ed357a48bed74e86ff21a564197835232c77abea2bc244",
+  "digest": "sha256:01ec0d9fb203016df286f9705bd2c18e9659751f85caeed28c5b80f85a5d1724",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [
