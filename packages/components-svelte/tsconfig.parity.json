@@ -4,6 +4,12 @@
     "rootDir": "../..",
     "noEmit": true
   },
-  "include": ["src/lib/diagram-card-parity/**/*.ts", "src/lib/diagram-zone-parity/**/*.ts"],
+  "include": [
+    "src/lib/diagram-card-parity/**/*.ts",
+    "src/lib/diagram-zone-parity/**/*.ts",
+    "src/lib/DiagramSceneFigure.flow-parity.test.ts",
+    "src/lib/DiagramSceneFigure.flows.test.ts",
+    "src/lib/DiagramSceneFigure.ssr.test.ts"
+  ],
   "exclude": []
 }

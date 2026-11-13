@@ -4,9 +4,9 @@ import { tick } from "svelte";
 import * as model from "@sentropic/diagram-canvas/diagramSceneModel";
 import { createLayoutCache,DEFAULT_FLOW_TOKENS } from "@sentropic/diagram-canvas";
 import { flowHitSize,type StepChange } from "@sentropic/diagram-canvas/flowModel";
-import { runFlowHostCase } from "../../../diagram-canvas/dist-host-support/host-support/flowHostContract.js";
-import { flowHostCases } from "../../../diagram-canvas/dist-test-support/flowHostCases.js";
-import { flowFixture,flowMeasure } from "../../../diagram-canvas/dist-test-support/flowFixture.js";
+import { runFlowHostCase } from "../../../diagram-canvas/tests/host-support/flowHostContract.js";
+import { flowHostCases } from "../../../diagram-canvas/test-support/flowHostCases.js";
+import { flowFixture,flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import DiagramSceneFigure,{type DiagramSceneFigureProps} from "./DiagramSceneFigure.svelte";
 
 beforeEach(()=>{

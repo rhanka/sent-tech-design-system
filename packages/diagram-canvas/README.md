@@ -431,5 +431,5 @@ Measured layouts support `flows.fanOutMax` (default 4), `countTemplate`, engine
 flow tokens, bundles, arrows, badges and internal targets. The pure
 `@sentropic/diagram-canvas/flowModel` subpath owns interaction semantics and
 static `flowMarksSvg`; selection/filter changes require no layout. Shared host
-acceptance cases build into unpublished `dist-test-support`. See
+acceptance cases are imported directly from unpublished `test-support` source. See
 [the contract, Vue handoff and limitations](../../docs/DC2C_NUMBERED_FLOWS.md).
