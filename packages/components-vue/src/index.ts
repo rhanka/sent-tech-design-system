@@ -656,12 +656,12 @@ export type {
   ObjectPageColumn,
   ObjectPageRow,
 } from "./ObjectPage.js";
-export { KanbanBoard } from "./KanbanBoard.js";
+export { default as KanbanBoard } from "./KanbanBoard.vue";
 export type {
   KanbanBoardProps,
   KanbanBoardCard,
   KanbanBoardColumn,
-} from "./KanbanBoard.js";
+} from "./KanbanBoard.vue";
 export { MasterDetail } from "./MasterDetail.js";
 export type {
   MasterDetailProps,
