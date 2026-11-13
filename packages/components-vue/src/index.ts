@@ -500,8 +500,8 @@ export type { CollapsibleProps } from "./Collapsible.js";
 export { Stepper } from "./Stepper.js";
 export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js";
 
-export { Rating } from "./Rating.js";
-export type { RatingProps, RatingSize } from "./Rating.js";
+export { default as Rating } from "./Rating.vue";
+export type { RatingProps, RatingSize } from "./Rating.vue";
 export { TimePicker } from "./TimePicker.js";
 export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
 export { Calendar } from "./Calendar.js";
