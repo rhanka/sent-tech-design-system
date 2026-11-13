@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Highlight.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:2cb3fce33ac6ee3fdb4f3d0e3fd9de345020dc250f06b3488d20084ce48da073",
+  "digest": "sha256:1c887836ee33216362aec662aaa71e6903f9da131698d2174a524d43915be855",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

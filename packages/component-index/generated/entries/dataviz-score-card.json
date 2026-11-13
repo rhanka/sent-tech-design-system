@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScoreCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Indicator card aggregated from a store (renders KpiCard).",
     "fr": "Carte d’indicateur agrégée depuis un store (rend KpiCard)."
   },
-  "digest": "sha256:f9c3ab0e35c4c5c48b787188f8690fb61bb3551dd9dabeca5d15471bfb9527e6",
+  "digest": "sha256:627ed34efaa814f5b33bbd0db3becb1b44b713df7e3c731e9fc67eabf6d4d478",
   "displayName": "ScoreCard (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

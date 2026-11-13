@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:d99a4533954a02479cead352d2c7459fc64151f64550a4910f074cd0bfe38aba",
-  "entryDigest": "sha256:243ff265a7e656901bdbe5acd0ce72f81c69bd6263c630d8ecff47e2d175dab8",
+  "digest": "sha256:89df592df4ce7f4323f03de096192d06b1b0aa1c63ce147a24dc939743de5821",
+  "entryDigest": "sha256:af3d039b52b42f747462c7a120ebf3d7142ccddc043f135b6c8c315f3bad1bfd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -88,7 +88,7 @@
         "declarationPath": "packages/components-angular/dist/TreemapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TreemapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

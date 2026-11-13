@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ItemChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length.",
     "fr": "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc."
   },
-  "digest": "sha256:8022da8758896b2666942f009a86fa52db0857297cd73a29ce589d922fc568b5",
+  "digest": "sha256:788f107917fce05917af47237c57c1e763f90fad1dd865888de558c45da88413",
   "displayName": "ItemChart",
   "format": "component-entry/v1",
   "frameworks": [

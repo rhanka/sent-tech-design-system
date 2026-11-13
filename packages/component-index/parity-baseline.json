@@ -1509,6 +1509,7 @@
       "composeAbsolute",
       "computePanelStackAutoCollapse",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1520,13 +1521,15 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePanelStackPrimary",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "dataviz-svelte": [
       "AdvancedPivotDataTable",

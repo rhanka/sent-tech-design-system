@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Inline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Wrapping horizontal flow with uniform gap.",
     "fr": "Flux horizontal qui passe à la ligne, gap homogène."
   },
-  "digest": "sha256:ae9c32ac067adbd951dfce3db1267f6072504f7b1c32a188c0cc96c70471bc67",
+  "digest": "sha256:ec98a97241144cb0a1f50e9d47059c8f2b89f69942bcedda121be80a9daa72c4",
   "displayName": "Inline",
   "format": "component-entry/v1",
   "frameworks": [

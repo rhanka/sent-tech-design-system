@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Search.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:70ff2efe2ba3fa37d20d681eb25a3a004e2016faa3e1ae8f1bbf6ebc15ddd589",
+  "digest": "sha256:6a406b70557a80889e2d1cdaea0885d63682fba9bd0aef249365a8322cb2032d",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

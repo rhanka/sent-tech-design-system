@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:f90f915aec36469ac0db69e3815d9ef4bcf41ac056c8bf207f134eef0d230a0e",
-  "entryDigest": "sha256:c7778984467b705f799318568996d7da34941b58462331420fbbc22efce66a2d",
+  "digest": "sha256:4f18f6c369d1cde191b17e03925980c83d4dacbdad5659824c64110bb8ac5c71",
+  "entryDigest": "sha256:b5f86a689aef4da4eb3c6a7eebea7a804db7f94b2da8cd9f9a9531d843f0e540",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -125,7 +125,7 @@
         "declarationPath": "packages/components-angular/dist/FileUploader.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

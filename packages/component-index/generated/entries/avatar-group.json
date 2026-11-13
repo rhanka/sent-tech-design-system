@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AvatarGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Overlapping avatar stack with a “+N” overflow token.",
     "fr": "Pile d'avatars avec recouvrement et jeton de débordement « +N »."
   },
-  "digest": "sha256:820a8aa3e9b78029fa9074510bba9a68cf2e70ca9f4442f999d0eb6e1bcf8985",
+  "digest": "sha256:6854dc2db03338aea7ac84a07f987c452c868bc20de032577be6c1400dd0f192",
   "displayName": "AvatarGroup",
   "format": "component-entry/v1",
   "frameworks": [

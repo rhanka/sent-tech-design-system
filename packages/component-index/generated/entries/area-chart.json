@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AreaChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Area chart to visualize temporal or numeric data.",
     "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
   },
-  "digest": "sha256:fd5f5ccf7197bc31af0b28128e6e06076583d05b51c226598ec637a98fdc5561",
+  "digest": "sha256:ad615611f17481eb4ddb744ac18770a61f9b53f04eac777c5936020d2539902d",
   "displayName": "AreaChart",
   "format": "component-entry/v1",
   "frameworks": [

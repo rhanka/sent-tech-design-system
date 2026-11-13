@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BoxPlotChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Box plots for comparing distributions and outliers.",
     "fr": "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques."
   },
-  "digest": "sha256:3a4b0b379cbe3ef23314204ff48c2bde92ed3f67b70de1630bcd01d2f6d7184c",
+  "digest": "sha256:cc5dc7ced3ac25a2ad33f84ad375f30dcac5bcd2fb37d56c8c7001e5d49774c4",
   "displayName": "BoxPlotChart",
   "format": "component-entry/v1",
   "frameworks": [

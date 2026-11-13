@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Typography.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Text component: variants, weight, tone, and alignment.",
     "fr": "Composant de texte : variantes, poids, ton, alignement."
   },
-  "digest": "sha256:5382852465a52fb55dc2d9a6d4ad7453f299eda998627f58f9be3933a8cfaf98",
+  "digest": "sha256:20f3c2629804a2d814de3929de2eff0047b9f1dcf36ec929eca2a0517f3d600c",
   "displayName": "Typography",
   "format": "component-entry/v1",
   "frameworks": [

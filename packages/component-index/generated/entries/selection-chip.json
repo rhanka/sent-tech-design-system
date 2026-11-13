@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SelectionChip.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact chip showing a selection with count and optional clear button.",
     "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
   },
-  "digest": "sha256:c72e1819375d076ec597aa4f021d19f18c66d2e65ab95b64984be3addfbc3a98",
+  "digest": "sha256:e23887db0290d08ce93fd5075741de66d8f3fba18570509e1cf8a18ae1cc55bb",
   "displayName": "SelectionChip",
   "format": "component-entry/v1",
   "frameworks": [

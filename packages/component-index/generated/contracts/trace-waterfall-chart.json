@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:fa486987d3fd8f5b36289823932de174bd7949f1adfd36efbf1b16fbf8cac7b2",
-  "entryDigest": "sha256:bd1cad430fbb3a3d288f6bde596f1c3c42858baebed5a2fbee366a15a8768828",
+  "digest": "sha256:0a1030cc430eebd00905c3c69c40398bdac2d2200d73239e01759a1c76325583",
+  "entryDigest": "sha256:bc8bb60cebfe22b6986104564112a4fa2d0c7a3b2100b7f8e2572265477aacb5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -87,7 +87,7 @@
         "declarationPath": "packages/components-angular/dist/TraceWaterfallChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TraceWaterfallChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:de2886a8fb3b3f0180a372bb609fa844916edbe4b5407f96fa0afa6337480f3c",
-  "entryDigest": "sha256:e809e4b31c93528b1b292fdc1598cfd8d5917a88a428b6ef9ada72a2a710c188",
+  "digest": "sha256:d5bd299265cf256765cb75771ac7efac70edafe46eac2e063b32c8529aec13cc",
+  "entryDigest": "sha256:09c8f756fa21f4e464055830e1ab6bc70c1b8b7e02fbfc18d709220394f07b2d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/Slider.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SliderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

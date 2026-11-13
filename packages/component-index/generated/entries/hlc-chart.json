@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/HLCChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "HLC bars: a vertical low→high bar with a right close tick (an OHLC variant without an open tick).",
     "fr": "Bâtons HLC : barre verticale low→high, tick droite à la clôture (variante d'OHLC sans tick d'ouverture)."
   },
-  "digest": "sha256:5013734862a3adb25aaf8428d7ba3f591c3d2739aacccbbbb03b0948be8fae55",
+  "digest": "sha256:8edfb336f423fb32584724cebc03931cb56efae77393cc4bf3bdfef089ddaaf2",
   "displayName": "HLCChart",
   "format": "component-entry/v1",
   "frameworks": [

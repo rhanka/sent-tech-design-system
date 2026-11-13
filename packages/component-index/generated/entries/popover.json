@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Popover.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact contextual content anchored to a trigger.",
     "fr": "Contenu contextuel compact ancré à un déclencheur."
   },
-  "digest": "sha256:a396af48eccbd5b5f416852305d2bc70c28c15dacf9d35cd4e927ce056abbebd",
+  "digest": "sha256:504312558884f1a216f69a799252f003aeb0504df59d8dba6268e3aacdc90088",
   "displayName": "Popover",
   "format": "component-entry/v1",
   "frameworks": [

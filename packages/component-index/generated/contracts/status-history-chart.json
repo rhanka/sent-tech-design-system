@@ -1,8 +1,8 @@
 {
   "componentId": "status-history-chart",
   "contractSource": "derived",
-  "digest": "sha256:9449fe1f4fd36aa92023700b8636d4b386f7cced199b8194ec11b383fc40fd2e",
-  "entryDigest": "sha256:c77703388b1852aa8457aaf3ccb308aee03f048ce06ec7c04b0947b88b14e305",
+  "digest": "sha256:3dd614ce0680a6360852589809f6e831ffe89e004bdb64bbafbafc6dc55b6d33",
+  "entryDigest": "sha256:96d10d1593b5e7bb2f829ad26d68825cd9a8396cb6b0240ab2a703cf5b5809a0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -107,7 +107,7 @@
         "declarationPath": "packages/components-angular/dist/StatusHistoryChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StatusHistoryChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

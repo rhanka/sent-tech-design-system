@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:55032f88142db026c7ca576b5e4457a8cacde2e5cd4db2fd409d65dc4fa55716",
-  "entryDigest": "sha256:56833615b7a4fdc1d35a94263df8b04d9b8ab68043ae47d11d3651eed58bb6e6",
+  "digest": "sha256:98512c64414ab82aff9fa1eb09798b39e9d35443952dbe596181146adbaaaf2e",
+  "entryDigest": "sha256:af2855a9791e50d78c37a6abdc216ac087d9df0cef5ce1b4d4069cc4d6686e64",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -134,7 +134,7 @@
         "declarationPath": "packages/components-angular/dist/Calendar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CalendarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

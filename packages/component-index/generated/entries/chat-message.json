@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChatMessage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Visual chat message bubble with role and status.",
     "fr": "Bulle de message visuelle avec rôles et statut."
   },
-  "digest": "sha256:a3b165790f5adde54ca8abff938460ddf511cdfd588ea903223e6c0ebe3c0559",
+  "digest": "sha256:d2ff23645597df7e92d457aa03294d1fbcba7e94e2d91570ec88da00ac76489e",
   "displayName": "ChatMessage",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:d15a7b9f9fc8e82b97b892727675dfe96aa06ff225bad4d315457eb025b90957",
-  "entryDigest": "sha256:b115788eab9d957836ee04705f6dbf129c343f5780a11a4d9bb5b67df3f6ec63",
+  "digest": "sha256:24a60ff2714a6df42ae5fee12adacb264f362d1f0cc9ff27a86f00ca43f7b645",
+  "entryDigest": "sha256:c5ac353e2360397856f5571f444b413deb88c2d86638ed3a3b1e8ed28c6f1955",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-angular/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AppChromeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

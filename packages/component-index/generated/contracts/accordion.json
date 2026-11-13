@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:0ddb4723b04d284e655b076d4fb479b11014dbb3cedb71db1cf73a2be3d7f67b",
-  "entryDigest": "sha256:9825517b489506d09d9deb2164fe48ce66684ae314e4628ff3dd26e53e3bf705",
+  "digest": "sha256:7f837082948c43e33d19d309fabd00c3f9094bf179865712d8a669b2f69d83ec",
+  "entryDigest": "sha256:c5a365dfb217ac58f99061d9724c7ec6e8ad6e76bdc4a0bbadcd58485a6b0c4d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/Accordion.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AccordionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

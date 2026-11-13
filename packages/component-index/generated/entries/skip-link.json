@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkipLink.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:2b811ff506f8be2ead358ff82ded6048ca1ee5feb48d964f01fc0cb1765d39bc",
+  "digest": "sha256:651e66cf508b6288c7909e2cb2ae66a6b04e385c1058fee4e4ed50c7cca3e9f4",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [

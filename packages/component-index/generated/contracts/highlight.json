@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:d31db48c68a957a5462b7ef2a1a9f1ab2f6ab548d118e5942693caacc03c5cc9",
-  "entryDigest": "sha256:2cb3fce33ac6ee3fdb4f3d0e3fd9de345020dc250f06b3488d20084ce48da073",
+  "digest": "sha256:ace8c6f348825873119d01e32ae96de6665c1193423079e9079a2c4cadd2a01a",
+  "entryDigest": "sha256:1c887836ee33216362aec662aaa71e6903f9da131698d2174a524d43915be855",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Highlight.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HighlightProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

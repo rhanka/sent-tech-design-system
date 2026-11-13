@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:d94d7b32c5c4c050cc78499fd7b557b6be1681e5a4c8744f62134c3dcfe8909a",
-  "entryDigest": "sha256:0cbf4e0ec036dd54551489039d6d03018924b5640fdc1fb7bab9b004c785eff0",
+  "digest": "sha256:a2be265da44306d43417449a6977f76653bf2efc61b03e5eb186d98b0bbc8dbf",
+  "entryDigest": "sha256:5e9f0c1ade3f9814407809b2f7924498e4258261724cee4cfeb6da764d3378f7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -155,7 +155,7 @@
         "declarationPath": "packages/components-angular/dist/MultiSelect.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MultiSelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

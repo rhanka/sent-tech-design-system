@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:ea631509179f1fbe8e9624187bf6ca658d52306cf900e26ef05e9299702bf337",
-  "entryDigest": "sha256:ca391d3a4fe5b15f7573aceb1ffc8931ec379ef5f53636e018f4af5a57e21d7d",
+  "digest": "sha256:7ff76be019ebb4000a7b22c5150c81e786a0b1795139d437f9d7a6b3102a8d45",
+  "entryDigest": "sha256:83130f6428d1ff4df8f7f5299f328cf759e0f9573f58004c68ca048a3924ec03",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -35,7 +35,7 @@
         "declarationPath": "packages/components-angular/dist/Card.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

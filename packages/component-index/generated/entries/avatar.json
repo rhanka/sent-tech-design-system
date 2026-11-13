@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Avatar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Identity badge: colored initials or photo, multiple sizes.",
     "fr": "Vignette d'identité : initiales colorées ou photo, plusieurs tailles."
   },
-  "digest": "sha256:3ee10207c36cdc3f2f448695e20c33ee888313cc5f105709c6a8f108120e37f1",
+  "digest": "sha256:18ec3a29e254c62553a1cff8c4b31720df0102a3a6c976bffe2618a9eba22fb9",
   "displayName": "Avatar",
   "format": "component-entry/v1",
   "frameworks": [

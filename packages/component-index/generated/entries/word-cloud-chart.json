@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/WordCloudChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap.",
     "fr": "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement."
   },
-  "digest": "sha256:3ab7161a25eb34d2172ae12da2bcfc8ada77d4c79f770d043a1e0895056abb3b",
+  "digest": "sha256:0f384f91761340162edbb08143b6eee70fdc24c8c15429e6251b7960571242d3",
   "displayName": "WordCloudChart",
   "format": "component-entry/v1",
   "frameworks": [

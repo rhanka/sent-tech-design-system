@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MessageStatusBadge.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Message status badge mapped to pending/processing/completed/failed.",
     "fr": "Badge de statut de message basé sur les niveaux pending/processing/completed/failed."
   },
-  "digest": "sha256:898e6288f5087aeb304d75cb841b75c762fb1101009caabfeeba30a47d31a32d",
+  "digest": "sha256:8cc26fa16883b4867b958cadbcf4a6f90f768aa67cec8bd2982faf7600ac233d",
   "displayName": "MessageStatusBadge",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:8536dfbe2e60aedaa839568ab08ad6bf6862fac9a77a0f54a5b4b73cb3bde480",
-  "entryDigest": "sha256:ae3e2057256d60148ed0c635501d674fe2594ed55c395ea99508e00fb3f83bf6",
+  "digest": "sha256:81c4aa78828f098b052ab09f9f23d491c6961487cd6459f23da45de1d09ec89a",
+  "entryDigest": "sha256:34fb67cb6ce32e3b644cacc0af255769e0285e765f2382a05817615feed81948",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,7 +117,7 @@
         "declarationPath": "packages/components-angular/dist/Select.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

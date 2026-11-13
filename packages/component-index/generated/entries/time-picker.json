@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time selection from slots generated at a fixed step.",
     "fr": "Sélection d'une heure parmi des créneaux générés par pas."
   },
-  "digest": "sha256:b932b7f34194e346cf477d05ea79358d78c41f47d6c8146a0d5f33032dd1abd3",
+  "digest": "sha256:f010d7e3476daab8ffd1b1372bda16639b6056f42b6598c5a23051104a8da9e2",
   "displayName": "TimePicker",
   "format": "component-entry/v1",
   "frameworks": [

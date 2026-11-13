@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:ca5557c4f5e5c1197ccad771af3286fd849f63b8ae36a651bc56356a57f21ee1",
-  "entryDigest": "sha256:898e6288f5087aeb304d75cb841b75c762fb1101009caabfeeba30a47d31a32d",
+  "digest": "sha256:924067591e23222d26973016e52d66092b740e227d401fa8e5d6087996ec2cbf",
+  "entryDigest": "sha256:8cc26fa16883b4867b958cadbcf4a6f90f768aa67cec8bd2982faf7600ac233d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/MessageStatusBadge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

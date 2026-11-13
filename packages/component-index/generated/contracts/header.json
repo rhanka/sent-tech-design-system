@@ -1,8 +1,8 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:f162bba8103ba7b3685f4958af1c7307d169e7e74d11aa94c4ddf19c986d6c32",
-  "entryDigest": "sha256:bcc5de6a5db8315d861716e79ab2b3d5489d1ceffe2c4ebe83bcecdb5c56e8bd",
+  "digest": "sha256:aca28280c8e65e4534257a7d7403ee47baf5991a455ca1afda588b610efea0e3",
+  "entryDigest": "sha256:0dc212b31eb3a3297df3ae9d611c9b8cb1c50a5976a658e4eb82ab6bc2c86e6c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-angular/dist/Header.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HeaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

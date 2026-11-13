@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScatterPlot.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Scatter plot (two numeric axes), tooltip and accessible value list.",
     "fr": "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible."
   },
-  "digest": "sha256:24411a6bc4469a6ca9e4af3b7836a74a45e5fb63a4d0b6ead2a0607210f34af8",
+  "digest": "sha256:42e529d7a0585c92b6ae00bb9e93e576db6d0010cef0c5c818ab73d5fe416bf7",
   "displayName": "ScatterPlot",
   "format": "component-entry/v1",
   "frameworks": [

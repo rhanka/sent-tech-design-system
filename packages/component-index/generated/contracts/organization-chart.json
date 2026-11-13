@@ -1,8 +1,8 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:556907a87e23816442914c947fc285846db909bff77f9645b15c8df93ca21a13",
-  "entryDigest": "sha256:1c3e1bb76c01e415ceee39c9b69bd3c710de90d78d5988e5edc336f20e4b2cbc",
+  "digest": "sha256:81b46b93e0c39fa8b29dc0165753ad1ff892bc37ffedc7245d8c09699020b0c1",
+  "entryDigest": "sha256:5b1411975fb277323f9a401362fb202e1d3b76a33265f65388938bc0dce54a41",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/OrganizationChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OrganizationChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Dropdown.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Selection dropdown (listbox).",
     "fr": "Liste déroulante de sélection (listbox)."
   },
-  "digest": "sha256:7a26619f24fbe777320d166b5f6b9f9f5ba1480349e6bab7c0bf33a920fa00a4",
+  "digest": "sha256:77503acd81dea5d94ae666b2ee4e4b89d6d74e4c8fce568d4a9a3ee4c82d9cba",
   "displayName": "Dropdown",
   "format": "component-entry/v1",
   "frameworks": [

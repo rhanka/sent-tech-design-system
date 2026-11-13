@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:51da2305ea46fe7a38d4f08247d818f48080a8b237e891264a547d59fce6a584",
-  "entryDigest": "sha256:2e7e6d69d6cbb10db1f9625a297b1670134b17fccd92be0b6a6e3273f1a1d563",
+  "digest": "sha256:d2fce04519d7073cc02167fd3059173ad7bed086ce85561246825af801585bf6",
+  "entryDigest": "sha256:efd73cd835f3419cb4e97e8747720ea99178ad1bbd6f281ed07bfc3048e1949b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/BackToTop.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BackToTopProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

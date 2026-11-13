@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColumnRangeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:0538f5d4fa1dffe56061e24e17dd44e4c03dbf0d8c4205da8260feeee1c14bc7",
+  "digest": "sha256:17eac9097e3e4ff593141197321d4a52e309f49b7562cde93ed28171ebc7d6c3",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

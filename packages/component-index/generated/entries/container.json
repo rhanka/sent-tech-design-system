@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Container.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:23ba855e467bc82c8368e4bc5e9811ca16502535c1689766ca70a13dc0d27cc9",
+  "digest": "sha256:6bb2b2d3259c07244010844debd282096ef2269a094ec2fdf771160bc8c30c24",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [

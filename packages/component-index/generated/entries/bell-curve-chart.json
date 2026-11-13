@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BellCurveChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ.",
     "fr": "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ."
   },
-  "digest": "sha256:3a0246d883c06751b1c2db5a08f0993072903aba21b2b44541cbe09ed13e4034",
+  "digest": "sha256:4df03320cfa127b92326a206471fb4f383094a78bcee597efeb9671375ac0c22",
   "displayName": "BellCurveChart",
   "format": "component-entry/v1",
   "frameworks": [

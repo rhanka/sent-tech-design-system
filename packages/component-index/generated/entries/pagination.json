@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Pagination.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page navigation with current page.",
     "fr": "Navigation de pages avec page courante."
   },
-  "digest": "sha256:cce02c0533ec57cac868053b39cbf6c47296edc7642b7d21282eac027e08b73c",
+  "digest": "sha256:4dda82ca9510eb483420e7644d0da62a00e88924658543cbc3e52451c4c9106a",
   "displayName": "Pagination",
   "format": "component-entry/v1",
   "frameworks": [

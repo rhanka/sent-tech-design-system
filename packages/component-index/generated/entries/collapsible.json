@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Collapsible.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Clickable header revealing a collapsible content region.",
     "fr": "En-tête cliquable révélant une région de contenu repliable."
   },
-  "digest": "sha256:daf8e8f031907e7f4ee20ef3c248f74b0c65c4801eb0bf869f297053f4090ac7",
+  "digest": "sha256:38733e8aef3d43eb5586d60095eb5664ba25d6d3775831d5d5b53636b86aa138",
   "displayName": "Collapsible",
   "format": "component-entry/v1",
   "frameworks": [

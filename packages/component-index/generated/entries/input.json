@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Input.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:8e41819ab0398c008b1ece3a1d99a68bfec7e13f22a0c24bb9155fa4e353acd1",
+  "digest": "sha256:b668123a1bc09750a7fe8fbef11e126b8026d185c056f8505aa1230f504c2fd2",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

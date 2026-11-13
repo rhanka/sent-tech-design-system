@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TileMapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
     "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
   },
-  "digest": "sha256:d093229953fb0bf11a71ffaca5192a67fef4464726230fb98e1c5658dd7c8c9f",
+  "digest": "sha256:8d74cbad3399ff826262488af50c3b7efa3fbba0f0afbd504f65a7ad4ba013f4",
   "displayName": "TileMapChart",
   "format": "component-entry/v1",
   "frameworks": [

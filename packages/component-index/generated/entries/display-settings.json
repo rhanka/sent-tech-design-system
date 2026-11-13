@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DisplaySettings.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Display preferences controls (font size, contrast, line spacing, motion).",
     "fr": "Préférences d’affichage (taille de texte, contraste, interligne, animations)."
   },
-  "digest": "sha256:64e470fbca8b662d886b8651bba459735f2d2f0273220b525234c35fc14129aa",
+  "digest": "sha256:14e35a0904a937b09fca8da76b426e33e7eed3923957357387b187eebd1ef5c2",
   "displayName": "DisplaySettings",
   "format": "component-entry/v1",
   "frameworks": [

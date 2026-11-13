@@ -1,8 +1,8 @@
 {
   "componentId": "candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:204e59ee68b31cee4af7a3fe914e33d7fe53ee5852d7d14050f528792cb92cdb",
-  "entryDigest": "sha256:4b17c106adc7fa9a160e71031326e7a14f67b4eb9b3ff44d7fce221e38a1c686",
+  "digest": "sha256:b8542249bc344c29c3561db8e0f32bc92ef050471f6ab56a29a4558b158bd537",
+  "entryDigest": "sha256:0afebd5fabffae55ed21ba8ca11009d8d424a7dfc844003a753769b57bafb85c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -307,7 +307,7 @@
         "declarationPath": "packages/components-angular/dist/CandlestickChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CandlestickChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:2961b3a1c6f7ae199e5dc5002298bb92d7789c3d04cd1d4cb3f3891da3d9aaea",
-  "entryDigest": "sha256:061fc4027e8f748b2b558bbc0088f4ec1c0960e1ca306a10e05c6e9130d678d9",
+  "digest": "sha256:0bbb58aa33f64751140a7f7096fa6e67503051d342e25c4132e6ea43344e70a6",
+  "entryDigest": "sha256:c747af1738a3baab44e7f36a96f2a6f3283908a96c987314cd924a1ba80492ca",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/Rating.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RatingProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

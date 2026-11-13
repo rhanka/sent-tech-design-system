@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:83bdedd5d8cc03c4a15773d383eb1a74cc39d4f11b52f2fe97647f7522e80618",
-  "entryDigest": "sha256:eea3a1171d30492bad98f0415e9e6e1e28171b20992e34c6c6e44990893f9a5a",
+  "digest": "sha256:bad98ce1a69be5aef919b29d0286d9954f7240091bd0ccf4d08d31607668a8d8",
+  "entryDigest": "sha256:19ab2293fac19819e36c93cde3b7469f78e902ccd61924fe6d15402a65032af2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -44,7 +44,7 @@
         "declarationPath": "packages/components-angular/dist/ColorSwatch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColorSwatchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

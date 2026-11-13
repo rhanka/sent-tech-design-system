@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:f9c6338bdecdbb247489a762a45a2077d8ade12907eae20b44b8ddb8afc9146a",
-  "entryDigest": "sha256:a5a1021ff03163c5ecce1ce1a55ba9c33464dce10c23667af585dc14ea388707",
+  "digest": "sha256:1f43343f4af5ca8dbc4f03fbb34e91508455302ff182d5b4be192b72e806ec5a",
+  "entryDigest": "sha256:696a1890d851e7f089b3464f841a2e0c7f8b83627c26c766802141ca46e229a4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/ErrorBarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ErrorBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

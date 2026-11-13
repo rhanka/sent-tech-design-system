@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Card.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Surface container with border and padding.",
     "fr": "Conteneur surface avec bordure et padding."
   },
-  "digest": "sha256:ca391d3a4fe5b15f7573aceb1ffc8931ec379ef5f53636e018f4af5a57e21d7d",
+  "digest": "sha256:83130f6428d1ff4df8f7f5299f328cf759e0f9573f58004c68ca048a3924ec03",
   "displayName": "Card",
   "format": "component-entry/v1",
   "frameworks": [

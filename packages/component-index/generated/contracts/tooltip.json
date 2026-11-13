@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:c6846cb47e5ffaaf99f168089b8874e8d5cba1711e5b8713e68527bcde38d853",
-  "entryDigest": "sha256:f1ba2c3e48e0c3280020ce8ad5f3cc420e0a6cc9438b3eb139a0a30eccc4c1f4",
+  "digest": "sha256:e4b4be836cd25b8f9fe00d8edc02d514508a521a8b751c7f57ebfedbd9ae3400",
+  "entryDigest": "sha256:2bc0a73bf7dd9f3e07ac12344510ad82e512bace976ff087d999e15794b16c13",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Tooltip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

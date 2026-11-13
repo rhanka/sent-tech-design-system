@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MessageActions.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Message action row with icon buttons and optional overflow.",
     "fr": "Rangée d’actions d’un message avec boutons icône et overflow optionnel."
   },
-  "digest": "sha256:6c0e61cc3ddf381ae6e61ac52cc01d110f47bed9f5610987de9e879e0d805708",
+  "digest": "sha256:edd1022e67ab7f6818fa4cd944271cb75a638a369248a6a89c2cb278806185c6",
   "displayName": "MessageActions",
   "format": "component-entry/v1",
   "frameworks": [

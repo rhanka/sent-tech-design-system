@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Switch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:a45cf5e331c98ff78ad18f586dfe43a015ba25e7246a883edec591696900e302",
+  "digest": "sha256:0dabd5a05e3c81ac337a0e626aac1bd5d7a2747ea62dbb4de3f6134a28297a95",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

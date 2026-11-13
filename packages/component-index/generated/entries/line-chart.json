@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:16ca6618a6fbdc55ac6eb781cb0f5c9f9fe4af6c0e8056cf9b5ce1473c8cbaf8",
+  "digest": "sha256:1bd7c066218afbe55293ea39a2a685a920739af6736f519099d13e10eb342a94",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

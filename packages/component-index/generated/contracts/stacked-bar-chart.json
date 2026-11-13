@@ -1,8 +1,8 @@
 {
   "componentId": "stacked-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:e01d9190260716ca1a30b425cc453ac3b32fe1685b495dac39c2d8ee30de5be7",
-  "entryDigest": "sha256:cc085f11617f63409e31bcf9e5f42fce3f3693a3581f4ab00a9065edc7f80dca",
+  "digest": "sha256:b86631d7859c5ec3efa9186bd40d752ca63e599317382f2d017569ab163c850d",
+  "entryDigest": "sha256:5c3928a0f30066507fc48c387f1267db13a25611fe15dd8e87d04d04cb51ec09",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -140,7 +140,7 @@
         "declarationPath": "packages/components-angular/dist/StackedBarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StackedBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

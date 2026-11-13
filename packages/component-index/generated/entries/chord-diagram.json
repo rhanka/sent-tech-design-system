@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChordDiagram.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Chord diagram: weighted flows between nodes laid out on a circle.",
     "fr": "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle."
   },
-  "digest": "sha256:22a20179a9ff8166b1a8326bf42e6eb7ac035413959d9cd0120a97071f399c8e",
+  "digest": "sha256:455b40f72bbfb789f765fd157b15b1b92c754f2a088c774ce6cfe424a6f2934e",
   "displayName": "ChordDiagram",
   "format": "component-entry/v1",
   "frameworks": [

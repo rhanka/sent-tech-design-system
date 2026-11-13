@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:3d340ea95cc341aac54d13795eb69298818c15e0f3117bcc681b731234c720d4",
-  "entryDigest": "sha256:1832396cd0b7ad293a3637186514db5ba85a017cfd404e0d17fc057b4f6d38fe",
+  "digest": "sha256:b10cf3f4a14cee0667b14d42919f5bc138b961dc1776616388d7d42bbafa5a7f",
+  "entryDigest": "sha256:4a02e4ab8fdeaffdac55b8ea281638d5e8f6394cd42db67fb077b3ec14aadd45",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/LanguageSelector.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LanguageSelectorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

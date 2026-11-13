@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Grid.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
     "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
   },
-  "digest": "sha256:498fa7746690edff21c45c74a0dd017dd9a6dd36aec7e8097e21b915fb6b07ab",
+  "digest": "sha256:2f220279830d9ef7987a99bf271af7b84d1e912aa7a4763f3943f9496ed25551",
   "displayName": "Grid",
   "format": "component-entry/v1",
   "frameworks": [

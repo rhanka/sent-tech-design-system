@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScoreCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:1a3093f7201078496af4e8ba188efe274c42c289fd183f43ce41858a6cc4b81b",
+  "digest": "sha256:71de2791899289baf303de90e6248b03b6f5a53efd32d70eac8d4966c0d2fe10",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [

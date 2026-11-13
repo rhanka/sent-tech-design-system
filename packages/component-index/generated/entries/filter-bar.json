@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FilterBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Bar grouping FilterPill chips with an optional clear-all action.",
     "fr": "Barre regroupant des FilterPill avec action optionnelle « Tout effacer »."
   },
-  "digest": "sha256:c6d86cb86e27ba5e04083d7ab867a31f26c74a428dcff91cadc0c6e6907d3256",
+  "digest": "sha256:b3c1bd8a1a0f1852fc11985149bd4b6f411721ae9c93a30c4d89ab4f1577f547",
   "displayName": "FilterBar",
   "format": "component-entry/v1",
   "frameworks": [

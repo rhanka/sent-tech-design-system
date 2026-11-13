@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ComboChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Combo chart with bars and lines, dual Y axis, and legend.",
     "fr": "Graphique combiné barres + courbes, double axe Y, légende."
   },
-  "digest": "sha256:907a56dcdc30b701e17235e5e508c13756aa3a44ea8159423e97d0edec5deb5d",
+  "digest": "sha256:99e105abdf33146ca833160f1ad6fb461368130a2999df56c1ccb6e810b21f47",
   "displayName": "ComboChart",
   "format": "component-entry/v1",
   "frameworks": [
