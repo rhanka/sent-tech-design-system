@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:79c6adf4b353adca8ecd0925f2d165d152eb30b559a11443ec7a97d56e98ca0e",
-  "entryDigest": "sha256:ea3f701381379105897ae474137174aea25c062ea3ae75b76e59fab6308c54d7",
+  "digest": "sha256:3ca3c7c3744e1d93d67a99f1e5e977600118bce9d3a0a85375615c1ce418a381",
+  "entryDigest": "sha256:61c3d0dcbe3de56cba6769521eec9e63a3f25c7197a609035634d08f446ed325",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -327,24 +327,24 @@
         },
         {
           "kind": "function",
+          "name": "onSelectOnce",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
           "name": "onUpdate:selectedId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUpdate:selectedIdOnce",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(id: string) => void"
         }
       ],
       "events": [
-        {
-          "name": "onSelect",
-          "payload": {
-            "type": "string"
-          }
-        },
-        {
-          "name": "onUpdate:selectedId",
-          "payload": {
-            "type": "string"
-          }
-        },
         {
           "name": "select",
           "payload": {
@@ -378,7 +378,16 @@
               "id": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "id"
@@ -433,14 +442,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "TreeNode.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "node-label",
@@ -467,7 +469,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:79cfcb2f4a8a15dbbb5e717549337e31cecd80399d4659b0d49f34d5fb3febf7",
+        "declarationDigest": "sha256:c4e582e905c57267fd0272eb15e4aeda8424ccb7423e5e8c7c6648b0c5136f78",
         "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
@@ -476,8 +478,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
-        "event pair: emits \"update:selectedId\" and prop \"onUpdate:selectedId\" both listed verbatim",
         "two-way binding: prop \"selectedId\" paired with emit \"update:selectedId\""
       ]
     }

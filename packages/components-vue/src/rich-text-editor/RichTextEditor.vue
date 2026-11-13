@@ -72,6 +72,8 @@
     onRequestUnlock?: () => void;
   }
 
+  /** @attrs none The editor owns its inner textbox; class is an explicit prop. */
+  defineOptions({ name: 'RichTextEditor', inheritAttrs: false });
   const {
     value,
     profile = "p0",
@@ -80,19 +82,12 @@
     messages,
     allocateId,
     class: className = "",
-    onChange,
-    onExternalConflict,
-    onUnsupportedPaste,
-    onReadinessChange,
     provider = null,
     binding = null,
     actor = null,
     lock = null,
     presence = null,
     capabilities = null,
-    onPresenceChange,
-    onLockChange,
-    onRequestUnlock,
   } = defineProps<RichTextEditorProps>();
 
   const root = ref<HTMLDivElement>();

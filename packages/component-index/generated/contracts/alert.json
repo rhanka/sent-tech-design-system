@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:720e156d4fecfe1febfa0486f5139d7c3f2c1fb729c47fae9a598df0af60e105",
-  "entryDigest": "sha256:21b3dc1cb2a11382090c60c90b76380209c2db9643337413fdf58a8bbf595777",
+  "digest": "sha256:5e3e1a9da3e3f0afa9af73bc78d35f3a6516dbcc31540106b3d1bfcbbe83bc45",
+  "entryDigest": "sha256:2d2e5a45985513bcda4fa867554b44accdc83403581fb5255ac46820524317a2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -197,12 +197,39 @@
       "props": {
         "additionalProperties": false,
         "properties": {
-          "actions": {},
+          "actions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
-          "message": {},
-          "title": {},
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "tone": {
             "enum": [
               "info",
@@ -214,26 +241,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "actions",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "message",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "actions"
@@ -249,13 +257,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:bb02630ba68d503b9c695adda6118174708325f5c5e25eeddd0058e5b5435af0",
+        "declarationDigest": "sha256:06b56a183f5ee21c3dc474256bd1351456906c28787f9560b7c2245288096fa1",
         "declarationPath": "packages/components-vue/dist/Alert.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

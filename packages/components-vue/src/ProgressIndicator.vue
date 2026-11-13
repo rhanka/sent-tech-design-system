@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
@@ -17,10 +18,10 @@ export interface ProgressIndicatorItem {
   value?: string;
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
 
   /** @slot item-description */
-  description?: unknown;
+  description?: string | number;
   status?: ProgressIndicatorStatus;
 }
 
@@ -65,8 +66,8 @@ defineSlots<{
     >
       <span class="st-progressIndicator__indicator">
         <span class="st-progressIndicator__circle">
-          <svg v-if="itemStatus(item) === 'complete'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
-          <svg v-else-if="itemStatus(item) === 'invalid'" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          <Icon v-if="itemStatus(item) === 'complete'" name="check" :size="14" />
+          <Icon v-else-if="itemStatus(item) === 'invalid'" name="x" :size="14" />
           <span v-else-if="itemStatus(item) === 'current'" class="st-progressIndicator__dot" />
           <span v-else class="st-progressIndicator__index">{{ String(index + 1) }}</span>
         </span>

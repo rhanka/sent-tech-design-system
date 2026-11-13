@@ -7,14 +7,14 @@ export type SelectSize = 'sm' | 'md' | 'lg';
 
 export type SelectOption = {
   value: string;
-  label?: unknown;
+  label?: string | number;
   disabled?: boolean;
 };
 
 export type SelectProps = {
-  label?: unknown;
-  helperText?: unknown;
-  errorText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
+  errorText?: string | number;
   invalid?: boolean;
   size?: SelectSize;
   options?: SelectOption[];

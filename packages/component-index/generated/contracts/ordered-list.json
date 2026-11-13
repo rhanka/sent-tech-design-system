@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:7d8a388b564735322d356c32975489a46ec783fdecd589bf1ccf9cfb977325ea",
-  "entryDigest": "sha256:518e049894c0575e465d52c854baee1e6c41d4ff1e3a770c5b5e0fad14c77e18",
+  "digest": "sha256:c4d346ce1cf9c8d6aa74a325f412cd4998709494ff9cee73c51a9e5aa0970445",
+  "entryDigest": "sha256:3dc5109de0fec0686d648445dfe522b141147676df077206dd5d478183468437",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -218,13 +218,59 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "$defs": {
+          "OrderedListItem": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/$defs/OrderedListItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
           },
           "items": {
-            "items": {},
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "$ref": "#/$defs/OrderedListItem"
+                }
+              ]
+            },
             "type": "array"
           },
           "nested": {
@@ -242,20 +288,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "items[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "item",
@@ -265,7 +298,19 @@
               "index": {
                 "type": "number"
               },
-              "item": {},
+              "item": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "$ref": "#/$defs/OrderedListItem"
+                  }
+                ]
+              },
               "path": {
                 "items": {
                   "type": "number"
@@ -283,13 +328,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:bdd88423a59ce33bc0803a88807fb3a61bd601f0b381a719c601948a38f1fb50",
+        "declarationDigest": "sha256:d5ee065d6197314047c7f2401130e08b5d0583aa0741817cb22ecb4ddb70e900",
         "declarationPath": "packages/components-vue/dist/OrderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrderedListProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

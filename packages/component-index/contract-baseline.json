@@ -23,7 +23,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -247,7 +247,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -467,7 +467,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -481,7 +481,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -495,7 +495,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -663,7 +663,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -841,6 +841,7 @@
    "vue": {
     "status": "partial",
     "props": [
+     "caption",
      "class",
      "columns",
      "decorations",
@@ -1129,7 +1130,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1269,7 +1270,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1311,7 +1312,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1395,7 +1396,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1451,7 +1452,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1549,7 +1550,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1639,7 +1640,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1695,7 +1696,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -1895,7 +1896,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1993,7 +1994,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2231,7 +2232,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2245,7 +2246,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2259,7 +2260,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2511,7 +2512,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2735,7 +2736,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2847,7 +2848,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2990,7 +2991,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -3004,7 +3005,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -3102,7 +3103,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -3294,8 +3295,11 @@
     "slots": [],
     "events": [
      "change",
+     "keyDown",
+     "keydown",
      "onChange",
      "onKeyDown",
+     "onKeydown",
      "onReadinessChange",
      "readinessChange"
     ],
@@ -3344,6 +3348,7 @@
     "props": [
      "binding",
      "capabilities",
+     "class",
      "lock",
      "messages",
      "nowIso",
