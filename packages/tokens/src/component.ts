@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './diagramSpacing.js';
 import { flowInk } from "./flow-colors.js";
 import { foundation } from "./foundation.js";
 import { semantic } from "./semantic.js";
@@ -1807,6 +1808,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       footerBottomInset: "9.25px",
       toggleAllocation: "66px",
       toggleBoxSize: "32px",
+      toggleInset: "8px",
       foldedHeaderTextWidth: "290px",
       // DC-2a — root-level sibling gaps of a packed scene (spec
       // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5): aliases of the zone gaps.
@@ -1815,7 +1817,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       proposedDashArray: "4 5",
       fontFamily: "var(--st-font-sans)",
       border: semantic.border.strong,
-      accent: semantic.data.category1,
+      accent: semantic.border.strong,
       surface: semantic.surface.raised,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
@@ -1826,6 +1828,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // requirement holds by construction. Collapsed zones reuse the atomic
     // card box (DC-D13: 460 × 200, no second size).
     diagramZone: {
+      toggleInset: "8px",
       radius: "0",
       borderWidth: "1.5px",
       headerInset: "16px",
@@ -1844,9 +1847,9 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       subtitleLineHeight: "1.3",
       subtitleGap: "var(--st-component-diagramCard-gap)",
       headerRuleGap: "4px",
-      contentInsetTop: "16px",
-      contentInsetBottom: "16px",
-      contentInsetInline: "16px",
+      contentInsetTop: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetBottom: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetInline: "var(--st-component-diagramScene-containerPadding)",
       collapsedWidth: "460px",
       collapsedHeight: "200px",
       collapsedInset: "16px",
@@ -1854,7 +1857,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
       toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
       headerTextInset: "178px",
-      toggleTopInset: "10px",
+      toggleTopInset: "var(--st-component-diagramZone-toggleInset)",
       footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
       proposedDashArray: "4 5",
       // DC-2a — row-pack autolayout spacing (spec
@@ -1862,10 +1865,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // axes, their hard caps (a gutter widens only for a crossing edge
       // label, never past the cap) and the 16:9 target aspect of every
       // packed level. The layout engine receives these as numbers.
-      childGapInline: "24px",
-      childGapBlock: "24px",
-      gapInlineMax: "32px",
-      gapBlockMax: "32px",
+      childGapInline: "var(--st-component-diagramScene-gapMin)",
+      childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+      gapInlineMax: "var(--st-component-diagramScene-gapMax)",
+      gapBlockMax: "var(--st-component-diagramScene-gapMax)",
       rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
@@ -1877,10 +1880,30 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
     // `minReadableScale` is the floor a fit holds before the host pans.
     // The edge label is the smallest text of a scene: 18 px on a 22 px line
-    // box, so one line plus its two 4 px margins (30 px) fits the 32 px gap
-    // cap, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
+    // box; its two 4 px margins are included in channel sizing, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
     // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
+    iconButton: {
+      smSize: "2rem", mdSize: "2.25rem", lgSize: "2.5rem",
+      radius: "0.375rem", text: semantic.text.primary, focusRing: semantic.border.interactive,
+    },
     diagramScene: {
+      containerPadding: `${spacing.containerPadding}px`,
+      gapMin: `${spacing.gapMin}px`,
+      gapMinBlock: `${spacing.gapMinBlock}px`,
+      gapBase: `${spacing.gapBase}px`,
+      gapBaseBlock: `${spacing.gapBaseBlock}px`,
+      trackSpacing: `${spacing.trackSpacing}px`,
+      trackSpacingBlock: `${spacing.trackSpacingBlock}px`,
+      labelBand: `${spacing.labelBand}px`,
+      gapMax: `${spacing.gapMax}px`,
+      bundleLabelMaxWidth: "320px",
+      labelPadding: "4px",
+      labelBorderWidth: "1px",
+      bundleMarkerGap: "6px",
+      edgeStroke: "#64748b",
+      labelSurface: "#ffffff",
+      labelBorder: "#cbd5e1",
+      labelText: "#172033",
       maxDisplayScale: "0.62",
       minReadableScale: "0.45",
       transitionDuration: "240ms",

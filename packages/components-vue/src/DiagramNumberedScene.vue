@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineOptions({ name: "DiagramSceneFigure" });
 import { computed, nextTick, onBeforeUnmount, onMounted, shallowRef, useId, watch } from "vue";
+import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { clampZoom, createLayoutCache, DEFAULT_FLOW_TOKENS, FIT_ASPECT, zoomReadout, type FlowTokens, type Rect } from "@sentropic/diagram-canvas";
 import { cardLineMeasurer, defaultCardMeasure } from "@sentropic/diagram-canvas/diagramCardModel";
 import {
@@ -27,6 +28,7 @@ const same = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b)
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: false });
 const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
 const ownedCache = createLayoutCache(), hostId = useId();
+const arrowId = 'diagram-arrow-' + hostId;
 const frame = shallowRef<HTMLElement>(), viewport = shallowRef<HTMLElement>();
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
@@ -263,8 +265,9 @@ const scenarioId = useId();
           <div class="st-diagramSceneFigure-world" :style="`transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`" :data-flow-active="highlight !== undefined && (highlight.primary.size > 0 || highlight.dimmed.size > 0) ? 'true' : undefined">
             <template v-if="scene !== undefined">
               <svg class="st-diagramSceneFigure-edges" aria-hidden="true">
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
-                  <polyline class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="points(edge.points)" />
+                  <polyline :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="points(edge.points)" />
                   <template v-if="edge.directed">
                     <polyline class="st-diagramSceneFigure-flowHit" :data-flow-hit="edge.occurrence" :points="points(edge.points)" />
                     <path v-for="(arrow, index) in edge.arrows" :key="index" class="st-diagramSceneFigure-flowArrow" :data-flow-arrow="edge.occurrence" :data-flow-state="stateOf(edge.occurrence)" :d="tokens.flowArrowPath" :transform="`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-tokens.flowArrowLength} ${-tokens.flowArrowWidth / 2})`" />
@@ -272,7 +275,7 @@ const scenarioId = useId();
                 </template>
               </svg>
               <div v-for="node in scene.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
-                <SceneNode :node="node" :measure="measure" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
+                <SceneNode :node="node" :measure="measure" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
               </div>
               <template v-for="badge in scene.badges" :key="badge.id">
                 <button type="button" class="st-diagramSceneFigure-flowBadge" :data-flow-badge="badge.id" :data-flow-state="stateOf(badge.occurrence)" :aria-pressed="same(selected, badge.target)" :aria-describedby="descriptionId('badge', badge.id)" :tabindex="badgeTab === badge.id ? 0 : -1" :style="boxStyle(badge.box)">{{ badge.text }}</button>

@@ -1,9 +1,10 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramZone' });
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, useId } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { ZONE_GEOMETRY, defaultCardMeasure, firstOverflowDiagnostic, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { ZONE_GEOMETRY, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -18,10 +19,8 @@ import { ZONE_GEOMETRY, defaultCardMeasure, firstOverflowDiagnostic, layoutZone,
  *
  * Both states render inside the SAME positioning wrapper
  * (`.st-diagramZone-pos`, absolute at `x`/`y`): folding never moves the
- * zone occurrence. Overflow = refusal (owner criterion): a `zone-overflow`
- * renders no normal zone — the wrapper carries the host-visible refusal
- * state `data-zone-refused="<slot>"`, matching the pure renderer's refused
- * result.
+ * zone occurrence. Owner A11 keeps all content visible and grows the zone;
+   * explicit hard-cap overflow remains diagnostic.
  *
  * The component owns no view state: `collapsed` is a prop (§4.3) and
  * activating the toggle emits the §7.2 intent through `onToggle`.
@@ -41,7 +40,7 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -68,6 +67,8 @@ const onSelect = (event: {
 const onDiagnostic = (event: ZoneDiagnostic) => emit('diagnostic', event);
 const zoneProps = computed(() => ({
     entityId,
+    containerPadding,
+    ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     ...(subtitle === undefined ? {} : { subtitle }),
@@ -101,7 +102,7 @@ const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) =
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"));
 // Overflow = refusal: the same predicate as the pure renderer
 // (`firstOverflowDiagnostic`), so both renderers refuse together.
-const refused = computed(() => firstOverflowDiagnostic(layout.value.diagnostics));
+
 const header = computed(() => layout.value.header);
 // Expanded subtitle measure: the layout's own `subtitleWidth`
 // (min(width, 460) − 26) — the single geometry source shared with
@@ -125,41 +126,41 @@ const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})
 // inline insets, as tall as the layout's header block + subtitle.
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};height:${header.value.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`);
+    : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.value.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
     : `top:${frameTop(header.value.ruleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
 const contentStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(header.value.contentTop)};left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(ZONE_GEOMETRY.contentInsetBottom)}`);
+    : `top:${frameTop(header.value.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`);
 const footerRuleStyle = computed(() => header.value?.footerRuleY === undefined
     ? undefined
     : `top:${frameTop(header.value.footerRuleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
 const footerStyle = computed(() => header.value === undefined
     ? undefined
-    : `left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
+    : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
 onMounted(() => {
     watch(layout, value => {
         for (const diagnostic of value.diagnostics)
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
+const descriptionId = useId();
 defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-<div class="st-diagramZone-pos" :style="`left:${x}px;top:${y}px`" :data-entity="entityId" :data-collapsed="collapsed ? 'true' : 'false'" :data-zone-refused="refused === undefined ? undefined : refused.slot" :data-zone-overflow="overflowSlot" :data-zone-icon-unknown="unknownIcon ? '' : undefined">
-  <template v-if="refused !== undefined">
-    <div class="st-diagramZone st-diagramZone--refused" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" role="group" :aria-label="title"></div>
-  </template><template v-else><template v-if="collapsed">
+<div class="st-diagramZone-pos" :style="`left:${x}px;top:${y}px`" :data-entity="entityId" :data-collapsed="collapsed ? 'true' : 'false'" :data-zone-overflow="overflowSlot" :data-zone-icon-unknown="unknownIcon ? '' : undefined">
+  <template v-if="collapsed">
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
-      <template v-if="header !== undefined">
+    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+      <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
+    <template v-if="header !== undefined">
 
         <div class="st-diagramZone-header" :style="headerStyle">
-          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="icon" :iconGlyph="iconGlyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
+          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
               ? undefined
               : {
                   collapsed: false,
@@ -178,13 +179,13 @@ defineSlots<{ "default"?: () => unknown }>();
           </template>
           <div class="st-diagramZone-footer" :style="footerStyle">
             <template v-for="(line, footerIndex) in header.footer" :key="footerIndex">
-              <span class="st-diagramZone-footerLine">{{ line.text }}</span>
+              <span class="st-diagramZone-footerLine" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
             </template>
           </div>
         </template>
       </template>
     </div>
-  </template></template>
+  </template>
 </div>
 </template>
 
@@ -208,7 +209,7 @@ defineSlots<{ "default"?: () => unknown }>();
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramZone--center {
     /* Owner variant: every text slot centred inside its allocation. */
@@ -218,12 +219,6 @@ defineSlots<{ "default"?: () => unknown }>();
      independently of the tint (owner criterion 5). */
   .st-diagramZone--proposed {
     border-style: dashed;
-  }
-  /* Refusal state (overflow = refusal): no normal frame, a dashed
-     placeholder the host can see via data-zone-refused on the wrapper. */
-  .st-diagramZone--refused {
-    border-style: dashed;
-    background: transparent;
   }
   .st-diagramZone-header {
     /* top/left/right/height come from the shared layout inline; the CSS

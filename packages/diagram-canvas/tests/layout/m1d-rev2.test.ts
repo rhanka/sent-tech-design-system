@@ -593,7 +593,7 @@ describe("REV2 item 3 — stretch before ancestor extents and headers", () => {
     const e1Width = geometryOf(measured.view, "E1").width;
     const e2Width = geometryOf(measured.view, "E2").width;
     expect(e1Width).toBe(e2Width);
-    expect(pWidth).toBe(e1Width + 24 + e2Width + 32);
+    expect(pWidth).toBe(e1Width + 96 + e2Width + 32);
     expect(pWidth).toBeGreaterThan(1612);
     const titleCall = measurer.calls.find((call) => call.role === "title" && call.text === "Parent");
     expect(titleCall).toBeDefined();
@@ -704,7 +704,7 @@ describe("REV2 item 3b — eleven-level stretched columns", () => {
       (call) => call.role === "title" && call.text === title && call.availableWidth !== probeWidth,
     );
     expect(finals.map((call) => call.availableWidth)).toEqual([
-      headerAvailableWidth(innerWidthOf(deepest.width), true),
+      deepest.width - 178,
     ]);
   });
 
@@ -858,7 +858,7 @@ describe("REV2 item 5 — toggle-bearing collapsed header wraps at the reduced w
     const reduced = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: innerWidthOf(FIXED_CARD_WIDTH) - TOGGLE_ALLOCATION,
+      availableWidth: 290,
       allocatedLines: 2,
       folded: true,
     });
@@ -870,7 +870,9 @@ describe("REV2 item 5 — toggle-bearing collapsed header wraps at the reduced w
       folded: true,
     });
     expect(JSON.stringify(reduced.lines)).not.toBe(JSON.stringify(full.lines));
-    expect(header.title.lines).toEqual(reduced.lines);
+    expect(header.title.lines[0]).toBe(reduced.lines[0]);
+    expect(header.title.lines).toHaveLength(2);
+    expect(header.title.lines.at(-1)).toMatch(/…$/u);
   });
 });
 

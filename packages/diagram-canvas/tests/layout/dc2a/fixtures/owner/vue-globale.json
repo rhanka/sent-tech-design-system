@@ -1,0 +1,885 @@
+{
+  "id": "vue-globale",
+  "source": {
+    "kind": "DC-2a DS fixture; R14 layout rules",
+    "path": "fixtures/vue-globale/vue-globale.views.json"
+  },
+  "cards": [
+    {
+      "id": "rt-claude",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Exécution · CLI",
+      "title": "Claude Code",
+      "purpose": "Session d'agent invoquant h2a et Track",
+      "detail": "sur: Poste",
+      "footer": "propriétaire: Anthropic",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "server",
+      "old": {
+        "x": 0,
+        "y": 0,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-codex",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Exécution · CLI",
+      "title": "Codex",
+      "purpose": "Session d'agent qui appelle le MCP",
+      "detail": "sur: Poste",
+      "footer": "propriétaire: OpenAI",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "server",
+      "old": {
+        "x": 500,
+        "y": 0,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-h2a",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Système",
+      "title": "h2a",
+      "purpose": "Coordonne les agents et produit Focus",
+      "detail": null,
+      "footer": "repo: h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1000,
+        "y": 0,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-h2a",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-h2a",
+      "kicker": "Paquet · Lib",
+      "title": "pkg-h2a",
+      "purpose": "Code h2a, binaires et skill archi",
+      "detail": null,
+      "footer": "repo: h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1500,
+        "y": 0,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-focus",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-h2a",
+      "kicker": "Composant",
+      "title": "Focus",
+      "purpose": "Projette archi-cards@1 et vérifie",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: h2a · pkg-h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 0,
+        "y": 260,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "art-skill-archi",
+      "kind": "artifact",
+      "form": "skill",
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-h2a",
+      "kicker": "Artefact · Skill",
+      "title": "skill archi (cible)",
+      "purpose": "Guide l'extraction des faits archi@1",
+      "detail": "chargé par: Claude Code (cible)",
+      "footer": "repo: h2a (cible) · pkg-h2a (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 500,
+        "y": 260,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-h2a",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-h2a",
+      "kicker": "Exécution · CLI",
+      "title": "CLI h2a",
+      "purpose": "Sert le MCP local et projette Focus",
+      "detail": "sur: Poste",
+      "footer": "repo: h2a · pkg-h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "server",
+      "old": {
+        "x": 1000,
+        "y": 260,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-h2a-mcp",
+      "kind": "service",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "sys-h2a",
+      "kicker": "Service",
+      "title": "MCP h2a (cible)",
+      "purpose": "Service MCP partagé de coordination",
+      "detail": "sur: Cluster (cible)",
+      "footer": "opéré par: mesh (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1500,
+        "y": 260,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-h2a",
+      "kind": "api",
+      "form": "mcp",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-h2a",
+      "kicker": "API · MCP",
+      "title": "h2a MCP",
+      "purpose": "Outils de coordination h2a_*",
+      "detail": "fourni par: CLI h2a",
+      "footer": "repo: h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "api",
+      "old": {
+        "x": 0,
+        "y": 520,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-track",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Système",
+      "title": "Track",
+      "purpose": "Contrôle chaque écriture du suivi",
+      "detail": null,
+      "footer": "repo: h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 500,
+        "y": 520,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-track",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-track",
+      "kicker": "Paquet · Lib",
+      "title": "pkg-track",
+      "purpose": "Code du suivi et binaire track",
+      "detail": null,
+      "footer": "repo: h2a",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1000,
+        "y": 520,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-control",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-track",
+      "kicker": "Composant",
+      "title": "Contrôle Track",
+      "purpose": "Valide ou refuse l'écriture",
+      "detail": "exécuté par: CLI track",
+      "footer": "repo: h2a · pkg-track",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1500,
+        "y": 520,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-track",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-track",
+      "kicker": "Exécution · CLI",
+      "title": "CLI track",
+      "purpose": "Valide puis écrit le suivi",
+      "detail": "sur: Poste",
+      "footer": "repo: h2a · pkg-track",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "server",
+      "old": {
+        "x": 0,
+        "y": 780,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "st-events",
+      "kind": "store",
+      "form": "jsonl",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-track",
+      "kicker": "Stockage · JSONL",
+      "title": "events.jsonl",
+      "purpose": "Journal du suivi, ajout seul",
+      "detail": "lu par: CLI h2a · engram live (cible)",
+      "footer": "écrit par: plusieurs",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "db",
+      "old": {
+        "x": 500,
+        "y": 780,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-sentropic",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Système",
+      "title": "mesh (cible)",
+      "purpose": "Plan cluster-mesh, registre et artefacts",
+      "detail": null,
+      "footer": "repo: sentropic (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1000,
+        "y": 780,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-mesh",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-sentropic",
+      "kicker": "Paquet · Lib",
+      "title": "pkg-mesh (cible)",
+      "purpose": "Plugin Hono, registre et relais",
+      "detail": null,
+      "footer": "repo: sentropic (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1500,
+        "y": 780,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-artifacts",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-sentropic",
+      "kicker": "Paquet · Lib",
+      "title": "artifacts (cible)",
+      "purpose": "Fournisseur et 15 outils artifacts_*",
+      "detail": null,
+      "footer": "repo: sentropic (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 0,
+        "y": 1040,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-memory-access",
+      "kind": "service",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "sys-sentropic",
+      "kicker": "Service",
+      "title": "Relais mém. (cible)",
+      "purpose": "Relaie les appels mémoire vers engram",
+      "detail": "sur: Cluster (cible)",
+      "footer": "opéré par: mesh (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 500,
+        "y": 1040,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-artifacts",
+      "kind": "service",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "sys-sentropic",
+      "kicker": "Service",
+      "title": "art-content (cible)",
+      "purpose": "Sert les artefacts et applique les baux",
+      "detail": "sur: Cluster (cible)",
+      "footer": "opéré par: mesh (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1000,
+        "y": 1040,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-mcp-registry",
+      "kind": "api",
+      "form": "mcp",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-sentropic",
+      "kicker": "API · MCP",
+      "title": "Registre MCP (cible)",
+      "purpose": "Porte unique des outils MCP",
+      "detail": "fourni par: MCP h2a (cible)",
+      "footer": "repo: sentropic (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "api",
+      "old": {
+        "x": 1500,
+        "y": 1040,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-engram",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Système",
+      "title": "engram",
+      "purpose": "Mémoire gouvernée et gardien archi@1",
+      "detail": null,
+      "footer": "repo: engram",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 0,
+        "y": 1300,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-engram",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-engram",
+      "kicker": "Paquet · Lib",
+      "title": "pkg-engram",
+      "purpose": "Gardien archi@1 et moteur mémoire",
+      "detail": null,
+      "footer": "repo: engram",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 500,
+        "y": 1300,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-archi-guardian",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-engram",
+      "kicker": "Composant",
+      "title": "Gardien",
+      "purpose": "Valide les formes et règles A1 à A4",
+      "detail": "exécuté par: CLI engram",
+      "footer": "repo: engram · pkg-engram",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1000,
+        "y": 1300,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-engram-cli",
+      "kind": "runtime",
+      "form": "cli",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-engram",
+      "kicker": "Exécution · CLI",
+      "title": "CLI engram",
+      "purpose": "Vérifie les documents sur le poste",
+      "detail": "sur: Poste",
+      "footer": "repo: engram · pkg-engram",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "server",
+      "old": {
+        "x": 1500,
+        "y": 1300,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-engram-live",
+      "kind": "service",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "sys-engram",
+      "kicker": "Service",
+      "title": "engram live (cible)",
+      "purpose": "Tient le track record vivant",
+      "detail": "sur: Cluster (cible)",
+      "footer": "opéré par: mesh (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 0,
+        "y": 1560,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-memory",
+      "kind": "api",
+      "form": "mcp",
+      "container": false,
+      "folded": false,
+      "parentId": "sys-engram",
+      "kicker": "API · MCP",
+      "title": "memory_* (cible)",
+      "purpose": "Six outils mémoire, contrat figé",
+      "detail": "fourni par: engram live (cible)",
+      "footer": "repo: engram (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "api",
+      "old": {
+        "x": 500,
+        "y": 1560,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-ds",
+      "kind": "system",
+      "form": null,
+      "container": true,
+      "folded": false,
+      "parentId": null,
+      "kicker": "Système",
+      "title": "DS",
+      "purpose": "Noyau sémantique, DC-2a et rendu SVG",
+      "detail": null,
+      "footer": "repo: ds",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1000,
+        "y": 1560,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-ds-core",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-ds",
+      "kicker": "Paquet · Lib",
+      "title": "diag-core",
+      "purpose": "Documents, vues, profils et repliage",
+      "detail": null,
+      "footer": "repo: ds",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 1500,
+        "y": 1560,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-ds-canvas",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-ds",
+      "kicker": "Paquet · Lib",
+      "title": "canvas (cible)",
+      "purpose": "Scène sans DOM et placement DC-2a",
+      "detail": null,
+      "footer": "repo: ds (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 0,
+        "y": 1820,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-ds-svelte",
+      "kind": "package",
+      "form": "library",
+      "container": true,
+      "folded": false,
+      "parentId": "sys-ds",
+      "kicker": "Paquet · Lib",
+      "title": "ds-svelte",
+      "purpose": "Rendu SVG des cartes et conteneurs",
+      "detail": null,
+      "footer": "repo: ds",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "cluster",
+      "old": {
+        "x": 500,
+        "y": 1820,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-dc2a",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-ds-canvas",
+      "kicker": "Composant",
+      "title": "DC-2a (cible)",
+      "purpose": "Calcule géométrie et routage",
+      "detail": "exécuté par: CLI h2a (cible)",
+      "footer": "repo: ds (cible) · canvas (cible)",
+      "lifecycle": "proposed",
+      "today": false,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1000,
+        "y": 1820,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-card-render",
+      "kind": "component",
+      "form": null,
+      "container": false,
+      "folded": false,
+      "parentId": "pkg-ds-svelte",
+      "kicker": "Composant",
+      "title": "svg-render",
+      "purpose": "Dessine cartes et zones en SVG",
+      "detail": "exécuté par: CLI h2a",
+      "footer": "repo: ds · ds-svelte",
+      "lifecycle": "current",
+      "today": true,
+      "target": true,
+      "icon": "base",
+      "old": {
+        "x": 1500,
+        "y": 1820,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "dc-skill-focus",
+      "source": "art-skill-archi",
+      "target": "cmp-focus",
+      "label": "documente · règles archi-cards@1"
+    },
+    {
+      "id": "da-rt-h2a",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "label": "déployé comme · binaire h2a"
+    },
+    {
+      "id": "do-h2a-track",
+      "source": "pkg-h2a",
+      "target": "pkg-track",
+      "label": "dépend de · lecture du suivi"
+    },
+    {
+      "id": "da-rt-track",
+      "source": "pkg-track",
+      "target": "rt-track",
+      "label": "déployé comme · binaire track"
+    },
+    {
+      "id": "ac-track-events-w",
+      "source": "rt-track",
+      "target": "st-events",
+      "label": "ajoute à · événements validés"
+    },
+    {
+      "id": "do-mesh-artifacts",
+      "source": "pkg-mesh",
+      "target": "pkg-artifacts",
+      "label": "dépend de · feuille artifacts"
+    },
+    {
+      "id": "da-mesh-mem-access",
+      "source": "pkg-mesh",
+      "target": "svc-memory-access",
+      "label": "déployé comme · relais mémoire"
+    },
+    {
+      "id": "da-pkg-artifacts",
+      "source": "pkg-artifacts",
+      "target": "svc-artifacts",
+      "label": "déployé comme · serveur contenu"
+    },
+    {
+      "id": "da-rt-engram",
+      "source": "pkg-engram",
+      "target": "rt-engram-cli",
+      "label": "déployé comme · validateur local"
+    },
+    {
+      "id": "do-canvas-core",
+      "source": "pkg-ds-canvas",
+      "target": "pkg-ds-core",
+      "label": "dépend de · modèle de vue"
+    },
+    {
+      "id": "do-svelte-core",
+      "source": "pkg-ds-svelte",
+      "target": "pkg-ds-core",
+      "label": "dépend de · contrat présentation"
+    },
+    {
+      "id": "do-h2a-ds-core",
+      "source": "pkg-h2a",
+      "target": "pkg-ds-core",
+      "label": "dépend de · validation et pliage"
+    },
+    {
+      "id": "do-h2a-ds-canvas",
+      "source": "pkg-h2a",
+      "target": "pkg-ds-canvas",
+      "label": "dépend de · placement DC-2a"
+    },
+    {
+      "id": "do-h2a-ds-svelte",
+      "source": "pkg-h2a",
+      "target": "pkg-ds-svelte",
+      "label": "dépend de · rendu SVG"
+    },
+    {
+      "id": "do-engram-ds-core",
+      "source": "pkg-engram",
+      "target": "pkg-ds-core",
+      "label": "dépend de · contrat diagram-core"
+    },
+    {
+      "id": "in-claude-h2a",
+      "source": "rt-claude",
+      "target": "rt-h2a",
+      "label": "lance · hooks et mcp-serve"
+    },
+    {
+      "id": "in-codex-h2a",
+      "source": "rt-codex",
+      "target": "rt-h2a",
+      "label": "lance · mcp-serve local"
+    },
+    {
+      "id": "in-claude-track",
+      "source": "rt-claude",
+      "target": "rt-track",
+      "label": "lance · écritures du suivi"
+    },
+    {
+      "id": "ca-claude-h2a-local",
+      "source": "rt-claude",
+      "target": "api-h2a",
+      "label": "appelle · outils h2a_* locaux"
+    },
+    {
+      "id": "ca-claude-reg",
+      "source": "rt-claude",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-codex-reg",
+      "source": "rt-codex",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-h2a-reg",
+      "source": "rt-h2a",
+      "target": "api-mcp-registry",
+      "label": "appelle · registre MCP"
+    },
+    {
+      "id": "ca-mem-access-engram",
+      "source": "svc-memory-access",
+      "target": "api-memory",
+      "label": "appelle · requêtes mémoire"
+    }
+  ]
+}

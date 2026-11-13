@@ -224,7 +224,7 @@ export function sceneInput(caseId: CaseId, viewName: string, alsoFolded: readonl
     const text: Record<string, string> = {};
     if (card.kicker !== null) text["kicker"] = card.kicker;
     if (card.title !== null) text["title"] = card.title;
-    if (card.purpose !== null) text["body"] = card.purpose;
+    if (card.purpose !== null) text[card.container ? "subtitle" : "body"] = card.purpose;
     if (card.detail !== null) text["detail"] = card.detail;
     if (card.footer !== null) text["footer"] = card.footer;
     forms[occurrenceOf(card.id)] = { form: card.container ? "container" : "card", text: text as PresentationText };
@@ -325,6 +325,8 @@ export interface SceneLayout {
   readonly input: SceneInput;
   readonly view: ViewDocument;
   readonly warnings: readonly LayoutWarning[];
+  readonly channels?: readonly import("../../../src/layout/channels.js").LayoutChannel[];
+  readonly bundles?: Readonly<Record<string, { readonly members: readonly string[] }>>;
   /** Emitted rectangles of the visible cards, keyed by card id. */
   readonly rects: ReadonlyMap<string, Rect>;
   /** Placement parent (nearest expanded visible ancestor) of each visible card. */
@@ -395,7 +397,7 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
     const card = byId.get(id);
     const rect = rects.get(id);
     if (card === undefined || rect === undefined || !card.container || card.folded) continue;
-    titleBands.set(id, { x: rect.x + 16, y: rect.y + 16, width: rect.width - 32, height: header.height });
+    titleBands.set(id, { x: rect.x, y: rect.y, width: rect.width, height: 16 + header.height });
   }
   // Label boxes are the ones the engine emits (`LayoutResult.labelBoxes`).
   const labelBoxes = new Map<string, Rect>(Object.entries(result.labelBoxes ?? {}).map(([id, box]) => [id, { ...box }] as const));
@@ -403,6 +405,8 @@ export function layScene(input: SceneInput, extra: Partial<LayoutOptions> = {}, 
     input,
     view,
     warnings: result.warnings,
+    channels: result.channels ?? [],
+    ...(result.edgeBundles === undefined ? {} : { bundles: result.edgeBundles }),
     rects,
     parentOf,
     routes,

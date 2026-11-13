@@ -47,7 +47,7 @@
       "gitBlob": "ace049eeddcc4467ac0e103cde9466d7eb0805aa",
       "sha256": "2e336ec40b2a4febb1b1cef53ca2e411fb6817fbb55ba9fe99ace6db83949092",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "8654ff2838fac72b83751e190a2d1ae54e07ba1dad25393a8c840fed0def19f9",
+      "destinationSha256": "ee524b7089899b21170b80f509189bb1c52a9b73779211f2161655ee6db8c7cf",
       "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
@@ -564,7 +564,7 @@
       "gitBlob": "5668937bc0c0b7f36d4617558cb5f25dab49ff50",
       "sha256": "e48a39ba97e2d5593171f39d0f7f738c7340d793aaa3dbeb4f86186f74ecc272",
       "status": "adapted-gd-m2-processing",
-      "destinationSha256": "c20a3c677c8eee22244c315c4a2220a00be1df412a629ba51132aafee9788798",
+      "destinationSha256": "4af5b4008db0dd7a4626bd52e55493f4fde9a8cab87d832128c798c0232fb534",
       "note": "GD-M2-PROCESSING: LayoutOutcome/toPositions/force-fa2/hierarchy-aware adaptation; prior M1 source hash kept in sha256; diagram-vue: add engine and presentation public entry points"
     },
     {
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "c19718ae32a08e83d0d9bf3d3a5aa54307ccb7006822325eee5f13c7f0ab3e30",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; PR 281 follow-up: pin the shared Vue component implementation to 0.41.0-next.3."
+      "destinationSha256": "6b1541b9e571c4c091d9be35e67557760a9874a5fe4e5d0ff99eb3d0c049883c",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; PR 281 follow-up: pin the shared Vue component implementation to 0.41.0-next.2."
     },
     {
       "repository": "dataviz",

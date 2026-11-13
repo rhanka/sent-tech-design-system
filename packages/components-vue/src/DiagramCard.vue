@@ -1,20 +1,17 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramCard' });
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, useId } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { CARD_GEOMETRY, defaultCardMeasure, firstOverflowDiagnostic, layoutCard } from "./diagramCardModel.js";
+import { CARD_GEOMETRY, cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
 import type { CardDiagnostic, CardLineMeasure, DiagramCardProps as DiagramCardData, } from "./diagramCardModel.js";
 /**
  * `DiagramCard` — the atomic diagram card (DC-1).
  *
- * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5. Fixed 460 × 200 box, square
- * corners, footer pinned at 9.25, one 1 px rule, no shortening. Overflow
- * = refusal (owner criterion): any `card-overflow` — a too-wide line, a
- * line-count overflow, or a header+body height that does not fit above the
- * pinned rule — renders NO normal card; the root carries the host-visible
- * refusal state `data-card-refused="<slot>"` and the diagnostics keep the
- * original slot text. An icon name with no glyph data raises
- * `card-icon-unknown` and the slot collapses (DIF-14).
+ * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5, amended by owner A2/A11.
+   * The card stays 460 × 200 and truncates measured slots (owner A14).
+   * Full text remains available in title/aria. A missing icon resolves
+   * to the visible unknown glyph.
  *
  * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
  * host publishes the current camera zoom as `--st-diagram-zoom` on the
@@ -43,7 +40,7 @@ export interface DiagramCardProps extends DiagramCardData {
     /** One call per diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
-const { entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
+const { autoSize = true, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
 const emit = defineEmits<{
     select: [
         event: {
@@ -60,6 +57,8 @@ const onSelect = (event: {
 const onDiagnostic = (event: CardDiagnostic) => emit('diagnostic', event);
 const layout = computed(() => layoutCard({
     entityId,
+    ...(autoSize === undefined ? {} : { autoSize }),
+    ...(height === undefined ? {} : { height }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     body,
@@ -75,28 +74,25 @@ const layout = computed(() => layoutCard({
 }, measure));
 const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) => diagnostic.code === "card-overflow")?.slot);
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
-// Overflow = refusal: the same predicate as the pure renderer
-// (`firstOverflowDiagnostic`), so both renderers refuse together.
-const refused = computed(() => firstOverflowDiagnostic(layout.value.diagnostics));
+
+
 onMounted(() => {
     watch(layout, value => {
         for (const diagnostic of value.diagnostics)
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
+const descriptionId = useId();
 </script>
 
 <template>
-<template v-if="refused !== undefined">
-
-  <div class="st-diagramCard st-diagramCard--refused" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :data-card-refused="refused.slot" :data-card-overflow="refused.slot" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })"></div>
-</template><template v-else>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
-  <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="icon" :iconGlyph="iconGlyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="cardFullText({ entityId, kicker, title, body, footer })" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+  <span :id="descriptionId" hidden>{{ cardFullText({ entityId, kicker, title, body, footer }) }}</span>
+  <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div class="st-diagramCard-body" :style="`margin-left:${layout.bodyX - CARD_GEOMETRY.headerInset}px;width:${layout.bodyWidth}px`">
     <template v-for="(line, bodyIndex) in layout.body" :key="bodyIndex">
-      <span :class="line.secondary ? 'st-diagramCard-detail' : 'st-diagramCard-line'">{{ line.text }}</span>
+      <span :class="line.secondary ? 'st-diagramCard-detail' : 'st-diagramCard-line'" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
   </div>
 
@@ -107,25 +103,25 @@ onMounted(() => {
     <template v-if="layout.footerLines.length > 0">
       <div class="st-diagramCard-footer">
         <template v-for="(line, footerIndex) in layout.footerLines" :key="footerIndex">
-          <span class="st-diagramCard-footerLine">{{ line.text }}</span>
+          <span class="st-diagramCard-footerLine" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
         </template>
       </div>
     </template>
   </div>
 </div>
 </template>
-</template>
 
 <style>
 
   .st-diagramCard {
+    position: relative;
     width: var(--st-component-diagramCard-width, 460px);
     height: var(--st-component-diagramCard-height, 200px);
     box-sizing: border-box;
     border: var(--st-component-diagramCard-borderWidth, 2px) solid
       var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
-      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
+      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-radius: var(--st-component-diagramCard-radius, 0);
     background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
@@ -133,7 +129,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramCard--center {
     /* Owner variant: every text slot centred inside its allocation. */
