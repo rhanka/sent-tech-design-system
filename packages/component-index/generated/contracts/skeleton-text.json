@@ -1,8 +1,8 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:76e5892c21148f2bb3e95f1d653ba31dbe63ce5f9f3ac8e4c358c3b3dc9790c5",
-  "entryDigest": "sha256:33a9869873daf8ea9a4b45e1a5e74fd4576787d56770d4f18cd23398f2b07327",
+  "digest": "sha256:7d99bae668b34e4aa6bb8101676949ebf43b6aeb4945c031bf8094b3fa9a763e",
+  "entryDigest": "sha256:dedbad17ed52752297ee493c262d07d673d6ab35271585de4e3481507a1acdea",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/SkeletonText.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SkeletonTextProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -90,11 +90,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SkeletonTextProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -147,7 +147,7 @@
         "declarationPath": "packages/components-svelte/dist/SkeletonText.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SkeletonTextProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

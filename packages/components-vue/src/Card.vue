@@ -11,11 +11,12 @@ const props = withDefaults(defineProps<CardProps>(), {
   interactive: false,
   class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
   <section
-    v-bind="$attrs"
-    :class="classNames('st-card', props.interactive && 'st-card--interactive', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-card', props.interactive && 'st-card--interactive', props.class)) }"
+
   ><slot /></section>
 </template>

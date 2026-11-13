@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Radio.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Radio.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d24f326a256efe90b9c729e408bbbc490f2b3fafb865ed75974bde0d7f406801",
+      "digest": "sha256:077c6207ce34b1eded8f093e98074d864ef220840fbd7489eafc135a2b945741",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Radio.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Radio.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:da2e563bcb228246f7a0daf88104c9a9613da728d8e7524d98202361be2e0dbc",
+  "digest": "sha256:369e9715dcfcd55a463a91912211699b22d6b7983d674b973872a9b72589a147",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

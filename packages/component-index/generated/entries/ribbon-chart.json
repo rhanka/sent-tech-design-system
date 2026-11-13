@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RibbonChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/RibbonChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2705ae6f71c4e8455d802eb37ff730f02cf331c6af4e3965b23574365c053018",
+      "digest": "sha256:04e9f51d376d7cd617ff95fa6992bae58537e543289dfc9ee709c35984027281",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RibbonChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RibbonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
     "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
   },
-  "digest": "sha256:002a14535e41ccdbf2c6ca61200662cfe5bfb6d9abdffdcafc48bcca4b1a834f",
+  "digest": "sha256:ab3c21443ffb2fb9315008bdf48af36a2fbe3179738be06812182ea5babf5be4",
   "displayName": "RibbonChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:cd90381059ba2cc2ea8bb8edb74d91138c5a5c38a0fea8ea4acdc8d32fd29fa0",
-  "entryDigest": "sha256:655933be8e057a8ac5452b25b8927812d6e1ce4165122e9586e60fc720708f4a",
+  "digest": "sha256:0dcd770fdc3024cbc98848890ee5a58d8a793cfdef75ef0218132eb06aa44c8a",
+  "entryDigest": "sha256:bf2a2b28485c09c0be23064921a626dee8501bf9966dc69068400543d203780e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -106,7 +106,7 @@
         "declarationPath": "packages/components-angular/dist/CheckboxGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CheckboxGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/CheckboxGroup.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CheckboxGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -324,7 +324,7 @@
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -436,16 +436,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:dc9b56518373b4b5034a71fbc67089b25a20fb827cdc229a6dea8a40d7d2f34f",
+        "declarationDigest": "sha256:b92d8760050b7e0828c8351bd3401b0de86b15f6c2fc97335d0892afaae3e22c",
         "declarationPath": "packages/components-vue/dist/CheckboxGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CheckboxGroupProps",

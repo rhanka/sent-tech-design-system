@@ -41,14 +41,14 @@ const props = withDefaults(defineProps<AvatarProps>(), {
 
 <template>
   <span
-    v-bind="$attrs"
-    :class="classNames(
+    v-bind="{ ...($attrs), class: (classNames(
       'st-avatar',
       `st-avatar--${props.size}`,
       `st-avatar--${props.shape}`,
       props.src ? 'st-avatar--image' : `st-avatar--${props.tone}`,
       props.class,
-    )"
+    )) }"
+
     role="img"
     :aria-label="props.alt ?? props.name"
   >

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Form.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Form.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:888cb5395d284385155e21aada34d7519cd58ae2320d15cd5063e4ec028e71ba",
+      "digest": "sha256:831b052435a075c5707cf88bcae9271ee35daecaf3e242daceeb25ec7d6b5f5e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Form.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Form.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:2fcd86755ebf7ef2e386f6f1f6acbf029f5def09c9d054f4677bb42a89f3a97e",
+  "digest": "sha256:6a03eafef921b531f7c9c72fa2603c4ab19b2b78599fc9c90ffe23a8ff6e26e9",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

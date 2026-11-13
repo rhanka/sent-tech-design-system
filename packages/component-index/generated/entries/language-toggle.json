@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LanguageToggle.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LanguageToggle.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d458766fe2705ff505dc0769b5ffecdb9ffaf0577a5a7d83c6e16efe37eab071",
+      "digest": "sha256:fb2c2a840e127cd094f9213f8270a41330eb9ba17dc4ecff4209da130cd5fc91",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageToggle.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageToggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Controlled language toggle, as a desktop select or mobile accordion.",
     "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
   },
-  "digest": "sha256:b488c4129eaae3a68fc72d098c9924d7eebaf4b0c7cfe7e98dcf81f8bbeedbc1",
+  "digest": "sha256:3f2444c21254fce8431fce777a568336b6753f70bc3cc9b9698e56458460d3b1",
   "displayName": "LanguageToggle",
   "format": "component-entry/v1",
   "frameworks": [

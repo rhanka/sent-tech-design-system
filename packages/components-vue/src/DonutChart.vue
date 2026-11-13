@@ -145,7 +145,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? items.value[hovere
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-donutChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-donutChart', props.class)) }" >
     <div class="st-donutChart__visual" role="img" :aria-label="label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${size} ${size}`" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-if="total > 0">

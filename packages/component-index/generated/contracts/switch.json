@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:8c3f724980a94fc230dbc7cf25cd74b3de855335e7ffdd14d35f5fd5ac252441",
-  "entryDigest": "sha256:4ba6e364c442c9757f345691b9ede73310bb5f94ae169c01aabb835a5ed7d485",
+  "digest": "sha256:e5680dd45e6f4ec915c0f132fa17c7aab0d6cb8cd97abfc5d3d4660caaa67794",
+  "entryDigest": "sha256:dbf74a12bc0ced1ee3b5611cb6d5f1c6b309155923f943769da85d198ac68dab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -58,7 +58,7 @@
         "declarationPath": "packages/components-angular/dist/Switch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -98,11 +98,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Switch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SwitchProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -208,9 +208,6 @@
             "type": "string"
           }
         },
-        "required": [
-          "label"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -236,7 +233,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:763c3e4c83d424f1771dcd29e906ed540ea70b36e2c357ffd721ca600201aa3b",
+        "declarationDigest": "sha256:3aeae06b670d62dbb7ed0649756c9f3c5c9060d46eefcff737318da62266ce27",
         "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",

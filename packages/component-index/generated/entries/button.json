@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Button.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Button.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:4698ab5fc59cd2188c4fd46ced6954fe0b861e32d287af49481cb7a8816cc737",
+      "digest": "sha256:33e8055871d4863a32d1df566a7b11d82317c60901b0297339bf813cf9de4965",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Button.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Button.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Primary, secondary, ghost, or destructive action.",
     "fr": "Action primaire, secondaire, fantôme ou destructive."
   },
-  "digest": "sha256:d6ac9684baf92f583684c47f5d704ae31a1b4908a15931d0c464ee9c55a6ad8b",
+  "digest": "sha256:3f3f1cb831f8b1455d149a618ed5fc21d942616cd79df23df1cb1604925a2979",
   "displayName": "Button",
   "format": "component-entry/v1",
   "frameworks": [

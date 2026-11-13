@@ -225,7 +225,7 @@ const hoveredCell = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-calendarHeatmapChart', `st-calendarHeatmapChart--${resolvedScale}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-calendarHeatmapChart', `st-calendarHeatmapChart--${resolvedScale}`, props.class)) }" >
     <div
       class="st-calendarHeatmapChart__visual"
       role="img"

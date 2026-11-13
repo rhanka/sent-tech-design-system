@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:a1aa1e185f42dfd16115d215e01852058d716df7e3bfec34e9508d4bf51b3b52",
-  "entryDigest": "sha256:73f0019711d02586baf73caa30349f6a2413efc1dc41af07cb236a5891571279",
+  "digest": "sha256:e1596b9a719dd5b4a771506d5055666dc616364688f3d91e97341b312593fcd3",
+  "entryDigest": "sha256:35f83689d5ac568f34b60280e28d0a143d80e5b7fc07b05bdaa4c25b699fa6b5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimelineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimelineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/Timeline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

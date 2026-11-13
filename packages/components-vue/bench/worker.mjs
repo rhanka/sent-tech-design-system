@@ -1,7 +1,9 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { bench, src, names, installSourceLoader, wrapperSource, normalizeHtml, componentPath } from './lib.mjs';
+import { bench, src, names, installSourceLoader, wrapperSource, normalizeHtml, mountedHtml, componentPath } from './lib.mjs';
 
 const [operation, name] = process.argv.slice(2);
 // Keep stdout as a single JSON record, including when Vue's development runtime
@@ -10,10 +12,10 @@ console.log = console.info = (...args) => console.error(...args);
 const report = value => process.stdout.write(JSON.stringify(value) + '\n');
 let temporary;
 try {
-  if (!names.includes(name) || !['ssr', 'vapor'].includes(operation)) throw new Error('Invalid worker arguments');
+  if (!names.includes(name) || !['ssr', 'vapor', 'classic-mount'].includes(operation)) throw new Error('Invalid worker arguments');
   const { JSDOM } = await import('jsdom');
   let dom;
-  if (operation === 'vapor' || name === 'Dropdown' || name === 'Popper' || name === 'ThemeProvider') {
+  if (operation !== 'ssr' || name === 'Dropdown' || name === 'Popper' || ['ThemeProvider', 'Menu', 'MenuPopover', 'OverflowMenu'].includes(name)) {
     dom = new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>', { url: 'http://localhost/' });
     for (const key of ['window', 'document', 'Node', 'Element', 'HTMLElement', 'SVGElement', 'Text', 'Comment', 'Document', 'DocumentFragment', 'MutationObserver', 'Event', 'CustomEvent']) {
       Object.defineProperty(globalThis, key, { value: dom.window[key], configurable: true });
@@ -27,7 +29,7 @@ try {
   temporary = mkdtempSync(resolve(bench, '.tmp-worker-'));
   const legacy = name === 'cellDecoration'
     ? /\bh\(/.test(readFileSync(resolve(src, 'cellDecoration.ts'), 'utf8'))
-    : existsSync(resolve(src, `${name}.ts`));
+    : existsSync(resolve(src, `${name}.ts`)) && !['Menu', 'MenuPopover', 'OverflowMenu'].includes(name);
   if (operation === 'ssr') {
     const { createSSRApp } = await import('vue');
     const { renderToString } = await import('@vue/server-renderer');
@@ -48,11 +50,18 @@ try {
     report({ ok: true, implementation: legacy ? 'ts' : 'vue', fixtures: results });
   } else {
     if (legacy) throw new Error('G5 requires the converted .vue');
-    const { createVaporApp, nextTick } = await import('vue');
-    if (typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
+    const { createVaporApp, createApp, nextTick } = await import('vue');
+    if (operation === 'vapor' && typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
     const { default: Target } = await import(pathToFileURL((name === 'cellDecoration' ? resolve(src, 'CellDecorationIcon.vue') : componentPath(name))).href);
-    if (Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
+    if (operation === 'vapor' && Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
     const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', name + '.json'), 'utf8'));
+    const classic = operation === 'vapor' ? (() => {
+      const child = spawnSync(process.execPath, [new URL(import.meta.url).pathname, 'classic-mount', name], { encoding: 'utf8', timeout: 60000, maxBuffer: 16 * 1024 * 1024 });
+      const result = JSON.parse(child.stdout.trim());
+      if (child.status !== 0 || !result.ok) throw new Error(result.error ?? child.stderr);
+      return result.fixtures;
+    })() : null;
+    const results = [];
     const errors = [];
     dom.window.addEventListener('error', event => errors.push(String(event.error ?? event.message)));
     const mounted = [];
@@ -61,9 +70,12 @@ try {
       const file = resolve(temporary, 'mount-' + fixture.id + '.vue');
       writeFileSync(file, wrapperSource(name, fixture));
       const { default: Component } = await import(pathToFileURL(file).href);
-      const app = createVaporApp(Component);
+      const app = (operation === 'vapor' ? createVaporApp : createApp)(Component);
       app.config.errorHandler = error => errors.push(String(error));
       app.config.warnHandler = warning => errors.push(warning);
+      // Vue retains this host marker after unmount in both runtimes.
+      document.querySelector('#app').setAttribute('data-v-app', '');
+      const beforeMount = normalizeHtml(document.body.innerHTML, JSDOM);
       try {
         app.mount(document.querySelector('#app'));
         await nextTick();
@@ -84,16 +96,23 @@ try {
           if (Boolean(document.querySelector('.st-dropdown__list')) !== Boolean(fixture.props.open)) throw new Error(fixture.id + ': incorrect Dropdown visibility');
           if (document.querySelector('#app .st-dropdown__list')) throw new Error('Dropdown list was not teleported');
         }
+        const html = mountedHtml(document.body, JSDOM);
+        results.push({ id: fixture.id, html });
+        if (classic) {
+          const expectedHtml = classic.find(f => f.id === fixture.id)?.html;
+          let at = 0; while (at < Math.min(html.length, expectedHtml?.length ?? 0) && html[at] === expectedHtml[at]) at++;
+          assert.ok(html === expectedHtml, fixture.id + ': Vapor/Classic DOM differ at ' + at + '\nVapor: ' + html.slice(Math.max(0, at - 80), at + 180) + '\nClassic: ' + expectedHtml?.slice(Math.max(0, at - 80), at + 180));
+        }
         mounted.push(fixture.id);
       } finally {
         app.unmount();
         await nextTick();
       }
-      if (['Portal', 'Popper', 'Dropdown'].includes(name) && document.querySelector('.st-portal,.st-popper,.st-dropdown__list')) throw new Error(fixture.id + ': teleported content survived unmount');
+      assert.equal(normalizeHtml(document.body.innerHTML, JSDOM), beforeMount, fixture.id + ': content survived unmount');
       if (errors.length) throw new Error(fixture.id + ': ' + errors.join('; '));
     }
     dom.window.close();
-    report({ ok: true, fixture: mounted.join(', '), runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
+    report({ ok: true, fixtures: results, fixture: mounted.join(', '), runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
   }
 } catch (error) {
   report({ ok: false, error: error.stack ?? String(error) });

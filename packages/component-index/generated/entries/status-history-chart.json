@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StatusHistoryChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StatusHistoryChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:557a3db68d5e2b87c8801cb8c5de4fbc9babce33123aee0c7b573bfaa3497609",
+      "digest": "sha256:ee715c30aa00c857cb662d9f6dd4d0abbce6ceadf362bdd2894b69357f320145",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StatusHistoryChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StatusHistoryChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:a296843e177a054d93dc8b9041368f7aa05cdc5867fd8dcfc64d924a19281106",
+  "digest": "sha256:0946ee5d5bcd9d7ead042b2fdcc66e6dbc8db6f3333a60df17fb1e82b6e0de25",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [

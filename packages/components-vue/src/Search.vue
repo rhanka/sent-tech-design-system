@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useId, useAttrs } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { computed, useId } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -18,7 +19,7 @@ export type SearchProps = {
   id?: string;
   class?: string;
 };
-defineOptions({ name: 'Search' });
+defineOptions({ name: 'Search', inheritAttrs: false });
 defineSlots<{ label?: () => unknown }>();
 const props = withDefaults(defineProps<SearchProps>(), {
   label: undefined,
@@ -38,11 +39,11 @@ const emit = defineEmits<{
   input: [event: Event];
   clear: [];
 }>();
-const attrs = useAttrs();
+
 
 const autoId = ref(`st-search-${useId()}`);
 const controlBindings = computed(() => ({
-  ...attrs,
+
   id: props.id ?? autoId.value,
   class: 'st-search__control st-search__input',
   type: 'search',
@@ -61,7 +62,6 @@ const currentValue = computed(() => props.modelValue ?? props.value ?? '');
 
 <template>
   <div
-    v-bind="$attrs"
     :class="
       classNames(
         'st-search',
@@ -72,7 +72,7 @@ const currentValue = computed(() => props.modelValue ?? props.value ?? '');
     "
   >
     <template v-if="props.label || $slots.label"
-      ><label :class="'st-field__label'" :for="inputId"><slot v-if="$slots.label" name="label" /><template v-else>{{ props.label }}</template></label></template
+      ><label :class="'st-field__label'" :for="inputId"><slot v-if="$slots.label" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></label></template
     ><template v-else></template>
     <span :class="'st-search__icon'" :aria-hidden="'true'"
       ><svg
@@ -91,7 +91,7 @@ const currentValue = computed(() => props.modelValue ?? props.value ?? '');
         <path d="m21 21-4.34-4.34" />
         <circle cx="11" cy="11" r="8" /></svg
     ></span>
-    <input v-bind="controlBindings" />
+    <input v-bind="{ ...$attrs, ...controlBindings }" />
     <template v-if="currentValue"
       ><button
         :type="'button'"

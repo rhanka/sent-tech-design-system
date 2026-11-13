@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:8246bfa539e590ed42fb8610199dc3b1f18efe312a8a7f77a91b9ba7122d596e",
-  "entryDigest": "sha256:8a2fb0bfeea3d02305d1ab0348437a1c94d30a71b58253a33a37613580417f8a",
+  "digest": "sha256:27da3cf8c5ccab3415ddddeaf7b2337950185c6fc6ca751c3dd56d8f4c9477ff",
+  "entryDigest": "sha256:9f8f5a84e11892d29f7cba3c1500e80b02ec5d18cd9174b2ccd1b77566f04561",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-angular/dist/Textarea.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TextareaProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -156,11 +156,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TextareaProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TextareaProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "lock-presence-badge",
   "contractSource": "derived",
-  "digest": "sha256:4646caad788075489c2516a4d89fd97310e62f5a9ed600ead93bdbc5eecc0ad3",
-  "entryDigest": "sha256:bfab98d3921f1f8e66cb7369021cb87a6b0b4bf5f1bd7a89c4757c5d85a958bd",
+  "digest": "sha256:386d60e07b8d29f7b0fce41fdfc28f07177da50b487bd1fe995ccfc785139bdc",
+  "entryDigest": "sha256:20dc17afd0af7cb768f6ec2e01f574b1116998629109b45a0df5b68db5613e7b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/LockPresenceBadge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/LockPresenceBadge.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -425,7 +425,7 @@
         "declarationPath": "packages/components-svelte/dist/presence-badge/LockPresenceBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LockPresenceBadgeProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

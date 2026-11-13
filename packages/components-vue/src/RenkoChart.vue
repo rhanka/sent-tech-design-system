@@ -178,7 +178,7 @@ function gridY(t: number): number {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-renkoChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-renkoChart', props.class)) }" >
     <div
       class="st-renkoChart__visual"
       role="img"

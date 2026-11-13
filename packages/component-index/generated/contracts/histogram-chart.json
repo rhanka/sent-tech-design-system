@@ -1,8 +1,8 @@
 {
   "componentId": "histogram-chart",
   "contractSource": "derived",
-  "digest": "sha256:2d26087d50a38936f1f5225cc7a2fdf4082b731b85aadbbdf1b7b613e27900ea",
-  "entryDigest": "sha256:9310976c2147ad43ebc836e2642fb13ae593365a1ba615cda2335be511c96000",
+  "digest": "sha256:fe9e5fc4e3f0a81b516d5a16fe769916545cbe4a60c55b354a074b79d025c077",
+  "entryDigest": "sha256:4b0e5c2447f30dc17e392d127b3f9ae1e1353d317f7498429c69a3c3b2580871",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/HistogramChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HistogramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-react/dist/HistogramChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HistogramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-svelte/dist/HistogramChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HistogramChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

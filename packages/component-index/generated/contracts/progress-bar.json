@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:1f73086969b3abda936eff58c0259461664df58c10e6a5bdb68823ca79858e8c",
-  "entryDigest": "sha256:f98f962cf22b40f8a79e708148658222075d4453db9a8bc2dcb883ddf5f041ae",
+  "digest": "sha256:90b12171f12ed069ce9d5795c4339457a0e224c096da84a4381862c5ead00179",
+  "entryDigest": "sha256:82d636721a99e0a0fe408552ff18e46101f9e86f5211885c3b0982ba5279187a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/ProgressBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ProgressBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -140,11 +140,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ProgressBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressBarProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -226,8 +226,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -281,9 +280,13 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:66ba98b0966594985d8def551975dc251c70c68e77e062c0138b336bbd90e390",
+        "declarationDigest": "sha256:d88175e17cd1050a5ece20654e45951bde79fc008be75988cf40b28ef13d925f",
         "declarationPath": "packages/components-vue/dist/ProgressBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressBarProps",

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Input.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Input.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:50ea711eab139617311eae6ba9cf38369228baac8e48baa4e95220b7f6ba2ffa",
+      "digest": "sha256:0eeb5bb2a8029cd17052e90994971d8d34be9d33dd552587812a487e87fbfbd8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Input.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Input.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:fc7aee623796d9af87babec6883b0da306de165055fdb3bc0087aebac0316bb0",
+  "digest": "sha256:4d4d53e79df2fa6616c70f30ced944b79592a37e09fea4d4bfee4a0b93304e98",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

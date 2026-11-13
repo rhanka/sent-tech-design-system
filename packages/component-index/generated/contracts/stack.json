@@ -1,8 +1,8 @@
 {
   "componentId": "stack",
   "contractSource": "derived",
-  "digest": "sha256:d22ced8855b2a0792e92d0f37417244cb187f1c06db402e27641bdab83670a08",
-  "entryDigest": "sha256:8f22541fdff5182a54cd43131a77e937ae657447ec1191564c432b301cd75bca",
+  "digest": "sha256:45826e4118bf37d64641b0853f401918e54953ab77059e18b5f875dbde78b9d2",
+  "entryDigest": "sha256:56060de479dc66950fdd859d9a681a655a7b3580a9065fb8f8af12e8d8198738",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -57,7 +57,7 @@
         "declarationPath": "packages/components-angular/dist/Stack.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -118,7 +118,7 @@
         "declarationPath": "packages/components-react/dist/Stack.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Stack.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StackProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,16 +234,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:2ab4edbbf30332a676a23edf00f54e1e4ea136ad66a5284a34cf6dfb7b698eff",
+        "declarationDigest": "sha256:7db8da6fd96f8de59ddcb16a3199ffc13fdfbf0d0d3b8cd9396fcc0f1cd12426",
         "declarationPath": "packages/components-vue/dist/Stack.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StackProps",

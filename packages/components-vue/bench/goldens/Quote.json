@@ -23,10 +23,14 @@
     {
       "id": "custom-attrs",
       "html": "<blockquote class=\"st-quote consumer\" data-bench=\"quote\" style=\"color:red;\"><p class=\"st-quote__text\">Quote here.</p><footer class=\"st-quote__attribution\"><span class=\"st-quote__author\">Ada</span></footer></blockquote>"
+    },
+    {
+      "id": "rich-attribution",
+      "html": "<blockquote class=\"st-quote\"><p class=\"st-quote__text\">Quote</p><footer class=\"st-quote__attribution\"><span class=\"st-quote__author\"><strong>Ada</strong></span><span class=\"st-quote__source\"><em>Notes</em></span></footer></blockquote>"
     }
   ],
   "sourceSha256": "5892590eea921d5826d54c501c0e0c5a0af6a7c1fc57ead13c84094eee291727",
-  "fixtureSha256": "a2b9184332ffbde8ffdefa3a470a04f703746de8c28f298a8f583789455a086d",
+  "fixtureSha256": "398081dbbe7cb401643badf075f3d51ba56eeffb7cd0838810a0fe38955c7851",
   "publicExports": [
     {
       "name": "Quote",

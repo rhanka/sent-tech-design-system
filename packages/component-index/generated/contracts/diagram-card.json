@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:fa3989528f7e8b9d54ac805a5dc04d7e247eaf2b0bb1ed5464e5c312add05da1",
-  "entryDigest": "sha256:684a272bcffb7e0f7e1d8032de55fe4df6d02f0ce96a3198003a879efa1ad9ed",
+  "digest": "sha256:7119403e5c142bb956b6da6244673029fd4f5b399a779b5d298736cd05d5375e",
+  "entryDigest": "sha256:1bf9f18fc7dc6a87763342d2df7b59f53781b009a53fe495c4a8b8371ca0a456",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

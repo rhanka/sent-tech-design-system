@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:969edb476d01f9127c79c9fbbf266af79348c8a7a6b3070e398407afcabb6f02",
-  "entryDigest": "sha256:eefe2f178a2e744b2818b5e51a07bcc86a5b72927f5a11fd648db132ff92602e",
+  "digest": "sha256:03a641cf250622c5c079dd3cd00a055a990982c8592bad72eb4af1de0bef8a03",
+  "entryDigest": "sha256:14ba59cb92fa8d3245b6f13d5dce3b55a305cafab755802494a521148a61fa09",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -164,11 +164,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -332,14 +332,20 @@
           "name": "avatar"
         },
         {
+          "name": "content"
+        },
+        {
           "name": "default"
         },
         {
           "name": "footer"
+        },
+        {
+          "name": "timestamp"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7bef63b305f68bbd37ca484e6d2562cff3f2a7953416f8efa3485dc644ab4689",
+        "declarationDigest": "sha256:2d092e5ca35dda144930524da38406ab71f67d463eb1f06acd2d8d8673fb3cec",
         "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",

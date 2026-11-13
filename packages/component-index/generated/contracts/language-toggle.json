@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:3a880b4df011e9013e6f899032d85e8ea0e0380ffc6e7b70f875b36583f7e8b3",
-  "entryDigest": "sha256:b488c4129eaae3a68fc72d098c9924d7eebaf4b0c7cfe7e98dcf81f8bbeedbc1",
+  "digest": "sha256:ed680336c72e7b446e4fb6d82b22f3bf68eade048e142be821143c94475251ca",
+  "entryDigest": "sha256:3f2444c21254fce8431fce777a568336b6753f70bc3cc9b9698e56458460d3b1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/LanguageToggle.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LanguageToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -139,11 +139,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LanguageToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageToggleProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

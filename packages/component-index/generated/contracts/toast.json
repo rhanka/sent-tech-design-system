@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:ab4af5dccda85a89b00c83c16b4bacb350b20994b557104025372ab4a843fa0d",
-  "entryDigest": "sha256:49ef3c3cfe6fc46a1077b004624b0b89edb3a1ca848f91644839e87a0d684b6c",
+  "digest": "sha256:6ec849631d8df143bda1f373acb29bc6ac4114711243611c73303a4891903557",
+  "entryDigest": "sha256:2b3b682e6897536fb13b4c69eb8203875fa71188680ebdc5488eb0a662a0ebf7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Toast.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToastProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -192,11 +192,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToastProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -324,8 +324,7 @@
               }
             },
             "required": [
-              "id",
-              "title"
+              "id"
             ],
             "type": "object"
           }
@@ -449,7 +448,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:f70b8df0538b2c97fe32cb158d61633694dd7992ce7d8aac63c00ec4adbc15c7",
+        "declarationDigest": "sha256:7df0e065939abdba061b01be9453d30cc31ea0f722c83bf0b0776b0155f491f2",
         "declarationPath": "packages/components-vue/dist/Toast.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",

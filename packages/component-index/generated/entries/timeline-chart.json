@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimelineChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TimelineChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e4231dbe9168c4c1edd3591a90e4ea391aa480f9309b0be31620b6f684c195bb",
+      "digest": "sha256:3107e5f8caa6b87780a2fdd9d0faa5d0ea1e4a153893bfd2219ade28b48b54a1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TimelineChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimelineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
     "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
   },
-  "digest": "sha256:6d189a3214a676003e1ff5ef1624e652cc328127a06760db76e777a0003a21d6",
+  "digest": "sha256:0b5e0d842d99ea1337640ebb48c990219c630152f587df2a616045225f9904ea",
   "displayName": "TimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

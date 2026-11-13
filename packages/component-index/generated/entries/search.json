@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Search.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Search.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2cd92e8fe00a5e669a62642245dba4a9500bc4ea88a8d474e791653ae01999a3",
+      "digest": "sha256:a138d407de15b13ab610a07b7068e9f36d4d5534494a2555f0ee11556a62ac84",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Search.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Search.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:eebc4e9d5921487ab29621a95c8fd2da0497686dbc25855a19cc2fa91828e342",
+  "digest": "sha256:4b5a71e6c8307dbb777e33ed8be2adfa8120d92043458031574b4d56109801a0",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

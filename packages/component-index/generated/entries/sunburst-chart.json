@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SunburstChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SunburstChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:0a1d2bfa6377a1fa70046eaa00b64dbdad6d1a599a43ce9592cb87953f31e221",
+      "digest": "sha256:feea55275da1bf226914fe32984ccb561993aebb4e84b572fb13b5f7c747f9bd",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SunburstChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SunburstChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Radial hierarchy for exploring nested contributions.",
     "fr": "Hiérarchie radiale pour explorer les contributions imbriquées."
   },
-  "digest": "sha256:534f1f70fa8cadfc99806a8b895bf9268704541f7aa03cc6ac884e1a1ea7eb38",
+  "digest": "sha256:6d39aa85edeeded8c449dce868ea603c3c217d1037977c1e66fea702be33589f",
   "displayName": "SunburstChart",
   "format": "component-entry/v1",
   "frameworks": [

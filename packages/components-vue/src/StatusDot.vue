@@ -29,5 +29,5 @@ const dotClasses = computed(() => classNames('st-statusDot__dot', props.color ? 
 </script>
 
 <template>
-  <span v-bind="$attrs" :class="classNames('st-statusDot', props.class)"><template v-if="props.label"><span :class="dotClasses" :style="dotStyle" aria-hidden="true" /><span class="st-statusDot__label">{{ props.label }}</span></template><span v-else :class="dotClasses" :style="dotStyle" role="img" :aria-label="props.label ?? props.color ?? props.tone" /></span>
+  <span v-bind="{ ...($attrs), class: (classNames('st-statusDot', props.class)) }" ><template v-if="props.label"><span :class="dotClasses" :style="dotStyle" aria-hidden="true" /><span class="st-statusDot__label">{{ props.label }}</span></template><span v-else :class="dotClasses" :style="dotStyle" role="img" :aria-label="props.label ?? props.color ?? props.tone" /></span>
 </template>
