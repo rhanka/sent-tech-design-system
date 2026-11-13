@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:d64fb7b3efe3cb2f24d900dd3a3df233c2a41e6239d39d422cb14a4f56cdb183",
-  "entryDigest": "sha256:0556f423d4c61a5349b98229619b486d96bc6599ea3f5789ebe085af41a49acd",
+  "digest": "sha256:5ca53c193479788b7e5d4f9badb33fe77eb2cb6dc48d4b23bdd4305d61a61d61",
+  "entryDigest": "sha256:d7e241a98391252d5286d69753c1bbe64909e89e0032c96367dd1e082e7ee5d4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -528,7 +528,7 @@
         "declarationPath": "packages/components-vue/dist/RangeSlider.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RangeSliderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
