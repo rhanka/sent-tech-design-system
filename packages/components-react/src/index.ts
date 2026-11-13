@@ -248,7 +248,20 @@ export type { LinkProps } from "./Link.js";
 export { LoadingState } from "./LoadingState.js";
 export type { LoadingStateProps } from "./LoadingState.js";
 export { Menu } from "./Menu.js";
-export type { MenuProps, MenuItem } from "./Menu.js";
+export type { MenuProps, MenuItem, MenuActionItem, MenuSubmenuSide } from "./Menu.js";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition
+} from "./menu-cascade.js";
+export type {
+  SubMenuSide,
+  ResolvedSubMenuSide,
+  SubMenuPosition,
+  ComputeSubMenuPositionInput,
+  CascadePoint,
+  CascadeRect
+} from "./menu-cascade.js";
 export { MenuPopover } from "./MenuPopover.js";
 export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
 export { MenuTriggerButton } from "./MenuTriggerButton.js";

@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:9055ca1322305d94d7d0e6cf6a560bfa750b407e01a7c266f26e8778f2183214",
-  "entryDigest": "sha256:5b54e286ae5cb6b7beb24f83b7fbcf128cbaf9740a882a7b3d9933f40062535a",
+  "digest": "sha256:5a4fe3959e3bfe6c0a1639edf75d5f731f538c39ddd91e9c81851249f9158b28",
+  "entryDigest": "sha256:a254e1e4fc53d98fc0ec521c562c43f39a27bd4579142f3fbfbdb29ad5c3060e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/ColumnPyramidChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-react/dist/ColumnPyramidChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

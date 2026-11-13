@@ -1,8 +1,8 @@
 {
   "componentId": "container",
   "contractSource": "derived",
-  "digest": "sha256:a3335a000288e7d1229556f4662beabb355b6e912eaec5c219441bccbea71ff3",
-  "entryDigest": "sha256:7f3660167927ca69104b0e46f1d506af36392ef1a885cee91a9d937aae073b2a",
+  "digest": "sha256:3a49890324df67b17f23feff63ed7f3e7767278b72301f88646d824da883d235",
+  "entryDigest": "sha256:e6453aac93bb2721c35fc02020040f3804c9ad8ecdf7abaf37c22580cd81d8cb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/Container.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ContainerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-react/dist/Container.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ContainerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

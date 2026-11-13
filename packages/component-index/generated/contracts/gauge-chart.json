@@ -1,8 +1,8 @@
 {
   "componentId": "gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:d6e62a8380018adf8f8dee87fc8d7a2349f50e8cecdf4ae89533f3c733b166e2",
-  "entryDigest": "sha256:0fc23cd8db7d9f7eebf59fcad5910b643e266ff40772e5f371c826a574b38ab1",
+  "digest": "sha256:8694242da3577197e430e43ea9a728f2df707fe673fc249d0855858356999b6d",
+  "entryDigest": "sha256:b3963ed4d278234b97e53e42f7c2027640ffcad54afd01c5c10d95f9f80edad5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -99,7 +99,7 @@
         "declarationPath": "packages/components-angular/dist/GaugeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "GaugeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-react/dist/GaugeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "GaugeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

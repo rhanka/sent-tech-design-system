@@ -137,12 +137,23 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
       `angular: ɵcmp of "${input.identifier}" does not resolve (missing declaration build; never guessed)`,
     );
   }
+  let selectorsIndex: number | undefined;
   if (cmpReference !== undefined) {
     const referenceSymbol = checker.getSymbolAtLocation(cmpReference.typeName);
     const aliased =
       referenceSymbol !== undefined && (referenceSymbol.flags & ts.SymbolFlags.Alias) !== 0
         ? checker.getAliasedSymbol(referenceSymbol)
         : referenceSymbol;
+    // QueryFields and NgContentSelectors are both string tuples. Resolve the
+    // named type parameter so a content query cannot become a public slot.
+    const declaration = aliased?.declarations?.find(
+      (node) => ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node),
+    );
+    if (declaration && (ts.isTypeAliasDeclaration(declaration) || ts.isInterfaceDeclaration(declaration))) {
+      selectorsIndex = declaration.typeParameters?.findIndex(
+        (parameter) => parameter.name.text === "NgContentSelectors",
+      );
+    }
     if (aliased?.name !== "ɵɵComponentDeclaration") {
       throw new Error(
         `angular: ɵcmp of "${input.identifier}" is not an ɵɵComponentDeclaration (missing declaration build; never guessed)`,
@@ -157,7 +168,7 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
   let outputs: CmpOutputs["fields"] | undefined;
   let selectors: string[] | undefined;
   const bodyWarnings: string[] = [];
-  for (const argument of typeArguments) {
+  for (const [argumentIndex, argument] of typeArguments.entries()) {
     if (inputs === undefined && isAliasRequiredShape(checker, argument)) {
       inputs = checker.getPropertiesOfType(argument).map((member) => {
         const shape = checker.getPropertiesOfType(checker.getTypeOfSymbol(member));
@@ -178,7 +189,7 @@ export function extractAngular(input: FrameworkInput): FrameworkBody {
       }));
       continue;
     }
-    if (selectors === undefined && isSelectorsShape(checker, argument)) {
+    if (argumentIndex === selectorsIndex && isSelectorsShape(checker, argument)) {
       const read = tupleStrings(checker, argument);
       if (read === undefined) {
         bodyWarnings.push("ng-content selectors not readable, slots omitted");

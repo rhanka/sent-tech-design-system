@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ParetoChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ParetoChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Descending bars with a cumulative percentage curve (Pareto principle).",
     "fr": "Barres triées décroissantes avec courbe cumulée en pourcentage (loi de Pareto)."
   },
-  "digest": "sha256:39737db59094f81947e0167743789a670d5800562281466e8fcec6d53336da2e",
+  "digest": "sha256:5c652ffd7791ff9e6bcb24403cb63765546fa0b8810c70f1822d41fe9d595d0c",
   "displayName": "ParetoChart",
   "format": "component-entry/v1",
   "frameworks": [

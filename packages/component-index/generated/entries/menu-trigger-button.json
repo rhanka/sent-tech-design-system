@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MenuTriggerButton.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -29,18 +29,18 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e4c00c0d427a4c968928752f968ae22b31312cdc67dfdc30a2eb06a2bfaa2798",
+      "digest": "sha256:05da02b5324db7a660bbdd6662d7a75e52aefb378b2b17df36f2e1b4946de059",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MenuTriggerButton.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Square icon button preconfigured to open a menu (haspopup/expanded wired).",
     "fr": "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
   },
-  "digest": "sha256:a26455d4bab638b05fda147d76d5ed81d4e1dbb40c9ab69d315cd9046950539b",
+  "digest": "sha256:eac9c797567c57ba96a2769269ef6e97681f34cdcf63d8d5598c2d8532ff27cd",
   "displayName": "MenuTriggerButton",
   "format": "component-entry/v1",
   "frameworks": [

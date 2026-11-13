@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:96edc70d51c2b66e4a397d416805d6794240468b9e25c65139a3871275e1ee71",
-  "entryDigest": "sha256:580a2dfc06236e4fc3c27470472987ede13faf97a3ec7f8163dd83a44aa13eb7",
+  "digest": "sha256:c10dafd0e895cd884a2101a2bc99b7d6068ed97c89f57a98ac90e44af4a49a66",
+  "entryDigest": "sha256:137bf68009006ec4ec7155bfe8fca6b3ed35673554181a99d8e10a09dbb07461",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -439,7 +439,7 @@
         "declarationPath": "packages/components-angular/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -908,7 +908,7 @@
         "declarationPath": "packages/components-react/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

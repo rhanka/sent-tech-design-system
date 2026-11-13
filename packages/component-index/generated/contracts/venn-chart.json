@@ -1,8 +1,8 @@
 {
   "componentId": "venn-chart",
   "contractSource": "derived",
-  "digest": "sha256:80149c8279c1b9cb415efa98843cec388be1fd836d74dfab7ecf46aacf931ad8",
-  "entryDigest": "sha256:7cce23b5a9f377c5d48cbad7212da7c4121bc687b27a036fd48ebe98763c8499",
+  "digest": "sha256:947e6c47d348e4e6153cf8dc6852282bd971d18c6be91cfee4a406d031de066e",
+  "entryDigest": "sha256:cbc1d1c1c5bf3e3a3e4860db43ec2183d116103dae5ffc11ef85f9e39fa0b73e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/VennChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VennChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -139,7 +139,7 @@
         "declarationPath": "packages/components-react/dist/VennChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VennChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
