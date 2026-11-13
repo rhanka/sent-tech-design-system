@@ -1,7 +1,7 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:3ebf99156f8c3ee0466707e9b4ae8ba73bb06d4f027d0b3a691b29a526ab322a",
+  "digest": "sha256:b3d0f102e2b3439c81fbcc2855ebcb2d5e5d0bc655b48ce4ba846e71ea0c928e",
   "entryDigest": "sha256:66a16505bffc92bbce06d9bd647f918be7ebfda26d3735b0189664f79127dea1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -967,7 +967,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d250788123278c1e6efcc6bb6b4b087395c71a693f39176f41911095bf75f891",
+        "declarationDigest": "sha256:0cb72855475f69770c83245d7a70c2722b0986528766ef7479df5b5c868e44e1",
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
