@@ -136,8 +136,8 @@ export { default as DependencyWheelChart } from './lib/DependencyWheelChart.vue'
 export type { DependencyWheelChartProps } from './lib/DependencyWheelChart.vue';
 export { default as HeikinAshiChart } from './lib/HeikinAshiChart.vue';
 export type { HeikinAshiChartProps } from './lib/HeikinAshiChart.vue';
-export { HollowCandlestickChart } from './lib/HollowCandlestickChart.js';
-export type { HollowCandlestickChartProps } from './lib/HollowCandlestickChart.js';
+export { default as HollowCandlestickChart } from './lib/HollowCandlestickChart.vue';
+export type { HollowCandlestickChartProps } from './lib/HollowCandlestickChart.vue';
 export { default as HLCChart } from './lib/HLCChart.vue';
 export type { HLCChartProps } from './lib/HLCChart.vue';
 export { CorrelationMatrix } from './lib/CorrelationMatrix.js';
