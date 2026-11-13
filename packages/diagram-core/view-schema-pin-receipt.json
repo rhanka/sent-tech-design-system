@@ -4,7 +4,7 @@
   "dsCommit": "unknown-before-commit; to be recorded in the PR",
   "engramSource": {
     "repo": "rhanka/engram (local clone /home/antoinefa/src/graphify)",
-    "commit": "310a9270",
+    "commit": "46f93dbe",
     "spec": "SPEC_ONTOLOGY_DIAGRAM_VIEW_SCHEMA_V2.md",
     "sourceFiles": [
       "src/ontology-guardian/diagram-schemas.ts",
@@ -30,7 +30,7 @@
       "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
     },
     "record": "packages/diagram-core/src/view-schema-pin.ts",
-    "recordSha256": "2355f819d5a2a4efe6b727f128d6b69730256114d071bc670840c78cc6a263ad",
+    "recordSha256": "771dc975652e01a3cec8b97ecfc1a136f2fa4d5b6d5e5da98b24d393697a69e1",
     "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
   },
   "dsRevision": {
