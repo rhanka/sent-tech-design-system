@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DashboardGrid.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Analytics tile canvas positioned by grid coordinates, with accessible edit mode.",
     "fr": "Canvas de tuiles analytiques positionnées par grille, avec mode édition accessible."
   },
-  "digest": "sha256:eac10bd9b53d33404532462544fa1ea4130836da29a4fcee4dc63da103ea0f09",
+  "digest": "sha256:19907dfd645ea7699df426aa8e04a696bb72bc4892d27268c4d272bfe0a2abac",
   "displayName": "DashboardGrid",
   "format": "component-entry/v1",
   "frameworks": [
