@@ -98,10 +98,15 @@ function scanTypeArguments(checker: ts.TypeChecker, type: ts.Type, scanned: Scan
 }
 
 function componentValueType(input: FrameworkInput): ts.Type | undefined {
+  // vue-tsc emits a named local constant followed by `export default` for SFCs.
+  const exportedDefault = input.declFile.statements.find(
+    (statement): statement is ts.ExportAssignment => ts.isExportAssignment(statement) && !statement.isExportEquals,
+  );
+  const defaultName = exportedDefault && ts.isIdentifier(exportedDefault.expression) ? exportedDefault.expression.text : undefined;
   for (const statement of input.declFile.statements) {
     if (!ts.isVariableStatement(statement)) continue;
     for (const declaration of statement.declarationList.declarations) {
-      if (!ts.isIdentifier(declaration.name) || declaration.name.text !== input.identifier) continue;
+      if (!ts.isIdentifier(declaration.name) || (declaration.name.text !== input.identifier && declaration.name.text !== defaultName)) continue;
       if (declaration.type === undefined) continue;
       return input.checker.getTypeFromTypeNode(declaration.type);
     }
