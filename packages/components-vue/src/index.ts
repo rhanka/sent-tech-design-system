@@ -647,7 +647,7 @@ export type {
   ListReportPageAction,
   ListReportPageFilter,
 } from "./ListReportPage.js";
-export { ObjectPage } from "./ObjectPage.js";
+export { default as ObjectPage } from "./ObjectPage.vue";
 export type {
   ObjectPageProps,
   ObjectPageBreadcrumbItem,
@@ -655,7 +655,7 @@ export type {
   ObjectPageField,
   ObjectPageColumn,
   ObjectPageRow,
-} from "./ObjectPage.js";
+} from "./ObjectPage.vue";
 export { KanbanBoard } from "./KanbanBoard.js";
 export type {
   KanbanBoardProps,
