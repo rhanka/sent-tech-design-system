@@ -3,6 +3,8 @@ let menuPopoverInstanceCounter = 0;
 </script>
 
 <script setup lang="ts">
+import type { MenuLabelSlots } from './menu-label-slots.js';
+defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { Menu } from "./Menu.js";
@@ -415,7 +417,10 @@ onUnmounted(teardown);
       :aria-label="props.label"
       :submenu-side="props.submenuSide"
       @select="handleMenuSelect"
-    />
+    >
+      <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
+      <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
+    </Menu>
     <slot v-else />
   </div>
 </template>
