@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Hidden.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hides its content above/below a breakpoint.",
     "fr": "Masque son contenu au-dessus/en-dessous d'un breakpoint."
   },
-  "digest": "sha256:ff92e81e2c293dc2ac0a881c80695cf46c5193150a098b35085211b008b37ca1",
+  "digest": "sha256:735e7ccaaf0894ad357eae09923411eb3329aea3fb19d0f844da79c1ba4e780a",
   "displayName": "Hidden",
   "format": "component-entry/v1",
   "frameworks": [

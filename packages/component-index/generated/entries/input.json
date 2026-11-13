@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Input.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:85a67df63634e7e420e79898d3b0d3718d8e1ed437540b878625b90720e93246",
+  "digest": "sha256:c35967b06aadae93877b6ad238bc237845828df8c7ec76c2ce484f54fa1b82bf",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

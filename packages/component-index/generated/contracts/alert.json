@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:b4c677dd18401177c3e7d7e8c6cf5f531f3d03254749405380a82550d9e27a08",
-  "entryDigest": "sha256:9ab68e60ae10aaf9f1aee02708ed9ae301add222f6c635f1d07046720d2c33ee",
+  "digest": "sha256:659cd637c0a464ec4bf936ad8c39eaec14a3c0cc3218615b521227d34f924e18",
+  "entryDigest": "sha256:c66e53eba673df65c3c181271072bc794193d9090d72674df0000e3e91a09278",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -244,7 +244,7 @@
         "declarationPath": "packages/components-vue/dist/Alert.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],

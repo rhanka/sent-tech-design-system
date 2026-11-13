@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StackedBarChart.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked bar chart (series), legend, per-segment tooltip.",
     "fr": "Barres empilées (séries), légende, tooltip par segment."
   },
-  "digest": "sha256:4f902a5e0482ba023f74e4c534c2faf1386155ec9ee22c76b3d517f9c43ba9f5",
+  "digest": "sha256:3d57bfb57a332d4f79b838a22bdafee1704d3a8ca21a9c8c6939ff2186851a89",
   "displayName": "StackedBarChart",
   "format": "component-entry/v1",
   "frameworks": [

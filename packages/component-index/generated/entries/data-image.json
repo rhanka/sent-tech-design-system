@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DataImage.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius).",
     "fr": "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon)."
   },
-  "digest": "sha256:5dbc470379fde5fd26537b211b03a0660d4870f955d1178c345ced4953d2aad4",
+  "digest": "sha256:9e51e56170a3daf4014cd2f6e4b337abcb168df5befcff25b9c6e9cc63ede324",
   "displayName": "DataImage",
   "format": "component-entry/v1",
   "frameworks": [

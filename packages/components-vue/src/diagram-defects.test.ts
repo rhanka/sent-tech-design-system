@@ -78,4 +78,37 @@ for (const host of hosts) describe(`${host.name} diagram defect regressions`, ()
     expect(cache.stats().entries).toBe(2); // injected cache belongs to its caller
     cache.dispose();
   });
+
+  it('should check newly unfolded content when the initial cards already fit the loaded font', async () => {
+    Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: Promise.resolve() } });
+    const context = { font: '', measureText: vi.fn((text: string) => ({
+      width: [...text].reduce((width, char) => width + (/[漢字]/u.test(char) ? 28 : 6), 0),
+    })) };
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(context as never);
+    const input = hCondInput('architecture', true);
+    const child = Object.values(input.view.entityOccurrences).find(node => {
+      const parent = node.group === undefined ? undefined : input.view.groups[node.group]?.occurrence;
+      return parent !== undefined && input.view.entityOccurrences[parent]?.group === undefined
+        && input.presentation.entities[node.id]?.form === 'card';
+    })!;
+    const parent = input.view.groups[child.group!]!.occurrence!;
+    const entry = input.presentation.entities[child.id]!;
+    const presentation = { ...input.presentation, entities: { ...input.presentation.entities,
+      [child.id]: { ...entry, text: { ...entry.text, body: '漢字 '.repeat(100) } },
+    } };
+    const results: LayoutResult[] = [];
+    const view = await host.mount({ ...input, presentation, measureLines: undefined, collapsed: undefined,
+      defaultFolds: input.collapsed, resolveGlyph: getDiagramGlyph,
+      onLayout: (value: LayoutResult) => results.push(value) });
+    await Promise.resolve(); await view.flush(); await view.flush();
+    expect(results).toHaveLength(1);
+    view.element.querySelector<HTMLElement>(`[data-scene-occurrence="${parent}"] button[aria-expanded]`)!
+      .dispatchEvent(new MouseEvent('click', { bubbles: true }));
+    await view.flush(); await Promise.resolve(); await view.flush(); await view.flush();
+    expect(results).toHaveLength(3); // unfold, then one correction for the newly visible text
+    const before = results[1]!, after = results[2]!;
+    if (before.status !== 'laid-out' || after.status !== 'laid-out') throw new Error('layout refused');
+    expect(after.view.entityOccurrences[child.id]!.geometry.height).toBeGreaterThan(before.view.entityOccurrences[child.id]!.geometry.height);
+    view.dispose();
+  });
 });

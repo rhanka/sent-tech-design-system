@@ -1,10 +1,10 @@
 # Diagram 0.40 blocking patch
 
-Initial base: `23929b5b` on `fix/dc2a-ds040-defects`. The endpoint-provenance main update (`00900974`) is included by a normal merge; generated index conflicts are resolved by regeneration. The supplied consumer report and PNGs were inspected. The four cleared JSON inputs are copied without modification; their SHA-256 values are in the fixture README.
+Initial base: `23929b5b` on `fix/dc2a-ds040-defects`. The endpoint-provenance (`00900974`) and Vue menu (`5f57b382`, Vue 0.40.0) main updates are included by normal merges; generated index conflicts are resolved by regeneration. The supplied consumer report and PNGs were inspected. The four cleared JSON inputs are copied without modification; their SHA-256 values are in the fixture README.
 
 | Defect | Fix | Regression evidence |
 | --- | --- | --- |
-| 1. Card text crosses titles/footers | Scene cards use the Inter token-face metrics with a 1.12 fallback width factor, the renderer’s actual text widths, content-derived height and a `card-grown` diagnostic. Both hosts wait for `document.fonts.ready`, measure the computed face with canvas and invalidate the DC-2b cache once when the content or label would overflow. | Both dossiers × folded/unfolded × 1440/390; body/footer invariant; both mocked font-ready paths; single zone diagnostic emission. |
+| 1. Card text crosses titles/footers | Scene cards use the Inter token-face metrics with a 1.12 fallback width factor, the renderer’s actual text widths, content-derived height and a `card-grown` diagnostic. Both hosts wait for `document.fonts.ready`, measure the computed face with canvas and invalidate the DC-2b cache once when the content or label would overflow. | Both dossiers × folded/unfolded × 1440/390; body/footer invariant; both mocked font-ready paths, including newly unfolded wide-glyph content; single zone diagnostic emission. |
 | 2. Right side clipped after fit | Fit uses the drawable item union, including ports, routes and placed labels; suppressed bundle routes cannot retain stale authored extents. The scroll extent covers the complete union at the 0.45 floor. Capped scenes retain centring and shrink the frame height to the scene. | Eight full-bbox witnesses, authored-route replacement, camera suite and both mounted hosts. |
 | 3. Labels cover cards/headers/labels | The entire zone header band blocks placement. Candidate placement and obstacle routing retain their retries; saturated external channels gain a comb column included in the fit union. | Card/header/label intersection and unrelated-card route checks on all eight scenes; saturated 14-label channel. |
 | 4. Folded zones touch and lifted labels overlap | Folded containers use zone gaps. Lifted parallel relations share one route with an N-relations label and the original label list in its title; semantic occurrences remain intact. A saturated general comb may share a trunk while retaining distinct label rows. | Folded sibling gaps, bundle counts, title data and label separation at both widths. |
@@ -55,13 +55,13 @@ Initial base: `23929b5b` on `fix/dc2a-ds040-defects`. The endpoint-provenance ma
 
 ## Versions and generated artifacts
 
-- `@sentropic/diagram-canvas` 0.1.1; `@sentropic/design-system-svelte` 0.40.1; `@sentropic/design-system-vue` 0.39.1.
+- `@sentropic/diagram-canvas` 0.1.1; `@sentropic/design-system-svelte` 0.40.1; `@sentropic/design-system-vue` 0.40.1.
 - `diagram-core` stays 0.1.0; this patch adds no core source changes relative to current main.
 - Consumer pins, including dataviz-vue, and the npm 10.9.9 lockfile are updated. Notices generation, component-index generation/check and licensing are required validation commands. No tags.
 
 ## Validation
 
-Final command results are recorded in the PR. After the main merge, the core suite passes 645 tests, the Svelte scope passes 356, and the Vue diagram/SSR/parity scope passes 161. Commands use the supplied npm cache. The root npm test command, Track, browser runners and Python were not used.
+Final command results are recorded in the PR. After the main merge, the core suite passes 645 tests, the Svelte scope passes 356, and the Vue diagram/SSR/parity scope passes 163. Commands use the supplied npm cache. The root npm test command, Track, browser runners and Python were not used.
 
 - Canvas: `node node_modules/vitest/vitest.mjs run --config packages/diagram-canvas/vitest.config.ts --maxWorkers=2` and both TypeScript configurations.
 - Svelte: scoped card/zone/scene/SSR/presentation suites, package build, both svelte-check configurations.

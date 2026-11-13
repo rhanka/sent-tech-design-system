@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:6010b5d2a52838a251b12e70d6cc8e9c64121b06ca78da1d67c78e0e298c9dd6",
-  "entryDigest": "sha256:b7c574b9e9b745f9c1e1cb3a49f4bd5be07c879efab99705b9723af5568a3752",
+  "digest": "sha256:316aeb94177b292a575b317ebe260a1c955453959c9ba985215f3daf47479580",
+  "entryDigest": "sha256:6c103cb5e673d0172b089e5a098cea9914785579e20c911d99c5bcd04ce5756d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -293,7 +293,7 @@
         "declarationPath": "packages/components-vue/dist/LanguageToggle.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageToggleProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],
