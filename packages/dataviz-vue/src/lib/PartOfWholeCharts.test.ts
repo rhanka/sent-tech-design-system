@@ -10,9 +10,9 @@ import PackedBubbleChart from './PackedBubbleChart.vue';
 import RadarChart from './RadarChart.vue';
 import RoseChart from './RoseChart.vue';
 import SankeyChart from './SankeyChart.vue';
-import { SunburstChart } from './SunburstChart.js';
-import { TreemapChart } from './TreemapChart.js';
-import { WaterfallChart } from './WaterfallChart.js';
+import SunburstChart from './SunburstChart.vue';
+import TreemapChart from './TreemapChart.vue';
+import WaterfallChart from './WaterfallChart.vue';
 
 const model: DataModel = {
   dimensions: [
