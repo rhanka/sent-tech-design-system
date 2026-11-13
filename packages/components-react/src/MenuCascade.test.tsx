@@ -9,6 +9,209 @@ import type { MenuItem, MenuSubmenuSide } from "./index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
+describe("third review regressions", () => {
+  const deepItems: MenuItem[] = [
+    { label: "A", children: [{ label: "Middle", children: [{ label: "Deep leaf" }] }] },
+    { label: "B", children: [{ label: "Other leaf" }] }
+  ];
+
+  it.each((["standalone", "popover"] as const).flatMap((host) =>
+    (["scroll", "resize"] as const).map((event) => ({ host, event }))
+  ))("attaches both levels to committed parent geometry after one $event in $host", async ({ host, event }) => {
+    let origin = { left: 100, top: 150 };
+    const trigger = document.createElement("button");
+    vi.spyOn(trigger, "getBoundingClientRect").mockImplementation(() =>
+      new DOMRect(origin.left, origin.top - 34, 100, 30));
+    const view = render(host === "popover"
+      ? <MenuPopover defaultOpen trigger={trigger} items={deepItems} />
+      : <Menu items={deepItems} />);
+    const popover = screen.queryByRole("dialog");
+    if (popover) {
+      // A transformed host establishes the coordinate frame for fixed panels.
+      popover.style.transform = "translateX(0)";
+      vi.spyOn(popover, "getBoundingClientRect").mockImplementation(() =>
+        new DOMRect(parseFloat(popover.style.left), parseFloat(popover.style.top), 192, 100));
+    }
+    const hostOrigin = () => popover ? popover.getBoundingClientRect() : new DOMRect();
+    const root = levelEl(view.container, 0)!;
+    vi.spyOn(root, "getBoundingClientRect").mockImplementation(() => {
+      const frame = popover ? hostOrigin() : origin;
+      return new DOMRect(frame.left, frame.top, 192, 100);
+    });
+    const parent = screen.getByRole("menuitem", { name: "A" });
+    vi.spyOn(parent, "getBoundingClientRect").mockImplementation(() => {
+      const rect = root.getBoundingClientRect();
+      return new DOMRect(rect.left + 5, rect.top + 20, 182, 30);
+    });
+    fireEvent.click(parent);
+    const first = levelEl(view.container, 1) as HTMLElement;
+    vi.spyOn(first, "getBoundingClientRect").mockImplementation(() => {
+      const frame = hostOrigin();
+      return new DOMRect(frame.left + parseFloat(first.style.left), frame.top + parseFloat(first.style.top), 192, 100);
+    });
+    const middle = screen.getByRole("menuitem", { name: "Middle" });
+    vi.spyOn(middle, "getBoundingClientRect").mockImplementation(() => {
+      const rect = first.getBoundingClientRect();
+      return new DOMRect(rect.left + 5, rect.top + 20, 182, 30);
+    });
+    fireEvent.click(middle);
+    const second = levelEl(view.container, 2) as HTMLElement;
+    vi.spyOn(second, "getBoundingClientRect").mockImplementation(() => {
+      const frame = hostOrigin();
+      return new DOMRect(frame.left + parseFloat(second.style.left), frame.top + parseFloat(second.style.top), 192, 100);
+    });
+    resizeWindow();
+    await advance(20);
+    origin = { left: 180, top: window.innerHeight - 80 };
+    fireEvent(window, new Event(event));
+    expect(first.getBoundingClientRect().left).toBe(root.getBoundingClientRect().right);
+    expect(first.getBoundingClientRect().top).toBe(Math.min(parent.getBoundingClientRect().top - 5, window.innerHeight - 108));
+    expect(second.getBoundingClientRect().left).toBe(first.getBoundingClientRect().right);
+    expect(second.getBoundingClientRect().top).toBe(Math.min(middle.getBoundingClientRect().top - 5, window.innerHeight - 108));
+  });
+
+  it("caps a themed panel by its measured width and retains the cap on scroll and resize", async () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, writable: true, value: 280 });
+    render(<Menu items={cascadeItems} />);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    panel.style.padding = "4px";
+    panel.style.border = "1px solid";
+    vi.spyOn(panel, "getBoundingClientRect").mockImplementation(() => {
+      const style = getComputedStyle(panel);
+      const extraWidth = style.boxSizing === "border-box" ? 0 :
+        parseFloat(style.paddingLeft) + parseFloat(style.paddingRight) + parseFloat(style.borderLeftWidth) + parseFloat(style.borderRightWidth);
+      const width = panel.style.minWidth === "0" ? Math.min(300, window.innerWidth - 16 + extraWidth) : 300;
+      return new DOMRect(parseFloat(panel.style.left), parseFloat(panel.style.top), width, 100);
+    });
+    resizeWindow();
+    const expectCapped = () => {
+      expect(panel.style.minWidth).toBe("0");
+      expect(panel.style.maxWidth).toBe("calc(100vw - 16px)");
+      expect(panel.getBoundingClientRect().right).toBeLessThanOrEqual(window.innerWidth - 8);
+    };
+    expectCapped();
+    await advance(20);
+    expectCapped();
+    fireEvent.scroll(window);
+    expectCapped();
+    window.innerWidth = 290;
+    resizeWindow();
+    expectCapped();
+    window.innerWidth = 600;
+    resizeWindow();
+    expect(panel.style.minWidth).toBe("");
+    expect(panel.style.maxWidth).toBe("");
+    expect(panel.style.boxSizing).toBe("");
+  });
+
+  it.each([true, false])("restores only focus removed by a hover branch switch, focus in branch=%s", async (focusInBranch) => {
+    render(<><button>Outside control</button><Menu items={deepItems} /></>);
+    const parent = screen.getByRole("menuitem", { name: "A" });
+    fireEvent.click(parent);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Middle" }));
+    const focused = screen.getByRole(focusInBranch ? "menuitem" : "button", { name: focusInBranch ? "Deep leaf" : "Outside control" });
+    focused.focus();
+    fireEvent.pointerOver(screen.getByRole("menuitem", { name: "B" }).closest(".st-menu__itemWrap")!, mouseProps());
+    await advance(149);
+    expect(document.activeElement).toBe(focused);
+    expect(levelEl(document.body, 2)).toBeTruthy();
+    await advance(1);
+    expect(levelEl(document.body, 2)).toBeNull();
+    expect(screen.queryByRole("menuitem", { name: "Middle" })).toBeNull();
+    expect(screen.getByRole("menuitem", { name: "Other leaf" })).toBeTruthy();
+    expect(document.activeElement).toBe(focusInBranch ? parent : focused);
+  });
+
+  it("draws one OverflowMenu cascade surface and preserves the flat wrapper styles", () => {
+    const style = document.createElement("style");
+    style.textContent = readFileSync(join(here, "styles.css"), "utf8");
+    document.head.appendChild(style);
+    try {
+      const flatItems = [{ label: "Flat" }];
+      const view = render(<OverflowMenu open items={flatItems} />);
+      const wrapper = view.container.querySelector(".st-overflowMenu__list")!;
+      const flatStyle = getComputedStyle(wrapper);
+      const flatSurface = [flatStyle.background, flatStyle.border, flatStyle.borderRadius, flatStyle.padding, flatStyle.boxShadow];
+      expect(flatStyle.boxShadow).toBe("var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14))");
+      view.rerender(<OverflowMenu open items={cascadeItems} />);
+      const cascadeStyle = getComputedStyle(wrapper);
+      expect(cascadeStyle.boxShadow).toBe("none");
+      expect(cascadeStyle.backgroundColor).toBe("rgba(0, 0, 0, 0)");
+      expect(cascadeStyle.borderTopWidth).toBe("0px");
+      expect(cascadeStyle.borderRadius).toBe("0");
+      expect(cascadeStyle.padding).toBe("0px");
+      const shadow = "var(--st-component-popover-shadow, var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14)))";
+      expect(getComputedStyle(levelEl(view.container, 0)!.parentElement!).boxShadow).toBe(shadow);
+      fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+      expect(getComputedStyle(levelEl(view.container, 1)!).boxShadow).toBe(shadow);
+      view.rerender(<OverflowMenu open items={flatItems} />);
+      const restored = getComputedStyle(wrapper);
+      expect([restored.background, restored.border, restored.borderRadius, restored.padding, restored.boxShadow]).toEqual(flatSurface);
+      expect(wrapper.className).toBe("st-overflowMenu__list st-overflowMenu__list--bottom-start");
+    } finally {
+      style.remove();
+    }
+  });
+
+  it.each(["Enter", " "])("preserves native flat OverflowMenu toggle and trigger focus with %s", (key) => {
+    render(<OverflowMenu label="Actions" items={[{ label: "Edit" }]} />);
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    trigger.focus();
+    for (const open of [true, false]) {
+      const notPrevented = fireEvent.keyDown(trigger, { key });
+      expect(notPrevented).toBe(true);
+      // jsdom has no native button keyboard activation; dispatch its click.
+      fireEvent.click(trigger);
+      expect(trigger.getAttribute("aria-expanded")).toBe(String(open));
+      expect(Boolean(screen.queryByRole("menu"))).toBe(open);
+      expect(document.activeElement).toBe(trigger);
+    }
+  });
+
+  it("preserves the flat trigger's ArrowDown default", () => {
+    render(<OverflowMenu label="Actions" items={[{ label: "Edit" }]} />);
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    trigger.focus();
+    expect(fireEvent.keyDown(trigger, { key: "ArrowDown" })).toBe(true);
+    expect(screen.queryByRole("menu")).toBeNull();
+    expect(document.activeElement).toBe(trigger);
+  });
+
+  it.each((["standalone", "overflow", "popover"] as const).flatMap((host) =>
+    [false, true].map((shiftKey) => ({ host, shiftKey }))
+  ))("AC-32: leaves $host from a focused deep leaf on Tab, shift=$shiftKey", ({ host, shiftKey }) => {
+    const controls = render(<><button>Before</button><button>Popover trigger</button><button>After</button></>);
+    const trigger = screen.getByRole("button", { name: "Popover trigger" });
+    function Host() {
+      const [open, setOpen] = React.useState(true);
+      return host === "standalone" ? <Menu items={deepItems} />
+        : host === "overflow" ? <OverflowMenu open={open} onOpenChange={setOpen} label="Actions" items={deepItems} />
+        : <MenuPopover defaultOpen trigger={trigger} items={deepItems} />;
+    }
+    // Put the menu between Before and After, with its trigger preceding it.
+    render(<Host />, { container: controls.container.insertBefore(document.createElement("div"), screen.getByRole("button", { name: "After" })) });
+    fireEvent.click(screen.getByRole("menuitem", { name: "A" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Middle" }));
+    const leaf = screen.getByRole("menuitem", { name: "Deep leaf" });
+    leaf.focus();
+    expect(document.activeElement).toBe(leaf);
+    expect(fireEvent.keyDown(leaf, { key: "Tab", shiftKey })).toBe(true);
+    expect(levelEl(document.body, 1)).toBeNull();
+    expect(levelEl(document.body, 2)).toBeNull();
+    if (host !== "standalone") expect(screen.queryByRole("menu")).toBeNull();
+    const anchor = host === "standalone" ? screen.getByRole("menuitem", { name: shiftKey ? "A" : "B" })
+      : host === "overflow" ? screen.getByRole("button", { name: "Actions" }) : trigger;
+    expect(document.activeElement).toBe(anchor);
+    // Emulate only the browser's default sequential focus step, absent in jsdom.
+    const stops = Array.from(controls.container.querySelectorAll<HTMLElement>("button, [tabindex]"))
+      .filter((element) => element.tabIndex >= 0 && !element.matches(":disabled"));
+    stops[stops.indexOf(anchor) + (shiftKey ? -1 : 1)].focus();
+    const previous = host === "standalone" || host === "overflow" ? trigger : screen.getByRole("button", { name: "Before" });
+    expect(document.activeElement).toBe(shiftKey ? previous : screen.getByRole("button", { name: "After" }));
+  });
+});
+
 describe("second review regressions", () => {
   it.each((["items", "children"] as const).flatMap((mode) =>
     (["top-start", "top-end", "bottom-end"] as const).map((placement) => ({ mode, placement }))
@@ -118,8 +321,8 @@ describe("second review regressions", () => {
     expect(document.activeElement).toBe(activation === "click" ? other : trigger);
   });
 
-  it.each(["ArrowDown", "Enter", " "])("focuses the first enabled flat OverflowMenu item when opened with %s", (key) => {
-    render(<OverflowMenu label="Actions" items={[{ label: "Disabled", disabled: true }, { label: "Edit" }]} />);
+  it.each(["ArrowDown", "Enter", " "])("focuses the first enabled cascade OverflowMenu item when opened with %s", (key) => {
+    render(<OverflowMenu label="Actions" items={[{ label: "Disabled", disabled: true }, { label: "Edit", children: [{ label: "Child" }] }]} />);
     const trigger = screen.getByRole("button", { name: "Actions" });
     trigger.focus();
     fireEvent.keyDown(trigger, { key });
@@ -816,11 +1019,14 @@ describe("Menu cascade — level-local keyboard and roving (AC-13, AC-31, AC-32)
     render(<Menu items={cascadeItems} />);
     fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
     const sub = levelItem(levelEl(document.body, 1), "Reason 1");
+    sub.focus();
+    expect(document.activeElement).toBe(sub);
     const notPrevented = fireEvent.keyDown(sub, { key: "Tab" });
     expect(levelEl(document.body, 1)).toBeNull();
-    // The standalone menu itself has no root open state in this port, so it
-    // stays; focus is not trapped because the event is never prevented.
+    // The standalone root stays mounted; native Tab can advance from its
+    // final enabled row to the following control.
     expect(screen.getByRole("menu")).toBeTruthy();
+    expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Class B" }));
     expect(notPrevented).toBe(true);
   });
 });
@@ -1375,7 +1581,8 @@ describe("Menu cascade — OverflowMenu flat regression (AC-37)", () => {
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
     expect(document.activeElement).toBe(trigger);
     fireEvent.keyDown(trigger, { key: "ArrowDown" });
-    expect(document.activeElement).toBe(edit);
+    expect(document.activeElement).toBe(trigger);
+    edit.focus();
     fireEvent.keyDown(edit, { key: "ArrowDown" });
     expect(document.activeElement).toBe(deleteItem);
     fireEvent.keyDown(deleteItem, { key: "ArrowUp" });
@@ -1483,9 +1690,11 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
       (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
     expect(first).toContain("left: 8px");
     expect(first).toContain("min-width: 0");
-    // The capped panel now measures its capped width: a scroll/resize
-    // recompute must keep the cap instead of dropping it.
-    stubRect(levelEl(document.body, 1) as Element, { width: 144, height: 100 });
+    // The panel follows its applied cap, while an uncapped measurement still
+    // exposes the CSS minimum. A scroll/resize must preserve that cap.
+    const panel = levelEl(document.body, 1) as HTMLElement;
+    vi.spyOn(panel, "getBoundingClientRect").mockImplementation(() =>
+      new DOMRect(8, 8, panel.style.minWidth === "0" ? 144 : 192, 100));
     resizeWindow();
     const second =
       (levelEl(document.body, 1) as HTMLElement).getAttribute("style") ?? "";
@@ -1544,8 +1753,9 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
       <OverflowMenu label="Row actions" items={[{ label: "Edit", value: "edit" }]} />
     );
     const trigger = screen.getByRole("button", { name: "Row actions" });
-    fireEvent.keyDown(trigger, { key: "ArrowDown" });
+    fireEvent.click(trigger);
     const item = screen.getByRole("menuitem", { name: "Edit" });
+    item.focus();
     expect(document.activeElement).toBe(item);
     fireEvent.keyDown(item, { key: "Escape" });
     expect(screen.queryByRole("menu")).toBeNull();
@@ -1633,11 +1843,13 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
     fireEvent.click(screen.getByRole("button", { name: "Row actions" }));
     fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
     const sub = levelItem(levelEl(document.body, 1), "Reason 1");
+    sub.focus();
+    expect(document.activeElement).toBe(sub);
     const notPrevented = fireEvent.keyDown(sub, { key: "Tab", shiftKey: true });
     expect(levelEl(document.body, 1)).toBeNull();
     expect(screen.queryByRole("menu")).toBeNull();
-    // Not prevented, so the browser moves focus out of the menu: no menu
-    // remains in the document for focus to be trapped in.
+    // Native Shift+Tab can move backward from the surviving trigger.
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Row actions" }));
     expect(notPrevented).toBe(true);
   });
 

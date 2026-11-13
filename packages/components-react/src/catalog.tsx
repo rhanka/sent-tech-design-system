@@ -29,10 +29,9 @@ import { Portal } from "./Portal.js";
 import {
   CLOSE_DELAY,
   OPEN_DELAY,
-  SUBMENU_DEFAULT_WIDTH,
-  VIEWPORT_MARGIN,
   MenuHostContext,
   computeSubMenuPosition,
+  isCappedSubMenuWidth,
   pointInSafeTriangle,
   resolvePreferredSide,
   toContainingBlockPosition,
@@ -3863,7 +3862,16 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     if (!button) return;
     const menuRect = levelRoot.getBoundingClientRect();
     const itemRect = button.getBoundingClientRect();
+    // Measure the themed width without our previous viewport cap. Measuring
+    // the capped result would remove the cap on the next positioning pass.
+    const { minWidth, maxWidth, boxSizing } = panel.style;
+    panel.style.minWidth = "";
+    panel.style.maxWidth = "";
+    panel.style.boxSizing = "";
     const panelRect = panel.getBoundingClientRect();
+    panel.style.minWidth = minWidth;
+    panel.style.maxWidth = maxWidth;
+    panel.style.boxSizing = boxSizing;
     const vw = window.innerWidth;
     const vh = window.innerHeight;
     const solved = computeSubMenuPosition({
@@ -3879,20 +3887,22 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
       block ? block.getBoundingClientRect() : null
     );
     setLevelSides((prev) => {
+      if (prev[level - 1] === solved.side) return prev;
       const next = [...prev];
       next[level - 1] = solved.side;
       return next;
     });
     setLevelPositions((prev) => {
+      const previous = prev[level - 1];
+      const capped = isCappedSubMenuWidth(panelRect.width, vw);
+      if (previous?.top === converted.top && previous.left === converted.left &&
+        previous.maxHeight === solved.maxHeight && previous.capped === capped) return prev;
       const next = [...prev];
       next[level - 1] = {
         top: converted.top,
         left: converted.left,
         maxHeight: solved.maxHeight,
-        // Viewport-alone derivation: the measured width is the capped width
-        // once the cap style applies, so re-deriving from it would drop the
-        // cap on the next scroll/resize recompute (§3.4 step 3).
-        capped: vw < SUBMENU_DEFAULT_WIDTH + 2 * VIEWPORT_MARGIN
+        capped
       };
       return next;
     });
@@ -3904,6 +3914,13 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
       computeLevelPosition(level);
     }
   }
+
+  // Descendant rectangles depend on committed ancestor positions, including
+  // host moves. Repeat after each commit until the measured positions agree;
+  // the equality guards above stop updates once both levels are attached.
+  React.useLayoutEffect(() => {
+    computeAllPositions();
+  });
 
   // Recompute every open level against its own parent rect on open, plus one
   // recompute after mount once the real panel size is known (§3.4 step 6).
@@ -4013,24 +4030,24 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     return pointInSafeTriangle(point, triangle[0], triangle[1], triangle[2]);
   }
 
+  function restoreClosingFocus(level: number) {
+    const parentIndex = openPath[level];
+    const active = document.activeElement;
+    const focusInClosingLevels = active && Array.from(levelElsRef.current).some(
+      ([panelLevel, panel]) => panelLevel > level && panel.contains(active)
+    );
+    if (focusInClosingLevels && parentIndex !== undefined) focusButton(level, parentIndex);
+  }
+
   function armClose(level: number) {
     cancelCloseTimer();
     closeLevelRef.current = level;
-    // Capture before the slice: the parent line of the closing level lives
-    // at openPath[level] while the timer is pending (§3.3 step 5).
-    const parentIndex = openPath[level];
     closeTimerRef.current = setTimeout(() => {
-      const active = document.activeElement;
-      const focusInClosingLevels = active && Array.from(levelElsRef.current).some(
-        ([panelLevel, panel]) => panelLevel > level && panel.contains(active)
-      );
+      // Restore focus before removing any descendant panel (§3.3 step 5).
+      restoreClosingFocus(level);
       setOpenPath((prev) => prev.slice(0, level));
       safeApexRef.current = null;
       safeLevelRef.current = -1;
-      // Focus inside a pointer-closed level moves to its parent line (§3.3).
-      if (focusInClosingLevels) {
-        if (parentIndex !== undefined) focusButton(level, parentIndex);
-      }
       closeTimerRef.current = undefined;
       closeLevelRef.current = -1;
     }, CLOSE_DELAY);
@@ -4049,6 +4066,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     cancelOpenTimer();
     openTimerRef.current = setTimeout(() => {
       openTimerRef.current = undefined;
+      restoreClosingFocus(depth);
       setOpenPath((prev) => [...prev.slice(0, depth), index]);
     }, OPEN_DELAY);
   }
@@ -4227,8 +4245,15 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
       return;
     }
     if (event.key === "Tab") {
-      // Tab closes everything and lets focus leave the menu (no trap, AC-32).
-      closeAll(false);
+      // Keep a surviving focus anchor before unmounting the active panel.
+      // The native Tab default then advances out of the menu in either
+      // direction: from the host trigger, or the standalone root boundary.
+      if (!isNested) {
+        const buttons = levelButtons(0);
+        const boundary = event.shiftKey ? buttons[0] : buttons[buttons.length - 1];
+        if (boundary) focusButton(0, rawIndexOf(boundary));
+      }
+      closeAll(true);
     }
   }
 
@@ -4286,6 +4311,7 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     if (position.capped) {
       style.minWidth = 0;
       style.maxWidth = "calc(100vw - 16px)";
+      style.boxSizing = "border-box";
     }
     return style;
   }
@@ -5333,7 +5359,7 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
           else setOpen(true);
         }}
         onKeyDown={(event) => {
-          if (!["ArrowDown", "Enter", " "].includes(event.key)) return;
+          if (!cascade || !["ArrowDown", "Enter", " "].includes(event.key)) return;
           event.preventDefault();
           if (open) focusFirstMenuItem();
           else openAndFocus();
@@ -5342,7 +5368,7 @@ export function OverflowMenu({ items, label = "More", open: controlledOpen, onOp
         <Ellipsis size={18} strokeWidth={2.25} aria-hidden="true" />
       </button>
       {open ? (
-        <div className={classNames("st-overflowMenu__list", `st-overflowMenu__list--${placement}`)}>
+        <div className={classNames("st-overflowMenu__list", `st-overflowMenu__list--${placement}`, cascade && "st-overflowMenu__list--cascade")}>
           <MenuHostContext.Provider value={hostContext}>
             <Menu items={items} aria-label={text(label)} onSelect={handleMenuSelect} submenuSide={submenuSide} />
           </MenuHostContext.Provider>
