@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "GaugeChart",
+  "sourceRevision": "f8ba040bbb9dffe99ea1e31668fa7164c42b5c3b",
+  "source": "src/GaugeChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Load\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"65\" aria-valuetext=\"Load: 65\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 154.037078474736 23.572367153728308\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.52838583578594 111.7978023789686 L 159.03097397187105 13.771295387656252 L 106.47161416421406 108.20219762103139 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">65</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Load</text></svg></div><ul aria-label=\"Data values for Load\" class=\"st-chartDataList\"><li>Load: 65 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "percent",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Fill\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"33.6\" aria-valuetext=\"Fill: 34%\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 62.20544786981571 25.592175797056015\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.44592766849132 108.04879972746876 L 56.785447112784496 16.020154495691244 L 106.55407233150868 111.95120027253124 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">34%</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Fill</text></svg></div><ul aria-label=\"Data values for Fill\" class=\"st-chartDataList\"><li>Fill: 34% (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "thresholds",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Usage\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"72\" aria-valuetext=\"Usage: 72, zone warning\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--success\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 109.99999999999999 13\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--warning\" d=\"M 109.99999999999999 13 A 97 97 0 0 1 188.4746484543699 52.98483052763008\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--error\" d=\"M 188.4746484543699 52.98483052763008 A 97 97 0 0 1 205.80576903772834 94.82585689109759\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--error\" d=\"M 205.80576903772834 94.82585689109759 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.05123244139213 112.5241989994048 L 178.84179089285846 26.784569780214724 L 106.94876755860787 107.4758010005952 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">72</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Usage</text></svg></div><ul aria-label=\"Data values for Usage\" class=\"st-chartDataList\"><li>Usage: 72 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "unit-size",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Latency\" aria-valuemax=\"200\" aria-valuemin=\"0\" aria-valuenow=\"42\" aria-valuetext=\"Latency: 42 ms\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 300 148.00000000000003\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 17 150.00000000000003 A 133 133 0 0 1 283 149.99999999999997\" fill=\"none\" stroke-width=\"30\"></path><path class=\"st-gaugeChart__progress\" d=\"M 17 150.00000000000003 A 133 133 0 0 1 44.90938335403314 68.48336186415416\" fill=\"none\" stroke-width=\"30\"></path><path class=\"st-gaugeChart__needle\" d=\"M 153.30969808972608 145.73316293317126 L 33.05705816839779 59.28975605935952 L 146.69030191027392 154.2668370668287 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"150\" cy=\"150\" r=\"6.6\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"150\" y=\"133.5\">42 ms</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"150\" y=\"148.5\">Latency</text></svg></div><ul aria-label=\"Data values for Latency\" class=\"st-chartDataList\"><li>Latency: 42 ms (min 0, max 200)</li></ul></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-gaugeChart consumer\" data-bench=\"gauge\" style=\"color:red;\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"10\" aria-valuetext=\"10\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 17.747517919370097 80.02535154563012\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 111.22370729772479 106.23381619547119 L 7.285896240123407 76.6261646075057 L 108.77629270227521 113.76618380452881 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">10</text></svg></div><ul aria-label=\"Data values for gauge\" class=\"st-chartDataList\"><li>10 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "over-max",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Clamped\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"100\" aria-valuetext=\"Clamped: 100\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 110 113.96 L 218 109.99999999999997 L 110 106.04 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">100</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Clamped</text></svg></div><ul aria-label=\"Data values for Clamped\" class=\"st-chartDataList\"><li>Clamped: 100 (min 0, max 100)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "dd3bc1e50045df8c8d6e1568236eb8e485333b6c86a0e2337ef694e05022c46b",
+  "fixtureSha256": "f95b0c76fcea6d44f6e0b25f88f5293c94983d4fdf31881aaf6f2ccb09a5c661",
+  "publicExports": [
+    {
+      "name": "GaugeChart",
+      "typeOnly": false
+    },
+    {
+      "name": "GaugeChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "GaugeChartTone",
+      "typeOnly": true
+    },
+    {
+      "name": "GaugeChartThreshold",
+      "typeOnly": true
+    },
+    {
+      "name": "GaugeChartFormat",
+      "typeOnly": true
+    }
+  ]
+}
