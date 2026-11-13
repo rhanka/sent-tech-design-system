@@ -662,13 +662,13 @@ export type {
   KanbanBoardCard,
   KanbanBoardColumn,
 } from "./KanbanBoard.vue";
-export { MasterDetail } from "./MasterDetail.js";
+export { default as MasterDetail } from "./MasterDetail.vue";
 export type {
   MasterDetailProps,
   MasterDetailNavItem,
   MasterDetailItem,
   MasterDetailField,
-} from "./MasterDetail.js";
+} from "./MasterDetail.vue";
 export { Dashboard } from "./Dashboard.js";
 export type {
   DashboardProps,
