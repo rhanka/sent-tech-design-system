@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "DrillBreadcrumb",
+  "sourceRevision": "4aba21c009ef5e7a52720faa05f1e9fca2d3bdfc",
+  "source": "src/lib/DrillBreadcrumb.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><nav aria-label=\"Chemin de drill\" class=\"st-breadcrumb\"><ol><li><span aria-current=\"page\">Region</span></li></ol></nav></div>"
+    },
+    {
+      "id": "drilled",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><nav aria-label=\"Chemin de drill\" class=\"st-breadcrumb\"><ol><li><span>Region</span><span class=\"st-breadcrumb__separator\">/</span></li><li><span aria-current=\"page\">City</span></li></ol></nav><button class=\"st-button st-button--ghost st-button--md\" type=\"button\">Remonter</button></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><nav aria-label=\"Trail\" class=\"st-breadcrumb\"><ol><li><span aria-current=\"page\">Region</span></li></ol></nav></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-flex st-inline consumer\" data-bench=\"crumbs\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><nav aria-label=\"Chemin de drill\" class=\"st-breadcrumb\"><ol><li><span aria-current=\"page\">Region</span></li></ol></nav></div>"
+    }
+  ],
+  "sourceSha256": "f962e3a38f65b3fdb3215c137b7f4ab592d58414299af32d96468c5735ac87a1",
+  "fixtureSha256": "6cb36b7a4826eb6d44ecb7e96408f8cdd5fac1b95d9dac7b6af1b8078413d381",
+  "publicExports": [
+    {
+      "name": "DrillBreadcrumb",
+      "typeOnly": false
+    },
+    {
+      "name": "DrillBreadcrumbProps",
+      "typeOnly": true
+    }
+  ]
+}
