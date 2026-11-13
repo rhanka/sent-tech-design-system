@@ -295,9 +295,9 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     // container title is measured at its own inner width minus the toggle
     // allocation, the leaf at its full inner width.
     const containerInner = geometryOf(measured.view, "C").width - 32;
-    expect(containerCall.availableWidth).toBe(containerInner - TOGGLE_ALLOCATION);
-    expect(leafCall.availableWidth).toBe(460 - 32);
-    expect(containerInner - containerCall.availableWidth).toBe(TOGGLE_ALLOCATION);
+    expect(containerCall.availableWidth).toBe(containerInner - TOGGLE_ALLOCATION - 4);
+    expect(leafCall.availableWidth).toBe(460 - 26);
+    expect(containerInner - containerCall.availableWidth).toBe(TOGGLE_ALLOCATION + 4);
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
     const replay = wordWrapMeasurer({ charWidth: 8 })({
       text: containerTitle,

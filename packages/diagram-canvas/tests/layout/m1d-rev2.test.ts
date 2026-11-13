@@ -704,7 +704,7 @@ describe("REV2 item 3b — eleven-level stretched columns", () => {
       (call) => call.role === "title" && call.text === title && call.availableWidth !== probeWidth,
     );
     expect(finals.map((call) => call.availableWidth)).toEqual([
-      headerAvailableWidth(innerWidthOf(deepest.width), true),
+      headerAvailableWidth(innerWidthOf(deepest.width), true) - 4,
     ]);
   });
 

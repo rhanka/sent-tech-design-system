@@ -44,7 +44,7 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
     const unwrapped = title.length * 8;
     const width = geometryOf(measured.view, "C").width;
     expect(width).toBeGreaterThan(FIXED_CARD_WIDTH);
-    expect(width).toBe(unwrapped + 2 * CONTENT_INSET + TOGGLE_ALLOCATION);
+    expect(width).toBe(unwrapped + 2 * CONTENT_INSET + TOGGLE_ALLOCATION + 4);
     // Step 3 measures the header at inner − TOGGLE_ALLOCATION, i.e. exactly
     // the unwrapped width: one line, no overflow, no zone-overflow warning.
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"));
@@ -56,7 +56,7 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
       .filter((call) => call.role === "title" && call.availableWidth < 10000)
       .find((call) => call.text === title);
     expect(titleCall).toBeDefined();
-    expect(titleCall?.availableWidth).toBe(width - 2 * CONTENT_INSET - TOGGLE_ALLOCATION);
+    expect(titleCall?.availableWidth).toBe(width - 2 * CONTENT_INSET - TOGGLE_ALLOCATION - 4);
     expect(titleCall?.availableWidth).toBe(unwrapped);
   });
 });

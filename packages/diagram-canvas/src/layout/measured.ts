@@ -65,6 +65,8 @@ import {
   type LayoutGroup,
   type LayoutHints,
 } from "./hints.js";
+import { measureSceneBox } from "./sceneMeasure.js";
+import { ZONE_GEOMETRY } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
   CONTENT_INSET,
@@ -289,6 +291,20 @@ export function layoutMeasured(
     };
   }
   const measure = options.measureLines;
+  const sceneBoxCache = new Map<string, ReturnType<typeof measureSceneBox>>();
+  const sceneBoxAt = (id: OccurrenceRef, width: number, collapsed: boolean) => {
+    const key = `${id}|${width}|${collapsed}`;
+    let box = sceneBoxCache.get(key);
+    if (box === undefined) {
+      const entry = presentation.entities[id];
+      const kind = kinds.get(projected.entityOccurrences[id]?.entity!);
+      const expanded = kind === "container-expanded" || kind === "legend-expanded";
+      box = measureSceneBox(expanded && entry?.form === "card" ? { ...entry, form: "container" } : entry,
+        id, width, collapsed, measure);
+      sceneBoxCache.set(key, box);
+    }
+    return box;
+  };
   const validationOptions =
     options.bindings === undefined ? { registry: options.registry } : { registry: options.registry, bindings: options.bindings };
   const diagnostics = validateDocument(document, validationOptions);
@@ -638,7 +654,7 @@ export function layoutMeasured(
     return { key, mode: "auto", items, stretch: false };
   };
   const runHasZone = (run: Run): boolean =>
-    run.items.some((item) => ("entity" in item ? isStretchedBox(item.entity) : runHasZone(item.run)));
+    run.items.some((item) => ("entity" in item ? kinds.get(item.entity) !== "leaf" : runHasZone(item.run)));
 
   // Drawn edges: the link occurrences the projected view draws. Internal
   // edges under a collapse are excluded by the same visibility; every
@@ -670,6 +686,28 @@ export function layoutMeasured(
     if (source === undefined || target === undefined) continue;
     drawnEdges.push({ occurrence: occurrence.id, relation: occurrence.relation, source, target });
   }
+  const edgeBundles: Record<string, { members: string[]; label: string; title: string }> = {};
+  const liftedPairs = new Map<string, DrawnEdge[]>();
+  for (const edge of drawnEdges) {
+    const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
+    if (!projectedEdge.endpoints.some(end => end.sourceOccurrence !== undefined)) continue;
+    const key = JSON.stringify([edge.source.entity, edge.target.entity]);
+    const pair = liftedPairs.get(key) ?? [];
+    pair.push(edge);
+    liftedPairs.set(key, pair);
+  }
+  const bundled = new Set<string>();
+  for (const pair of liftedPairs.values()) {
+    if (pair.length < 2) continue;
+    const first = pair[0]!;
+    edgeBundles[first.occurrence] = { members: pair.map(edge => edge.occurrence),
+      label: `${pair.length} relations`,
+      title: pair.map(edge => edgeLabelOf(document, edge.relation) ?? edge.relation).join("\n") };
+    pair.slice(1).forEach(edge => bundled.add(edge.occurrence));
+  }
+  for (let index = drawnEdges.length - 1; index >= 0; index -= 1) {
+    if (bundled.has(drawnEdges[index]!.occurrence)) drawnEdges.splice(index, 1);
+  }
   const filteredGraph: LayoutGraph = {
     nodes: new Map([...graph.nodes].filter(([id]) => visible(id))),
     roots: graph.roots.filter(visible),
@@ -689,7 +727,7 @@ export function layoutMeasured(
   const labelSizes = new Map<RelationRef, { width: number; height: number }>();
   const edgeLayouts = new Map<RelationRef, LineLayout>();
   for (const edge of drawnEdges) {
-    const label = edgeLabelOf(document, edge.relation);
+    const label = edgeBundles[edge.occurrence]?.label ?? edgeLabelOf(document, edge.relation);
     if (label === undefined) continue;
     const layout = measure({
       text: label,
@@ -813,7 +851,9 @@ export function layoutMeasured(
         availableWidth: inner,
         allocatedLines: { ...DEFAULT_ALLOCATED_LINES },
       };
-      const header = measureHeader(input, measure);
+      const entry = presentation.entities[representativeOf(id)];
+      const header = entry === undefined ? measureHeader(input, measure)
+        : sceneBoxAt(representativeOf(id), inner + 2 * CONTENT_INSET, input.folded).header;
       headers.set(id, header);
       headerInputs.set(id, input);
       headerWidths.set(id, inner);
@@ -898,10 +938,17 @@ export function layoutMeasured(
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
         outerWidths.set(id, FIXED_CARD_WIDTH);
-        return { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT };
+        const entry = presentation.entities[representativeOf(id)];
+        const measured = entry === undefined ? { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT }
+          : sceneBoxAt(representativeOf(id), FIXED_CARD_WIDTH, kind !== "leaf");
+        const size = { width: measured.width, height: measured.height };
+        packedSizes.set(id, size);
+        return size;
       }
       if (kind === "legend-key") return { width: innerWidthOf(FIXED_CARD_WIDTH), height: LEGEND_KEY_HEIGHT };
-      const headerDriven = unwrappedHeaderWidth(id) + 2 * CONTENT_INSET + TOGGLE_ALLOCATION;
+      const hasIcon = presentation.entities[representativeOf(id)]?.icon !== undefined;
+      const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
+      const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
       const floor = Math.max(FIXED_CARD_WIDTH, headerDriven);
       const ordered = orderedChildrenOf(id);
       const headerHeight = headerHeightOf(id, floor);
@@ -947,7 +994,8 @@ export function layoutMeasured(
       outerWidths.set(id, outer);
       const size = {
         width: outer,
-        height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + levelHeight + LAST_CHILD_TO_BOTTOM_GAP,
+        height: CONTENT_INSET + headerHeight + RULE_TO_FIRST_CHILD_GAP + levelHeight + LAST_CHILD_TO_BOTTOM_GAP
+          + sceneBoxAt(representativeOf(id), outer, false).footerReserve,
       };
       packedSizes.set(id, size);
       return size;
@@ -979,6 +1027,11 @@ export function layoutMeasured(
       if (before.size === outerWidths.size && [...outerWidths].every(([id, width]) => before.get(id) === width)) break;
     }
     for (const id of headerIds) {
+      const size = packedSizes.get(id);
+      if (!isStretchedBox(id) && size !== undefined && size.height > FIXED_CARD_HEIGHT) {
+        warnings.push({ code: "card-grown", refs: [representativeOf(id)],
+          message: `card grew from ${FIXED_CARD_HEIGHT} to ${size.height} px to contain its measured content` });
+      }
       for (const overflow of headerOverflows(headerInputs.get(id)!, headers.get(id)!, lineHeightOf)) {
         warnOverflow(overflow, kinds.get(id) !== "leaf");
       }
@@ -1007,7 +1060,7 @@ export function layoutMeasured(
     const seatBox = (id: EntityRef, x: number, y: number): void => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
-        rects.set(id, { x, y, width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT });
+        rects.set(id, { x, y, ...packedSizes.get(id)! });
         return;
       }
       if (kind === "legend-key") {
@@ -1018,7 +1071,7 @@ export function layoutMeasured(
       const header = headers.get(id)!;
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
-      titleBands.set(id, { x: x + CONTENT_INSET, y: y + CONTENT_INSET, width: inner, height: header.height });
+      titleBands.set(id, { x, y, width: size.width, height: CONTENT_INSET + header.height });
       const contentX = x + CONTENT_INSET;
       const contentY = y + CONTENT_INSET + header.height + RULE_TO_FIRST_CHILD_GAP;
       if (kind === "legend-expanded") {
@@ -1097,6 +1150,7 @@ export function layoutMeasured(
       }
       const expanded = kind === "container-expanded" || kind === "legend-expanded";
       const inner = expanded ? innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH) : innerWidthOf(FIXED_CARD_WIDTH);
+      const rendered = sceneBoxAt(occurrence, rects.get(id)!.width, !expanded && kind !== "leaf");
       for (const role of ["body", "detail", "footer"] as const) {
         if (text[role] === undefined) continue;
         recordSlot(
@@ -1105,7 +1159,7 @@ export function layoutMeasured(
           measure({
             text: text[role]!,
             role,
-            availableWidth: inner,
+            availableWidth: role === "footer" ? rendered.footerWidth : rendered.bodyWidth,
             allocatedLines: DEFAULT_ALLOCATED_LINES[role],
             folded: !expanded && kind !== "leaf",
           }),
@@ -1564,6 +1618,34 @@ export function layoutMeasured(
         }
       }
       if (choice === undefined) {
+        // Dense inter-zone channels may exceed the aspect-based allowance.
+        // Comb their labels outside the drawing rather than dropping them or
+        // painting through a card. The full union below includes this column.
+        const request = requests.find(candidate => candidate.id === entry.id)!;
+        if (entry.within === undefined) {
+          const right = Math.max(...[...rects.values()].map(rect => rect.x + rect.width));
+          const pitch = Math.max(...[...labelSizes.values()].map(size => size.height)) + 2 * metrics.labelMargin;
+          const column = right + Math.max(...[...labelSizes.values()].map(size => size.width)) / 2 + metrics.clearance;
+          const row = drawingBottom + metrics.clearance + (entries.indexOf(entry) + 1) * pitch;
+          const { limit: _limit, ...unbounded } = entry;
+          const samePair = requests.filter(candidate => candidate.id !== entry.id && candidate.pairKey === request.pairKey)
+            .map(candidate => retryRoutes.get(candidate.id)!);
+          const comb = (earlier: readonly (readonly Vec2[])[]) => labelDetour({ request, shapes: shapesOf(entry.id), earlier,
+            xs: [...new Set([request.start.x, request.end.x, column, ...outerLanesX])].sort((a, b) => a - b),
+            ys: [...new Set([request.start.y, request.end.y, row, ...outerLanes])].sort((a, b) => a - b),
+            accepts: points => placePackedLabel({ ...unbounded, route: points }, fixedShapes, taken, metrics.labelMargin) !== undefined,
+          });
+          // Once a channel is saturated, its comb may share a trunk. Card
+          // and header obstacles remain mandatory; label rows stay distinct.
+          const route = comb(samePair) ?? comb([]);
+          if (route !== undefined) {
+            retryRoutes.set(entry.id, route);
+            retryObstructed.delete(entry.id);
+            choice = placePackedLabel({ ...unbounded, route }, fixedShapes, taken, metrics.labelMargin);
+          }
+        }
+      }
+      if (choice === undefined) {
         unplaced.push({ ...entry, route: retryRoutes.get(entry.id)! });
         continue;
       }
@@ -1735,6 +1817,7 @@ export function layoutMeasured(
           .sort(([left], [right]) => byString(left, right))
           .map(([id, box]) => [id, { x: clean(box.x), y: clean(box.y), width: box.width, height: box.height }] as const),
       ),
+      ...(Object.keys(edgeBundles).length === 0 ? {} : { edgeBundles }),
     };
     return { result, chosen, requested, unused, unplaced: unplaced.length };
   };
