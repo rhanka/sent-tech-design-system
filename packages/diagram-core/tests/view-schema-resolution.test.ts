@@ -125,7 +125,7 @@ describe("view-schema exact-pin resolution", () => {
   it.each([
     ["latest alias", "latest"],
     ["dotted version", "1.0"],
-    ["next major", "3"],
+    ["next major", "4"],
     ["empty version", ""],
   ])("refuses an unknown version (%s) with no fallback and no reverse migration", (_label, version) => {
     const pin =
