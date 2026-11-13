@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { ChordChart } from './ChordChart.js';
+import ChordChart from './ChordChart.vue';
 import { DonutChart } from './DonutChart.js';
 import { FunnelChart } from './FunnelChart.js';
 import { MekkoChart } from './MekkoChart.js';
