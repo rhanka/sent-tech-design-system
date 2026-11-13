@@ -151,8 +151,8 @@ export { Toggle } from "./Toggle.js";
 export type { ToggleProps, ToggleSize } from "./Toggle.js";
 export { UnorderedList } from "./UnorderedList.js";
 export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from "./UnorderedList.js";
-export { Combobox } from "./Combobox.js";
-export type { ComboboxProps, ComboboxOption, ComboboxSize } from "./Combobox.js";
+export { default as Combobox } from "./Combobox.vue";
+export type { ComboboxProps, ComboboxOption, ComboboxSize } from "./Combobox.vue";
 export { DataTable } from "./DataTable.js";
 export type {
   DataTableProps,
