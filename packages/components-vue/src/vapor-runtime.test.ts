@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
 import { createVaporApp, nextTick, vaporInteropPlugin, type VaporComponent } from 'vue';
-import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend, DataTable, LabelledIconButton, WebFrame, CopyButton, Toast, TreeView } from '../dist/vapor/index.js';
+import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend, DataTable, LabelledIconButton, WebFrame, CopyButton, Toast, TreeView, Modal, Drawer } from '../dist/vapor/index.js';
 import { ComposerEditor, RichTextEditor } from '../dist/vapor/rich-text-editor/index.js';
 import { LockPresenceBadge } from '../dist/vapor/presence-badge/index.js';
 import { parseFullMarkdown } from '@sentropic/design-system-rich-text';
+import type { RichTextEditor as CoreEditor } from '@sentropic/design-system-rich-text/editor';
 import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/index.js';
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
@@ -13,6 +14,16 @@ import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileReg
 import { flowFixture, flowMeasure } from '../../diagram-canvas/test-support/flowFixture.js';
 
 const engine = vi.hoisted(() => ({ create: vi.fn(), destroy: vi.fn() }));
+const { createdCores } = vi.hoisted(() => ({ createdCores: [] as CoreEditor[] }));
+vi.mock('@sentropic/design-system-rich-text/editor', async importOriginal => {
+  const actual = await importOriginal<typeof import('@sentropic/design-system-rich-text/editor')>();
+  return { ...actual, createRichTextEditor: (options: Parameters<typeof actual.createRichTextEditor>[0]) => {
+    const result = actual.createRichTextEditor(options);
+    if (result instanceof Promise) void result.then(core => createdCores.push(core));
+    else createdCores.push(result);
+    return result;
+  } };
+});
 vi.mock('@sentropic/bpmn-canvas', () => ({ createBpmnCanvas: (...args: unknown[]) => engine.create(...args) }));
 const apps: ReturnType<typeof createVaporApp>[] = [];
 afterEach(() => { apps.splice(0).forEach(app => app.unmount()); document.body.replaceChildren(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
@@ -52,6 +63,43 @@ it('should keep once listeners and merged listener arrays usable in native Vapor
 });
 
 const editorMessages = { editorLabel: 'Editor', placeholder: 'Write', preservedBlockLabel: 'Preserved {kind}', externalConflictLabel: 'Conflict' };
+it('should await the pending full-profile mount, edit one paragraph and omit only the synthetic trailing paragraph in native Vapor', async () => {
+  const input = 'First\n\nHard  \nbreak\n\n- item';
+  const composer = mount(ComposerEditor, { value: input, profile: 'full', messages: editorMessages });
+  expect(composer.vm.readiness().ready).toBe(false);
+  const capture = composer.vm.captureComposer();
+  expect((await capture).text).toBe(input);
+  const core = createdCores.at(-1)!;
+  const blocks = core.getDocument().blocks;
+  expect(blocks.at(-1)).toMatchObject({ kind: 'paragraph', segments: [] });
+  const doc = core.view.state.doc;
+  expect(doc.child(doc.childCount - 2).type.name).toBe('bulletList');
+  core.typeText(blocks[0].paragraphId, '!');
+  expect((await composer.vm.captureComposer()).text).toBe('First!\n\nHard  \nbreak\n\n- item');
+  // Once typed, the trailing paragraph becomes real content and is retained.
+  core.typeText(blocks.at(-1)!.paragraphId, 'Tail');
+  expect((await composer.vm.captureComposer()).text).toBe('First!\n\nHard  \nbreak\n\n- item\n\nTail');
+});
+
+for (const component of [Modal, Drawer]) {
+  it(`should initialize and clean up an initially open ${component.name} in native Vapor`, async () => {
+    document.body.style.overflow = 'auto';
+    const onClose = vi.fn(), view = mount(component, { open: true, onClose, 'aria-label': 'Consumer title' });
+    expect(document.body.style.overflow).toBe('hidden');
+    expect(view.root.querySelector('[role=dialog]')?.getAttribute('aria-label')).toBe('Consumer title');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', cancelable: true }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    apps.pop()!.unmount();
+    expect(document.body.style.overflow).toBe('auto');
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    document.body.style.overflow = '';
+    const labeled = mount(component, { open: true, 'aria-labelledby': 'consumer-heading' });
+    const dialog = labeled.root.querySelector('[role=dialog]')!;
+    expect(dialog.getAttribute('aria-labelledby')).toBe('consumer-heading');
+    expect(dialog.hasAttribute('aria-label')).toBe(false);
+  });
+}
 for (const profile of ['p0', 'full']) it(`should capture initialized ${profile} editors and intercept Enter before ProseMirror in native Vapor`, async () => {
   const onKeydown = vi.fn(() => true), input = profile === 'full' ? 'First\n\nHard  \nbreak\n\n- item' : 'Draft';
   const composer = mount(ComposerEditor, { value: input, profile, messages: editorMessages, onKeydown, class: 'custom', id: 'discard', role: 'textbox' });

@@ -47,7 +47,7 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   const deps = collectSentropicDeps(svelteManifest);
   const byName = new Map(deps.map((d) => [d.name, d.version]));
   assert.equal(byName.get("@sentropic/design-system-themes"), "0.14.0");
-  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
+  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.1");
   assert.equal(byName.get("@sentropic/graph"), "0.3.0");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
   // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
@@ -74,10 +74,10 @@ test("verifyDeps reports pins the registry does not resolve to the exact version
 });
 
 test("main fails closed on the release case: themes 0.14.0 not yet on npm", () => {
-  // Simulated registry state before the core release: rich-text 0.1.0, graph 0.3.0 and
+  // Simulated registry state before the core release: rich-text 0.1.1, graph 0.3.0 and
   // theme-dsfr 0.2.2 exist; tokens 0.14.0 and themes 0.14.0 do not (E404).
   const registry = new Map([
-    ["@sentropic/design-system-rich-text@0.1.0", "0.1.0"],
+    ["@sentropic/design-system-rich-text@0.1.1", "0.1.1"],
     ["@sentropic/graph@0.3.0", "0.3.0"],
     ["@sentropic/design-system-theme-dsfr@0.2.2", "0.2.2"],
   ]);
@@ -110,6 +110,10 @@ test("the diagram-canvas gate fails closed while @sentropic/diagram-core is not 
 test("main passes when every pinned @sentropic/* version is on npm", () => {
   const view = (name, version) => version;
   assert.equal(main(["--workspace", "packages/components-svelte"], view), 0);
+});
+
+test('Vue publication requires the new rich-text release before Vue, even when 0.1.0 exists', () => {
+  assert.equal(main(['--workspace', 'packages/components-vue', '--runtime'], (name, version) => name === '@sentropic/design-system-rich-text' ? '0.1.0' : version), 1);
 });
 
 test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v lockstep), OIDC only, pinned SHAs", () => {
