@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "ForecastLineChart",
+  "sourceRevision": "d04c14e7688115c9b215d56552b1bfea1d5a54cf",
+  "source": "src/lib/ForecastLineChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-forecastLineChart\"><div aria-label=\"Forecast\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "step",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-forecastLineChart\"><div aria-label=\"Forecast\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-forecastLineChart\"><div aria-label=\"Forecast\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 260\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"464\" y1=\"228\" y2=\"228\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"228\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"228\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"464\" y1=\"228\" y2=\"228\"></line></svg></div></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-forecastLineChart consumer\" data-bench=\"forecast\"><div aria-label=\"Forecast\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-forecastLineChart\"><div aria-label=\"Forecast\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "6f26b1c74cc5e6734bf4afe8fa67557366cfd28473fe493157fbaf9af44b2924",
+  "fixtureSha256": "d45acf62f3a42d065c24ceacc591cabd0c3ae01d33f9af0cfda1cbd37b1ea985",
+  "publicExports": [
+    {
+      "name": "ForecastLineChart",
+      "typeOnly": false
+    },
+    {
+      "name": "ForecastLineChartProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "GaugeChart",
+  "sourceRevision": "8663671c38b2f6b16fbc208122560639c6174f83",
+  "source": "src/lib/GaugeChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Gauge\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Gauge: 40\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 80.02535154563009 17.74751791937011\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.76618380452881 108.77629270227521 L 76.62616460750567 7.285896240123421 L 106.23381619547119 111.22370729772479 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">40</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Gauge</text></svg></div><ul aria-label=\"Data values for Gauge\" class=\"st-chartDataList\"><li>Gauge: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "range",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Gauge\" aria-valuemax=\"30\" aria-valuemin=\"0\" aria-valuenow=\"30\" aria-valuetext=\"Gauge: 30 €\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 110 113.96 L 218 109.99999999999997 L 110 106.04 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">30 €</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Gauge</text></svg></div><ul aria-label=\"Data values for Gauge\" class=\"st-chartDataList\"><li>Gauge: 30 € (min 0, max 30)</li></ul></div>"
+    },
+    {
+      "id": "thresholds",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Gauge\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Gauge: 40, zone neutral\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--undefined\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 23.572367153728308 65.96292152526397\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__band st-gaugeChart__band--neutral\" d=\"M 23.572367153728308 65.96292152526397 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.76618380452881 108.77629270227521 L 76.62616460750567 7.285896240123421 L 106.23381619547119 111.22370729772479 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">40</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Gauge</text></svg></div><ul aria-label=\"Data values for Gauge\" class=\"st-chartDataList\"><li>Gauge: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-gaugeChart\"><div aria-label=\"Gauge\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Gauge: 40\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 200 196\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 57.00000000000002 25.52181527453827 A 86 86 0 1 1 57.00000000000002 174.47818472546174\" fill=\"none\" stroke-width=\"24\"></path><path class=\"st-gaugeChart__progress\" d=\"M 57.00000000000002 25.52181527453827 A 86 86 0 0 1 178.56490935726367 65.02064869548119\" fill=\"none\" stroke-width=\"24\"></path><path class=\"st-gaugeChart__needle\" d=\"M 101.75710229808746 103.94651637701604 L 189.5274548489749 60.13980897857159 L 98.24289770191254 96.05348362298396 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"100\" cy=\"100\" r=\"5.28\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"100\" y=\"86.8\">40</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"100\" y=\"98.8\">Gauge</text></svg></div><ul aria-label=\"Data values for Gauge\" class=\"st-chartDataList\"><li>Gauge: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-gaugeChart consumer\" data-bench=\"gauge\"><div aria-label=\"Gauge\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Gauge: 40\" class=\"st-gaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-gaugeChart__track\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 207 109.99999999999997\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__progress\" d=\"M 13 110.00000000000001 A 97 97 0 0 1 80.02535154563009 17.74751791937011\" fill=\"none\" stroke-width=\"22\"></path><path class=\"st-gaugeChart__needle\" d=\"M 113.76618380452881 108.77629270227521 L 76.62616460750567 7.285896240123421 L 106.23381619547119 111.22370729772479 Z\"></path><circle class=\"st-gaugeChart__hub\" cx=\"110\" cy=\"110\" r=\"4.84\"></circle><text class=\"st-gaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"97.9\">40</text><text class=\"st-gaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"108.9\">Gauge</text></svg></div><ul aria-label=\"Data values for Gauge\" class=\"st-chartDataList\"><li>Gauge: 40 (min 0, max 100)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "a0e7b9d27ff3d2063bdf6d9cb810765863cd15dbb807795670318303396ee5dd",
+  "fixtureSha256": "a828d0e13e814c726ed71f9590e6d68653faadc54fbb6befa289ab1e051e1273",
+  "publicExports": [
+    {
+      "name": "GaugeChart",
+      "typeOnly": false
+    },
+    {
+      "name": "GaugeChartProps",
+      "typeOnly": true
+    }
+  ]
+}
