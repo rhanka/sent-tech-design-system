@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:111415ebd497db78b5af18e2d5ce4d1aceed0ece230f0956420d910dc13fb711",
-  "entryDigest": "sha256:834a08d21d891004cb1b03d38ed9ea421f2c867488d77a6074ca89e656fde703",
+  "digest": "sha256:2e14f4a38b0f728078e6bdfedccd01594a0191473cc829d2faf30ff5d21b747e",
+  "entryDigest": "sha256:2514ba415e0d233865c91314ea13d779555532c47706d24357df224c57452111",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -787,10 +787,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -853,10 +853,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -1221,10 +1221,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1287,10 +1287,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]

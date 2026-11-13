@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:297cbcd5fc348f82eb1a59473f2fdd31a3d9f3cf318a8ce0597d006fd94f810e",
-  "entryDigest": "sha256:3013076fcbd913ab0250063432122d44ad4d618411c3b3ea34d9b68c62c0dc06",
+  "digest": "sha256:2dbca4d3722a4263c141ae7ccae799c164fce31fd7753618232d3b72b91bb96a",
+  "entryDigest": "sha256:3380ea674e5a31698e35aa71c61df612bffa23896e4ee7f9b777df1c8b22ad1a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/Inline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -258,16 +258,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:36f71174cdd3429999c1f7203a87841e7e9e3d27e7fd8f5dc6044c58d4a0982e",
+        "declarationDigest": "sha256:57bd2da1ced0316170772a516223e2cdb39253dbf5aa710c8c30436b1747ae60",
         "declarationPath": "packages/components-vue/dist/Inline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",

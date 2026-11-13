@@ -19,6 +19,7 @@ const props = withDefaults(defineProps<NotificationProps>(), {
   tone: 'info', message: undefined, dismissible: false, dismissLabel: undefined, locale: 'fr-FR', class: undefined,
 });
 const emit = defineEmits<{ dismiss: [] }>();
+defineSlots<{ default?: () => unknown; actions?: () => unknown }>();
 
 const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((props.locale ?? 'fr-FR').toLowerCase().startsWith('fr') ? 'Fermer' : 'Dismiss'));
 const role = computed(() => (props.tone === 'error' ? 'alert' : 'status'));

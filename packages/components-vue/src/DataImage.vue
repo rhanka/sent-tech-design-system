@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useAttrs } from 'vue';
+import type { StyleValue } from 'vue';
 import { classNames } from './classNames.js';
 
 export type DataImageFit = 'cover' | 'contain';
@@ -49,7 +50,6 @@ const imgStyle = computed<Record<string, string>>(() => {
   if (r) style.borderRadius = r;
   return style;
 });
-const callerStyle = computed(() => attrs.style as Record<string, string> | string | undefined);
 const rootAttrs = () => {
   const { style: _callerStyle, ...rest } = attrs;
   return rest;
@@ -57,5 +57,5 @@ const rootAttrs = () => {
 </script>
 
 <template>
-  <img v-bind="rootAttrs()" :class="classNames('st-dataImage', `st-dataImage--${props.fit}`, props.class)" :src="props.src" :alt="props.alt" :style="[imgStyle, callerStyle]" :loading="props.loading" :decoding="props.decoding" />
+  <img v-bind="rootAttrs()" :class="classNames('st-dataImage', `st-dataImage--${props.fit}`, props.class)" :src="props.src" :alt="props.alt" :style="[imgStyle, $attrs.style as StyleValue]" :loading="props.loading" :decoding="props.decoding" />
 </template>

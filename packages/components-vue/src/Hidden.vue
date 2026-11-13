@@ -16,6 +16,7 @@ defineOptions({ name: 'Hidden', inheritAttrs: false });
 const props = withDefaults(defineProps<HiddenProps>(), {
   below: undefined, above: undefined, as: 'div', class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

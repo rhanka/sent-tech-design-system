@@ -3,7 +3,9 @@ defineOptions({ name: 'BpmnCanvas' });
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import type { HostConfig, Diagnostic } from '@sentropic/design-system-elements/bpmn';
 export interface BpmnCanvasProps {
-    envelope?: unknown;
+
+  /** @vaporData Serialized BPMN input, never rendered as children. */
+  envelope?: unknown;
     hostConfig?: HostConfig;
 }
 const props = defineProps<BpmnCanvasProps>();
@@ -108,6 +110,7 @@ onMounted(() => {
 });
 onUnmounted(() => { mounted = false; ticket += 1; observer?.disconnect(); controller?.abort(); stop?.(); stop = undefined; });
 defineExpose({ state, diagnostics, ready });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

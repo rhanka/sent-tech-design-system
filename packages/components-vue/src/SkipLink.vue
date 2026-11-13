@@ -10,6 +10,7 @@ defineOptions({ name: 'SkipLink', inheritAttrs: false });
 const props = withDefaults(defineProps<SkipLinkProps>(), {
   href: '#main', class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

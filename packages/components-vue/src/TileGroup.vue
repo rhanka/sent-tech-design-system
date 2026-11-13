@@ -7,9 +7,15 @@ import { scalarContent } from './slotContent.js';
 export interface TileGroupItem {
   value: string;
   /** Libellé du tile (canonique Svelte). */
+
+  /** @slot item-label */
   label?: unknown;
   /** @deprecated Alias de `label` (compat). Utilisez `label`. */
+
+  /** @slot item-label */
   title?: unknown;
+
+  /** @slot item-description */
   description?: unknown;
   disabled?: boolean;
 }

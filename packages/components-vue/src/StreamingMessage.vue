@@ -6,7 +6,11 @@ import type { ChatMessageStatus } from './ChatMessage.vue';
 
 export type StreamingMessageEvent = {
   id: string;
-  label: unknown;
+
+  /** @slot event-label */
+  label?: unknown;
+
+  /** @vaporData Reserved event metadata; the original renders only label. */
   text?: unknown;
   status?: ChatMessageStatus;
 };

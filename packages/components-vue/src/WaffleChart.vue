@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type WaffleTone =
@@ -39,7 +39,7 @@ const props = withDefaults(defineProps<WaffleChartProps>(), {
   totalCells: 100, columns: 10, label: undefined, size: 240, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-waffleChart', props.class),
