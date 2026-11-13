@@ -1,7 +1,7 @@
 {
   "componentId": "selection-chip",
   "contractSource": "derived",
-  "digest": "sha256:02fdfda2e247706e162de039614f4ad352260a3c67ee46c54688eb15728f3a0c",
+  "digest": "sha256:fdaf4a8be53ff653e2733f000a7ee8ad52c1bc8f0402aab25efac8eb92bf10cc",
   "entryDigest": "sha256:ea13f6b2935d711f98ddbbfc0824f72f0c5069780a40285eae1d1379c591ecf8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -109,7 +109,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectionChipProps",

@@ -535,8 +535,11 @@ const deepVerify = {
 
 const minExportCounts = {
   "@sentropic/design-system-react": () => reactComponentFiles().length,
-  // Type-only SFC companion modules ship declarations but no runtime exports.
-  "@sentropic/design-system-vue": () => vueComponentFiles().filter((file) => !file.endsWith(".types.js")).length,
+  // Each compiled SFC also has a compatibility .js wrapper for the same export.
+  // Keep both in tarball-shape checks, but count that export only once here.
+  // Type-only companion modules contribute no runtime exports.
+  "@sentropic/design-system-vue": () => vueComponentFiles().filter((file) =>
+    !file.endsWith(".types.js") && !file.endsWith(".vue.js")).length,
   "@sentropic/design-system-angular": () => angularComponentFiles().length,
   "@sentropic/dataviz-react": () => datavizReactLibFiles().length,
   "@sentropic/dataviz-vue": () => datavizVueLibFiles().length,

@@ -194,7 +194,12 @@ export function resolveSourceFile(
   if (target === null) {
     throw new Error(`${barrelPath}: export "${exportName}" resolves to no committed file ("${specifier}")`);
   }
-  return relative(repoRoot, target).split("\\").join("/");
+  // Vue keeps same-name TypeScript compatibility wrappers for some converted
+  // components. Inventory the SFC implementation rather than its wrapper.
+  const sfc = target.replace(/\.ts$/, ".vue");
+  const source = target.startsWith(join(repoRoot, "packages/components-vue/src") + "/") &&
+    sfc !== target && existsSync(sfc) ? sfc : target;
+  return relative(repoRoot, source).split("\\").join("/");
 }
 
 /** D4.2 guard: barrels carry no editorial metadata keys as values. */
