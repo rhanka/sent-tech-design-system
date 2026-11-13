@@ -29,7 +29,6 @@
   "packages/dataviz-vue/src/lib/DashboardGrid.ts",
   "packages/dataviz-vue/src/lib/DateHistogramChart.ts",
   "packages/dataviz-vue/src/lib/DateRangeFilter.ts",
-  "packages/dataviz-vue/src/lib/Density2DChart.ts",
   "packages/dataviz-vue/src/lib/DependencyWheelChart.ts",
   "packages/dataviz-vue/src/lib/DivergingBarChart.ts",
   "packages/dataviz-vue/src/lib/DonutChart.ts",
