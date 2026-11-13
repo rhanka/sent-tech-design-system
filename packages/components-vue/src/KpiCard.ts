@@ -1,4 +1,5 @@
 import { defineComponent, h } from "vue";
+import CellDecorationIcon from './CellDecorationIcon.vue';
 import { classNames } from "./classNames.js";
 import { Sparkline } from "./Sparkline.js";
 import {
@@ -170,7 +171,7 @@ export const KpiCard = defineComponent({
       const valueChildren: ReturnType<typeof h>[] = [];
       if (decoration) {
         const icon = renderCellDecorationIcon(decoration.icon);
-        if (icon) valueChildren.push(icon);
+        if (icon) valueChildren.push(h(CellDecorationIcon, { icon: decoration.icon }));
       }
       valueChildren.push(h("span", { class: "st-kpiCard__number" }, formattedValue));
       if (unit) {
