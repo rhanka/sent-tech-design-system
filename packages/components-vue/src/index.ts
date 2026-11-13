@@ -264,13 +264,13 @@ export type {
   GaugeChartThreshold,
   GaugeChartFormat,
 } from "./GaugeChart.js";
-export { SolidGaugeChart } from "./SolidGaugeChart.js";
+export { default as SolidGaugeChart } from "./SolidGaugeChart.vue";
 export type {
   SolidGaugeChartProps,
   SolidGaugeTone,
   SolidGaugeThreshold,
   SolidGaugeFormat,
-} from "./SolidGaugeChart.js";
+} from "./SolidGaugeChart.vue";
 export { StateTimelineChart } from "./StateTimelineChart.js";
 export type {
   StateTimelineChartProps,
