@@ -34,8 +34,8 @@ export { default as Embed } from "./Embed.vue";
 export type { EmbedProps } from "./Embed.vue";
 export { default as EmptyState } from "./EmptyState.vue";
 export type { EmptyStateProps } from "./EmptyState.vue";
-export { ErrorSummary } from "./ErrorSummary.js";
-export type { ErrorSummaryProps, ErrorSummaryItem } from "./ErrorSummary.js";
+export { default as ErrorSummary } from "./ErrorSummary.vue";
+export type { ErrorSummaryProps, ErrorSummaryItem } from "./ErrorSummary.vue";
 export { FileUploader } from "./FileUploader.js";
 export type {
   FileUploaderProps,
