@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramCardHeader' });
 import { computed } from 'vue';
 import { getDiagramGlyph } from './diagram-icons/registry.js';
@@ -58,10 +59,10 @@ const glyph = computed(() => iconGlyph ?? (iconName === undefined || iconName ==
   </template>
   <div class="st-diagramCardHeader-text" :style="`width:${headerTextWidth}px`">
     <template v-for="(line, kickerIndex) in kicker" :key="kickerIndex">
-      <span class="st-diagramCard-kicker">{{ line.text }}</span>
+      <span class="st-diagramCard-kicker" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
     <template v-for="(line, titleIndex) in title" :key="titleIndex">
-      <span class="st-diagramCard-title">{{ line.text }}</span>
+      <span class="st-diagramCard-title" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
     </template>
   </div>
   <template v-if="toggle !== undefined">

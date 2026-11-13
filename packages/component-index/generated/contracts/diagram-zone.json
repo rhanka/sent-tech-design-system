@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:d6c0b60b4eb1f1f58a1adf9717c89c821f01575e1ab32f4efd0bd17cf7c1ac49",
-  "entryDigest": "sha256:72d78b789eb9e932ed2ad7081077e0513df7b41e0442641e712b3bb8b1d1c94a",
+  "digest": "sha256:8f8c775b5d1c6f51af60a3c0a28c04e94a4547a8fe92bed5b65608eeef1d06cc",
+  "entryDigest": "sha256:61eea4fd35cf2e08c6df73e45897ea48f9f7a1a3236c04e96d069271150c9816",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,8 +117,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -150,8 +159,17 @@
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
@@ -353,8 +371,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -386,8 +413,17 @@
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"

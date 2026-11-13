@@ -20,6 +20,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
+  import { measureRenderedBounds } from "./diagramRenderedBounds.js";
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import {
     cardLineMeasurer,
@@ -46,6 +47,7 @@
     resolveZoom,
     sameRects,
     sceneFit,
+    sceneTextRows,
     scenePlacement,
     WHEEL_ZOOM_RATE,
     ZOOM_STEP_RATIO,
@@ -71,10 +73,9 @@
    * `diagramScene.maxDisplayScale`), never zoom 1: no input — buttons,
    * keys, Ctrl + wheel, pinch, `setZoom` — goes above it. The fit frames
    * the scene bounds plus the placed label boxes on both axes inside the
-   * fit box `viewW × min(viewW × 9/16, 0.85 × windowH)`; it holds at the
-   * readability floor (token `diagramScene.minReadableScale`), where the
-   * viewport scrolls the overflowing axis from its start, and zoom-out
-   * still reaches the whole drawing. The camera is never seeded from the
+   * fit box `viewW × min(viewW × 9/16, 0.85 × windowH)`. Fit reaches the
+   * whole rendered drawing, including below the readability preference.
+   * Zooming in scrolls the overflowing axis from its start. The camera is never seeded from the
    * layout fit report. Zoom is a transform: it re-runs no layout.
    *
    * Folds. A fold toggle re-runs the whole layout, feeding the previous
@@ -301,6 +302,23 @@
   let windowHeight = $state<number>();
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
+  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
+  const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
+  function readRenderedBounds(): void {
+    if (frameEl === undefined || scene === undefined) return;
+    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
+    if (bounds !== undefined && bounds !== scene.bounds) {
+      if (atFit && (renderedBounds === undefined || renderedBounds.scene === scene)) requestedZoom = undefined;
+      renderedBounds = { scene, bounds };
+    }
+  }
+  $effect(() => {
+    const current = scene;
+    if (current === undefined) return;
+    let active = true;
+    void tick().then(() => { if (active && scene === current) readRenderedBounds(); });
+    return () => { active = false; };
+  });
 
   $effect(() => {
     const element = frameEl;
@@ -370,7 +388,7 @@
   const measured = $derived(viewWidth !== undefined && windowHeight !== undefined);
   const fit = $derived(
     sceneFit({
-      ...(scene?.bounds === undefined ? {} : { bounds: scene.bounds }),
+      ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
       // Before the frame is measured (server render, hidden mount) the fit
       // box is the nominal 16:9 box of the layout target width.
       viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
@@ -381,7 +399,7 @@
   );
   const zoom = $derived(resolveZoom(requestedZoom, fit));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
-  const placement = $derived(scenePlacement(scene?.bounds, zoom, fit));
+  const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
   const canZoomOut = $derived(zoom > fit.minZoom);
 
@@ -393,6 +411,7 @@
       atFit = true;
       requestedZoom = undefined;
       browserMeasure = undefined;
+      renderedBounds = undefined;
     }
     cameraDocument = id;
   });
@@ -456,6 +475,7 @@
   /** Z-3/Z-4: fit and reset are one action. An overflowing axis scrolls from its start. */
   export function fitToFrame(): void {
     readCameraTokens();
+    readRenderedBounds();
     atFit = true;
     requestedZoom = fit.zoom;
     const element = viewportEl;
@@ -661,8 +681,9 @@
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
+  const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
-    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom}`,
+    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -793,10 +814,13 @@
       </div>
     </div>
   </div>
+  {#if scene}<div class="st-diagramSceneFigure-fallback">{#each sceneTextRows(scene, semanticDocument) as row}<p>{row}</p>{/each}</div>{/if}
   {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
 </figure>
 
 <style>
+  .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
   .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
   .st-diagramErd-svg { height: 100%; width: 100%; }
 
@@ -906,11 +930,12 @@
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
   .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
   .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
   .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }

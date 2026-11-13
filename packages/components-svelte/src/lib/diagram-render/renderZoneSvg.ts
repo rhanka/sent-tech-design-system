@@ -16,6 +16,7 @@
  * same slot glyph as the card's and the subtitle is one body string.
  */
 import {
+  zoneFullText,
   CARD_GEOMETRY,
   ZONE_GEOMETRY,
   defaultCardMeasure,
@@ -86,6 +87,7 @@ function childContent(
       neededPx: diagnostic.neededPx,
       allocatedPx: diagnostic.allocatedPx,
       ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
+      ...(diagnostic.hiddenLength === undefined ? {} : { hiddenLength: diagnostic.hiddenLength, severity: "info" as const, reason: "truncated" as const }),
     }));
     return { content, diagnostics };
   }
@@ -111,7 +113,7 @@ export function zoneContent(
   const layout = layoutZone(props, measure, children);
   const x = layout.box.x;
   const y = layout.box.y;
-  const parts: string[] = [];
+  const parts: string[] = [`<title>${escapeXml(zoneFullText(props))}</title><desc>${escapeXml(zoneFullText(props))}</desc>`];
   const descendantDiagnostics: ZoneDiagnostic[] = [];
 
   if (layout.collapsed) {
@@ -245,8 +247,7 @@ export function renderZoneSvg(
   const unknownIcon = diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown");
   const firstOverflow = overflowSlots.length === 0 ? undefined : overflowSlots[0];
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramZoneSvg" width="${x + width}" height="${y + height}" viewBox="0 0 ${x + width} ${y + height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
-    `<title>${escapeXml(props.title)}</title>` +
+    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramZoneSvg" width="${x + width}" height="${y + height}" viewBox="0 0 ${x + width} ${y + height}" role="img" aria-label="${escapeXml(props.title)}" aria-description="${escapeXml(zoneFullText(props))}" style="font-family:${FONT_STACK}">` +
     `<g class="st-diagramZone${layout.collapsed ? " st-diagramZone--collapsed" : " st-diagramZone--expanded"}" data-entity="${escapeXml(props.entityId)}" data-collapsed="${layout.collapsed ? "true" : "false"}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-zone-overflow="${firstOverflow}"`}${unknownIcon ? ` data-zone-icon-unknown=""` : ""} transform="translate(${x} ${y})">` +
     content +
     `</g>` +

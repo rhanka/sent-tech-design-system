@@ -49,11 +49,12 @@ describe('Owner addendum A1–A13',()=>{
    const rendered=project.kind==='zone'?renderZoneSvg({...project.props,autoSize:true}):renderCardSvg({...project.props,autoSize:true,height:node.rect.height},sceneCardMeasure(defaultCardMeasure));
    if(rendered.kind==='refused'){refused++;continue;}
    expect(rendered.svg).toContain('data-diagram-icon=');
+   if(node.kind==='card'||node.collapsed){expect(node.rect.width).toBe(460);expect(node.rect.height).toBe(200);expect(rendered.layout.box.width).toBe(460);expect(rendered.layout.box.height).toBe(200);}
    const card='collapsed' in rendered.layout?rendered.layout.card:rendered.layout;
    const header='header' in rendered.layout?rendered.layout.header:undefined;
    const lines=card!==undefined?[...card.kicker,...card.title,...card.body,...card.footerLines]:header===undefined?[]:[...header.kicker,...header.title,...header.subtitle,...header.footer];
-   const text=lines.map(l=>l.text).join('').replace(/\s+/g,'');
-   for(const part of [source.kicker,source.title,node.kind==='zone'?source.purpose:source.purpose,node.kind==='zone'?undefined:source.detail,source.footer].filter(Boolean))expect(text).toContain(part!.replace(/\s+/g,''));
+   const text=rendered.svg.replace(/\s+/g,'');
+   for(const part of [source.kicker,source.title,node.kind==='zone'?source.purpose:source.purpose,node.kind==='zone'?undefined:source.detail,source.footer].filter(Boolean))expect(text).toContain(part!.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replace(/\s+/g,''));
   }
   expect(refused).toBe(0);
   expect({nodes:scene.nodes.map(node=>[node.occurrence,node.rect]),labels:scene.labels.map(label=>[label.occurrence,label.lines,label.box])}).toMatchSnapshot();
@@ -92,9 +93,10 @@ describe('Owner addendum A1–A13',()=>{
   expect(chip.layout.height).toBe(chip.groups.at(-1)!.top+chip.groups.at(-1)!.height);
   expect(chip).toEqual(measureBundleLabel(relations,input.measureLines));
  });
- it('should apply the current spacing tokens while leaving A9 owner calibration pending',()=>{
+ it('should pin owner-approved A9 V1 spacing at 72 vertical / 96 horizontal',()=>{
   const pin=JSON.parse(readFileSync(new URL('./owner-spacing.json',import.meta.url),'utf8'));
-  expect(pin.decision).toContain('pending');
+  expect(pin.accepted).toEqual({vertical:72,horizontal:96});
+  expect(spacing.gapMinBlock).toBe(72);expect(spacing.gapMin).toBe(96);
   for(const input of [hCondInput('architecture',false),ownerInput('vue-globale',false)]){
     const result=layoutScene({...input,metrics:spacing});if(result.status!=='laid-out')throw new Error('refused');
     for(const channel of result.channels??[]){

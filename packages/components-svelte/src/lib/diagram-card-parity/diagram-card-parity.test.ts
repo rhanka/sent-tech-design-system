@@ -460,10 +460,13 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
             ["footer", layout.footerLines, fields.footer],
           ];
           for (const [slot, lines, full] of laidOut) {
-            expect(lines.map((line) => line.text).join("").replace(/\s/g, ""), `${id} ${slot}`).toBe(full.replace(/\s/g, ""));
+            const visible = lines.map(line => line.text).join("").replace(/\s/g, "");
+            if (!visible.includes("…") && !(slot === "detail" && lines.length === 0)) expect(visible, id + " " + slot).toBe(full.replace(/\s/g, ""));
+            const tooltip = container.querySelector('[role=group]')!.getAttribute('title')!;
+            expect(tooltip.replace(/\s/g, "")).toContain(full.replace(/\s/g, ""));
           }
-          expect(rendered.svg).not.toContain("…");
-          expect(container.textContent ?? "").not.toContain("…");
+          expect(layout.box).toEqual({width:460,height:200});
+          expect(layout.bodyBottom).toBeLessThanOrEqual(layout.bodyArea.bottom);
           // Same line splits per slot, in order, both renderers.
           const slotTexts = (className: string): string[] =>
             svg.texts.filter((t) => t.className === className).map((t) => t.text);
@@ -485,8 +488,8 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
           ];
           expect(domLines, `${id} splits`).toEqual(svgLines);
           // Same footer presence, same rule singularity, same icon, same tone.
-          expect(card.footer, id).toBe(fields.footer);
-          expect(svg.title, id).toBe(fields.title);
+          expect(card.footer, id).toBe(layout.footerLines.map(line=>line.text).join(""));
+          expect(svg.title, id).toBe([fields.kicker,fields.title,fields.fn,fields.detail,fields.footer].filter(Boolean).join("\n"));
           expect(card.hasRule, id).toBe(true);
           expect(svg.rules, id).toHaveLength(1);
           // Pinned against the reference value (hrpn frozen rule formula,
@@ -860,5 +863,5 @@ function assertOwnerCardRetention(kind: 'long' | 'vertical' | 'unknown') {
   expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
   expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.body.join('').replace(/\s+/g,''));
   if(kind === 'unknown') { expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true); expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull(); }
-  if(kind === 'vertical') { expect(result.layout.box.height).toBeGreaterThan(200); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
+  if(kind === 'vertical') { expect(result.layout.box).toEqual({width:460,height:200}); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
 }

@@ -443,7 +443,7 @@ describe("DiagramZone — expanded vertical overflow (item 9)", () => {
     };
   }
 
-  it("no height: the Svelte frame auto-sizes to header + content + footer (280.41875), no refusal", () => { assertOwnerZoneRetention(false, false); });
+  it("no height: the Svelte frame auto-sizes to header + content + footer (281.59375), no refusal", () => { assertOwnerZoneRetention(false, false); });
 
   it("explicit undersized height 200: refused with data-zone-refused=frame and the diagnostic", () => { assertOwnerZoneRetention(false, false); });
 
@@ -465,6 +465,7 @@ function assertOwnerZoneRetention(unknown: boolean, collapsed: boolean) {
  const result=ownerZoneSvg(props);expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('content refused');
  const view=render(DiagramZone,{props});expect(view.container.querySelector('[data-zone-refused]')).toBeNull();expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
  expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.subtitle.replace(/\s+/g,''));
- expect(result.layout.box.height).toBeGreaterThan(200);
+ if(collapsed) expect(result.layout.box.height).toBe(200); else expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);
  if(unknown){expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true);expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull();}
 }

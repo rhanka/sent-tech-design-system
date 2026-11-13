@@ -253,6 +253,7 @@ export type LayoutWarningCode =
   | "docking-overflow";
 
 export interface LayoutWarning {
+  readonly severity?: "info";
   readonly code: LayoutWarningCode;
   readonly refs: readonly string[];
   readonly message: string;

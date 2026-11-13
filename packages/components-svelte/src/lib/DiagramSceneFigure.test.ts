@@ -459,17 +459,17 @@ describe("DiagramSceneFigure camera", () => {
       await tick();
       await fireEvent.click(view.button("Fit"));
       let fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
-      const raw = Math.min(width / bounds.width, fitHeight / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
-      if (raw === DEFAULT_MAX_DISPLAY_SCALE) fitHeight = Math.min(fitHeight, bounds.height * raw);
+      const raw = Math.min((width - 2) / bounds.width, (fitHeight - 2) / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
+      if (raw === DEFAULT_MAX_DISPLAY_SCALE) fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * raw + 2) * 64) / 64);
       expect(view.viewport.style.height).toBe(`${fitHeight}px`);
       // BF-2: the fit holds at the readability floor.
-      expect(view.zoom()).toBeCloseTo(Math.max(raw, DEFAULT_MIN_READABLE_SCALE), 12);
+      expect(view.zoom()).toBeCloseTo(raw, 12);
       expect(view.zoom()).toBeLessThanOrEqual(DEFAULT_MAX_DISPLAY_SCALE);
       const placed = scenePlacement(bounds, view.zoom(), { fitWidth: width, fitHeight });
       expect(view.world.style.transform).toBe(
         `translate(${placed.translateX}px,${placed.translateY}px) scale(${view.zoom()})`,
       );
-      if (raw >= DEFAULT_MIN_READABLE_SCALE) {
+      if (raw > 0) {
         // Whole drawing inside the box, centred on both axes.
         expect(bounds.width * view.zoom()).toBeLessThanOrEqual(width + 1e-6);
         expect(bounds.height * view.zoom()).toBeLessThanOrEqual(fitHeight + 1e-6);

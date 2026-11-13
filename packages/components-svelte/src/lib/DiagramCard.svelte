@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
+  const descriptionId = $props.id();
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import { defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
+  import { cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
   import type {
     CardDiagnostic,
     CardLineMeasure,
@@ -11,8 +13,8 @@
    * `DiagramCard` — the atomic diagram card (DC-1).
    *
    * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5, amended by owner A2/A11.
-   * The 460 px card grows with its full content. Explicit hard-cap overflow
-   * remains diagnostic and every slot is retained. A missing icon resolves
+   * The card stays 460 × 200 and truncates measured slots (owner A14).
+   * Full text remains available in title/aria. A missing icon resolves
    * to the visible unknown glyph.
    *
    * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
@@ -91,8 +93,7 @@
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"),
   );
-  // Overflow = refusal: the same predicate as the pure renderer
-  // (`firstOverflowDiagnostic`), so both renderers refuse together.
+
 
 
   $effect(() => {
@@ -115,9 +116,12 @@
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
+  title={cardFullText({ entityId, kicker, title, body, footer })}
   aria-label={title}
+  aria-describedby={descriptionId}
   onclick={() => onSelect?.({ entityId })}
 >
+  <span id={descriptionId} hidden>{cardFullText({ entityId, kicker, title, body, footer })}</span>
   <DiagramCardHeader
     kicker={layout.kicker}
     title={layout.title}
@@ -133,7 +137,7 @@
     style={`margin-left:${layout.bodyX - 16}px;width:${layout.bodyWidth}px`}
   >
     {#each layout.body as line, bodyIndex (bodyIndex)}
-      <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"}>{line.text}</span>
+      <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"} style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
   </div>
   <!-- The rule and the footer are positioned together from the shared
@@ -148,7 +152,7 @@
     {#if layout.footerLines.length > 0}
       <div class="st-diagramCard-footer">
         {#each layout.footerLines as line, footerIndex (footerIndex)}
-          <span class="st-diagramCard-footerLine">{line.text}</span>
+          <span class="st-diagramCard-footerLine" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
         {/each}
       </div>
     {/if}
