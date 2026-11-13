@@ -4,7 +4,7 @@ Date : 2026-09-15. Worktree `feat/graph-dataviz-repatriation`, base DS `42277686
 
 ## Changement et provenance
 
-200 fichiers suivis/licences ont été repris depuis les blobs Git des sources auditées : `graphify@8f19554cea3a4397fd66a90c7e9fd5ea54c81626` et `dataviz@0869ae5b59bb308be7d43fbe0de58c5487e11f25`. [Manifeste fichier par fichier](graph-dataviz-m1-provenance.json) avec commit, blob et SHA-256 ; aucun runtime ni test source modifié.
+200 fichiers suivis/licences ont été repris depuis les blobs Git des sources auditées : `engram@58feb61e292776bfd07e19d7874eb4343bedf6a9` et `dataviz@0869ae5b59bb308be7d43fbe0de58c5487e11f25`. [Manifeste fichier par fichier](graph-dataviz-m1-provenance.json) avec commit, blob et SHA-256 ; aucun runtime ni test source modifié.
 
 Les quatre adaptations concernent uniquement la distribution :
 

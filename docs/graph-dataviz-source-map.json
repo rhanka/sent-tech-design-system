@@ -6,9 +6,9 @@
     {
       "repository": "graphify",
       "remote": "https://github.com/rhanka/graphify",
-      "head": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "head": "58feb61e292776bfd07e19d7874eb4343bedf6a9",
       "branch": "feat/aclp-ontology-studio",
-      "inventoryHead": "8f19554cea3a4397fd66a90c7e9fd5ea54c81626",
+      "inventoryHead": "58feb61e292776bfd07e19d7874eb4343bedf6a9",
       "packageFirstCommit": "0ed0fc76d3af8fc9b9f5335351a7a040d5ef1b24",
       "scopeStatus": "?? packages/graph/tests/golden/__out__/"
     },
