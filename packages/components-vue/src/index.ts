@@ -231,7 +231,7 @@ export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
 export { StackedBarChart } from "./StackedBarChart.js";
 export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
-export { KpiCard } from "./KpiCard.js";
+export { default as KpiCard } from "./KpiCard.vue";
 export type {
   KpiCardProps,
   KpiCardSize,
@@ -239,7 +239,7 @@ export type {
   KpiCardFormat,
   KpiCardDeltaFormat,
   KpiCardTone,
-} from "./KpiCard.js";
+} from "./KpiCard.vue";
 export { ConfigItemCard } from "./ConfigItemCard.js";
 export type {
   ConfigItemCardProps,
