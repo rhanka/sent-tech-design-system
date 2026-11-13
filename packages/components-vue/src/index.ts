@@ -96,8 +96,8 @@ export type {
   ProgressIndicatorStatus,
   ProgressIndicatorOrientation,
 } from "./ProgressIndicator.vue";
-export { Quote } from "./Quote.js";
-export type { QuoteProps } from "./Quote.js";
+export { default as Quote } from "./Quote.vue";
+export type { QuoteProps } from "./Quote.vue";
 export { Radio } from "./Radio.js";
 export type { RadioProps } from "./Radio.js";
 export { Search } from "./Search.js";
