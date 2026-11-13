@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:2644fb884a11372ecf48524abb546e5b82b53532bcf92067bc78095f041f8fb2",
-  "entryDigest": "sha256:2e6020e61360b7693b2d96213f7956897763dc97d1c9bd9f3165495814d951a0",
+  "digest": "sha256:cfdc94fce3f1b09c1ca4b2e9ef8b7b65a211aa9699349c60e0b50f53d6f66331",
+  "entryDigest": "sha256:fc75f88e3cbeba775d0c2d24dab3120c0c1afe904d16e1aae3cbbce66e74f198",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -858,7 +858,7 @@
         "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataTableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1167,7 +1167,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:8df205db886904d362671b83d839839bc688a6200520ee8314981a6f950a5adb",
+        "declarationDigest": "sha256:3f8f002d80da6eeab59d6d21d5604925441727bc6029febd8d2aeea11aa7ee80",
         "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",

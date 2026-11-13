@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:b90f527df3c5a18a5bebbac46034a3eacea18701a373cb66a6289c75cf527011",
-  "entryDigest": "sha256:81f1108a00e99911c9c61fb305208643186ad3e1f897c12b582ea00a7760cb84",
+  "digest": "sha256:3beb77f09d254521ab6dcbf22759fe3d0746fe22b7878db9834cfa280cd33675",
+  "entryDigest": "sha256:d370fc432d2315f4c5972a7f4a054982cd3fca81da5544930636e0156dad5b07",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

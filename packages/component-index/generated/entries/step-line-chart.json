@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StepLineChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step line chart: the value stays flat until the next threshold.",
     "fr": "Courbe en paliers : la valeur reste stable jusqu'au prochain seuil."
   },
-  "digest": "sha256:894f311778f433bef104baf1768c4573c221d6b53237b4b2273c5d7f42f31a33",
+  "digest": "sha256:e899ea600cd14154c93e6ce91ad5bfec52f8dd1f95f3b4d3ca72c529a88c0a27",
   "displayName": "StepLineChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Drawer.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Side panel for secondary workflows.",
     "fr": "Panneau latéral pour workflows secondaires."
   },
-  "digest": "sha256:946bb1f2a4c158b03e0b3acb43cbcb5d527233f94e79b79ed933b64bfa78bf99",
+  "digest": "sha256:01850753c4836398fe265dff0baf140056880ded5935e43cb90be124b52af054",
   "displayName": "Drawer",
   "format": "component-entry/v1",
   "frameworks": [

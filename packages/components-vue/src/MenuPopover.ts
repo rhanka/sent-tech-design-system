@@ -26,4 +26,4 @@ export type { MenuItem };
 
 import MenuPopoverComponent from "./MenuPopover.vue";
 
-export const MenuPopover = MenuPopoverComponent;
+export const MenuPopover: typeof MenuPopoverComponent = MenuPopoverComponent;
