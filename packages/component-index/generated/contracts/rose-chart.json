@@ -1,8 +1,8 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:a1152519a6515ad9f05fbbcafc120376f8a3f10edd7718d0d05cb391254dfcbf",
-  "entryDigest": "sha256:179bdcb1437e7ef2e3b8e3f66bc819ee356f9cb872e18c9dcbef76bab1853754",
+  "digest": "sha256:e3f225f3906016bc106798f24ff27f11cd89a44b6f4b14e01d270634493ee123",
+  "entryDigest": "sha256:c4f6a64a56221b0451eeb8d561467955eb2b1ed0e82557740e780b63cc5eac4b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/RoseChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RoseChartProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],

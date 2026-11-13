@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:a73ec845ddc936d4c466e347021cd9f7d1d0634ffa1ecd58881e452b10610381",
-  "entryDigest": "sha256:c48eaec95ee5605fb45e7aa85123927f293ebe2b43bda27c71b2a2f83484506c",
+  "digest": "sha256:f8cd1f2c5655367c2551370802308a5b274ac23fec44f9c950303c074484f3b1",
+  "entryDigest": "sha256:bd99182529ce84e8fd2c88eec2c9c0f7d3be1bb8c5ebc0a6c03e163622361c62",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -414,6 +414,9 @@
               "right-end"
             ]
           }
+        },
+        {
+          "name": "placementChange"
         }
       ],
       "limitations": [
@@ -512,11 +515,14 @@
         "declarationPath": "packages/components-vue/dist/Popper.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopperProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"placementChange\": payload not in declaration",
+        "event pair: emits \"placementChange\" and prop \"onPlacementChange\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

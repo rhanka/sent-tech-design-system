@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ChatThread.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Scrollable message list with auto-scroll and empty-state.",
     "fr": "Liste de messages scrollable avec auto-scroll et état vide."
   },
-  "digest": "sha256:7ada395247d8f23834c30a6aa20bd5adfdd968cab33d9ea20b9fc4b2defe9edf",
+  "digest": "sha256:36636d9fb43c1d4895f4cf0a7238775c1e769e4df3e416ddf2fa2b0b5266ad66",
   "displayName": "ChatThread",
   "format": "component-entry/v1",
   "frameworks": [

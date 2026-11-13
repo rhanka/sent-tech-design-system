@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:d2628a80d313605690a55e69471dad3f3f20a90333817943479366b1a49b8572",
-  "entryDigest": "sha256:1e77e06f3d5773ccf111e19ea04013da2d87775593d0aa5f0cb0150d5c589aa7",
+  "digest": "sha256:84c9d86e82ac743a32d427f846653477ebdfddf1fb8f3e01060b9ef2596ff617",
+  "entryDigest": "sha256:2271b0c5ee39cc310af0adccfd66f0e9474ecad67ab48a0528c9a7fc16c63779",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -450,7 +450,7 @@
         "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.39.1"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],

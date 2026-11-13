@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Quote.ts",
-      "version": "0.39.1"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Editorial blockquote with author and source.",
     "fr": "Citation éditoriale (blockquote) avec auteur et source."
   },
-  "digest": "sha256:4bac332dcf93736b0a957b65387629d697856f756e7cb6732268071089431096",
+  "digest": "sha256:b2c50af9b3642cabae57addf520e7637ac77bd59d9118998af20efef85bd235c",
   "displayName": "Quote",
   "format": "component-entry/v1",
   "frameworks": [
