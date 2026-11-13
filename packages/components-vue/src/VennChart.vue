@@ -1,6 +1,7 @@
-import { defineComponent, h, ref, type PropType, type VNode } from "vue";
-import { classNames } from "./classNames.js";
-import { chartDataList } from "./chartScale.js";
+<script setup lang="ts">
+import { ref, computed } from 'vue';
+import { classNames } from './classNames.js';
+
 
 export type VennChartTone =
   | "category1"
@@ -12,10 +13,12 @@ export type VennChartTone =
   | "category7"
   | "category8";
 
+
 export type VennChartArea = {
   sets: string[];
   value: number;
 };
+
 
 export type VennChartProps = {
   data: VennChartArea[];
@@ -25,16 +28,6 @@ export type VennChartProps = {
   class?: string;
 };
 
-const TONES: VennChartTone[] = [
-  "category1",
-  "category2",
-  "category3",
-  "category4",
-  "category5",
-  "category6",
-  "category7",
-  "category8",
-];
 
 type VennCircle = {
   name: string;
@@ -48,6 +41,7 @@ type VennCircle = {
   anchor: "start" | "middle" | "end";
 };
 
+
 type VennRegion = {
   sets: string[];
   value: number;
@@ -55,15 +49,34 @@ type VennRegion = {
   y: number;
 };
 
+
 type VennLayout = {
   circles: VennCircle[];
   regions: VennRegion[];
   items: string[];
 };
+defineOptions({ name: 'VennChart', inheritAttrs: false });
+const props = withDefaults(defineProps<VennChartProps>(), { width: 420, height: 360, class: undefined });
+
+
+
+
+const TONES: VennChartTone[] = [
+  "category1",
+  "category2",
+  "category3",
+  "category4",
+  "category5",
+  "category6",
+  "category7",
+  "category8",
+];
+
 
 function safeValue(value: number): number {
   return Number.isFinite(value) && value > 0 ? value : 0;
 }
+
 
 function vennLayout(data: VennChartArea[], width: number, height: number): VennLayout {
   const areas = data
@@ -158,21 +171,13 @@ function vennLayout(data: VennChartArea[], width: number, height: number): VennL
   return { circles, regions, items };
 }
 
-export const VennChart = defineComponent({
-  name: "VennChart",
-  props: {
-    data: { type: Array as PropType<VennChartArea[]>, required: true },
-    label: { type: String, required: true },
-    width: { type: Number, default: 420 },
-    height: { type: Number, default: 360 },
-    class: { type: String, default: undefined },
-  },
-  setup(props, { attrs }) {
     const hoveredIndex = ref<number | null>(null);
+
 
     function handleLeave() {
       hoveredIndex.value = null;
     }
+
     function handleVisualPointerMove(event: PointerEvent) {
       const target = event.target;
       if (!(target instanceof Element)) {
@@ -182,107 +187,18 @@ export const VennChart = defineComponent({
       const index = Number(target.getAttribute("data-chart-index"));
       hoveredIndex.value = Number.isInteger(index) ? index : null;
     }
+const width = computed(() => props.width ?? 420);
+const height = computed(() => props.height ?? 360);
+const layout = computed(() => vennLayout(props.data, width.value, height.value));
+const hovered = computed(() => hoveredIndex.value !== null ? layout.value.circles[hoveredIndex.value] : undefined);
+</script>
 
-    return () => {
-      const width = props.width ?? 420;
-      const height = props.height ?? 360;
-      const label = props.label;
-      const layout = vennLayout(props.data, width, height);
-
-      const svgChildren: VNode[] = [];
-      for (let i = 0; i < layout.circles.length; i++) {
-        const circle = layout.circles[i];
-        svgChildren.push(
-          h("circle", {
-            key: `c${circle.name}`,
-            class: classNames(
-              "st-vennChart__circle",
-              `st-vennChart__circle--${circle.tone}`,
-              hoveredIndex.value !== null && hoveredIndex.value !== i && "st-vennChart__circle--dim",
-            ),
-            cx: circle.cx,
-            cy: circle.cy,
-            r: circle.r,
-            "data-chart-index": i,
-          }),
-        );
-      }
-      for (const region of layout.regions) {
-        svgChildren.push(
-          h(
-            "text",
-            {
-              key: `v${region.sets.join("|")}`,
-              class: "st-vennChart__value",
-              x: region.x,
-              y: region.y,
-              "text-anchor": "middle",
-              "dominant-baseline": "middle",
-            },
-            String(region.value),
-          ),
-        );
-      }
-      for (const circle of layout.circles) {
-        svgChildren.push(
-          h(
-            "text",
-            {
-              key: `l${circle.name}`,
-              class: "st-vennChart__label",
-              x: circle.labelX,
-              y: circle.labelY,
-              "text-anchor": circle.anchor,
-              "dominant-baseline": "middle",
-            },
-            circle.name,
-          ),
-        );
-      }
-
-      const hovered = hoveredIndex.value !== null ? layout.circles[hoveredIndex.value] : undefined;
-
-      return h("div", { ...attrs, class: classNames("st-vennChart", props.class) }, [
-        h(
-          "div",
-          {
-            class: "st-vennChart__visual",
-            role: "img",
-            "aria-label": label,
-            onPointermove: handleVisualPointerMove,
-            onPointerleave: handleLeave,
-          },
-          [
-            h(
-              "svg",
-              {
-                viewBox: `0 0 ${width} ${height}`,
-                preserveAspectRatio: "xMidYMid meet",
-                width: "100%",
-                height: "100%",
-                focusable: "false",
-                "aria-hidden": "true",
-              },
-              svgChildren,
-            ),
-          ],
-        ),
-        chartDataList(label, layout.items),
-        hovered
-          ? h(
-              "div",
-              {
-                class: "st-vennChart__tooltip",
-                role: "presentation",
-                style: { left: `${(hovered.cx / width) * 100}%`, top: `${(hovered.cy / height) * 100}%` },
-              },
-              [
-                h("span", { class: "st-vennChart__tooltipLabel" }, hovered.name),
-                h("span", { class: "st-vennChart__tooltipValue" }, String(hovered.total)),
-              ],
-            )
-          : null,
-      ]);
-    };
-  },
-});
+<template>
+  <div v-bind="$attrs" :class="classNames('st-vennChart', props.class)"><div class="st-vennChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave"><svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+    <circle v-for="(circle, index) in layout.circles" :key="`c${circle.name}`" :class="classNames('st-vennChart__circle', `st-vennChart__circle--${circle.tone}`, hoveredIndex !== null && hoveredIndex !== index && 'st-vennChart__circle--dim')" :cx="circle.cx" :cy="circle.cy" :r="circle.r" :data-chart-index="index" />
+    <text v-for="region in layout.regions" :key="`v${region.sets.join('|')}`" class="st-vennChart__value" :x="region.x" :y="region.y" text-anchor="middle" dominant-baseline="middle">{{ String(region.value) }}</text>
+    <text v-for="circle in layout.circles" :key="`l${circle.name}`" class="st-vennChart__label" :x="circle.labelX" :y="circle.labelY" :text-anchor="circle.anchor" dominant-baseline="middle">{{ circle.name }}</text>
+  </svg></div><ul v-if="layout.items.length > 0" class="st-chartDataList" :aria-label="`Data values for ${props.label}`"><li v-for="(item, index) in layout.items" :key="index">{{ item }}</li></ul>
+    <div v-if="hovered" class="st-vennChart__tooltip" role="presentation" :style="{ left: `${(hovered.cx / width) * 100}%`, top: `${(hovered.cy / height) * 100}%` }"><span class="st-vennChart__tooltipLabel">{{ hovered.name }}</span><span class="st-vennChart__tooltipValue">{{ String(hovered.total) }}</span></div>
+  </div>
+</template>

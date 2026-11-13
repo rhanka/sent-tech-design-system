@@ -184,7 +184,6 @@
   "packages/components-vue/src/UtilityPanel.ts",
   "packages/components-vue/src/VariablePieChart.ts",
   "packages/components-vue/src/VectorFieldChart.ts",
-  "packages/components-vue/src/VennChart.ts",
   "packages/components-vue/src/ViolinChart.ts",
   "packages/components-vue/src/WaffleChart.ts",
   "packages/components-vue/src/WaterfallChart.ts",
