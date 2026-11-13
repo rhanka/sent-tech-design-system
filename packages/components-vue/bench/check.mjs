@@ -13,7 +13,7 @@ if (!names.includes(name) || args.slice(1).some(arg => arg !== '--json') || args
   console.error(`Usage: node bench/check.mjs <${names.join('|')}> [--json]`);
   process.exit(2);
 }
-const file = resolve(src, `${name}.vue`);
+const file = resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`);
 const gates = [];
 let temporary;
 const fail = message => { throw new Error(message); };
@@ -54,7 +54,9 @@ function typecheck(files) {
 try {
   gate('G1', 'Template source', () => {
     const problems = [];
-    if (existsSync(resolve(src, `${name}.ts`))) problems.push(`Old src/${name}.ts still exists`);
+    if (name === 'cellDecoration') {
+      if (/\b(?:h|defineComponent)\s*\(/.test(readFileSync(resolve(src, 'cellDecoration.ts'), 'utf8'))) problems.push('Decoration helper still renders VNodes');
+    } else if (existsSync(resolve(src, `${name}.ts`))) problems.push(`Old src/${name}.ts still exists`);
     const { descriptor, errors } = compilers.classic.parse(source(), { filename: file });
     if (errors.length) fail(errors.map(String).join('; '));
     if (!descriptor.scriptSetup || descriptor.scriptSetup.lang !== 'ts') problems.push('Requires <script setup lang="ts">');
@@ -116,12 +118,16 @@ try {
     };
     jsxWalk(jsxAst);
     if (problems.length) fail([...new Set(problems)].join('; '));
-    return 'Old .ts absent; typed script setup + template; forbidden syntax absent';
+    return name === 'cellDecoration'
+      ? 'Pure TypeScript data helper; typed template SVG consumer; forbidden rendering syntax absent'
+      : 'Old .ts absent; typed script setup + template; forbidden syntax absent';
   });
   gate('G2', 'Classic + Vapor compile', () => {
     const build = readFileSync(resolve(pkg, 'scripts/build-sfc.mjs'));
     const pin = readFileSync(resolve(bench, 'build-sfc.sha256'), 'utf8').trim();
     if (createHash('sha256').update(build).digest('hex') !== pin) fail('build-sfc.mjs changed: reconcile bench/lib.mjs compiler logic and update build-sfc.sha256');
+    const shared = readFileSync(resolve(pkg, '../../scripts/vue-sfc-build.mjs'));
+    if (createHash('sha256').update(shared).digest('hex') !== readFileSync(resolve(bench, 'shared-build.sha256'), 'utf8').trim()) fail('Shared SFC compiler changed; reconcile the bench compiler');
     for (const mode of ['classic', 'vapor']) compileSfc(source(), file, mode);
     return `Build-script compiler options; classic ${compilers.classic.version}, Vapor ${compilers.vapor.version}`;
   });
@@ -160,7 +166,22 @@ try {
     const ast = ts.createSourceFile(indexFile, index, ts.ScriptTarget.Latest, true);
     const target = `${name}Props`;
     const expectedExports = JSON.parse(readFileSync(resolve(bench, 'goldens', `${name}.json`), 'utf8')).publicExports;
-    if (!Array.isArray(expectedExports) || ![name, target].every(n => expectedExports.some(e => e.name === n))) fail('Missing frozen public export manifest');
+    if (!Array.isArray(expectedExports)) fail('Missing frozen public export manifest');
+    if (name === 'cellDecoration') {
+      for (const entry of expectedExports) {
+        if (!entry.typeOnly || !ast.statements.some(node => ts.isExportDeclaration(node) && node.isTypeOnly && node.moduleSpecifier?.text === './cellDecoration.js' && node.exportClause?.elements?.some(e => e.name.text === entry.name))) fail(`Helper export changed: ${entry.name}`);
+      }
+      typecheck([file, resolve(src, 'cellDecoration.ts')]);
+      return 'Decoration types retain their pure-helper barrel path; data resolver and template consumer type-check';
+    }
+    if (!expectedExports.length) {
+      temporary ??= mkdtempSync(resolve(bench, '.tmp-check-'));
+      const probe = resolve(temporary, 'private.ts');
+      writeFileSync(probe, `import Component, { type ${target} } from '../../src/${name === 'cellDecoration' ? 'CellDecorationIcon' : name}.vue';\nconst component: object | Function = Component;\ntype Props = ${target};\nvoid component;\n`);
+      typecheck([probe]);
+      return 'Internal component; direct default export and Props resolve (no public barrel exports in reference)';
+    }
+    if (![name, target].every(n => expectedExports.some(e => e.name === n))) fail('Missing frozen public export manifest');
     const expectedNames = expectedExports.map(e => e.name);
     const exports = ast.statements.filter(node => ts.isExportDeclaration(node) && node.exportClause && ts.isNamedExports(node.exportClause)
       && node.exportClause.elements.some(e => expectedNames.includes(e.name.text)));
@@ -171,7 +192,12 @@ try {
     for (const { name: exported, typeOnly } of expectedExports) {
       const entry = entries.find(e => e.exported === exported);
       if (!entry || typeof entry.specifier !== 'string') fail(`${exported} must be explicitly re-exported from src/index.ts`);
-      const expected = existsSync(file) ? `./${name}.vue` : `./${name}.js`;
+      const relocations = {
+        Icon: { ICONS: './icon-data.js', ICON_NAMES: './icon-data.js' },
+        Popper: { computePosition: './popper-position.js', splitPlacement: './popper-position.js', joinPlacement: './popper-position.js' },
+        SelectableRow: { SELECTABLE_LIST_KEY: './selectable-list-context.js' },
+      };
+      const expected = relocations[name]?.[exported] ?? (existsSync(file) ? `./${name}.vue` : `./${name}.js`);
       if (entry.specifier !== expected) fail(`${exported} routes to ${entry.specifier}, expected ${expected}`);
       if (entry.type !== typeOnly) fail(`${exported} changed value/type export kind`);
     }

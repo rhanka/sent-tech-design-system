@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { StatusDot } from "./StatusDot.js";
+import StatusDot from './StatusDot.vue';
 
 const dot = (el: HTMLElement) => el.querySelector<HTMLElement>(".st-statusDot__dot");
 

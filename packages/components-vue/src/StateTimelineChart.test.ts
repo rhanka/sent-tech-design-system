@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { StateTimelineChart } from "./StateTimelineChart.js";
+import StateTimelineChart from "./StateTimelineChart.vue";
 
 const services = [
   {

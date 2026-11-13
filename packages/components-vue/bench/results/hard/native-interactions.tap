@@ -1,0 +1,102 @@
+TAP version 13
+# You are running a development build of Vue.
+# Make sure to use the production build (*.prod.js) when deploying for production.
+# Subtest: Dropdown should teleport, select once, close on Escape and remove its list
+ok 1 - Dropdown should teleport, select once, close on Escape and remove its list
+  ---
+  duration_ms: 326.66017
+  type: 'test'
+  ...
+# Subtest: Portal should reactively move between targets and inline without leaving content
+ok 2 - Portal should reactively move between targets and inline without leaving content
+  ---
+  duration_ms: 29.402691
+  type: 'test'
+  ...
+# Subtest: Popper should position against its anchor, request close once and remove its panel
+ok 3 - Popper should position against its anchor, request close once and remove its panel
+  ---
+  duration_ms: 69.248852
+  type: 'test'
+  ...
+# Subtest: Toast should react to listener presence and invoke close and dismiss once
+ok 4 - Toast should react to listener presence and invoke close and dismiss once
+  ---
+  duration_ms: 60.452753
+  type: 'test'
+  ...
+# Subtest: TreeView should enable interaction when listeners appear and preserve expansion and selection
+ok 5 - TreeView should enable interaction when listeners appear and preserve expansion and selection
+  ---
+  duration_ms: 61.570898
+  type: 'test'
+  ...
+# Subtest: TileGroup should use unique group names and emit the model value before change
+ok 6 - TileGroup should use unique group names and emit the model value before change
+  ---
+  duration_ms: 41.813444
+  type: 'test'
+  ...
+# Subtest: SelectableRow should register, read reactive provider state and unregister
+ok 7 - SelectableRow should register, read reactive provider state and unregister
+  ---
+  duration_ms: 41.872836
+  type: 'test'
+  ...
+# Subtest: PanelSection should keep content mounted across provider collapse and primary changes
+ok 8 - PanelSection should keep content mounted across provider collapse and primary changes
+  ---
+  duration_ms: 41.765855
+  type: 'test'
+  ...
+# Subtest: AppShell should preserve panel content during disclosure and resize by keyboard
+ok 9 - AppShell should preserve panel content during disclosure and resize by keyboard
+  ---
+  duration_ms: 82.425637
+  type: 'test'
+  ...
+# Subtest: AppChrome should render utility menus and invoke theme and locale callbacks
+ok 10 - AppChrome should render utility menus and invoke theme and locale callbacks
+  ---
+  duration_ms: 142.737074
+  type: 'test'
+  ...
+# Subtest: DataTable should sort, select and page while keeping scoped cells native
+ok 11 - DataTable should sort, select and page while keeping scoped cells native
+  ---
+  duration_ms: 201.952617
+  type: 'test'
+  ...
+# Subtest: NavItem should notify its selection listener once per activation
+ok 12 - NavItem should notify its selection listener once per activation
+  ---
+  duration_ms: 65.075144
+  type: 'test'
+  ...
+# Subtest: NavSection should notify its toggle listener once through Collapsible
+ok 13 - NavSection should notify its toggle listener once through Collapsible
+  ---
+  duration_ms: 56.774288
+  type: 'test'
+  ...
+# Subtest: Popper should notify a placement listener once when it flips
+ok 14 - Popper should notify a placement listener once when it flips
+  ---
+  duration_ms: 13.315848
+  type: 'test'
+  ...
+# Subtest: Icon and decoration glyphs should retain SVG namespaces in native Vapor
+ok 15 - Icon and decoration glyphs should retain SVG namespaces in native Vapor
+  ---
+  duration_ms: 22.355945
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2359.628468

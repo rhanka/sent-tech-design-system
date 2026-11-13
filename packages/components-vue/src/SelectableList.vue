@@ -4,7 +4,7 @@ import { classNames } from './classNames.js';
 import {
   SELECTABLE_LIST_KEY,
   type SelectableListContext,
-} from './SelectableRow.js';
+} from './selectable-list-context.js';
 
 export type SelectableListProps = {
   /** Accessible name for the listbox (required for SR users). */

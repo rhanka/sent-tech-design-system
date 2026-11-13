@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "NavItem",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/NavItem.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-navItem st-navItem--depth0\" style=\"--st-navItem-indent: var(--st-component-navItem-depth0-indent, 0rem);\"><div aria-selected=\"false\" class=\"st-selectableRow\" role=\"option\" tabindex=\"0\"><span class=\"st-selectableRow__content\"><span class=\"st-navItem__title\">Item</span></span></div></div>"
+    },
+    {
+      "id": "full",
+      "html": "<div class=\"st-navItem st-navItem--depth2 st-navItem--status-error\" style=\"--st-navItem-indent: var(--st-component-navItem-depth2-indent, 1.5rem);\"><div aria-selected=\"true\" class=\"st-selectableRow st-selectableRow--selected st-selectableRow--hasCaption\" data-value=\"a\" role=\"option\" tabindex=\"0\"><span class=\"st-selectableRow__leading\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"red\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:red;width:14px;height:14px;\"></span></span></span><span class=\"st-selectableRow__content st-selectableRow__content--stacked\"><span class=\"st-selectableRow__label\"><span class=\"st-navItem__title\">Item</span></span><span class=\"st-selectableRow__caption\"><span class=\"st-navItem__caption\">Caption</span></span></span><span class=\"st-selectableRow__trailing\"><span aria-label=\"0 Item\" class=\"st-badge st-badge--error st-badge--circle st-badge--sm\">0</span></span></div><hr aria-hidden=\"true\" class=\"st-navItem__divider\"></div>"
+    },
+    {
+      "id": "tone",
+      "html": "<div class=\"st-navItem st-navItem--depth3 consumer\" data-bench=\"nav\" style=\"--st-navItem-indent:var(--st-component-navItem-depth3-indent, 2.25rem);\"><a class=\"st-selectableRow\" href=\"/item\" tabindex=\"0\"><span class=\"st-selectableRow__leading\"><span class=\"st-statusDot\"><span aria-label=\"success\" class=\"st-statusDot__dot st-statusDot__dot--success\" role=\"img\" style=\"width:8px;height:8px;\"></span></span></span><span class=\"st-selectableRow__content\"><span class=\"st-navItem__title\">Item</span></span><span class=\"st-selectableRow__trailing\"><span aria-label=\"5 Item\" class=\"st-badge st-badge--neutral st-badge--circle st-badge--sm\">5</span></span></a></div>"
+    },
+    {
+      "id": "slots",
+      "html": "<div class=\"st-navItem st-navItem--depth0\" style=\"--st-navItem-indent: var(--st-component-navItem-depth0-indent, 0rem);\"><div aria-selected=\"false\" class=\"st-selectableRow\" role=\"option\" tabindex=\"0\"><span class=\"st-selectableRow__leading\"><b>Lead</b></span><span class=\"st-selectableRow__content\"><span class=\"st-navItem__title\">Item</span></span><span class=\"st-selectableRow__trailing\"><em>Tail</em></span></div></div>"
+    },
+    {
+      "id": "disabled",
+      "html": "<div class=\"st-navItem st-navItem--depth0\" style=\"--st-navItem-indent: var(--st-component-navItem-depth0-indent, 0rem);\"><div aria-disabled=\"true\" aria-selected=\"false\" class=\"st-selectableRow st-selectableRow--disabled\" role=\"option\" tabindex=\"-1\"><span class=\"st-selectableRow__content\"><span class=\"st-navItem__title\">Disabled</span></span></div></div>"
+    }
+  ],
+  "sourceSha256": "6ee3feeef6e911aeed41e2439266324a7749908cc04de27375449a761b3ba0c0",
+  "fixtureSha256": "16b7cea5b3a28b6c5a140189e236bc35552fb264d15b59c311aa65b595ef657e",
+  "publicExports": [
+    {
+      "name": "NavItem",
+      "typeOnly": false
+    },
+    {
+      "name": "NavItemProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NavItemDepth",
+      "typeOnly": true
+    },
+    {
+      "name": "NavItemStatus",
+      "typeOnly": true
+    },
+    {
+      "name": "NavItemSwatch",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { defineComponent, h } from "vue";
 import { classNames } from "./classNames.js";
-import { CopyButton } from "./CopyButton.js";
+import CopyButton from "./CopyButton.vue";
 
 export type CodeSnippetProps = {
   code: string;
