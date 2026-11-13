@@ -9,7 +9,7 @@
  * it with the stored digest, the Pin and the Engram literal, and asserts the
  * vendored bytes equal the canonical fixture files byte for byte.
  *
- * Engram source (read-only): graphify@310a9270
+ * Engram source (read-only): engram@46f93dbe
  * `src/ontology-guardian/diagram-schemas.ts`, `canonical.ts`.
  * DS pattern: `src/presentation.ts:185-228`, `presentation-catalog.ts`,
  * `tests/presentation-catalog-pin.test.ts`, `src/sha256.ts`.
