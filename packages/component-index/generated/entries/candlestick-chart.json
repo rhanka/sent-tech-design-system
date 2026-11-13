@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CandlestickChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CandlestickChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "OHLC candlestick chart for financial price data.",
     "fr": "Bougies OHLC pour visualiser les cours financiers."
   },
-  "digest": "sha256:622395c09139178cb6d664aeec3a48103ed74307d81760475b5e8f3208d0dcf5",
+  "digest": "sha256:f4fe44216dfe161aec2062bdfc7902d17184ddb248b4c39fd8e70abf8256552a",
   "displayName": "CandlestickChart",
   "format": "component-entry/v1",
   "frameworks": [

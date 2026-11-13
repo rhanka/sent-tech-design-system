@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/NumberInput.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NumberInput.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Numeric field with increment/decrement.",
     "fr": "Champ numérique avec incrément/décrément."
   },
-  "digest": "sha256:b8aa8348f3c1b4075f6d42e1e6dce86ed3a31b5b5bcf15dd6e365be8c2d51a8a",
+  "digest": "sha256:a0f356a03d518bbe911771c1a6543c0508d00f079fdd743b1f900622d9a7b2b1",
   "displayName": "NumberInput",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "pareto-chart",
   "contractSource": "derived",
-  "digest": "sha256:8155edc23025b4d3ed14b22eef9f01c9abecbe9109c2bd6f07e1429a726a307c",
-  "entryDigest": "sha256:1f6f92fc80839d9ab5a831c6d305c4597ece4650422e96a41a964d0c282c54d3",
+  "digest": "sha256:23ff77b76596cbd10003fa070072929b84edd9dc5cc8942a86a2c492c5d969b9",
+  "entryDigest": "sha256:2b9957bbacd4efef1f18406870ffe0e468f5c7f4f8de95568039646ff61bce78",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/ParetoChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ParetoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/ParetoChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ParetoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

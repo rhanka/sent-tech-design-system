@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:343aacae880112f0226f948978e7d531446897e2d9303bc3bd937f04a86a9d0e",
-  "entryDigest": "sha256:9432d622c825e45de361fe9b535a0b71fcc08cb4c7b535d57dabaa989dddac9d",
+  "digest": "sha256:9a75c2d8005ebb115f57d40f768a1176a7bf44d272843fc55ce66ed18b58b5a9",
+  "entryDigest": "sha256:14021bf36327045f03324b4b68569abbf66508441423648c00a444b166dbe00b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -51,7 +51,7 @@
         "declarationPath": "packages/components-angular/dist/Hidden.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HiddenProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -107,7 +107,7 @@
         "declarationPath": "packages/components-react/dist/Hidden.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HiddenProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

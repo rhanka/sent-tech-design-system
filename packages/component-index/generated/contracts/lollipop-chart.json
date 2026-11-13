@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:eb63bab825eacc76eddc256ec81157295a8a2aa2b5fd6c5a83f5a4da234b68f5",
-  "entryDigest": "sha256:804b92515962b9d8c0920f7251e7a3975e293e5cc34ad7913d4cbebc4310b18b",
+  "digest": "sha256:024f3d8548edd2a919a053e6505aa9a3a01db081797fc97fe44798f360027eaf",
+  "entryDigest": "sha256:f368c3f1e03349b90d88062b06999f796116e6ccd3e4f38e06fa69e6059e46f7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/LollipopChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LollipopChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -194,7 +194,7 @@
         "declarationPath": "packages/components-react/dist/LollipopChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LollipopChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

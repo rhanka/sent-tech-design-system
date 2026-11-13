@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ViolinChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ViolinChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Mirrored distribution density per category, with median and quartiles.",
     "fr": "Densité de distribution en miroir par catégorie, avec médiane et quartiles."
   },
-  "digest": "sha256:dfcd62d49482ff0ea9ac3dd5fe1401ff12b2628c4e9500f71728786e0fc0bec2",
+  "digest": "sha256:c79930da1c39cde1f8e44c7dc1c41742baf28d61624afce31e2f74b5775be434",
   "displayName": "ViolinChart",
   "format": "component-entry/v1",
   "frameworks": [

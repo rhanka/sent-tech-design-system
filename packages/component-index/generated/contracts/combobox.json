@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:341279530c087685cf18036cbab9aa2ad99d032e2283720797b3acde11734c33",
-  "entryDigest": "sha256:ff46b375875f89a652a3ad45ebb3ca384512109f7a5e07cca12ed0cf303384ff",
+  "digest": "sha256:16e3a2235caeb6c6331f845a1feb38e1bd8d9a85394ade9216d18bbbf8f6d31c",
+  "entryDigest": "sha256:539fffcf02811b75f745c627f2d090eb1a2239b29acfa3bb7fc07304c3b8ae89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-angular/dist/Combobox.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ComboboxProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -261,7 +261,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ComboboxProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

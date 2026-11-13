@@ -1,8 +1,8 @@
 {
   "componentId": "sunburst-chart",
   "contractSource": "derived",
-  "digest": "sha256:3b8a290decc35297540c6e2b7604c9da21322aba7ef94265fd00687061e404f7",
-  "entryDigest": "sha256:1c198baef3719139dec55ac58423908f7311e95e2c335a66954486058392039e",
+  "digest": "sha256:e592eddba4520e2acea104ca5e094c301c7e0be888482defd620db8727a0da0b",
+  "entryDigest": "sha256:e5bfe86cf37f4fe9d8c8db948ac3abb805396c648e8e84aa71d2bf2bf8e86a6d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/SunburstChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SunburstChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-react/dist/SunburstChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SunburstChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

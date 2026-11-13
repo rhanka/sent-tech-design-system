@@ -1,8 +1,8 @@
 {
   "componentId": "selection-chip",
   "contractSource": "derived",
-  "digest": "sha256:805ad12d2e107268a7b945015ce797fca1fe9f168bb2e5dd2c3b4a266ce66c30",
-  "entryDigest": "sha256:ef1ea8645b5760a6c62f74d902bc3aabd440f8892e6d397857b1e7b8652963d8",
+  "digest": "sha256:d86b54dd147a00bfcdf1ae7827c94192a729f76dd1ec01df1b2ff81c665af6e2",
+  "entryDigest": "sha256:54e11530506f8d0cae3987bf96d97ce9980003146d1ce8ea26ddd26498124e16",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -57,7 +57,7 @@
         "declarationPath": "packages/components-angular/dist/SelectionChip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectionChipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -113,7 +113,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectionChipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Highlight.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Highlight.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:b2e02e2f4cd3959d6e1fe4b79c5e053fb8428a4bd40a07a87fda6672c606aa24",
+  "digest": "sha256:e0fd4ea4e72dd93a45b086efecd5728f2f216139d9f4b18866957ff22c3d604f",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

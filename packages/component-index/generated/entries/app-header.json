@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AppHeader.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AppHeader.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact application header with menu trigger, navigation, and actions.",
     "fr": "En-tête applicatif compact avec burger, navigation et zone d’actions."
   },
-  "digest": "sha256:e9904066aecb8e211f2379a2ded275efae06aa33b2f480b3e7af666eaefc1b4c",
+  "digest": "sha256:fde79ab0a287ed417c7e3442b2eb96121adf486126ab393b6d19d86d635b7e3c",
   "displayName": "AppHeader",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:12ad83baf84f6ce13a33b415c58de32f43a309ec231bb98d430a2ef8ec070f93",
-  "entryDigest": "sha256:ca03a7e856aa8f76a846cf411d5b48d5c16df39b8577d45b23f478a53cf69b3f",
+  "digest": "sha256:9ab05ce2d62bc664acfdcd4b4381d8b729a2558203720d0e6ca1764409abf65d",
+  "entryDigest": "sha256:08a8f0259868f020eeb17e8c501a8c0a496461ac216ee984ff66758e6f2278ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/ArcDiagramChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/ArcDiagramChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ArcDiagramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

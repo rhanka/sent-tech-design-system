@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tooltip.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tooltip.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Contextual hint on hover/focus.",
     "fr": "Info contextuelle au survol/focus."
   },
-  "digest": "sha256:85c36ec9dc3a9598277e25d3092e8936a4e3bf4d8c2ae2ff7b5d1b28a1f35cb1",
+  "digest": "sha256:232bb4ea2107126e93e38c8abacb37648271d4967cd7cc5d17cf556acd9f8ffd",
   "displayName": "Tooltip",
   "format": "component-entry/v1",
   "frameworks": [

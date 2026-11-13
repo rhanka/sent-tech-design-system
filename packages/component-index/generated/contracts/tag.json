@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:d5f8afcc86485af55af687971862d33babe8f7185a222f592b54146cf91c19ad",
-  "entryDigest": "sha256:ca2af701334e3959e66070e7292c5d44e59a128d5b3741212ba8bfd4fc8fa85e",
+  "digest": "sha256:cc29050488384c46d31b0487bdff3e21c5626dab62959141de912cef42690f3b",
+  "entryDigest": "sha256:c9f137cf2735c0f5d8065b6ca31c6179928c7a3ab3bc853ddb27b5915d315ab9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/Tag.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TagProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -134,7 +134,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TagProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

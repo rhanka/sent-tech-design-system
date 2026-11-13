@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Slider.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Slider.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Continuous value slider.",
     "fr": "Curseur de valeur continue."
   },
-  "digest": "sha256:89196c9672f70d97f81dea60b072cddfde04538ce3cfc5f92484d3881911a3ac",
+  "digest": "sha256:3e7b64ae809e675556b1569920c7dfa5590ce1301780c310c12f3652ccde1598",
   "displayName": "Slider",
   "format": "component-entry/v1",
   "frameworks": [

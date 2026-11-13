@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DependencyWheelChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DependencyWheelChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Dependency wheel: nodes on a circle, weighted ribbons coloured by source.",
     "fr": "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source."
   },
-  "digest": "sha256:d6f9889f15415219ed008c6c2de9af50198a97bba86968dafc6d90627cb1ee76",
+  "digest": "sha256:b3ff910165f8ab2ff4a749f81973c78354f2ac5bc3cd1e0dc611ed47c1fc1f92",
   "displayName": "DependencyWheelChart",
   "format": "component-entry/v1",
   "frameworks": [

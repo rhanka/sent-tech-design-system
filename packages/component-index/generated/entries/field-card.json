@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FieldCard.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FieldCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Field group card: titled header, optional comment pill, bordered / plain / accent variants.",
     "fr": "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent."
   },
-  "digest": "sha256:f73616c9663fe635829f105022b1fdc4aa793a688c739612d6d210c680dce63b",
+  "digest": "sha256:679f03a6b922ccbbbfdadc7baa28d64ef8729ca3c64c278bb472d45928fe3b13",
   "displayName": "FieldCard",
   "format": "component-entry/v1",
   "frameworks": [

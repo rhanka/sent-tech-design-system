@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FilterPill.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FilterPill.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Active filter pill: field, operator, value, and remove button.",
     "fr": "Pilule de filtre actif : champ, opérateur, valeur et bouton de retrait."
   },
-  "digest": "sha256:a1bc14325eed8bcb64fc11b4a11b826b27b0cbf40cb24ea77e6472879e2b0fcf",
+  "digest": "sha256:3ae321e5dbce05f1f9090965823058659259523fd0e2163ae4081e9d640d67d2",
   "displayName": "FilterPill",
   "format": "component-entry/v1",
   "frameworks": [

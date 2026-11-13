@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:d84a796568e45457cd8ed89f1ae1383c68ef35ee925d54c7610c0bb6807587e7",
-  "entryDigest": "sha256:3eaff464ed983fe5933e7813611c8e7ae64d116ac7b538b8c827b66c7b104fa7",
+  "digest": "sha256:9d028b30b8064b5d3da0f46d1fa533be695a3fa251649ec856af5526b4bcb3ba",
+  "entryDigest": "sha256:fc3e44b6014033ac257fad8eecdc16839782115e7fbe638a8f86828adb5a2247",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-angular/dist/TimeRangePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimeRangePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-react/dist/TimeRangePicker.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimeRangePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

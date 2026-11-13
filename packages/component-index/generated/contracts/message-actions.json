@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:ef3565561091b9c365554355372dfe36eb8c0fdd73b754824098a729ef593270",
-  "entryDigest": "sha256:012ec82547917068964e9d1483905413ddc2864e2e19702173e29aae319184f0",
+  "digest": "sha256:4a4f70f1de7009531d77752c97b621e55e76901365981244baa1b0fd2586a1c3",
+  "entryDigest": "sha256:c37ff8ac1435aaa59ea231ff1351e87509f8fa631ad614d8a3156278159a5adb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/MessageActions.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

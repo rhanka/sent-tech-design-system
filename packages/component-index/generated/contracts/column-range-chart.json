@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:de8fb2bdfccec6310c131672f9721145e692cf7fd6edb7658545af0319dd4ad2",
-  "entryDigest": "sha256:f5170df1733884a86a3852ec443e0664088749e234057b2f459331c0c327f848",
+  "digest": "sha256:1037d77bd18781d1af4c1adf8f0302bb35b1e59d1aa96e94e0640fb5178ed824",
+  "entryDigest": "sha256:cf3f3af7c7dfe247d381956a42505f664ad190c7acd89a075b37ea736acf41c7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-angular/dist/ColumnRangeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -202,7 +202,7 @@
         "declarationPath": "packages/components-react/dist/ColumnRangeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

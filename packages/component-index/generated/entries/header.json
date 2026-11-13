@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Header.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Header.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:967cc9ab816961ce8cf54e034407b31be9fc5ffa6b056b51480a12f66fb86538",
+  "digest": "sha256:139eeed0b2c5c8a0baf8d7b3b3ef808f2f3204881e7a72beabda88de248cfb7c",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

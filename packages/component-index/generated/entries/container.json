@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Container.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Container.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Centered container with bounded max width (sm…full).",
     "fr": "Conteneur centré à largeur maximale bornée (sm…full)."
   },
-  "digest": "sha256:5c90811cf08aae3f095b235dad50abd21f2c4107f8251028f226510b8ed62dd6",
+  "digest": "sha256:cf5386566db8d1fc7c341b8d60d8c70eedff75dfedb7d9faf88ef3a2a501601b",
   "displayName": "Container",
   "format": "component-entry/v1",
   "frameworks": [

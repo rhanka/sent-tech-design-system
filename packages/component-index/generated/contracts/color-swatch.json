@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:ee9a6da1a4c4d84dbeb1e287b539bae367bf7737b85ddca2ffdd9354421f7fe1",
-  "entryDigest": "sha256:5d4bb30ce2fca879614b4fe976fe1d2574f61cc99b9aea2fee8c5f6337721c92",
+  "digest": "sha256:6f7eb9da5f07f7d9e99d87e68f97abbc465fc0182c03e092917605774df3d69f",
+  "entryDigest": "sha256:6b0d62f230a7827e4ba2c03356fa6faa23bcd5fc2585778bdaac152c07a6b5cc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -44,7 +44,7 @@
         "declarationPath": "packages/components-angular/dist/ColorSwatch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColorSwatchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -103,7 +103,7 @@
         "declarationPath": "packages/components-react/dist/ColorSwatch.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColorSwatchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

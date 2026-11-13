@@ -1,8 +1,8 @@
 {
   "componentId": "config-item-card",
   "contractSource": "derived",
-  "digest": "sha256:99207182588faab84af0d3076f8a25ece2cf7610b4cf3b2f1d38c85d5820e77e",
-  "entryDigest": "sha256:f6f6c8ed45334ef731f1160cf5eba165831ce8bdc07e51d67313b345a4ef0b9f",
+  "digest": "sha256:b234e54c3f600a04e8b8f84471c617a75744b9fa119670d6c1828970092637dc",
+  "entryDigest": "sha256:002951285cb7894a5832f1122e3f82ec23d73dc4259af32e6a7bc96abe351cad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/ConfigItemCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ConfigItemCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -233,7 +233,7 @@
         "declarationPath": "packages/components-react/dist/ConfigItemCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ConfigItemCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

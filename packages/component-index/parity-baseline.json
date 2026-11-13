@@ -1420,6 +1420,7 @@
       "alignValue",
       "composeAbsolute",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1431,12 +1432,14 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "vue": [
       "AppShell",
@@ -1509,6 +1512,7 @@
       "composeAbsolute",
       "computePanelStackAutoCollapse",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1520,13 +1524,15 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePanelStackPrimary",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "dataviz-svelte": [
       "AdvancedPivotDataTable",

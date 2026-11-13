@@ -1886,7 +1886,7 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "8c4f4a917494b305e4394a38fd391a42fddbdbe40df6b6034e4831a592ec6b6a",
+      "destinationSha256": "5bd4cb8876fcd45cb5ad934f536b63ccd001c2e4c17b07ac728948f6ac78ee04",
       "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only); @sentropic/design-system-angular dependency bumped to 0.39.0 by the Icon glyph prop release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions"
     },
     {

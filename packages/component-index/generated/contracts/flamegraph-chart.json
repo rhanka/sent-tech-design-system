@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:a0e1d410718ae5ef4475b74868638d544946f651d87fb56c78dd5fbb0f6efc29",
-  "entryDigest": "sha256:027a5583b4eb0ec50571b11a1805d31d05bd877ee6ced8fff831f59000cc82a9",
+  "digest": "sha256:0b44546a4dba53c58656ccaf80a18042552ab4b5067945d6703da553260527da",
+  "entryDigest": "sha256:2f902a3d42b27beecc11f190cfe6e971c93ec1cea9fb0006aa8bd238bfb5b708",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/FlamegraphChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FlamegraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -144,7 +144,7 @@
         "declarationPath": "packages/components-react/dist/FlamegraphChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FlamegraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

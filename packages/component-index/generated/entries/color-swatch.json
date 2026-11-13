@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ColorSwatch.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColorSwatch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Swatch of an arbitrary color (hex/rgb/oklch/token) with an optional label: a palette or legend building block.",
     "fr": "Pastille d'une couleur arbitraire (hex/rgb/oklch/token) avec libellé optionnel : brique d'une palette ou d'une légende."
   },
-  "digest": "sha256:5d4bb30ce2fca879614b4fe976fe1d2574f61cc99b9aea2fee8c5f6337721c92",
+  "digest": "sha256:6b0d62f230a7827e4ba2c03356fa6faa23bcd5fc2585778bdaac152c07a6b5cc",
   "displayName": "ColorSwatch",
   "format": "component-entry/v1",
   "frameworks": [

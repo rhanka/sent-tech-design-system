@@ -1,8 +1,8 @@
 {
   "componentId": "dumbbell-chart",
   "contractSource": "derived",
-  "digest": "sha256:5cbbd8b5f33e089fb3b721ca56b3fd430e554ef123fd7cb708aa78f1fa9aca31",
-  "entryDigest": "sha256:6bb4073f1dc899eaaf35a23f1cbcde28a95c0e5f7c3dbd93d2a20e57305679aa",
+  "digest": "sha256:dbac06ba478c4902332ad9d5fe442e38b1fadf8d48d327f702bfd00f34abd417",
+  "entryDigest": "sha256:9f2feb8bc480877c451c40247949efef235b6734b1d62439577be32c70fe9985",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-angular/dist/DumbbellChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DumbbellChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -201,7 +201,7 @@
         "declarationPath": "packages/components-react/dist/DumbbellChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DumbbellChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

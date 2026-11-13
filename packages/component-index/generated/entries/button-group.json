@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ButtonGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ButtonGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Groups buttons, either attached as segments or spaced.",
     "fr": "Regroupe des boutons, en segments joints ou espacés."
   },
-  "digest": "sha256:ce25f71f1e28135faf749b19278627b3e30639e2cca987ede426efe8bc052ad0",
+  "digest": "sha256:a80ad5b6114014e4cccc12ab43da9e79409a53e227cd3cffd499e9b62256e6af",
   "displayName": "ButtonGroup",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BoxPlotChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BoxPlotChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Box plots for comparing distributions and outliers.",
     "fr": "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques."
   },
-  "digest": "sha256:3599ce681af2982f3be8f0a8855b505382493341db536aa30241b2ed47291a23",
+  "digest": "sha256:f636ac851242ebb4f1459ce524160291742038428b6182a1b78d8d3e8bb7bb40",
   "displayName": "BoxPlotChart",
   "format": "component-entry/v1",
   "frameworks": [

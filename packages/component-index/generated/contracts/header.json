@@ -1,8 +1,8 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:58ededb84c10554a47123519b7ac16e1affed30ceb970c99d930b77c06a55909",
-  "entryDigest": "sha256:967cc9ab816961ce8cf54e034407b31be9fc5ffa6b056b51480a12f66fb86538",
+  "digest": "sha256:5ae456192a43447ece3090e108ff95288b883df716d95afb9a6ec75868fa80c0",
+  "entryDigest": "sha256:139eeed0b2c5c8a0baf8d7b3b3ef808f2f3204881e7a72beabda88de248cfb7c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-angular/dist/Header.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HeaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -212,7 +212,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HeaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

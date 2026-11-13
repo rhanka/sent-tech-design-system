@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PriorityMatrix.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PriorityMatrix.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement.",
     "fr": "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement."
   },
-  "digest": "sha256:c5277df3926ce5aee60224baada1d0ba3f2a741f859d3bbb3416893d4aacbcab",
+  "digest": "sha256:24d065df4d43ca71c44da84d02b5f88177890d10b0803258d572e4ede0246af3",
   "displayName": "PriorityMatrix",
   "format": "component-entry/v1",
   "frameworks": [

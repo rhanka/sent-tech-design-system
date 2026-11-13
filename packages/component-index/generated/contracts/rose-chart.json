@@ -1,8 +1,8 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:7d4a9b09d1be9660d8f94b574fde44c5a946d691b68a1b8536e99649766337b3",
-  "entryDigest": "sha256:c68c5cf6278affd01a98864459092454b36da53e9dbdfe8a87072aaacee603e3",
+  "digest": "sha256:f23f1962db1499142eab19323b30bec138b339ccbd56ce6b5f2b2806dd306b55",
+  "entryDigest": "sha256:863ccdd43536620b74c6c43371bc74559d633f4443b3f7da9029377195b69db4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/RoseChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RoseChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/RoseChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RoseChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
