@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Radio",
+  "sourceRevision": "0a3458c7eab2a7c01962b3c161d0adfb7351e335",
+  "source": "src/Radio.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"choice\" type=\"radio\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Option A</span></span></label>"
+    },
+    {
+      "id": "model-checked",
+      "html": "<label class=\"st-choice st-choice--radio\"><input checked=\"\" class=\"st-choice__input\" name=\"choice\" type=\"radio\" value=\"b\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Selected</span></span></label>"
+    },
+    {
+      "id": "model-unchecked",
+      "html": "<label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"choice\" type=\"radio\" value=\"c\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Not selected</span></span></label>"
+    },
+    {
+      "id": "checked-overrides-model",
+      "html": "<label class=\"st-choice st-choice--radio\"><input checked=\"\" class=\"st-choice__input\" name=\"choice\" type=\"radio\" value=\"d\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Legacy checked</span></span></label>"
+    },
+    {
+      "id": "disabled-invalid",
+      "html": "<label class=\"st-choice st-choice--radio\"><input aria-invalid=\"true\" class=\"st-choice__input\" disabled=\"\" name=\"choice\" type=\"radio\" value=\"e\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Invalid</span></span></label>"
+    },
+    {
+      "id": "helper-custom",
+      "html": "<label class=\"st-choice st-choice--radio consumer\" data-bench=\"radio\" style=\"color:red;\"><input class=\"st-choice__input\" data-bench=\"radio\" name=\"choice\" style=\"color: red\" type=\"radio\" value=\"f\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">With help</span><span class=\"st-choice__help\">Choose carefully</span></span></label>"
+    }
+  ],
+  "sourceSha256": "7c24d713b190c8a27ab890a98bbd10d44d75316e1793b4bbe1dafb04316e9efc",
+  "fixtureSha256": "70beef7ab06a165e37762204896e9029d335acf3b1204a6295e1817c75ffd047",
+  "publicExports": [
+    {
+      "name": "Radio",
+      "typeOnly": false
+    },
+    {
+      "name": "RadioProps",
+      "typeOnly": true
+    }
+  ]
+}
