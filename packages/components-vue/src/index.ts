@@ -435,8 +435,8 @@ export type { MessageActionsProps, MessageAction, MessageActionVariant } from ".
 export { MessageStatusBadge } from "./MessageStatusBadge.js";
 export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
 
-export { BackToTop } from "./BackToTop.js";
-export type { BackToTopProps } from "./BackToTop.js";
+export { default as BackToTop } from "./BackToTop.vue";
+export type { BackToTopProps } from "./BackToTop.vue";
 export { DisplaySettings } from "./DisplaySettings.js";
 export type {
   DisplaySettingsProps,
