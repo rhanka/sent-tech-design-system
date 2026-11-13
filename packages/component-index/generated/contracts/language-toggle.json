@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:976926c88030b4d0fc2bcedeea9335ae6ec01e4cb9fb83ed063568894e4d599e",
-  "entryDigest": "sha256:9494a7b3a2deb9edba6f9874c792f3c07f309748233066db17732d7f12e5b3c3",
+  "digest": "sha256:3a880b4df011e9013e6f899032d85e8ea0e0380ffc6e7b70f875b36583f7e8b3",
+  "entryDigest": "sha256:b488c4129eaae3a68fc72d098c9924d7eebaf4b0c7cfe7e98dcf81f8bbeedbc1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -229,15 +229,19 @@
         {
           "name": "localeChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "enum": [
+              "fr",
+              "en"
+            ]
           }
         },
         {
           "name": "onLocaleChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "enum": [
+              "fr",
+              "en"
+            ]
           }
         }
       ],
@@ -283,29 +287,16 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "localeChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onLocaleChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d65657680f724d0bf05cf4d6aa8b4222e17e17b6515cb86e9f10900e08898df1",
-        "declarationPath": "packages/components-vue/dist/LanguageToggle.d.ts",
+        "declarationDigest": "sha256:9633f7290ae0bae1db8489ecc1fe2a222cd364a1988f6b057e4937b2fa122c79",
+        "declarationPath": "packages/components-vue/dist/LanguageToggle.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageToggleProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"localeChange\" and prop \"onLocaleChange\" both listed verbatim"

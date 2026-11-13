@@ -1,8 +1,8 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:a61a5813f19c41c9d9e6d963b7a0cec739411a55c9cb8533fd5c53d37d071386",
-  "entryDigest": "sha256:cd22a7bd2ce8dc43fd735ad0baa66b47b8b2b66ced9bc139b17f43d6a5995134",
+  "digest": "sha256:c5d63d95ac4ffd5bdfd5e3ba4be6d19879caa07a500339d512cbc99bb298e5da",
+  "entryDigest": "sha256:a1a6e1435246e8a7193fb1262dd855e93e4e77ed47ff02578f6f42eb8b51179a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:74e0398153c8a6e3d02f72c68976348ba677c8fcc60a86b02739fb7f86393811",
-        "declarationPath": "packages/components-vue/dist/RoseChart.d.ts",
+        "declarationDigest": "sha256:1c61fb477ec5acd4eba5da691e0a134c3e0203034f1fd01de7fb069f09592ac2",
+        "declarationPath": "packages/components-vue/dist/RoseChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RoseChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

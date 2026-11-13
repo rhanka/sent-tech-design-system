@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:f3cc3e95d1b7cb7d9553c872255ad31f41133c03e0c07700aa96397e7a4a4727",
-  "entryDigest": "sha256:ab388cfac3743abe98f8cba3cd6a6e384f79a8d08bfaaef9963929ead8278b18",
+  "digest": "sha256:860ae520a038057375cb038fb93ef6b9dc61aa356dadc021ada115d1a8f15d3f",
+  "entryDigest": "sha256:6a571f623dc9dcfa1d8152ea6eec64694ba29b5e6e4cac3400607b128f298a65",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -270,8 +270,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -307,13 +306,26 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "leading"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:66f11d447728828d8317f671c7103712a3081f2079df2f13eceef51363094e23",
-        "declarationPath": "packages/components-vue/dist/SelectableRow.d.ts",
+        "declarationDigest": "sha256:9dec14d2f138a2bf05f72ecaff8f65cce0b6527d04b6703eed4b81aef0238770",
+        "declarationPath": "packages/components-vue/dist/SelectableRow.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableRowProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

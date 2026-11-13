@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:16a5f8484dfae131fb4685a459f0a4605b30b8c97ff76244feeaf863e1322867",
-  "entryDigest": "sha256:cd212c3a1e31374097d0a54436079b8a5726450afbcff5bb010029fdbf484dc7",
+  "digest": "sha256:3d341dacc997acf6cb5ef11aac912f4b82bb41b5a004eeaa48c263b2dc1f9be7",
+  "entryDigest": "sha256:fe38f5a942200c33a4bf125d0dbcc19bee08d86a4c9d964198c99d970d796c50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -262,11 +262,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:be60c5d356373bc591d9557961ef5e051eb8b558eaa80ea0dd830f52ff3dda13",
-        "declarationPath": "packages/components-vue/dist/BellCurveChart.d.ts",
+        "declarationDigest": "sha256:1ebfd0fbd4afb6d5e3119893ad40fb4fded56acec5a64dc0be59078aa4886e57",
+        "declarationPath": "packages/components-vue/dist/BellCurveChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BellCurveChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

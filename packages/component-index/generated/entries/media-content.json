@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c178f41ec1b3ee78f74cec32dc838163ea9bc6bb42e5290c4e2a561b22a38667",
+      "digest": "sha256:38d0601fd187d9b4b026f9ee0783fa5406a1fc81442ddb812d1f0d7ed70d07a7",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MediaContent.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/MediaContent.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:28631a16c70a9703244e4f79d5092c67a9e1331af673c8eb0d1b21dc4a572849",
+  "digest": "sha256:b6cd8e9e53ead868aaf679462741d85b35da1601f6f05e1b54491b5abf347e76",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

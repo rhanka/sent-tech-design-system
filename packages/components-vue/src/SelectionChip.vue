@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { X } from 'lucide-vue-next';
+
 import { classNames } from './classNames.js';
 
 export type SelectionChipTone = 'neutral' | 'success' | 'warning' | 'error' | 'info';
@@ -52,7 +52,7 @@ function handleClear(e: MouseEvent) {
       :disabled="props.disabled"
       @click="handleClear"
     >
-      <X :size="11" :stroke-width="2.5" aria-hidden="true" />
+      <svg    aria-hidden="true"  xmlns="http://www.w3.org/2000/svg" :width="11" :height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
     </button>
   </span>
 </template>

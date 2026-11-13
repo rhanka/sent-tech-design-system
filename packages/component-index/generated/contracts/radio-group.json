@@ -1,8 +1,8 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:df204212b3c50a32c773ffbdfb6cb29013b7083afe929209732bbf033491cd1d",
-  "entryDigest": "sha256:85bbd10ab8a074a548c2e21222248381388ae20e5c118e56c1042d1c5630e3cf",
+  "digest": "sha256:a336f2179f23e74f6062e4ee78c46f2f93edd30c438f887a67406ff1bf12b42c",
+  "entryDigest": "sha256:e423a5e5bf1eb3f3ef0a22560ce9708787c8909b95aece0859b237a52a8ebd9a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -321,8 +321,7 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
@@ -333,8 +332,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -403,21 +401,23 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:cfc76bf7a647a64cd8abba83d2b244cd667ef3b10a25ae3cf215c25cf2b07e99",
-        "declarationPath": "packages/components-vue/dist/RadioGroup.d.ts",
+        "declarationDigest": "sha256:c1de36753da4cb17ab557a7945ce8d3ad84079de32751ae873bd216b85dbcfb1",
+        "declarationPath": "packages/components-vue/dist/RadioGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RadioGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

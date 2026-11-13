@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:1996358cfa740fd4371e47b2b7d4113f75120cb6dc83467a246d4e7ca18b415a",
-  "entryDigest": "sha256:bef68c75c2a69eea6cd19b9a41b659ac2adaa5b26da81616db066780c92e6d57",
+  "digest": "sha256:2723b4d50f3c292b90ca0ba2c1a08b3ad061455bd882d3bfa3a32eb6512ac1b7",
+  "entryDigest": "sha256:4a8eefc417baabe57a1fc4493d2df199e97e25efa1edfcb3624b80bcea29d31d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -236,8 +236,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -277,13 +276,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:f4805e7324a841124d9204fd6e14b8e192ca8c321b823ad3fe7818285b6a02cb",
-        "declarationPath": "packages/components-vue/dist/FieldCard.d.ts",
+        "declarationDigest": "sha256:72869d1c26449e98a46ffa972d41ff6fef259b75a0e311478288534cad85672d",
+        "declarationPath": "packages/components-vue/dist/FieldCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FieldCardProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

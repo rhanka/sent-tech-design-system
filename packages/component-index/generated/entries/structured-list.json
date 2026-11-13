@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:480b4cc6b80059417a4f9a21d9015c336719078617ecadc4f9dcacb70544517e",
+      "digest": "sha256:75182a0a1a8f440ca0b4d69afc121f2391b114f9dd1efafa472ce9c3ab9cc33c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/StructuredList.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/StructuredList.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Structured key/value list (term/definition pairs).",
     "fr": "Liste clé/valeur structurée (paires terme/définition)."
   },
-  "digest": "sha256:ac0f82631bf4605419850706d169df3de695f8e237dc7820bfa01dd2a0acb3d6",
+  "digest": "sha256:cf7a070bdd14052b89d3e054e883d89e774f2ec2f57235f49ff22a4f76cf8f18",
   "displayName": "StructuredList",
   "format": "component-entry/v1",
   "frameworks": [

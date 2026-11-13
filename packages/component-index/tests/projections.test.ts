@@ -76,7 +76,7 @@ describe("witness projections (no field loss)", () => {
     const pins: Record<string, { dir: string; path: string }> = {
       svelte: { dir: "packages/components-svelte", path: "packages/components-svelte/src/lib/Button.svelte" },
       react: { dir: "packages/components-react", path: "packages/components-react/src/Button.tsx" },
-      vue: { dir: "packages/components-vue", path: "packages/components-vue/src/Button.ts" },
+      vue: { dir: "packages/components-vue", path: "packages/components-vue/src/Button.vue" },
       angular: { dir: "packages/components-angular", path: "packages/components-angular/src/Button.ts" },
     };
     for (const delivery of deliveries) {

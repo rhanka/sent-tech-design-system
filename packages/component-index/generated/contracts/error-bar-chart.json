@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:3beb77f09d254521ab6dcbf22759fe3d0746fe22b7878db9834cfa280cd33675",
-  "entryDigest": "sha256:d370fc432d2315f4c5972a7f4a054982cd3fca81da5544930636e0156dad5b07",
+  "digest": "sha256:b0d41044394f76687a53e0e99de0533a4008030fe948ddca302b5d6c91551629",
+  "entryDigest": "sha256:0baa2879763ba0ecea34c29cf5cb5e508a6c01d92544f4fe92ec3c69184b109e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -342,11 +342,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:e6307d5a2e7e2592e2561fe21ed246f7e867d782c5d0169d6d340de50f0548fe",
-        "declarationPath": "packages/components-vue/dist/ErrorBarChart.d.ts",
+        "declarationDigest": "sha256:5a5a7efe02c0822da76d7574029db24dbcca057fbff5e9722a55035222616266",
+        "declarationPath": "packages/components-vue/dist/ErrorBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorBarChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

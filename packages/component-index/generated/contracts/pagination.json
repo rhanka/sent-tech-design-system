@@ -1,8 +1,8 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:e5875354e32fc97752e7b98811138dfddda608ca64dcd4d15ddb56cb57f4c88e",
-  "entryDigest": "sha256:0ccbe9e1bdc303c64da6ee7d753f4786f8c7662b52e18b593a07b080a7549e12",
+  "digest": "sha256:2cf59aaddf1a85f3cc9082c1d38ebbf51b20dc4205b0b131ed9981a46daad26e",
+  "entryDigest": "sha256:928108b28a9a0b096f8f288d2d6e38a1dbb8f5065ba174b8e27342430f37f1ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -195,15 +195,13 @@
         {
           "name": "onPageChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "pageChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         }
       ],
@@ -244,29 +242,16 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onPageChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "pageChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:dd1054c0ae59dc25498fc511b3b0be0e3e34fd6162d3415c550a966cf2130d48",
-        "declarationPath": "packages/components-vue/dist/Pagination.d.ts",
+        "declarationDigest": "sha256:32b72f21f21089d05e957bc0420ac8da79f2c09c69d297ae1ae3604a9928d04c",
+        "declarationPath": "packages/components-vue/dist/Pagination.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"pageChange\" and prop \"onPageChange\" both listed verbatim"

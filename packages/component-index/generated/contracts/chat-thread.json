@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:a4d17bceb5483a19a4dadeec40f94b7fa21fabbb7e1dda7bcd4673b8d4adb3d9",
-  "entryDigest": "sha256:966e2c7d9d913e7b85a7018bac01c9545e86d6777363262c88014df86cd3cf5a",
+  "digest": "sha256:e9bbafc30fa20856af227b40e2795be2083deec2faaf617f55281c832cfa99a2",
+  "entryDigest": "sha256:dc6a29751272ec6901fcb73400d76dc36b96dc79a5c9de66550b1e0485db7984",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -279,8 +279,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -349,13 +348,20 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "empty"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:48266f950a2196ff3f102bcbf5f97161350485b0b9f4e18ffa164273b8be2c9d",
-        "declarationPath": "packages/components-vue/dist/ChatThread.d.ts",
+        "declarationDigest": "sha256:581d310489afd50ec0cd9868036450dca0114c2cc140c7833791f898222f1a31",
+        "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

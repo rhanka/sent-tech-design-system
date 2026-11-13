@@ -45,6 +45,12 @@ test('SVG geometry and namespaced attributes survive normalization', () => {
   assert.match(normalize(a), /xlink:href="#glyph"/);
   assert.notEqual(normalize(a), normalize(a.replace('width="2"', 'width="3"')));
 });
+test('generated SVG identities preserve cell suffixes and reference targets', () => {
+  const svg = (base, ref = '1') => `<svg><defs><clipPath id="${base}-0"></clipPath><clipPath id="${base}-1"></clipPath></defs><g clip-path="url(#${base}-${ref})"></g></svg>`;
+  assert.equal(normalize(svg('st-treemap-clip-abc1234')), normalize(svg('st-treemap-clip-v0')));
+  assert.notEqual(normalize(svg('st-treemap-clip-abc1234')), normalize(svg('st-treemap-clip-v0', '0')));
+  assert.notEqual(normalize('<svg><path fill="url(#consumer-a)"></path></svg>'), normalize('<svg><path fill="url(#consumer-b)"></path></svg>'));
+});
 test('worked examples compile with the house options in classic and Vapor', () => {
   for (const name of ['Badge', 'Tabs']) {
     const source = readFileSync(resolve(bench, 'examples', `${name}.vue`), 'utf8');

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:dd3bc1e50045df8c8d6e1568236eb8e485333b6c86a0e2337ef694e05022c46b",
+      "digest": "sha256:0ca1a5c2905dd1b7cb30ffe305d799220de7aa6254b0019374fd51b2ff73ab7d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/GaugeChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/GaugeChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Semi-circular gauge with color thresholds, centered value and unit.",
     "fr": "Jauge semi-circulaire avec seuils colorés, valeur et unité centrées."
   },
-  "digest": "sha256:0fc23cd8db7d9f7eebf59fcad5910b643e266ff40772e5f371c826a574b38ab1",
+  "digest": "sha256:9a405dd79c51479276752c23c46adb5fcb0b86b074b44b9e57aa360e5efe541f",
   "displayName": "GaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

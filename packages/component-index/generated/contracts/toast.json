@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:5728714da43a3c39764232f1435a3de575e73048cbc914a15b79acc652111313",
-  "entryDigest": "sha256:6dbb0a67816c97354ab8fda9db56a29c7993981af48b73543f1d116b8765e6d6",
+  "digest": "sha256:ab4af5dccda85a89b00c83c16b4bacb350b20994b557104025372ab4a843fa0d",
+  "entryDigest": "sha256:49ef3c3cfe6fc46a1077b004624b0b89edb3a1ca848f91644839e87a0d684b6c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -266,41 +266,42 @@
           "name": "dismissLabel",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(title: unknown) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onClose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onDismiss",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
         }
       ],
       "events": [
         {
-          "name": "close",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "close"
         },
         {
           "name": "dismiss",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "onClose",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onClose"
         },
         {
           "name": "onDismiss",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -385,34 +386,10 @@
           "sourceType": "unknown"
         },
         {
-          "name": "close.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "dismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "message",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onDismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         },
         {
           "name": "title",
@@ -421,13 +398,62 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "title",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d48f8ec669ef909272eaab41056c1e62e4b8f12ef2105af8675fbed6fb7d8ce4",
-        "declarationPath": "packages/components-vue/dist/Toast.d.ts",
+        "declarationDigest": "sha256:f70b8df0538b2c97fe32cb158d61633694dd7992ce7d8aac63c00ec4adbc15c7",
+        "declarationPath": "packages/components-vue/dist/Toast.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

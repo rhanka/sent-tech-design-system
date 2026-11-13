@@ -1,8 +1,8 @@
 {
   "componentId": "venn-chart",
   "contractSource": "derived",
-  "digest": "sha256:80149c8279c1b9cb415efa98843cec388be1fd836d74dfab7ecf46aacf931ad8",
-  "entryDigest": "sha256:7cce23b5a9f377c5d48cbad7212da7c4121bc687b27a036fd48ebe98763c8499",
+  "digest": "sha256:b416eb5d780fdcf2f3c5b87322992e6336fc6007cbb1262c3a45353d7212d591",
+  "entryDigest": "sha256:ed192b1340c95f897eb73ba2c49757d52b48881011f0b3cfcf5e7273caf4063f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -274,11 +274,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:210eb50d2b300c1015453ed1b7b38d5e4e6f6cba1fd35479262cfd54454d4644",
-        "declarationPath": "packages/components-vue/dist/VennChart.d.ts",
+        "declarationDigest": "sha256:dd93c2ebebd8d3179b4733bdf1ea31fe820cb427579bca08b45e6ff12a77134f",
+        "declarationPath": "packages/components-vue/dist/VennChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VennChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

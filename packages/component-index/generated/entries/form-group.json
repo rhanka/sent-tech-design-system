@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:250c3853c81bed8c6b26318e7dec9936e163d7c1cb81777c7fecbaf0730c506a",
+      "digest": "sha256:8f413a10a42ae61144b9481851a4708d657a55cd5a118227db0137c664ddca6c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FormGroup.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/FormGroup.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:2a61c551f8c7493ed6cc2ba73c199f371986d35ffe2f6c5eec46a0a191cdc951",
+  "digest": "sha256:5d952fc89fd77e945599d03b2e646e8d7e4b576ea78365607d1b75325577334f",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

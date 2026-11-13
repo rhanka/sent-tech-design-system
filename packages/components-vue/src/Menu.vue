@@ -9,7 +9,7 @@ import type {
   MenuGroupItem,
   MenuItem,
   MenuSubmenuSide,
-} from "./Menu.vue";
+} from "./Menu.js";
 import {
   computed,
   useAttrs,

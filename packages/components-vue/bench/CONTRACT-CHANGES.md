@@ -1,4 +1,4 @@
-# HARD lane content migrations
+# Overnight Vapor content migrations
 
 The original `.ts` fixtures and goldens were frozen before conversion. Every
 `legacyProps` rich-content fixture renders the old VNode/component callback and
@@ -35,3 +35,50 @@ its matching callback prop. These now emit once without calling that same
 callback a second time. Payloads and public callback props are retained.
 Popper installs Escape/focus handling when it is initially open as well as
 when it opens after mount. Neither change affects the frozen SSR markup.
+
+## Integration and remaining lanes
+
+All existing component and auxiliary exports retain their public names and
+value/type kinds. Pure runtime helpers move out of script setup: Flex's
+spacing/align/justify functions, Grid's gridTemplateColumns, Col's spanBasis and
+offsetMargin, Header's deriveInitials, IdentityMenu's identityInitial and
+PanelStack's constants remain exported through the public barrel. chartScale
+stays TypeScript: chartDataList now returns accessible-list data; chart SFCs own
+the list markup. No helper calls h or creates VNodes.
+
+| Module | Rich-content migration |
+| --- | --- |
+| Header | `brand`, `title` and navigation labels use `brand`, `title`, `nav-label` (`{ item }`) slots with scalar fallbacks. The existing brand slot remains. |
+| Table | `caption` and column labels use `caption` and `label` (`{ column }`) slots with scalar fallbacks. |
+| Search | Rich `label` content uses the `label` slot with its scalar prop fallback; the pre-existing declared prop type remains unchanged. |
+| Alert / LoadingState / Toggle / Toggletip | Rich label/title/message/content props migrate to their corresponding named slots; scalar fallbacks and existing slots remain. |
+| Tabs | Rich item labels and panels use `tab-label` (`{ item, index }`) and `panel` (`{ item }`). |
+| ChatMessage | Rich avatar, content, footer and actions use `avatar`, existing `default`, `footer` and `actions` slots. |
+| Footer | Rich brand and copyright use `brand` and `copyright` slots. |
+| FormGroup | Rich legend and helper text use `legend` and `helperText` slots; existing default content remains. |
+| Highlight | Rich title uses `title`; existing default content remains. |
+| Switch / Textarea | Rich labels and help use `label` and `helper-text`; Textarea also exposes `error-text`. |
+| Tile | Rich title and description use `title` and `description`; existing default content remains. |
+
+Generated file-upload, search, gradient and clip identities use setup useId.
+The measurement normalizer applies the same registered identity masks to both
+frozen reference HTML and converted HTML, retaining SVG cell suffixes and
+reference relationships. Table's paired rich-label input was repaired to use
+the original per-column tags and alignments; the ORIGINAL Table.ts was rerun
+and every frozen SSR fixture matched byte-for-byte. Only its fixture-input
+digest changed; no reference output was regenerated.
+
+ThemeProvider's original SSR reference was captured under Node/JSDOM because
+its style-injection effect requires document. This preserves that existing
+environment requirement. This port does not add server-only document support.
+
+The release is prepared as `0.41.0-next.0` under npm's `next` dist-tag. Publishing
+and any release tag remain with the owner. Dataviz-vue conversion follows in a
+second PR.
+
+The index's measured Vue declarations now expose Button's default slot,
+DataTable's caption/cell/column-label slots and Modal's default/footer slots.
+Eight derived Vue contract cells move from partial to complete without losses:
+AppHeader, Drawer, LanguageToggle, Modal, Notification, Pagination,
+PaginationNav and Popover. The contract baseline records those measured
+changes; source-conversion progress remains a separate metric.

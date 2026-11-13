@@ -13,7 +13,7 @@ try {
   if (!names.includes(name) || !['ssr', 'vapor'].includes(operation)) throw new Error('Invalid worker arguments');
   const { JSDOM } = await import('jsdom');
   let dom;
-  if (operation === 'vapor' || name === 'Dropdown' || name === 'Popper') {
+  if (operation === 'vapor' || name === 'Dropdown' || name === 'Popper' || name === 'ThemeProvider') {
     dom = new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>', { url: 'http://localhost/' });
     for (const key of ['window', 'document', 'Node', 'Element', 'HTMLElement', 'SVGElement', 'Text', 'Comment', 'Document', 'DocumentFragment', 'MutationObserver', 'Event', 'CustomEvent']) {
       Object.defineProperty(globalThis, key, { value: dom.window[key], configurable: true });

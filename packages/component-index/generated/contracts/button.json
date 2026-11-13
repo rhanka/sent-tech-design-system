@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:9e07c51937e1035a47aaf4d1ab7eaf5158f5a69823a2fd40610f474c882dee31",
-  "entryDigest": "sha256:2da91718a058e00a6122b66a7a09f968eb3fc28f56c2e7ba222debe5a6da2dad",
+  "digest": "sha256:6eada5c95556ec03f365d39696eb67660de6695b125a416b6e9d6a51b4104dc2",
+  "entryDigest": "sha256:d6ac9684baf92f583684c47f5d704ae31a1b4908a15931d0c464ee9c55a6ad8b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,8 +204,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -242,13 +241,22 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:99162332f338de33d267748a42e3e68ff92fd98b3efeebec0680539c55e90f26",
-        "declarationPath": "packages/components-vue/dist/Button.d.ts",
+        "declarationDigest": "sha256:3f64064f640b5843b9b09fdf3d31f5258da857c4abd304fa5ce1429748fd7e75",
+        "declarationPath": "packages/components-vue/dist/Button.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

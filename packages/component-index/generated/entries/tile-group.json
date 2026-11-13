@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:69b69a0d7a063a816071fdf6ef2ea393297ea82bf3105c1a77b29a5041f16c51",
+      "digest": "sha256:0efc9251b04c23722429e98d9489ae9acf14be8a1ad0759f7d4d90e77530acce",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/TileGroup.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/TileGroup.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Selectable tile group (radio), with legend.",
     "fr": "Groupe de tuiles sélectionnables (radio), avec légende."
   },
-  "digest": "sha256:df0d466f18ffbaeb9149e7344e188ef5f343665b069901636691c29dd26000f4",
+  "digest": "sha256:4a1445850e1ae80fe01b26a2bd90d2ee8fd4b034d4c489611a3f8452821da082",
   "displayName": "TileGroup",
   "format": "component-entry/v1",
   "frameworks": [

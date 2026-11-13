@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:42dc6d95cb0d2ee5d5b245baf49f7b46be1a867af6ac8649e665f1628b70451a",
-  "entryDigest": "sha256:d7e241a98391252d5286d69753c1bbe64909e89e0032c96367dd1e082e7ee5d4",
+  "digest": "sha256:0687a7270054aeaf9d71520cc95a8c9d9c3c16c60665abae7a100f9ec464e227",
+  "entryDigest": "sha256:05464e2ceb7e7a9f56e8cf484c709cc4aeec6b17e15ab992c89e860501e211c2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -398,28 +398,60 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         }
@@ -516,39 +548,14 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:58ccb972027586f41565a7611fc5fa2f2598f7a58552bd6a906324a646ef92f8",
-        "declarationPath": "packages/components-vue/dist/RangeSlider.d.ts",
+        "declarationDigest": "sha256:e2bacd5b7fea538d62c3c7e5da74708fc6c1b944ca25688ed08e9cb072228e2a",
+        "declarationPath": "packages/components-vue/dist/RangeSlider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RangeSliderProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

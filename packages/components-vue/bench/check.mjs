@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-import { bench, pkg, src, names, require, compilers, compileSfc } from './lib.mjs';
+import { bench, pkg, src, names, require, compilers, compileSfc, normalizeHtml } from './lib.mjs';
 
 const args = process.argv.slice(2);
 const name = args[0];
@@ -28,6 +28,7 @@ function source() {
 function worker(operation) {
   const child = spawnSync(process.execPath, [resolve(bench, 'worker.mjs'), operation, name], {
     cwd: pkg, encoding: 'utf8', timeout: 60000, maxBuffer: 8 * 1024 * 1024,
+    env: { ...process.env, LANG: 'fr_FR.UTF-8', LC_ALL: 'fr_FR.UTF-8' },
   });
   if (child.error) throw child.error;
   let result;
@@ -138,6 +139,10 @@ try {
   });
   gate('G4', 'SSR golden parity', () => {
     const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', `${name}.json`), 'utf8'));
+    // Apply the current identity-only normalizer symmetrically to frozen references.
+    const { JSDOM } = require('jsdom');
+    golden.fixtures = golden.fixtures.map(f => ({ ...f, html: normalizeHtml(f.html, JSDOM),
+      ...(f.teleports ? { teleports: Object.fromEntries(Object.entries(f.teleports).map(([k, v]) => [k, normalizeHtml(v, JSDOM)])) } : {}) }));
     if (golden.schema !== 1 || golden.component !== name || golden.fixtures.length < 4) fail('Invalid golden metadata');
     const fixtureHash = createHash('sha256').update(readFileSync(resolve(bench, 'fixtures', `${name}.fixtures.ts`))).digest('hex');
     if (fixtureHash !== golden.fixtureSha256) fail('Fixture changed since golden capture; restore the frozen measurement input');
@@ -193,6 +198,12 @@ try {
       const entry = entries.find(e => e.exported === exported);
       if (!entry || typeof entry.specifier !== 'string') fail(`${exported} must be explicitly re-exported from src/index.ts`);
       const relocations = {
+        Flex: { spacingToken: './spacing.js', alignValue: './flex-layout.js', justifyValue: './flex-layout.js' },
+        Grid: { gridTemplateColumns: './grid-layout.js' },
+        Col: { spanBasis: './col-layout.js', offsetMargin: './col-layout.js' },
+        PanelStack: { PANEL_STACK_MAX_SECTIONS: './panel-stack-context.js' },
+        IdentityMenu: { identityInitial: './identity-initial.js' },
+        Header: { deriveInitials: './header-initials.js' },
         Icon: { ICONS: './icon-data.js', ICON_NAMES: './icon-data.js' },
         Popper: { computePosition: './popper-position.js', splitPlacement: './popper-position.js', joinPlacement: './popper-position.js' },
         SelectableRow: { SELECTABLE_LIST_KEY: './selectable-list-context.js' },

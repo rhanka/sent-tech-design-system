@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e75ede05145e99fd0d4892f0f9f67fc981febea72e703d87a593ab2797d0311e",
+      "digest": "sha256:8aeee13f76887fd8b46535342def5d723a7af05d4f17226ee60ade2a6a8e4529",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ColumnRangeChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/ColumnRangeChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:f68303020b7c95c7306999d7fd6e332bbfa17561e02942c373c000838a82b2f7",
+  "digest": "sha256:e973fe978740b86698dac8b788c7a1e59c0f6d324e727f447eee0950bd93e324",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

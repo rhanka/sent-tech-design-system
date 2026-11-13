@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:ecaf6590d315e3095ecbeb5719c03321fe31b4c8c436d1e3bd42351dd00813a4",
-  "entryDigest": "sha256:7a90e1d0d6d9186fd82a02627926bed509f6242f4715d9d473d1cdf49876c57e",
+  "digest": "sha256:8fc76859536b4d4ed41a5452d7255fcf1dcda388d11c16904b81469c1c4dffda",
+  "entryDigest": "sha256:e2ada6d381b4e5f017cceeaea92bf5566dff64f93f33eeacd87a68a258a20b54",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -294,11 +294,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b16ce527ad30d2bb9408f48fa94dbe7559895d1b67e009580676ee45cfc97e87",
-        "declarationPath": "packages/components-vue/dist/HLCChart.d.ts",
+        "declarationDigest": "sha256:295a212a6f88119c67cc85cf7d9723d0ce78f7adc1aef9b475d75ec6a28e4d67",
+        "declarationPath": "packages/components-vue/dist/HLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HLCChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

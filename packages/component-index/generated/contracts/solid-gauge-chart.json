@@ -1,8 +1,8 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:f26dd5013a6907c5e19d11b093f90636a6c956d7e0c0b4eaa3e2f118f6f76bb5",
-  "entryDigest": "sha256:3440ca54ec540eb225c460fb68defdbed372eb3956fa860f662491f855271f08",
+  "digest": "sha256:6e0ebefee33a7478a49a3f4293bac4e78309369000dca72d987825d87110cb31",
+  "entryDigest": "sha256:51b0f23ba3a0cfcbe3b174575701b9e8692bcb7214f584977322671195f8730b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -427,11 +427,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:8e167b52b00fcd1fad04426351e9ecbefff951e162fac1e700ae2d6c9b21c8a3",
-        "declarationPath": "packages/components-vue/dist/SolidGaugeChart.d.ts",
+        "declarationDigest": "sha256:d002a257f61224734b76a13f70baee5bd50d3c2c4e348aa27bd1f5f8f4cb16d1",
+        "declarationPath": "packages/components-vue/dist/SolidGaugeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

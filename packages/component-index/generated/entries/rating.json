@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d38b998122f10c6e2fc48fedb8cfa70b3f3b01e0427503ff61c658104c5ed20a",
+      "digest": "sha256:2a1a577a7afdf8b66dc54c9bff75d61c358948083d2220f4d943eafa46d0245c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Rating.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Rating.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:9081f002738d7dd08d2359a31003098f478bba0d06d11078ae7692c842a074bc",
+  "digest": "sha256:ac084cc4cd9667623f7f53ab453f14d80dffac447c8ca5960262fe9a43425264",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

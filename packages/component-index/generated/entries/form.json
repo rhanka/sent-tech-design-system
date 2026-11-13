@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f6710a48e9aab9d54ee56912cf2890b5207daf498fde7213268a5c90b87b4db6",
+      "digest": "sha256:888cb5395d284385155e21aada34d7519cd58ae2320d15cd5063e4ec028e71ba",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Form.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Form.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:8fabaf9901589b2b73d41dd706b0a9606ae3ce66c532619608e900b474e1b0fd",
+  "digest": "sha256:2fcd86755ebf7ef2e386f6f1f6acbf029f5def09c9d054f4677bb42a89f3a97e",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

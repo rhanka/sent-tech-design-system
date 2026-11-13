@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:f0e9bde632cd11c13b2bd95e8ba8c947ac4b8af3a824aeb620ce8c46b753f362",
-  "entryDigest": "sha256:8fee1cb512a1357e3cadd1cc23cb5ce54364ac06422f95c77c55ea4a124a017e",
+  "digest": "sha256:a3946abd014d40c7d12299c51ce0919729338a68f3db48e489a003c120823cb4",
+  "entryDigest": "sha256:e5980f731fac8139cc7a9c9ac4f26a8b4102a98a4589ed066785de89588c3e47",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,23 +204,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "close",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "close"
         },
         {
-          "name": "onClose",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onClose"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -243,29 +234,33 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "close.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         },
         {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "footer",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:9686157b213f925fd276a668039a4e0c7cb8d4a5b7c01aaa14270b73f50ea47d",
-        "declarationPath": "packages/components-vue/dist/Modal.d.ts",
+        "declarationDigest": "sha256:527d5aca8fe6a0ba715ef55e250fcbc0664b53e76a72e0c70441be838f4e4b74",
+        "declarationPath": "packages/components-vue/dist/Modal.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ModalProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"

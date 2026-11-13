@@ -1,8 +1,8 @@
 {
   "componentId": "streamgraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:54411bf9dc8ce74035655ceddf2c760d3593753198df95abd7cb201e2e097638",
-  "entryDigest": "sha256:9a46ac66c67e0cb98e6d9ac96ac40cdd036a49fdf4054b59817dfda3d452c91f",
+  "digest": "sha256:6620970e31b2d55f892664f0d2d7574bb89ca9dd8607e02a14b3293eeaeb731b",
+  "entryDigest": "sha256:ded8efe0e2f7a1fdacaa62870ddeb21ed2ae075fcaacb39e7cef74e765a1caaf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -410,11 +410,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:02bb52d13b4a2897886a41b2589ba32cfa0b4b40c2aaa4c574f93d3773e96df9",
-        "declarationPath": "packages/components-vue/dist/StreamgraphChart.d.ts",
+        "declarationDigest": "sha256:38bb7859874fdf022fe2033d6ccdffd2e91cadf6aaaed6a9bf1d1b2413cb6c54",
+        "declarationPath": "packages/components-vue/dist/StreamgraphChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamgraphChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

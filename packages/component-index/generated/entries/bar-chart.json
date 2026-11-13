@@ -27,11 +27,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:5774db72970e886e71c0d71c6af4b91864db42291ea104f6cf60188df3fd4e64",
+      "digest": "sha256:f05cb9df1bd99a1cf5095e801ada03df86769761e6744bafa64ae9dfca5ce55a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/BarChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/BarChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -54,7 +54,7 @@
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:d4c3abc65525eed344f1b59bc60d81ec40c417a18743a14b0623ebdf91af2416",
+  "digest": "sha256:2fe9de9fb05c6714f79d2cdb0838d13fe2400be22e72e2ce097803940a95ad53",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

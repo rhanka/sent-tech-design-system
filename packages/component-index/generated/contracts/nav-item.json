@@ -1,8 +1,8 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:5638f2b741cd89c306e36cad4a46c12dc25535306653f8bfaabc147ad3198b32",
-  "entryDigest": "sha256:d5b8ee6d6eeeb3b435aca227398d8354cd1046d6145ca732fe53db188bf5b9c2",
+  "digest": "sha256:934fafd7b92f554ffe7256453fc8c5b587a34ce25d56cedc2ee7ebf18386f75d",
+  "entryDigest": "sha256:f7894414d58d62cf9aaeb81d2e2f952d745aa206d853fef48c7033cd7a5e13ad",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -399,8 +399,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -500,13 +499,20 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "leading"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:00e741822b3ad268cde85c9ab4a73c6d5e4d0175faedcf8bfcdd7cdbd5a6aeb7",
-        "declarationPath": "packages/components-vue/dist/NavItem.d.ts",
+        "declarationDigest": "sha256:25d5e4ec21008d71e72b3a05a4fb15740307e562ae5163c6ec528c9ffd4b6a67",
+        "declarationPath": "packages/components-vue/dist/NavItem.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavItemProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

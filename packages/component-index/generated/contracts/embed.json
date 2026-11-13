@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:26aa1a9db54b29138006a353f0df245179fe65a3be94e65a01444d32e10b922f",
-  "entryDigest": "sha256:9052bec649ef9680a289d39d3fb645b55c3524e351e2846dddbdcb9a5ecb39a9",
+  "digest": "sha256:288a72a2eb20ed2b2a106e5388aeb77ff273c43839ec2f6def4f3b4eaa80cb9b",
+  "entryDigest": "sha256:702149daa873aa3a7a72b9c11e8a2bed9194ecde71afb5ee1907a88b60bc08b0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -240,11 +240,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9029105c171229e4a0eb257314ae629a800b62be2d2a62350925e015f5586c56",
-        "declarationPath": "packages/components-vue/dist/Embed.d.ts",
+        "declarationDigest": "sha256:c08ffb810131dd1946f2febc16f53a098903c662cb7c03a1c14da436dc46df71",
+        "declarationPath": "packages/components-vue/dist/Embed.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmbedProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

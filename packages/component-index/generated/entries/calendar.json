@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:edb7be76e2a06e9d4471fa42d8c301ac7ebb9c15bba45680ae59018fa3a440b4",
+      "digest": "sha256:7969ac398f646f4357c55d6180ced1d5b19c31d4f73a37e7e9ff27b89248d454",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Calendar.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Calendar.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Monthly calendar: single date or range, with min/max bounds.",
     "fr": "Calendrier mensuel : date unique ou plage, bornes min/max."
   },
-  "digest": "sha256:49262947506834ff35e6cd4ada2fdeba8e9da16132535f1763adee535bc040d5",
+  "digest": "sha256:5766c95385b87ad6030ad1291ddfa16b23078e07da24b9a4f08c864ab6ad799b",
   "displayName": "Calendar",
   "format": "component-entry/v1",
   "frameworks": [

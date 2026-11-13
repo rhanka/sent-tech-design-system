@@ -24,3 +24,6 @@ export type PanelStackContext = {
   register: (id: string, rootEl: HTMLElement, headerEl: HTMLElement) => () => void;
 };
 
+
+export const PANEL_STACK_MAX_SECTIONS = 4;
+export const PRIMARY_MIN_BLOCK_SIZE_PX = 160;

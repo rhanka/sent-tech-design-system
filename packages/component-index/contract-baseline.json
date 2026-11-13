@@ -65,7 +65,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -317,7 +317,9 @@
      "type",
      "variant"
     ],
-    "slots": [],
+    "slots": [
+     "default"
+    ],
     "events": [],
     "bindable": []
    },
@@ -861,7 +863,11 @@
      "sortNoneLabel",
      "sortable"
     ],
-    "slots": [],
+    "slots": [
+     "caption",
+     "cell",
+     "column-label"
+    ],
     "events": [
      "onPageChange",
      "onRowClick",
@@ -1067,7 +1073,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1630,7 +1636,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -1824,7 +1830,7 @@
     "bindable": []
    },
    "vue": {
-    "status": "partial",
+    "status": "complete",
     "props": [
      "class",
      "closeLabel",
@@ -1832,7 +1838,10 @@
      "open",
      "title"
     ],
-    "slots": [],
+    "slots": [
+     "default",
+     "footer"
+    ],
     "events": [
      "close",
      "onClose"
@@ -1925,7 +1934,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2037,7 +2046,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2051,7 +2060,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2149,7 +2158,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"

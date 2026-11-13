@@ -2,8 +2,9 @@
 import { computed, useAttrs } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
-import { spacingToken, alignValue, justifyValue } from './Flex.js';
-import type { FlexAlign, FlexJustify } from './Flex.js';
+import { spacingToken } from './spacing.js';
+import { alignValue, justifyValue } from './flex-layout.js';
+import type { FlexAlign, FlexJustify } from './Flex.vue';
 
 export type StackProps = {
   /** Spacing scale step (0..12) mapped to `--st-spacing-*`. */

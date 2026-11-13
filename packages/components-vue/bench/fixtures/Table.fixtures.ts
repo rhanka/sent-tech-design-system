@@ -8,9 +8,9 @@ export default [
   { id: 'rich-caption', props: { columns, rows, caption: 'Plain' },
     legacyProps: { caption: h('strong', 'Rich caption') },
     slots: { caption: '<strong>Rich caption</strong>' } },
-  { id: 'rich-label', props: { columns, rows },
+  { id: 'rich-label', props: { columns: [{ key: 'name', label: 'Name' }, { key: 'score', label: 'Score' }], rows },
     legacyProps: { columns: [{ key: 'name', label: h('strong', 'Name') }, { key: 'score', label: h('em', 'Score') }] },
-    slots: { label: { scope: '{ column }', html: '<strong>{{ column.label }}</strong>' } } },
+    slots: { label: { scope: '{ column }', html: '<strong v-if="column.key === \'name\'">{{ column.label }}</strong><em v-else>{{ column.label }}</em>' } } },
   { id: 'custom-attrs', props: { columns, rows, caption: 'Data', class: 'consumer', style: 'color: red', 'data-bench': 'table', 'aria-label': 'People' } },
   { id: 'empty-rows', props: { columns, rows: [] } },
 ] satisfies Fixture[];
