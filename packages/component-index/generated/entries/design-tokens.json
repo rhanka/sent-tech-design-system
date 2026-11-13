@@ -7,49 +7,49 @@
       "digest": "sha256:6528544449048222a8e3459271b20fb1787e86fccc276ad4e6b8bd7c534dceec",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/foundation.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:0885b6e16c0ad293cf3bc6f18f264a50e5182fb6c9e0108f4ff5601c1ad679de",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/semantic.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:19491b9c08b2ae0fb01fb80c8466a2be99347a71a7075d4a5eeab67081748fa5",
+      "digest": "sha256:54f79310a9d658c7b0d3199f58b488ddb329ebb22b8c96e1fc3e8ce9ae22c7ea",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/component.ts",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:923ee07aaf591fd101009b6197a1870e3837fd52fe320b582916fb3ceb442e2e",
+      "digest": "sha256:807cdbf5faa4193a9140ce511c0b37e25a2f460af520d798092a99935bef50f9",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/sent-tech.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:6034def2fb8c159da473fbb0adced8fe21fa01b7dda8c4b89edb15dea408f966",
+      "digest": "sha256:4285bd5841ff1231b42213ab036c7b5d4f192da071399ecd5e795b06dafce447",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/forge.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:7d5e294723855f7a8ce107da310f57bc5bae230d7e70108a14d4676c599a4746",
+      "digest": "sha256:134ec42cc336be3659c344a6a6060eebc06b1473bb6a292015cd8307d915841a",
       "package": "@sentropic/design-system-themes",
       "path": "packages/themes/css/entropic.css",
-      "version": "0.12.0"
+      "version": "0.13.0"
     }
   ],
   "description": {
     "en": "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens.",
     "fr": "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens."
   },
-  "digest": "sha256:03731ae71574bafe8f14d97761c250f71375981ceddb166b5f6cdc1b73ec9746",
+  "digest": "sha256:890dfe0e1a1ec775c115c46de315abc0be62d28e8b4bd3b53a8817b5ac679baa",
   "displayName": "DesignTokens",
   "format": "component-entry/v1",
   "frameworks": [],

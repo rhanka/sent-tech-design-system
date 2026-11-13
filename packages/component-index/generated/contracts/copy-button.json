@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:1a16547461a286ca1a6edd5b3befd7075855d3fa7f3bea929e44e418017780d5",
-  "entryDigest": "sha256:cc46331f16c046866c86ee6d7bf52559b8a307c90ba0a9ac4f637c968cebe926",
+  "digest": "sha256:3d9054d18d62f1f87573aeefef7d463777e46dd011906800462ecc8794856861",
+  "entryDigest": "sha256:a583617e38cfac64281eae84d544f7200b82edde8770f72b22df9a6631998973",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/CopyButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CopyButtonProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

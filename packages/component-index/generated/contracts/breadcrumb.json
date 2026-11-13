@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:5357dffe602dbb45d88ad7a70c7c8d331db3080ad9b6626c5a94466b62b6fc4d",
-  "entryDigest": "sha256:6d40e10ae4e7d23fac9e8a0c78618f7b6fa3d6dcbd18f384749912138e0355cd",
+  "digest": "sha256:9549281d8e0c7a6ce15eba7a0c5a487cddc49c02a045d5eff3ae0174ee1def62",
+  "entryDigest": "sha256:331014875f49c534cedfae7c87b959f5d63ad077022f07ae1d52199c306bf006",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-svelte/dist/Breadcrumb.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BreadcrumbProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

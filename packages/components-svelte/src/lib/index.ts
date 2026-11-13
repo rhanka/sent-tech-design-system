@@ -106,7 +106,7 @@ export type {
   SceneOccurrenceRef,
   ScenePresentation,
   SceneView,
-} from "./diagramSceneModel.js";
+} from "@sentropic/diagram-canvas/diagramSceneModel";
 export { default as Divider } from "./Divider.svelte";
 export { default as DonutChart } from "./DonutChart.svelte";
 export { default as Drawer } from "./Drawer.svelte";
@@ -504,9 +504,27 @@ export type { DropdownOption } from "./Dropdown.svelte";
 export type { HeaderAccount } from "./Header.svelte";
 export { deriveInitials } from "./Header.svelte";
 export type { FileUploadItem, FileUploadStatus } from "./FileUploader.svelte";
-export type { MenuItem } from "./Menu.svelte";
+export type {
+  MenuItem,
+  MenuActionItem,
+  MenuDividerItem,
+  MenuGroupItem,
+  MenuSubmenuSide,
+  MenuSelectDetail
+} from "./Menu.svelte";
 export type { MultiSelectOption } from "./MultiSelect.svelte";
-export type { OverflowMenuItem } from "./OverflowMenu.svelte";
+export type {
+  OverflowMenuItem,
+  OverflowMenuActionItem,
+  OverflowMenuDividerItem,
+  OverflowMenuGroupItem,
+  OverflowMenuSubmenuSide
+} from "./OverflowMenu.svelte";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition
+} from "./menu-cascade.js";
 export type {
   ProgressIndicatorItem,
   ProgressIndicatorStatus
@@ -565,3 +583,7 @@ export { default as Dashboard } from "./Dashboard.svelte";
 export type { DashboardProps, DashboardNavItem, DashboardKpi } from "./Dashboard.svelte";
 export { default as Wizard } from "./Wizard.svelte";
 export type { WizardProps, WizardStep } from "./Wizard.svelte";
+
+export { createLayoutCache } from "@sentropic/diagram-canvas";
+export type { LayoutCacheConfig, LayoutCacheStats } from "@sentropic/diagram-canvas";
+export type { DiagramSceneSize, SceneLayoutCache } from "@sentropic/diagram-canvas/diagramSceneModel";
