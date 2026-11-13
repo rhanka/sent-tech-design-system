@@ -59,6 +59,8 @@ export interface SceneCollapsedOccurrences extends ReadonlyArray<SceneOccurrence
     label?: string;
     compact?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
+    iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
+    strictIcons?: boolean;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (
       collapsed: readonly SceneOccurrenceRef[],

@@ -19,7 +19,6 @@ import {
   CARD_GEOMETRY,
   ZONE_GEOMETRY,
   defaultCardMeasure,
-  firstOverflowDiagnostic,
   layoutZone,
   projectZoneProps,
   zoneCollapsedCardProps,
@@ -133,9 +132,9 @@ export function zoneContent(
   parts.push(
     `<rect class="st-diagramZone-frame" x="0" y="0" width="${width}" height="${height}" rx="${g.radius}" fill="var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramZone-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramZone-proposedDashArray, 4 5)"` : ""}/>`,
   );
-  if (header.iconBox !== undefined && props.icon !== undefined) {
+  if (header.iconBox !== undefined) {
     parts.push(
-      iconGroupFor(props.icon, props.iconGlyph, header.iconBox.x - x, header.iconBox.y - y, header.iconBox.size),
+      iconGroupFor(layout.icon.name, layout.icon.glyph, header.iconBox.x - x, header.iconBox.y - y, header.iconBox.size),
     );
   }
   if (header.kicker.length > 0) {
@@ -248,9 +247,6 @@ export function renderZoneSvg(
   const measure = opts.measure ?? defaultCardMeasure;
   const children = opts.children ?? [];
   const { content, layout, diagnostics } = zoneContent(props, children, measure);
-  if (firstOverflowDiagnostic(diagnostics) !== undefined) {
-    return { kind: "refused", diagnostics, layout };
-  }
   const { x, y, width, height } = layout.box;
   const overflowSlots = diagnostics
     .filter((diagnostic) => diagnostic.code === "zone-overflow")

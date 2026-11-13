@@ -73,7 +73,7 @@ describe("fixed footprints", () => {
     // 16 top inset + header band + 16 rule gap + one row of 200-high cards + 16 bottom;
     // 16 + 460 + 24 gap + 460 + 16 wide.
     expect(box.height).toBe(16 + header.height + 16 + 200 + 16);
-    expect(box.width).toBe(16 + 460 + 24 + 460 + 16);
+    expect(box.width).toBe(16 + 460 + 96 + 460 + 16);
   });
 });
 

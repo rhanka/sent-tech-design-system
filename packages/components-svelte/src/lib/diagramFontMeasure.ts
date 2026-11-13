@@ -1,3 +1,4 @@
+import { measureBundleLabel } from '@sentropic/diagram-canvas';
 /** Browser-only font read; the layout/cache still own geometry. */
 import { CARD_GEOMETRY, cardLineMeasurer, createCardMeasure, layoutCard, layoutZone, projectCardProps, projectZoneProps,
   type CardLineMeasure } from './diagramCardModel.js';
@@ -48,7 +49,9 @@ export function measureRenderedSceneFont(frame: HTMLElement, scene: SceneModel, 
   }
   const lines = cardLineMeasurer(measured);
   for (const label of scene.labels) {
-    const layout = lines({ text: label.lines.join(' '), role: 'edge-label', availableWidth: 400, allocatedLines: 1 });
+    const layout = label.bundle === undefined
+      ? lines({ text: label.lines.join(' '), role: 'edge-label', availableWidth: 400, allocatedLines: 1 })
+      : measureBundleLabel(label.bundle.groups.map(group => group.lines.join(' ')), lines, label.box.width).layout;
     if (layout.width > label.box.width + 0.01 || layout.height > label.box.height) return measured;
   }
   return undefined;
