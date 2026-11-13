@@ -127,7 +127,6 @@
   "packages/components-vue/src/PackedBubblesChart.ts",
   "packages/components-vue/src/Pagination.ts",
   "packages/components-vue/src/PaginationNav.ts",
-  "packages/components-vue/src/PanelSection.ts",
   "packages/components-vue/src/PanelStack.ts",
   "packages/components-vue/src/ParallelCoordinatesChart.ts",
   "packages/components-vue/src/ParetoChart.ts",
