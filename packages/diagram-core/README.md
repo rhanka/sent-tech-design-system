@@ -100,8 +100,11 @@ for an entity. Geometry, groups, collapsed state and filters cannot prove a chai
 A drawn port is tested through its owner entity.
 
 Walks stop at the first admitted end and close cycles with an iterative branch
-stack. `first-drawn` accepts a completed single-step prefix (the exposer in an
-external-API chain), and a drawn non-admitted intermediate blocks further lifting.
+stack. Completed suffixes are reused while their cycle-pruning ancestors remain
+on the branch, preserving the first witness in candidate order. `first-drawn`
+accepts a drawn completed single-step prefix (the exposer in an external-API
+chain) without requiring the remaining suffix. A drawn non-admitted intermediate
+blocks further lifting.
 Aggregates recompute the complete member set, test each member's target and source
 chains, sort by UTF-16 `(sourceId, targetId, relationId)`, and require the smallest
 member as carrier. Any occurrence of the same repo entity is an equivalent end.
@@ -128,7 +131,10 @@ changing the presentation pin. The package includes
 [`schemas/diagram-view-schema-3.json`](schemas/diagram-view-schema-3.json) and its
 [canonical SHA-256](schemas/diagram-view-schema-3.sha256):
 `b415c05197692baa5f74ab35e3150ce58079cf9f06201df5e581d222a8d2c0df`.
-Versions and downstream dependency pins are managed by the release conductor.
+This branch includes the successor `@3` schema lot but defers the specification's
+`0.2.0` release lot: the current package version and downstream dependency pins
+remain `0.1.0`. The release conductor owns that version/pin/lockfile update and
+the owner-confirmed tag; schema inclusion does not certify downstream adoption.
 
 ### Commands are transactions
 
