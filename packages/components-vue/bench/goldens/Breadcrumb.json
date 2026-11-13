@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Breadcrumb",
+  "sourceRevision": "5c90d6f46b6748773b03974989140e5e399c5a9d",
+  "source": "src/Breadcrumb.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol><li><a href=\"/\">Home</a><span class=\"st-breadcrumb__separator\">/</span></li><li><a href=\"/docs\">Docs</a><span class=\"st-breadcrumb__separator\">/</span></li><li><span aria-current=\"page\">Guide</span></li></ol></nav>"
+    },
+    {
+      "id": "no-href",
+      "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol><li><span>Home</span><span class=\"st-breadcrumb__separator\">/</span></li><li><span>Docs</span></li></ol></nav>"
+    },
+    {
+      "id": "current-only",
+      "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol><li><span aria-current=\"page\">Here</span></li></ol></nav>"
+    },
+    {
+      "id": "custom-label",
+      "html": "<nav aria-label=\"Fil d'Ariane\" class=\"st-breadcrumb consumer\" data-bench=\"crumbs\" style=\"color:red;\"><ol><li><a href=\"/\">Home</a><span class=\"st-breadcrumb__separator\">/</span></li><li><a href=\"/s\">Section</a></li></ol></nav>"
+    },
+    {
+      "id": "empty",
+      "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol></ol></nav>"
+    }
+  ],
+  "sourceSha256": "911e3dc615a0694dd9762f85ecb7e066728db05557384f3f5ff6e1b500d57728",
+  "fixtureSha256": "17852f339aaae510f09feb83fa38b31182c7293ad00d9150da92fedade4b5e63",
+  "publicExports": [
+    {
+      "name": "Breadcrumb",
+      "typeOnly": false
+    },
+    {
+      "name": "BreadcrumbProps",
+      "typeOnly": true
+    },
+    {
+      "name": "BreadcrumbItem",
+      "typeOnly": true
+    }
+  ]
+}
