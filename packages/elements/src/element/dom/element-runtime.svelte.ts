@@ -15,6 +15,9 @@
  * hosts observe the element itself, never the runtime.
  */
 
+import { prepareBpmnEnvelope } from '../bpmn.js';
+import { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
+export { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
 import type { Diagnostic } from "../../validate/index.js";
 import { engineLoadFailed } from "../../validate/diagnostics.js";
 import { normalizeEnvelopeInput } from "../../validate/envelope.js";
@@ -33,20 +36,6 @@ export type ElementPayload =
       readonly watermark: { readonly hidden: true; readonly license: string } | undefined;
     }
   | { readonly kind: "dossier"; readonly document: unknown };
-
-/** The hostConfig shape the elements read (§6.5). */
-export interface HostConfig {
-  readonly theme?: unknown;
-  readonly colorScheme?: unknown;
-  readonly locale?: unknown;
-  readonly assetBase?: unknown;
-  readonly bpmn?: {
-    readonly watermark?: {
-      readonly hidden?: unknown;
-      readonly license?: unknown;
-    };
-  };
-}
 
 /** The catalogue components L2 wraps. */
 export type ElementComponent = "BarChart" | "BpmnCanvas" | "DecisionDossier";
@@ -130,16 +119,6 @@ function needsOwnEngine(component: ElementComponent, errors: readonly Diagnostic
  * readable in the browser (§6.5), so a host that puts a literal license
  * there is caught by the W4 guard, not by this element.
  */
-export function bpmnWatermark(hostConfig: HostConfig | undefined):
-  | { readonly hidden: true; readonly license: string }
-  | undefined {
-  const watermark = hostConfig?.bpmn?.watermark;
-  if (watermark === undefined) return undefined;
-  const { hidden, license } = watermark;
-  if (hidden !== true) return undefined;
-  if (typeof license !== "string" || license.trim() === "") return undefined;
-  return { hidden: true, license };
-}
 
 /**
  * Create the runtime of one element instance. Called once from the wrapper
@@ -193,6 +172,13 @@ export function createElementRuntime(component: ElementComponent) {
   async function ingest(envelope: unknown, hostConfig: HostConfig | undefined): Promise<void> {
     const ticket = ++sequence;
     state = "rendering";
+    if (component === 'BpmnCanvas') {
+      const prepared = await prepareBpmnEnvelope(envelope, hostConfig);
+      if (ticket !== sequence) return;
+      diagnostics = [...prepared.diagnostics]; payload = prepared.payload;
+      settle(prepared.payload === null ? 'refused' : 'rendered'); return;
+    }
+
     try {
       // B1: the canonical form, once — size and both validators judge the
       // JSON value the host transmits, never the raw JS object (§4.3).
@@ -251,35 +237,6 @@ export function createElementRuntime(component: ElementComponent) {
       if (component === "BarChart") {
         const { component: _c, id: _i, ...props } = root;
         payload = { kind: "bar-chart", props };
-      } else if (component === "BpmnCanvas") {
-        const { toXml } = (await loadEngine(component)) as {
-          toXml: (document: unknown) => Promise<
-            { ok: true; xml: string; warnings: readonly unknown[] } | { ok: false; code: string; message: string }
-          >;
-        };
-        const xml = await toXml(root.document);
-        if (ticket !== sequence) return;
-        if (!xml.ok) {
-          diagnostics = [
-            {
-              code: "semantic-invalid",
-              path: "/root/document",
-              message: xml.message,
-              severity: "error",
-              source: "bpmn-canvas",
-              detail: { code: xml.code },
-            },
-          ];
-          payload = null;
-          settle("refused");
-          return;
-        }
-        payload = {
-          kind: "bpmn",
-          xml: xml.xml,
-          assetBase: typeof hostConfig?.assetBase === "string" ? hostConfig.assetBase : undefined,
-          watermark: bpmnWatermark(hostConfig),
-        };
       } else {
         payload = { kind: "dossier", document: root.document };
       }

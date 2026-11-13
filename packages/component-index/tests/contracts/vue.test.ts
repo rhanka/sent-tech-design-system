@@ -50,6 +50,14 @@ describe("K1b Vue extractor (spec 7.4)", () => {
     expect(body.status).toBe("partial");
   });
 
+  it("retains event payloads from a template SFC's default declaration", () => {
+    const body = extractVue(inputFor("SceneWidget"));
+    expect(body.events).toEqual([{ name: "onSelect", payload: {
+      type: "object", properties: { entityId: { type: "string" } },
+      required: ["entityId"], additionalProperties: false,
+    } }]);
+  });
+
   it("records none with no-props-type when XProps is absent", () => {
     const body = extractVue(inputFor("Missing"));
     expect(body.status).toBe("none");

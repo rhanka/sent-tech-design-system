@@ -1,8 +1,8 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:d453e72079bbe1fb737a5b881e6075583866bc061c5330c8ba9e0636952603d3",
-  "entryDigest": "sha256:577638241e6a00b107df7d374ae975bc7eed0888a14a77252b98e9fef040e6a3",
+  "digest": "sha256:d1ddbd1c6fd639b3bb0d17679fd3a1095654a20e9a94e8d76196704e19ce9859",
+  "entryDigest": "sha256:7e22a7be5400cbafa95ebba8415ad3a6c5b4e1a01a13ad1a7f11964b06f9252e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -229,7 +229,7 @@
         "declarationPath": "packages/components-svelte/dist/GanttChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GanttChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:ee54a2f721128b79699c5f4f86f776d5a676c77bcb2184ec2b309aaa69135426",
-  "entryDigest": "sha256:af55c1e052cd46bbe5e342300acd956f42c21fd49c182dbf57a1ce79d52c7cd4",
+  "digest": "sha256:0050f1b57a1141c0efd9293219c68c99719393a4392c56d7a74afbb9eac3b71f",
+  "entryDigest": "sha256:e20c4a2cae78c6fdbeda308ad517264044910282b0189e4f154692ad252caeb9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -479,7 +479,7 @@
         "declarationPath": "packages/components-svelte/dist/MenuPopover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -727,7 +727,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:791285f47501a7b7c8abd9e66b8ad64efb0b8c31b22fb1b38233bbec31509743",
+        "declarationDigest": "sha256:21c5df06d2c4c37e83e73dd4efb5714b9e485fe20ed7c822fd1aa2879cc65057",
         "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuPopoverProps",

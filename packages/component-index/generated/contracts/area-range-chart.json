@@ -1,8 +1,8 @@
 {
   "componentId": "area-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:989108b4e2a80ecbc305818b4cf32759247714ee2791ab04aba2be5b137c69d8",
-  "entryDigest": "sha256:b8cf34f3eda364221a43fd438dc56b31ea41ed36ab4ad9458d7e875663443d4c",
+  "digest": "sha256:abb42904e02b66ff41f230df7fbe32257b449b26fe5cfa49962648edd5dc7d06",
+  "entryDigest": "sha256:bb4dd4df6ca53dc4c4168408273d7c761f785f1727ee7f904286ed084a49c3e5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
