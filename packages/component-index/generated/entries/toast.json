@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1b0ac1334d2bfd172471afc865df02c2deae3db1a60f5b3659bf7b963c6990b7",
+      "digest": "sha256:f374932437a0773d6e8119268b483a1778813525f4ee7787c878ad257a233e8e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toast.vue",
@@ -40,7 +40,7 @@
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:8cf258ac5a8fe4f47d9f9b104c61e7e32aa562a4173ff0727c1ed7d0bb62fdf8",
+  "digest": "sha256:2b3b682e6897536fb13b4c69eb8203875fa71188680ebdc5488eb0a662a0ebf7",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [

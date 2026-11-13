@@ -1,8 +1,8 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:145c170f02cafab0015afac9936a5d185c165f25de27190ec445d386211db62b",
-  "entryDigest": "sha256:831c74893a418746a787ec6b86e7ca22fef4aea2d79747fd6b19efabaaa6707b",
+  "digest": "sha256:fcfb60a0ce371eec65812c8b1bbd526d3d50c3576cd06cde61a7270524ea2aaa",
+  "entryDigest": "sha256:6ec689584af47717f70517676d95b6fe72099eaff21b4133e686411412458acd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

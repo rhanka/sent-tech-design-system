@@ -3,7 +3,7 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type EmptyStateProps = {
-  title: unknown;
+  title?: unknown;
   message?: unknown;
   action?: unknown;
   class?: string;
@@ -15,16 +15,16 @@ const props = withDefaults(defineProps<EmptyStateProps>(), {
   action: undefined,
   class: undefined,
 });
-defineSlots<{ default?: () => unknown }>();
+defineSlots<{ default?: () => unknown; title?: () => unknown; message?: () => unknown; action?: () => unknown }>();
 </script>
 
 <template>
   <section v-bind="{ ...($attrs), class: (classNames('st-empty-state st-emptyState', props.class)) }" >
     <div class="st-empty-state__content">
-      <h2 class="st-empty-state__title st-emptyState__title">{{ scalarContent(props.title) }}</h2>
-      <p v-if="props.message" class="st-empty-state__message st-emptyState__message">{{ scalarContent(props.message) }}</p>
+      <h2 class="st-empty-state__title st-emptyState__title"><slot name="title">{{ scalarContent(props.title) }}</slot></h2>
+      <p v-if="$slots.message || props.message" class="st-empty-state__message st-emptyState__message"><slot name="message">{{ scalarContent(props.message) }}</slot></p>
       <slot />
-      <div v-if="props.action" class="st-empty-state__action">{{ scalarContent(props.action) }}</div>
+      <div v-if="$slots.action || props.action" class="st-empty-state__action"><slot name="action">{{ scalarContent(props.action) }}</slot></div>
     </div>
   </section>
 </template>

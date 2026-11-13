@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:5c27eb9f3844fe765d187f007271fb9d3d8a0ee48d8ec9ff9cc37dec6ace61b6",
-  "entryDigest": "sha256:97050ac5c943cfa0e18e2de149b34ac5ccf788df9954ef068cb7c02f5daa670e",
+  "digest": "sha256:53a64aadfa85d0d42a051cbefbbedeae3e5033483a608ac525ea9c0e0b7ca55c",
+  "entryDigest": "sha256:4cc42c408b5ee3e160b6f369535ffbf632c27077a97aafc204e5703f6a671717",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

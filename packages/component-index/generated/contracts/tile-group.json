@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:86655c8a03300cb3b467e425df39560a49fcebd00bf656cbcd6416bf94fb24c7",
-  "entryDigest": "sha256:131ad0a6f3b33307c7c510697505bd47145244a0b7ae1c9b28fcaed61c91da65",
+  "digest": "sha256:0625cb1979b515f95949ff70ed9a5d3662c7c18ef37537bb226edb7e50d31e90",
+  "entryDigest": "sha256:6ea9219bc0aa7101ac28be7b51b505e60bbb8766510f82eb4c05c368a608dcb5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -339,9 +339,7 @@
               "disabled": {
                 "type": "boolean"
               },
-              "label": {
-                "description": "Libellé du tile (canonique Svelte)."
-              },
+              "label": {},
               "title": {},
               "value": {
                 "type": "string"
@@ -453,7 +451,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:5f425694883a2f1509b6d97ff96b8167c9208fcf3ccfeded6c135c780e7a5eb5",
+        "declarationDigest": "sha256:1299e31e0191e2fb4bab3d49da61d3449d445f3d1426272c52e095782d187640",
         "declarationPath": "packages/components-vue/dist/TileGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",

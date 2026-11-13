@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:7627375444726e7ac9b759a9982bcabbb80d1bc430229e0d2515434b342c7a08",
-  "entryDigest": "sha256:fc185d62821a5aa454386a739d911f05bc9bc5baba0efee7d0d96f46807256bb",
+  "digest": "sha256:eb69640c2c79e1cea94ea5f8f8ae4d3e789ac65211c1564b3c7523de4ddd8354",
+  "entryDigest": "sha256:1575993bff4b48c59e1cada3c3a113f60d4f391026ba5006e7118bc558487e48",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

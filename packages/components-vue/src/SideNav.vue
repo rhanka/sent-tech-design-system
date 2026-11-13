@@ -3,7 +3,9 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type SideNavItem = {
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
   href: string;
   active?: boolean;
   children?: SideNavItem[];

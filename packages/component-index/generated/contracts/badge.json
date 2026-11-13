@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:c27fe76d80d243135602c712067c43f2dad245722cb294cfdb261a99960f0a7e",
-  "entryDigest": "sha256:35df417f51c6c90c8195698e4e741c544a56a0e3a8de74eed69f3174db88f1a6",
+  "digest": "sha256:5cbd11721e8eca1f9892b6b322b4967e8ba9b676e028ec8f94a623118c3059de",
+  "entryDigest": "sha256:758d78f404d3e5c3216cb8231e6cb4d146f8634a27d1172d19c94fb2d1d65a58",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,16 +220,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:a53be2265b4f2c714f8b11ce2c7238cf87093a0255504e32e089bae50926e6b0",
+        "declarationDigest": "sha256:264e1024243cf25a4b95570cb28b1730956a1df5149e9b7832758fea685e8a0c",
         "declarationPath": "packages/components-vue/dist/Badge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BadgeProps",

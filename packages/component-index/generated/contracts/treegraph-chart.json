@@ -1,8 +1,8 @@
 {
   "componentId": "treegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:b249330c45b41dbe092d3745c013c0e97635c7d1930939e19fa726b51e527080",
-  "entryDigest": "sha256:6178597732071b70e8fc594523aed66399bd85623f4acffc0927d98f7b852183",
+  "digest": "sha256:e1c86009a1951200e0b8bbcc229c061c6c4e8b487d82ccad6e36cb12c4ae4773",
+  "entryDigest": "sha256:bdbbcdff9cfc5e346ea5d0c42489da68afc425a42642906843fb66a7071a7d17",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

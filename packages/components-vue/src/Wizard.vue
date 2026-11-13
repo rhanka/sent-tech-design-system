@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type WizardStep = { label: string; description?: string };
@@ -30,7 +30,7 @@ const props = withDefaults(defineProps<WizardProps>(), {
 });
 defineSlots<{ default?: () => unknown }>();
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-wz', props.class),

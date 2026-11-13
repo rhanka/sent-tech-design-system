@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId, useAttrs } from 'vue';
+import { computed, useId } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
 import {
@@ -61,7 +61,7 @@ const props = withDefaults(defineProps<BellCurveChartProps>(), {
   intervals: 64,
   class: undefined,
 });
-const attrs = useAttrs();
+
 const hoveredIndex = ref<number | null>(null);
 const gradientId = 'st-bellcurve-gradient-' + useId();
 function handleLeave() {

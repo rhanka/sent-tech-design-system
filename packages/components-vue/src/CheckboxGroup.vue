@@ -49,6 +49,7 @@ function toggle(optionValue: string, checked: boolean) {
 function onCheckboxChange(event: Event, option: CheckboxGroupOption) {
   toggle(option.value, (event.target as HTMLInputElement).checked);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

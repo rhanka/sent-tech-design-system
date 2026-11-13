@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:63880a677d45242cae522d8a66a9eeaca5f2684f665d5529e757d21c458252a5",
+      "digest": "sha256:ebc3e38ad9dad306c1d92fa5d2d831e55d5b494460d069d5abe13728681b87d5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ChatComposer.vue",
@@ -40,7 +40,7 @@
     "en": "Composer with action slots and send/stop handling.",
     "fr": "Barre de rédaction avec slots d’actions et envoi/arrêt."
   },
-  "digest": "sha256:aa348261ffd8fe69f6d5f119b12d938ab995e8ad7a31a929f78d3c3c0e53321d",
+  "digest": "sha256:aec1df752f1e13de0281030023d17bc9b8666aa8b1a3aba9ee7e28801dcbef87",
   "displayName": "ChatComposer",
   "format": "component-entry/v1",
   "frameworks": [

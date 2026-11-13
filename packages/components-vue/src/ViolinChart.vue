@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ViolinChartTone =
@@ -66,7 +66,7 @@ const props = withDefaults(defineProps<ViolinChartProps>(), {
   bins: 20, quartiles: true, width: 480, height: 280, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-violinChart', props.class),

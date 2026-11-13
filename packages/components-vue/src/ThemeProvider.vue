@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSlots } from 'vue';
+
 import { computed, onBeforeUnmount, watchEffect } from 'vue';
 import {
   compileTheme,

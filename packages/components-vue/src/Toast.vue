@@ -10,7 +10,7 @@ export type ToastTone = "info" | "success" | "warning" | "error";
 export type ToastItem = {
   id: string;
   tone?: ToastTone;
-  title: unknown;
+  title?: unknown;
   message?: unknown;
   actions?: unknown;
 };
@@ -41,7 +41,11 @@ const emit = defineEmits<{ close: []; dismiss: [id: string] }>();
 
     const resolvedCloseLabel = computed(() => props.closeLabel ?? (isFr.value ? "Fermer" : "Close"));
 
-    const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((title: unknown) => isFr.value ? `Fermer ${String(title)}` : `Dismiss ${String(title)}`));
+    const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((title: unknown) => {
+      const text = scalarContent(title);
+      const action = isFr.value ? 'Fermer' : 'Dismiss';
+      return text === '' ? action : `${action} ${text}`;
+    }));
 
     const hasClose = () => typeof props.onClose === 'function';
     const hasDismiss = () => typeof props.onDismiss === 'function';

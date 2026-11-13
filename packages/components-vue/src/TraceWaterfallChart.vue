@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TraceSpan = {
@@ -91,7 +91,7 @@ const props = withDefaults(defineProps<TraceWaterfallChartResolvedProps>(), {
   size: undefined, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-traceWaterfallChart', props.class),

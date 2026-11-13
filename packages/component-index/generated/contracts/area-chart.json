@@ -1,8 +1,8 @@
 {
   "componentId": "area-chart",
   "contractSource": "derived",
-  "digest": "sha256:8acfc202e85dfc15e9877f31b2bc32ae6ce264cf2bbef7b8edd4562d596e9b21",
-  "entryDigest": "sha256:8bff6417366484be4942e0c7a11f134141e63163cbf16634a1ef4be440c1508f",
+  "digest": "sha256:8af80339e53923708aa1cd154703d9dc06e6b0e499ae10ab741bb3a89af7a221",
+  "entryDigest": "sha256:d7c8226ad412a693ccc8209dcfd80dc7cfd5897bcd36635663d28d20eed0574f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

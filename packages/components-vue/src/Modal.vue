@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onUnmounted, useAttrs, watch } from 'vue';
+import { computed, onUnmounted, watch } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ModalProps = {
@@ -16,7 +16,7 @@ const props = withDefaults(defineProps<ModalProps>(), {
 });
 const emit = defineEmits<{ close: [] }>();
 
-const attrs = useAttrs();
+
 const sectionProps = computed(() => ({
 
   class: classNames('st-modal', props.class),
@@ -50,6 +50,7 @@ onUnmounted(() => {
   document.body.style.overflow = '';
   document.removeEventListener('keydown', onKeyDown);
 });
+defineSlots<{ "default"?: () => unknown; "footer"?: () => unknown }>();
 </script>
 
 <template>

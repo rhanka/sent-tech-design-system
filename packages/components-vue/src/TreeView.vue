@@ -6,7 +6,9 @@ import { scalarContent } from './slotContent.js';
 
 export type TreeNode = {
   id: string;
-  label: unknown;
+
+  /** @slot node-label */
+  label?: unknown;
   children?: TreeNode[];
   disabled?: boolean;
 };

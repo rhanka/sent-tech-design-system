@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-data-image",
   "contractSource": "derived",
-  "digest": "sha256:21c5dd8b2c6da7730dab1c9bd28e777fb21b473393577190b6a7574af59fcf85",
-  "entryDigest": "sha256:333402149047d56f8ef774b713b4e02d9668c992417cc8c6786ecd93abf41fbf",
+  "digest": "sha256:774ad82c27112474f27171756a3770eda779985c9310905bb757ebdb8f96f4ba",
+  "entryDigest": "sha256:3d36db7bdadb71dc49354ff65099b36d99e82e1a4962b785c459259ee0efe9dc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

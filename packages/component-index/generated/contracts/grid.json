@@ -1,8 +1,8 @@
 {
   "componentId": "grid",
   "contractSource": "derived",
-  "digest": "sha256:7d9bdb11d305cf3ffdc90958571cf3d10e5f9ea8efd5d575a57b48aa10e37447",
-  "entryDigest": "sha256:cf06f896c3fd339a636e4b669c7a572ea9c0fd11a783286e8e4fd7c9c79df387",
+  "digest": "sha256:1b699ee699bbf2f0e0e91852144c6914f0ef11700d4ecd1550bcaa792cbd175b",
+  "entryDigest": "sha256:79a6e5503847664761285df5e8bdd638d8919d7de7499fa61e88ca02e7ab23d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

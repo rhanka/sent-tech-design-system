@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:864eeaf0955dd248dc4aed9797b3e7534fc74f8d8140100c96eb81bfd476c445",
-  "entryDigest": "sha256:45f99b4c3216172efa39c5a73fc8a5d55099f1eb4b90b33b6c0efcf0e596f2ac",
+  "digest": "sha256:64389a04539d37de70114242fdc6a07e3cdb96d906c812f22f6f6cf704cf05bd",
+  "entryDigest": "sha256:a172a19e6aeec8f83d068347988209d4bed5ca4278f957f96827315d868f13b4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -226,16 +226,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7a7cf6d8e8e187a98a69c9d6e31ed3ede6ba494055beed742466b1dbc5a3fd34",
+        "declarationDigest": "sha256:9d88299de3d7dbf63ae8ffc993637a12b49012f9c1563bd11c2abbf4283ac59b",
         "declarationPath": "packages/components-vue/dist/MenuTriggerButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuTriggerButtonProps",

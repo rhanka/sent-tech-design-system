@@ -37,6 +37,7 @@ const props = withDefaults(defineProps<ChatMessageProps>(), {
   class: undefined,
 });
 defineSlots<{timestamp?: () => unknown;
+  content?: () => unknown;
   default?: () => unknown;
   avatar?: () => unknown;
   footer?: () => unknown;
@@ -74,7 +75,7 @@ const alignment = computed(() => (role.value === 'user' ? 'end' : 'start'));
     </div>
     <div class="st-chatMessage__body">
       <div class="st-chatMessage__bubble">
-        <div class="st-chatMessage__content"><template v-if="$slots.default"><slot /></template><template v-else>{{ scalarContent(props.content) }}</template></div>
+        <div class="st-chatMessage__content"><slot name="content"><slot>{{ scalarContent(props.content) }}</slot></slot></div>
         <span v-if="isStreaming" class="st-chatMessage__pulse" aria-hidden="true" />
       </div>
       <div v-if="$slots.footer || props.footer || props.timestamp || $slots.timestamp" class="st-chatMessage__footer">

@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:8dfc3f02b1f3395ee56e74b0dcb24b64999f20b757a15658ad205c6223dc9f14",
-  "entryDigest": "sha256:a7cf1c044a7bc4ab0404388f8e0049213e96ad1ea0d41f0c7c58683395adac96",
+  "digest": "sha256:e5680dd45e6f4ec915c0f132fa17c7aab0d6cb8cd97abfc5d3d4660caaa67794",
+  "entryDigest": "sha256:dbf74a12bc0ced1ee3b5611cb6d5f1c6b309155923f943769da85d198ac68dab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

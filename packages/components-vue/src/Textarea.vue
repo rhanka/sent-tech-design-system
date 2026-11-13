@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { useSlots, useId, computed, ref, useAttrs } from 'vue';
+import { useSlots, useId, computed, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TextareaProps = {

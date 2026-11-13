@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:73582e8667509668be64a299a3bb0bef3db78fe19e22d50c10d25094e48760a2",
-  "entryDigest": "sha256:def50442fa43148a5a3737f2235155804e2f455adba4898727f91a6e21aa6ddb",
+  "digest": "sha256:c1fbcb93439f2c755e90f70b2bb2998dfcdff98b1e9c0043bc0b508fdc35cb90",
+  "entryDigest": "sha256:90b50dfb535c7ad85f66361df7767b1f67727e22892d0b5f198a5666a55f2d65",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

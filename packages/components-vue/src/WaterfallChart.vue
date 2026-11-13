@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 import { formatTick, niceTicks, scaleLinear } from './chartScale.js';
 
@@ -28,7 +28,7 @@ const props = withDefaults(defineProps<WaterfallChartProps>(), {
   width: 480, height: 240, connectors: true, format: undefined, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-waterfallChart', props.class),

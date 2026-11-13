@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:73211d93ffb47e0585c98b8b17d60616db22557643c69ac43f319097eafbb386",
-  "entryDigest": "sha256:e0bd5445a12709d47ecc7e950e0bfcfa6fe94a8d06a4559ef9d945f22e79077a",
+  "digest": "sha256:3adf6262619551b551ef9ddeb1d9dd0157d3406adbaf32f77808dbf249234d83",
+  "entryDigest": "sha256:084607853dcca4533094973b84428ad42f14f04b94e98bbbfdabbad59f2ca0ed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

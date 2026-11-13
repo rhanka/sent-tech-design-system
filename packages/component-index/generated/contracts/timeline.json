@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:5233093d78be609a15475e56ea9f0f4b5e5b00b01ba57ce0f93a47ae3948774c",
-  "entryDigest": "sha256:40caa733beef2c808f4f0469787e2f36d32b3466a60dca46c8ee6b8a92046d8d",
+  "digest": "sha256:e1596b9a719dd5b4a771506d5055666dc616364688f3d91e97341b312593fcd3",
+  "entryDigest": "sha256:35f83689d5ac568f34b60280e28d0a143d80e5b7fc07b05bdaa4c25b699fa6b5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

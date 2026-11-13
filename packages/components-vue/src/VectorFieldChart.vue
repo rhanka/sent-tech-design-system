@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 import { formatTick, niceTicks, scaleLinear } from './chartScale.js';
 
@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<VectorFieldChartProps>(), {
   width: 640, height: 320, size: 26, class: undefined, label: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-vectorFieldChart', props.class),

@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:6f152600a4e1f15f354f77464ab51885cee6ad3d07eeaf259817d6bd7ee63b7d",
-  "entryDigest": "sha256:40e269ef3305541319ebbd672c26a18a9b1ec040f0fcb8fd7888d09b0fd81916",
+  "digest": "sha256:5bf01f088f3c759370efc6cff05ad934ef2ab07aacb08a80095a0cbdf6216d6b",
+  "entryDigest": "sha256:5333bd053f38e97f547e6f3c070f8ea6ce80f88a9db4711d8a905aed25804839",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

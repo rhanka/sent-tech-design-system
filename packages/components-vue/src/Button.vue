@@ -16,6 +16,7 @@ defineOptions({ name: 'Button', inheritAttrs: false });
 const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'primary', size: 'md', type: 'button', disabled: false, class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

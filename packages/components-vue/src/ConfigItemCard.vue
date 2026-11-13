@@ -61,6 +61,7 @@ function onResetClicked() {
 function onDeleteClicked() {
   props.onDelete?.(item.value.id);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

@@ -23,6 +23,7 @@ const props = withDefaults(defineProps<NavShellProps>(), {
   label: undefined, open: false, side: 'left', class: undefined,
 });
 const emit = defineEmits<{ back: []; close: [] }>();
+defineSlots<{ default?: () => unknown; search?: () => unknown; footer?: () => unknown }>();
 </script>
 
 <template>

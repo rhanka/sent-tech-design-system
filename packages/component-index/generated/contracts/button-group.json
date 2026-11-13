@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:84e96d245c9b4f4bd788f49483d2f9de23cd1a87715748178d0a242a8b88120a",
-  "entryDigest": "sha256:dcd622f3757a7c711101fc4291840eb010d7eca524b0c64ffcb2878505e9a487",
+  "digest": "sha256:269754c5314c9bbdb6f67988086407a7c87ac38f5fbc5d55ab91a39969e10c77",
+  "entryDigest": "sha256:5544b80eaf10d823157d6a043e853b669206aee60aca584de4704661e8bbe8f2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -231,16 +231,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:ae40e4ee3b7a859a13da72ad01dd19f73e46d13761ffa3ccf2f0a6be52d4c273",
+        "declarationDigest": "sha256:5677040c42e6ae6962edc6278f353b2551a2649418fff5cbd9dbe3c010c58c2e",
         "declarationPath": "packages/components-vue/dist/ButtonGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonGroupProps",

@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:fc57143d31aba018421f10f7ac54cb4df5957235e6fb1c6edd25ee51b0ddf15c",
-  "entryDigest": "sha256:6cce8047edca97ca839322044ef6766a8b67f02a4a8713b831e492095ce5dc13",
+  "digest": "sha256:7d063fdcc6710934627b3b9eda6a3d84321d3d7ec25d94ddaccfcd2dbd6b174e",
+  "entryDigest": "sha256:7e1d6a3f1188fa3cef0890ab1f93fdf596a285cf49c20f50b0c353c6739fc923",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,24 +237,14 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         },
         {
-          "name": "footer",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "footer"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:527d5aca8fe6a0ba715ef55e250fcbc0664b53e76a72e0c70441be838f4e4b74",
+        "declarationDigest": "sha256:6c8fe33561f17fb76f016c3a4fc625265454b12528cf60ad8aa961590f083877",
         "declarationPath": "packages/components-vue/dist/Modal.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ModalProps",

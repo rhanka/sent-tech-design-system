@@ -19,6 +19,14 @@ test('counter IDs and useId IDs match while reference relationships survive', ()
   assert.notEqual(normalize('<div id="st-tabs-1-tab-one" aria-controls="st-tabs-1-panel-one"></div>'),
     normalize('<div id="st-tabs-v-0-tab-one" aria-controls="st-tabs-v-0-panel-two"></div>'));
 });
+test('review label identities should normalize without losing their suffixes or relationships', () => {
+  for (const name of ['eventFeedPanel', 'multiSelect']) {
+    const html = (id, ref = id) => `<p id="st-${name}-${id}-label">Label</p><div aria-labelledby="st-${name}-${ref}-label"></div>`;
+    assert.equal(normalize(html('0')), normalize(html('v-0')));
+    assert.notEqual(normalize(html('0')), normalize(html('v-0', 'v-1')));
+    assert.notEqual(normalize(html('0')), normalize(html('v-0').replace('-label', '-other')));
+  }
+});
 test('static IDs, classes, text, styles, attributes and element order remain significant', () => {
   const base = '<section id="consumer" class="a b" style="color:red" aria-hidden="false"><strong>A</strong><em>B</em></section>';
   for (const changed of [base.replace('consumer', 'other'), base.replace('a b', 'b a'), base.replace('red', 'blue'), base.replace('false', 'true'), base.replace('>A<', '>C<'), base.replace('<strong>A</strong><em>B</em>', '<em>B</em><strong>A</strong>')]) {

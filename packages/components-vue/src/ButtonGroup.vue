@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { normalizeStyle, computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -28,20 +28,20 @@ const props = withDefaults(defineProps<ButtonGroupProps>(), {
   label: undefined,
   class: undefined,
 });
-const attrs = useAttrs();
 const groupStyle = computed<CSSProperties | string | undefined>(() => {
   const gapValue =
     props.attached || props.gap == null
       ? undefined
       : `var(--st-spacing-${props.gap}, ${props.gap * 0.25}rem)`;
   return gapValue != null
-    ? { ...(normalizeStyle([attrs.style]) as CSSProperties), gap: gapValue }
-    : (attrs.style as CSSProperties | undefined);
+    ? { gap: gapValue }
+    : undefined;
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <div v-bind="$attrs"
+  <div v-bind="{ ...$attrs, style: [groupStyle, $attrs.style] }"
     :class="classNames(
       'st-buttonGroup',
       `st-buttonGroup--${props.orientation}`,
@@ -51,6 +51,5 @@ const groupStyle = computed<CSSProperties | string | undefined>(() => {
     role="group"
     :aria-label="props.label"
     :data-size="props.size"
-    :style="groupStyle"
   ><slot /></div>
 </template>

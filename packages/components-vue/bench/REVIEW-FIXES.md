@@ -80,3 +80,58 @@ ARIA, structure and reference relationships.
 
 No root npm test, browser, Python, Track command, rebase, stash or force-push was
 used. Publication and release tags remain outside this PR-fix operation.
+
+## Round-2 fixes
+
+Merged DC-2c.1 / PR 272 from origin/main (`47c996d8`) in `fcddc800` and
+regenerated the component indexes. The following corrections supersede the
+first-pass class-wide claims above. All 238 production SFCs were audited.
+
+| Findings | Correction and failing regression |
+| --- | --- |
+| Astra N1; Carbon M5 | Breadcrumb item-label renders linked/current rich labels with { item, index }; labels are optional and legacy non-scalars do not serialize. |
+| Astra N2; Carbon B3/M5 | EmptyState title/message/action slots support slot-only markup and a working Retry button; wrappers react to slot removal; title is optional. |
+| Carbon B1/m1, R2-M1 | Mixed inline type exports survive the Vapor build. Published gates compare every resolved type declaration, including CellDecorationIconProps: 632 types, 253 runtime values, 885 total names in each barrel. Menu component icons require item-icon and no longer leave empty spacers; empty string behavior is preserved. |
+| Carbon B4, R2-M3 | LanguageToggle forwards attrs in both variants; AppHeader retains them with an open compact drawer; MenuPopover keeps caller styles alongside owned positioning. Fourteen layout/image hosts exercise conflicting string/object/array styles and late updates with original caller precedence; cached style composition is removed. |
+| Carbon R2-M2/M4 | Combobox/MultiSelect/ChatComposer guard original values before string conversion. Slot labels name the listboxes and MultiSelect group/trigger. ChatComposer retains nullish defaults and explicit empty strings. |
+| Carbon m5, R2-m1 | Removed the 28 dead attrs bindings and five unused imports identified by the initial audit, plus imports made unused by those removals. Header uses computed links; FileUploader derives row metadata without singleton loops. |
+| Carbon R2-m2/m3 | Reactive select/drawer IDs retain stable generated fallbacks; LanguageToggle SVG tokens are unique; EventFeedPanel siblings have distinct label identities. |
+| Carbon R2-m4 | NavShell and Notification declare their slots. The whole-package guard now checks every statically rendered slot, repairing the other missing declarations too. Archived source still fails this guard for both reviewed components. |
+| Additional package audit | MessageStatusBadge gains scoped label; ChatMessage and MenuLabel gain named content/label aliases while preserving default slots; Combobox gains no-results-label; Accordion gains optional item-content for render callbacks. DatePicker's non-scalar dialog name falls back correctly; slot-only Toast queue titles have localized dismiss names. |
+
+Rich fields are optional at both top-level and collection positions. @slot
+documents equivalent existing scoped names; the two @vaporData exceptions are
+serialized/unrendered data. K25 negative controls cover unknown/VNode aliases,
+callbacks, optionality, missing/unrendered/undeclared slots, string conversion,
+attrs class/style precedence, cached caller style and unused Vue bindings.
+
+The initial new behavior campaign failed 33 of 62 cases. Three additional audit
+cases and two scalar-boundary cases failed before their fixes. The published
+type comparison failed specifically on CellDecorationIconProps. The final
+campaign has 71 passing cases in each runtime. Existing golden HTML was retained;
+two new paired fixtures were captured from archived Breadcrumb/EmptyState sources.
+
+| Final verification | Result |
+| --- | --- |
+| components-vue full Classic/Vapor suite | 114 files, 2,385 passed |
+| dataviz-vue full suite | 37 files, 160 passed |
+| Round-2 regressions | 71 Classic + 71 native Vapor passed |
+| Existing review regressions, Classic | 63 passed |
+| Review/interaction/normalizer/AST/codemod Node suites | 119 passed |
+| Existing toolchain/guard suite | 12 passed |
+| diagram-core / diagram-canvas suites after main integration | 669 / 504 passed; one existing canvas skip |
+| Component-index suite / freshness | 151 passed; 430 artifacts fresh |
+| Index/dependency/provenance Node guards | 26 passed |
+| Notices / licensing | Regenerated; 22 publishable packages passed |
+| Published declarations, Classic/Vapor builds, stable Vue 3.5.45 builds | Passed |
+| Packed Classic, stable-3.5 and Vapor consumers | All three runs passed; declarations, dependency graphs and runtime exports checked |
+| Vue/dataviz package smoke shard | Passed, including strict peer installation and Vapor consumer types |
+| All converted-component G1–G6 targets | 220 targets, 1,320 passing gates; 1,217 paired fixtures |
+| K25 against origin/main; whitespace check | Passed |
+
+The 33 targets updated during the gate campaign were rerun on final source.
+The first new fixture ordering error was corrected; no archived expectation was
+changed. Two verification attempts overlapped declaration builds and saw transient
+missing/partial output; both were rerun after builds completed. See
+[round2-fixes.json](results/round2-fixes.json) for final target results, the source
+digest, per-file hashes and archived slot-declaration failures.

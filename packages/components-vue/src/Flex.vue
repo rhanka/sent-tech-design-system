@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { normalizeStyle, computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
@@ -37,7 +37,6 @@ const props = withDefaults(defineProps<FlexProps>(), {
   class: undefined,
 });
 defineSlots<{ default?: () => unknown }>();
-const attrs = useAttrs();
 const bindings = computed(() => {
   const style: CSSProperties = {
     display: props.inline ? 'inline-flex' : 'flex',
@@ -46,7 +45,6 @@ const bindings = computed(() => {
     alignItems: alignValue(props.align),
     justifyContent: justifyValue(props.justify),
     gap: spacingToken(props.gap),
-    ...(normalizeStyle([attrs.style]) as CSSProperties),
   };
 
   return {  class: classNames('st-flex', props.class), style };
@@ -54,5 +52,5 @@ const bindings = computed(() => {
 </script>
 
 <template>
-  <component :is="props.as" v-bind="{ ...$attrs, ...bindings }"><slot /></component>
+  <component :is="props.as" v-bind="{ ...$attrs, ...bindings, style: [bindings.style, $attrs.style] }"><slot /></component>
 </template>

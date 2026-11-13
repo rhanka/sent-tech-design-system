@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:11082479a83c1c6f8fedd3c9f027880e13a683bd56adf324a2057450db079610",
-  "entryDigest": "sha256:be42cab7db29fda074402911123df1dbe1b75a2fea5d0cc2e38c654b09171d30",
+  "digest": "sha256:ee3348d3c7ea83db2fd8c0fa1c6a62d450f3df46e1479048456ad794716824e6",
+  "entryDigest": "sha256:1d8ec51f1ec2019d6bd68a82f448074838b4922980b7fa4387b1a15d485ff119",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

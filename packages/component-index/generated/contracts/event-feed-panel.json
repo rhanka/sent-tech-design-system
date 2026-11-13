@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:7ce6693abe41fde6814c5847c978b2e1a0f156d002f0167fd93694190968c46b",
-  "entryDigest": "sha256:a7fd2443de3ae66b5a40b4d1eb24d5ae17d6af8ef713ec3a4be9af27c676a041",
+  "digest": "sha256:4f3d3662e20bae3a86d8938ccfa66bbf5d47b4dc06ce62643abae22b948e2b7b",
+  "entryDigest": "sha256:c9d87b46eafa160bbd6e8ab6480e45fd358f641bf77b7363b00d7045f8dcf564",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

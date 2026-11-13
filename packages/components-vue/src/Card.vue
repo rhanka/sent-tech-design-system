@@ -11,6 +11,7 @@ const props = withDefaults(defineProps<CardProps>(), {
   interactive: false,
   class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

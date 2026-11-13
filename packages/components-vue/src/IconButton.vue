@@ -16,6 +16,7 @@ defineOptions({ name: 'IconButton', inheritAttrs: false });
 const props = withDefaults(defineProps<IconButtonProps>(), {
   size: 'md', variant: 'ghost', type: 'button', disabled: false, class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

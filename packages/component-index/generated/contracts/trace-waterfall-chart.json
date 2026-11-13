@@ -1,8 +1,8 @@
 {
   "componentId": "trace-waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:1935d4a8e54251d498f472fe525ce4438397ad251e812024cbe8f5dbe9c703bf",
-  "entryDigest": "sha256:a1faa1779fc2773bdd88e6faa678008d78fda6d729fb72da11a77b00aeff97fe",
+  "digest": "sha256:8205f7033655fba5501cadf200c7584abed04c85b1e226bd12e29e0125f10d5f",
+  "entryDigest": "sha256:09bc0483f5bf0d0c42bb122ff82779054d180926786361ab51f23677f03cbcb1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:006e0c4dc171246e1e6bbbcadd39a3ae1596119aad10b7fa6464e590678c9618",
-  "entryDigest": "sha256:694dd3110029b9dca639f12fa009c7dba7074be27834a9abdf27ede042286db5",
+  "digest": "sha256:2dbca4d3722a4263c141ae7ccae799c164fce31fd7753618232d3b72b91bb96a",
+  "entryDigest": "sha256:3380ea674e5a31698e35aa71c61df612bffa23896e4ee7f9b777df1c8b22ad1a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -258,16 +258,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:e18a8944f5ca56ccf90ca80af041c39e9b67cce044807f210b6c1f480bed8c35",
+        "declarationDigest": "sha256:57bd2da1ced0316170772a516223e2cdb39253dbf5aa710c8c30436b1747ae60",
         "declarationPath": "packages/components-vue/dist/Inline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",
