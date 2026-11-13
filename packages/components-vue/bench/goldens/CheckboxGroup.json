@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "CheckboxGroup",
+  "sourceRevision": "acf7aef266d21e5acde8c1de195edb598e6aae8c",
+  "source": "src/CheckboxGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Toppings</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input checked=\"\" class=\"st-choice__input\" type=\"checkbox\" value=\"cheese\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Cheese</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"bacon\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Bacon</span><span class=\"st-choice__help\">Smoky</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" disabled=\"\" type=\"checkbox\" value=\"tofu\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Tofu</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "horizontal",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--horizontal\"><legend class=\"st-checkboxGroup__legend\">Size</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"s\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">S</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"m\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">M</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "no-options",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Empty</legend><div class=\"st-checkboxGroup__options\"></div></fieldset>"
+    },
+    {
+      "id": "custom",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical consumer\" data-bench=\"checks\" disabled=\"\" style=\"color:red;\"><legend class=\"st-checkboxGroup__legend\">Extras</legend><p class=\"st-checkboxGroup__help\">Pick any</p><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input checked=\"\" class=\"st-choice__input\" name=\"extras\" type=\"checkbox\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">A</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "with-slot",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Mixed</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">A</span></span></label><label class=\"extra\">Extra</label></div></fieldset>"
+    }
+  ],
+  "sourceSha256": "7e4760be8d34a3d929fc3bf72a261b395231eeafccbaa0f1fb9e25e746093953",
+  "fixtureSha256": "213b4d55264cb07728b5056f496ffb93675926bc80bdb320d94b0cc5839bae79",
+  "publicExports": [
+    {
+      "name": "CheckboxGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "CheckboxGroupProps",
+      "typeOnly": true
+    },
+    {
+      "name": "CheckboxGroupOption",
+      "typeOnly": true
+    }
+  ]
+}
