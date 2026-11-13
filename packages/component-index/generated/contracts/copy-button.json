@@ -1,7 +1,7 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:c6b06a7688809644d3e742e6346d5aa002fe2e05b5464ce051727ee8cd5ed0f3",
+  "digest": "sha256:fa279a095160eaff860098f84a1856f27dea375f0063a909da4ca89bfdae55e5",
   "entryDigest": "sha256:14d22101c50411a5b395b83a88478f4bf6b08db58875f255fbef646d90209853",
   "format": "component-contract/v1",
   "frameworks": {
@@ -198,7 +198,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "click"
+          "name": "click",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onClick",
@@ -245,6 +249,12 @@
       },
       "replaced": [
         {
+          "name": "click.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onClick.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -262,7 +272,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"click\": payload not in declaration",
         "event pair: emits \"click\" and prop \"onClick\" both listed verbatim"
       ]
     }
