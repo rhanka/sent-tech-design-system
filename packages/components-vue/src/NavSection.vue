@@ -35,7 +35,7 @@ const emit = defineEmits<{ toggle: [open: boolean] }>();
 const uid = `st-navSection-${useId()}`;
 const internalOpen = ref(props.open);
 watch(() => props.open, next => { internalOpen.value = next; });
-function toggle(open: boolean) { internalOpen.value = open; props.onToggle?.(open); emit('toggle', open); }
+function toggle(open: boolean) { internalOpen.value = open; emit('toggle', open); }
 </script>
 
 <template>

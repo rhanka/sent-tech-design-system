@@ -75,7 +75,7 @@ const DEPTH_INDENT = ['0rem', '0.75rem', '1.5rem', '2.25rem'] as const;
 
     function handleSelect(next: boolean) {
       internalSelected.value = next;
-      props.onSelect?.(next);
+
       emit("select", next);
     }
 const safeDepth = computed(() => Math.min(Math.max(Math.trunc(Number(props.depth) || 0), 0), 3) as NavItemDepth);

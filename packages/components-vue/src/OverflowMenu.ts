@@ -19,4 +19,4 @@ export type { MenuItem as OverflowMenuItem };
 
 import OverflowMenuComponent from "./OverflowMenu.vue";
 
-export const OverflowMenu = OverflowMenuComponent;
+export const OverflowMenu: typeof OverflowMenuComponent = OverflowMenuComponent;
