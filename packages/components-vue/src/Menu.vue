@@ -21,6 +21,7 @@ import {
 } from "vue";
 import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
+import { MenuLabel } from "./MenuLabel.js";
 import {
   CLOSE_DELAY,
   MENU_HOST_KEY,
@@ -344,7 +345,18 @@ function computeLevelPosition(level: number) {
   if (!levelRoot || !panel || !button) return;
   const menuRect = levelRoot.getBoundingClientRect();
   const itemRect = button.getBoundingClientRect();
-  const panelRect = panel.getBoundingClientRect();
+  // Measure the themed width without the previous viewport cap. Otherwise
+  // a capped measurement would remove the cap on the next resize/scroll.
+  const panelStyle = (panel as HTMLElement).style;
+  const previousStyle = panelStyle.cssText;
+  let panelRect: DOMRect;
+  try {
+    panelStyle.removeProperty("min-width");
+    panelStyle.removeProperty("max-width");
+    panelRect = panel.getBoundingClientRect();
+  } finally {
+    panelStyle.cssText = previousStyle;
+  }
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const solved = computeSubMenuPosition({
@@ -364,10 +376,9 @@ function computeLevelPosition(level: number) {
     top: converted.top,
     left: converted.left,
     maxHeight: solved.maxHeight,
-    // Viewport-alone derivation: the measured width is the capped width
-    // once the cap style applies, so re-deriving from it would drop the
-    // cap on the next scroll/resize recompute (§3.4 step 3).
-    capped: vw < SUBMENU_DEFAULT_WIDTH + 2 * VIEWPORT_MARGIN,
+    capped:
+      (panelRect.width > 0 ? panelRect.width : SUBMENU_DEFAULT_WIDTH) >
+      vw - 2 * VIEWPORT_MARGIN,
   };
 }
 
@@ -951,7 +962,7 @@ const panelDepths = computed(() => [
         :id="rootId + '--group-' + 0 + '-' + row.index"
         role="presentation"
       >
-        {{ (row.item as MenuGroupItem).label }}
+        <MenuLabel :label="(row.item as MenuGroupItem).label" />
       </div>
       <button
         v-else
@@ -982,7 +993,9 @@ const panelDepths = computed(() => [
             :stroke-width="2"
           />
         </span>
-        <span class="st-menu__itemLabel">{{ row.action!.label }}</span>
+        <span class="st-menu__itemLabel">
+          <MenuLabel :label="row.action!.label" />
+        </span>
       </button>
     </template>
   </div>
@@ -1050,7 +1063,7 @@ const panelDepths = computed(() => [
           :id="rootId + '--group-' + depth + '-' + row.index"
           role="presentation"
         >
-          {{ (row.item as MenuGroupItem).label }}
+          <MenuLabel :label="(row.item as MenuGroupItem).label" />
         </div>
         <div
           v-else-if="rowIsParent(row, depth)"
@@ -1112,7 +1125,9 @@ const panelDepths = computed(() => [
                 :stroke-width="2"
               />
             </span>
-            <span class="st-menu__itemLabel">{{ row.action!.label }}</span>
+            <span class="st-menu__itemLabel">
+              <MenuLabel :label="row.action!.label" />
+            </span>
             <span
               v-if="chevronSide(depth, row.index) === 'right'"
               class="st-menu__itemChevron st-menu__itemChevron--end"
@@ -1158,7 +1173,9 @@ const panelDepths = computed(() => [
               :stroke-width="2"
             />
           </span>
-          <span class="st-menu__itemLabel">{{ row.action!.label }}</span>
+          <span class="st-menu__itemLabel">
+            <MenuLabel :label="row.action!.label" />
+          </span>
         </button>
       </template>
     </div>

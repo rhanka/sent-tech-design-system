@@ -26,9 +26,10 @@ The supplied absolute specification path is absent. Verification used the tracke
 
 At verification time, local `main` was `956eeb92` and both `origin/main` and
 `git ls-remote origin refs/heads/main` identified `f0cafb9f0c45b22680d2a53fe498a01edda908b7`.
-Those main refs do not contain the cascade implementation. The cascade reference
-available in this checkout is the inherited Svelte implementation from
-`e8b0dd6a`, corrected in `865e40aece9bc0952a9e90b839eb43825ee26418`.
+Local `main` predates the cascade. `origin/main` at `f0cafb9f` contains the cascade implementation,
+including the Svelte correction `865e40aece9bc0952a9e90b839eb43825ee26418`.
+The inherited Svelte implementation from `e8b0dd6a`, corrected in that same
+commit, is therefore available on the reviewed remote main reference.
 
 Re-read `Menu.svelte`, `MenuPopover.svelte`, `OverflowMenu.svelte`,
 `lib/menu-cascade.ts`, `MenuCascade.test.ts`, and `lib/menu-cascade.test.ts`.
@@ -76,3 +77,33 @@ root lists and two open submenu levels with `top-start`, `top-end`,
 `bottom-end` / end alignment, and `bottom-start` / center alignment. Confirm the
 root list scrolls within the host cap while submenu panels remain visible beyond
 the transformed host; also check a flat popover retains its existing scrolling.
+
+## Third-review follow-up — 2026-11-12
+
+Target: the final verdict of `REVIEW3-cascade-vue-astra.md`, reviewed baseline
+`d1578ea1b065788104b8d1907e1f08a2e72a316d`.
+
+| Finding | Fix | Failing-first regression |
+| --- | --- | --- |
+| P2: VNode/array labels are stringified | Private `MenuLabel` renderer preserves label content for flat and cascade groups, parents, and leaves; `Menu.vue` remains a compiled Composition API template. | Two tests failed on missing markup, then passed with element/text assertions and unchanged selected-item payloads (single argument for flat, full path for cascade). |
+| P2: width capping assumes 192 px | Measure each panel without its previous viewport cap, then derive the cap from that natural width. Theme changes and viewport growth are measured again. | A 320 px panel in a 300 px viewport failed its cap assertion, then passed across 300/280/300 px resizes and cap removal at 600 px. The earlier 160 px test now models natural and capped measurements separately. |
+| P3: reference provenance is incorrect | Corrected the local `main` versus `origin/main` distinction above, verified against Git objects and ancestry. | The audit regression failed on the incorrect statement, then passed with the corrected remote reference and Svelte correction commit. |
+
+All four new tests were observed failing before their fixes. AC-13 additionally
+checks Home/End and arrow wrapping with three enabled submenu items and a
+disabled item, asserting the focus target and one roving target per level after
+every key. No production keyboard change was needed.
+
+Final validation from this worktree, with the requested npm cache exported:
+
+- Vue package Vitest: **104 files, 1,699 tests passed**; check and build passed.
+- Component-index package Vitest: **15 files, 137 tests passed**; check and build passed.
+- Component-index generation passed; freshness check: **430 artifacts fresh**.
+  Only the two generated source-commit stamps changed.
+- Notices generation and freshness passed for **22 publishable packages**.
+- Licensing passed for **22 publishable packages**, including tarball membership;
+  temporary files stayed under `.vite/menu-cascade-review3` in this worktree.
+- `git diff --check` passed.
+
+AC-24 remains pending human or later CI execution as recorded above. No browser
+was launched. Svelte and Angular sources were not changed.
