@@ -97,7 +97,7 @@ describe("measured subtitle height moves the first child row", () => {
     const two = layMeasured2(document, presentation, fixedLinesMeasurer({ subtitle: 2 }));
     const headerOne = one.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
     const headerTwo = two.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
-    expect(headerTwo.height - headerOne.height).toBe(10);
+    expect(headerTwo.height - headerOne.height).toBe(31.1875);
     const yOne = geometryOf(one.view, "a").y;
     const yTwo = geometryOf(two.view, "a").y;
     expect(yTwo - yOne).toBe(headerTwo.height - headerOne.height);
@@ -143,13 +143,13 @@ describe("layout lines and emitted measurements share one result", () => {
         folded: false,
       }).lines;
     const containerInner = geometryOf(measured.view, "C").width - 32;
-    const containerTitleWidth = containerInner - TOGGLE_ALLOCATION;
+    const containerTitleWidth = containerInner - 146;
     const containerTitle = "Container with a fairly long title that definitely wraps differently at full and toggle widths";
     const expectedContainerTitle = replayLines(containerTitle, "title", containerTitleWidth);
     expect(expectedContainerTitle.join(" ")).toBe(containerTitle);
     const leafTitle = "Alpha with a fairly long card title that wraps at the fixed inner width";
-    const leafFull = replayLines(leafTitle, "title", 460 - 32);
-    const leafReduced = replayLines(leafTitle, "title", 460 - 32 - TOGGLE_ALLOCATION);
+    const leafFull = replayLines(leafTitle, "title", 358);
+    const leafReduced = replayLines(leafTitle, "title", 290);
     expect(leafFull.length).toBeGreaterThan(1);
     expect(leafFull.join(" ")).toBe(leafTitle);
     expect(leafReduced.join(" ")).toBe(leafTitle);
@@ -183,8 +183,8 @@ describe("layout lines and emitted measurements share one result", () => {
           header.occurrence === occurrenceOfEntity("C") && role === "title"
             ? containerTitleWidth
             : header.occurrence === occurrenceOfEntity("C")
-              ? containerInner
-              : 460 - 32;
+              ? role === "subtitle" ? 434 : containerTitleWidth
+              : 358;
         return replayLines(text, role, width);
       };
       if (header.kicker !== undefined) expect(header.kicker.lines).toEqual(expected("kicker"));
@@ -265,7 +265,7 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     const reduced = wordWrapMeasurer({ charWidth: 8 })({
       text: title,
       role: "title",
-      availableWidth: innerWidthOf(FIXED_CARD_WIDTH) - TOGGLE_ALLOCATION,
+      availableWidth: 290,
       allocatedLines: 2,
       folded: true,
     });
@@ -277,7 +277,9 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
       folded: true,
     });
     expect(JSON.stringify(reduced.lines)).not.toBe(JSON.stringify(full.lines));
-    expect(header.title.lines).toEqual(reduced.lines);
+    expect(header.title.lines[0]).toBe(reduced.lines[0]);
+    expect(header.title.lines).toHaveLength(2);
+    expect(header.title.lines.at(-1)).toMatch(/…$/u);
   });
   it("uses the reduced width in the input and the emitted measurement", () => {
     const document = buildGeneric2Document();
@@ -295,9 +297,9 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     // container title is measured at its own inner width minus the toggle
     // allocation, the leaf at its full inner width.
     const containerInner = geometryOf(measured.view, "C").width - 32;
-    expect(containerCall.availableWidth).toBe(containerInner - TOGGLE_ALLOCATION);
-    expect(leafCall.availableWidth).toBe(460 - 32);
-    expect(containerInner - containerCall.availableWidth).toBe(TOGGLE_ALLOCATION);
+    expect(containerCall.availableWidth).toBe(containerInner - 146);
+    expect(leafCall.availableWidth).toBe(358);
+    expect(containerInner - containerCall.availableWidth).toBe(146);
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
     const replay = wordWrapMeasurer({ charWidth: 8 })({
       text: containerTitle,
@@ -312,14 +314,14 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
     const leafFull = wordWrapMeasurer({ charWidth: 8 })({
       text: leafTitle,
       role: "title",
-      availableWidth: 460 - 32,
+      availableWidth: 358,
       allocatedLines: 2,
       folded: false,
     });
     const leafReduced = wordWrapMeasurer({ charWidth: 8 })({
       text: leafTitle,
       role: "title",
-      availableWidth: 460 - 32 - TOGGLE_ALLOCATION,
+      availableWidth: 290,
       allocatedLines: 2,
       folded: false,
     });

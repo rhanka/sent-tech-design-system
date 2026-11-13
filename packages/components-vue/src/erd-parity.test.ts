@@ -17,7 +17,7 @@ function dom(node: Element): unknown {
       const s = (node as HTMLElement).style;
       return [a.name, Array.from({ length: s.length }, (_, i) => s.item(i)).sort().map(k => [k, s.getPropertyValue(k).trim()])];
     }
-    return [a.name, a.value];
+    return [a.name, a.value.replace(/diagram-arrow-[^\s)]+/g, 'diagram-arrow-instance')];
   }).filter(([name, value]) => !String(name).startsWith('data-v-') && !(name === 'class' && !value)).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
   return { tag: node.tagName, attributes, children: [...node.childNodes].flatMap(n => n.nodeType === 1 ? [dom(n as Element)] : n.nodeType === 3 && n.textContent?.trim() ? [n.textContent.replace(/\s+/g, ' ').trim()] : []) };
 }

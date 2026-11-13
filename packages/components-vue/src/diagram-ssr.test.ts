@@ -43,7 +43,8 @@ it('should render refusals without invoking client diagnostic listeners on the s
   const onDiagnostic = vi.fn();
   const card = await renderToString(createSSRApp(DiagramCard, { entityId: 'wide', title: 'X'.repeat(200), body: [], onDiagnostic }));
   const zone = await renderToString(createSSRApp(DiagramZone, { entityId: 'wide-zone', title: 'X'.repeat(200), collapsed: false, width: 492, height: 400, onDiagnostic }));
-  expect(card).toContain('data-card-refused'); expect(zone).toContain('data-zone-refused');
+  expect(card).not.toContain('data-card-refused'); expect(zone).not.toContain('data-zone-refused');
+  expect(card).toContain('X'.repeat(200)); expect(zone).toContain('st-diagramZone');
   expect(onDiagnostic).not.toHaveBeenCalled();
 });
 

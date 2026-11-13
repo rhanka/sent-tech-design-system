@@ -1,0 +1,21 @@
+name: Diagram anatomy contract
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+permissions:
+  contents: read
+jobs:
+  anatomy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - name: Require owner-visible approval label for anatomy updates
+        env:
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if ! git diff --quiet "$BASE_SHA" HEAD -- packages/diagram-canvas/contracts/diagram-anatomy.v1.json; then
+            node --input-type=module -e 'if (!JSON.parse(process.env.PR_LABELS).includes("anatomy change")) throw new Error("Anatomy golden changed: add the anatomy change label and describe the update in the PR body")'
+          fi

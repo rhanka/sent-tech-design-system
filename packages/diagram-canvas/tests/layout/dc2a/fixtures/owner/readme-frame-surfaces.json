@@ -1,0 +1,108 @@
+{
+  "id": "readme-frame-surfaces",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "surfaces"
+  },
+  "cards": [
+    {
+      "id": "surfaces",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC & TIERS",
+      "title": "Access surfaces",
+      "purpose": "AI providers · Cowork · CLIs · 3rd-party applications",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 2512,
+        "y": 0,
+        "width": 2352,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "surf-ai",
+      "parentId": "surfaces",
+      "container": false,
+      "folded": false,
+      "kicker": "ACCESS",
+      "title": "AI providers",
+      "purpose": "ChatGPT · Gemini · Claude · Muse",
+      "detail": "Cowork/MCP: qualify each connection",
+      "footer": "service: Surfaces d’accès",
+      "icon": "window",
+      "old": {
+        "x": 2528,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "surf-cowork",
+      "parentId": "surfaces",
+      "container": false,
+      "folded": false,
+      "kicker": "ACCESS",
+      "title": "Cowork workstation",
+      "purpose": "cowork-desktop and cowork-bridge",
+      "detail": "Consent · human priority 60 s",
+      "footer": "service: Surfaces d’accès",
+      "icon": "window",
+      "old": {
+        "x": 3148,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "surf-cli",
+      "parentId": "surfaces",
+      "container": false,
+      "folded": false,
+      "kicker": "ACCESS",
+      "title": "CLI workstation",
+      "purpose": "h2a-cli · @sentropic/harness",
+      "detail": "Local checkout · mandated sessions",
+      "footer": "service: Surfaces d’accès",
+      "icon": "window",
+      "old": {
+        "x": 3768,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "surf-cloud",
+      "parentId": "surfaces",
+      "container": false,
+      "folded": false,
+      "kicker": "ACCESS",
+      "title": "Sentropic & other apps",
+      "purpose": "OpenERP · nc-fullstack · CV",
+      "detail": "Catalog ↔ hosted instances",
+      "footer": "service: Surfaces d’accès",
+      "icon": "window",
+      "old": {
+        "x": 4388,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-ai-cowork",
+      "source": "surf-ai",
+      "target": "surf-cowork",
+      "label": "Cowork connection"
+    }
+  ]
+}

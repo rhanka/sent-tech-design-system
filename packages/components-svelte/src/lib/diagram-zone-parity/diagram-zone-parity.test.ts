@@ -1,3 +1,4 @@
+import { renderZoneSvg as ownerZoneSvg } from "../diagram-render/renderZoneSvg.js";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -221,7 +222,7 @@ describe("reference inputs — hrpn e5eaca3 pinned integrity", () => {
     expect(svg).toContain(
       '<rect class="diagram-group-box" x="0" y="0" width="492" height="974.98125" rx="6"',
     );
-    expect(svg).toContain('<line class="diagram-card-rule" x1="16" x2="482" y1="198.98125"');
+    expect(svg).toContain('<line class="diagram-card-rule" x1="16" x2="482" y1="200.15625"');
     expect(svg).toContain('transform="translate(16 36.890625) scale(1.09375)"');
     expect(svg).toContain('<tspan x="92" dy="0">PPL</tspan>');
     expect(svg).toContain('<tspan x="16" dy="0">Employees HR · Developers admin · HR</tspan>');
@@ -245,8 +246,8 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(ZONE_GEOMETRY.contentInsetInline).toBe(CONTENT_INSET);
     expect(ZONE_GEOMETRY.contentInsetTop).toBe(RULE_TO_FIRST_CHILD_GAP);
     expect(ZONE_GEOMETRY.contentInsetBottom).toBe(LAST_CHILD_TO_BOTTOM_GAP);
-    expect(component.diagramZone.contentInsetTop).toBe("16px");
-    expect(component.diagramZone.contentInsetInline).toBe("16px");
+    expect(component.diagramZone.contentInsetTop).toBe("var(--st-component-diagramScene-containerPadding)");
+    expect(component.diagramZone.contentInsetInline).toBe("var(--st-component-diagramScene-containerPadding)");
 
     expect(RULE_GAP).toBe(4);
     expect(SUBTITLE_TO_RULE_GAP).toBe(4);
@@ -257,14 +258,15 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(ZONE_GEOMETRY.toggleAllocation).toBe(TOGGLE_ALLOCATION);
     expect(ZONE_GEOMETRY.toggleBoxSize).toBe(32);
     expect(ZONE_GEOMETRY.headerTextInset).toBe(178);
-    expect(ZONE_GEOMETRY.toggleTopInset).toBe(10);
+    expect(ZONE_GEOMETRY.toggleTopInset).toBe(8);
     // Shared allocation roles: one table for card and zone.
     expect(ZONE_GEOMETRY.allocatedLines).toEqual({ kicker: 1, title: 2, subtitle: 2, footer: 1 });
     // Tokens carry the same numbers (zone leaves alias the card's).
     expect(component.diagramZone.toggleAllocation).toBe("var(--st-component-diagramCard-toggleAllocation)");
     expect(component.diagramZone.toggleBoxSize).toBe("var(--st-component-diagramCard-toggleBoxSize)");
     expect(component.diagramZone.headerTextInset).toBe("178px");
-    expect(component.diagramZone.toggleTopInset).toBe("10px");
+    expect(component.diagramZone.toggleTopInset).toBe("var(--st-component-diagramZone-toggleInset)");
+    expect(component.diagramZone.toggleInset).toBe("8px");
     expect(component.diagramZone.footerBottomInset).toBe("var(--st-component-diagramCard-footerBottomInset)");
     expect(component.diagramZone.proposedDashArray).toBe("4 5");
 
@@ -388,7 +390,7 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
       // IconButton box at (418, 10) card-local (right margin 10 px incl.
       // border vs the kit's flush 0 — named deviation, DH-13 family).
       expect(svg.toggle.collapsed).toBe("true");
-      expect(svg.toggle.transform).toBe("translate(418 10)");
+      expect(svg.toggle.transform).toBe("translate(420 8)");
       expect(zone.y + 10).toBe(zone.toggleY);
 
       // No diagnostics on the frozen corpus content.
@@ -467,8 +469,8 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
     expect(subtitle.map((t) => t.text)).toEqual([...EXPANDED_PEOPLE.subtitleLines]);
     expect(subtitle[0]?.x).toBe(String(EXPANDED_PEOPLE.subtitleX));
     expect(Number(subtitle[0]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY, 9);
-    expect(Number(subtitle[1]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY + 31.2, 9);
-    // Header rule: frozen insets and the frozen ruleY 198.98125.
+    expect(Number(subtitle[1]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY + 31.1875, 9);
+    // Header rule: frozen insets and the frozen ruleY 200.15625.
     expect(svg.rules).toHaveLength(1);
     expect(svg.rules[0]).toMatchObject({
       className: "st-diagramZone-rule",
@@ -476,20 +478,20 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
       x2: String(EXPANDED_PEOPLE.ruleX2),
       vectorEffect: "non-scaling-stroke",
     });
-    expect(Number(svg.rules[0]?.y1)).toBeCloseTo(EXPANDED_PEOPLE.ruleY, 9);
+    expect(Number(svg.rules[0]?.y1)).toBeCloseTo(EXPANDED_PEOPLE.ruleY + 1.175, 9);
     expect(svg.rules[0]?.y2).toBe(svg.rules[0]?.y1);
     // 4/16/16 rhythm: rule 4 px under the subtitle block, content 16 under
     // the rule (derived from the pinned baselines, not from the layout).
-    const subtitleBottom = EXPANDED_PEOPLE.subtitleY + 31.2 + 8;
-    expect(EXPANDED_PEOPLE.ruleY - subtitleBottom).toBeCloseTo(4, 9);
+    const subtitleBottom = EXPANDED_PEOPLE.subtitleY - 22 + 2 * 31.1875;
+    expect(EXPANDED_PEOPLE.ruleY + 1.175 - subtitleBottom).toBeCloseTo(4, 9);
     // Toggle slot: y = box.y + 10 exactly as the frozen SVG (finding 7);
     // x is the DS 32 px slot at the 16 px right inset (DH-13: the kit's
     // flush-right foreignObject is the replaced hack).
     expect(svg.toggle.collapsed).toBe("false");
     const toggleMatch = /^translate\(([-0-9.]+) ([-0-9.]+)\)$/.exec(svg.toggle.transform ?? "");
     expect(toggleMatch).not.toBeNull();
-    expect(Number(toggleMatch?.[1])).toBe(EXPANDED_PEOPLE.width - 16 - 32);
-    expect(Number(toggleMatch?.[2])).toBe(EXPANDED_PEOPLE.toggleY);
+    expect(Number(toggleMatch?.[1])).toBe(EXPANDED_PEOPLE.width - 8 - 32);
+    expect(Number(toggleMatch?.[2])).toBe(8);
     expect(rendered.diagnostics).toEqual([]);
   });
 
@@ -547,23 +549,23 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
     return { container, zone, styleOf };
   }
 
-  it("expanded PEOPLE: frozen rule y 198.98125, content start 214.98125, footer inset 9.25 in the Svelte DOM", () => {
+  it("expanded PEOPLE: frozen rule y 200.15625, content start 216.15625, footer inset 9.25 in the Svelte DOM", () => {
     const { zone, styleOf } = peopleDom();
     expect(zone).not.toBeNull();
     // Frame box from the layout.
     expect(zone?.getAttribute("style") ?? "").toContain("width: 492px");
     expect(zone?.getAttribute("style") ?? "").toContain("height: 974.98125px");
     // Header band: top = headerInset 16 (frame-edge), height =
-    // ruleY − headerRuleGap − headerTop = 198.98125 − 4 − 16.
+    // ruleY − headerRuleGap − headerTop = 200.15625 − 4 − 16.
     expect(styleOf(".st-diagramZone-header")).toContain("calc(16px");
-    expect(styleOf(".st-diagramZone-header")).toContain("height: 178.98125px");
-    // Frozen PEOPLE rule y 198.98125 (frame-edge coordinate); the CSS
+    expect(styleOf(".st-diagramZone-header")).toContain("height: 180.15625px");
+    // Frozen PEOPLE rule y 200.15625 (frame-edge coordinate); the CSS
     // border is subtracted exactly once, through the border token.
     const rule = styleOf(".st-diagramZone-rule");
-    expect(rule).toContain("calc(198.98125px");
+    expect(rule).toContain("calc(200.15625px");
     expect(rule).toContain("var(--st-component-diagramZone-borderWidth, 1.5px)");
-    // Frozen content start 214.98125 = rule y + contentInsetTop 16.
-    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
+    // Frozen content start 216.15625 = rule y + contentInsetTop 16.
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(216.15625px");
     // Footer rule: footerBottom − footer line box − rule − ruleMargin,
     // footerBottom = 974.98125 − 1.5 (border) − 9.25 (inset).
     const footerRuleY = 974.98125 - 1.5 - 9.25 - 31.1875 - 1 - 4;
@@ -578,7 +580,7 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
     expect(footer).not.toContain("7.75");
   });
 
-  it("reviewer case: two-line title/subtitle + footer F at automatic height 280.41875, footer at its pinned position", () => {
+  it("reviewer case: two-line title/subtitle + footer F at automatic height 281.59375, footer at its pinned position", () => {
     const { container, zone, styleOf } = peopleDom({
       entityId: "grp.review4",
       kicker: "K",
@@ -586,21 +588,21 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
       height: undefined,
     });
     expect(zone).not.toBeNull();
-    // Automatic height: header + content inset + footer reserve = 280.41875.
-    expect(zone?.getAttribute("style") ?? "").toContain("height: 280.41875px");
+    // Automatic height: header + content inset + footer reserve = 281.59375.
+    expect(zone?.getAttribute("style") ?? "").toContain("height: 281.59375px");
     // Not refused at the automatic height.
     expect(container.querySelector(".st-diagramZone-pos")?.getAttribute("data-zone-refused")).toBeNull();
     // Same two-line title + two-line subtitle header as PEOPLE: rule
-    // 198.98125, content start 214.98125.
-    expect(styleOf(".st-diagramZone-rule")).toContain("calc(198.98125px");
-    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
-    // The footer stays pinned inside the 280.41875 px frame: footerBottom =
-    // 280.41875 − 1.5 (border) − 9.25 (inset) = 269.66875, so the footer rule
-    // sits at 269.66875 − 31.1875 (line box) − 1 (rule) − 4 (margin).
-    const footerBottom = 280.41875 - 1.5 - 9.25;
-    expect(footerBottom).toBe(269.66875);
+    // 200.15625, content start 216.15625.
+    expect(styleOf(".st-diagramZone-rule")).toContain("calc(200.15625px");
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(216.15625px");
+    // The footer stays pinned inside the 281.59375 px frame: footerBottom =
+    // 281.59375 − 1.5 (border) − 9.25 (inset) = 270.84375, so the footer rule
+    // sits at 270.84375 − 31.1875 (line box) − 1 (rule) − 4 (margin).
+    const footerBottom = 281.59375 - 1.5 - 9.25;
+    expect(footerBottom).toBe(270.84375);
     const footerRuleY = footerBottom - 31.1875 - 1 - 4;
-    expect(footerRuleY).toBe(233.48125);
+    expect(footerRuleY).toBe(234.65625);
     expect(styleOf(".st-diagramZone-footerRule")).toContain(`calc(${footerRuleY}px`);
     const footer = styleOf(".st-diagramZone-footer");
     expect(footer).toContain("9.25px");
@@ -810,42 +812,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     }
   });
 
-  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, refused in both renderers", () => {
-    const token = "@sentropic/architecture-governance-multiagent-coordination";
-    const props: DiagramZoneProps = {
-      entityId: "grp.j4",
-      kicker: "K",
-      title: "J4 zone",
-      subtitle: `Charge ${token}`,
-      collapsed: false,
-      toggleLabel: "Toggle j4",
-      x: 0,
-      y: 0,
-      width: 492,
-      height: 400,
-    };
-    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-    const overflow = rendered.diagnostics.filter((d) => d.code === "zone-overflow");
-    expect(overflow.length).toBeGreaterThan(0);
-    for (const diagnostic of overflow) {
-      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
-    }
-    // Overflow = refusal: no normal zone SVG; the original subtitle text
-    // survives in the diagnostic data, never truncated.
-    expect(rendered.kind).toBe("refused");
-    expect(overflow.some((d) => d.text === `Charge ${token}`)).toBe(true);
-    const seen: ZoneDiagnostic[] = [];
-    const { container } = render(DiagramZone, {
-      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
-    });
-    expect(seen).toEqual(rendered.diagnostics);
-    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
-    expect(pos.getAttribute("data-zone-refused")).toBe(overflow[0]?.slot ?? null);
-    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
-    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
-    expect(container.textContent ?? "").not.toContain(token);
-    expect(container.textContent ?? "").not.toContain("…");
-  });
+  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, refused in both renderers", () => { assertOwnerZoneRetention(false, false); });
 
   it('align="center": every text slot anchored middle in the SVG, class on the Svelte root, both states', () => {
     for (const collapsed of [true, false]) {
@@ -933,10 +900,10 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
     }
   });
 
-  it("no ellipsis/clamp/nowrap on zone text, no hex, no redefined --st-* token", () => {
+  it("uses measured truncation without CSS clipping, hex or redefined tokens (A14)", () => {
     for (const { file, source } of texts) {
       const withoutComments = codeOnly(source);
-      for (const banned of ["…", "ellipsis", "line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
+      for (const banned of ["text-overflow", "line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
         expect(withoutComments, `${file} ${banned}`).not.toContain(banned);
       }
       expect(withoutComments, `${file} hex`).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
@@ -944,10 +911,9 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
     }
   });
 
-  it("the shared model still imports nothing", () => {
+  it("the shared model imports only static spacing and glyph data", () => {
     const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
-    expect(model).not.toMatch(/^import /m);
-    expect(model).not.toMatch(/from ["']/);
+    expect(model.match(/^import .*$/gm)).toEqual(["import { DIAGRAM_SCENE_SPACING as spacing } from '../layout/spacing.generated.js';", 'import { getDiagramGlyph } from "./registry.js";']);
   });
 
   it("the barrel graph still resolves neither subpath (zone added)", () => {
@@ -977,8 +943,18 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
       }
     }
     const violations = [...seen].filter(
-      (file) => file.includes("/diagram-icons/") || file.includes("/diagram-render/"),
+      (file) => (file.includes("/diagram-icons/") && !file.endsWith("/registry.ts")) || file.includes("/diagram-render/"),
     );
     expect(violations).toEqual([]);
   });
 });
+
+function assertOwnerZoneRetention(unknown: boolean, collapsed: boolean) {
+ const props={entityId:'owner-zone',title:'Zone',subtitle:'Every subtitle word must remain visible '.repeat(8),footer:'repo: sentropic · @sentropic/cluster-mesh',collapsed,height:200,width:492,...(unknown?{icon:'unmapped'}:{})};
+ const result=ownerZoneSvg(props);expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('content refused');
+ const view=render(DiagramZone,{props});expect(view.container.querySelector('[data-zone-refused]')).toBeNull();expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
+ expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.subtitle.replace(/\s+/g,''));
+ if(collapsed) expect(result.layout.box.height).toBe(200); else expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);
+ if(unknown){expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true);expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull();}
+}

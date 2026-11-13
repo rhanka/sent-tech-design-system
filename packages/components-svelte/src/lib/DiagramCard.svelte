@@ -1,6 +1,8 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
+  const descriptionId = $props.id();
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import { defaultCardMeasure, firstOverflowDiagnostic, layoutCard } from "./diagramCardModel.js";
+  import { cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
   import type {
     CardDiagnostic,
     CardLineMeasure,
@@ -10,14 +12,10 @@
   /**
    * `DiagramCard` — the atomic diagram card (DC-1).
    *
-   * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5. Fixed 460 × 200 box, square
-   * corners, footer pinned at 9.25, one 1 px rule, no shortening. Overflow
-   * = refusal (owner criterion): any `card-overflow` — a too-wide line, a
-   * line-count overflow, or a header+body height that does not fit above the
-   * pinned rule — renders NO normal card; the root carries the host-visible
-   * refusal state `data-card-refused="<slot>"` and the diagnostics keep the
-   * original slot text. An icon name with no glyph data raises
-   * `card-icon-unknown` and the slot collapses (DIF-14).
+   * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md §5, amended by owner A2/A11.
+   * The card stays 460 × 200 and truncates measured slots (owner A14).
+   * Full text remains available in title/aria. A missing icon resolves
+   * to the visible unknown glyph.
    *
    * The rule stays 1 screen px at every zoom WITHOUT moving the layout: the
    * host publishes the current camera zoom as `--st-diagram-zoom` on the
@@ -47,6 +45,8 @@
 
   let {
     entityId,
+    autoSize,
+    height,
     kicker,
     title,
     body,
@@ -68,6 +68,8 @@
     layoutCard(
       {
         entityId,
+        ...(autoSize === undefined ? {} : { autoSize }),
+        ...(height === undefined ? {} : { height }),
         ...(kicker === undefined ? {} : { kicker }),
         title,
         body,
@@ -91,9 +93,8 @@
   const unknownIcon = $derived(
     layout.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"),
   );
-  // Overflow = refusal: the same predicate as the pure renderer
-  // (`firstOverflowDiagnostic`), so both renderers refuse together.
-  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
+
+
 
   $effect(() => {
     if (onDiagnostic === undefined) return;
@@ -106,38 +107,26 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
-{#if refused !== undefined}
-  <!-- Overflow = refusal: no normal card is rendered for refused content.
-       The host sees the refusal state on the root (data-card-refused) and
-       gets the original slot text through onDiagnostic. -->
-  <div
-    class="st-diagramCard st-diagramCard--refused"
-    data-entity={entityId}
-    data-tone={tone}
-    data-proposed={proposed === true ? "true" : undefined}
-    data-card-refused={refused.slot}
-    data-card-overflow={refused.slot}
-    role="group"
-    aria-label={title}
-    onclick={() => onSelect?.({ entityId })}
-  ></div>
-{:else}
 <div
   class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}"
   data-entity={entityId}
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
+  style={`height:${layout.box.height}px`}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
-  aria-label={title}
+  title={cardFullText({ entityId, kicker, title, body, footer })}
+  aria-label={cardFullText({ entityId, kicker, title, body, footer })}
+  aria-describedby={descriptionId}
   onclick={() => onSelect?.({ entityId })}
 >
+  <span id={descriptionId} hidden>{cardFullText({ entityId, kicker, title, body, footer })}</span>
   <DiagramCardHeader
     kicker={layout.kicker}
     title={layout.title}
-    iconName={icon}
-    iconGlyph={iconGlyph}
+    iconName={layout.icon.name}
+    iconGlyph={layout.icon.glyph}
     headerTextWidth={layout.headerTextWidth}
     headerBlockHeight={layout.headerBlockHeight}
     toggle={toggle}
@@ -148,7 +137,7 @@
     style={`margin-left:${layout.bodyX - 16}px;width:${layout.bodyWidth}px`}
   >
     {#each layout.body as line, bodyIndex (bodyIndex)}
-      <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"}>{line.text}</span>
+      <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"} style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
   </div>
   <!-- The rule and the footer are positioned together from the shared
@@ -163,23 +152,23 @@
     {#if layout.footerLines.length > 0}
       <div class="st-diagramCard-footer">
         {#each layout.footerLines as line, footerIndex (footerIndex)}
-          <span class="st-diagramCard-footerLine">{line.text}</span>
+          <span class="st-diagramCard-footerLine" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
         {/each}
       </div>
     {/if}
   </div>
 </div>
-{/if}
 
 <style>
   .st-diagramCard {
+    position: relative;
     width: var(--st-component-diagramCard-width, 460px);
     height: var(--st-component-diagramCard-height, 200px);
     box-sizing: border-box;
     border: var(--st-component-diagramCard-borderWidth, 2px) solid
       var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
-      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
+      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-radius: var(--st-component-diagramCard-radius, 0);
     background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
@@ -187,7 +176,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramCard--center {
     /* Owner variant: every text slot centred inside its allocation. */

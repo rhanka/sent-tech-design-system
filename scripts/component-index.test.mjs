@@ -530,6 +530,7 @@ const TREE_SUBTREES = [
   "packages/elements/catalog.json",
   "packages/tokens/src",
   "packages/themes/css",
+  "packages/diagram-canvas/contracts",
 ];
 const TREE_FILES = ["packages/component-index/contract-baseline.json", "packages/component-index/parity-baseline.json", "packages/component-index/catalog-overlay.json"];
 const TREE_PACKAGES = [

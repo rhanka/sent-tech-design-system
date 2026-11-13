@@ -31,6 +31,7 @@ import {
   layoutDocument,
   type HeaderMeasurement,
   type LayoutHints,
+  type LayoutWarning,
   type LineLayout,
   type LineMeasurer,
   type MeasureRequest,
@@ -112,7 +113,7 @@ export interface Measured {
   readonly view: ViewDocument;
   readonly headers: readonly HeaderMeasurement[];
   readonly slots: readonly SlotMeasurement[];
-  readonly warnings: readonly { code: string; refs: readonly string[]; message: string }[];
+  readonly warnings: readonly LayoutWarning[];
   readonly fit: { direction: string; width: number; height: number };
 }
 

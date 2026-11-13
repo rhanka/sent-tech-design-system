@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
+  import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import IconButton from "./IconButton.svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
@@ -36,7 +38,7 @@
     kicker,
     title,
     iconName,
-    iconGlyph,
+    iconGlyph = iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
     headerTextWidth,
     headerBlockHeight,
     toggle,
@@ -45,7 +47,7 @@
 </script>
 
 <div class="st-diagramCardHeader" style={`height:${headerBlockHeight}px`}>
-  {#if iconName !== undefined && iconGlyph !== undefined}
+  {#if iconName !== undefined && iconName !== "none" && iconGlyph !== undefined}
     <svg
       class="st-diagramCardHeader-icon"
       data-diagram-icon={iconName}
@@ -92,16 +94,17 @@
   {/if}
   <div class="st-diagramCardHeader-text" style={`width:${headerTextWidth}px`}>
     {#each kicker as line, kickerIndex (kickerIndex)}
-      <span class="st-diagramCard-kicker">{line.text}</span>
+      <span class="st-diagramCard-kicker" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
     {#each title as line, titleIndex (titleIndex)}
-      <span class="st-diagramCard-title">{line.text}</span>
+      <span class="st-diagramCard-title" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
     {/each}
   </div>
   {#if toggle !== undefined}
     <div
       class="st-diagramCard-toggle"
-      style={toggleTopOffset === undefined ? undefined : `margin-top:${toggleTopOffset}px`}
+      style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramZone-headerInset, 16px) - var(--st-component-diagramZone-borderWidth, 1.5px))'}`}
+
     >
       <IconButton
         size="sm"
@@ -164,10 +167,8 @@
     word-break: normal;
   }
   .st-diagramCard-toggle {
-    flex: 0 0 auto;
-    margin-left: auto;
-    /* Top right of the header row with the card's own top margin
-       (hrpn folded-card placement), not vertically centred. */
-    align-self: flex-start;
+    position: absolute;
+    width: var(--st-component-diagramCard-toggleBoxSize, 32px);
+    height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }
 </style>

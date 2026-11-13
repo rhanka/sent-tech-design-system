@@ -1,0 +1,858 @@
+{
+  "documentId": "document:appctx-ontology",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 1,
+  "profileRefs": [
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "ports": {},
+  "resources": {},
+  "extensions": [],
+  "entities": {
+    "entity:zone-normative": {
+      "id": "entity:zone-normative",
+      "profile": "generic@2",
+      "type": "container",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plan normatif (NormativeArtifact)"
+        }
+      }
+    },
+    "entity:zone-delivery": {
+      "id": "entity:zone-delivery",
+      "profile": "generic@2",
+      "type": "container",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plan de suivi (DeliveryArtifact)"
+        }
+      }
+    },
+    "entity:zone-interface": {
+      "id": "entity:zone-interface",
+      "profile": "generic@2",
+      "type": "container",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plan interface & API (InterfaceArtifact)"
+        }
+      }
+    },
+    "entity:zone-data": {
+      "id": "entity:zone-data",
+      "profile": "generic@2",
+      "type": "container",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Plan modèle de données (DataArtifact)"
+        }
+      }
+    },
+    "entity:zone-repo": {
+      "id": "entity:zone-repo",
+      "profile": "generic@2",
+      "type": "container",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Socle code & dépôt (RepositoryArtifact)"
+        }
+      }
+    },
+    "entity:ent-spec": {
+      "id": "entity:ent-spec",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Normatif] Spec — Document de spécification Markdown"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:normative" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-spec-section": {
+      "id": "entity:ent-spec-section",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Normatif] SpecSection — Section adressable par slugPath"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:normative" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-requirement": {
+      "id": "entity:ent-requirement",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Normatif] Requirement — Exigence nommée explicite"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:normative" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-track-wp": {
+      "id": "entity:ent-track-wp",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Suivi] TrackWorkpackage — Lot de travaux Track"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:delivery" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-track-item": {
+      "id": "entity:ent-track-item",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Suivi] TrackItem — Item de réalisation Track"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:delivery" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-track-decision": {
+      "id": "entity:ent-track-decision",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Suivi] TrackDecision — Décision d'architecture Track"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:delivery" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-route": {
+      "id": "entity:ent-route",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Interface] Route — Écran ou route UI statique"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:interface" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-component": {
+      "id": "entity:ent-component",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Interface] Component — Composant Svelte"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:interface" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-api-endpoint": {
+      "id": "entity:ent-api-endpoint",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Interface] ApiEndpoint — Route HTTP (méthode + chemin)"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:interface" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-data-entity": {
+      "id": "entity:ent-data-entity",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Données] DataEntity — Table Drizzle pgTable"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:data" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-data-field": {
+      "id": "entity:ent-data-field",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Données] DataField — Colonne typée Drizzle"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:data" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-code-symbol": {
+      "id": "entity:ent-code-symbol",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Code] CodeSymbol — Fonction ou handler TypeScript"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:repository" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-file": {
+      "id": "entity:ent-file",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Dépôt] File — Fichier versionné relatif au dépôt"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:repository" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    },
+    "entity:ent-commit": {
+      "id": "entity:ent-commit",
+      "profile": "generic@2",
+      "type": "node",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "[Entité · Dépôt] Commit — Instantané Git indexé (source_hash)"
+        },
+        "state": {
+          "kind": "enum",
+          "value": "draft"
+        },
+        "tags": {
+          "kind": "collection",
+          "items": [
+            { "kind": "text", "value": "plane:repository" },
+            { "kind": "text", "value": "profile:app-context-v1" }
+          ]
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:contains-spec": {
+      "id": "relation:contains-spec",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-normative" },
+        { "role": "child", "target": "entity:ent-spec" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-spec-section": {
+      "id": "relation:contains-spec-section",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-normative" },
+        { "role": "child", "target": "entity:ent-spec-section" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-requirement": {
+      "id": "relation:contains-requirement",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-normative" },
+        { "role": "child", "target": "entity:ent-requirement" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-track-wp": {
+      "id": "relation:contains-track-wp",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-delivery" },
+        { "role": "child", "target": "entity:ent-track-wp" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-track-item": {
+      "id": "relation:contains-track-item",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-delivery" },
+        { "role": "child", "target": "entity:ent-track-item" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-track-decision": {
+      "id": "relation:contains-track-decision",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-delivery" },
+        { "role": "child", "target": "entity:ent-track-decision" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-route": {
+      "id": "relation:contains-route",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-interface" },
+        { "role": "child", "target": "entity:ent-route" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-component": {
+      "id": "relation:contains-component",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-interface" },
+        { "role": "child", "target": "entity:ent-component" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-api-endpoint": {
+      "id": "relation:contains-api-endpoint",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-interface" },
+        { "role": "child", "target": "entity:ent-api-endpoint" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-data-entity": {
+      "id": "relation:contains-data-entity",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-data" },
+        { "role": "child", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-data-field": {
+      "id": "relation:contains-data-field",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-data" },
+        { "role": "child", "target": "entity:ent-data-field" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-code-symbol": {
+      "id": "relation:contains-code-symbol",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-repo" },
+        { "role": "child", "target": "entity:ent-code-symbol" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-file": {
+      "id": "relation:contains-file",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-repo" },
+        { "role": "child", "target": "entity:ent-file" }
+      ],
+      "attributes": {}
+    },
+    "relation:contains-commit": {
+      "id": "relation:contains-commit",
+      "profile": "generic@2",
+      "type": "contains",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "parent", "target": "entity:zone-repo" },
+        { "role": "child", "target": "entity:ent-commit" }
+      ],
+      "attributes": {}
+    },
+    "relation:rel-ont-01": {
+      "id": "relation:rel-ont-01",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-spec" },
+        { "role": "target", "target": "entity:ent-spec-section" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "contains" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-02": {
+      "id": "relation:rel-ont-02",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-spec-section" },
+        { "role": "target", "target": "entity:ent-requirement" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "specifies" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-03": {
+      "id": "relation:rel-ont-03",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-spec" },
+        { "role": "target", "target": "entity:ent-requirement" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "specifies" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-04": {
+      "id": "relation:rel-ont-04",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-spec" },
+        { "role": "target", "target": "entity:ent-route" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "governs" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-05": {
+      "id": "relation:rel-ont-05",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-spec-section" },
+        { "role": "target", "target": "entity:ent-component" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "governs" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-06": {
+      "id": "relation:rel-ont-06",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-requirement" },
+        { "role": "target", "target": "entity:ent-api-endpoint" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "governs" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-07": {
+      "id": "relation:rel-ont-07",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-requirement" },
+        { "role": "target", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "governs" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-08": {
+      "id": "relation:rel-ont-08",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-track-item" },
+        { "role": "target", "target": "entity:ent-track-wp" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "in_workpackage" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-09": {
+      "id": "relation:rel-ont-09",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-track-item" },
+        { "role": "target", "target": "entity:ent-requirement" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "tracks · réalise" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-10": {
+      "id": "relation:rel-ont-10",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-track-wp" },
+        { "role": "target", "target": "entity:ent-spec" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "tracks · réalise" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-11": {
+      "id": "relation:rel-ont-11",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-track-decision" },
+        { "role": "target", "target": "entity:ent-spec" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "decides" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-12": {
+      "id": "relation:rel-ont-12",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-track-decision" },
+        { "role": "target", "target": "entity:ent-track-wp" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "decides" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-13": {
+      "id": "relation:rel-ont-13",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-route" },
+        { "role": "target", "target": "entity:ent-component" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "renders" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-14": {
+      "id": "relation:rel-ont-14",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-component" },
+        { "role": "target", "target": "entity:ent-component" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "uses" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-15": {
+      "id": "relation:rel-ont-15",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-component" },
+        { "role": "target", "target": "entity:ent-api-endpoint" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "calls · HTTP littéral" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-16": {
+      "id": "relation:rel-ont-16",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-code-symbol" },
+        { "role": "target", "target": "entity:ent-api-endpoint" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "handles" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-17": {
+      "id": "relation:rel-ont-17",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-api-endpoint" },
+        { "role": "target", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "reads" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-18": {
+      "id": "relation:rel-ont-18",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-api-endpoint" },
+        { "role": "target", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "writes" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-19": {
+      "id": "relation:rel-ont-19",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-code-symbol" },
+        { "role": "target", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "reads · writes" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-20": {
+      "id": "relation:rel-ont-20",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-data-entity" },
+        { "role": "target", "target": "entity:ent-data-field" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "has_field" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-21": {
+      "id": "relation:rel-ont-21",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-data-field" },
+        { "role": "target", "target": "entity:ent-data-entity" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "references · FK" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-22": {
+      "id": "relation:rel-ont-22",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-code-symbol" },
+        { "role": "target", "target": "entity:ent-file" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "defined_in" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    },
+    "relation:rel-ont-23": {
+      "id": "relation:rel-ont-23",
+      "profile": "generic@2",
+      "type": "link",
+      "direction": "directed",
+      "endpoints": [
+        { "role": "source", "target": "entity:ent-file" },
+        { "role": "target", "target": "entity:ent-commit" }
+      ],
+      "attributes": {
+        "label": { "kind": "text", "value": "at_commit" },
+        "weight": { "kind": "quantity", "unit": "unit", "value": 1 }
+      }
+    }
+  }
+}

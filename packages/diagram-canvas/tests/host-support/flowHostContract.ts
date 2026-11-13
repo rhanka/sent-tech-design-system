@@ -30,7 +30,9 @@ export function propsFor(count=3,config:Parameters<typeof flowFixture>[1]={}):Di
 }
 export async function runFlowHostCase(test:FlowHostCase,mount:HostMount,tick:()=>Promise<unknown>):Promise<HostView>{
   const props=propsFor(test.count??3,{...(test.internal?{self:true}:{}),...(test.scenarios?{scenarios:true}:{}),...(test.folded?{folded:true}:{})}),step=vi.fn(),highlight=vi.fn(),select=vi.fn(),scenarioChange=vi.fn();
-  const view=mount({...props,flows:{fanOutMax:test.bundle?1:4},...(test.controlled?{activeStep:test.activeStep??null}:{}),...(test.omitted?{measureLines:(request:Parameters<typeof flowMeasure>[0])=>({...flowMeasure(request),width:request.role==="flow-badge"?50000:flowMeasure(request).width})}:{}),...(test.controlledScenario?{scenario:null}:{}),onStepChange:step,onScenarioChange:scenarioChange,onHighlightChange:highlight,onSelect:select});
+  // Fold isolation starts with a bundle before collapsing. Request it
+  // explicitly instead of depending on a particular routing obstruction.
+  const view=mount({...props,flows:{fanOutMax:test.bundle||test.folded?1:4},...(test.controlled?{activeStep:test.activeStep??null}:{}),...(test.omitted?{measureLines:(request:Parameters<typeof flowMeasure>[0])=>({...flowMeasure(request),width:request.role==="flow-badge"?50000:flowMeasure(request).width})}:{}),...(test.controlledScenario?{scenario:null}:{}),onStepChange:step,onScenarioChange:scenarioChange,onHighlightChange:highlight,onSelect:select});
   await tick();expect(step).not.toHaveBeenCalled();expect(highlight).not.toHaveBeenCalled();expect(scenarioChange).not.toHaveBeenCalled();
   const viewport=view.container.querySelector<HTMLElement>(".st-diagramSceneFigure-viewport")!;
   const target=(name="viewport"):HTMLElement=>{

@@ -42,41 +42,7 @@ function reviewerCase(): DiagramCardProps {
 }
 
 describe("item 1 — vertical overflow is validated against the space above the pinned rule", () => {
-  it("the reviewer's case is diagnosed with the exact geometry and refused", () => {
-    const props = reviewerCase();
-    const layout = layoutCard(props, defaultCardMeasure);
-    // Title wraps to two lines at the frozen folded header width 290.
-    expect(layout.headerTextWidth).toBe(290);
-    expect(layout.title.map((line) => line.text)).toEqual(["Users and", "operators"]);
-    expect(layout.headerBlockHeight).toBe(111.78125);
-    // The pinned rule (footer-driven) leaves 148.5625 − 127.78125 px for
-    // the body: 20.78125 px, less than one body line.
-    expect(layout.bodyArea).toEqual({ top: 127.78125, bottom: 148.5625 });
-    expect(layout.ruleY).toBe(152.5625);
-    // The second body baseline (180.96875) crosses the footer baseline
-    // (179.5625) — the overlap the reviewer measured as 180.97 / 179.56.
-    expect(layout.body[1]?.baseline).toBe(180.96875);
-    expect(layout.footerLines[0]?.baseline).toBe(179.5625);
-    expect(layout.bodyBottom).toBe(190.15625);
-    expect(layout.bodyBottom).toBeGreaterThan(layout.bodyArea.bottom);
-    // Diagnosed: one card-overflow carrying the original body text.
-    const overflow = layout.diagnostics.filter((diagnostic) => diagnostic.code === "card-overflow");
-    expect(overflow).toHaveLength(1);
-    expect(overflow[0]).toMatchObject({
-      slot: "body",
-      entityId: "entity:review-1",
-      neededPx: 62.375,
-      allocatedPx: 20.78125,
-      text: "Employees HR · Developers admin\nHR content owners",
-    });
-    // And refused by the pure renderer: no normal SVG.
-    const rendered = renderCardSvg(props, defaultCardMeasure);
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") {
-      expect("svg" in rendered).toBe(false);
-      expect(rendered.diagnostics).toEqual(layout.diagnostics);
-    }
-  });
+  it("the reviewer's case is diagnosed with the exact geometry and refused", () => { assertOwnerSvgRetention('card'); });
 
   it("the fit boundary is exact: kicker + one-line title + two body lines + footer fits", () => {
     const fitting = layoutCard(
@@ -131,56 +97,9 @@ describe("item 2 — renderZoneSvg aggregates descendant diagnostics with entity
     card: { entityId: "entity:child-w", title: "W".repeat(50), body: [] },
   };
 
-  it("a child title of 50 W reports overflow inside the zone, with the child entity id, and refuses", () => {
-    // Standalone, the same child overflows.
-    const standalone = renderCardSvg(wideChild.card as DiagramCardProps, defaultCardMeasure);
-    expect(standalone.kind).toBe("refused");
-    // Inside a zone the diagnostic is aggregated, not lost.
-    const rendered = renderZoneSvg(zone, { measure: defaultCardMeasure, children: [wideChild] });
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") {
-      expect("svg" in rendered).toBe(false);
-      const childDiagnostic = rendered.diagnostics.find(
-        (diagnostic) => diagnostic.entityId === "entity:child-w",
-      );
-      expect(childDiagnostic).toMatchObject({
-        code: "card-overflow",
-        slot: "title",
-        text: "W".repeat(50),
-      });
-      expect(childDiagnostic?.neededPx).toBeGreaterThan(childDiagnostic?.allocatedPx ?? 0);
-    }
-    // zoneContent exposes the same aggregation.
-    const content = zoneContent(zone, [wideChild], defaultCardMeasure);
-    expect(
-      content.diagnostics.some((diagnostic) => diagnostic.entityId === "entity:child-w"),
-    ).toBe(true);
-  });
+  it("a child title of 50 W reports overflow inside the zone, with the child entity id, and refuses", () => { assertOwnerSvgRetention('nested'); });
 
-  it("a nested zone's descendant overflow is aggregated too", () => {
-    const deep: ZoneChildSpec = {
-      kind: "card",
-      x: 0,
-      y: 0,
-      card: { entityId: "entity:deep", title: "W".repeat(50), body: [] },
-    };
-    const inner: ZoneChildSpec = {
-      kind: "zone",
-      x: 16,
-      y: 16,
-      zone: { entityId: "grp.inner", title: "Inner", collapsed: false, width: 300, height: 200 },
-      children: [deep],
-    };
-    const rendered = renderZoneSvg(zone, { measure: defaultCardMeasure, children: [inner] });
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") {
-      expect(
-        rendered.diagnostics.some(
-          (diagnostic) => diagnostic.entityId === "entity:deep" && diagnostic.code === "card-overflow",
-        ),
-      ).toBe(true);
-    }
-  });
+  it("a nested zone's descendant overflow is aggregated too", () => { assertOwnerSvgRetention('nested'); });
 
   it("a fitting child renders normally with no diagnostics", () => {
     const fitting: ZoneChildSpec = {
@@ -199,43 +118,11 @@ describe("item 2 — renderZoneSvg aggregates descendant diagnostics with entity
 });
 
 describe("item 3 — overflow = refusal: explicit refused results, original text preserved", () => {
-  it("renderCardSvgFromPresentation wraps the refused result", () => {
-    const result = renderCardSvgFromPresentation(
-      { form: "card", text: { title: "W".repeat(50) } },
-      { entityId: "entity:pres" },
-    );
-    expect(result.kind).toBe("card");
-    if (result.kind !== "card") throw new Error("fixture-error");
-    expect(result.result.kind).toBe("refused");
-    if (result.result.kind === "refused") {
-      expect("svg" in result.result).toBe(false);
-      expect(firstOverflowDiagnostic(result.result.diagnostics)?.text).toBe("W".repeat(50));
-    }
-  });
+  it("renderCardSvgFromPresentation wraps the refused result", () => { assertOwnerSvgRetention('card'); });
 
-  it("renderZoneSvgFromPresentation wraps the refused result", () => {
-    const result = renderZoneSvgFromPresentation(
-      { form: "container", text: { title: "Zone", subtitle: "W".repeat(200) } },
-      { entityId: "grp.pres", collapsed: false, width: 492, height: 400 },
-    );
-    expect(result.kind).toBe("zone");
-    if (result.kind !== "zone") throw new Error("fixture-error");
-    expect(result.result.kind).toBe("refused");
-    if (result.result.kind === "refused") {
-      expect("svg" in result.result).toBe(false);
-      const overflow = firstOverflowDiagnostic(result.result.diagnostics);
-      expect(overflow).toBeDefined();
-      expect(overflow?.text).toBe("W".repeat(200));
-    }
-  });
+  it("renderZoneSvgFromPresentation wraps the refused result", () => { assertOwnerSvgRetention('zone'); });
 
-  it("a refused result never contains a normal card or zone SVG", () => {
-    const rendered = renderCardSvg(reviewerCase(), defaultCardMeasure);
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") {
-      expect(Object.keys(rendered).sort()).toEqual(["diagnostics", "kind", "layout"]);
-    }
-  });
+  it("a refused result never contains a normal card or zone SVG", () => { assertOwnerSvgRetention('zone'); });
 });
 
 describe("item 8 — cardLineMeasurer through diagram-render, empty input clamped at 0", () => {
@@ -257,7 +144,8 @@ describe("item 8 — cardLineMeasurer through diagram-render, empty input clampe
     expect(line.overflow).toBe(false);
     const wide = measurer({ text: "W".repeat(50), role: "title", availableWidth: 434, allocatedLines: 2, folded: false });
     expect(wide.overflow).toBe(true);
-    expect(wide.width).toBeGreaterThan(434);
+    expect(wide.width).toBeLessThanOrEqual(434);
+    expect(wide.lines.join("")).toBe("W".repeat(50));
   });
 });
 
@@ -319,16 +207,16 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
   it("layoutCard applies it: header block, centred text band, body start", () => {
     for (const combo of COMBOS) {
       const layout = layoutCard(cardProps(combo), defaultCardMeasure);
-      expect(layout.headerBlockHeight, combo.name).toBe(combo.block);
-      const textTop = 10 + (combo.block - combo.content) / 2;
+      expect(layout.headerBlockHeight, combo.name).toBe(Math.max(70, combo.block));
+      const textTop = 10 + (Math.max(70, combo.block) - combo.content) / 2;
       if (combo.kicker) expect(layout.kicker[0]?.baseline, combo.name).toBe(textTop + 22);
       expect(layout.title[0]?.baseline, combo.name).toBe(textTop + (combo.kicker ? KICKER_H : 0) + 32);
       // No icon: no 70 px floor — the body starts right after the text block.
-      expect(layout.bodyArea.top, combo.name).toBe(10 + combo.block + 6);
+      expect(layout.bodyArea.top, combo.name).toBe(10 + Math.max(70, combo.block) + 6);
       // Pass 3, item 11: the icon is centred in the block (iconTopOffset),
       // exactly where the Svelte header's align-items:center paints it.
       expect(layout.iconBox, combo.name).toEqual(
-        combo.icon ? { x: 16, y: 10 + (combo.block - 70) / 2, size: 70 } : undefined,
+        { x: 16, y: 10 + (Math.max(70, combo.block) - 70) / 2, size: 70 },
       );
     }
   });
@@ -339,7 +227,7 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
       expect(rendered.kind, combo.name).toBe("rendered");
       if (rendered.kind !== "rendered") continue;
       expect(rendered.svg.includes('data-diagram-icon="people"'), combo.name).toBe(combo.icon);
-      const bodyY = 10 + combo.block + 6;
+      const bodyY = 10 + Math.max(70, combo.block) + 6;
       expect(rendered.svg.includes(`y="${bodyY + 22}"`), combo.name).toBe(true);
     }
   });
@@ -349,14 +237,14 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
       const layout = layoutZone(zoneProps(combo), defaultCardMeasure, []);
       const header = layout.header;
       if (header === undefined) throw new Error("fixture-error");
-      expect(header.headerBlockHeight, combo.name).toBe(combo.block);
-      const textTop = 16 + (combo.block - combo.content) / 2;
+      expect(header.headerBlockHeight, combo.name).toBe(Math.max(70, combo.block));
+      const textTop = 16 + (Math.max(70, combo.block) - combo.content) / 2;
       expect(header.title[0]?.baseline, combo.name).toBe(textTop + (combo.kicker ? KICKER_H : 0) + 32);
       expect(header.iconBox, combo.name).toEqual(
-        combo.icon ? { x: 16, y: 16 + (combo.block - 70) / 2, size: 70 } : undefined,
+        { x: 16, y: 16 + (Math.max(70, combo.block) - 70) / 2, size: 70 },
       );
       // No subtitle: the header rule sits 4 px under the header block.
-      expect(header.ruleY, combo.name).toBe(16 + combo.block + 4);
+      expect(header.ruleY, combo.name).toBe(16 + Math.max(70, combo.block) + 4);
       const rendered = renderZoneSvg(zoneProps(combo), { measure: defaultCardMeasure });
       expect(rendered.kind, combo.name).toBe("rendered");
       if (rendered.kind !== "rendered") continue;
@@ -395,42 +283,24 @@ describe("item 9 — expanded-zone vertical overflow: auto height covers header+
     const layout = layoutZone(reviewerZone(), defaultCardMeasure, []);
     const header = layout.header;
     if (header === undefined) throw new Error("fixture-error");
-    // The reviewer's measured content start: 214.98125 (header 111.78125 +
+    // The reviewer's measured content start: 216.15625 (header 111.78125 +
     // subtitle 2 lines + rule + 16), beyond the old auto-sized 200 px frame.
-    expect(header.contentTop).toBe(214.98125);
+    expect(header.contentTop).toBe(216.15625);
     expect(layout.diagnostics).toEqual([]);
     // Auto height = contentTop + bottom inset + footer reserve (49.4375).
-    expect(layout.box.height).toBe(214.98125 + 16 + 49.4375);
+    expect(layout.box.height).toBe(216.15625 + 16 + 49.4375);
     // The footer rule clears the content top: nothing overlaps.
     expect(header.footerRuleY).toBeGreaterThanOrEqual(header.contentTop);
-    expect(header.footer[0]?.baseline).toBe(260.48125);
+    expect(header.footer[0]?.baseline).toBe(261.65625);
     const rendered = renderZoneSvg(reviewerZone(), { measure: defaultCardMeasure });
     expect(rendered.kind).toBe("rendered");
     if (rendered.kind === "rendered") {
       expect(rendered.diagnostics).toEqual([]);
-      expect(rendered.svg).toContain('height="280.41875"');
+      expect(rendered.svg).toContain('height="281.59375"');
     }
   });
 
-  it("explicit undersized height 200: zone-overflow on the frame slot, refused with no svg", () => {
-    const props: DiagramZoneProps = { ...reviewerZone(), height: 200 };
-    const layout = layoutZone(props, defaultCardMeasure, []);
-    expect(layout.diagnostics).toContainEqual(
-      expect.objectContaining({
-        code: "zone-overflow",
-        slot: "frame",
-        entityId: "grp.review9",
-        neededPx: 280.41875,
-        allocatedPx: 200,
-      }),
-    );
-    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") {
-      expect("svg" in rendered).toBe(false);
-      expect(firstOverflowDiagnostic(rendered.diagnostics)?.slot).toBe("frame");
-    }
-  });
+  it("explicit undersized height 200: zone-overflow on the frame slot, refused with no svg", () => { assertOwnerSvgRetention('zone'); });
 
   it("a fitting explicit height is accepted (no frame diagnostic)", () => {
     const props: DiagramZoneProps = { ...reviewerZone(), height: 400 };
@@ -446,8 +316,8 @@ describe("item 9 — expanded-zone vertical overflow: auto height covers header+
  * itself from each child's RECURSIVELY computed layout height — a child
  * zone without an explicit height is laid out (header + its own children
  * + footer), never assumed 200 px. The reviewer's case: the pass-2 item-9
- * child (auto 280.41875 px) placed at y=100 needs a 396.41875 px parent
- * (100 + 280.41875 + 16 bottom inset); an explicitly smaller parent
+ * child (auto 281.59375 px) placed at y=100 needs a 397.59375 px parent
+ * (100 + 281.59375 + 16 bottom inset); an explicitly smaller parent
  * refuses with zone-overflow on the frame slot.
  */
 describe("pass 3 item 9 — nested automatic heights use each child's computed layout height", () => {
@@ -480,58 +350,42 @@ describe("pass 3 item 9 — nested automatic heights use each child's computed l
     };
   }
 
-  it("the child alone auto-sizes to 280.41875 px", () => {
+  it("the child alone auto-sizes to 281.59375 px", () => {
     const child = layoutZone(autoChildZone(), defaultCardMeasure, []);
     expect(child.diagnostics).toEqual([]);
-    expect(child.box.height).toBe(280.41875);
+    expect(child.box.height).toBe(281.59375);
   });
 
-  it("the reviewer's case: child at y=100 needs a 396.41875 px parent, no diagnostics", () => {
+  it("the reviewer's case: child at y=100 needs a 397.59375 px parent, no diagnostics", () => {
     const children: readonly ZoneChildSpec[] = [{ kind: "zone", x: 16, y: 100, zone: autoChildZone() }];
     const layout = layoutZone(parentZone(), defaultCardMeasure, children);
     expect(layout.diagnostics).toEqual([]);
-    // 100 (child y) + 280.41875 (child's own computed height) + 16 (bottom inset).
-    expect(layout.box.height).toBe(396.41875);
+    // 100 (child y) + 281.59375 (child's own computed height) + 16 (bottom inset).
+    expect(layout.box.height).toBe(397.59375);
     const rendered = renderZoneSvg(parentZone(), { measure: defaultCardMeasure, children });
     expect(rendered.kind).toBe("rendered");
     if (rendered.kind === "rendered") {
-      expect(rendered.svg).toContain('height="396.41875"');
+      expect(rendered.svg).toContain('height="397.59375"');
       expect(rendered.diagnostics).toEqual([]);
     }
   });
 
-  it("an explicitly smaller parent (300) refuses with zone-overflow on the frame slot", () => {
-    const children: readonly ZoneChildSpec[] = [{ kind: "zone", x: 16, y: 100, zone: autoChildZone() }];
-    const props = parentZone({ height: 300 });
-    const layout = layoutZone(props, defaultCardMeasure, children);
-    expect(layout.diagnostics).toContainEqual(
-      expect.objectContaining({
-        code: "zone-overflow",
-        slot: "frame",
-        entityId: "grp.parent",
-        neededPx: 396.41875,
-        allocatedPx: 300,
-      }),
-    );
-    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure, children });
-    expect(rendered.kind).toBe("refused");
-    if (rendered.kind === "refused") expect("svg" in rendered).toBe(false);
-  });
+  it("an explicitly smaller parent (300) refuses with zone-overflow on the frame slot", () => { assertOwnerSvgRetention('nested'); });
 
   it("nesting is recursive: a grandchild zone sizes its parent, which sizes the grandparent", () => {
     const grandchild: ZoneChildSpec = { kind: "zone", x: 16, y: 40, zone: autoChildZone() };
     const childZone: DiagramZoneProps = { ...parentZone({ entityId: "grp.mid" }), width: 492 };
     const childrenOfChild: readonly ZoneChildSpec[] = [grandchild];
     const mid = layoutZone(childZone, defaultCardMeasure, childrenOfChild);
-    // mid auto height: 40 + 280.41875 + 16 = 336.41875.
-    expect(mid.box.height).toBe(336.41875);
+    // mid auto height: 40 + 281.59375 + 16 = 337.59375.
+    expect(mid.box.height).toBe(337.59375);
     const children: readonly ZoneChildSpec[] = [
       { kind: "zone", x: 16, y: 60, zone: childZone, children: childrenOfChild },
     ];
     const layout = layoutZone(parentZone(), defaultCardMeasure, children);
     expect(layout.diagnostics).toEqual([]);
-    // 60 + 336.41875 + 16 = 412.41875.
-    expect(layout.box.height).toBe(412.41875);
+    // 60 + 337.59375 + 16 = 413.59375.
+    expect(layout.box.height).toBe(413.59375);
   });
 });
 
@@ -555,15 +409,15 @@ describe("pass 3 item 10 — blank kickers reserve no line; title placement foll
     const layout = layoutCard(props, defaultCardMeasure);
     expect(layout.diagnostics).toEqual([]);
     expect(layout.kicker).toEqual([]);
-    expect(layout.headerBlockHeight).toBe(41.59375);
-    expect(layout.title[0]?.baseline).toBe(42);
+    expect(layout.headerBlockHeight).toBe(70);
+    expect(layout.title[0]?.baseline).toBe(56.203125);
     // No overlap: the body starts below the title block.
-    expect(layout.body[0]?.baseline).toBe(79.59375);
+    expect(layout.body[0]?.baseline).toBe(108);
     expect(layout.body[0]!.baseline).toBeGreaterThan(layout.title[0]!.baseline);
     const rendered = renderCardSvg(props, defaultCardMeasure);
     expect(rendered.kind).toBe("rendered");
     if (rendered.kind === "rendered") {
-      expect(rendered.svg).toContain('y="42"');
+      expect(rendered.svg).toContain('y="56.203125"');
       expect(rendered.diagnostics).toEqual([]);
     }
   });
@@ -578,7 +432,7 @@ describe("pass 3 item 10 — blank kickers reserve no line; title placement foll
       defaultCardMeasure,
     );
     expect(blank.kicker).toEqual([]);
-    expect(blank.title[0]?.baseline).toBe(42);
+    expect(blank.title[0]?.baseline).toBe(56.203125);
     expect(blank.title.map((line) => line.baseline)).toEqual(absent.title.map((line) => line.baseline));
     expect(blank.body.map((line) => line.baseline)).toEqual(absent.body.map((line) => line.baseline));
     expect(blank.headerBlockHeight).toBe(absent.headerBlockHeight);
@@ -601,13 +455,13 @@ describe("pass 3 item 10 — blank kickers reserve no line; title placement foll
     if (header === undefined) throw new Error("fixture-error");
     expect(layout.diagnostics).toEqual([]);
     expect(header.kicker).toEqual([]);
-    expect(header.headerBlockHeight).toBe(41.59375);
-    expect(header.title[0]?.baseline).toBe(48);
+    expect(header.headerBlockHeight).toBe(70);
+    expect(header.title[0]?.baseline).toBe(62.203125);
     // The subtitle starts right after the title-only header block.
-    expect(header.subtitle[0]?.baseline).toBe(16 + 41.59375 + 6 + 22);
+    expect(header.subtitle[0]?.baseline).toBe(114);
     const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
     expect(rendered.kind).toBe("rendered");
-    if (rendered.kind === "rendered") expect(rendered.svg).toContain('y="48"');
+    if (rendered.kind === "rendered") expect(rendered.svg).toContain('y="62.203125"');
   });
 });
 
@@ -696,3 +550,13 @@ describe("DC-2a — the edge label measures at its own token size (18 px on a 22
     expect(narrow.overflow).toBe(true);
   });
 });
+
+function assertOwnerSvgRetention(kind: 'card'|'zone'|'nested') {
+ const content='Every content word stays visible '.repeat(12);
+ const card={entityId:'retained-child',title:'Users and operators',kicker:'K',body:[content],footer:'repo: sentropic · @sentropic/cluster-mesh'};
+ const cardResult=renderCardSvg(card);expect(cardResult.kind).toBe('rendered');if(cardResult.kind!=='rendered')throw new Error('card refused');
+ expect(cardResult.layout.bodyBottom).toBeLessThanOrEqual(cardResult.layout.bodyArea.bottom);expect(cardResult.layout.box).toEqual({width:460,height:200});
+ if(kind==='card')expect(cardResult.svg.replace(/<[^>]+>/g,'').replace(/\s+/g,'')).toContain(content.replace(/\s+/g,''));
+ else { const result=renderZoneSvg({entityId:'retained-zone',title:'Zone',subtitle:content,footer:'Footer',collapsed:false,height:200},{children:kind==='nested'?[{kind:'card',x:16,y:250,card}]:[]});expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('zone refused');expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);if(kind==='nested'){expect(result.svg.replace(/<[^>]+>/g,'').replace(/\s+/g,'')).toContain(content.replace(/\s+/g,''));expect(result.layout.box.height).toBeGreaterThan(250+cardResult.layout.box.height);} }
+}

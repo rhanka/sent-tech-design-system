@@ -23,6 +23,7 @@ import {
   CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   DEFAULT_LAYOUT_METRICS,
+  DEFAULT_MIN_READABLE_SCALE,
   layoutFolded,
   layoutMeasured,
   placeEdgeLabels,
@@ -43,6 +44,10 @@ import {
   type Vec2,
 } from "../index.js";
 
+import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
+import { getDiagramGlyph } from "./registry.js";
+import { ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { measureSceneBox } from "../layout/sceneMeasure.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 
 /** The semantic document the layout engine reads. */
@@ -92,7 +97,35 @@ export function sceneContentSize(result: LayoutResult | undefined): DiagramScene
   return result?.status === "laid-out" ? { width: result.fit.width, height: result.fit.height } : { width: 0, height: 0 };
 }
 
+/** Presentation data keyed by profile:type (or type), kept outside semantic profiles. */
+export type SceneIconBindings = Readonly<Record<string, { readonly icon?: string; readonly role?: string; readonly shape?: "component" | "flow" | "erd" | "note" }>>;
+export const ROLE_ICONS: Readonly<Record<string, string>> = { card: "base", zone: "cluster", store: "db", actor: "user", api: "api", runtime: "server" };
+
+export function resolveScenePresentation(document: SceneDocument, presentation: ScenePresentation,
+  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph) {
+  const missing: string[] = [];
+  const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
+    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, entry];
+    const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
+    const entity = document.entities[entityId];
+    if (entity?.profile === "erd@1") return [id, entry];
+    const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
+    if (binding?.shape !== undefined && binding.shape !== "component") return [id, { ...entry, icon: entry.icon ?? "none" }];
+    const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
+    const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
+    if (icon === undefined || resolveGlyph(icon) === undefined) {
+      missing.push(id);
+      return [id, { ...entry, icon: strict ? "unknown" : "none" }];
+    }
+    return [id, { ...entry, icon }];
+  }));
+  return { presentation: { ...presentation, entities }, missing };
+}
+
 export interface SceneLayoutInput {
+  readonly iconBindings?: SceneIconBindings;
+  readonly strictIcons?: boolean;
+  readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
   /** Retained source view (authored occurrences, fold groups). Optional: the engine synthesises one. */
@@ -119,6 +152,7 @@ export interface SceneLayoutInput {
  * required field carries no second metric source.
  */
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.flows === undefined ? {} : { flows: input.flows }),
@@ -134,7 +168,7 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
       });
       return { width: layout.width, height: layout.height };
     },
-    presentation: input.presentation,
+    presentation: resolved.presentation,
     measureLines: input.measureLines,
     collapsed: input.collapsed,
     ...(input.hints === undefined ? {} : { hints: input.hints }),
@@ -143,14 +177,14 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
   };
-  if (input.cache !== undefined) {
-    return input.view === undefined
+  const result = input.cache !== undefined
+    ? (input.view === undefined
       ? input.cache.layout(input.document, options)
-      : input.cache.layoutFolded(input.document, input.view, options);
-  }
-  return input.view === undefined
+      : input.cache.layoutFolded(input.document, input.view, options))
+    : input.view === undefined
     ? layoutMeasured(input.document, options)
     : layoutFolded(input.document, input.view, options);
+  return result.status !== "laid-out" || resolved.missing.length === 0 ? result : { ...result, warnings: [...result.warnings, ...resolved.missing.map(id => ({ code: "card-icon-missing" as const, refs: [id], message: "No icon resolves for this component; strict mode displays unknown" }))] };
 }
 
 /** Collapsed occurrence ids recorded by a view's fold groups. */
@@ -193,6 +227,8 @@ export interface SceneLabelModel {
   readonly occurrence: SceneOccurrenceRef;
   readonly lines: readonly string[];
   readonly box: Rect;
+  readonly title?: string;
+  readonly bundle?: { readonly header: string; readonly groups: readonly BundleLabelGroup[] };
   readonly leader?: readonly Vec2[];
   readonly erd?: boolean;
 }
@@ -242,13 +278,17 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "flows">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows">,
 ): SceneModel {
   const view = result.view;
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
+  const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));
+  const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
+  const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = input.presentation.entities[node.occurrence] as EntityPresentation | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as EntityPresentation | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";
@@ -281,19 +321,23 @@ export function resolveScene(
     (result.measurements?.headers ?? []).map((header) => [header.occurrence as string, header.height] as const),
   );
   const blockers: Rect[] = [];
-  for (const node of nodes) {
+  for (const node of result.labelBoxes === undefined || input.document.profileRefs.includes("erd@1") ? nodes : []) {
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
       continue;
     }
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
+    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
     blockers.push({
-      x: node.rect.x + CONTENT_INSET,
-      y: node.rect.y + CONTENT_INSET,
-      width: node.rect.width - 2 * CONTENT_INSET,
-      height,
+      x: node.rect.x,
+      y: node.rect.y,
+      width: node.rect.width,
+      height: CONTENT_INSET + height + ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
     });
+    const reserve = measureSceneBox(node.presentation, node.occurrence, node.rect.width, false, input.measureLines, input.metrics?.containerPadding).footerReserve;
+    if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
+      width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
   }
 
   const allFlows = flowIndex(input.document);
@@ -320,11 +364,11 @@ export function resolveScene(
     const occurrence = view.relationOccurrences[target.occurrence];
     flowEnds[id] = occurrence?.endpoints.map((end) => view.portOccurrences[end.occurrence]?.ownerOccurrence ?? end.occurrence) ?? [];
   }
-  const visibleEdges = new Set(sceneEdges(frame).map((edge) => edge.occurrence as string));
   const edges: SceneEdgeModel[] = [];
   const entries: { id: string; route: readonly Vec2[]; size: { width: number; height: number } }[] = [];
   const labelLines = new Map<string, readonly string[]>();
   for (const id of Object.keys(view.relationOccurrences).sort(byCodeUnit)) {
+    if (!visibleEdges.has(id)) continue;
     const occurrence = view.relationOccurrences[id]!;
     if (occurrence.waypoints === undefined || !visibleEdges.has(id)) continue;
     const points = relationRoute(view, occurrence.id) ?? [];
@@ -340,9 +384,9 @@ export function resolveScene(
     }
     edges.push({ ...(markers === undefined ? {} : { markers }), occurrence: occurrence.id, points, directed: flow !== undefined, arrows: result.arrowBoxes?.[occurrence.id] ?? [], ...(flow === undefined ? {} : { flow }), ...(bundle === undefined ? {} : { bundle }) });
     if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
-    const label = semantic?.profile === 'erd@1'
+    const label = result.edgeBundles?.[id]?.label ?? (semantic?.profile === 'erd@1'
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
-      : edgeLabelOf(input.document, occurrence.relation);
+      : edgeLabelOf(input.document, occurrence.relation));
     if (label === undefined) continue;
     const layout = measuredLabels.get(id) ?? input.measureLines({
       text: label,
@@ -357,16 +401,20 @@ export function resolveScene(
   }
   const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const labels: SceneLabelModel[] = [];
-  let bounds = frame.bounds;
+  let bounds: Rect | undefined;
+  for (const item of items) {
+    const box = item.kind === "edge" ? item.bounds : item.rect;
+    bounds = bounds === undefined ? box : rectUnion(bounds, box);
+  }
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
-  const placements = erd
-    ? placeErdRoleLabels(entries, blockers, margin)
-    : result.labelBoxes === undefined
-      ? placeEdgeLabels(entries, blockers, margin)
-      : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
+  const placements = erd ? placeErdRoleLabels(entries, blockers, margin) : result.labelBoxes === undefined
+    ? placeEdgeLabels(entries, blockers, margin)
+    : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
   for (const [id, placement] of placements) {
     if (placement === undefined) continue;
-    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}) });
+    labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
+      ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
+      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
@@ -393,6 +441,16 @@ export function resolveScene(
     ...(bounds === undefined ? {} : { bounds }),
     orientations: result.orientations ?? {},
   };
+}
+
+/** Full presentation text retained alongside the textual relations (A14). */
+export function sceneTextRows(scene: SceneModel, document: SceneDocument): readonly string[] {
+  const rows = scene.nodes.map(node => Object.values(node.presentation?.text ?? {}).filter(Boolean).join(" · "));
+  for (const relation of Object.values(document.relations)) {
+    const names = relation.endpoints.map(end => { const value = document.entities[end.target]?.attributes["name"]; return value?.kind === "text" ? String(value.value) : end.target; });
+    rows.push(names.join(" → ") + " · " + (edgeLabelOf(document, relation.id) ?? relation.type));
+  }
+  return rows;
 }
 
 /* ───────────────────────────── camera ───────────────────────────── */

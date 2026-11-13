@@ -33,12 +33,13 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
  * Only framework markers, comments and equivalent CSS serialization differ. */
 export function dom(node: Element): unknown {
   const attrs = [...node.attributes].filter(a => !/^data-v-/.test(a.name)).map(a => {
+    if (a.name === 'aria-describedby' || a.name === 'id' && node.hasAttribute('hidden')) return [a.name, 'description'];
     if (a.name === 'class') return [a.name, a.value.split(/\s+/).filter(c => c && !c.startsWith('svelte-')).sort().join(' ')];
     if (a.name === 'style') {
       const style = (node as HTMLElement).style;
       return [a.name, Array.from({ length: style.length }, (_, index) => style.item(index)).sort().map(key => [key, style.getPropertyValue(key).trim()])];
     }
-    return [a.name, a.value];
+    return [a.name, a.value.replace(/diagram-arrow-[^\s)]+/g, 'diagram-arrow-instance')];
   }).filter(([name, value]) => !(name === 'class' && value === '')).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
   return { tag: node.tagName, attrs, children: [...node.childNodes].flatMap(child => {
     if (child.nodeType === 1) return [dom(child as Element)];
@@ -49,10 +50,18 @@ export function dom(node: Element): unknown {
 
 describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   it('should emit each collapsed-zone diagnostic once', async () => {
-    const props = { entityId: 'unknown-zone', title: 'Unknown', collapsed: true, icon: 'unmapped' };
-    const vue = mount(DiagramZone, { props }); await nextTick();
-    expect(vue.emitted('diagnostic')?.flat()).toEqual(renderZoneSvg(props).diagnostics);
-    vue.unmount();
+    for (const props of [
+      { entityId: 'unknown-zone', title: 'Unknown', collapsed: true, icon: 'unmapped' },
+      { entityId: 'growing-zone', title: 'Grows', collapsed: true, autoSize: true, subtitle: 'word '.repeat(50) },
+    ]) {
+      const vue = mount(DiagramZone, { props }); await nextTick();
+      const diagnostics = vi.fn();
+      const svelte = render(SvelteZone, { ...props, onDiagnostic: diagnostics }); await tick();
+      const expected = renderZoneSvg(props).diagnostics;
+      expect(vue.emitted('diagnostic')?.flat()).toEqual(expected);
+      expect(diagnostics.mock.calls.map(call => call[0])).toEqual(expected);
+      vue.unmount(); svelte.unmount();
+    }
   });
   it('should invoke graph listeners once and restrict pointer activation to the dot', async () => {
     const onSelect = vi.fn(), onOpenEntity = vi.fn(), onNodeHover = vi.fn(), onEdgeHover = vi.fn();
@@ -352,7 +361,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(vue.emitted('layout')).toHaveLength(2); vue.unmount(); vi.unstubAllGlobals();
   });
   it('should display a refused scene accessibly', async () => {
-    const vue = mount(SceneFigure, { props: { ...host, ...SINGLE, registry: new Map() as never } });
+    const vue = mount(SceneFigure, { props: { ...host, ...SINGLE, registry: { get: () => undefined, list: () => [] } as never } });
     expect(vue.find('[role="alert"]').text()).toContain('Diagram unavailable');
     expect(vue.attributes('data-scene-refused')).toBeTruthy(); vue.unmount();
   });

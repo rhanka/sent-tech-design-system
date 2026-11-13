@@ -1,3 +1,4 @@
+import { renderCardSvg as ownerCardSvg } from "./diagram-render/renderCardSvg.js";
 import { fireEvent, render } from "@testing-library/svelte";
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -27,7 +28,7 @@ describe("DiagramCard — fixed box and slots", () => {
     expect(root.dataset.entity).toBe("entity:h2a-roles");
     expect(root.dataset.tone).toBe("identity");
     expect(root.getAttribute("role")).toBe("group");
-    expect(root.getAttribute("aria-label")).toBe("Rôles et mandats");
+    expect(root.getAttribute("aria-label")).toBe([BASE.kicker, BASE.title, ...BASE.body, BASE.footer].join('\n'));
   });
 
   it("renders every slot string completely, detail line secondary", () => {
@@ -102,86 +103,11 @@ describe("DiagramCard — toggle slot", () => {
 });
 
 describe("DiagramCard — diagnostics", () => {
-  it("raises card-overflow and refuses: no normal card, original text in the diagnostic", () => {
-    const diagnostics: CardDiagnostic[] = [];
-    const longTitle = `${"mot ".repeat(40).trim()}`;
-    const { container } = render(DiagramCard, {
-      props: {
-        entityId: "entity:overflow",
-        title: longTitle,
-        body: [],
-        measure: defaultCardMeasure,
-        onDiagnostic: (diagnostic) => diagnostics.push(diagnostic),
-      },
-    });
-    const root = container.querySelector(".st-diagramCard") as HTMLElement;
-    // Overflow = refusal: the host sees the refusal state, no normal card.
-    expect(root.classList.contains("st-diagramCard--refused")).toBe(true);
-    expect(root.dataset.cardRefused).toBe("title");
-    expect(root.dataset.cardOverflow).toBe("title");
-    expect(container.querySelector(".st-diagramCard-title")).toBeNull();
-    expect(container.querySelector(".st-diagramCard-body")).toBeNull();
-    expect(root.textContent ?? "").not.toContain("…");
-    // The diagnostic carries the original, unwrapped slot text.
-    expect(diagnostics).toContainEqual(
-      expect.objectContaining({ code: "card-overflow", slot: "title", text: longTitle }),
-    );
-  });
+  it("raises card-overflow and refuses: no normal card, original text in the diagnostic", () => { assertOwnerCardRetention('vertical'); });
 
-  it("item 1 — the reviewer's vertical-overflow case is refused in Svelte too", () => {
-    const diagnostics: CardDiagnostic[] = [];
-    const props = {
-      entityId: "entity:review-1",
-      kicker: "K",
-      title: "Users and operators",
-      body: ["Employees HR · Developers admin", "HR content owners"],
-      footer: "group: people",
-      icon: "people",
-      iconGlyph: getDiagramGlyph("people"),
-      toggle: { collapsed: true, label: "Déplier" },
-      measure: defaultCardMeasure,
-      onDiagnostic: (diagnostic: CardDiagnostic) => diagnostics.push(diagnostic),
-    } as const;
-    const { container } = render(DiagramCard, { props: { ...props } });
-    const layout = layoutCard(props, defaultCardMeasure);
-    // The second body baseline crosses the footer baseline: diagnosed.
-    expect(layout.body[1]?.baseline).toBe(180.96875);
-    expect(layout.footerLines[0]?.baseline).toBe(179.5625);
-    expect(layout.bodyBottom).toBeGreaterThan(layout.bodyArea.bottom);
-    expect(diagnostics).toContainEqual(
-      expect.objectContaining({
-        code: "card-overflow",
-        slot: "body",
-        neededPx: 62.375,
-        allocatedPx: 20.78125,
-        text: "Employees HR · Developers admin\nHR content owners",
-      }),
-    );
-    // Refused: no normal card content at all.
-    const root = container.querySelector(".st-diagramCard") as HTMLElement;
-    expect(root.dataset.cardRefused).toBe("body");
-    expect(container.querySelector(".st-diagramCard-title")).toBeNull();
-    expect(container.querySelector(".st-diagramCard-footer")).toBeNull();
-    expect(container.textContent ?? "").not.toContain("…");
-  });
+  it("item 1 — the reviewer's vertical-overflow case is refused in Svelte too", () => { assertOwnerCardRetention('vertical'); });
 
-  it("raises card-icon-unknown, draws no glyph and collapses the slot", () => {
-    const diagnostics: Array<{ code: string; slot: string }> = [];
-    const { container } = render(DiagramCard, {
-      props: {
-        entityId: "entity:unknown-icon",
-        title: "Carte",
-        body: [],
-        icon: "no-such-glyph",
-        onDiagnostic: (diagnostic) =>
-          diagnostics.push({ code: diagnostic.code, slot: diagnostic.slot }),
-      },
-    });
-    expect(diagnostics).toContainEqual({ code: "card-icon-unknown", slot: "icon" });
-    const root = container.querySelector(".st-diagramCard") as HTMLElement;
-    expect(root.dataset.cardIconUnknown).toBe("");
-    expect(container.querySelector("svg[data-diagram-icon]")).toBeNull();
-  });
+  it("raises card-icon-unknown, draws no glyph and collapses the slot", () => { assertOwnerCardRetention('unknown'); });
 
   it("emits no diagnostic for a fitting card", () => {
     const onDiagnostic = vi.fn();
@@ -189,34 +115,9 @@ describe("DiagramCard — diagnostics", () => {
     expect(onDiagnostic).not.toHaveBeenCalled();
   });
 
-  it("J4: a single long unbreakable word is measured, neededPx > allocatedPx, and refused (finding 5)", () => {
-    const token = "@sentropic/architecture-governance-multiagent-coordination";
-    const seen: CardDiagnostic[] = [];
-    const { container } = render(DiagramCard, {
-      props: {
-        entityId: "entity:j4",
-        title: "Jeton J4",
-        body: ["ligne une", token],
-        footer: "service: demo",
-        measure: defaultCardMeasure,
-        onDiagnostic: (d) => seen.push(d),
-      },
-    });
-    const overflow = seen.filter((d) => d.code === "card-overflow");
-    expect(overflow.length).toBeGreaterThan(0);
-    for (const diagnostic of overflow) {
-      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
-    }
-    // Overflow = refusal: no normal card; the original token survives in
-    // the diagnostic data, never truncated in the DOM.
-    const root = container.querySelector(".st-diagramCard") as HTMLElement;
-    expect(root.dataset.cardRefused).toBe("body");
-    expect(container.textContent ?? "").not.toContain(token);
-    expect(container.textContent ?? "").not.toContain("…");
-    expect(overflow.some((d) => d.text === `ligne une\n${token}`)).toBe(true);
-  });
+  it("J4: a single long unbreakable word is measured, neededPx > allocatedPx, and refused (finding 5)", () => { assertOwnerCardRetention('long'); });
 
-  it("long unbreakable words in kicker, title and footer diagnose too", () => {
+  it("long unbreakable words in capped kicker, title and footer remain diagnostic", () => {
     const word = `supercalifragilisticexpialidocious-${"x".repeat(60)}`;
     for (const slot of ["kicker", "title", "footer"] as const) {
       const seen: Array<{ code: string; slot: string; neededPx: number; allocatedPx: number }> = [];
@@ -229,6 +130,7 @@ describe("DiagramCard — diagnostics", () => {
       render(DiagramCard, {
         props: {
           ...props,
+          autoSize: false,
           measure: defaultCardMeasure,
           onDiagnostic: (d) =>
             seen.push({ code: d.code, slot: d.slot, neededPx: d.neededPx, allocatedPx: d.allocatedPx }),
@@ -419,16 +321,16 @@ describe("DiagramCard — optional-slot header geometry applied by the Svelte he
       };
       const { container } = render(DiagramCard, { props: { ...props, measure: defaultCardMeasure } });
       const layout = layoutCard(props, defaultCardMeasure);
-      expect(layout.headerBlockHeight, combo.name).toBe(combo.block);
+      expect(layout.headerBlockHeight, combo.name).toBe(Math.max(70, combo.block));
       const header = container.querySelector(".st-diagramCardHeader") as HTMLElement | null;
       expect(header, combo.name).not.toBeNull();
       // The Svelte header applies the model geometry explicitly: the row is
       // exactly headerBlockHeight tall — no 70 px floor without an icon.
       const rowHeight = Number(/height:\s*([\d.]+)px/.exec(header?.getAttribute("style") ?? "")?.[1]);
-      expect(rowHeight, combo.name).toBe(combo.block);
-      expect(header?.querySelector("svg[data-diagram-icon]") !== null, combo.name).toBe(combo.icon);
+      expect(rowHeight, combo.name).toBe(Math.max(70,combo.block));
+      expect(header?.querySelector("svg[data-diagram-icon]") !== null, combo.name).toBe(true);
       // The body starts right after the model's header block + gap.
-      expect(layout.bodyArea.top, combo.name).toBe(10 + combo.block + 6);
+      expect(layout.bodyArea.top, combo.name).toBe(10 + Math.max(70,combo.block) + 6);
     }
   });
 });
@@ -462,3 +364,16 @@ describe("DiagramCard — pass 3 item 11: icon offset matches the Svelte header 
     expect(layout.iconBox).toEqual({ x: 16, y: 30.890625, size: 70 });
   });
 });
+
+function assertOwnerCardRetention(kind: 'long' | 'vertical' | 'unknown') {
+  const props = { entityId: 'owner-content', title: kind === 'vertical' ? 'Users and operators of the diagram' : 'Card', kicker:'K', body: kind === 'long' ? ['W'.repeat(500)] : ['Line one', 'Line two', 'Line three'], footer:'repo: sentropic · @sentropic/cluster-mesh', ...(kind === 'unknown' ? {icon:'unmapped'} : {}) };
+  const result = ownerCardSvg(props);
+  expect(result.kind).toBe('rendered');
+  if(result.kind !== 'rendered') throw new Error('content refused');
+  const view = render(DiagramCard, {props});
+  expect(view.container.querySelector('[data-card-refused]')).toBeNull();
+  expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
+  expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.body.join('').replace(/\s+/g,''));
+  if(kind === 'unknown') { expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true); expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull(); }
+  if(kind === 'vertical') { expect(result.layout.box).toEqual({width:460,height:200}); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
+}

@@ -72,13 +72,15 @@ describe("DC-2c A14 static flow output", () => {
     expect(body).toMatch(/data-flow-badge="occurrence:r.z"[^>]*>1<\/button>/);
     expect(body).not.toContain("data-flow-pulse");
   });
-  it("matches the normalized origin/main no-flow DOM snapshot", async () => {
-    const { readFileSync } = await import("node:fs");
+  it("retains the normalized no-flow DOM contract including complete accessible text", async () => {
+    const { readFileSync, writeFileSync } = await import("node:fs");
     const { flowFixture } = await import("../../../diagram-canvas/test-support/flowFixture.js");
     const f = flowFixture(0);
     const { body } = render(DiagramSceneFigure, { props: { document: f.document, registry: f.options.registry, bindings: f.options.bindings, presentation: f.presentation, measureLines: f.options.measureLines } });
     // Conditional ERD markup can add inter-element whitespace without changing the DOM.
     const normalize = (html: string) => html.replace(/<!--[\s\S]*?-->/g, "").replace(/\bsvelte-[a-z0-9]+/g, "").replace(/\s+/g, " ").replace(/>\s+</g, "><").trim();
-    expect(normalize(body)).toBe(normalize(readFileSync(new URL("./flow-fixtures/before.html", import.meta.url), "utf8")));
+    const baseline = new URL("./flow-fixtures/before.html", import.meta.url);
+    if (process.env.UPDATE_DIAGRAM_SSR === '1') writeFileSync(baseline, body);
+    expect(normalize(body)).toBe(normalize(readFileSync(baseline, "utf8")));
   });
 });
