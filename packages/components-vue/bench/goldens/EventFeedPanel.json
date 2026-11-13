@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "EventFeedPanel",
+  "sourceRevision": "71a1b1b3f4aff7be26e67ded01cf28612bbbbaf8",
+  "source": "src/EventFeedPanel.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-eventFeedPanel\"><ul aria-busy=\"false\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"><li aria-label=\"deploy — Deployed\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--info\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--info\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">deploy</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Deployed</p></div></li></ul></div>"
+    },
+    {
+      "id": "mixed-severities",
+      "html": "<div class=\"st-eventFeedPanel\"><p class=\"st-eventFeedPanel__label\" id=\"st-eventFeedPanel-label\">Events</p><ul aria-busy=\"false\" aria-label=\"Events\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"max-height:200px;\"><li aria-label=\"deploy — Done\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--success\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--success\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">deploy</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Done</p></div></li><li aria-label=\"alert — Failed\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--error\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--error\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">alert</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Failed</p></div></li><li aria-label=\"custom — Odd\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--neutral\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--neutral\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">custom</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Odd</p></div></li><li aria-label=\"warn — Slow\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--warning\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--warning\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">warn</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Slow</p></div></li></ul></div>"
+    },
+    {
+      "id": "height-prop",
+      "html": "<div class=\"st-eventFeedPanel consumer\" data-bench=\"feed\" style=\"color:red;\"><ul aria-busy=\"false\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"max-height:120px;\"><li aria-label=\"deploy — Hi\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--info\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--info\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">deploy</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Hi</p></div></li></ul></div>"
+    },
+    {
+      "id": "invalid-events",
+      "html": "<div class=\"st-eventFeedPanel\"><ul aria-busy=\"false\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"><li aria-label=\"ok — Good\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--info\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--info\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">ok</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Good</p></div></li></ul></div>"
+    },
+    {
+      "id": "unsorted",
+      "html": "<div class=\"st-eventFeedPanel\"><ul aria-busy=\"false\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"><li aria-label=\"b — Last\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--info\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--info\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">b</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">Last</p></div></li><li aria-label=\"a — First\" class=\"st-eventFeedPanel__item st-eventFeedPanel__item--info\" role=\"article\"><span aria-hidden=\"true\" class=\"st-eventFeedPanel__badge st-eventFeedPanel__badge--info\"></span><div class=\"st-eventFeedPanel__body\"><div class=\"st-eventFeedPanel__meta\"><span class=\"st-eventFeedPanel__type\">a</span><time class=\"st-eventFeedPanel__time\">19:00</time></div><p class=\"st-eventFeedPanel__message\">First</p></div></li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-eventFeedPanel\"><ul aria-busy=\"false\" class=\"st-eventFeedPanel__list\" role=\"feed\" style=\"\"></ul></div>"
+    }
+  ],
+  "sourceSha256": "2474f835bfe302beddb51b77a39e673f50f05f67ea2e080f470670e6b862d709",
+  "fixtureSha256": "98dabd530502de217cbb48838c11cd6466a179931b18e2a8bf5fda45a0053ae9",
+  "publicExports": [
+    {
+      "name": "EventFeedPanel",
+      "typeOnly": false
+    },
+    {
+      "name": "EventFeedPanelProps",
+      "typeOnly": true
+    },
+    {
+      "name": "EventFeedPanelEvent",
+      "typeOnly": true
+    },
+    {
+      "name": "EventFeedPanelSeverity",
+      "typeOnly": true
+    }
+  ]
+}
