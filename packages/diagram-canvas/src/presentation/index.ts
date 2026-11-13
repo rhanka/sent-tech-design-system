@@ -58,3 +58,6 @@ export type {
   ZoneLayout,
   ZonePresentationInput,
 };
+
+export { ERD_GEOMETRY, measureErdCard, renderErdCardSvg, erdMarkerGeometry, renderErdMarkerSvg, renderErdTable } from "./erd.js";
+export type { ErdCard, ErdRow, ErdMarker } from "./erd.js";
