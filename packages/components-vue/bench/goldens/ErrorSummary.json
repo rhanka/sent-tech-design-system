@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "ErrorSummary",
+  "sourceRevision": "5e31a9e7cc8757ba94498b299b8813a35ce91372",
+  "source": "src/ErrorSummary.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-error-summary\" role=\"alert\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">There was a problem</h2><ul class=\"st-error-summary__list\"><li class=\"st-error-summary__item\"><a class=\"st-error-summary__link\" href=\"#name\">Name is required</a></li><li class=\"st-error-summary__item\"><a class=\"st-error-summary__link\" href=\"#email\">Email is invalid</a></li></ul></section>"
+    },
+    {
+      "id": "custom-heading",
+      "html": "<section class=\"st-error-summary\" role=\"alert\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">Fix the following</h2><ul class=\"st-error-summary__list\"><li class=\"st-error-summary__item\"><a class=\"st-error-summary__link\" href=\"#age\">Age must be positive</a></li></ul></section>"
+    },
+    {
+      "id": "single-error",
+      "html": "<section class=\"st-error-summary\" role=\"alert\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">There was a problem</h2><ul class=\"st-error-summary__list\"><li class=\"st-error-summary__item\"><a class=\"st-error-summary__link\" href=\"#only\">Only error</a></li></ul></section>"
+    },
+    {
+      "id": "custom-class",
+      "html": "<section class=\"st-error-summary consumer\" data-bench=\"summary\" role=\"alert\" style=\"color:red;\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">There was a problem</h2><ul class=\"st-error-summary__list\"><li class=\"st-error-summary__item\"><a class=\"st-error-summary__link\" href=\"#x\">X error</a></li></ul></section>"
+    },
+    {
+      "id": "empty-errors",
+      "html": "<section class=\"st-error-summary\" role=\"alert\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">There was a problem</h2></section>"
+    },
+    {
+      "id": "no-errors-prop",
+      "html": "<section class=\"st-error-summary\" role=\"alert\" tabindex=\"-1\"><h2 class=\"st-error-summary__heading\">There was a problem</h2></section>"
+    }
+  ],
+  "sourceSha256": "a1841095b554d70efdb62098fa98352478e1e35594c040fdbd72980dc70ffa26",
+  "fixtureSha256": "484c6d19e96d81bc744144188ef1f9ee7e55b78981f8f63f5d58346439b83165",
+  "publicExports": [
+    {
+      "name": "ErrorSummary",
+      "typeOnly": false
+    },
+    {
+      "name": "ErrorSummaryProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ErrorSummaryItem",
+      "typeOnly": true
+    }
+  ]
+}
