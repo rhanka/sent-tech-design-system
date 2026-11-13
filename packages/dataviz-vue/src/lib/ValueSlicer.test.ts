@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { ValueSlicer } from './ValueSlicer.js';
+import ValueSlicer from './ValueSlicer.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'country', label: 'Pays', type: 'discrete' }],
