@@ -1554,7 +1554,7 @@
       "deliveryChannels": [
         "tokens"
       ],
-      "digest": "sha256:021fbf8498b30f5f29b7c17a122be731514a1e8d69c5a48e375bb50057f963ff",
+      "digest": "sha256:2a53ac06bb9b745b519b1de73f7e72a56302b8e12e6d6f59d2d3d32070997b6d",
       "frameworks": [],
       "parity": {
         "angular": "no-counterpart",
@@ -1575,7 +1575,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:df2aa7609bc69e4f9ad49b97bb94ed974c76d80bb8a2bafb773209a511cd2d8e",
+      "digest": "sha256:46d83fbf5cf8bf2a144e4a9e459c17914885895aa1f55537b14200efb37d2587",
       "frameworks": [
         "svelte",
         "vue"
@@ -1600,7 +1600,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e5940a25a08ada4d2ed8de01c6ad1f82eda22fba91ee3ef204f46adf157bf50b",
+      "digest": "sha256:96c8b771e4a1b7ecfd407bdce4d8d67ae17336030f6e6db0978176e0352994d8",
       "frameworks": [
         "svelte",
         "vue"
@@ -1625,7 +1625,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d392484249ac38ea7271fa63439506294c1bcfd36e3f7175947650aea43a10d7",
+      "digest": "sha256:72d78b789eb9e932ed2ad7081077e0513df7b41e0442641e712b3bb8b1d1c94a",
       "frameworks": [
         "svelte",
         "vue"
@@ -5790,6 +5790,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:43aea1ad2f9896c594ba654d66b949e426b63946bda114ddb8662fdf8a46c6f5",
-  "sourceCommit": "68fe6e7c028f4de971539d65131cd2918ea396a6"
+  "registryRevision": "sha256:0a71873f07a95fbd668e67f2e811397572d962133accfddc5ad46b682feb5916",
+  "sourceCommit": "26f6182e56df6c44d6356c8c87a79fffb3883b02"
 }

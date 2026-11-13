@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './diagramSpacing.js';
 import { foundation } from "./foundation.js";
 import { semantic } from "./semantic.js";
 import type { ComponentAnatomy, DensityAnatomy, FieldAnatomy, TypographyAnatomy } from "./anatomy.js";
@@ -1845,9 +1846,9 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       subtitleLineHeight: "1.3",
       subtitleGap: "var(--st-component-diagramCard-gap)",
       headerRuleGap: "4px",
-      contentInsetTop: "16px",
-      contentInsetBottom: "16px",
-      contentInsetInline: "16px",
+      contentInsetTop: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetBottom: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetInline: "var(--st-component-diagramScene-containerPadding)",
       collapsedWidth: "460px",
       collapsedHeight: "200px",
       collapsedInset: "16px",
@@ -1863,10 +1864,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // axes, their hard caps (a gutter widens only for a crossing edge
       // label, never past the cap) and the 16:9 target aspect of every
       // packed level. The layout engine receives these as numbers.
-      childGapInline: "96px",
-      childGapBlock: "72px",
-      gapInlineMax: "240px",
-      gapBlockMax: "240px",
+      childGapInline: "var(--st-component-diagramScene-gapMin)",
+      childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+      gapInlineMax: "var(--st-component-diagramScene-gapMax)",
+      gapBlockMax: "var(--st-component-diagramScene-gapMax)",
       rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
@@ -1878,18 +1879,22 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
     // `minReadableScale` is the floor a fit holds before the host pans.
     // The edge label is the smallest text of a scene: 18 px on a 22 px line
-    // box, so one line plus its two 4 px margins (30 px) fits the 32 px gap
-    // cap, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
+    // box; its two 4 px margins are included in channel sizing, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
     // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
+    iconButton: {
+      smSize: "2rem", mdSize: "2.25rem", lgSize: "2.5rem",
+      radius: "0.375rem", text: semantic.text.primary, focusRing: semantic.border.interactive,
+    },
     diagramScene: {
-      gapMin: "96px",
-      gapMinBlock: "72px",
-      gapBase: "64px",
-      gapBaseBlock: "8px",
-      trackSpacing: "14px",
-      trackSpacingBlock: "7px",
-      labelBand: "30px",
-      gapMax: "240px",
+      containerPadding: `${spacing.containerPadding}px`,
+      gapMin: `${spacing.gapMin}px`,
+      gapMinBlock: `${spacing.gapMinBlock}px`,
+      gapBase: `${spacing.gapBase}px`,
+      gapBaseBlock: `${spacing.gapBaseBlock}px`,
+      trackSpacing: `${spacing.trackSpacing}px`,
+      trackSpacingBlock: `${spacing.trackSpacingBlock}px`,
+      labelBand: `${spacing.labelBand}px`,
+      gapMax: `${spacing.gapMax}px`,
       bundleLabelMaxWidth: "320px",
       labelPadding: "4px",
       labelBorderWidth: "1px",

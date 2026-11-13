@@ -1,3 +1,6 @@
+import { component } from '../../../../tokens/dist/component.js';
+import { DIAGRAM_SCENE_SPACING } from './spacing-tokens.js';
+import { execFileSync } from 'node:child_process';
 /**
  * DC-2a AC-6 — the engine's row-pack and camera defaults mirror the DS tokens.
  *
@@ -22,28 +25,19 @@ import {
 } from "../../../src/index.js";
 import { layScene, PINNED_LINE_HEIGHT, pinnedMeasurer, sceneInput } from "./scenes.js";
 
-const source = readFileSync(new URL("../../../../tokens/src/component.ts", import.meta.url), "utf8");
-/** The object literal of one component group: from `<group>: {` to its closing brace (leaves are flat). */
-const groupSource = (group: string): string => {
-  const start = source.indexOf(`\n    ${group}: {`);
-  if (start < 0) throw new Error(`token group ${group} not found in packages/tokens/src/component.ts`);
-  const end = source.indexOf("\n    }", start);
-  return source.slice(start, end);
-};
-/** One leaf of one group — never a same-named leaf of another component. */
-const token = (group: "diagramCard" | "diagramZone" | "diagramScene", leaf: string): string => {
-  const match = new RegExp(`\\b${leaf}: "([^"]+)"`).exec(groupSource(group));
-  if (match === null) throw new Error(`token leaf ${group}.${leaf} not found in packages/tokens/src/component.ts`);
-  return match[1]!;
-};
+const token = (group: "diagramCard" | "diagramZone" | "diagramScene", leaf: string): string => (component[group] as Record<string,string>)[leaf]!;
 const model = readFileSync(new URL("../../../../diagram-canvas/src/presentation/diagramCardModel.ts", import.meta.url), "utf8");
 
 describe("DC-2a tokens (AC-6)", () => {
   it("engine defaults equal the token values", () => {
-    expect(token("diagramZone", "childGapInline")).toBe(`${DEFAULT_ROW_GAP}px`);
-    expect(token("diagramZone", "childGapBlock")).toBe(`72px`);
-    expect(token("diagramZone", "gapInlineMax")).toBe(`${DEFAULT_ROW_GAP_MAX}px`);
-    expect(token("diagramZone", "gapBlockMax")).toBe(`${DEFAULT_ROW_GAP_MAX}px`);
+    expect(token("diagramZone", "childGapInline")).toBe("var(--st-component-diagramScene-gapMin)");
+    expect(token("diagramScene", "gapMin")).toBe(`${DEFAULT_ROW_GAP}px`);
+    expect(token("diagramZone", "childGapBlock")).toBe("var(--st-component-diagramScene-gapMinBlock)");
+    expect(token("diagramZone", "gapInlineMax")).toBe("var(--st-component-diagramScene-gapMax)");
+    expect(token("diagramZone", "gapBlockMax")).toBe("var(--st-component-diagramScene-gapMax)");
+    expect(Number.parseFloat(token("diagramScene", "gapMax"))).toBe(DEFAULT_ROW_GAP_MAX);
+    expect(DEFAULT_LAYOUT_METRICS.containerPadding).toBe(DIAGRAM_SCENE_SPACING.containerPadding);
+    execFileSync(process.execPath, [new URL("../../../../../scripts/sync-diagram-spacing.mjs", import.meta.url).pathname, "--check"]);
     expect(Number(token("diagramZone", "rowPackTargetAspect"))).toBe(DEFAULT_ROW_PACK.targetAspect);
     expect(Number(token("diagramScene", "maxDisplayScale"))).toBe(DEFAULT_MAX_DISPLAY_SCALE);
     expect(Number(token("diagramScene", "minReadableScale"))).toBe(DEFAULT_MIN_READABLE_SCALE);

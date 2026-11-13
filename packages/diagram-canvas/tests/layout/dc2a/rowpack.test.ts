@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing-tokens.js';
 /**
  * DC-2a L2 — row-pack gates on the ten scenes (SPEC_EVOL_DC2A §7.3, §8).
  *
@@ -43,7 +44,7 @@ import { CASE_IDS, layScene, sceneInput, viewNamesOf, type CaseId, type SceneLay
 const BASELINE = new URL("./baseline.json", import.meta.url);
 const AFTER = new URL("./after.json", import.meta.url);
 const GAP_CAP = 240;
-const BASE_X = 96, BASE_Y = 72;
+const BASE_X = spacing.gapMin, BASE_Y = spacing.gapMinBlock;
 
 interface FillProof {
   readonly view: string;

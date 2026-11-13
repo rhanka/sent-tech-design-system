@@ -255,7 +255,7 @@ describe("RED item 9 — gapAfter replaces the inherited gap", () => {
     const a = geometryOf(measured.view, "a");
     const b = geometryOf(measured.view, "b");
     expect(b.y).toBe(a.y);
-    expect(b.x - (a.x + 460)).toBe(96);
+    expect(b.x - (a.x + 460)).toBe(10);
   });
 });
 

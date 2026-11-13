@@ -47,6 +47,7 @@
 
   let {
     entityId,
+    containerPadding,
     autoSize,
     kicker,
     title,
@@ -72,6 +73,7 @@
 
   const zoneProps = $derived({
     entityId,
+    ...(containerPadding === undefined ? {} : { containerPadding }),
     ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
@@ -142,7 +144,7 @@
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
+      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
   );
   const ruleStyle = $derived(
     header === undefined
@@ -152,7 +154,7 @@
   const contentStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(header.contentTop)};left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(ZONE_GEOMETRY.contentInsetBottom)}`,
+      : `top:${frameTop(header.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`,
   );
   const footerRuleStyle = $derived(
     header?.footerRuleY === undefined
@@ -162,7 +164,7 @@
   const footerStyle = $derived(
     header === undefined
       ? undefined
-      : `left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
+      : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
   );
 
   $effect(() => {
