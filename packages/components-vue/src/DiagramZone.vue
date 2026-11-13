@@ -41,7 +41,7 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize, entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -68,6 +68,7 @@ const onSelect = (event: {
 const onDiagnostic = (event: ZoneDiagnostic) => emit('diagnostic', event);
 const zoneProps = computed(() => ({
     entityId,
+    ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     ...(subtitle === undefined ? {} : { subtitle }),
@@ -207,7 +208,7 @@ onMounted(() => {
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramZone--center {
     /* Owner variant: every text slot centred inside its allocation. */

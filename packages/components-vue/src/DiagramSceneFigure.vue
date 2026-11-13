@@ -1,16 +1,21 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramSceneFigure' });
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+import { clampZoom, createLayoutCache, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+import { measureRenderedSceneFont } from './diagramFontMeasure.js';
+import type { CardLineMeasure } from './diagramCardModel.js';
+import { sceneContentSize, type DiagramSceneSize } from './diagramSceneModel.js';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
-import { cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
+import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
 import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = defineProps<DiagramSceneFigureProps>();
 const emit = defineEmits<{
+    sizeChange: [size: DiagramSceneSize];
+    'update:contentSize': [size: DiagramSceneSize];
     foldChange: [
         collapsed: SceneCollapsedOccurrences,
         change: {
@@ -36,18 +41,21 @@ const defaults: DiagramSceneFigureLabels = {
     expand: title => `Expand ${title}`, collapse: title => `Collapse ${title}`,
 };
 const strings = computed(() => ({ ...defaults, ...props.labels }));
-const measure = computed(() => props.measure ?? defaultCardMeasure);
+const browserMeasure = shallowRef<CardLineMeasure>();
+const measure = computed(() => sceneCardMeasure(browserMeasure.value ?? props.measure ?? defaultCardMeasure));
 const measureLines = computed(() => props.measureLines ?? cardLineMeasurer(measure.value));
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
 let previousOrientation: SceneOrientations | undefined;
 let orientationDocument: string | undefined;
+const ownedCache = createLayoutCache();
 const layoutResult = computed(() => {
     if (orientationDocument !== props.document.documentId) {
         orientationDocument = props.document.documentId;
         previousOrientation = undefined;
     }
     const result = layoutScene({
+        cache: props.layoutCache ?? ownedCache,
         document: props.document, registry: props.registry, presentation: props.presentation,
         measureLines: measureLines.value, collapsed: collapsedNow.value,
         ...(props.view === undefined ? {} : { view: props.view }),
@@ -70,6 +78,14 @@ const scene = computed(() => layoutResult.value.status === 'laid-out'
 const sceneRects = computed<ReadonlyMap<string, Rect>>(() => scene.value === undefined ? new Map() : rectsOf(scene.value));
 onMounted(() => {
     watch(layoutResult, result => emit('layout', result), { immediate: true });
+    let published: DiagramSceneSize | undefined;
+    watch(layoutResult, result => {
+        const size = sceneContentSize(result);
+        if (published?.width === size.width && published?.height === size.height) return;
+        published = size;
+        emit('sizeChange', size);
+        emit('update:contentSize', size);
+    }, { immediate: true });
 });
 const frameEl = shallowRef<HTMLElement>();
 const viewportEl = shallowRef<HTMLElement>();
@@ -264,6 +280,7 @@ watch(sceneRects, next => {
 watch(displayed, value => { shown = value; }, { flush: 'post' });
 let observer: ResizeObserver | undefined;
 let mountedViewport: HTMLElement | undefined;
+let fontsActive = true;
 onMounted(() => {
     measureFrame();
     window.addEventListener('resize', measureFrame);
@@ -272,8 +289,16 @@ onMounted(() => {
         observer?.observe(frameEl.value);
     mountedViewport = viewportEl.value;
     mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
+    if (props.measure === undefined && props.measureLines === undefined) {
+        void document.fonts?.ready.then(() => {
+            if (fontsActive && frameEl.value !== undefined && scene.value !== undefined)
+                browserMeasure.value = measureRenderedSceneFont(frameEl.value, scene.value, defaultCardMeasure);
+        });
+    }
 });
 onUnmounted(() => {
+    fontsActive = false;
+    ownedCache.dispose();
     stopFrames();
     observer?.disconnect();
     window.removeEventListener('resize', measureFrame);
@@ -309,7 +334,7 @@ watch(collapsedNow, () => { void nextTick(restoreToggleFocus); }, { flush: 'post
 function cardPropsOf(node: SceneNodeModel) {
     const projected = projectCardProps(node.presentation, { entityId: node.entity,
         ...(props.resolveGlyph === undefined ? {} : { resolveGlyph: props.resolveGlyph }) });
-    return projected.kind === 'card' ? projected.props : undefined;
+    return projected.kind === 'card' ? { ...projected.props, autoSize: true, height: node.rect.height } : undefined;
 }
 function zonePropsOf(node: SceneNodeModel) {
     const title = node.presentation?.text.title ?? '';
@@ -318,7 +343,7 @@ function zonePropsOf(node: SceneNodeModel) {
         toggleLabel: node.collapsed ? strings.value.expand(title) : strings.value.collapse(title),
         ...(node.collapsed ? {} : { width: rect.width, height: rect.height }),
         ...(props.resolveGlyph === undefined ? {} : { resolveGlyph: props.resolveGlyph }) });
-    return projected.kind === 'zone' ? projected.props : undefined;
+    return projected.kind === 'zone' ? { ...projected.props, autoSize: true, height: rect.height } : undefined;
 }
 const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
@@ -364,7 +389,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </template>
                 <div v-else class="st-diagramSceneFigure-label" :data-entity="node.entity">{{ node.text }}</div>
               </div>
-              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence"
+              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <span v-for="(line, index) in edgeLabel.lines" :key="index">{{ line }}</span>
               </div>
@@ -448,7 +473,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
     line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
@@ -475,7 +500,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
     color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
     line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
