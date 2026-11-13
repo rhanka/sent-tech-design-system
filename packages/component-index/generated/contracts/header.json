@@ -1,8 +1,8 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:deb42f0fdba5f152543854ce4e6deadcad68eced9339ae0c6600e11dfc6ea796",
-  "entryDigest": "sha256:3f33b04164c5d0ee7d4d588552919ff2e45cf34c46434f403e6c1e6aea8eb385",
+  "digest": "sha256:088854e980bec87e4a66bc0efbab365f8bfd8d51bab4c046a5fde7c67702fae4",
+  "entryDigest": "sha256:191f91940911408ebf2f205479d82421d9cdd62e430c5bb4a16eb329bcf550f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -357,7 +357,16 @@
               "href": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "href"
@@ -370,7 +379,16 @@
           "account": {
             "$ref": "#/$defs/HeaderAccount"
           },
-          "brand": {},
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -389,30 +407,20 @@
           "sticky": {
             "type": "boolean"
           },
-          "title": {}
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "HeaderNavItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "brand",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "brand"
@@ -437,13 +445,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:12bef03f9fb1dc1ee582c343db1114b7075679ab7753b3c723b4f35e56e7d567",
+        "declarationDigest": "sha256:3a6b3ab7d8d5c6b591bda20e0b6874ff07ef0b934bec617b5354a8311a7bfd7c",
         "declarationPath": "packages/components-vue/dist/Header.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeaderProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

@@ -6,13 +6,15 @@ import { ICONS, ICON_NAMES } from './icon-data.js';
 // Ported CA-L1 Svelte witnesses; glyphs now use the K7 neutral data contract.
 const label = 'SENTINEL-LABEL';
 describe('LabelledIconButton (CA-L1)', () => {
-  it('keeps the ten canonical icon mappings', () => {
-    expect(ICON_NAMES).toHaveLength(10);
-    expect(Object.entries(ICONS).map(([key, glyph]) => [key, glyph.name])).toEqual([
+  it('keeps the ten canonical icon mappings alongside migrated control glyphs', () => {
+    const canonical = [
       ['settings', 'settings'], ['eye', 'eye'], ['eye-off', 'eye-off'], ['layers', 'layers'],
       ['target', 'target'], ['close', 'x'], ['chevron-down', 'chevron-down'],
       ['chevron-right', 'chevron-right'], ['comment', 'message-square'], ['circle-dashed', 'circle-dashed'],
-    ]);
+    ];
+    for (const [name, glyph] of canonical) expect(ICONS[name as keyof typeof ICONS].name).toBe(glyph);
+    expect(ICON_NAMES).toEqual(expect.arrayContaining(canonical.map(([name]) => name)));
+    for (const name of ['copy', 'check', 'search', 'upload', 'clock']) expect(ICON_NAMES).toContain(name);
   });
 
   it('renders one icon-only button whose accessible name matches the label', () => {

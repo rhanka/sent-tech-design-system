@@ -17,11 +17,11 @@ export type ChatMessageStatus =
 export type ChatMessageProps = {
   role?: ChatMessageRole;
   status?: ChatMessageStatus;
-  content?: unknown;
-  timestamp?: unknown;
-  footer?: unknown;
-  actions?: unknown;
-  avatar?: unknown;
+  content?: string | number;
+  timestamp?: string | number;
+  footer?: string | number;
+  actions?: string | number;
+  avatar?: string | number;
   class?: string;
 };
 

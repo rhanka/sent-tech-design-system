@@ -1,3 +1,4 @@
+import { withControlIconTokens } from './test-support/control-icon-contract.js';
 import { readFileSync } from 'node:fs';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
@@ -45,7 +46,7 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
         expect(vue.findAll('[data-erd-marker]')).toHaveLength(2 * source.relations.length);
         expect(vue.findAll('[data-erd-table-field]')).toHaveLength(Object.keys(data.document.ports).length);
         expect(vue.findAll('[data-erd-table-relation]')).toHaveLength(source.relations.length);
-        expect(dom(vue.element)).toEqual(dom(svelte.container.querySelector('figure')!));
+        expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.querySelector('figure')!)));
         const vbutton = vue.find('.st-diagramErd-toggle');
         const sbutton = svelte.container.querySelector<HTMLButtonElement>('.st-diagramErd-toggle')!;
         expect(sbutton.style.position).toBe('');
@@ -55,12 +56,12 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
         await nextTick();
         await tick();
         expect(vbutton.attributes('aria-expanded')).toBe('false');
-        expect(dom(vue.element)).toEqual(dom(svelte.container.querySelector('figure')!));
+        expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.querySelector('figure')!)));
         await vbutton.trigger('click');
         await fireEvent.click(sbutton);
         await nextTick();
         await tick();
-        expect(dom(vue.element)).toEqual(dom(svelte.container.querySelector('figure')!));
+        expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.querySelector('figure')!)));
       }
       finally {
         vue.unmount();

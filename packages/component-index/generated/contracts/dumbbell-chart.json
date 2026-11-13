@@ -1,8 +1,8 @@
 {
   "componentId": "dumbbell-chart",
   "contractSource": "derived",
-  "digest": "sha256:04f021ea71db571c0fcef965f1baf87ca4733f6b26b94a021c972b0bae90ccc9",
-  "entryDigest": "sha256:6f7462065a7d7acf4ff82ae8eddde5fb98bee9009f2d0f6336fc057284dc8c3f",
+  "digest": "sha256:457bb70e4d9a9acc47b0e36d2d2ef0a75e0719785e16b6c9125f293107673006",
+  "entryDigest": "sha256:c8f9b1f3726cabc55e0d5d626cde44ff628cb6bb46bd9a47dfcb283be1d2bda1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -402,7 +402,7 @@
         "declarationPath": "packages/components-vue/dist/DumbbellChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DumbbellChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

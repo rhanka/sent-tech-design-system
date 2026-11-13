@@ -1,5 +1,45 @@
 # Overnight Vapor content migrations
 
+## 0.41.0-next.3 review corrections
+
+Content fallbacks now accept `string | number` in their public types. VNodes,
+components and callbacks returning VNodes must move into the named slots below;
+TypeScript rejects those values instead of allowing content that renders empty.
+DataTable's `caption`, column `label` and `cell()` follow this rule. Accordion
+keeps callbacks returning scalars; rich bodies use `#item-content`.
+
+Menu action icons accept DS icon names or literal text. Custom components use
+`#item-icon="{ item, index }"` through Menu, MenuPopover or OverflowMenu.
+MessageActions accepts scalar labels/icons, resolves DS icon names with Icon,
+and offers `#action-icon="{ action, index }"` as well as `#action-content`.
+Alert/Toast titles, messages and actions and TreeView labels follow the same
+scalar-or-slot contract. This also applies to field labels/help/errors,
+navigation labels/icons, list content and the other scalar fallbacks in this
+document. This includes ChatMessage avatar/footer/timestamp, ChatThread emptyLabel,
+EmptyState action, Footer copyright, Quote author/source, StreamingMessage
+text/placeholder and StructuredList value aliases. OrderedList/UnorderedList
+items accept scalars or their recursive item records; MessageStatusBadge
+labels map statuses to scalars. Data records and notification callbacks
+retain their own types.
+
+ComposerEditor supports both `@keydown` and `@key-down` with a neutral
+`ComposerKeyEvent` in capture phase. A return value of `true` or
+`preventDefault()` suppresses the native editing action. The same function
+bound through both aliases runs once. Both editor wrappers intentionally
+discard undeclared attributes, as their Svelte references do; use their
+declared `class` prop and messages to configure the editor.
+
+Editor peers are optional. Applications using `rich-text-editor` install the
+Tiptap v3 peers explicitly, and collaboration applications install Yjs and
+y-protocols. Root component imports do not load those peers. Both
+`rich-text-editor.css` and `rich-text-editor/styles.css` resolve to the same
+editor stylesheet.
+
+WebFrame and its config types are exported from the design-system package;
+dataviz-vue re-exports that same implementation for Classic and Vapor.
+LockPresenceBadge, LabelledIconButton and WebFrame forward caller attributes
+onto their interactive root, and control glyphs use the DS Icon token layer.
+
 The original `.ts` fixtures and goldens were frozen before conversion. Every
 `legacyProps` rich-content fixture renders the old VNode/component callback and
 an equivalent template slot, with the same tags, text and order. G4 compares
@@ -49,7 +89,7 @@ the list markup. No helper calls h or creates VNodes.
 | --- | --- |
 | Header | `brand`, `title` and navigation labels use `brand`, `title`, `nav-label` (`{ item }`) slots with scalar fallbacks. The existing brand slot remains. |
 | Table | `caption` and column labels use `caption` and `label` (`{ column }`) slots with scalar fallbacks. |
-| Search | Rich `label` content uses the `label` slot with its scalar prop fallback; the pre-existing declared prop type remains unchanged. |
+| Search | Rich `label` content uses the `label` slot with its scalar prop fallback; the prop accepts string or number. |
 | Alert / LoadingState / Toggle / Toggletip | Rich label/title/message/content props migrate to their corresponding named slots; scalar fallbacks and existing slots remain. |
 | Tabs | Rich item labels and panels use `tab-label` (`{ item, index }`) and `panel` (`{ item }`). |
 | ChatMessage | Rich avatar, content, footer and actions use `avatar`, existing `default`, `footer` and `actions` slots. |

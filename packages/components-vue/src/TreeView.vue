@@ -2,21 +2,24 @@
 import { ref, computed, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
 import { scalarContent } from './slotContent.js';
+import { hasListener, type Listener } from './hasListener.js';
 
 
 export type TreeNode = {
   id: string;
 
   /** @slot node-label */
-  label?: unknown;
+  label?: string | number;
   children?: TreeNode[];
   disabled?: boolean;
 };
 
 
 export type TreeViewProps = {
-  onSelect?: (id: string) => void;
-  'onUpdate:selectedId'?: (id: string) => void;
+  onSelect?: Listener<[id: string]>;
+  onSelectOnce?: Listener<[id: string]>;
+  'onUpdate:selectedId'?: Listener<[id: string]>;
+  'onUpdate:selectedIdOnce'?: Listener<[id: string]>;
   nodes: TreeNode[];
   selectedId?: string;
   /** Svelte-canonical alias of `selectedId`. */
@@ -71,7 +74,7 @@ function flattenVisible(nodes: TreeNode[], expanded: Set<string>): TreeFlatNode[
 
     const rootRef = ref<HTMLElement | null>(null);
 
-    const interactive = () => Boolean(props.onSelect) || Boolean(props['onUpdate:selectedId']);
+    const interactive = () => hasListener(props.onSelect, props.onSelectOnce) || hasListener(props['onUpdate:selectedId'], props['onUpdate:selectedIdOnce']);
 
 
       const expansionControlled = computed(() => Array.isArray(props.expandedIds));

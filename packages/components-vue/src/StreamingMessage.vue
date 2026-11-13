@@ -8,7 +8,7 @@ export type StreamingMessageEvent = {
   id: string;
 
   /** @slot event-label */
-  label?: unknown;
+  label?: string | number;
 
   /** @vaporData Reserved event metadata; the original renders only label. */
   text?: unknown;
@@ -17,10 +17,10 @@ export type StreamingMessageEvent = {
 export type StreamingMessageMode = 'live' | 'passive';
 
 export type StreamingMessageProps = {
-  text?: unknown;
+  text?: string | number;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
-  placeholder?: unknown;
+  placeholder?: string | number;
   class?: string;
 };
 

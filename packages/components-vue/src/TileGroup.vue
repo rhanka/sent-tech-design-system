@@ -9,20 +9,20 @@ export interface TileGroupItem {
   /** Libellé du tile (canonique Svelte). */
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
   /** @deprecated Alias de `label` (compat). Utilisez `label`. */
 
   /** @slot item-label */
-  title?: unknown;
+  title?: string | number;
 
   /** @slot item-description */
-  description?: unknown;
+  description?: string | number;
   disabled?: boolean;
 }
 
 
 export type TileGroupProps = {
-  legend?: unknown;
+  legend?: string | number;
   legendHidden?: boolean;
   items: TileGroupItem[];
   value?: string;

@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "6b1541b9e571c4c091d9be35e67557760a9874a5fe4e5d0ff99eb3d0c049883c",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release"
+      "destinationSha256": "c19718ae32a08e83d0d9bf3d3a5aa54307ccb7006822325eee5f13c7f0ab3e30",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; PR 281 follow-up: pin the shared Vue component implementation to 0.41.0-next.3."
     },
     {
       "repository": "dataviz",
@@ -5188,7 +5188,9 @@
       "destination": "packages/dataviz-vue/src/index.ts",
       "gitBlob": "89c69547ab782fbd3eec5e560fca78a3541aac0b",
       "sha256": "541d13891ecddd434c0ec4057643c9bfa94086c0d3d159d9bd80ab7e07857ebb",
-      "status": "copied-byte-identical"
+      "status": "adapted-webframe-reuse",
+      "destinationSha256": "e924b74c96cd08bfeefee3b71d167c3b83200def9a20b0596b715bca4ae0063a",
+      "note": "PR 281 follow-up: re-export the canonical DS WebFrame instead of maintaining a second iframe renderer."
     },
     {
       "repository": "dataviz",
@@ -5996,7 +5998,9 @@
       "destination": "packages/dataviz-vue/src/lib/ObjectLayers.ts",
       "gitBlob": "7712328b08d07fe30aae951d9fbfe6e74b52ae6d",
       "sha256": "84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
-      "status": "copied-byte-identical"
+      "status": "adapted-webframe-reuse",
+      "destinationSha256": "53c0faeeacaee937f9696e7bbb1c9612b070979a219dec1fb5c35772a1d654d2",
+      "note": "PR 281 follow-up: replace the duplicate WebFrame renderer with the DS implementation; DataImage and ObjectLayerPanel are retained."
     },
     {
       "repository": "dataviz",

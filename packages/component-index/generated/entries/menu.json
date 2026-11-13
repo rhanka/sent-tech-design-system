@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:bc46a7e07ac64760f24713b2be07b609e58a9cf0358b9e72548bc027b8a88d61",
+      "digest": "sha256:76035df5d9d7b81ab0f7a7ec42f2eda74205d2894ec113cc939fe00c63ae70e3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Menu.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:2046c96dcf078feec03ca0adb0a52d9c61c3b1f276f173d3684ee974d315ba85",
+  "digest": "sha256:9f4b7c488670979803661ae141f7c59e0ec4f9e6cc0402ea9aca2854743b65b6",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

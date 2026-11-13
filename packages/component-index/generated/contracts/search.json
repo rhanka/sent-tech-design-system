@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:0e1a59cf2dfdb1ba79e8558b3d60eb29c2c2f5f5212a101db60c5970a9749f18",
-  "entryDigest": "sha256:b5c54797a21b441fc1553feb5ce6e631e256816ed8717d43e7f0ea1856769a26",
+  "digest": "sha256:728ee5cf2f56727474b718337de1b067958673b2b242ccafb03f5a557b7f66e7",
+  "entryDigest": "sha256:e91f5a0677c7b40b4e29a172685b8618bc24f701e591c34f8f662004e87c99f8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -338,7 +338,16 @@
           "id": {
             "type": "string"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "modelValue": {
             "type": "string"
           },
@@ -359,25 +368,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "label"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:180de335ed205197a5512b080c3b7d632233a7528adf24f0400e90a357ef4f44",
+        "declarationDigest": "sha256:3f3df7e7a4bbc637cd77f4fa654fc9d5e3dd06fc38c7f64b3b3853dcf2fe6857",
         "declarationPath": "packages/components-vue/dist/Search.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SearchProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [

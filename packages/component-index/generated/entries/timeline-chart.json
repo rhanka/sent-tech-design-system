@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TimelineChart.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Timeline: events positioned on a graduated horizontal axis, categorical markers and labels alternated above/below.",
     "fr": "Frise chronologique : événements positionnés sur un axe horizontal gradué, marqueurs catégoriels et libellés alternés au-dessus/dessous."
   },
-  "digest": "sha256:05a4c0ffe52b184d5ee965457a4b58f7614d56f2da99e588b580335eba7f2edf",
+  "digest": "sha256:5e9af2efefcb88a98ac42e2c9c4f3404b3fc3c1254e849715892a7d087ff5d8c",
   "displayName": "TimelineChart",
   "format": "component-entry/v1",
   "frameworks": [

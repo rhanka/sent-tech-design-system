@@ -1,7 +1,7 @@
 // Real installations outside the workspace; Vite builds and Vitest/jsdom only.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
@@ -49,6 +49,14 @@ try {
       overrides: { vue: version, vite: '$vite' },
     }, null, 2));
     npm(['install', '--ignore-scripts', '--no-audit', '--no-fund'], cwd);
+    for (const name of ['@tiptap/core', '@tiptap/markdown', 'yjs', 'y-protocols']) {
+      assert(!existsSync(join(cwd, 'node_modules', name)), `Basic ${mode} consumer unexpectedly installed ${name}`);
+    }
+    // The root barrel must load before any editor peer is installed.
+    run(process.execPath, ['--input-type=module', '-e', "const ds = await import('@sentropic/design-system-vue'); if (!ds.Button) throw new Error('Missing Button');"], cwd);
+    console.log(`${mode}: root import without editor peers passed`);
+    const richText = manifests.get('@sentropic/design-system-rich-text').manifest;
+    npm(['install', '--ignore-scripts', '--no-audit', '--no-fund', ...Object.keys(richText.peerDependencies).map(name => `${name}@${richText.devDependencies[name]}`)], cwd);
     const env = { ...process.env, VUE_PACKED_MODE: mode };
     const vitest = join(cwd, 'node_modules/vitest/vitest.mjs');
     for (const args of [[process.execPath, ['verify.mjs']], [process.execPath, [vitest, 'run']]]) {

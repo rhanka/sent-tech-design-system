@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:be76ff57c35110ff565bf06bb9249194b584cc9b412d1c6817655a10bc8e56e1",
-  "entryDigest": "sha256:ae8160374e2edaa0c0412779b58bcc8e554887813e5693e14f4c2bff2a22dcdd",
+  "digest": "sha256:93ec602d37407f2b205b6de6e4b5b1c3cef96f4b3477a520f28e462d50c24c58",
+  "entryDigest": "sha256:9a031ccec9c1b8bf23513ddb1dc726bbcc3a1c0de88d9daf3540ca7ea4a1fb1e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -350,7 +350,7 @@
         "declarationPath": "packages/components-vue/dist/ViolinChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ViolinChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

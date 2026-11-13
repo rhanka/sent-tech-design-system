@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:2f64246ed4ec2a4d93ba2c3fe94ae6ffd963836aa488e1451d0c166ed5dad4a6",
-  "entryDigest": "sha256:98d842b57639e8e2fedb5f5682c8071eb986a2cdd409a576632fc984a9fbf647",
+  "digest": "sha256:7d915e0fb8200ccf65c5e98b379a9e78d29aa0dbf2cb4dcae61729bc62fc6f2a",
+  "entryDigest": "sha256:4821e3d7ecf46ce2979e32fa10fe0b03d51947502c08d3e6cbfd2f724cc6fbae",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -261,13 +261,49 @@
       "props": {
         "additionalProperties": false,
         "properties": {
-          "actions": {},
-          "avatar": {},
+          "actions": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "avatar": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
-          "content": {},
-          "footer": {},
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "footer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "role": {
             "enum": [
               "user",
@@ -288,42 +324,20 @@
               "sent"
             ]
           },
-          "timestamp": {}
+          "timestamp": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "actions",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "avatar",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "footer",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "timestamp",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "actions"
@@ -345,13 +359,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:2d092e5ca35dda144930524da38406ab71f67d463eb1f06acd2d8d8673fb3cec",
+        "declarationDigest": "sha256:c7ac479c7d302e1241d64f1a41325bfa155e5b1baf8cc37da982a7de96b7d9d1",
         "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:796e2264a201f2b4eabfd9ea12822f783da91a8924a7e4d178a1cc60bb264c66",
-  "entryDigest": "sha256:7be5833a9d83b4cdc8887b3404513e14a4eee433b3f5d8eb58b974cd28a37d90",
+  "digest": "sha256:54d2188d8b529b038c82f30bbba4edf37a029a212c4774cd99594c5029b8bcbf",
+  "entryDigest": "sha256:f706242c30f226d5657f7f089b938a7d55e709fbd79f2a0704b02714db237bc7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -160,25 +160,30 @@
           "class": {
             "type": "string"
           },
-          "helperText": {},
-          "legend": {}
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "legend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "legend",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -194,13 +199,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:aff4175f6fff246b6c15216130277ce2f1100c9068373a5c093bc6695395d0d1",
+        "declarationDigest": "sha256:72db82291860914cf774541ba4ab0a312b72ef4db131fe7797c2c658d2e30bd9",
         "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

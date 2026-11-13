@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed } from 'vue';
 
 import { classNames } from './classNames.js';
@@ -52,7 +53,7 @@ function handleClear(e: MouseEvent) {
       :disabled="props.disabled"
       @click="handleClear"
     >
-      <svg    aria-hidden="true"  xmlns="http://www.w3.org/2000/svg" :width="11" :height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+      <Icon name="x" :size="11" />
     </button>
   </span>
 </template>

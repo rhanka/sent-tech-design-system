@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:057299e57b6f80a0f1a34b9d70fd458970dd3ee9e8a773735421a1d8171a31f0",
-  "entryDigest": "sha256:ab7e4a96a592f82c5b79a4e6e483dda5fa3aeacc1b035e78c6badb7bc4eb6f8f",
+  "digest": "sha256:55fb489b63a983e367c2e22f9073e3ec31636a47e02fa1165f9332d10e1dcca2",
+  "entryDigest": "sha256:f03bc7d1d6a5136f46fecceb7e5ae1df9c40c0c1a751828b13fdddda2db1f3b4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -457,7 +457,16 @@
               "disabled": {
                 "type": "boolean"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -491,11 +500,29 @@
           "invalid": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "listLabel": {
             "type": "string"
           },
-          "noResultsLabel": {},
+          "noResultsLabel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "open": {
             "type": "boolean"
           },
@@ -527,26 +554,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "ComboboxOption.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "noResultsLabel",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "error-text"
@@ -577,13 +585,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:3a63175d34ca8fc971cf9a5de7a5a93fd55170b4d378522029780ab477b29f35",
+        "declarationDigest": "sha256:e85ccc32156079fa84061e56acf169de46adf1d944f31087d117a1d6f5a99fa5",
         "declarationPath": "packages/components-vue/dist/Combobox.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboboxProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",

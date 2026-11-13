@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:1ee772e656a39b656992639aff302e0e26850997d9cabb389047c8377ddc1b23",
-  "entryDigest": "sha256:3a1f495abc8089f2bc67bc1f3c0678e2cb7eaa2edf8fd617d4ca40927026c073",
+  "digest": "sha256:ebf4ca00c36a9cd16cf3648a5d1d7b49ceb03c95836ca4db756bfaf1c6cfa2f6",
+  "entryDigest": "sha256:4191517afdffa024c42d2db3e4ff93d848cf765a31772ddd48688e835da78d39",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4112,6 +4112,7 @@
           },
           "name": {
             "enum": [
+              "x",
               "close",
               "layers",
               "settings",
@@ -4121,11 +4122,33 @@
               "chevron-down",
               "chevron-right",
               "comment",
-              "circle-dashed"
+              "circle-dashed",
+              "loader-circle",
+              "circle-check",
+              "circle-alert",
+              "arrow-up",
+              "chevron-left",
+              "send",
+              "check",
+              "copy",
+              "upload",
+              "file",
+              "circle-chevron-down",
+              "ellipsis",
+              "search",
+              "clock"
             ]
           },
           "size": {
-            "type": "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "description": "Pixels or a CSS length. Absolute stroke normalization requires pixels."
           },
           "strokeWidth": {
             "type": "number"
@@ -4154,11 +4177,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0e07c9e0baa57ac2b3f3aae0d04788cb3a59fc4b19bbb5bbe6c2a1baab52f640",
+        "declarationDigest": "sha256:81fbc2b8522a78c9b652c82f8a8b676a975588df6776be08090f139a42518cef",
         "declarationPath": "packages/components-vue/dist/Icon.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],

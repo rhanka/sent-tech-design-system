@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TreemapChart.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Squarified hierarchical treemap, 1 or 2 levels, with optional labels.",
     "fr": "Carte proportionnelle hiérarchique (squarified), 1 ou 2 niveaux, labels."
   },
-  "digest": "sha256:ac8554db4a3959a84ae441d50a15618ba5f83c5d6e30a9188231d0bbb98b45d0",
+  "digest": "sha256:e193af7e0e8b81ebe6a4d793faa83ea0ac6c90c27f7d5dbe4a7ca984ebe812fa",
   "displayName": "TreemapChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.41.0-next.2",
+  "version": "0.41.0-next.3",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -64,7 +64,8 @@
       "types": "./dist/vapor/presence-badge/index.d.ts",
       "import": "./dist/vapor/presence-badge/index.js"
     },
-    "./rich-text-editor.css": "./dist/rich-text-editor/rich-text-editor.css"
+    "./rich-text-editor.css": "./dist/rich-text-editor/rich-text-editor.css",
+    "./rich-text-editor/styles.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
     "dist"
@@ -117,10 +118,86 @@
     "vite": "^8.0.16",
     "vitest": "^4.1.11",
     "vue": "3.6.0-rc.15",
-    "vue-tsc": "3.3.14"
+    "vue-tsc": "3.3.14",
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-blockquote": "3.32.0",
+    "@tiptap/extension-bold": "3.32.0",
+    "@tiptap/extension-code": "3.32.0",
+    "@tiptap/extension-code-block": "3.32.0",
+    "@tiptap/extension-document": "3.32.0",
+    "@tiptap/extension-hard-break": "3.32.0",
+    "@tiptap/extension-heading": "3.32.0",
+    "@tiptap/extension-horizontal-rule": "3.32.0",
+    "@tiptap/extension-italic": "3.32.0",
+    "@tiptap/extension-link": "3.32.0",
+    "@tiptap/extension-list": "3.32.0",
+    "@tiptap/extension-paragraph": "3.32.0",
+    "@tiptap/extension-placeholder": "3.32.0",
+    "@tiptap/extension-strike": "3.32.0",
+    "@tiptap/extension-text": "3.32.0",
+    "@tiptap/extension-underline": "3.32.0",
+    "@tiptap/extensions": "3.32.0",
+    "@tiptap/pm": "3.32.0"
   },
   "peerDependenciesMeta": {
     "@sentropic/design-system-elements": {
+      "optional": true
+    },
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extension-blockquote": {
+      "optional": true
+    },
+    "@tiptap/extension-bold": {
+      "optional": true
+    },
+    "@tiptap/extension-code": {
+      "optional": true
+    },
+    "@tiptap/extension-code-block": {
+      "optional": true
+    },
+    "@tiptap/extension-document": {
+      "optional": true
+    },
+    "@tiptap/extension-hard-break": {
+      "optional": true
+    },
+    "@tiptap/extension-heading": {
+      "optional": true
+    },
+    "@tiptap/extension-horizontal-rule": {
+      "optional": true
+    },
+    "@tiptap/extension-italic": {
+      "optional": true
+    },
+    "@tiptap/extension-link": {
+      "optional": true
+    },
+    "@tiptap/extension-list": {
+      "optional": true
+    },
+    "@tiptap/extension-paragraph": {
+      "optional": true
+    },
+    "@tiptap/extension-placeholder": {
+      "optional": true
+    },
+    "@tiptap/extension-strike": {
+      "optional": true
+    },
+    "@tiptap/extension-text": {
+      "optional": true
+    },
+    "@tiptap/extension-underline": {
+      "optional": true
+    },
+    "@tiptap/extensions": {
+      "optional": true
+    },
+    "@tiptap/pm": {
       "optional": true
     }
   }

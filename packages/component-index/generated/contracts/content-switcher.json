@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:3f28a108e934c90d8863e2c2f0c4e8c488d0afb31001844265706476dcfcd44d",
-  "entryDigest": "sha256:e165d0c83607fb1e14a7120bfedf2e6812471e7504d58c6bc738b02443cca893",
+  "digest": "sha256:9fe30ca771faf5f1fdd7406c358d06179659b47453cec6a09f11a88ebf001ccd",
+  "entryDigest": "sha256:5a37f37a0e06fb093a30bba79450b8d0da404309e1c327c854aa1f7a89ce0d49",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -300,7 +300,16 @@
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -338,14 +347,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "ContentSwitcherItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "item-label",
@@ -364,11 +366,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:299104d1592b057853706930424705416c5a564eeb083f8c70441d23869ee9ec",
+        "declarationDigest": "sha256:f48cdf3ed502e739e46e8c25035103ff3170742923382882a8c920bea75bf399",
         "declarationPath": "packages/components-vue/dist/ContentSwitcher.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContentSwitcherProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],

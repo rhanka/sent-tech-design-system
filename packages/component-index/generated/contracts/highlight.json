@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:470cc1833a96e4a2a8d820c53c2ef6345c3d2a20bb00eee8c4c937bfc01969ba",
-  "entryDigest": "sha256:80174a2061eb0de9e0d54534e716a7309ff91ae7368eaa0b9a82d9844668b22f",
+  "digest": "sha256:4d86956ee712bbb216f54dd7f97fdcb14d33cc948c3070668783d1ac3cf24838",
+  "entryDigest": "sha256:e8308eb0f14117b6d0baab2d0de420beb9c390c06f7b2656bc5ad18cd936f9a0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -168,7 +168,16 @@
           "class": {
             "type": "string"
           },
-          "title": {},
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "tone": {
             "enum": [
               "info",
@@ -181,14 +190,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -198,13 +200,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:c9b158401c1abf063206ca0a7d57247342e24f2bc10063d3734a33617574f5bc",
+        "declarationDigest": "sha256:796fe14388cd00ad35f964af0295245ea8f1ec8e64aca9100388c82099b54bcc",
         "declarationPath": "packages/components-vue/dist/Highlight.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HighlightProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 import { scalarContent } from './slotContent.js';
@@ -7,7 +8,7 @@ export type AccordionItem = {
   id?: string;
   title: string;
   /** @slot item-content */
-  content?: string | (() => unknown);
+  content?: string | number | (() => string | number);
   disabled?: boolean;
 };
 
@@ -88,12 +89,12 @@ function contentText(item: AccordionItem): string | number {
           @click="toggle(idFrom(item, index, 'accordion'))"
         >
           <template v-if="props.align === 'start'">
-            <span class="st-accordion__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span>
+            <span class="st-accordion__icon" aria-hidden="true"><Icon name="chevron-down" :size="18" /></span>
             <span class="st-accordion__title">{{ item.title }}</span>
           </template>
           <template v-else>
             <span class="st-accordion__title">{{ item.title }}</span>
-            <span class="st-accordion__icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg></span>
+            <span class="st-accordion__icon" aria-hidden="true"><Icon name="chevron-down" :size="18" /></span>
           </template>
         </button>
       </h3>

@@ -1,8 +1,8 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:cb4249b04f246376eb863d7624570f4f0ae632a0055b1d6d33fa7e5db0a23092",
-  "entryDigest": "sha256:da40c579cd3dc68f56d6dd426a887d55962899853d4bd0ea513de4e8bde61818",
+  "digest": "sha256:07fef508dfdba7e38cf0c69506c2c4bc365c72cf5d8dc1d3dcab6cbaf4476c53",
+  "entryDigest": "sha256:12b2854a38fe0ba0b442a9e8209953acdadc7041d7c87f70d547c083ffcab8e6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/HeikinAshiChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

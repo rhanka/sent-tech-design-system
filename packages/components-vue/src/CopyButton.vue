@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -41,7 +42,7 @@ function onClick(event: MouseEvent) {
 
 <template>
   <button v-bind="{ ...($attrs), class: (classNames('st-copyButton', `st-copyButton--${props.size}`, copied && 'st-copyButton--copied', props.class)) }" type="button"  @click="onClick">
-    <span class="st-copyButton__icon" aria-hidden="true"><svg v-if="copied" aria-hidden="true" class="lucide lucide-check-icon lucide-check" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><path d="M20 6 9 17l-5-5"></path></svg><svg v-else aria-hidden="true" class="lucide lucide-copy-icon lucide-copy" fill="none" height="14" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="14" xmlns="http://www.w3.org/2000/svg"><rect height="14" rx="2" ry="2" width="14" x="8" y="8"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg></span>
+    <span class="st-copyButton__icon" aria-hidden="true"><Icon v-if="copied" name="check" :size="14" /><Icon v-else name="copy" :size="14" /></span>
     <span class="st-copyButton__label">{{ copied ? resolvedCopiedLabel : resolvedLabel }}</span>
   </button>
 </template>

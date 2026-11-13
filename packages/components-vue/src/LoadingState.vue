@@ -5,8 +5,8 @@ import { classNames } from './classNames.js';
 export type LoadingStateVariant = 'spinner' | 'skeleton';
 
 export type LoadingStateProps = {
-  label?: unknown;
-  title?: unknown;
+  label?: string | number;
+  title?: string | number;
   variant?: LoadingStateVariant;
   class?: string;
 };

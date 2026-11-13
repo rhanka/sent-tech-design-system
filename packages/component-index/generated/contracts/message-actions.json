@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:046a719ed158aaddd74accf7f675a95270d54587ba638a85de79a31da6a766db",
-  "entryDigest": "sha256:149c483235c8ee14eeea5645fa30b67cf47fdb5883495149ba3c1448d470ae71",
+  "digest": "sha256:15cb154ba9d4983c4129f149fabfcab91d60dc7844e6883eaa51ee428f65a409",
+  "entryDigest": "sha256:11950dbd430b110ce2f6b7e0dd4ca0e68301941b591e15257212cc1a1cf77424",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -292,11 +292,29 @@
               "disabled": {
                 "type": "boolean"
               },
-              "icon": {},
+              "icon": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "variant": {
                 "enum": [
                   "danger",
@@ -330,20 +348,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "MessageAction.icon",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "MessageAction.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "action-content",
@@ -363,14 +368,33 @@
             ],
             "type": "object"
           }
+        },
+        {
+          "name": "action-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/MessageAction"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "action",
+              "index"
+            ],
+            "type": "object"
+          }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:64dff000870941fe4754b15c9e2565a9fdbe5c6c525de9d1862a0bb2146fbdbd",
+        "declarationDigest": "sha256:df7ed75f0d6bebfbb31cbc92b775802d63ba8a0180f3eb9b431d5df12c9a078f",
         "declarationPath": "packages/components-vue/dist/MessageActions.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],

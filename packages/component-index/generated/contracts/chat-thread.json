@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:0ac7903c033230475acb33b76dbf510d95c0f9fd59989d540313e05e35956ac5",
-  "entryDigest": "sha256:f87e5c21c333f5266a22fd5505dd6dbef94eb72c606a4cdd4510c48546e8c0e9",
+  "digest": "sha256:ba805e4fd1c6fc4383b27310f5c4e471b501e0b16ee614afa98cc0fbef08805c",
+  "entryDigest": "sha256:50eeea0068f97b5c09da8b9aff00ec07d52f7b123256a0234e419cdbb6b8a3cb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -290,7 +290,16 @@
           "class": {
             "type": "string"
           },
-          "emptyLabel": {},
+          "emptyLabel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "label": {
             "type": "string"
           },
@@ -298,7 +307,16 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "content": {},
+                "content": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
                 "id": {
                   "type": "string"
                 },
@@ -333,26 +351,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "emptyLabel",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "message.content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "messages[].content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -368,7 +367,16 @@
               "message": {
                 "additionalProperties": false,
                 "properties": {
-                  "content": {},
+                  "content": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      }
+                    ]
+                  },
                   "id": {
                     "type": "string"
                   },
@@ -407,13 +415,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:30e6203e3e0d2568dd171a92596e898b2a69e87bcf5cc3e5d682771b3c27fb58",
+        "declarationDigest": "sha256:4eafd41ac7e33056f265ccb76aa0ecf3f32a1b54322c6d8ee9eea5a04564ab13",
         "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }
