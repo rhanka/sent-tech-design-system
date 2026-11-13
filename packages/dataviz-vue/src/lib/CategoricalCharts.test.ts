@@ -6,7 +6,7 @@ import { AreaChart } from './AreaChart.js';
 import { ComboChart } from './ComboChart.js';
 import { LollipopChart } from './LollipopChart.js';
 import StackedBarChart from './StackedBarChart.vue';
-import { StepLineChart } from './StepLineChart.js';
+import StepLineChart from './StepLineChart.vue';
 
 const model: DataModel = {
   dimensions: [
