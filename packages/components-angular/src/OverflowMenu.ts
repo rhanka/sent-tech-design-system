@@ -90,6 +90,7 @@ export class OverflowMenu implements AfterViewInit, OnDestroy {
   readonly rootMenuId = `st-overflowmenu-${++OverflowMenu.nextInstanceId}`;
   readonly [MENU_HOST_CONTEXT]: MenuHost = {
     rootMenuId: this.rootMenuId,
+    label: () => this.label || "More",
     select: (keyboard, cascade) => {
       if (!cascade) return;
       this.localOpen = false;
