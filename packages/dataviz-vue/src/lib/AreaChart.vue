@@ -53,5 +53,5 @@ const data = computed(() => {
   <DsAreaChart :data="data" :label="props.label" :tone="props.tone" :smooth="props.smooth"
     :width="props.width" :height="props.height" :annotations="props.annotations"
     :data-labels="props.dataLabels" :hover-key="props.hoverKey"
-    :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey" :class="props.class" />
+    @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey" :class="props.class" />
 </template>

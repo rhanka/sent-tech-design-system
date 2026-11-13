@@ -38,5 +38,5 @@ const data = computed(() => {
 </script>
 
 <template>
-  <DsStackedBarChart :data="data" :label="props.label" :show-legend="props.showLegend" :width="props.width" :height="props.height" :data-labels="props.dataLabels" :hidden-series="props.hiddenSeries" :on-toggle-series="props.onToggleSeries" :class="props.class" />
+  <DsStackedBarChart :data="data" :label="props.label" :show-legend="props.showLegend" :width="props.width" :height="props.height" :data-labels="props.dataLabels" :hidden-series="props.hiddenSeries" @toggle-series="props.onToggleSeries" :class="props.class" />
 </template>

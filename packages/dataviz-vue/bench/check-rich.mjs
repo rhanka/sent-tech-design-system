@@ -33,26 +33,28 @@ try {
         assert.ok(document.querySelector('#app > div'));
         if (name === 'FieldPane' && fixture.id === 'default') {
           const selected = [];
+          const dimension = fixture.props.model.dimensions[0];
+          const dimensionId = 'dimension:' + dimension.id;
           state.value = { ...fixture.props, onSelect: id => selected.push(id) };
           await nextTick();
           assert.equal(document.querySelectorAll('button').length, 3);
-          [...document.querySelectorAll('button')].find(button => button.textContent.includes('Country')).click();
+          [...document.querySelectorAll('button')].find(button => button.textContent.includes(dimension.label)).click();
           await nextTick();
-          assert.deepEqual(selected, ['dimension:country']);
+          assert.deepEqual(selected, [dimensionId]);
           state.value = { ...state.value, expandedIds: [] };
           await nextTick();
           assert.equal(document.querySelectorAll('button').length, 0);
           state.value = { ...fixture.props, 'onUpdate:selectedId': id => selected.push(id) };
           await nextTick();
-          const country = document.querySelector('[data-tree-id="dimension:country"]');
+          const country = document.querySelector(`[data-tree-id="${dimensionId}"]`);
           assert.ok(country);
           country.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
           await nextTick();
           // Original FieldPane filters this model listener during fallthrough.
           assert.equal(country.getAttribute('tabindex'), null);
-          assert.deepEqual(selected, ['dimension:country']);
+          assert.deepEqual(selected, [dimensionId]);
         }
-        if (name === 'PalettePicker' && fixture.id === 'default') {
+        if (name === 'PalettePicker' && fixture.id === 'all') {
           assert.equal(document.querySelectorAll('.st-colorScaleBar').length, 2);
           state.value = { ...fixture.props, sequential: undefined, diverging: undefined, categorical: ['#123456'], swatchSize: 7 };
           await nextTick();

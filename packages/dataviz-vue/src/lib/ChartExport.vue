@@ -14,7 +14,7 @@ export const DEFAULT_EXPORT_LABELS: Record<ExportFormat, string> = {
 import { computed } from 'vue';
 import { Button, Inline } from '@sentropic/design-system-vue';
 import { findMeasure, type DashboardStore, type Row } from '@sentropic/dataviz-core';
-import { rowsToCsv } from './ExportMenu.js';
+import { rowsToCsv } from './ExportMenu.vue';
 import {
   downloadBlob,
   downloadPng,

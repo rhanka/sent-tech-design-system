@@ -30,7 +30,7 @@ const expanded = computed(() => new Set(props.expandedIds ?? props.defaultExpand
 
 <template>
   <div v-if="props.onSelect" :class="['st-treeView', props.class]" role="tree" :aria-label="props.label">
-    <FieldPaneRows :nodes="tree.nodes" :expanded="expanded" :selected-id="props.selectedId" :on-select="props.onSelect" />
+    <FieldPaneRows :nodes="tree.nodes" :expanded="expanded" :selected-id="props.selectedId" @select="props.onSelect" />
   </div>
   <FieldPaneTree v-else :nodes="tree.nodes" :selected-id="props.selectedId" :expanded-ids="props.expandedIds"
     :default-expanded-ids="props.defaultExpandedIds ?? tree.defaultExpandedIds" :class="props.class" :aria-label="props.label" />

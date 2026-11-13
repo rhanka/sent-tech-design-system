@@ -21,18 +21,18 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
+      "digest": "sha256:680fad4a24e800fc9ffb5e6bcfe084ae2ee5050f7c17a8f9bc21cce116b35d4d",
       "framework": "vue",
       "package": "@sentropic/dataviz-vue",
-      "path": "packages/dataviz-vue/src/lib/ObjectLayers.ts",
-      "version": "0.5.0"
+      "path": "packages/dataviz-vue/src/lib/WebFrame.vue",
+      "version": "0.6.0-next.0"
     }
   ],
   "description": {
     "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
     "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
   },
-  "digest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "digest": "sha256:946d9855eb37d3548e136ff6d862dd5526cd6cb03915ff9febf48ef596433fac",
   "displayName": "WebFrame",
   "format": "component-entry/v1",
   "frameworks": [],

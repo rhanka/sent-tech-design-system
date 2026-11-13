@@ -132,13 +132,13 @@ const pickerValue = computed(() => props.brushRange
 <template>
   <div v-if="props.enableBrush" class="st-dateHistogramChart__wrapper">
     <BarChart :data="data" :label="props.label" :width="props.width" :height="props.height"
-      :selected-keys="props.selectable && props.viewId ? selectedKeys : []" :on-select="onSelect"
-      :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey"
+      :selected-keys="props.selectable && props.viewId ? selectedKeys : []" @select="onSelect"
+      :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey"
       :class="['st-dateHistogramChart', props.class].filter(Boolean).join(' ')" />
     <DatePicker mode="range" :label="`${props.label} — plage de dates`" :value="pickerValue" @change="handlePickerChange" />
   </div>
   <BarChart v-else :data="data" :label="props.label" :width="props.width" :height="props.height"
-    :selected-keys="props.selectable && props.viewId ? selectedKeys : []" :on-select="onSelect"
-    :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey"
+    :selected-keys="props.selectable && props.viewId ? selectedKeys : []" @select="onSelect"
+    :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey"
     :class="['st-dateHistogramChart', props.class].filter(Boolean).join(' ')" />
 </template>
