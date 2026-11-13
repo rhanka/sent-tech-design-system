@@ -512,8 +512,8 @@ export type {
   SlideIndicatorVariant,
   SlideIndicatorSize,
 } from "./SlideIndicator.js";
-export { Autosave } from "./Autosave.js";
-export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
+export { default as Autosave } from "./Autosave.vue";
+export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.vue";
 export { Portal } from "./Portal.js";
 export type { PortalProps } from "./Portal.js";
 export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.js";
