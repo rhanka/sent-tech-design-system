@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Tag",
+  "sourceRevision": "41e5f7808293e35cbfa6b6b0b5ee95e36efb3601",
+  "source": "src/Tag.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-tag st-tag--neutral st-tag--md\"><span class=\"st-tag__label\">New</span></span>"
+    },
+    {
+      "id": "success-small",
+      "html": "<span class=\"st-tag st-tag--success st-tag--sm\"><span class=\"st-tag__label\">Active</span></span>"
+    },
+    {
+      "id": "dismissible",
+      "html": "<span class=\"st-tag st-tag--info st-tag--md\"><span class=\"st-tag__label\">Filter</span><button aria-label=\"Remove\" class=\"st-tag__dismiss\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "disabled-dismissible",
+      "html": "<span aria-disabled=\"true\" class=\"st-tag st-tag--error st-tag--sm st-tag--disabled\"><span class=\"st-tag__label\"><strong>Locked</strong></span><button aria-label=\"Dismiss\" class=\"st-tag__dismiss\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<span class=\"st-tag st-tag--warning st-tag--md consumer\" data-bench=\"tag\" style=\"color:red;\" title=\"Note\"><span class=\"st-tag__label\">Caution</span></span>"
+    },
+    {
+      "id": "empty",
+      "html": "<span class=\"st-tag st-tag--neutral st-tag--md\"><span class=\"st-tag__label\"></span></span>"
+    }
+  ],
+  "sourceSha256": "e150ce2a6413970e191eaa0320cf57a2e83ecc61d020647ebe7640b8e87412ce",
+  "fixtureSha256": "c05daa243a4020049dba217835668e360f59f3164eb007c28e278cc0a2a58bbb",
+  "publicExports": [
+    {
+      "name": "Tag",
+      "typeOnly": false
+    },
+    {
+      "name": "TagProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TagTone",
+      "typeOnly": true
+    },
+    {
+      "name": "TagSize",
+      "typeOnly": true
+    }
+  ]
+}
