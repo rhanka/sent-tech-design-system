@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "component": "Popper",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/Popper.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<!--teleport start--><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><div class=\"st-popper\" data-popper-placement=\"bottom\" style=\"position: absolute; top: 0px; left: 0px;\"><button>Panel</button><span aria-hidden=\"true\" class=\"st-popper__arrow\" data-popper-side=\"bottom\"></span></div><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "inline",
+      "html": "<!--teleport start--><div class=\"st-popper\" data-popper-placement=\"top-end\" style=\"position: fixed; top: 0px; left: 0px;\" tabindex=\"-1\"><p>Inline</p></div><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "closed",
+      "html": ""
+    },
+    {
+      "id": "no-anchor",
+      "html": ""
+    },
+    {
+      "id": "attrs",
+      "html": "<!--teleport start--><!--teleport end-->",
+      "teleports": {
+        "body": "<!--teleport start anchor--><div class=\"st-popper consumer\" data-popper-placement=\"bottom\" style=\"position: absolute; top: 0px; left: 0px;\">Text</div><!--teleport anchor-->"
+      }
+    }
+  ],
+  "sourceSha256": "96d8c8f666e012c3b4199c632fcf1c5ba7269f293c4fd511f750cba9bf9bf3ac",
+  "fixtureSha256": "85c12b3f60caccb649c486635ee806203fa8517cfc3a2d0d2d00c97aa8988ab3",
+  "publicExports": [
+    {
+      "name": "Popper",
+      "typeOnly": false
+    },
+    {
+      "name": "computePosition",
+      "typeOnly": false
+    },
+    {
+      "name": "splitPlacement",
+      "typeOnly": false
+    },
+    {
+      "name": "joinPlacement",
+      "typeOnly": false
+    },
+    {
+      "name": "PopperProps",
+      "typeOnly": true
+    },
+    {
+      "name": "PopperPlacement",
+      "typeOnly": true
+    },
+    {
+      "name": "PopperStrategy",
+      "typeOnly": true
+    },
+    {
+      "name": "PopperSide",
+      "typeOnly": true
+    },
+    {
+      "name": "PopperAlign",
+      "typeOnly": true
+    },
+    {
+      "name": "Rect",
+      "typeOnly": true
+    }
+  ]
+}
