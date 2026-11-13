@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Switch.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:dbf74a12bc0ced1ee3b5611cb6d5f1c6b309155923f943769da85d198ac68dab",
+  "digest": "sha256:32ffb717e9026f5ef5f1e1d490b9caf9fb17feef4621f851fb3d38d114946dd1",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

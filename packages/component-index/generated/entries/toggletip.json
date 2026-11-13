@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggletip.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Click-activated, persistent tooltip.",
     "fr": "Tooltip activable au clic, persistant."
   },
-  "digest": "sha256:12dc4d07d42e0678619066627b4e18ceb2c92f000a001542e86f5ec80c7d7b8f",
+  "digest": "sha256:3b5c23e4a31dd77b5af8e31c423a05040ca1cae5bd3d9acd90783790e7f3cae4",
   "displayName": "Toggletip",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MediaContent.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:90befdf8dc964c6dd4fc600407d64684fc42efe1749c53545ceff1519f3a7501",
+  "digest": "sha256:fde9d0c0da23765ba74e6501c0a6e85cf8fc1148ae4972e6424ae355690a4fe6",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

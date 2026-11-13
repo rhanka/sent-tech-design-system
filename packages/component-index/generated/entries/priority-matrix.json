@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PriorityMatrix.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement.",
     "fr": "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement."
   },
-  "digest": "sha256:4107d737c22adcf7200a5c718952cc12c3c92216f42c7007af52f52a6e37feb7",
+  "digest": "sha256:c843499bc7aa9ae5ead77478287bbdc89e88886b88e2f53fc51f285c7a58b3c6",
   "displayName": "PriorityMatrix",
   "format": "component-entry/v1",
   "frameworks": [
