@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "NumberInput",
+  "sourceRevision": "543db9fd57822badeabb09a48e3378ab95f79247",
+  "source": "src/NumberInput.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-1\"><span class=\"st-field__label\">Quantity</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-1\" type=\"number\" value=\"\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "controlled-clamped",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-2\"><span class=\"st-field__label\">Count</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-2\" max=\"5\" min=\"0\" step=\"2\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" disabled=\"\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label><span class=\"st-field__help\">Use the steppers.</span></div>"
+    },
+    {
+      "id": "seeded-value",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-3\"><span class=\"st-field__label\">Price</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-3\" max=\"100\" min=\"0\" type=\"number\" value=\"12.5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "error-disabled",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-4\"><span class=\"st-field__label\">Amount</span><span class=\"st-numberInput st-numberInput--md\"><input aria-invalid=\"true\" class=\"st-numberInput__control\" disabled=\"\" id=\"st-numberInput-4\" type=\"number\" value=\"\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" disabled=\"\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" disabled=\"\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div class=\"st-field consumer\" data-bench=\"number\" style=\"color:red;\"><label class=\"st-field__control\" for=\"st-numberInput-5\"><span class=\"st-field__label\">Qty</span><span class=\"st-numberInput st-numberInput--sm\"><input class=\"st-numberInput__control\" data-bench=\"number\" id=\"st-numberInput-5\" style=\"color: red\" type=\"number\" value=\"\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Diminuer\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Augmenter\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "readonly-empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-6\"><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-6\" readonly=\"\" type=\"number\" value=\"\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    }
+  ],
+  "sourceSha256": "6e823e773de1632906e5218fc59bad4707b28eef9156634071045e19806f3aa4",
+  "fixtureSha256": "de604e785dd4bdb99b89b8dc395bb8cc7a6fce8fde1fcf3a1cb5730f3af02454",
+  "publicExports": [
+    {
+      "name": "NumberInput",
+      "typeOnly": false
+    },
+    {
+      "name": "NumberInputProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NumberInputSize",
+      "typeOnly": true
+    }
+  ]
+}
