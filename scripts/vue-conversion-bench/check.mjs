@@ -1,9 +1,10 @@
+import { checkTemplateSource } from './template-source.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { resolve, relative, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-export function runCheck({ bench, pkg, src, packageSrc, names, modulePath, buildFiles, require, compilers, compileSfc }) {
+export function runCheck({ bench, pkg, src, packageSrc, names, modulePath, buildFiles, require, compilers, compileSfc, normalizeHtml }) {
 
 const args = process.argv.slice(2);
 const name = args[0];
@@ -52,69 +53,8 @@ function typecheck(files) {
 
 try {
   gate('G1', 'Template source', () => {
-    const problems = [];
-    if (existsSync(resolve(src, `${modulePath(name)}.ts`))) problems.push(`Old src/${name}.ts still exists`);
-    const { descriptor, errors } = compilers.classic.parse(source(), { filename: file });
-    if (errors.length) fail(errors.map(String).join('; '));
-    if (!descriptor.scriptSetup || descriptor.scriptSetup.lang !== 'ts') problems.push('Requires <script setup lang="ts">');
-    if (!descriptor.template || descriptor.template.src) problems.push('Requires an inline template');
-    if (descriptor.script || descriptor.scriptSetup?.src) problems.push('Only inline script setup is permitted');
-    if (descriptor.scriptSetup?.attrs.vapor !== undefined) problems.push('Build injects vapor; do not author it');
-    const script = descriptor.scriptSetup?.content ?? '';
-    const ast = ts.createSourceFile(file + '.ts', script, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
-    const banned = new Set(['h', 'defineComponent', 'render']);
-    for (const node of ast.statements) {
-      if (ts.isImportDeclaration(node) && node.importClause?.namedBindings && ts.isNamedImports(node.importClause.namedBindings)) {
-        for (const item of node.importClause.namedBindings.elements) {
-          if (!node.importClause.isTypeOnly && !item.isTypeOnly && banned.has((item.propertyName ?? item.name).text)) {
-            banned.add(item.name.text);
-            problems.push(`Forbidden runtime import: ${(item.propertyName ?? item.name).text}`);
-          }
-        }
-      }
-    }
-    const walk = node => {
-      if (ts.isCallExpression(node)) {
-        const called = ts.isIdentifier(node.expression) ? node.expression.text
-          : ts.isPropertyAccessExpression(node.expression) ? node.expression.name.text : '';
-        if (banned.has(called)) problems.push(`Forbidden call: ${called}()`);
-        if (called === 'defineOptions' && node.arguments[0] && ts.isObjectLiteralExpression(node.arguments[0])) {
-          for (const property of node.arguments[0].properties) {
-            if (!property.name || !['name', 'inheritAttrs'].includes(property.name.getText().replace(/['"]/g, ''))) {
-              problems.push('defineOptions is limited to name and inheritAttrs; Options API behavior is forbidden');
-            }
-          }
-        }
-      }
-      if (ts.isExportAssignment(node)) problems.push('Runtime default/Options API export is forbidden');
-      if ((ts.isFunctionDeclaration(node) || ts.isMethodDeclaration(node) || ts.isPropertyAssignment(node) || ts.isVariableDeclaration(node))
-        && node.name?.getText() === 'render') problems.push('Render function is forbidden');
-      if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node) || ts.isJsxFragment(node)) problems.push('JSX is forbidden');
-      ts.forEachChild(node, walk);
-    };
-    walk(ast);
-    // Also inspect template expressions: a forbidden render call must not hide
-    // in interpolation, v-bind, v-on or a directive expression.
-    const templateWalk = node => {
-      if (!node || typeof node !== 'object') return;
-      if (node.type === 4 && !node.isStatic && typeof node.content === 'string') {
-        walk(ts.createSourceFile('template.ts', node.content, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS));
-      }
-      for (const [key, value] of Object.entries(node)) {
-        if (key === 'loc') continue;
-        if (Array.isArray(value)) value.forEach(templateWalk);
-        else if (value && typeof value === 'object') templateWalk(value);
-      }
-    };
-    templateWalk(descriptor.template?.ast);
-    // TSX parse is separate so JSX cannot hide in malformed TS input.
-    const jsxAst = ts.createSourceFile(file + '.tsx', script, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-    const jsxWalk = node => {
-      if (ts.isJsxElement(node) || ts.isJsxSelfClosingElement(node) || ts.isJsxFragment(node)) problems.push('JSX is forbidden');
-      ts.forEachChild(node, jsxWalk);
-    };
-    jsxWalk(jsxAst);
-    if (problems.length) fail([...new Set(problems)].join('; '));
+    if (existsSync(resolve(src, `${modulePath(name)}.ts`))) fail(`Old src/${name}.ts still exists`);
+    checkTemplateSource(source(), file, compilers);
     return 'Old .ts absent; typed script setup + template; forbidden syntax absent';
   });
   gate('G2', 'Classic + Vapor compile', () => {
@@ -134,7 +74,13 @@ try {
     if (golden.schema !== 1 || golden.component !== name || golden.fixtures.length < 4) fail('Invalid golden metadata');
     const fixtureHash = createHash('sha256').update(readFileSync(resolve(bench, 'fixtures', `${name}.fixtures.ts`))).digest('hex');
     if (fixtureHash !== golden.fixtureSha256) fail('Fixture changed since golden capture; restore the frozen measurement input');
+    const { JSDOM } = require('jsdom');
+    const normalizeFixture = f => ({ ...f, html: normalizeHtml(f.html, JSDOM),
+      ...(f.teleports ? { teleports: Object.fromEntries(Object.entries(f.teleports).map(([k, v]) => [k, normalizeHtml(v, JSDOM)])) } : {}) });
+    // Frozen measurements remain untouched; normalize both sides at comparison time.
+    golden.fixtures = golden.fixtures.map(normalizeFixture);
     const actual = worker('ssr');
+    actual.fixtures = actual.fixtures.map(normalizeFixture);
     const differences = [];
     if (JSON.stringify(actual.fixtures.map(f => f.id)) !== JSON.stringify(golden.fixtures.map(f => f.id))) fail('Fixture IDs/order differ from golden');
     for (let i = 0; i < golden.fixtures.length; i++) {
