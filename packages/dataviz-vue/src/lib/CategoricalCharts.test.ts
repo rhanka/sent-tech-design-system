@@ -5,7 +5,7 @@ import { createDashboardStore, type DataModel, type Row } from '@sentropic/datav
 import { AreaChart } from './AreaChart.js';
 import { ComboChart } from './ComboChart.js';
 import { LollipopChart } from './LollipopChart.js';
-import { StackedBarChart } from './StackedBarChart.js';
+import StackedBarChart from './StackedBarChart.vue';
 import { StepLineChart } from './StepLineChart.js';
 
 const model: DataModel = {
