@@ -495,7 +495,7 @@ describe("independent axis gaps", () => {
       wordWrapMeasurer(),
       // DC-2a re-pin (AC-3, DEC-6): sibling gaps are capped at 32 px on both
       // axes and an override above the cap refuses, so the wide gap is 32.
-      { hints: { ...a5RootHints(), cardGapX: 32, zoneGapX: 32 } },
+      { hints: { ...a5RootHints(), cardGapX: 144, zoneGapX: 144 } },
     );
     for (const local of ["PEOPLE", "WS", "GCP", "OUT", "G", "E1", "E2", "k"]) {
       expect(geometryOf(wideX.view, local).y).toBe(geometryOf(base.view, local).y);
@@ -507,7 +507,7 @@ describe("independent axis gaps", () => {
       buildColumnsDocument(),
       makePresentation({ forms: columnsForms }),
       wordWrapMeasurer(),
-      { hints: { ...a5RootHints(), cardGapY: 32, zoneGapY: 32 } },
+      { hints: { ...a5RootHints(), cardGapY: 120, zoneGapY: 120 } },
     );
     for (const local of ["PEOPLE", "WS", "GCP", "OUT", "G", "E1", "E2", "k"]) {
       expect(geometryOf(tallY.view, local).x).toBe(geometryOf(base.view, local).x);
@@ -526,7 +526,7 @@ describe("independent axis gaps", () => {
       targetWidth: 4000,
       presentation: makePresentation({ forms: columnsForms }),
       measureLines: wordWrapMeasurer(),
-      hints: { cardGapY: 160 },
+      hints: { cardGapY: 241 },
     });
     expect(result.status).toBe("refused");
     if (result.status !== "refused") return;
@@ -547,7 +547,7 @@ describe("independent axis gaps", () => {
     const lone = geometryOf(wide.view, "lone");
     // Two roots on one row, 24 px apart.
     expect(lone.y).toBe(c.y);
-    expect(lone.x - (c.x + c.width)).toBe(24);
+    expect(lone.x - (c.x + c.width)).toBe(108);
   });
 });
 

@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:4b6b35cbba009c1bea6e48a9be190887b028016d6aaf4b92b5c3e2a9ae3ac2ed",
+  "contractsRevision": "sha256:d9a0c762ed60ebfb86ea5438786a170b4036d2b6feaaf71130a86b2cfef09365",
   "counts": {
     "byFramework": {
       "angular": {
@@ -775,8 +775,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:758feab28198b290dc311a679db0be11c166d418e95a90f48ff152421d91a7ef",
-      "entryDigest": "sha256:c1e827287662112b481681ee1777c51225343a803e32ee2984d47766333486a7",
+      "contractDigest": "sha256:0f3e13d287b416113f7dde0c449796e5eebe9ba270ac13393b4742bc7ded57d3",
+      "entryDigest": "sha256:1b45bcdad7f59a55cba0958127d0b53898f40bbb80ce8ac70cc3ab2dcdf57a7d",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
     },
@@ -788,8 +788,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:aaa08d76840b673136aaef1ad287d7cab9d5f842d7e1887f72367649b6b23d92",
-      "entryDigest": "sha256:c4306563ca97e7a3fc9e7055d101c66faf9323f5d283212b25215739d110b545",
+      "contractDigest": "sha256:7d969eef44f47b896a2daa1fdd1b206b03acb4e6266da7cda8a43c8010b17a3d",
+      "entryDigest": "sha256:41ba5974df8abc27f679731dba6ab71bacd81be1ad716f4c778f183f717d5915",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
     },
@@ -801,8 +801,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:b59110a8425772b9d235a04693ccc147a0db363a6ae7ec7c732357d784aa86df",
-      "entryDigest": "sha256:1eb573c57234ccfbd42dd2f450f5330dafafefc62fc45608ef3b5f1f19fa7136",
+      "contractDigest": "sha256:8702901a9f2fa2dc0e9d17c61f46339b16b654ed04415ab7a401219c8416e009",
+      "entryDigest": "sha256:a909995f45ddef1c3693ff9ef3e53b1608ba09e96a43849926d4eb5a4fdaf5df",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "20f80790cb1021a3804729c5cad187000c3a0652"
+  "sourceCommit": "fc3ef66984ecc3cf237eb85e1dee963b5edfef39"
 }

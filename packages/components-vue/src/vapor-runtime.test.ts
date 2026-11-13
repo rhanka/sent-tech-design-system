@@ -30,7 +30,12 @@ it('should execute published Vapor card, zone, icon and legend modules and emit 
   expect(onSelect).toHaveBeenCalledExactlyOnceWith({ entityId: 'one' });
   const onDiagnostic = vi.fn();
   mount(DiagramZone, { entityId: 'zone', title: 'Zone', collapsed: true, icon: 'unmapped', onDiagnostic });
-  await nextTick(); expect(onDiagnostic).toHaveBeenCalledTimes(1);
+  await nextTick();
+  // The missing-glyph diagnostic accompanies the zone-specific diagnostic.
+  expect(onDiagnostic.mock.calls).toEqual([
+    [{ code: 'card-icon-missing', slot: 'icon', entityId: 'zone', neededPx: 1, allocatedPx: 0 }],
+    [{ code: 'zone-icon-unknown', slot: 'icon', entityId: 'zone', neededPx: 1, allocatedPx: 0 }],
+  ]);
   const icon = mount(DiagramIcon, { name: DIAGRAM_GLYPH_NAMES[0] }); expect(icon.root.querySelector('svg')).not.toBeNull();
   const legend = mount(GraphLegend, { entries: [{ label: 'Nodes', shape: 'star' }] }); expect(legend.root.textContent).toContain('Nodes');
 });
