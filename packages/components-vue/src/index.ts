@@ -223,8 +223,8 @@ export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.
 export type { DataLabelsProp, DataLabelsOptions, DataLabelPosition } from "./chartDataLabels.js";
 export { DonutChart } from "./DonutChart.js";
 export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
-export { ScatterPlot } from "./ScatterPlot.js";
-export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.js";
+export { default as ScatterPlot } from "./ScatterPlot.vue";
+export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.vue";
 export { PriorityMatrix } from "./PriorityMatrix.js";
 export type { PriorityMatrixProps, PriorityMatrixDatum, PriorityMatrixTone } from "./PriorityMatrix.js";
 export { Sparkline } from "./Sparkline.js";
