@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:a5534c83c5895fc88d18e59ab4ea757c54a5e20017b75835dfba3ea33caea241",
-  "entryDigest": "sha256:9f0c2bb67406246ad975795e6d2497ee889d553b1841a4dd489e292b81778ceb",
+  "digest": "sha256:e7f7487556de89409b8581d8428ce5084846d1bd488517e5afe6455fdbc4aa14",
+  "entryDigest": "sha256:795554c1b9b9e93ca9c6092048c9c6fc5c8ba4b9d31b8809960bdbce6742cdb2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-vue/dist/StructuredList.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StructuredListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

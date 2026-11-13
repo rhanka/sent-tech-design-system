@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SelectableRow.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
     "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
   },
-  "digest": "sha256:a0d2f50c4a57b6ecc20184c6ba8a823cbce0de755c9fa15a89906032839b9419",
+  "digest": "sha256:c98d52f8e45979b5a1b138b3a504aed7f17115c50b26342a03a55f11a0acdc59",
   "displayName": "SelectableRow",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Select.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled native select, sm/md/lg sizes.",
     "fr": "Sélecteur natif stylé, tailles sm/md/lg."
   },
-  "digest": "sha256:34fb67cb6ce32e3b644cacc0af255769e0285e765f2382a05817615feed81948",
+  "digest": "sha256:ab818f1b76223d47a5b975f7228a34d3b59b52fca269a03e274d713877e7539a",
   "displayName": "Select",
   "format": "component-entry/v1",
   "frameworks": [

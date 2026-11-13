@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:836364b894f48e29315f8328b3613f044a730eed16bda7ec60fb49150c7b081b",
-  "entryDigest": "sha256:20f3c2629804a2d814de3929de2eff0047b9f1dcf36ec929eca2a0517f3d600c",
+  "digest": "sha256:4534c975e49cfc18d0a444c04e60f3e1c435a346d86b287d53e024c82d37c31c",
+  "entryDigest": "sha256:aa5e66c616ddfd694ca81f820d989f8b5d78ed78f287789a6f03f958f5ac80c3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -336,7 +336,7 @@
         "declarationPath": "packages/components-vue/dist/Typography.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

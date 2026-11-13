@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Determinate or indeterminate progress bar.",
     "fr": "Barre de progression déterminée ou indéterminée."
   },
-  "digest": "sha256:e7fb90a8125ff7c882908c62f02b72dc69d0e05cced5cda9b48b9c64f4edf179",
+  "digest": "sha256:78e1d90a11bf01653a3236b3d37568b3d118360fc69c1605d46fb2b00d9dedfd",
   "displayName": "ProgressBar",
   "format": "component-entry/v1",
   "frameworks": [

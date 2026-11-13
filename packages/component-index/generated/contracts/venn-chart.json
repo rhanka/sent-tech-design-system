@@ -1,8 +1,8 @@
 {
   "componentId": "venn-chart",
   "contractSource": "derived",
-  "digest": "sha256:1877b00a5af87ec88c6549eeb562d64676b7003882698d6836ede01cb48bb519",
-  "entryDigest": "sha256:0d910d3290c1c3e011071041660d041ec5964fa9399a2ddaeaeb6f708b784e6b",
+  "digest": "sha256:947e6c47d348e4e6153cf8dc6852282bd971d18c6be91cfee4a406d031de066e",
+  "entryDigest": "sha256:cbc1d1c1c5bf3e3a3e4860db43ec2183d116103dae5ffc11ef85f9e39fa0b73e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -278,7 +278,7 @@
         "declarationPath": "packages/components-vue/dist/VennChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VennChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
