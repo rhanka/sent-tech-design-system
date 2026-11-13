@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "DashboardActiveFilters",
+  "sourceRevision": "0be6a3108a16f6c50bf4635216ed4689a46ba369",
+  "source": "src/lib/DashboardActiveFilters.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Active filters\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"><span aria-label=\"Filtre Region\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Region</span><span class=\"st-filterPill__value\">North</span></span><button aria-label=\"Retirer le filtre Region\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div><button class=\"st-filterBar__clearAll\" type=\"button\">Tout effacer</button></div>"
+    },
+    {
+      "id": "no-filters",
+      "html": "<div aria-label=\"Active filters\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"></div></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div aria-label=\"Filters\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"><span aria-label=\"Filtre Region\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Region</span><span class=\"st-filterPill__value\">North</span></span><button aria-label=\"Retirer le filtre Region\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div><button class=\"st-filterBar__clearAll\" type=\"button\">Clear all</button></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div aria-label=\"Active filters\" class=\"st-filterBar consumer\" data-bench=\"filters\" role=\"group\"><div class=\"st-filterBar__pills\"><span aria-label=\"Filtre Region\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Region</span><span class=\"st-filterPill__value\">North</span></span><button aria-label=\"Retirer le filtre Region\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div><button class=\"st-filterBar__clearAll\" type=\"button\">Tout effacer</button></div>"
+    }
+  ],
+  "sourceSha256": "5b527d12115c1025165b1e6ceaf3120201ada0cecfe9699336b72f8db6989590",
+  "fixtureSha256": "94ae6cb60b212eca49b71407768bdbfe2c3e371bb90c926a009ff6af5805e384",
+  "publicExports": [
+    {
+      "name": "DashboardActiveFilters",
+      "typeOnly": false
+    },
+    {
+      "name": "DashboardActiveFiltersProps",
+      "typeOnly": true
+    }
+  ]
+}
