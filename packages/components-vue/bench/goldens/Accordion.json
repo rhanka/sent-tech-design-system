@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Accordion",
+  "sourceRevision": "9790c144d4874420c9b451c24b1effcec1fba65c",
+  "source": "src/Accordion.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-accordion st-accordion--md st-accordion--align-end\"><div class=\"st-accordion__item st-accordion__item--open\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-a\" aria-expanded=\"true\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-a\" type=\"button\"><span class=\"st-accordion__title\">First</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div aria-labelledby=\"st-accordion-trigger-a\" class=\"st-accordion__panel\" id=\"st-accordion-panel-a\" role=\"region\">Alpha</div></div><div class=\"st-accordion__item\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-b\" aria-expanded=\"false\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-b\" type=\"button\"><span class=\"st-accordion__title\">Second</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div></div>"
+    },
+    {
+      "id": "align-start-lg",
+      "html": "<div class=\"st-accordion st-accordion--lg st-accordion--align-start\"><div class=\"st-accordion__item\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-a\" aria-expanded=\"false\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-a\" type=\"button\"><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span><span class=\"st-accordion__title\">First</span></button></h3></div><div class=\"st-accordion__item\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-b\" aria-expanded=\"false\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-b\" type=\"button\"><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span><span class=\"st-accordion__title\">Second</span></button></h3></div></div>"
+    },
+    {
+      "id": "multiple-open",
+      "html": "<div class=\"st-accordion st-accordion--md st-accordion--align-end\"><div class=\"st-accordion__item st-accordion__item--open\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-a\" aria-expanded=\"true\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-a\" type=\"button\"><span class=\"st-accordion__title\">First</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div aria-labelledby=\"st-accordion-trigger-a\" class=\"st-accordion__panel\" id=\"st-accordion-panel-a\" role=\"region\">Alpha</div></div><div class=\"st-accordion__item st-accordion__item--open\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-b\" aria-expanded=\"true\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-b\" type=\"button\"><span class=\"st-accordion__title\">Second</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div aria-labelledby=\"st-accordion-trigger-b\" class=\"st-accordion__panel\" id=\"st-accordion-panel-b\" role=\"region\">Beta</div></div><div class=\"st-accordion__item\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-accordion-2\" aria-expanded=\"false\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-accordion-2\" type=\"button\"><span class=\"st-accordion__title\">Third</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div></div>"
+    },
+    {
+      "id": "disabled-controlled",
+      "html": "<div class=\"st-accordion st-accordion--sm st-accordion--align-end\"><div class=\"st-accordion__item\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-a\" aria-expanded=\"false\" class=\"st-accordion__trigger\" disabled=\"\" id=\"st-accordion-trigger-a\" type=\"button\"><span class=\"st-accordion__title\">First</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3></div><div class=\"st-accordion__item st-accordion__item--open\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-b\" aria-expanded=\"true\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-b\" type=\"button\"><span class=\"st-accordion__title\">Second</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div aria-labelledby=\"st-accordion-trigger-b\" class=\"st-accordion__panel\" id=\"st-accordion-panel-b\" role=\"region\">Beta</div></div></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-accordion st-accordion--md st-accordion--align-end consumer\" data-bench=\"accordion\" style=\"color:red;\"><div class=\"st-accordion__item st-accordion__item--open\"><h3 class=\"st-accordion__heading\"><button aria-controls=\"st-accordion-panel-a\" aria-expanded=\"true\" class=\"st-accordion__trigger\" id=\"st-accordion-trigger-a\" type=\"button\"><span class=\"st-accordion__title\">First</span><span aria-hidden=\"true\" class=\"st-accordion__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></h3><div aria-labelledby=\"st-accordion-trigger-a\" class=\"st-accordion__panel\" id=\"st-accordion-panel-a\" role=\"region\">Alpha</div></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-accordion st-accordion--md st-accordion--align-end\"></div>"
+    }
+  ],
+  "sourceSha256": "0eb81b0adccd1c42ef8a70bb269fd5fa8b052b786584d449ad0af775c0f339c0",
+  "fixtureSha256": "2169b6e68dded0e3f74055f62da9cb013eda88303306abda1a45043a5d4f5997",
+  "publicExports": [
+    {
+      "name": "Accordion",
+      "typeOnly": false
+    },
+    {
+      "name": "AccordionProps",
+      "typeOnly": true
+    },
+    {
+      "name": "AccordionItem",
+      "typeOnly": true
+    }
+  ]
+}
