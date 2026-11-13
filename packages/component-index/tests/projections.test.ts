@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { parseBarrelFile } from "../src/generator/barrels.js";
+import { parseBarrelFile, resolveSourceFile } from "../src/generator/barrels.js";
 import { parseCatalogueFile, stripDatavizMarker } from "../src/generator/catalog.js";
 import { FRAMEWORK_ORDER } from "../src/generator/constants.js";
 import { entryDigest, fileDigestHex } from "../src/generator/digest.js";
@@ -28,6 +28,25 @@ function manifest(dir: string): { name: string; version: string } {
 }
 
 describe("witness projections (no field loss)", () => {
+  it("Vue metadata resolves converted components to SFCs, including compatibility wrappers", () => {
+    const barrelPath = join(repoRoot, "packages/components-vue/src/index.ts");
+    const barrel = parseBarrelFile(barrelPath);
+    for (const [name, specifier] of barrel.values) {
+      const sfc = `packages/components-vue/src/${name}.vue`;
+      if (existsSync(join(repoRoot, sfc))) {
+        expect(resolveSourceFile(barrelPath, name, specifier, repoRoot), name).toBe(sfc);
+      }
+    }
+    for (const file of readdirSync(join(packageDir, "generated/entries"))) {
+      const entry = readEntry(file.slice(0, -5));
+      for (const delivery of entry.delivery as { framework?: string; path?: string }[]) {
+        if (delivery.framework === "vue" && delivery.path?.endsWith(".ts")) {
+          expect(existsSync(join(repoRoot, delivery.path.replace(/\.ts$/, ".vue"))), delivery.path).toBe(false);
+        }
+      }
+    }
+  });
+
   it("button projects field-by-field from catalogue, barrels and bytes", () => {
     const rows = parseCatalogueFile(join(repoRoot, "apps/docs/src/lib/components-catalog.ts"));
     const row = rows.find((candidate) => candidate.slug === "button");

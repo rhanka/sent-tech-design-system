@@ -1,7 +1,7 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:e1e73ced95065baee3d978109bf646deacae57d55332e7bda186807ed7f539dd",
+  "digest": "sha256:7cc4a4a43c1827998fc3d27132b7b8d9853ca267c78569019ca396bd87522cc7",
   "entryDigest": "sha256:f960806b54012c304d9a3678aeb2e29cce0429f1f306741ecf6e643d209a5690",
   "format": "component-contract/v1",
   "frameworks": {
@@ -3956,7 +3956,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconProps",
