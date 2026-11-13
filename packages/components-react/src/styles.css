@@ -4854,6 +4854,14 @@
     z-index: var(--st-component-popover-zIndex, 80);
   }
 
+  .st-overflowMenu__list--cascade {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
   .st-overflowMenu--bottom-end .st-overflowMenu__list {
     right: 0;
     top: calc(100% + var(--st-spacing-1, 0.25rem));
