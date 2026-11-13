@@ -242,8 +242,8 @@ export {
 export type { RelativeDateFilterProps, RelativeDatePreset } from './lib/RelativeDateFilter.js';
 export { RangeSliderFilter, numericDomain, rangeBoundsToSpec } from './lib/RangeSliderFilter.js';
 export type { RangeSliderFilterProps, NumericDomain } from './lib/RangeSliderFilter.js';
-export { ChartExport } from './lib/ChartExport.js';
-export type { ChartExportProps, ChartExportTarget } from './lib/ChartExport.js';
+export { default as ChartExport, DEFAULT_EXPORT_LABELS } from './lib/ChartExport.vue';
+export type { ChartExportProps, ChartExportTarget } from './lib/ChartExport.vue';
 export {
   serializeSvg,
   svgStringToBlob,
