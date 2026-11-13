@@ -374,12 +374,12 @@ export type {
   WordCloudChartWord,
   WordCloudChartTone,
 } from "./WordCloudChart.js";
-export { OrganizationChart } from "./OrganizationChart.js";
+export { default as OrganizationChart } from "./OrganizationChart.vue";
 export type {
   OrganizationChartProps,
   OrganizationChartTone,
   OrganizationChartNode,
-} from "./OrganizationChart.js";
+} from "./OrganizationChart.vue";
 export { TreegraphChart } from "./TreegraphChart.js";
 export type {
   TreegraphChartProps,
