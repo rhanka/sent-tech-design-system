@@ -2,7 +2,7 @@
 defineOptions({ name: 'DiagramSceneFigureBase' });
 import { DEFAULT_FLOW_STRINGS } from '@sentropic/diagram-canvas/flowModel';
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
-import { clampZoom, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+import { renderErdCardSvg, renderErdTable, clampZoom, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
@@ -322,6 +322,7 @@ function zonePropsOf(node: SceneNodeModel) {
         ...(props.resolveGlyph === undefined ? {} : { resolveGlyph: props.resolveGlyph }) });
     return projected.kind === 'zone' ? projected.props : undefined;
 }
+const erdTable = computed(() => props.document.profileRefs.includes("erd@1") ? renderErdTable(props.document) : "");
 const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
@@ -356,9 +357,15 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
             <template v-if="scene !== undefined">
               <svg class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
                 <polyline v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
+                <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
+                <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
               </svg>
               <div v-for="{ node, cardProps, zoneProps } in projectedNodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
-                <template v-if="node.kind === 'card'">
+                <template v-if="node.kind === 'erd' && node.erd">
+                  <button class="st-diagramErd-toggle" type="button" :aria-label="node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)" :aria-expanded="!node.collapsed" :style="`--st-erd-header-height: ${node.erd.headerHeight}px`" @click="toggleFold(node)">{{ node.erd.title }}</button>
+                  <div class="st-diagramErd-svg" v-html="renderErdCardSvg(node.erd)" />
+                </template>
+                <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
                 </template>
                 <template v-else-if="node.kind === 'zone'">
@@ -366,7 +373,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </template>
                 <div v-else class="st-diagramSceneFigure-label" :data-entity="node.entity">{{ node.text }}</div>
               </div>
-              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence"
+              <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <span v-for="(line, index) in edgeLabel.lines" :key="index">{{ line }}</span>
               </div>
@@ -375,11 +382,17 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         </div>
       </div>
     </div>
+    <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
   </figure>
 </template>
 
 <style>
+  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
+  .st-diagramErd-svg { height: 100%; width: 100%; }
 
+  .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
+  .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
+  .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;

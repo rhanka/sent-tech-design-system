@@ -37,6 +37,7 @@ export interface EntityTypeDeclaration {
    * or token field is added here: those live in the view/presentation contract.
    */
   readonly container?: boolean;
+  readonly foldable?: boolean;
   /** K1 base types, in declaration order (depth-first, left-to-right). */
   readonly supertypes?: readonly string[];
 }
@@ -166,6 +167,7 @@ export type AddedConstraint =
   | { readonly kind: "collection-unique"; readonly entityType: string; readonly attribute: string };
 
 export type ProfileConstraint =
+  | { readonly kind: "erd-keys"; readonly maxFields: number }
   | { readonly kind: "acyclic-hierarchy"; readonly hierarchyId: string }
   | {
       readonly kind: "unique-attribute";

@@ -78,6 +78,7 @@ export function portRepresentativeOf(
   const port = view.portOccurrences[id];
   if (port === undefined) return id;
   const ownerRep = representativeOf(view, collapsed, port.ownerOccurrence);
+  if (port.ownerOccurrence === ownerRep && collapsed.has(ownerRep) && document.ports[port.port]?.profile === "erd@1") return ownerRep;
   const ownerEntity = view.entityOccurrences[ownerRep]?.entity;
   const original = document.ports[port.port];
   const candidates = Object.values(view.portOccurrences).filter((candidate) => {

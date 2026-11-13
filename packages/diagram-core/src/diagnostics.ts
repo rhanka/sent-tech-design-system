@@ -11,6 +11,8 @@
 
 /** Stable, machine-readable refusal codes. Additive; never renamed in place. */
 export type DiagnosticCode =
+  | "erd-missing-pk" | "erd-multiple-pk" | "erd-dangling-fk" | "erd-missing-end"
+  | "erd-duplicate-field" | "erd-invalid-fk-target"
   // --- The nine named rejected cases of SPEC 3.7 -------------------------
   /** A reference resolves to nothing in its namespace. */
   | "dangling-reference"

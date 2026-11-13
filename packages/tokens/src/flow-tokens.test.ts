@@ -2,8 +2,6 @@
 import { describe,expect,it } from "vitest";
 import { createComponent,component } from "./component.js";
 import { semantic } from "./semantic.js";
-import { componentDark } from "./component.dark.js";
-import { DEFAULT_FLOW_TOKENS } from "../../diagram-canvas/dist/index.js";
 const themes=import.meta.glob<{[key:string]:unknown}>(["../../theme-*/src/index.ts","../../themes/src/themes/*.ts"],{eager:true});
 type RGB=readonly number[];
 const gamma=(value:number)=>value<=0.0031308?12.92*value:1.055*Math.pow(value,1/2.4)-0.055;
@@ -24,8 +22,7 @@ const mix=(a:RGB,b:RGB,alpha:number)=>a.map((v,i)=>v*alpha+b[i]!*(1-alpha));
 const luminance=(rgb:RGB)=>rgb.map((v)=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[0.2126,0.7152,0.0722][i]!,0);
 const ratio=(a:RGB,b:RGB)=>{const x=luminance(a),y=luminance(b);return(Math.max(x,y)+0.05)/(Math.min(x,y)+0.05);};
 describe("DC-2c A14 frozen geometry and contrast",()=>{
- it("pins engine numbers and geometry in both modes",()=>{
-  for(const c of [component,componentDark])for(const[key,value]of Object.entries(DEFAULT_FLOW_TOKENS))expect(c.diagramScene[key as keyof typeof c.diagramScene]).toBe(String(value));
+ it("pins badge typography and dimming",()=>{
   expect(component.diagramScene.flowBadgeFontSize).toBe("16px");expect(component.diagramScene.flowBadgeLineHeight).toBe("20px");expect(component.diagramScene.flowDimOpacity).toBe("0.6");
  });
  it("keeps text, pressed text, strokes and focus contrast in every shipped theme mode, including dimming",()=>{

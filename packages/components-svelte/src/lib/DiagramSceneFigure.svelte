@@ -2,6 +2,7 @@
   import { tick, untrack } from "svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import {
+    renderErdCardSvg, renderErdTable,
     clampZoom,
     createLayoutCache,
     FIT_ASPECT,
@@ -827,6 +828,8 @@
     return projected.kind === "zone" ? projected.props : undefined;
   };
 
+  const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
+
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
@@ -929,6 +932,12 @@
                   {/each}
                 {/if}
               {/each}
+              {#each scene.edges as edge (edge.occurrence)}
+                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
+              {/each}
+              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
+                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+              {/each}
             </svg>
             {#each scene.nodes as node (node.occurrence)}
               {@const rect = rectOf(node)}
@@ -939,7 +948,10 @@
                 data-flow-state={stateOf(node.occurrence)}
                 style={`left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${entering(node) ? `;opacity:${eased}` : ""}`}
               >
-                {#if node.kind === "card"}
+                {#if node.kind === "erd" && node.erd}
+                  <button class="st-diagramErd-toggle" type="button" aria-label={node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)} aria-expanded={!node.collapsed} style={`--st-erd-header-height: ${node.erd.headerHeight}px`} onclick={() => toggleFold(node)}>{node.erd.title}</button>
+                  <div class="st-diagramErd-svg">{@html renderErdCardSvg(node.erd)}</div>
+                {:else if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
                     <DiagramCard {...cardProps} {measure} onSelect={(event) => selectNode(node, event)} />
@@ -966,6 +978,7 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                data-erd-label={edgeLabel.erd || undefined}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
               >
                 {#each edgeLabel.lines as line, lineIndex (lineIndex)}
@@ -978,6 +991,7 @@
       </div>
     </div>
   </div>
+  {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
 </figure>
 
 <style>
@@ -998,6 +1012,12 @@
   .st-diagramSceneFigure-flowBadge[aria-pressed="true"] { color: var(--st-component-diagramScene-flowBadgeBackground); background: var(--st-component-diagramScene-flowPrimaryStroke); }
   .st-diagramSceneFigure-flowNode:not(:focus-visible) { opacity: var(--st-component-diagramScene-flowHiddenOpacity); }
   .st-diagramSceneFigure-flowBadge:focus-visible, .st-diagramSceneFigure-flowNode:focus-visible { opacity: var(--st-component-diagramScene-flowFullOpacity); outline: var(--st-component-diagramScene-flowOutlineWidth) solid var(--st-component-diagramScene-flowFocusOutline); }
+  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
+  .st-diagramErd-svg { height: 100%; width: 100%; }
+
+  .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
+  .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
+  .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
@@ -1013,7 +1033,7 @@
   .st-diagramSceneFigure-title {
     color: var(--st-semantic-text-primary);
     grid-column: 1;
-    font-weight: 600;
+    font-weight: var(--st-component-button-anatomy-typography-weight);
   }
   .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
     font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
@@ -1028,7 +1048,7 @@
     color: var(--st-semantic-text-secondary);
     font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
     font-variant-numeric: tabular-nums;
-    min-width: 4ch;
+    min-width: var(--st-component-diagramScene-readoutMinWidth);
     text-align: center;
   }
   .st-diagramSceneFigure-frame {
@@ -1046,7 +1066,7 @@
     width: 100%;
   }
   .st-diagramSceneFigure-viewport:focus-visible {
-    box-shadow: inset 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
+    box-shadow: inset 0 0 0 var(--st-component-diagramCard-borderWidth) var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
     outline: none;
   }
   .st-diagramSceneFigure-extent {
@@ -1075,13 +1095,13 @@
     width: 100%;
   }
   .st-diagramSceneFigure-edges {
-    height: 1px;
+    height: var(--st-component-diagramCard-ruleHeight);
     left: 0;
     overflow: visible;
     pointer-events: none;
     position: absolute;
     top: 0;
-    width: 1px;
+    width: var(--st-component-diagramCard-ruleHeight);
   }
   .st-diagramSceneFigure-edge {
     fill: none;
