@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:172bd1de627b7defc5fd028703ac83c32ac6c74e677ce004c66bee2cf935ed36",
-  "entryDigest": "sha256:e3e991cb62444b50260c9e2cafaf941fad53397c5b30dfe59f2194df0e871d36",
+  "digest": "sha256:65c95e884fc8b0f557babedc86cc8549d957ec9da43dcf8fa58c086403f502c3",
+  "entryDigest": "sha256:ff7e2c2c21f79440a437472ee72e6d151953b856838a02175f0a53eb3ed0fec4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-vue/dist/Portal.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PortalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

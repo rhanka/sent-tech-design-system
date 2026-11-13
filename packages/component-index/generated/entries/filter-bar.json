@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FilterBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bar grouping FilterPill chips with an optional clear-all action.",
     "fr": "Barre regroupant des FilterPill avec action optionnelle « Tout effacer »."
   },
-  "digest": "sha256:46d300d6243b048700f542dfd43ea736de97bc4e9e65f6acb84ca6c737e53c26",
+  "digest": "sha256:82902e2fea839db6a3d601057be4266981b16b7863781dc7a700aab95dcf2566",
   "displayName": "FilterBar",
   "format": "component-entry/v1",
   "frameworks": [

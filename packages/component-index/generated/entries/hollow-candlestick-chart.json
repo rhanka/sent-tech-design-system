@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/HollowCandlestickChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hollow candlesticks: colour by close vs previous close, hollow body when bullish and filled when bearish.",
     "fr": "Chandeliers creux : couleur selon la clôture vs la précédente, corps creux si haussier et plein si baissier."
   },
-  "digest": "sha256:2769828dac97b54fc94651431145f0a3a10373ecfb87706162130c0c4037ecc0",
+  "digest": "sha256:c47d7e7861e877d5fe16e9374d3bfdaabdc4dfbb936a5a498d64cbd7e6839a7a",
   "displayName": "HollowCandlestickChart",
   "format": "component-entry/v1",
   "frameworks": [
