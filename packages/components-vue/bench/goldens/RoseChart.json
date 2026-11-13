@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "RoseChart",
+  "sourceRevision": "004fc25b73a8c894f5bfc1a09708d2ee0927d074",
+  "source": "src/RoseChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 160 160 L 160 62.601848066813915 A 97.39815193318609 97.39815193318609 0 0 1 244.3492738557956 208.69907596659303 Z\" data-chart-index=\"0\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 160 160 L 293.3679121828036 236.99999999999997 A 154 154 0 0 1 26.632087817196464 237.00000000000006 Z\" data-chart-index=\"1\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category8\" d=\"M 160 160 L 100.3560564684058 194.43544685349679 A 68.87089370699353 68.87089370699353 0 0 1 160 91.12910629300647 Z\" data-chart-index=\"2\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"212.29654979059325\" y=\"129.80657290071233\">Alpha</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"160.00000000000003\" y=\"255.48000000000002\">Beta</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"123.02075501041158\" y=\"138.650022950832\">Gamma</text></svg></div><ul aria-label=\"Data values for Rose\" class=\"st-chartDataList\"><li>Alpha: 10</li><li>Beta: 25</li><li>Gamma: 5</li></ul></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Single\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 160 160 L 160 6 A 154 154 0 1 1 159.98460000002567 6.0000007699999856 Z\" data-chart-index=\"0\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"160\" y=\"255.48000000000002\">Only</text></svg></div><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>Only: 100</li></ul></div>"
+    },
+    {
+      "id": "zero-mixed",
+      "html": "<div class=\"st-roseChart consumer\" data-bench=\"rose\" style=\"color:red;\"><div aria-label=\"Mixed\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 400 360\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 200 180 L 230.13768405169847 197.4 A 34.800000000000004 34.800000000000004 0 0 1 169.86231594830153 197.4 Z\" data-chart-index=\"1\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category3\" d=\"M 200 180 L 49.3115797415077 267.00000000000006 A 174 174 0 0 1 199.99999999999997 6 Z\" data-chart-index=\"2\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"106.57317943973474\" y=\"126.06000000000003\">Big</text></svg></div><ul aria-label=\"Data values for Mixed\" class=\"st-chartDataList\"><li>Zero: 0</li><li>Small: 2</li><li>Big: 50</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Empty\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "negative",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Balance\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 160 160 L 160 314 A 154 154 0 0 1 159.99999999999997 6 Z\" data-chart-index=\"1\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"64.52\" y=\"160\">Gain</text></svg></div><ul aria-label=\"Data values for Balance\" class=\"st-chartDataList\"><li>Loss: 0</li><li>Gain: 10</li></ul></div>"
+    },
+    {
+      "id": "decimal",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Decimals\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 160 160 L 160 6 A 154 154 0 0 1 160 314 Z\" data-chart-index=\"0\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 160 160 L 160 201.15823125451337 A 41.15823125451336 41.15823125451336 0 0 1 160 118.84176874548663 Z\" data-chart-index=\"1\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"255.48000000000002\" y=\"160\">Half</text></svg></div><ul aria-label=\"Data values for Decimals\" class=\"st-chartDataList\"><li>Half: 3.5</li><li>Quarter: 0.25</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "497865d08d10fafd3b1d6d7de0c0dc1f9a4d54391568dd323b1cde2686b54763",
+  "fixtureSha256": "e0c7c769f755550726d449d12b81ff3ceca1c39d4e4e8221d1c9e20bf6d82de2",
+  "publicExports": [
+    {
+      "name": "RoseChart",
+      "typeOnly": false
+    },
+    {
+      "name": "RoseChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "RoseChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "RoseChartTone",
+      "typeOnly": true
+    }
+  ]
+}
