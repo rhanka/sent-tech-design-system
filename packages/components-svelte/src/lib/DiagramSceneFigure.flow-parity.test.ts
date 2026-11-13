@@ -4,7 +4,7 @@ import { tick } from "svelte";
 import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
-import { DiagramSceneFigure as VueFigure } from "../../../components-vue/dist/DiagramSceneFigure.js";
+import { DiagramSceneFigure as VueFigure } from "../../../components-vue/src/DiagramSceneFigure.js";
 import { flowHostCases } from "../../../diagram-canvas/test-support/flowHostCases.js";
 import { runFlowHostCase, flowDomOf, propsFor } from "../../../diagram-canvas/tests/host-support/flowHostContract.js";
 

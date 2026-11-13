@@ -1,7 +1,7 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:0874d1459372b81191f4910d991f938b31d1ebe533d8a8469fb6941307d068c6",
+  "digest": "sha256:4cd9e01dc163665cfbcb4f6a599203ef190c0ea93bff54edb2e3dfa39e57f0bc",
   "entryDigest": "sha256:6c7ada6754f0ba76b79548db77ccacb797daac8ae4a78226c68f25eb5cabb431",
   "format": "component-contract/v1",
   "frameworks": {
@@ -140,7 +140,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ProgressBarProps",
