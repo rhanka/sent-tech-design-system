@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:f00f14a381fc4c95c858c5ef7ebc41a09833e7451fd7a0281f448f0914462d9a",
-  "entryDigest": "sha256:2dad69d4776aec63d24d04786972e6bb2b3a279ea2697dacfcdf06021c556072",
+  "digest": "sha256:304ea1751736c629e95947c30318ea55925387446ffdda75c1e54503f5afec90",
+  "entryDigest": "sha256:17047236feb9966922bcff4c314bdab55519ddae896556ff8d47be27e7d2c7f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
