@@ -37,7 +37,6 @@
   "packages/components-vue/src/Col.ts",
   "packages/components-vue/src/Collapsible.ts",
   "packages/components-vue/src/ColorScaleBar.ts",
-  "packages/components-vue/src/ColorSwatch.ts",
   "packages/components-vue/src/ColumnPyramidChart.ts",
   "packages/components-vue/src/ColumnRangeChart.ts",
   "packages/components-vue/src/ComboChart.ts",

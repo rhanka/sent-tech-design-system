@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ColorSwatch } from "./ColorSwatch.js";
+import ColorSwatch from './ColorSwatch.vue';
 
 const chip = (el: HTMLElement) => el.querySelector<HTMLElement>(".st-colorSwatch__chip");
 
