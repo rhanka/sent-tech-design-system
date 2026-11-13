@@ -1886,7 +1886,7 @@
       "gitBlob": "0324f1612dd9a0405d50dddd2ba7e1c58a029f2d",
       "sha256": "97141365d0ab46106c6d894e5ede74c342efbf46b4771d9c9d6ba22b3dfc6777",
       "status": "adapted-packaging-only",
-      "destinationSha256": "ce5ac27dbe4ac6566de36373a25c7b53d24ed45db442ddc244f0b0b0f935bac6",
+      "destinationSha256": "fd039bfb01d6e43b84ec12a4322da445cd81dff6f83a483a0a46dd8891d01385",
       "note": "angular devDeps pinned to exact 21.2.17 (single runtime; ^ resolved a nested 21.2.23 breaking TestBed); @angular/* devDeps moved to exact 21.2.24 by #72 (single hoisted runtime, clears the i18n XSS advisory); @sentropic/design-system-angular dependency bumped to 0.38.0 by the Calendar onMonthChange release; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); @sentropic/design-system-angular dependency bumped to 0.38.1 by the Checkbox centring patch (pin only); @sentropic/design-system-angular dependency bumped to 0.39.0 by the Icon glyph prop release (pin only)"
     },
     {
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "54dd4b680a427edf8b2429eab26a0309822b6f8b7fdc0ea18ba138987ae4ad27",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci"
+      "destinationSha256": "aae9f63b6cfc276d363695071ea1c33596e9d5304d8e922ed873d282d5085b06",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release"
     },
     {
       "repository": "dataviz",

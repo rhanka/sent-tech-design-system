@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:436efaa287ac2d3d42c9cea6d43098d1b3f1965eecd3cbeb14f7a01d44de912d",
-  "entryDigest": "sha256:eebc4e9d5921487ab29621a95c8fd2da0497686dbc25855a19cc2fa91828e342",
+  "digest": "sha256:ec379e819985c0de5a06b928f7b1c4b526f2a32531393abbb5060680f027f9a4",
+  "entryDigest": "sha256:70eb53fb59f45f38953599ad9a55ead83dc0e0359f9d00929958cf114e1ed353",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -126,7 +126,7 @@
         "declarationPath": "packages/components-angular/dist/Search.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SearchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SearchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

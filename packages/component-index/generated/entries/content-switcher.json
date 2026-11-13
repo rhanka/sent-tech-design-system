@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ContentSwitcher.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:79ccfa51bf1ea84e13d656192ee08d73c6f4fe621396c34e6c7bc743bb1dd2ed",
+      "digest": "sha256:1042c19121c96ceab65923131d907971c04fb0897146d330aade52571bade5d4",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ContentSwitcher.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ContentSwitcher.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Segmented switcher between multiple views.",
     "fr": "Bascule segmentée entre plusieurs vues."
   },
-  "digest": "sha256:cfcf9dfedf195ab7f587f9981cd60ffd19683e073a930f1259b9083af0e1ca7f",
+  "digest": "sha256:1cd84c40915c43afc7e837447886db0f0fd9935da068595da9109e4c7f0b5b33",
   "displayName": "ContentSwitcher",
   "format": "component-entry/v1",
   "frameworks": [

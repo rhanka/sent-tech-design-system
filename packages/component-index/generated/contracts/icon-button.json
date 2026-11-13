@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:072d74f9eb4569c4b1fc276fa788b5584794f886c12206191b26a9f05b8cbd09",
-  "entryDigest": "sha256:0997902e84e18537089cf769ce85f9c83423e760ee153cf57646e3449a64bf4e",
+  "digest": "sha256:9ecd2974295d809a866795cfbae55e2b700c30c7a6feed08091c41d1f3b6050b",
+  "entryDigest": "sha256:298c9ef2852e90085c1855449b98f6a2d333f44c59d60dc64d6e0242ba3c6e1f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -59,7 +59,7 @@
         "declarationPath": "packages/components-angular/dist/IconButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -103,7 +103,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

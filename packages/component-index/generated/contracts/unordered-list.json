@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:dba519b11b32176f1a6bc8433742b6a5f97c88104e05d04941e5dcd013f6eb99",
-  "entryDigest": "sha256:233a14c6106b33b6164d8639d36479f1386174cfa87f99dd477de43d86187638",
+  "digest": "sha256:b0ea03c26fd1c9b277def116d1ee1c558a52a00329daf8dacb6bc3c7af9d4684",
+  "entryDigest": "sha256:77b222f5a1ba03c5fd13522d52c04f5e4037b6069487eb7c7c5faae419b968d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/UnorderedList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -121,7 +121,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -231,7 +231,6 @@
             "type": "boolean"
           },
           "path": {
-            "description": "Internal recursive slot address.",
             "items": {
               "type": "number"
             },
@@ -284,7 +283,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7ccd4266c3136612770d6205e4f5c38de499702de05c9aa7c56aafc4b3f611b1",
+        "declarationDigest": "sha256:9ec98a7a4998e82953909e56ecc3c351c3fa8ad121b07a45f212aa884c347124",
         "declarationPath": "packages/components-vue/dist/UnorderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UnorderedListProps",

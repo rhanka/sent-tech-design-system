@@ -35,6 +35,11 @@ describe("K1b Angular extractor (spec 7.5)", () => {
     expect(body.slots.map((slot) => slot.name).sort()).toEqual(["default", "footer"]);
   });
 
+  it("does not publish content queries as projection slots", () => {
+    expect(extractAngular(inputFor("Pane")).slots.map(slot => slot.name).sort()).toEqual(["default", "footer"]);
+    expect(extractAngular(inputFor("QueriedWithoutProjection")).slots).toEqual([]);
+  });
+
   it("flags XProps discrepancies as partial with a warning", () => {
     const body = extractAngular(inputFor("Broken"));
     expect(body.status).toBe("partial");

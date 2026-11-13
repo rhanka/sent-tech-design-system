@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CalendarHeatmapChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CalendarHeatmapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "GitHub-style calendar grid for visualizing daily activity.",
     "fr": "Grille calendrier GitHub-style pour visualiser l'activité quotidienne."
   },
-  "digest": "sha256:3748713e29598b8e3fb5665463b19836a31352358d5f6924763836dbfc08686a",
+  "digest": "sha256:efaa560f5c185cf629f9aff0407835b25715df286b5e207323df883e8e8d6fc9",
   "displayName": "CalendarHeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

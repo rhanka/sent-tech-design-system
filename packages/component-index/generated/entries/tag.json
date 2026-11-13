@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tag.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:af3fef77c1cd075bcf04b16864349ac8d1407d5e80a292c64704542a15803aff",
+      "digest": "sha256:8eeb62b8c1fe177fcf660a96c0c9aad7deeff4f2cc0339849314ef0f4899e034",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tag.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tag.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:2dce880eeae01ffaba5d47115e08528b2a56eebe7b5da1b6a575a9e8111d2de5",
+  "digest": "sha256:a42ac4d8d071a7e135cefe73c3eeb708986609ce72fa21005124b86df2b4413b",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

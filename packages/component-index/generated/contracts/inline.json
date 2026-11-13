@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:916eb806e8f821239bccee81457e0ee95e3264fbafff3df2adf9d5f1231d1855",
-  "entryDigest": "sha256:85044a2a697f261c3744be2f0231adf400cd41eaf469a520d5e2b559b7631e46",
+  "digest": "sha256:4fc0122ff680a0ab40bf74cef8bfdd7d11d342041335871bf4c44bf147d74ac1",
+  "entryDigest": "sha256:28733196c8441f3391c3706d518990c5d8d58471d2178121e8374c9ef37148b0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/Inline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -136,7 +136,7 @@
         "declarationPath": "packages/components-react/dist/Inline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InlineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -267,7 +267,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:36f71174cdd3429999c1f7203a87841e7e9e3d27e7fd8f5dc6044c58d4a0982e",
+        "declarationDigest": "sha256:e18a8944f5ca56ccf90ca80af041c39e9b67cce044807f210b6c1f480bed8c35",
         "declarationPath": "packages/components-vue/dist/Inline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",

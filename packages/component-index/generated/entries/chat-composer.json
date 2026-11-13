@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ChatComposer.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChatComposer.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Composer with action slots and send/stop handling.",
     "fr": "Barre de rédaction avec slots d’actions et envoi/arrêt."
   },
-  "digest": "sha256:e290c8d78f41ca224d72a9cb2516c72dc1ee0ed4e31f90526b660aeb052847d0",
+  "digest": "sha256:6edb62562b19d68fa14ef2af7bd8581964e90d2f20ce45e4b320cb5a7b8a3e3a",
   "displayName": "ChatComposer",
   "format": "component-entry/v1",
   "frameworks": [

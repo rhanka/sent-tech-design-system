@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:672853149ee93f648d98f1caa9003b18558dfdf9b9a7cd9ef3165631b4e4d0c1",
-  "entryDigest": "sha256:2487a74fe8a2c1883fd2ac228e9fc812931bd6cadf1d196de075dc49c92443f8",
+  "digest": "sha256:0ddf3b35a5d1d24a33aa0e1ee2e46f729ce65eced0ca2c56550c67bcb9301916",
+  "entryDigest": "sha256:e29fda30c032c3882e966df1ac54cb1f870fea631becd415ba801e22c65c2384",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-angular/dist/DatePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DatePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -397,7 +397,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DatePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -645,8 +645,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -823,9 +822,19 @@
           "sourceType": "Date"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:9b672ad410a59a4029859059acf7e282c9db81d4d246ef7f4ca22878c7895b3a",
+        "declarationDigest": "sha256:125f281993c31145b5d64f5bf72b1e76b82e8ce11cdc0836f29e72545f27ea33",
         "declarationPath": "packages/components-vue/dist/DatePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DatePickerProps",

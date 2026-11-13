@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Switch.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:1c017883f33ca57f63c89ff188099d66c42c959fef5886ca3ccabccac80d3cfc",
+      "digest": "sha256:c30b443b2835efc51b71f36de53d10aa03345991c0e11ce27f357453a733d4aa",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Switch.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Switch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:4ba6e364c442c9757f345691b9ede73310bb5f94ae169c01aabb835a5ed7d485",
+  "digest": "sha256:d6ec684b92e99cf1a99b7b0647aba549a5a8360d77694c3c5f4d4ba567c0a431",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

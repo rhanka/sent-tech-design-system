@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TreegraphChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:6f4aed9e679f4282967252a86e6872efb5415d04bbd4f05610f487377606d97c",
+      "digest": "sha256:facd439be4344ef907949f14d53e5672ebccdceb9ecd2b3f548502bcf67620b3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TreegraphChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TreegraphChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically.",
     "fr": "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement."
   },
-  "digest": "sha256:1106b1c8b36e539eb29cacd1a8e16d22e218254c4f10becc6ad744c9f25aeefa",
+  "digest": "sha256:75fb0e15ba9971a97110824a5c1aa32bab8dcc26099c0629f7191daf2e303bfa",
   "displayName": "TreegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

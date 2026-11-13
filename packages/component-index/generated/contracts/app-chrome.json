@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:530ff6648ac00c7fd35f57f9d645c793ffd576a5e794675da08724e6b57ca53b",
-  "entryDigest": "sha256:c51f486e8b741d93cfeffbc4ea3116cc19c511a4f6f21826c3401bd1d7586fe1",
+  "digest": "sha256:305f1455ad8a7fd554e4c750dadf8d2dcad212f814c4fe1571fff36cd1bcb356",
+  "entryDigest": "sha256:83ba458a1dcfc4faaed9acf56e98c2f88cb4c4f6436401dffd818d7cbc119335",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-angular/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AppChromeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -463,7 +463,7 @@
         "declarationPath": "packages/components-react/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppChromeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -958,6 +958,9 @@
       "replaced": [],
       "slots": [
         {
+          "name": "extra-selectors"
+        },
+        {
           "name": "extraSelectors"
         },
         {
@@ -965,7 +968,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:2fae31157ef49bd574ae66a4e1f6775b0f64a7525e22ae0bc051f4a6cf0b1c7b",
+        "declarationDigest": "sha256:ab89e3dfa46de9035d153a844021864a0ff04001023909ed15c2da077fa7e70c",
         "declarationPath": "packages/components-vue/dist/AppChrome.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppChromeProps",

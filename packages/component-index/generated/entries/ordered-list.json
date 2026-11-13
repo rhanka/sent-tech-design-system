@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/OrderedList.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:36f66fffbf81bd99a131103929915309e78ad9bb550998de03f8e3b402a3d18b",
+      "digest": "sha256:742fa4dba7fdef30ce4cfa153acb28470bbcbef90a0421ed7976918cc138148d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OrderedList.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OrderedList.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Numbered ordered list, with nesting.",
     "fr": "Liste ordonnée numérotée, avec imbrication."
   },
-  "digest": "sha256:aff148e12241cb2599e4c3755d1098a41af7da24286c3eb51879ecba4c32dc4f",
+  "digest": "sha256:3e738be00c0389b485a849c0fdf3e4797f03574f1c83edc300e5c783219c9d3f",
   "displayName": "OrderedList",
   "format": "component-entry/v1",
   "frameworks": [

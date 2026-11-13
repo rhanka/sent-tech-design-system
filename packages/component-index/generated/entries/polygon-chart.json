@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PolygonChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PolygonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:8412e2754cff2fa39a99966490dbe9eb56276255e2d87fc9f699185756a16475",
+  "digest": "sha256:ea6f3bd357b31c29d813d0eacda351a739222d1f946aabd141ddf70fdb01f843",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

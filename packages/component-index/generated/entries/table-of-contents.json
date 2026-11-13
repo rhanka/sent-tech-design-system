@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TableOfContents.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:387fad0726d5c42cda4c6e851566f6c1147746323adc0a620305fb81ae3b4b3e",
+      "digest": "sha256:2e22ae1b03e11e8dfd891fdad07dd5725982f8cae5aa12142d1c1403772e4ee4",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TableOfContents.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TableOfContents.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:958f564f827954e5a9a6f289d3cfd50865123153f18d1120be176cc39d8c046e",
+  "digest": "sha256:8b4944a72515802a9763e1db89258c9c77b1ffe314d2709d6075a15fc6cd7b8c",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

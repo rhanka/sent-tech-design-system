@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:a5a0924e56614d79f8c3b4e1ec550e2a0882a66c3d6252e90903fa8374567efb",
-  "entryDigest": "sha256:108fe88b92a99909176742d50d2d3e4f7efb39e829b33b54bb1e76876c1aee37",
+  "digest": "sha256:63870613361f176e56ae883e331d6428b4f29508a16354499db6010a5f4df597",
+  "entryDigest": "sha256:978ee96e1ad0f1648983c77b127a17727474ae67cfdcc0d438eaf0ada72e0ec6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/Toggletip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToggletipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -120,7 +120,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggletipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -226,9 +226,6 @@
             ]
           }
         },
-        "required": [
-          "label"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -257,7 +254,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:d2e8c0d1ba27f36ae0ed957a09c9a1ba2d0a0ff16abc988a6bff6cd5c78fb785",
+        "declarationDigest": "sha256:3cf9e1896f010a4496881da3dbef01d722bd9f6698659c8a6a16f5696d08dd68",
         "declarationPath": "packages/components-vue/dist/Toggletip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToggletipProps",

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StatusHistoryChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StatusHistoryChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time × entity grid: each cell encodes a discrete status per time bucket.",
     "fr": "Grille temps × entité : chaque cellule encode un statut discret par bucket temporel."
   },
-  "digest": "sha256:a296843e177a054d93dc8b9041368f7aa05cdc5867fd8dcfc64d924a19281106",
+  "digest": "sha256:1c8eb8844f9b7d55bb131a03db6570b3db1e195a277077ab70d2ac470a76b2f6",
   "displayName": "StatusHistoryChart",
   "format": "component-entry/v1",
   "frameworks": [

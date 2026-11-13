@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StackedBarChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StackedBarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Stacked bar chart (series), legend, per-segment tooltip.",
     "fr": "Barres empilées (séries), légende, tooltip par segment."
   },
-  "digest": "sha256:7e5e796ffbfc04caedb75cab68e82e7321cac3ff8653554fc9deb87bf7471541",
+  "digest": "sha256:b0bced475ff4520178c5b26a42039d6b2bc090889cde332093211ea43e4656c5",
   "displayName": "StackedBarChart",
   "format": "component-entry/v1",
   "frameworks": [

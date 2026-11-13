@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:c16472ff621a6c2750019f39fb14d6e159f477b0301b6fd89ebf5f766ed3d4fc",
-  "entryDigest": "sha256:1270c4f598000f69a7f01d61c908069125acada0533a0056c913dbc9ec9e6e6f",
+  "digest": "sha256:310c1fbc1bc92a032637a7ba0b1b3fc1f072b9704698c38704274e6b3bf57edf",
+  "entryDigest": "sha256:2c12da0b69afb0be9571cc8e59ac99c4f10b8b407a698f9200d88e547cf87f6e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -89,7 +89,7 @@
         "declarationPath": "packages/components-angular/dist/Dropdown.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DropdownProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -188,7 +188,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DropdownProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

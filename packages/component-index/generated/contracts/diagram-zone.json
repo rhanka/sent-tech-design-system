@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:ccac83bf0009f29452801e96f837620e4601f2868010e768ace2ec3ade89ccb9",
+  "digest": "sha256:6db4525ca0d4530db03370a14f8680a130d22f3320ddac8fcfbc17579ea8f046",
   "entryDigest": "sha256:edef1a488b5640beb61dcc3e176b7c35a9e058fcf4c84fedaf269ab9e25eba78",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
