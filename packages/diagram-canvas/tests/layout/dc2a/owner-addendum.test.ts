@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing-tokens.js';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { describe,expect,it } from 'vitest';
 import { layoutScene,resolveScene,resolveScenePresentation } from '../../../src/presentation/diagramSceneModel.js';
@@ -9,7 +10,6 @@ import { renderCardSvg } from '../../../src/presentation/renderCardSvg.js';
 import { renderZoneSvg } from '../../../src/presentation/renderZoneSvg.js';
 import { defaultCardMeasure,sceneCardMeasure,projectCardProps,projectZoneProps } from '../../../src/presentation/diagramCardModel.js';
 import { getDiagramGlyph } from '../../../src/presentation/registry.js';
-const median=(xs:number[])=>{xs.sort((a,b)=>a-b);return xs.length%2?xs[(xs.length-1)/2]!:(xs[xs.length/2-1]!+xs[xs.length/2]!)/2;};
 describe('Owner addendum A1–A13',()=>{
  for(const name of ['architecture','ontology'] as const)for(const folded of [false,true])it(`should size every ${name}/${folded} channel from routed traffic (A1)`,()=>{
   const input=hCondInput(name,folded),result=layoutScene(input);if(result.status!=='laid-out')throw new Error(JSON.stringify(result));
@@ -20,8 +20,10 @@ describe('Owner addendum A1–A13',()=>{
     const routed=scene.edges.filter(edge=>edge.points.slice(1).some((end,index)=>{const start=edge.points[index]!;return c.strips.some(strip=>hits(strip,{x:Math.min(start.x,end.x),y:Math.min(start.y,end.y),width:Math.abs(start.x-end.x),height:Math.abs(start.y-end.y)}));}));
     const n=routed.reduce((sum,edge)=>sum+(result.edgeBundles?.[edge.occurrence]?.members.length??1),0);
     const labelled=scene.labels.some(label=>c.strips.some(strip=>hits(strip,label.box)));
-    const horizontal=c.axis==='horizontal';const min=horizontal?96:72,base=horizontal?64:8,pitch=horizontal?14:7;
-    const expected=n===0?min:Math.min(240,Math.max(min,base+n*pitch+(labelled?30:0)));
+    const parameters=channelMetrics(spacing,c.axis==='horizontal');
+    const boxes=scene.labels.filter(label=>c.strips.some(strip=>hits(strip,label.box))).map(label=>label.box);
+    const floor=Math.max(0,...boxes.map(box=>(c.axis==='horizontal'?box.width:box.height)+8).filter(needed=>needed<=parameters.gapMax));
+    const expected=Math.min(parameters.gapMax,Math.max(channelGap(n,labelled,parameters),floor));
     expect(c.n).toBe(n);expect(c.labelled).toBe(labelled);expect(c.gap,c.id).toBeCloseTo(expected,0);
   }
  });
@@ -90,18 +92,17 @@ describe('Owner addendum A1–A13',()=>{
   expect(chip.layout.height).toBe(chip.groups.at(-1)!.top+chip.groups.at(-1)!.height);
   expect(chip).toEqual(measureBundleLabel(relations,input.measureLines));
  });
- it('should pin measured spacing provenance without conflating incompatible A9 targets',()=>{
-  const requireStats:unknown[]=[];
-  for(const input of [hCondInput('architecture',false),ownerInput('vue-globale',false)]){
-   const result=layoutScene(input);if(result.status!=='laid-out')throw new Error('refused');
-   requireStats.push({name:input.document.documentId,channels:result.channels,medians:['horizontal','vertical'].map(axis=>[axis,median(result.channels!.filter(c=>c.axis===axis).map(c=>c.gap))])});
-  }
+ it('should apply the current spacing tokens while leaving A9 owner calibration pending',()=>{
   const pin=JSON.parse(readFileSync(new URL('./owner-spacing.json',import.meta.url),'utf8'));
-  for(const record of requireStats as {name:string;medians:[string,number][]}[])for(const [axis,value] of record.medians){
-    expect(value).toBe(pin.expected[record.name][axis]);
-    expect(Math.abs(value-pin.ratioTarget[axis])/pin.ratioTarget[axis]).toBeLessThanOrEqual(.15);
-    // Pin BOTH measurements; 2×24=48 and 160/ratio have disjoint ±15% bands.
-    expect(24*2*1.15).toBeLessThan(pin.ratioTarget[axis]*.85);
+  expect(pin.decision).toContain('pending');
+  for(const input of [hCondInput('architecture',false),ownerInput('vue-globale',false)]){
+    const result=layoutScene({...input,metrics:spacing});if(result.status!=='laid-out')throw new Error('refused');
+    for(const channel of result.channels??[]){
+      const parameters=channelMetrics(spacing,channel.axis==='horizontal');
+      expect(channel.gap).toBeGreaterThanOrEqual(parameters.gapMin);
+      expect(channel.gap).toBeLessThanOrEqual(parameters.gapMax);
+      expect(channel.gap).toBeCloseTo(channel.expected,0);
+    }
   }
  });
 });

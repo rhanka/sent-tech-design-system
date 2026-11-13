@@ -117,7 +117,7 @@ describe("DiagramCard — diagnostics", () => {
 
   it("J4: a single long unbreakable word is measured, neededPx > allocatedPx, and refused (finding 5)", () => { assertOwnerCardRetention('long'); });
 
-  it("long unbreakable words in kicker, title and footer diagnose too", () => {
+  it("long unbreakable words in capped kicker, title and footer remain diagnostic", () => {
     const word = `supercalifragilisticexpialidocious-${"x".repeat(60)}`;
     for (const slot of ["kicker", "title", "footer"] as const) {
       const seen: Array<{ code: string; slot: string; neededPx: number; allocatedPx: number }> = [];
@@ -130,6 +130,7 @@ describe("DiagramCard — diagnostics", () => {
       render(DiagramCard, {
         props: {
           ...props,
+          autoSize: false,
           measure: defaultCardMeasure,
           onDiagnostic: (d) =>
             seen.push({ code: d.code, slot: d.slot, neededPx: d.neededPx, allocatedPx: d.allocatedPx }),

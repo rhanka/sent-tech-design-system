@@ -19,6 +19,8 @@ for(const host of hosts)describe(`${host.name} owner addendum`,()=>{
  for(const name of ['architecture','ontology'] as const)for(const folded of [true,false])it(`should render default icons and text in ${name}/${folded} (A2–A5/A12)`,async()=>{
   const input=hCondInput(name,folded);const view=await host.mount({...input,measureLines:undefined});
   for(const node of view.element.querySelectorAll('[data-scene-kind="card"],[data-scene-kind="zone"]'))expect(node.querySelector('[data-diagram-icon]')).not.toBeNull();
+  const marker=view.element.querySelector('marker')!;expect(marker).not.toBeNull();
+  for(const edge of view.element.querySelectorAll('[data-scene-edge]'))expect(edge.getAttribute('marker-end')).toBe('url(#'+marker.id+')');
   for(const label of view.element.querySelectorAll('[data-scene-label]'))expect(label.textContent?.trim()).toBeTruthy();
   for(const group of view.element.querySelectorAll('[data-bundle-relation]'))expect(group.textContent?.replace('•','').trim()).toBeTruthy();
   if(folded&&name==='architecture')expect(view.element.querySelectorAll('[data-bundle-relation]').length).toBeGreaterThan(1);

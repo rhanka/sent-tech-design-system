@@ -25,6 +25,11 @@ export function ownerInput(name:string, folded?:boolean) {
    relations[relation]={id:relation,profile:'generic@2',type:'contains',endpoints:[{role:'parent',target:parent},{role:'child',target:id}],attributes:{}};
   } else rootOrder.push(id);
  }
+ const approved=(fixture.source as {layout?:{top:string[];children:Record<string,string[]>}}).layout;
+ if(approved){
+  rootOrder.splice(0,rootOrder.length,...approved.top.map(entityRef));
+  for(const [parent,children] of Object.entries(approved.children))ordering[entityRef(parent)]=children.map(entityRef);
+ }
  for(const edge of fixture.edges){
   if(!ids.has(edge.source)||!ids.has(edge.target))continue;
   const id='relation:link.'+edge.id;

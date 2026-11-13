@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * Fixed footprints and the measurement API (M3 §4.6.1/§4.6.2/§4.6.4).
  *
@@ -18,15 +19,15 @@ export const FIXED_CARD_HEIGHT = 200;
 /** Legend-key fixed height; its width follows the legend inner width. */
 export const LEGEND_KEY_HEIGHT = 64;
 /** Content insets on all four sides of an expanded box. */
-export const CONTENT_INSET = 16;
+export const CONTENT_INSET = spacing.containerPadding;
 /** Rule gaps of the frozen spacing values. */
 export const RULE_GAP = 4;
 /** Subtitle to rule gap inside an expanded header band. */
 export const SUBTITLE_TO_RULE_GAP = 4;
 /** Rule to first-child gap inside an expanded box. */
-export const RULE_TO_FIRST_CHILD_GAP = 16;
+export const RULE_TO_FIRST_CHILD_GAP = spacing.containerPadding;
 /** Last-child to bottom gap inside an expanded box. */
-export const LAST_CHILD_TO_BOTTOM_GAP = 16;
+export const LAST_CHILD_TO_BOTTOM_GAP = spacing.containerPadding;
 /** Fold-control reservation reducing title/kicker width when `toggle`.
  *  66 px: the hrpn header's inline-end room for the +/− control
  *  (tints.css `header { padding-right: 66px }`), shared with

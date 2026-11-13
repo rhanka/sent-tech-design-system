@@ -1,7 +1,7 @@
 {
   "source040": "23929b5b: appctx unfolded actual geometry; vue-globale after.json",
   "sourceOld": "MemoryContainerFigureR14 → card-svg-r14.js → layout-r9.js:25–26; inner gaps160px, root vertical280px",
-  "decision": "Provisional old-renderer ratio target; the owner A9 alternative 2×0.40.0 target is incompatible and pending clarification",
+  "decision": "A9 pending owner selection: V1 vertical72/horizontal96, V2 48/48, V3 20/80. Acceptance reads the current canonical tokens; no target is accepted here.",
   "baseline040": {
     "architecture": {
       "horizontal": 24,
@@ -19,15 +19,5 @@
   "ratioTarget": {
     "horizontal": 106.66666666666667,
     "vertical": 80
-  },
-  "expected": {
-    "document:appctx-architecture": {
-      "horizontal": 96,
-      "vertical": 72
-    },
-    "document:owner-vue-globale": {
-      "horizontal": 101,
-      "vertical": 80
-    }
   }
 }

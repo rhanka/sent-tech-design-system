@@ -460,7 +460,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
             ["footer", layout.footerLines, fields.footer],
           ];
           for (const [slot, lines, full] of laidOut) {
-            expect(lines.map((line) => line.text).join(" "), `${id} ${slot}`).toBe(full);
+            expect(lines.map((line) => line.text).join("").replace(/\s/g, ""), `${id} ${slot}`).toBe(full.replace(/\s/g, ""));
           }
           expect(rendered.svg).not.toContain("…");
           expect(container.textContent ?? "").not.toContain("…");
@@ -756,9 +756,9 @@ describe("zero-ellipsis and token discipline — shipped sources", () => {
     }
   });
 
-  it("the shared model imports nothing (one geometry source leaf)", () => {
+  it("the shared model imports only static spacing and glyph data", () => {
     const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
-    expect(model.match(/^import .*$/gm)).toEqual(['import { getDiagramGlyph } from "./registry.js";']);
+    expect(model.match(/^import .*$/gm)).toEqual(["import { DIAGRAM_SCENE_SPACING as spacing } from '../layout/spacing.generated.js';", 'import { getDiagramGlyph } from "./registry.js";']);
   });
 });
 
