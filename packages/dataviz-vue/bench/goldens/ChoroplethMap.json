@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "ChoroplethMap",
+  "sourceRevision": "4137b9a5f4a129860daa965f8173776b55f4ed77",
+  "source": "src/lib/ChoroplethMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-choroplethMap\"><div aria-label=\"Choropleth\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 260\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"259\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Choropleth\" class=\"st-chartDataList\"><li>Choropleth: 0 régions</li></ul></div>"
+    },
+    {
+      "id": "geometry",
+      "html": "<div class=\"st-geoMap st-choroplethMap\"><div aria-label=\"Choropleth\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 260\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"259\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Choropleth\" class=\"st-chartDataList\"><li>Choropleth: 0 régions</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-choroplethMap\"><div aria-label=\"Choropleth\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Choropleth\" class=\"st-chartDataList\"><li>Choropleth: 0 régions</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-choroplethMap consumer\" data-bench=\"choros\"><div aria-label=\"Choropleth\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 260\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"259\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Choropleth\" class=\"st-chartDataList\"><li>Choropleth: 0 régions</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-geoMap st-choroplethMap\"><div aria-label=\"Choropleth\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 260\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"259\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--choropleth\"></g></svg></div><ul aria-label=\"Data values for Choropleth\" class=\"st-chartDataList\"><li>Choropleth: 0 régions</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "6b8430c4671f53b4573ba90f585f953d6084ad99870b5b4227b2b74f4830ac87",
+  "fixtureSha256": "fc09888fa48aee93e91928bbc65320a60cae14a9f00a08c0bd8c569b662c17c6",
+  "publicExports": [
+    {
+      "name": "ChoroplethMap",
+      "typeOnly": false
+    },
+    {
+      "name": "ChoroplethMapProps",
+      "typeOnly": true
+    }
+  ]
+}
