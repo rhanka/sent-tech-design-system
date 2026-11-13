@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { h } from "vue";
 import { describe, expect, it } from "vitest";
-import { AppShell } from "./AppShell.js";
+import AppShell from './AppShell.vue';
 
 const panelSlots = {
   primaryRail: () => h("div", "rail-content"),

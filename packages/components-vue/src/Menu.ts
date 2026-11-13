@@ -44,4 +44,4 @@ export type MenuProps = {
 
 import MenuComponent from "./Menu.vue";
 
-export const Menu = MenuComponent;
+export const Menu: typeof MenuComponent = MenuComponent;

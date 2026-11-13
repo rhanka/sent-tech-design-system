@@ -1,32 +1,28 @@
 {
   "schema": 1,
   "component": "StatusDot",
-  "sourceRevision": "fd38667f65cb2464797edcc4ec8328a0ac0f7e6b",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
   "source": "src/StatusDot.ts",
   "fixtures": [
     {
       "id": "default",
-      "html": "<span class=\"st-statusDot\"><span aria-label=\"success\" class=\"st-statusDot__dot st-statusDot__dot--success\" role=\"img\" style=\"width:8px;height:8px;\"></span></span>"
+      "html": "<span class=\"st-statusDot\"><span aria-label=\"neutral\" class=\"st-statusDot__dot st-statusDot__dot--neutral\" role=\"img\" style=\"width:8px;height:8px;\"></span></span>"
     },
     {
-      "id": "color-size",
-      "html": "<span class=\"st-statusDot\"><span aria-label=\"var(--brand)\" class=\"st-statusDot__dot\" role=\"img\" style=\"width:12px;height:12px;background-color:var(--brand);\"></span></span>"
+      "id": "variant-1",
+      "html": "<span class=\"st-statusDot\"><span aria-hidden=\"true\" class=\"st-statusDot__dot st-statusDot__dot--success st-statusDot__dot--pulse\" style=\"width:8px;height:8px;\"></span><span class=\"st-statusDot__label\">Online</span></span>"
     },
     {
-      "id": "label-pulse",
-      "html": "<span class=\"st-statusDot\"><span aria-hidden=\"true\" class=\"st-statusDot__dot st-statusDot__dot--info st-statusDot__dot--pulse\" style=\"width:8px;height:8px;\"></span><span class=\"st-statusDot__label\">Live</span></span>"
+      "id": "variant-2",
+      "html": "<span class=\"st-statusDot\"><span aria-label=\"red\" class=\"st-statusDot__dot\" role=\"img\" style=\"width:1px;height:1px;background-color:red;\"></span></span>"
     },
     {
-      "id": "custom",
-      "html": "<span class=\"st-statusDot consumer\" data-bench=\"dot\" style=\"color:red;\"><span aria-label=\"warning\" class=\"st-statusDot__dot st-statusDot__dot--warning\" role=\"img\" style=\"width:16px;height:16px;\"></span></span>"
-    },
-    {
-      "id": "label-color",
-      "html": "<span class=\"st-statusDot\"><span aria-hidden=\"true\" class=\"st-statusDot__dot\" style=\"width:8px;height:8px;background-color:#123456;\"></span><span class=\"st-statusDot__label\">Status</span></span>"
+      "id": "variant-3",
+      "html": "<span class=\"st-statusDot consumer\" data-bench=\"dot\"><span aria-label=\"error\" class=\"st-statusDot__dot st-statusDot__dot--error\" role=\"img\" style=\"width:8px;height:8px;\"></span></span>"
     }
   ],
   "sourceSha256": "76e644f10b7501c1594a56da6c5fcf64f38d4b52c53de80bf85bb11c1ead7362",
-  "fixtureSha256": "9bf77926b0f5ad83b2646614b14cc8e968bffdba7a903abd1a939524bf0ce1ee",
+  "fixtureSha256": "551812797b2292319cca19d93b2b5e32b54a746c390fadc7220daf201b739027",
   "publicExports": [
     {
       "name": "StatusDot",

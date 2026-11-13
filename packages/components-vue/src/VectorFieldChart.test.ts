@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { VectorFieldChart } from "./VectorFieldChart.js";
+import VectorFieldChart from "./VectorFieldChart.vue";
 
 const field = [
   { x: 0, y: 0, length: 1, direction: 0 },

@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import type { VueWrapper } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { LineChart, BarChart, AreaChart } from "./index.js";
-import type { LineChartDatum } from "./LineChart.js";
+import type { LineChartDatum } from "./LineChart.vue";
 import type { BarChartDatum } from "./BarChart.vue";
 
 // FR-5 — roving-tabindex keyboard navigation of the data points (a11y), strict
