@@ -169,3 +169,79 @@ test('attrs audit: Stack should accept styles added after its initial render', a
   try { h.props.style = 'color:red;display:grid'; await flush(); assert.equal(h.element.firstElementChild.style.color, 'red'); assert.equal(h.element.firstElementChild.style.display, 'grid'); }
   finally { await h.close(); }
 });
+
+// R3 baseline: origin/main Popper.vue binds attrs after class/style/keydown;
+// OrderedList.ts/UnorderedList.ts render content and children recursively;
+// Combobox.ts displays/searches scalar labels and emits option values.
+// Slot-only inputs must retain those operations without placeholder rich props.
+for (const style of ['position:fixed;top:999px;color:red', { position: 'fixed', top: '999px', color: 'red' }, [{ position: 'fixed' }, 'top:999px;color:red']])
+  test(`R3: inline Popper should preserve caller precedence and late updates (${typeof style === 'string' ? 'string' : Array.isArray(style) ? 'array' : 'object'})`, async () => {
+    const calls = [];
+    const anchor = document.createElement('button'); document.body.append(anchor);
+    const h = await mount('Popper', { anchor, open: true, portal: false, trapFocus: true, strategy: 'absolute', class: 'caller', style, onKeydown: event => calls.push(['first', event.defaultPrevented]) });
+    try {
+      const panel = h.element.querySelector('.st-popper');
+      assert.equal(panel.className, 'st-popper caller');
+      assert.equal(panel.style.position, 'fixed'); assert.equal(panel.style.top, '999px'); assert.equal(panel.style.color, 'red');
+      panel.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+      assert.deepEqual(calls, [['first', true]]);
+      h.props.style = 'position:relative;top:777px;color:blue'; h.props.class = 'updated';
+      h.props.onKeydown = event => calls.push(['updated', event.defaultPrevented]);
+      await flush();
+      assert.equal(panel.className, 'st-popper updated'); assert.equal(panel.style.position, 'relative'); assert.equal(panel.style.top, '777px'); assert.equal(panel.style.color, 'blue');
+      panel.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+      assert.deepEqual(calls, [['first', true], ['updated', true]]);
+    } finally { await h.close(); anchor.remove(); }
+  });
+
+for (const name of ['OrderedList', 'UnorderedList']) test(`R3: ${name} should operate recursively with slot-only items and paths`, async () => {
+  const paths = [];
+  const h = await mount(name, { items: [{ children: [{ children: ['Leaf'] }] }], onPick: path => paths.push(path) }, '<template #item="{item,index,path}"><button @click="state.props.onPick(path)">{{path.join(".")}}:{{index}}:{{typeof item === "string" ? item : "Branch"}}</button></template>');
+  try {
+    const buttons = [...h.element.querySelectorAll('button')];
+    assert.deepEqual(buttons.map(button => button.textContent), ['0:0:Branch', '0.0:0:Branch', '0.0.0:0:Leaf']);
+    assert.equal(h.element.querySelectorAll('[class$="--nested"]').length, 2);
+    buttons[2].click(); await flush(); assert.deepEqual(paths, [[0, 0, 0]]);
+    h.props.items = [{ children: ['Replacement', 'Sibling'] }]; await flush();
+    assert.deepEqual([...h.element.querySelectorAll('button')].map(button => button.textContent), ['0:0:Branch', '0.0:0:Replacement', '0.1:1:Sibling']);
+  } finally { await h.close(); }
+});
+
+for (const controlled of [true, false]) test(`R3: Combobox should display, search, select and clear slot-only options (${controlled ? 'controlled' : 'local'})`, async () => {
+  const changes = [], selections = [], models = [];
+  const props = { options: [{ value: 'a' }, { value: 'b' }, { value: 'blocked', disabled: true }], allowCustomValue: false,
+    onChange: value => changes.push(value), onSelect: value => selections.push(value), 'onUpdate:modelValue': value => models.push(value) };
+  if (controlled) props.value = 'a';
+  const h = await mount('Combobox', props, '<template #option-label="{option}"><strong>Rich {{option.value}}</strong></template>');
+  try {
+    const input = h.element.querySelector('input');
+    input.dispatchEvent(new window.FocusEvent('focus')); await flush();
+    const selected = () => [...h.element.querySelectorAll('[aria-selected="true"]')].map(option => option.textContent);
+    assert.equal(input.value, controlled ? 'a' : ''); assert.deepEqual(selected(), controlled ? ['Rich a'] : []);
+    input.value = 'b'; input.dispatchEvent(new window.Event('input', { bubbles: true })); await flush();
+    assert.deepEqual([...h.element.querySelectorAll('[role="option"] strong')].map(option => option.textContent), ['Rich b', 'Rich blocked']);
+    input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true })); await flush();
+    assert.equal(document.getElementById(input.getAttribute('aria-activedescendant'))?.textContent, 'Rich b');
+    input.dispatchEvent(new window.KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); await flush();
+    assert.deepEqual(changes, ['b']); assert.deepEqual(selections, ['b']); assert.deepEqual(models, ['b']);
+    if (controlled) { h.props.value = 'b'; await flush(); }
+    assert.equal(input.value, 'b');
+    h.element.querySelector('.st-combobox__toggle').click(); await flush(); assert.deepEqual(selected(), ['Rich b']);
+    h.element.querySelector('[aria-disabled="true"]').dispatchEvent(new window.MouseEvent('mousedown', { bubbles: true, cancelable: true })); await flush();
+    assert.deepEqual(selections, ['b']);
+    h.element.querySelector('.st-combobox__clear').click();
+    if (controlled) h.props.value = '';
+    await flush(); assert.equal(input.value, ''); assert.deepEqual(selected(), []); assert.deepEqual(changes, ['b', '']); assert.deepEqual(models, ['b', '']);
+  } finally { await h.close(); }
+});
+
+test('R3: EmptyState should omit absent titles and react to title props and slots', async () => {
+  const h = await mount('EmptyState', { message: 'No entries' }, '<template v-if="state.show" #title><strong>Slot title</strong></template>');
+  try {
+    assert.equal(h.element.querySelector('h2 strong')?.textContent, 'Slot title');
+    h.state.show = false; await flush(); assert.equal(h.element.querySelector('h2'), null);
+    h.props.title = 'Prop title'; await flush(); assert.equal(h.element.querySelector('h2')?.textContent, 'Prop title');
+    h.props.title = undefined; await flush(); assert.equal(h.element.querySelector('h2'), null);
+    assert.equal(h.element.querySelector('p')?.textContent, 'No entries');
+  } finally { await h.close(); }
+});
