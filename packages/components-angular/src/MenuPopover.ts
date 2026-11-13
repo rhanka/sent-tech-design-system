@@ -202,7 +202,6 @@ export type MenuPopoverProps = {
         @if (items && items.length) {
           <st-menu
             [items]="items"
-            [id]="rootMenuId"
             [submenuSide]="submenuSide"
             [role]="innerRole"
             (select)="onMenuSelect($event)"
