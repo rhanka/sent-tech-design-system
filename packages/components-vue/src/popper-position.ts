@@ -1,4 +1,4 @@
-import type { PopperPlacement, PopperSide, PopperAlign, Rect } from './Popper.js';
+import type { PopperPlacement, PopperSide, PopperAlign, Rect } from './Popper.vue';
 
 /** Split a placement into its side and (optional) alignment. */
 export function splitPlacement(placement: PopperPlacement): {
