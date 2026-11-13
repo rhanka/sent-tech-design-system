@@ -98,8 +98,8 @@ export type {
 } from "./ProgressIndicator.js";
 export { Quote } from "./Quote.js";
 export type { QuoteProps } from "./Quote.js";
-export { Radio } from "./Radio.js";
-export type { RadioProps } from "./Radio.js";
+export { default as Radio } from "./Radio.vue";
+export type { RadioProps } from "./Radio.vue";
 export { Search } from "./Search.js";
 export type { SearchProps, SearchSize } from "./Search.js";
 export { default as Select } from "./Select.vue";
