@@ -19,7 +19,6 @@ import {
   CARD_GEOMETRY,
   ZONE_GEOMETRY,
   defaultCardMeasure,
-  firstOverflowDiagnostic,
   layoutZone,
   projectZoneProps,
   zoneCollapsedCardProps,
@@ -212,14 +211,7 @@ export function zoneContent(
   };
 }
 
-/**
- * The zone render result. Overflow = refusal (owner criterion): when the
- * zone's own layout or any descendant card/zone overflows, the result is
- * `{ kind: "refused" }` with NO `svg` — the aggregated diagnostics carry each
- * offender's `entityId` and original slot text. The Svelte `DiagramZone`
- * renders the matching refusal state (`data-zone-refused`) on the same
- * predicate — one contract, both renderers.
- */
+/** Content is always rendered (owner A11). The legacy refused variant remains for source compatibility. */
 export type ZoneSvgResult =
   | {
       readonly kind: "rendered";
@@ -237,9 +229,7 @@ export type ZoneSvgResult =
  * Render one zone as a standalone SVG string. Collapsed: the atomic card
  * at the zone occurrence (460 × 200, plus the "+" toggle slot). Expanded:
  * the frame with header, rule and children. `measure` defaults to the
- * deterministic greedy wrapper. Returns a refused result (no `svg`) when
- * the zone or any descendant overflows; descendant diagnostics are
- * aggregated with their entity ids.
+ * deterministic greedy wrapper. Returns all content and any hard-cap diagnostics (owner A11).
  */
 export function renderZoneSvg(
   props: DiagramZoneProps,
@@ -248,9 +238,6 @@ export function renderZoneSvg(
   const measure = opts.measure ?? defaultCardMeasure;
   const children = opts.children ?? [];
   const { content, layout, diagnostics } = zoneContent(props, children, measure);
-  if (firstOverflowDiagnostic(diagnostics) !== undefined) {
-    return { kind: "refused", diagnostics, layout };
-  }
   const { x, y, width, height } = layout.box;
   const overflowSlots = diagnostics
     .filter((diagnostic) => diagnostic.code === "zone-overflow")

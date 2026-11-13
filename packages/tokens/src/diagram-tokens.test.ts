@@ -7,7 +7,7 @@ import { componentDark } from "./component.dark.js";
 import { semanticDark } from "./semantic.dark.js";
 
 /**
- * DC-1 CA-DC1-1: every Appendix A token exists with its frozen value.
+ * DC-1 CA-DC1-1: every Appendix A token exists with its owner-amended value.
  *
  * Spec: spec/SPEC_EVOL_DS_DIAGRAM_CARDS.md Appendix A (§5.3, §6.4, §9.1).
  * Geometry leaves are frozen literals; colour leaves alias the semantic
@@ -52,6 +52,7 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     footerBottomInset: "9.25px",
     toggleAllocation: "66px",
     toggleBoxSize: "32px",
+    toggleInset: "8px",
     foldedHeaderTextWidth: "290px",
     proposedDashArray: "4 5",
     fontFamily: "var(--st-font-sans)",
@@ -88,14 +89,15 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
     toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
     headerTextInset: "178px",
-    toggleTopInset: "10px",
+    toggleInset: "8px",
+    toggleTopInset: "var(--st-component-diagramZone-toggleInset)",
     footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
     proposedDashArray: "4 5",
     // DC-2a row-pack spacing (SPEC_EVOL_DC2A §3.5).
-    childGapInline: "24px",
-    childGapBlock: "24px",
-    gapInlineMax: "32px",
-    gapBlockMax: "32px",
+    childGapInline: "96px",
+    childGapBlock: "72px",
+    gapInlineMax: "240px",
+    gapBlockMax: "240px",
     rowPackTargetAspect: "1.78",
   },
   // DC-2a scene camera, transition and edge-label typography (§5, §4.3).
@@ -103,6 +105,15 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     maxDisplayScale: "0.62",
     minReadableScale: "0.45",
     transitionDuration: "240ms",
+    gapMin: "96px",
+    gapBase: "64px",
+    trackSpacing: "14px",
+    gapMinBlock: "72px",
+    gapBaseBlock: "8px",
+    trackSpacingBlock: "7px",
+    labelBand: "30px",
+    gapMax: "240px",
+    bundleLabelMaxWidth: "320px",
     edgeLabelFontSize: "18px",
     edgeLabelLineHeight: "22px",
   },
@@ -133,7 +144,7 @@ describe("diagram tokens — frozen Appendix A values", () => {
 
   it("diagram colour leaves alias the semantic layer (no own raw value)", () => {
     expect(component.diagramCard.border).toBe(semantic.border.strong);
-    expect(component.diagramCard.accent).toBe(semantic.data.category1);
+    expect(component.diagramCard.accent).toBe(semantic.border.strong);
     expect(component.diagramCard.surface).toBe(semantic.surface.raised);
     expect(component.diagramCard.text).toBe(semantic.text.primary);
     expect(component.diagramCard.secondaryText).toBe(semantic.text.secondary);

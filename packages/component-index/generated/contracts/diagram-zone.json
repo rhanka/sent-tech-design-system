@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:64bd88d7caa49360f67d216147ec6c8aa1fbc88b3d074fb8645d6e709a8485ae",
-  "entryDigest": "sha256:8d60e911e27ce026d9aa95be9f9f7dc9fba0dc9a291155f5cf47c7de5414841e",
+  "digest": "sha256:cb9431921cc0b41bc6be0f769450edbd18aa3598a086c540acdd6adcabb4368b",
+  "entryDigest": "sha256:d392484249ac38ea7271fa63439506294c1bcfd36e3f7175947650aea43a10d7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -140,6 +140,7 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
                   "zone-icon-unknown",
@@ -245,7 +246,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0214d1605488f469a357bc82e145c21a605c01e2184c67214779a2154e2114aa",
+        "declarationDigest": "sha256:e180567301fd050476422baacc68bad21a5a3967d4acce3575f018c4ca6a66f2",
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
@@ -372,6 +373,7 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-icon-missing",
                   "card-grown",
                   "zone-overflow",
                   "zone-icon-unknown",
@@ -473,7 +475,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:af6c6d02a929c92f8a50875b456c17c85ab7d0fba90be9b97d943779fe671868",
+        "declarationDigest": "sha256:843d221d211ef87bd9e2b6e5dced55e8df680c6c6e554b51fefbb8e0d8e9f1b8",
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
