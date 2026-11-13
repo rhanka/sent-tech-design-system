@@ -621,14 +621,14 @@ export { default as Overline } from './Overline.vue';
 export type { OverlineProps, OverlineAs } from './Overline.vue';
 export { default as StatusDot } from './StatusDot.vue';
 export type { StatusDotProps, StatusDotTone } from './StatusDot.vue';
-export { NavActionStack } from "./NavActionStack.js";
+export { default as NavActionStack } from './NavActionStack.vue';
 export type {
   NavActionStackProps,
   NavAction,
   NavActionKind,
   NavActionDangerZone,
   NavActionStackOrientation,
-} from "./NavActionStack.js";
+} from './NavActionStack.vue';
 export { NavItem } from "./NavItem.js";
 export type {
   NavItemProps,
