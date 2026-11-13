@@ -1606,8 +1606,25 @@
     "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial",
+    "props": [
+     "ariaKeyshortcuts",
+     "class",
+     "disabled",
+     "icon",
+     "label",
+     "pressed",
+     "size",
+     "tooltipContent",
+     "tooltipPlacement",
+     "variant"
+    ],
+    "slots": [],
+    "events": [
+     "click",
+     "onClick"
+    ],
+    "bindable": []
    },
    "angular": {
     "status": "none",
@@ -3233,6 +3250,207 @@
    },
    "angular": {
     "status": "complete"
+   }
+  },
+  "composer-editor": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "class",
+     "disabled",
+     "editable",
+     "messages",
+     "placeholder",
+     "profile",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "onChange",
+     "onKeyDown",
+     "onReadinessChange"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"ComposerEditor\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "class",
+     "disabled",
+     "editable",
+     "messages",
+     "placeholder",
+     "profile",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "change",
+     "onChange",
+     "onKeyDown",
+     "onReadinessChange",
+     "readinessChange"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"ComposerEditor\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   }
+  },
+  "lock-presence-badge": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "binding",
+     "capabilities",
+     "lock",
+     "messages",
+     "nowIso",
+     "presence",
+     "readOnly"
+    ],
+    "slots": [],
+    "events": [
+     "onAcceptUnlock",
+     "onForceUnlock",
+     "onReleaseLock",
+     "onRequestUnlock"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "binding",
+     "capabilities",
+     "lock",
+     "messages",
+     "nowIso",
+     "presence",
+     "readOnly"
+    ],
+    "slots": [],
+    "events": [
+     "acceptUnlock",
+     "forceUnlock",
+     "onAcceptUnlock",
+     "onForceUnlock",
+     "onReleaseLock",
+     "onRequestUnlock",
+     "releaseLock",
+     "requestUnlock"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   }
+  },
+  "rich-text-editor": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "actor",
+     "binding",
+     "capabilities",
+     "class",
+     "disabled",
+     "editable",
+     "lock",
+     "messages",
+     "presence",
+     "profile",
+     "provider",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "onChange",
+     "onExternalConflict",
+     "onLockChange",
+     "onPresenceChange",
+     "onReadinessChange",
+     "onRequestUnlock",
+     "onUnsupportedPaste"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "actor",
+     "binding",
+     "capabilities",
+     "class",
+     "disabled",
+     "editable",
+     "lock",
+     "messages",
+     "presence",
+     "profile",
+     "provider",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "change",
+     "externalConflict",
+     "lockChange",
+     "onChange",
+     "onExternalConflict",
+     "onLockChange",
+     "onPresenceChange",
+     "onReadinessChange",
+     "onRequestUnlock",
+     "onUnsupportedPaste",
+     "presenceChange",
+     "readinessChange",
+     "requestUnlock",
+     "unsupportedPaste"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
    }
   }
  }
