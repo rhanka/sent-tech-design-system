@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "AppHeader",
+  "sourceRevision": "b534453688e2b8319f30b35e59b31e8b786459d8",
+  "source": "src/AppHeader.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><a aria-label=\"SENT Design System\" class=\"st-appHeader__brand\" href=\"/\"><span class=\"st-appHeader__brandCopy\"><span class=\"st-appHeader__brandName\">SENT</span><span class=\"st-appHeader__brandProduct\">Design System</span></span></a><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"><a href=\"/docs\">Docs</a></nav><div class=\"st-appHeader__actions\"><button type=\"button\">Sign in</button></div></div></header>"
+    },
+    {
+      "id": "compact-closed",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><a aria-label=\"SENT\" class=\"st-appHeader__brand\" href=\"/\"><span class=\"st-appHeader__brandCopy\"><span class=\"st-appHeader__brandName\">SENT</span></span></a><div class=\"st-appHeader__burger\"><button aria-controls=\"drawer-2\" aria-expanded=\"false\" aria-haspopup=\"menu\" aria-label=\"Menu\" class=\"st-appHeader__burgerButton\" type=\"button\"><svg aria-hidden=\"true\" class=\"st-appHeader__burgerIcon\" fill=\"none\" focusable=\"false\" height=\"20\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"20\"><path d=\"M4 5h16\"></path><path d=\"M4 12h16\"></path><path d=\"M4 19h16\"></path></svg></button></div></div></header>"
+    },
+    {
+      "id": "compact-open-drawer",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><a aria-label=\"SENT\" class=\"st-appHeader__brand\" href=\"/\"><span class=\"st-appHeader__brandCopy\"><span class=\"st-appHeader__brandName\">SENT</span></span></a><div class=\"st-appHeader__burger\"><button aria-controls=\"drawer-3\" aria-expanded=\"true\" aria-haspopup=\"menu\" aria-label=\"Toggle menu\" class=\"st-appHeader__burgerButton\" type=\"button\"><svg aria-hidden=\"true\" class=\"st-appHeader__burgerIcon\" fill=\"none\" focusable=\"false\" height=\"20\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"20\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></div></div></header><button aria-label=\"Toggle menu\" class=\"st-appHeader__scrim\" type=\"button\"></button><aside class=\"st-appHeader__drawer\" id=\"drawer-3\"><nav aria-label=\"Mobile\"><a href=\"/\">Home</a></nav></aside>"
+    },
+    {
+      "id": "logo-slot",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><div class=\"st-appHeader__logo\"><span class=\"brand-lockup\">SENT</span></div><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"></nav><div class=\"st-appHeader__actions\"></div></div></header>"
+    },
+    {
+      "id": "default-brand-img",
+      "html": "<header class=\"st-appHeader\"><div class=\"st-appHeader__bar\"><a aria-label=\"SENT home\" class=\"st-appHeader__brand\" href=\"/home\"><img alt=\"\" aria-hidden=\"true\" class=\"st-appHeader__brandMark\" src=\"/SENT-logo-squared.svg\"><span class=\"st-appHeader__brandCopy\"><span class=\"st-appHeader__brandName\">SENT</span><span class=\"st-appHeader__brandProduct\">Data Viz</span></span></a><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"></nav><div class=\"st-appHeader__actions\"></div></div></header>"
+    },
+    {
+      "id": "custom",
+      "html": "<header class=\"st-appHeader consumer\" data-bench=\"header\" style=\"color:red;\"><div class=\"st-appHeader__bar\"><a aria-label=\"SENT\" class=\"st-appHeader__brand\" href=\"/\"><span class=\"st-appHeader__brandCopy\"><span class=\"st-appHeader__brandName\">SENT</span></span></a><nav aria-label=\"Primary\" class=\"st-appHeader__nav\"></nav><div class=\"st-appHeader__actions\"></div></div></header>"
+    }
+  ],
+  "sourceSha256": "57d636f5cf3263af50bcf17e3239789894dadb012f88c2edd280fedb021fe36e",
+  "fixtureSha256": "d2538235ed78dafb4d97363a1bfb1a5fe10ebb10ef97b225e902e0e4c3fc219b",
+  "publicExports": [
+    {
+      "name": "AppHeader",
+      "typeOnly": false
+    },
+    {
+      "name": "AppHeaderProps",
+      "typeOnly": true
+    }
+  ]
+}
