@@ -12,7 +12,7 @@ import { RoseChart } from './RoseChart.js';
 import { SankeyChart } from './SankeyChart.js';
 import SunburstChart from './SunburstChart.vue';
 import TreemapChart from './TreemapChart.vue';
-import { WaterfallChart } from './WaterfallChart.js';
+import WaterfallChart from './WaterfallChart.vue';
 
 const model: DataModel = {
   dimensions: [
