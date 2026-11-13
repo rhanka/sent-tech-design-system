@@ -3,7 +3,7 @@ defineOptions({ name: 'DiagramZone' });
 import { computed, onMounted, watch } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { ZONE_GEOMETRY, defaultCardMeasure, firstOverflowDiagnostic, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { ZONE_GEOMETRY, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -41,7 +41,7 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { autoSize, entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize = true, entityId, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -102,7 +102,7 @@ const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) =
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "zone-icon-unknown"));
 // Overflow = refusal: the same predicate as the pure renderer
 // (`firstOverflowDiagnostic`), so both renderers refuse together.
-const refused = computed(() => firstOverflowDiagnostic(layout.value.diagnostics));
+
 const header = computed(() => layout.value.header);
 // Expanded subtitle measure: the layout's own `subtitleWidth`
 // (min(width, 460) − 26) — the single geometry source shared with
@@ -148,10 +148,8 @@ onMounted(() => {
 </script>
 
 <template>
-<div class="st-diagramZone-pos" :style="`left:${x}px;top:${y}px`" :data-entity="entityId" :data-collapsed="collapsed ? 'true' : 'false'" :data-zone-refused="refused === undefined ? undefined : refused.slot" :data-zone-overflow="overflowSlot" :data-zone-icon-unknown="unknownIcon ? '' : undefined">
-  <template v-if="refused !== undefined">
-    <div class="st-diagramZone st-diagramZone--refused" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" role="group" :aria-label="title"></div>
-  </template><template v-else><template v-if="collapsed">
+<div class="st-diagramZone-pos" :style="`left:${x}px;top:${y}px`" :data-entity="entityId" :data-collapsed="collapsed ? 'true' : 'false'" :data-zone-overflow="overflowSlot" :data-zone-icon-unknown="unknownIcon ? '' : undefined">
+  <template v-if="collapsed">
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
@@ -159,7 +157,7 @@ onMounted(() => {
       <template v-if="header !== undefined">
 
         <div class="st-diagramZone-header" :style="headerStyle">
-          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="icon" :iconGlyph="iconGlyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
+          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
               ? undefined
               : {
                   collapsed: false,
@@ -184,7 +182,7 @@ onMounted(() => {
         </template>
       </template>
     </div>
-  </template></template>
+  </template>
 </div>
 </template>
 

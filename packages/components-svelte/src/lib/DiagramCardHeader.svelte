@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import IconButton from "./IconButton.svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
@@ -35,8 +36,8 @@
   let {
     kicker,
     title,
-    iconName,
-    iconGlyph,
+    iconName = "base",
+    iconGlyph = getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
     headerTextWidth,
     headerBlockHeight,
     toggle,
@@ -101,7 +102,8 @@
   {#if toggle !== undefined}
     <div
       class="st-diagramCard-toggle"
-      style={toggleTopOffset === undefined ? undefined : `margin-top:${toggleTopOffset}px`}
+      style={`top:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"};right:${toggleTopOffset === undefined ? "calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))" : toggleTopOffset + "px"}`}
+      
     >
       <IconButton
         size="sm"
@@ -164,10 +166,10 @@
     word-break: normal;
   }
   .st-diagramCard-toggle {
-    flex: 0 0 auto;
-    margin-left: auto;
-    /* Top right of the header row with the card's own top margin
-       (hrpn folded-card placement), not vertically centred. */
-    align-self: flex-start;
+    position: absolute;
+    top: var(--st-component-diagramZone-toggleInset, 8px);
+    right: var(--st-component-diagramZone-toggleInset, 8px);
+    width: var(--st-component-diagramCard-toggleBoxSize, 32px);
+    height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }
 </style>

@@ -15,7 +15,6 @@
 import {
   CARD_GEOMETRY,
   defaultCardMeasure,
-  firstOverflowDiagnostic,
   layoutCard,
   projectCardProps,
   type CardDiagnostic,
@@ -109,11 +108,11 @@ export function renderCardContent(
     `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
   );
   parts.push(
-    `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-accent, var(--st-semantic-data-category1))"/>`,
+    `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))"/>`,
   );
-  if (layout.iconBox !== undefined && props.icon !== undefined) {
+  if (layout.iconBox !== undefined) {
     parts.push(
-      iconGroupFor(props.icon, props.iconGlyph, layout.iconBox.x, layout.iconBox.y, layout.iconBox.size),
+      iconGroupFor(layout.icon.name, layout.icon.glyph, layout.iconBox.x, layout.iconBox.y, layout.iconBox.size),
     );
   }
   if (layout.kicker.length > 0) {
@@ -229,10 +228,6 @@ export function renderCardSvg(
 ): CardSvgResult {
   const { content, layout } = renderCardContent(props, measure);
   const g = { ...CARD_GEOMETRY, height: layout.box.height };
-  const refused = firstOverflowDiagnostic(layout.diagnostics);
-  if (refused !== undefined) {
-    return { kind: "refused", diagnostics: layout.diagnostics, layout };
-  }
   const overflowSlots = layout.diagnostics
     .filter((diagnostic) => diagnostic.code === "card-overflow")
     .map((diagnostic) => diagnostic.slot);

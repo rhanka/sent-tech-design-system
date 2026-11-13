@@ -37,6 +37,8 @@ import {
   type Vec2,
 } from "../index.js";
 
+import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
+import { getDiagramGlyph } from "./registry.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 
 /** The semantic document the layout engine reads. */
@@ -86,7 +88,34 @@ export function sceneContentSize(result: LayoutResult | undefined): DiagramScene
   return result?.status === "laid-out" ? { width: result.fit.width, height: result.fit.height } : { width: 0, height: 0 };
 }
 
+/** Presentation data keyed by profile:type (or type), kept outside semantic profiles. */
+export type SceneIconBindings = Readonly<Record<string, { readonly icon?: string; readonly role?: string; readonly shape?: "component" | "flow" | "erd" | "note" }>>;
+export const ROLE_ICONS: Readonly<Record<string, string>> = { card: "base", zone: "cluster", store: "db", actor: "user", api: "api", runtime: "server" };
+
+export function resolveScenePresentation(document: SceneDocument, presentation: ScenePresentation,
+  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph) {
+  const missing: string[] = [];
+  const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
+    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, entry];
+    const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
+    const entity = document.entities[entityId];
+    const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
+    if (binding?.shape !== undefined && binding.shape !== "component") return [id, entry];
+    const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
+    const icon = entry.icon ?? binding?.icon ?? ROLE_ICONS[role];
+    if (icon === undefined || resolveGlyph(icon) === undefined) {
+      missing.push(id);
+      return [id, strict ? { ...entry, icon: "unknown" } : { ...entry, ...(icon === undefined ? {} : { icon }) }];
+    }
+    return [id, { ...entry, icon }];
+  }));
+  return { presentation: { ...presentation, entities }, missing };
+}
+
 export interface SceneLayoutInput {
+  readonly iconBindings?: SceneIconBindings;
+  readonly strictIcons?: boolean;
+  readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
   /** Retained source view (authored occurrences, fold groups). Optional: the engine synthesises one. */
@@ -111,6 +140,7 @@ export interface SceneLayoutInput {
  * required field carries no second metric source.
  */
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.bindings === undefined ? {} : { bindings: input.bindings }),
@@ -124,7 +154,7 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
       });
       return { width: layout.width, height: layout.height };
     },
-    presentation: input.presentation,
+    presentation: resolved.presentation,
     measureLines: input.measureLines,
     collapsed: input.collapsed,
     ...(input.hints === undefined ? {} : { hints: input.hints }),
@@ -133,14 +163,14 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
   };
-  if (input.cache !== undefined) {
-    return input.view === undefined
+  const result = input.cache !== undefined
+    ? (input.view === undefined
       ? input.cache.layout(input.document, options)
-      : input.cache.layoutFolded(input.document, input.view, options);
-  }
-  return input.view === undefined
+      : input.cache.layoutFolded(input.document, input.view, options))
+    : input.view === undefined
     ? layoutMeasured(input.document, options)
     : layoutFolded(input.document, input.view, options);
+  return result.status !== "laid-out" || resolved.missing.length === 0 ? result : { ...result, warnings: [...result.warnings, ...resolved.missing.map(id => ({ code: "card-icon-missing" as const, refs: [id], message: "No icon resolves for this component; strict mode displays unknown" }))] };
 }
 
 /** Collapsed occurrence ids recorded by a view's fold groups. */
@@ -178,6 +208,7 @@ export interface SceneLabelModel {
   readonly lines: readonly string[];
   readonly box: Rect;
   readonly title?: string;
+  readonly bundle?: { readonly header: string; readonly groups: readonly BundleLabelGroup[] };
 }
 
 export interface SceneModel {
@@ -216,16 +247,17 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph">,
 ): SceneModel {
   const view = result.view;
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
   const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));
   const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = input.presentation.entities[node.occurrence] as EntityPresentation | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as EntityPresentation | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const kind: SceneNodeKind =
@@ -307,7 +339,8 @@ export function resolveScene(
   for (const [id, placement] of placements) {
     if (placement === undefined) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box,
-      ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }) });
+      ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
+      ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 

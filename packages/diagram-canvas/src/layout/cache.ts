@@ -187,7 +187,7 @@ export function createLayoutCache(config: LayoutCacheOptions = {}): LayoutCache 
       : layoutDocument(document, options);
     if (disposed || key === undefined || result.status === "refused" || maxEntries === 0) return result;
     const viewText = canonicalise(result.view, "view");
-    const size = utf8ByteLength(viewText) + utf8ByteLength(canonicalise(result.measurements ?? null)) + utf8ByteLength(canonicalise(result.labelBoxes ?? null));
+    const size = utf8ByteLength(viewText) + utf8ByteLength(canonicalise(result.measurements ?? null)) + utf8ByteLength(canonicalise(result.labelBoxes ?? null)) + utf8ByteLength(canonicalise(result.edgeBundles ?? null)) + utf8ByteLength(canonicalise(result.channels ?? null));
     if (size > maxBytes) return result;
     const stored: Entry = {
       base: key.base, exact: key.exact, previous: { ...options.previousOrientation }, result, bytes: size,

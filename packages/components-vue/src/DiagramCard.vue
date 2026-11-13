@@ -2,7 +2,7 @@
 defineOptions({ name: 'DiagramCard' });
 import { computed, onMounted, watch } from "vue";
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { CARD_GEOMETRY, defaultCardMeasure, firstOverflowDiagnostic, layoutCard } from "./diagramCardModel.js";
+import { CARD_GEOMETRY, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
 import type { CardDiagnostic, CardLineMeasure, DiagramCardProps as DiagramCardData, } from "./diagramCardModel.js";
 /**
  * `DiagramCard` — the atomic diagram card (DC-1).
@@ -43,7 +43,7 @@ export interface DiagramCardProps extends DiagramCardData {
     /** One call per diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
-const { autoSize, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
+const { autoSize = true, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
 const emit = defineEmits<{
     select: [
         event: {
@@ -79,7 +79,7 @@ const overflowSlot = computed(() => layout.value.diagnostics.find((diagnostic) =
 const unknownIcon = computed(() => layout.value.diagnostics.some((diagnostic) => diagnostic.code === "card-icon-unknown"));
 // Overflow = refusal: the same predicate as the pure renderer
 // (`firstOverflowDiagnostic`), so both renderers refuse together.
-const refused = computed(() => firstOverflowDiagnostic(layout.value.diagnostics));
+
 onMounted(() => {
     watch(layout, value => {
         for (const diagnostic of value.diagnostics)
@@ -89,12 +89,8 @@ onMounted(() => {
 </script>
 
 <template>
-<template v-if="refused !== undefined">
-
-  <div class="st-diagramCard st-diagramCard--refused" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :data-card-refused="refused.slot" :data-card-overflow="refused.slot" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })"></div>
-</template><template v-else>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="autoSize ? `height:${layout.box.height}px` : undefined" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
-  <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="icon" :iconGlyph="iconGlyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
+  <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div class="st-diagramCard-body" :style="`margin-left:${layout.bodyX - CARD_GEOMETRY.headerInset}px;width:${layout.bodyWidth}px`">
     <template v-for="(line, bodyIndex) in layout.body" :key="bodyIndex">
@@ -116,18 +112,18 @@ onMounted(() => {
   </div>
 </div>
 </template>
-</template>
 
 <style>
 
   .st-diagramCard {
+    position: relative;
     width: var(--st-component-diagramCard-width, 460px);
     height: var(--st-component-diagramCard-height, 200px);
     box-sizing: border-box;
     border: var(--st-component-diagramCard-borderWidth, 2px) solid
       var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
-      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
+      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-radius: var(--st-component-diagramCard-radius, 0);
     background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));

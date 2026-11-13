@@ -112,6 +112,7 @@ export interface Delivery {
 }
 
 export interface Entry {
+  anatomy?: { contractId: string; path: string; digest: string };
   format: typeof FORMAT_ENTRY;
   producerId: string;
   componentId: string;
@@ -561,6 +562,10 @@ function catalogueEntry(
     delivery: orderDeliveries(deliveries),
   };
   if (row.groupSlug !== undefined) digestless.groupSlug = row.groupSlug;
+  if (["diagram-card", "diagram-zone", "diagram-scene-figure"].includes(row.slug)) {
+    const path = "packages/diagram-canvas/contracts/diagram-anatomy.v1.json";
+    digestless.anatomy = { contractId: "diagram-anatomy/v1", path, digest: digestFile(repoRoot, path) };
+  }
   const contract = elements.get(identifier);
   if (contract !== undefined) {
     const schemaPath = `packages/elements/schemas/${contract.component}.v1.json`;

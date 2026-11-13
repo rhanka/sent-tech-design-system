@@ -17,10 +17,11 @@
  */
 import { isLayoutGroup, resolveRowGaps, type LayoutGroup, type LayoutHints } from "./hints.js";
 import type { LayoutMeasurements } from "./measure.js";
+import { channelMetrics } from "./channels.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2a.2";
+export const LAYOUT_ENGINE_VERSION = "dc2a.owner.3";
 
 export interface LayoutFingerprintInput {
   readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId">;
@@ -78,7 +79,8 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
     fold: [...(options.collapsed ?? [])].map(String).sort(byString),
     rowPack: resolveRowPack(options.rowPack),
     gaps,
-    metrics: { clearance: metrics.clearance, labelMargin: metrics.labelMargin, slotSpacing: metrics.slotSpacing, nodeGap: metrics.nodeGap },
+    channels: { inline: channelMetrics(metrics, true), block: channelMetrics(metrics, false), bundleLabelMaxWidth: metrics.bundleLabelMaxWidth ?? 320 },
+    metrics: { clearance: metrics.clearance, labelMargin: metrics.labelMargin, slotSpacing: options.metrics?.slotSpacing ?? options.metrics?.trackSpacing ?? 14, nodeGap: metrics.nodeGap },
     previousOrientation: Object.entries(options.previousOrientation ?? {}).sort(([left], [right]) => byString(left, right)),
     hints: {
       ordering: hints.ordering,
