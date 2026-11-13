@@ -115,8 +115,8 @@ export type {
   AppShellUtilitySide,
   AppShellVariant,
 } from "./AppShell.js";
-export { NavShell } from "./NavShell.js";
-export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.js";
+export { default as NavShell } from "./NavShell.vue";
+export type { NavShellProps, NavShellSide, NavShellVariant } from "./NavShell.vue";
 export { NavRail } from "./NavRail.js";
 export type { NavRailItem, NavRailProps } from "./NavRail.js";
 export { NavDrawer } from "./NavDrawer.js";
