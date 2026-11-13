@@ -1,16 +1,16 @@
-import { defineComponent, h } from "vue";
-import { classNames } from "./classNames.js";
-import { chartDataList } from "./chartScale.js";
+<script setup lang="ts">
+import { computed, useAttrs } from 'vue';
+import { classNames } from './classNames.js';
 
 export type TreegraphChartTone =
-  | "category1"
-  | "category2"
-  | "category3"
-  | "category4"
-  | "category5"
-  | "category6"
-  | "category7"
-  | "category8";
+  | 'category1'
+  | 'category2'
+  | 'category3'
+  | 'category4'
+  | 'category5'
+  | 'category6'
+  | 'category7'
+  | 'category8';
 
 export type TreegraphChartNode = {
   id: string;
@@ -28,14 +28,14 @@ export type TreegraphChartProps = {
 };
 
 const TONES = [
-  "category1",
-  "category2",
-  "category3",
-  "category4",
-  "category5",
-  "category6",
-  "category7",
-  "category8",
+  'category1',
+  'category2',
+  'category3',
+  'category4',
+  'category5',
+  'category6',
+  'category7',
+  'category8',
 ] as const;
 
 type Node = {
@@ -166,97 +166,55 @@ function buildLayout(data: TreegraphChartNode[], width: number, height: number):
 
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, Math.max(1, n - 1))}…` : s);
 
-export const TreegraphChart = defineComponent({
-  name: "TreegraphChart",
-  props: {
-    data: { type: Array as () => TreegraphChartNode[], required: true },
-    width: { type: Number, default: 640 },
-    height: { type: Number, default: 360 },
-    label: { type: String, required: true },
-    class: { type: String, default: undefined },
-  },
-  setup(props, { attrs }) {
-    return () => {
-      const width = props.width ?? 640;
-      const height = props.height ?? 360;
-      const label = props.label;
-
-      const { nodes, links, rowH } = buildLayout(props.data, width, height);
-
-      const fontSize = rowH < 18 ? 9 : rowH < 26 ? 10 : 11;
-      const maxChars = Math.max(2, Math.floor((PAD_X - R - 6) / (fontSize * 0.58)));
-
-      const dataValueItems = nodes.map((b) => {
-        const parent = b.parentId != null ? nodes.find((p) => p.id === b.parentId) : undefined;
-        return parent ? `${b.label} (${b.id}) → ${parent.label}` : `${b.label} (${b.id})`;
-      });
-
-      const svgChildren: ReturnType<typeof h>[] = [];
-
-      links.forEach((link) => {
-        const cx = (link.x1 + link.x2) / 2;
-        svgChildren.push(
-          h("path", {
-            key: `link-${link.id}`,
-            class: "st-treegraphChart__link",
-            d: `M ${link.x1} ${link.y1} C ${cx} ${link.y1} ${cx} ${link.y2} ${link.x2} ${link.y2}`,
-            fill: "none",
-          }),
-        );
-      });
-
-      nodes.forEach((node) => {
-        const isLeaf = !nodes.some((c) => c.parentId === node.id);
-        svgChildren.push(
-          h("g", { key: node.id, class: "st-treegraphChart__node" }, [
-            h("circle", {
-              class: classNames(
-                "st-treegraphChart__dot",
-                `st-treegraphChart__dot--${node.tone}`,
-              ),
-              cx: node.x,
-              cy: node.y,
-              r: R,
-            }),
-            h(
-              "text",
-              {
-                class: "st-treegraphChart__label",
-                x: isLeaf ? node.x + R + 4 : node.x - R - 4,
-                y: node.y,
-                "text-anchor": isLeaf ? "start" : "end",
-                "dominant-baseline": "central",
-                style: `font-size: ${fontSize}px`,
-              },
-              clip(node.label, maxChars),
-            ),
-          ]),
-        );
-      });
-
-      const children: (ReturnType<typeof h> | null)[] = [
-        h(
-          "div",
-          { class: "st-treegraphChart__visual", role: "img", "aria-label": label },
-          [
-            h(
-              "svg",
-              {
-                viewBox: `0 0 ${width} ${height}`,
-                preserveAspectRatio: "xMidYMid meet",
-                width: "100%",
-                height: "100%",
-                focusable: "false",
-                "aria-hidden": "true",
-              },
-              svgChildren,
-            ),
-          ],
-        ),
-        chartDataList(label, dataValueItems),
-      ];
-
-      return h("div", { ...attrs, class: classNames("st-treegraphChart", props.class) }, children);
-    };
-  },
+defineOptions({ name: 'TreegraphChart' });
+const props = withDefaults(defineProps<TreegraphChartProps>(), {
+  width: 640, height: 360, class: undefined,
 });
+
+const attrs = useAttrs();
+const rootProps = computed(() => ({
+  ...attrs,
+  class: classNames('st-treegraphChart', props.class),
+}));
+
+const width = computed(() => props.width ?? 640);
+const height = computed(() => props.height ?? 360);
+const layout = computed(() => buildLayout(props.data, width.value, height.value));
+
+const fontSize = computed(() => {
+  const rowH = layout.value.rowH;
+  return rowH < 18 ? 9 : rowH < 26 ? 10 : 11;
+});
+const maxChars = computed(() => Math.max(2, Math.floor((PAD_X - R - 6) / (fontSize.value * 0.58))));
+
+const dataValueItems = computed(() => layout.value.nodes.map((b) => {
+  const parent = b.parentId != null ? layout.value.nodes.find((p) => p.id === b.parentId) : undefined;
+  return parent ? `${b.label} (${b.id}) → ${parent.label}` : `${b.label} (${b.id})`;
+}));
+
+function isLeaf(node: Node): boolean {
+  return !layout.value.nodes.some((c) => c.parentId === node.id);
+}
+
+function linkPath(link: Link): string {
+  const cx = (link.x1 + link.x2) / 2;
+  return `M ${link.x1} ${link.y1} C ${cx} ${link.y1} ${cx} ${link.y2} ${link.x2} ${link.y2}`;
+}
+</script>
+
+<template>
+  <div v-bind="rootProps">
+    <div class="st-treegraphChart__visual" role="img" :aria-label="props.label">
+      <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+        <path v-for="link in layout.links" :key="`link-${link.id}`" class="st-treegraphChart__link" :d="linkPath(link)" fill="none" />
+        <g v-for="node in layout.nodes" :key="node.id" class="st-treegraphChart__node">
+          <circle :class="classNames('st-treegraphChart__dot', `st-treegraphChart__dot--${node.tone}`)" :cx="node.x" :cy="node.y" :r="R" />
+          <text class="st-treegraphChart__label" :x="isLeaf(node) ? node.x + R + 4 : node.x - R - 4" :y="node.y" :text-anchor="isLeaf(node) ? 'start' : 'end'" dominant-baseline="central" :style="`font-size: ${fontSize}px`">{{ clip(node.label, maxChars) }}</text>
+        </g>
+      </svg>
+    </div>
+    <ul v-if="dataValueItems.length > 0" class="st-chartDataList" :aria-label="`Data values for ${props.label}`">
+      <li v-for="(item, i) in dataValueItems" :key="i">{{ item }}</li>
+    </ul>
+  </div>
+</template>
