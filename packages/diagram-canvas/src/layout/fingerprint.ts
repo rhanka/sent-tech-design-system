@@ -20,7 +20,7 @@ import type { LayoutMeasurements } from "./measure.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2a.1";
+export const LAYOUT_ENGINE_VERSION = "dc2a.2";
 
 export interface LayoutFingerprintInput {
   readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId">;

@@ -151,7 +151,7 @@ describe("legend keys", () => {
 });
 
 describe("measurement overflow", () => {
-  it("reports card-overflow with the box and every character kept", () => {
+  it("grows the card and reports the allocation overflow with every character kept", () => {
     const longBody = Array.from({ length: 50 }, (_, index) => `word${index}`).join(" ");
     const overflowing = makePresentation({
       forms: { C: "card", a: "card", b: "card", lone: "card" },
@@ -165,7 +165,9 @@ describe("measurement overflow", () => {
     const measured = layMeasured(buildMeasuredDocument(), overflowing, wordWrapMeasurer({ charWidth: 8 }));
     const codes = measured.warnings.map((warning) => warning.code);
     expect(codes).toContain("card-overflow");
-    expect(geometryOf(measured.view, "a")).toMatchObject({ width: 460, height: 200 });
+    expect(geometryOf(measured.view, "a").width).toBe(460);
+    expect(geometryOf(measured.view, "a").height).toBeGreaterThan(200);
+    expect(codes).toContain("card-grown");
     const body = measured.slots.find((slot) => slot.role === "body")!;
     expect(body.layout.overflow).toBe(true);
     expect(body.layout.lines.join(" ")).toBe(longBody);
