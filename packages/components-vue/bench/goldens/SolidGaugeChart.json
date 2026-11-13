@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "SolidGaugeChart",
+  "sourceRevision": "9768d9a45ad8a0982e58a83a9c55d1d5b10e9cea",
+  "source": "src/SolidGaugeChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Load\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"65\" aria-valuetext=\"Load: 65\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 152.1666376158091 27.24331403338438\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">65</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Load</text></svg></div><ul aria-label=\"Data values for Load\" class=\"st-chartDataList\"><li>Load: 65 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "percent",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"CPU\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"80\" aria-valuetext=\"CPU: 80%\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 185.14149843754512 55.406505767075075\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">80%</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">CPU</text></svg></div><ul aria-label=\"Data values for CPU\" class=\"st-chartDataList\"><li>CPU: 80% (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "thresholds-unit",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"42\" aria-valuetext=\"42 ms\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 260 128.00000000000003\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 19.92 130 A 110.08 110.08 0 0 1 240.07999999999998 129.99999999999997\" fill=\"none\" stroke-width=\"35.84\"></path><path class=\"st-solidGaugeChart__progress st-solidGaugeChart__progress--success\" d=\"M 19.92 130 A 110.08 110.08 0 0 1 102.62421722089273 23.378365622960303\" fill=\"none\" stroke-width=\"35.84\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"130\" y=\"126.416\">42 ms</text></svg></div><ul aria-label=\"Data values for gauge\" class=\"st-chartDataList\"><li>42 ms (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-solidGaugeChart consumer\" data-bench=\"gauge\" style=\"color:red;\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"10\" aria-valuetext=\"10\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 21.66587076650613 81.2985015624549\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">10</text></svg></div><ul aria-label=\"Data values for gauge\" class=\"st-chartDataList\"><li>10 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "empty-angles",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 17.120000000000005 110.00000000000001\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">0</text></svg></div><ul aria-label=\"Data values for gauge\" class=\"st-chartDataList\"><li>0 (min 0, max 100)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "2943ccdf8292bb240c09c9d42ba1e48ec89fa3d26770556bb16abbbe9b445dc5",
+  "fixtureSha256": "6084072d43f1c63cf1423ab550910132bcbdb2e15f3166b88f62150562ab395f",
+  "publicExports": [
+    {
+      "name": "SolidGaugeChart",
+      "typeOnly": false
+    },
+    {
+      "name": "SolidGaugeChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SolidGaugeTone",
+      "typeOnly": true
+    },
+    {
+      "name": "SolidGaugeThreshold",
+      "typeOnly": true
+    },
+    {
+      "name": "SolidGaugeFormat",
+      "typeOnly": true
+    }
+  ]
+}
