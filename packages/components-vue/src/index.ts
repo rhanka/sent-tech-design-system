@@ -636,11 +636,11 @@ export type {
   NavItemStatus,
   NavItemSwatch,
 } from "./NavItem.js";
-export { NavSection } from "./NavSection.js";
+export { default as NavSection } from './NavSection.vue';
 export type {
   NavSectionProps,
   NavSectionHeadingLevel,
-} from "./NavSection.js";
+} from './NavSection.vue';
 export { ListReportPage } from "./ListReportPage.js";
 export type {
   ListReportPageProps,
