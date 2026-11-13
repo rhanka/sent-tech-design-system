@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Drawer",
+  "sourceRevision": "62f4b0300f139f54f8218d8d2d945bd90d18f212",
+  "source": "src/Drawer.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Settings\" aria-modal=\"true\" class=\"st-drawer st-drawer--right\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Settings</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><p class=\"st-drawer__description\">Edit preferences</p><div class=\"st-drawer__body\">Body content</div><div class=\"st-drawer__footer\">Footer actions</div></aside></div>"
+    },
+    {
+      "id": "left-placement",
+      "html": "<div class=\"st-drawer__backdrop\" data-bench=\"drawer\" data-testid=\"st-drawer-backdrop\" role=\"presentation\" style=\"color:red;\"><aside aria-label=\"Nav\" aria-modal=\"true\" class=\"st-drawer st-drawer--left consumer\" data-bench=\"drawer\" role=\"dialog\" style=\"color: red\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Nav</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\">Links</div></aside></div>"
+    },
+    {
+      "id": "bottom-no-title",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Drawer\" aria-modal=\"true\" class=\"st-drawer st-drawer--bottom\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><button aria-label=\"Dismiss\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\">Content</div></aside></div>"
+    },
+    {
+      "id": "open-title-only",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Plain\" aria-modal=\"true\" class=\"st-drawer st-drawer--right\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Plain</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\">Body</div></aside></div>"
+    },
+    {
+      "id": "closed",
+      "html": ""
+    },
+    {
+      "id": "closed-empty",
+      "html": ""
+    }
+  ],
+  "sourceSha256": "115e1489d04f679e530a898606f5ccf5a64835137c00f204712755e48dc05aa6",
+  "fixtureSha256": "7171d91bd6b4a486749fc3a204ce77f1a789d44b4fe04bb16514f10f4554b197",
+  "publicExports": [
+    {
+      "name": "Drawer",
+      "typeOnly": false
+    },
+    {
+      "name": "DrawerProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DrawerPlacement",
+      "typeOnly": true
+    }
+  ]
+}
