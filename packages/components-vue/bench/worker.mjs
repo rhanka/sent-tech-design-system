@@ -52,26 +52,48 @@ try {
     if (typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
     const { default: Target } = await import(pathToFileURL(resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`)).href);
     if (Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
-    const file = resolve(temporary, 'mount.vue');
-    writeFileSync(file, wrapperSource(name, fixtures[0]));
-    const { default: Component } = await import(pathToFileURL(file).href);
-    const app = createVaporApp(Component);
+    const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', name + '.json'), 'utf8'));
     const errors = [];
-    app.config.errorHandler = error => errors.push(String(error));
-    app.config.warnHandler = warning => errors.push(warning);
     dom.window.addEventListener('error', event => errors.push(String(event.error ?? event.message)));
-    try {
-      app.mount(document.querySelector('#app'));
-      await nextTick();
-      await new Promise(done => setTimeout(done, 0));
-      if (!document.body.querySelector('#app *') && !document.body.querySelector('[data-st-portal="teleported"]') && !document.body.querySelector('.st-popper') && !document.body.textContent) throw new Error('Mount produced no content');
-    } finally {
-      app.unmount();
-      await nextTick();
-      dom.window.close();
+    const mounted = [];
+    for (const fixture of fixtures) {
+      document.body.innerHTML = '<div id="app"></div><div id="destination"></div>';
+      const file = resolve(temporary, 'mount-' + fixture.id + '.vue');
+      writeFileSync(file, wrapperSource(name, fixture));
+      const { default: Component } = await import(pathToFileURL(file).href);
+      const app = createVaporApp(Component);
+      app.config.errorHandler = error => errors.push(String(error));
+      app.config.warnHandler = warning => errors.push(warning);
+      try {
+        app.mount(document.querySelector('#app'));
+        await nextTick();
+        await new Promise(done => setTimeout(done, 0));
+        const expected = golden.fixtures.find(f => f.id === fixture.id);
+        if ((expected.html || Object.values(expected.teleports ?? {}).some(Boolean)) && !document.body.textContent && !document.querySelector('#app *') && !document.querySelector('.st-popper,.st-portal')) throw new Error(fixture.id + ': mount produced no content');
+        if (name === 'Portal') {
+          const target = fixture.props.disabled ? document.querySelector('#app') : typeof fixture.props.target === 'string' ? document.querySelector(fixture.props.target) : fixture.props.target ?? document.body;
+          if (!target?.querySelector('.st-portal')) throw new Error(fixture.id + ': portal did not reach its destination');
+          if (!fixture.props.disabled && document.querySelector('#app .st-portal')) throw new Error('Portal stayed inline');
+        }
+        if (name === 'Popper') {
+          const panel = document.querySelector('.st-popper');
+          if (Boolean(panel) !== Boolean(fixture.props.open && fixture.props.anchor)) throw new Error(fixture.id + ': incorrect Popper visibility');
+          if (panel && (fixture.props.portal === false) !== Boolean(document.querySelector('#app .st-popper'))) throw new Error(fixture.id + ': incorrect Popper destination');
+        }
+        if (name === 'Dropdown') {
+          if (Boolean(document.querySelector('.st-dropdown__list')) !== Boolean(fixture.props.open)) throw new Error(fixture.id + ': incorrect Dropdown visibility');
+          if (document.querySelector('#app .st-dropdown__list')) throw new Error('Dropdown list was not teleported');
+        }
+        mounted.push(fixture.id);
+      } finally {
+        app.unmount();
+        await nextTick();
+      }
+      if (['Portal', 'Popper', 'Dropdown'].includes(name) && document.querySelector('.st-portal,.st-popper,.st-dropdown__list')) throw new Error(fixture.id + ': teleported content survived unmount');
+      if (errors.length) throw new Error(fixture.id + ': ' + errors.join('; '));
     }
-    if (errors.length) throw new Error(errors.join('; '));
-    report({ ok: true, fixture: 'default', runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
+    dom.window.close();
+    report({ ok: true, fixture: mounted.join(', '), runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
   }
 } catch (error) {
   report({ ok: false, error: error.stack ?? String(error) });
