@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:5d8c583edc7f5558e55368cc6fd4b4c507fc36eaad25c527ebdc3a588c53feac",
-  "entryDigest": "sha256:aa8ce69c62bbc48266b80fd3a60a4ee78e009291044d13a1fcc7470d82ed8930",
+  "digest": "sha256:5b46f01f3d963ee942096a30784d5446c84bfaa2035ab333bdf446217b6ab881",
+  "entryDigest": "sha256:2473910d3d07dcd0f81074630dd367386080bc533db2895ce2cc21f6e42f92e7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -71,7 +71,7 @@
         "declarationPath": "packages/components-angular/dist/ChatComposer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatComposerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -132,7 +132,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatComposerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

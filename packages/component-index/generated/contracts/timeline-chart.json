@@ -1,8 +1,8 @@
 {
   "componentId": "timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:7530741003c40cbe125aa367b988800c33494c8280cab072bb30d646fc4b9ceb",
-  "entryDigest": "sha256:3a920ad32a9135d3d3b2b1f9b1e90bde20a6328eaac0d6df74ea608984adb1a7",
+  "digest": "sha256:443337f15fb6e532f9db6b86cfe0652b54b510bc96edf3eb6baa58a748d1c533",
+  "entryDigest": "sha256:a42bc2de1ba33c66b988724095095e7142b94078b421cae4e3b9059b14a6b51d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -80,7 +80,7 @@
         "declarationPath": "packages/components-angular/dist/TimelineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimelineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/TimelineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimelineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

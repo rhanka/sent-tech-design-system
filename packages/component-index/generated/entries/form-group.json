@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FormGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FormGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:18931c82c312d60bd5d7a98f1dc619600b8181524b5212047b31cfe250bb6e10",
+  "digest": "sha256:892839d2c9c02c8daebfa2d872054a61059439cbe078ab2e15f05087ac1f2057",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

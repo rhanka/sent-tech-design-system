@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ProgressIndicator.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ProgressIndicator.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Step sequence with complete/current/upcoming status.",
     "fr": "Suite d’étapes avec statut complete/current/upcoming."
   },
-  "digest": "sha256:e592e1d21af7b80cd0058a42fcf3718d93022212b4c7c415c8486723e925a372",
+  "digest": "sha256:2d9883bfe4040722d607114e1b8dd9bf09d3f8c3b535e5d3cecbaa04c1a7037a",
   "displayName": "ProgressIndicator",
   "format": "component-entry/v1",
   "frameworks": [

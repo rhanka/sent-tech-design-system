@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ErrorBarChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ErrorBarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval).",
     "fr": "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance)."
   },
-  "digest": "sha256:fa2e17c102aa739272064dc37b6134fe928df5b124b372694b7e4482cdc62551",
+  "digest": "sha256:b22b367e84b13eeadf46bec0a90be6ab7313f9ad8a433361049f99bf64fbea50",
   "displayName": "ErrorBarChart",
   "format": "component-entry/v1",
   "frameworks": [

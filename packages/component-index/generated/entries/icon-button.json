@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/IconButton.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/IconButton.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact 32-36 px icon-only button, mandatory aria-label, Lucide.",
     "fr": "Bouton icône compact 32-36 px, aria-label obligatoire, Lucide."
   },
-  "digest": "sha256:bd9ccaff06386df0ca05bfcad866b2d0685247aae54480a2978ca86e38490b73",
+  "digest": "sha256:e48ce5b918902658a9cc39fc82a779810dfd4a321d7658c7741322e8c5ca6cf1",
   "displayName": "IconButton",
   "format": "component-entry/v1",
   "frameworks": [

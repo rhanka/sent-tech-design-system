@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MessageStatusBadge.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MessageStatusBadge.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Message status badge mapped to pending/processing/completed/failed.",
     "fr": "Badge de statut de message basé sur les niveaux pending/processing/completed/failed."
   },
-  "digest": "sha256:3d1c9bd7360d9e30e92554859d157f5a2117a33b1ee2fe8f9c55bfaa0052c83a",
+  "digest": "sha256:8d2fbefe1c3dea377c99f3ceca13881a2c404d7f954012563541343853923545",
   "displayName": "MessageStatusBadge",
   "format": "component-entry/v1",
   "frameworks": [

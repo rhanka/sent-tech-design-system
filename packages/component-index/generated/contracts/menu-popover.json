@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:23e35d27ea69d9bc5c258840c9206f9e401873ea32b2632b22a8a677b670ac48",
-  "entryDigest": "sha256:6068c7ffbc275613baeb4d3bd690b087093fc928ba885c65a565fd49089d6a6a",
+  "digest": "sha256:3685d7a92c8b6b8273b508c72c1e9adbf5d90c67025a548159c40771a44ac5ee",
+  "entryDigest": "sha256:1057e62feca4d1182c91e9351aa3fd99f0d9f3d8e5a9e79bc644c6fc7bacabac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -198,7 +198,7 @@
         "declarationPath": "packages/components-angular/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -392,7 +392,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

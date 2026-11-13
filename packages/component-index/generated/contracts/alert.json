@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:945bf98d8f1289e9c031afd40cb158ee2d389a0240e695ad64410207b4ccdd4d",
-  "entryDigest": "sha256:fe5b25b167f0a5faedf1935c801afe08fb973c60c7b6efac69e71483503cfacd",
+  "digest": "sha256:a4133a338545793d8ff20f6c156597c17fd0dc67e8f0de162f08da232d9f52e3",
+  "entryDigest": "sha256:8de629d9f963175d397aa8c225473902f63f4b7fa70704206f868f7ff9f8bde9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Alert.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AlertProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -122,7 +122,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AlertProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

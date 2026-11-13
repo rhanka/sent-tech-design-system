@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:3838d093b6f12a45d35e965ccd4ba14f14d6eade6e0b4e6258f6f0987c50dbc4",
-  "entryDigest": "sha256:444c098af98fe8e709b4ae608dec85b84764efe90efd2f7bbcb9c848a5c7552b",
+  "digest": "sha256:dda44a5ee3e0aa3f85c365d55d4d6004755f2e925c71d1bbfbb668993c9737b4",
+  "entryDigest": "sha256:57278b22bb5c7104986055fe02c3a943c50f5d04bf6a03dc01b9664fa902bb2c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Embed.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -116,7 +116,7 @@
         "declarationPath": "packages/components-react/dist/Embed.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

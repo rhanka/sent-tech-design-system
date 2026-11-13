@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:c65a178dd58ec296592f2998a43287defdf0cf33f7141b08315f3388ab55f1d4",
-  "entryDigest": "sha256:b2e02e2f4cd3959d6e1fe4b79c5e053fb8428a4bd40a07a87fda6672c606aa24",
+  "digest": "sha256:8b3a1de479f3d7ff250456a0c3825aae66d6802f96b0977515e184deda6256b4",
+  "entryDigest": "sha256:e0fd4ea4e72dd93a45b086efecd5728f2f216139d9f4b18866957ff22c3d604f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Highlight.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HighlightProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HighlightProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

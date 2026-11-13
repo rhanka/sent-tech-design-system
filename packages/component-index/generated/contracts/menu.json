@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:0d120eef0be73dbe2fe95359a0499c9f89148d958f7bdf05ca0dea810a2044f5",
-  "entryDigest": "sha256:788bb18afe264e686fd1516f7c1d98af072fa604a982bdf909afa574d1d24bf8",
+  "digest": "sha256:5762fc543d2a300f2c49c1f82452f481556150928af1a05e6a85f25b27d417d5",
+  "entryDigest": "sha256:a4fe14e872e2501f018dc16d8c9732d2c3327c4a86bc9f10b7e840ed608a3d26",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -166,7 +166,7 @@
         "declarationPath": "packages/components-angular/dist/Menu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -312,7 +312,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

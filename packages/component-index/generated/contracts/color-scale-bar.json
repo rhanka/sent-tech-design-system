@@ -1,8 +1,8 @@
 {
   "componentId": "color-scale-bar",
   "contractSource": "derived",
-  "digest": "sha256:05392589fd4005e962be83bc75e2239557e0e9ebc8e74656cd98946d8e974b58",
-  "entryDigest": "sha256:db103b2357bd9b6bbdb22836d56584e9d910e55dea7387afa8dcef2081567fe9",
+  "digest": "sha256:2aadff61e2749b53e2d2a10473214f003750d145251ae7f17e0742e9b5b1beba",
+  "entryDigest": "sha256:66347e47c0ad3fcc13e6ab132d949bf6f2b4355be5739d113d1f71d73db05e50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -55,7 +55,7 @@
         "declarationPath": "packages/components-angular/dist/ColorScaleBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColorScaleBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -127,7 +127,7 @@
         "declarationPath": "packages/components-react/dist/ColorScaleBar.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColorScaleBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

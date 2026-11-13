@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:524bda8de77bac6387cace20e0faafb4815c9bd1c0d3efb8f97f41aacbbf2119",
-  "entryDigest": "sha256:dfcd62d49482ff0ea9ac3dd5fe1401ff12b2628c4e9500f71728786e0fc0bec2",
+  "digest": "sha256:d13a45b38b1c8e59cb6390280ff127c2516bb32271143422c9b0910c0af37d28",
+  "entryDigest": "sha256:c79930da1c39cde1f8e44c7dc1c41742baf28d61624afce31e2f74b5775be434",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -82,7 +82,7 @@
         "declarationPath": "packages/components-angular/dist/ViolinChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ViolinChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-react/dist/ViolinChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ViolinChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:4bd3d5b66e53a60eb2dc1cbf62f5c6a7356e8f5650e0ea59e6ad0b46bc0761e8",
-  "entryDigest": "sha256:f17da5f3c0cbc732170c5d5723d742af775cf68fa4f30bdf95cda617da211c72",
+  "digest": "sha256:f6445238e72af3881d684f105753f16e47d8f742d2fecb091182f50ea90b0082",
+  "entryDigest": "sha256:991422b454a840ded7626d93a95f245406acffc4e4a1f4d8c9536d983419ee32",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-angular/dist/Textarea.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TextareaProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -160,7 +160,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TextareaProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CopyButton.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CopyButton.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Button dedicated to copying a value to the clipboard.",
     "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
-  "digest": "sha256:f4f544493ffd7c5865147be8e3bc7045304852a509937dd27a1045b1cfd07e79",
+  "digest": "sha256:14d22101c50411a5b395b83a88478f4bf6b08db58875f255fbef646d90209853",
   "displayName": "CopyButton",
   "format": "component-entry/v1",
   "frameworks": [

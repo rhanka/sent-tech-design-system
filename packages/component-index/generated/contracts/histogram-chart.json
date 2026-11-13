@@ -1,8 +1,8 @@
 {
   "componentId": "histogram-chart",
   "contractSource": "derived",
-  "digest": "sha256:8a700dbb90a3b2645bd3d3610420665356a032d17cee689ff6fbadac62d2042b",
-  "entryDigest": "sha256:3a0d82a4a83afbd10549abe6f96b2ffd331a7786b38b32519291ae59f17b01b2",
+  "digest": "sha256:5d8b091e12ab69f992be83557236a14a19a35ab5e2a915c41dce7bd28c50d72f",
+  "entryDigest": "sha256:8e48869d9b2ff205f1e2302197df0b9f6d061b15907f5778810be2926dea2c12",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/HistogramChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HistogramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-react/dist/HistogramChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HistogramChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
