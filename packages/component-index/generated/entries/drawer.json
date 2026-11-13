@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Drawer.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Side panel for secondary workflows.",
     "fr": "Panneau latéral pour workflows secondaires."
   },
-  "digest": "sha256:6ffc9e09f3e823ba7f207717c618f315b0925b8f94a0d2423ff8058f21f3bf8f",
+  "digest": "sha256:0c15c5b8da3ab0457a721ef444250e25968b16c14735a40d2c4644b80c327950",
   "displayName": "Drawer",
   "format": "component-entry/v1",
   "frameworks": [

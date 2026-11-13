@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DataTable.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Advanced table: sorting, multi-row selection.",
     "fr": "Table avancée: tri, sélection multi-lignes."
   },
-  "digest": "sha256:829f8fde18b746cc3473bc6268b863c11b251361e0529d5c91bece4795f4ddc0",
+  "digest": "sha256:b1811363c716e96b3f384cf9da6714495528f405633611bfeff0b295cabb1e8e",
   "displayName": "DataTable",
   "format": "component-entry/v1",
   "frameworks": [

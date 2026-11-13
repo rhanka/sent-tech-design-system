@@ -1,0 +1,72 @@
+{
+  "id": "readme-frame-cm-security",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "cm-security"
+  },
+  "cards": [
+    {
+      "id": "cm-security",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "5. Security and observability",
+      "purpose": "Responsibilities separate from AI capabilities",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 3458,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "sec-access",
+      "parentId": "cm-security",
+      "container": false,
+      "folded": false,
+      "kicker": "TRUST",
+      "title": "Access & seats",
+      "purpose": "IAM · NHI · 2FA · rights · consent",
+      "detail": "MFA #695 · central custody #596",
+      "footer": "service: Sentropic",
+      "icon": "shield",
+      "old": {
+        "x": 3474,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sec-observe",
+      "parentId": "cm-security",
+      "container": false,
+      "folded": false,
+      "kicker": "TRUST",
+      "title": "Audit & observability",
+      "purpose": "Logs · metrics · traces · receipts",
+      "detail": "auditId · submitted/committed/accepted",
+      "footer": "service: Sentropic",
+      "icon": "shield",
+      "old": {
+        "x": 3474,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-sec-observe",
+      "source": "sec-access",
+      "target": "sec-observe",
+      "label": "Access audit"
+    }
+  ]
+}

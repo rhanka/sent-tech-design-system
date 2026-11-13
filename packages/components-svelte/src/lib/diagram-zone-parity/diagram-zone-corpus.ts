@@ -20,11 +20,12 @@ import { createHash as sha256 } from "node:crypto";
  * frame rect, header rule, icon, kicker/title/subtitle and toggle.
  */
 
-export const HRPN_REPO = "/home/antoinefa/src/airbus-genair-hrpolnav";
+export const HRPN_REPO = process.env.DIAGRAM_LEGACY_REFERENCE_REPO;
 export const HRPN_REV = "e5eaca3";
 
 /** Read one pinned file from the read-only reference repo (test-only). */
 export function readHrpnPinned(path: string): Buffer | null {
+  if (HRPN_REPO === undefined) return null;
   try {
     return gitShowFile("git", ["-C", HRPN_REPO, "show", `${HRPN_REV}:${path}`], {
       encoding: "buffer",

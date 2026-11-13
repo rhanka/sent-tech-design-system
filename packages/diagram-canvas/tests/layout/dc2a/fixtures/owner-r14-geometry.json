@@ -1,0 +1,851 @@
+{
+  "engine": "Memory R14 renderContainerScene",
+  "engineSha256": "b32cd721791a6ff931dc5fbcdd541bb5030158b4f143598eeba09375291e0798",
+  "placementSha256": "46a948ca99cff0a0e7fc33df78adc3dfb7621aa8ef9c3736bcf5b1f3315d37d1",
+  "approvedRender": {
+    "scene": "memory-roles",
+    "bounds": [
+      1564,
+      3168
+    ],
+    "boxes": 7,
+    "boxedLabels": 12
+  },
+  "scenes": {
+    "memory/expanded": {
+      "order": {
+        "top": [
+          "host-poste",
+          "sys-h2a",
+          "sys-track",
+          "sys-mesh",
+          "st-events",
+          "sys-engram",
+          "act-memctl"
+        ],
+        "children": {
+          "host-poste": [
+            "rt-codex",
+            "rt-gemini",
+            "rt-agy",
+            "rt-hermes",
+            "rt-opencode",
+            "rt-muse",
+            "rt-vibe",
+            "rt-claude"
+          ],
+          "sys-h2a": [
+            "api-h2a",
+            "rt-h2a",
+            "pkg-h2a",
+            "rt-mandates",
+            "pkg-plugin"
+          ],
+          "pkg-plugin": [],
+          "pkg-h2a": [],
+          "sys-track": [
+            "pkg-track",
+            "rt-track"
+          ],
+          "pkg-track": [
+            "cmp-control",
+            "art-track-op",
+            "art-branch"
+          ],
+          "sys-engram": [
+            "svc-live",
+            "api-memory",
+            "st-record",
+            "st-mandates",
+            "rt-dreaming",
+            "cmp-guard",
+            "st-blacklist"
+          ],
+          "sys-mesh": [
+            "api-mesh",
+            "api-mcp-registry",
+            "svc-h2a-mcp"
+          ]
+        }
+      },
+      "parameters": {
+        "childGap": 160,
+        "rowGap": 160,
+        "topGap": 280
+      },
+      "rects": {
+        "host-poste": {
+          "x": 568,
+          "y": 44,
+          "width": 2352,
+          "height": 767.625,
+          "kind": "zone-expanded"
+        },
+        "rt-codex": {
+          "x": 584,
+          "y": 186.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-gemini": {
+          "x": 1204,
+          "y": 186.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-agy": {
+          "x": 1824,
+          "y": 186.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-hermes": {
+          "x": 2444,
+          "y": 186.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-opencode": {
+          "x": 584,
+          "y": 546.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-muse": {
+          "x": 1204,
+          "y": 546.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-vibe": {
+          "x": 1824,
+          "y": 546.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-claude": {
+          "x": 2444,
+          "y": 546.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-h2a": {
+          "x": 862,
+          "y": 1091.625,
+          "width": 1764,
+          "height": 782.875,
+          "kind": "zone-expanded"
+        },
+        "api-h2a": {
+          "x": 878,
+          "y": 1233.8125,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-h2a": {
+          "x": 1498,
+          "y": 1233.8125,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "pkg-h2a": {
+          "x": 2118,
+          "y": 1233.8125,
+          "width": 492,
+          "height": 207.625,
+          "kind": "zone-expanded"
+        },
+        "rt-mandates": {
+          "x": 878,
+          "y": 1601.4375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "pkg-plugin": {
+          "x": 1498,
+          "y": 1601.4375,
+          "width": 492,
+          "height": 207.625,
+          "kind": "zone-expanded"
+        },
+        "sys-track": {
+          "x": 552,
+          "y": 2154.5,
+          "width": 2384,
+          "height": 615.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-track": {
+          "x": 568,
+          "y": 2296.6875,
+          "width": 1732,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-control": {
+          "x": 584,
+          "y": 2438.875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "art-track-op": {
+          "x": 1204,
+          "y": 2438.875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "art-branch": {
+          "x": 1824,
+          "y": 2438.875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-track": {
+          "x": 2460,
+          "y": 2296.6875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-mesh": {
+          "x": 878,
+          "y": 3049.75,
+          "width": 1732,
+          "height": 438.825,
+          "kind": "zone-expanded"
+        },
+        "api-mesh": {
+          "x": 894,
+          "y": 3223.1375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "api-mcp-registry": {
+          "x": 1514,
+          "y": 3223.1375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "svc-h2a-mcp": {
+          "x": 2134,
+          "y": 3223.1375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "st-events": {
+          "x": 1514,
+          "y": 3768.575,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-engram": {
+          "x": 568,
+          "y": 4248.575,
+          "width": 2352,
+          "height": 767.625,
+          "kind": "zone-expanded"
+        },
+        "svc-live": {
+          "x": 584,
+          "y": 4390.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "api-memory": {
+          "x": 1204,
+          "y": 4390.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "st-record": {
+          "x": 1824,
+          "y": 4390.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "st-mandates": {
+          "x": 2444,
+          "y": 4390.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-dreaming": {
+          "x": 584,
+          "y": 4750.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "cmp-guard": {
+          "x": 1204,
+          "y": 4750.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "st-blacklist": {
+          "x": 1824,
+          "y": 4750.7625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "act-memctl": {
+          "x": 1514,
+          "y": 5296.2,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        }
+      }
+    },
+    "memory/folded": {
+      "order": {
+        "top": [
+          "host-poste",
+          "sys-h2a",
+          "sys-track",
+          "sys-mesh",
+          "st-events",
+          "sys-engram",
+          "act-memctl"
+        ],
+        "children": {
+          "host-poste": [
+            "rt-codex",
+            "rt-gemini",
+            "rt-agy",
+            "rt-hermes",
+            "rt-opencode",
+            "rt-muse",
+            "rt-vibe",
+            "rt-claude"
+          ],
+          "sys-h2a": [
+            "api-h2a",
+            "rt-h2a",
+            "pkg-h2a",
+            "rt-mandates",
+            "pkg-plugin"
+          ],
+          "pkg-plugin": [],
+          "pkg-h2a": [],
+          "sys-track": [
+            "pkg-track",
+            "rt-track"
+          ],
+          "pkg-track": [
+            "cmp-control",
+            "art-track-op",
+            "art-branch"
+          ],
+          "sys-engram": [
+            "svc-live",
+            "api-memory",
+            "st-record",
+            "st-mandates",
+            "rt-dreaming",
+            "cmp-guard",
+            "st-blacklist"
+          ],
+          "sys-mesh": [
+            "api-mesh",
+            "api-mcp-registry",
+            "svc-h2a-mcp"
+          ]
+        }
+      },
+      "parameters": {
+        "childGap": 160,
+        "rowGap": 160,
+        "topGap": 280
+      },
+      "rects": {
+        "host-poste": {
+          "x": 552,
+          "y": 44,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-h2a": {
+          "x": 552,
+          "y": 524,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-track": {
+          "x": 552,
+          "y": 1004,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-mesh": {
+          "x": 552,
+          "y": 1484,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "st-events": {
+          "x": 552,
+          "y": 1964,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-engram": {
+          "x": 552,
+          "y": 2444,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "act-memctl": {
+          "x": 552,
+          "y": 2924,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        }
+      }
+    },
+    "vue-globale/expanded": {
+      "order": {
+        "top": [
+          "rt-claude",
+          "rt-codex",
+          "sys-h2a",
+          "sys-track",
+          "sys-sentropic",
+          "sys-engram",
+          "sys-ds"
+        ],
+        "children": {
+          "sys-h2a": [
+            "pkg-h2a",
+            "rt-h2a",
+            "svc-h2a-mcp",
+            "api-h2a"
+          ],
+          "pkg-h2a": [
+            "cmp-focus",
+            "art-skill-archi"
+          ],
+          "sys-track": [
+            "pkg-track",
+            "rt-track",
+            "st-events"
+          ],
+          "pkg-track": [
+            "cmp-control"
+          ],
+          "sys-sentropic": [
+            "pkg-mesh",
+            "pkg-artifacts",
+            "svc-memory-access",
+            "svc-artifacts",
+            "api-mcp-registry"
+          ],
+          "pkg-mesh": [],
+          "pkg-artifacts": [],
+          "sys-engram": [
+            "pkg-engram",
+            "rt-engram-cli",
+            "svc-engram-live",
+            "api-memory"
+          ],
+          "pkg-engram": [
+            "cmp-archi-guardian"
+          ],
+          "sys-ds": [
+            "pkg-ds-core",
+            "pkg-ds-canvas",
+            "pkg-ds-svelte"
+          ],
+          "pkg-ds-core": [],
+          "pkg-ds-canvas": [
+            "cmp-dc2a"
+          ],
+          "pkg-ds-svelte": [
+            "cmp-card-render"
+          ]
+        }
+      },
+      "parameters": {
+        "childGap": 160,
+        "rowGap": 160,
+        "topGap": 280
+      },
+      "rects": {
+        "rt-claude": {
+          "x": 1824,
+          "y": 44,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-codex": {
+          "x": 1824,
+          "y": 524,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-h2a": {
+          "x": 552,
+          "y": 1004,
+          "width": 3004,
+          "height": 615.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-h2a": {
+          "x": 568,
+          "y": 1146.1875,
+          "width": 1112,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-focus": {
+          "x": 584,
+          "y": 1288.375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "art-skill-archi": {
+          "x": 1204,
+          "y": 1288.375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-h2a": {
+          "x": 1840,
+          "y": 1146.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "svc-h2a-mcp": {
+          "x": 2460,
+          "y": 1146.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "api-h2a": {
+          "x": 3080,
+          "y": 1146.1875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-track": {
+          "x": 1172,
+          "y": 1899.25,
+          "width": 1764,
+          "height": 615.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-track": {
+          "x": 1188,
+          "y": 2041.4375,
+          "width": 492,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-control": {
+          "x": 1204,
+          "y": 2183.625,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-track": {
+          "x": 1840,
+          "y": 2041.4375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "st-events": {
+          "x": 2460,
+          "y": 2041.4375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-sentropic": {
+          "x": 1156,
+          "y": 2794.5,
+          "width": 1796,
+          "height": 775.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-mesh": {
+          "x": 1172,
+          "y": 2936.6875,
+          "width": 492,
+          "height": 207.625,
+          "kind": "zone-expanded"
+        },
+        "pkg-artifacts": {
+          "x": 1824,
+          "y": 2936.6875,
+          "width": 492,
+          "height": 207.625,
+          "kind": "zone-expanded"
+        },
+        "svc-memory-access": {
+          "x": 2476,
+          "y": 2936.6875,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "svc-artifacts": {
+          "x": 1172,
+          "y": 3304.3125,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "api-mcp-registry": {
+          "x": 1792,
+          "y": 3304.3125,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-engram": {
+          "x": 862,
+          "y": 3849.75,
+          "width": 2384,
+          "height": 615.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-engram": {
+          "x": 878,
+          "y": 3991.9375,
+          "width": 492,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-archi-guardian": {
+          "x": 894,
+          "y": 4134.125,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-engram-cli": {
+          "x": 1530,
+          "y": 3991.9375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "svc-engram-live": {
+          "x": 2150,
+          "y": 3991.9375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "api-memory": {
+          "x": 2770,
+          "y": 3991.9375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-ds": {
+          "x": 1140,
+          "y": 4745,
+          "width": 1828,
+          "height": 615.25,
+          "kind": "zone-expanded"
+        },
+        "pkg-ds-core": {
+          "x": 1156,
+          "y": 4887.1875,
+          "width": 492,
+          "height": 207.625,
+          "kind": "zone-expanded"
+        },
+        "pkg-ds-canvas": {
+          "x": 1808,
+          "y": 4887.1875,
+          "width": 492,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-dc2a": {
+          "x": 1824,
+          "y": 5029.375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "pkg-ds-svelte": {
+          "x": 2460,
+          "y": 4887.1875,
+          "width": 492,
+          "height": 407.625,
+          "kind": "zone-expanded"
+        },
+        "cmp-card-render": {
+          "x": 2476,
+          "y": 5029.375,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        }
+      }
+    },
+    "vue-globale/folded": {
+      "order": {
+        "top": [
+          "rt-claude",
+          "rt-codex",
+          "sys-h2a",
+          "sys-track",
+          "sys-sentropic",
+          "sys-engram",
+          "sys-ds"
+        ],
+        "children": {
+          "sys-h2a": [
+            "pkg-h2a",
+            "rt-h2a",
+            "svc-h2a-mcp",
+            "api-h2a"
+          ],
+          "pkg-h2a": [
+            "cmp-focus",
+            "art-skill-archi"
+          ],
+          "sys-track": [
+            "pkg-track",
+            "rt-track",
+            "st-events"
+          ],
+          "pkg-track": [
+            "cmp-control"
+          ],
+          "sys-sentropic": [
+            "pkg-mesh",
+            "pkg-artifacts",
+            "svc-memory-access",
+            "svc-artifacts",
+            "api-mcp-registry"
+          ],
+          "pkg-mesh": [],
+          "pkg-artifacts": [],
+          "sys-engram": [
+            "pkg-engram",
+            "rt-engram-cli",
+            "svc-engram-live",
+            "api-memory"
+          ],
+          "pkg-engram": [
+            "cmp-archi-guardian"
+          ],
+          "sys-ds": [
+            "pkg-ds-core",
+            "pkg-ds-canvas",
+            "pkg-ds-svelte"
+          ],
+          "pkg-ds-core": [],
+          "pkg-ds-canvas": [
+            "cmp-dc2a"
+          ],
+          "pkg-ds-svelte": [
+            "cmp-card-render"
+          ]
+        }
+      },
+      "parameters": {
+        "childGap": 160,
+        "rowGap": 160,
+        "topGap": 280
+      },
+      "rects": {
+        "rt-claude": {
+          "x": 552,
+          "y": 44,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "rt-codex": {
+          "x": 552,
+          "y": 524,
+          "width": 460,
+          "height": 200,
+          "kind": "leaf"
+        },
+        "sys-h2a": {
+          "x": 552,
+          "y": 1004,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-track": {
+          "x": 552,
+          "y": 1484,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-sentropic": {
+          "x": 552,
+          "y": 1964,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-engram": {
+          "x": 552,
+          "y": 2444,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        },
+        "sys-ds": {
+          "x": 552,
+          "y": 2924,
+          "width": 460,
+          "height": 200,
+          "kind": "zone-collapsed"
+        }
+      }
+    }
+  }
+}

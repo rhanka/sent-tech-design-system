@@ -1,0 +1,878 @@
+{
+  "id": "memory",
+  "source": {
+    "kind": "Memory R14",
+    "path": "/home/antoinefa/src/h2a/tmp/h-cond/memory-dossier/kit/src/memory-scenes-r14.json",
+    "layout": {
+      "top": [
+        "host-poste",
+        "sys-h2a",
+        "sys-track",
+        "sys-mesh",
+        "st-events",
+        "sys-engram",
+        "act-memctl"
+      ],
+      "children": {
+        "host-poste": [
+          "rt-codex",
+          "rt-gemini",
+          "rt-agy",
+          "rt-hermes",
+          "rt-opencode",
+          "rt-muse",
+          "rt-vibe",
+          "rt-claude"
+        ],
+        "sys-h2a": [
+          "api-h2a",
+          "rt-h2a",
+          "pkg-h2a",
+          "rt-mandates",
+          "pkg-plugin"
+        ],
+        "pkg-plugin": [],
+        "pkg-h2a": [],
+        "sys-track": [
+          "pkg-track",
+          "rt-track"
+        ],
+        "pkg-track": [
+          "cmp-control",
+          "art-track-op",
+          "art-branch"
+        ],
+        "sys-engram": [
+          "svc-live",
+          "api-memory",
+          "st-record",
+          "st-mandates",
+          "rt-dreaming",
+          "cmp-guard",
+          "st-blacklist"
+        ],
+        "sys-mesh": [
+          "api-mesh",
+          "api-mcp-registry",
+          "svc-h2a-mcp"
+        ]
+      }
+    }
+  },
+  "cards": [
+    {
+      "id": "host-poste",
+      "parentId": null,
+      "container": true,
+      "folded": true,
+      "kicker": "HÔTE · POSTE",
+      "title": "Poste de travail",
+      "purpose": "8 CLI",
+      "detail": null,
+      "footer": "opéré par: rhanka",
+      "icon": "cloud",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-h2a",
+      "parentId": null,
+      "container": true,
+      "folded": true,
+      "kicker": "SYSTÈME",
+      "title": "h2a",
+      "purpose": "Relie les agents des CLI",
+      "detail": null,
+      "footer": "repo: h2a",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-plugin",
+      "parentId": "sys-h2a",
+      "container": true,
+      "folded": true,
+      "kicker": "PAQUET · PLUGIN",
+      "title": "Plugin h2a",
+      "purpose": "Branche h2a dans les CLI",
+      "detail": null,
+      "footer": "repo: h2a",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-h2a",
+      "parentId": "sys-h2a",
+      "container": true,
+      "folded": true,
+      "kicker": "PAQUET · LIB",
+      "title": "@sentropic/h2a",
+      "purpose": "Code JS de h2a et bin h2a",
+      "detail": null,
+      "footer": "repo: h2a",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-track",
+      "parentId": null,
+      "container": true,
+      "folded": true,
+      "kicker": "SYSTÈME",
+      "title": "Track",
+      "purpose": "Contrôle chaque écriture",
+      "detail": null,
+      "footer": "repo: h2a",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "pkg-track",
+      "parentId": "sys-track",
+      "container": true,
+      "folded": true,
+      "kicker": "PAQUET · LIB",
+      "title": "@sentropic/track",
+      "purpose": "Code JS du suivi et bins track",
+      "detail": null,
+      "footer": "repo: h2a",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-engram",
+      "parentId": null,
+      "container": true,
+      "folded": true,
+      "kicker": "SYSTÈME",
+      "title": "engram",
+      "purpose": "Mémoire gouvernée du suivi",
+      "detail": null,
+      "footer": "repo: engram",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sys-mesh",
+      "parentId": null,
+      "container": true,
+      "folded": true,
+      "kicker": "SYSTÈME",
+      "title": "cluster-mesh",
+      "purpose": "Relie h2a et Track à engram et porte le Registre MCP",
+      "detail": null,
+      "footer": "repo: sentropic",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-claude",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Claude Code",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: Anthropic",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-codex",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Codex",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: OpenAI",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-gemini",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Gemini CLI",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: inconnu",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-agy",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Antigravity/agy",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: Google",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-hermes",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Hermes",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: NousResearch",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-opencode",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "OpenCode",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: inconnu",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-muse",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Muse",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: Meta",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-vibe",
+      "parentId": "host-poste",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "Vibe",
+      "purpose": "Ouvre la session de l’agent",
+      "detail": "sur: Poste de travail",
+      "footer": "propriétaire: Mistral",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-h2a",
+      "parentId": "sys-h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "CLI h2a",
+      "purpose": "Sert le MCP et les hooks",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/h2a",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-h2a",
+      "parentId": "sys-h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "API · MCP",
+      "title": "MCP h2a",
+      "purpose": "Outils de coordination h2a_*",
+      "detail": "fourni par: CLI h2a",
+      "footer": "repo: h2a",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-mandates",
+      "parentId": "sys-h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · DÉMON",
+      "title": "Gestion des mandats",
+      "purpose": "Émet et révoque les mandats h2a",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-control",
+      "parentId": "pkg-track",
+      "container": false,
+      "folded": false,
+      "kicker": "COMPOSANT",
+      "title": "Contrôle Track",
+      "purpose": "Valide ou refuse l'écriture",
+      "detail": "exécuté par: CLI track",
+      "footer": "repo: h2a · @sentropic/track",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "art-track-op",
+      "parentId": "pkg-track",
+      "container": false,
+      "folded": false,
+      "kicker": "ARTEFACT · SKILL",
+      "title": "track-operation",
+      "purpose": "Choisit lecture MCP ou CLI",
+      "detail": "chargé par: Claude Code · Codex",
+      "footer": "repo: h2a · @sentropic/track",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "art-branch",
+      "parentId": "pkg-track",
+      "container": false,
+      "folded": false,
+      "kicker": "ARTEFACT · SKILL",
+      "title": "branch-lifecycle",
+      "purpose": "Guide la fusion et la clôture",
+      "detail": "chargé par: Claude Code · Codex",
+      "footer": "repo: h2a · @sentropic/track",
+      "icon": "window",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-track",
+      "parentId": "sys-track",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · CLI",
+      "title": "CLI track",
+      "purpose": "Valide puis écrit le suivi",
+      "detail": "sur: Poste de travail",
+      "footer": "repo: h2a · @sentropic/track",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-memory",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "API · MCP",
+      "title": "Outils mémoire",
+      "purpose": "Six outils mémoire, contrat figé",
+      "detail": "fourni par: engram live",
+      "footer": "repo: engram",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-live",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "SERVICE",
+      "title": "engram live",
+      "purpose": "Tient le registre du suivi vivant",
+      "detail": "sur: Cluster mesh",
+      "footer": "opéré par: cluster-mesh",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "st-record",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "STOCKAGE · GRAPHE",
+      "title": "Registre du suivi",
+      "purpose": "Conserve le suivi vivant",
+      "detail": "lu par: Dreaming · engram live",
+      "footer": "écrit par: engram live",
+      "icon": "db",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "rt-dreaming",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "EXÉCUTION · JOB",
+      "title": "Dreaming",
+      "purpose": "Relit et propose à cadence choisie",
+      "detail": "sur: Cluster mesh",
+      "footer": "repo: engram",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "st-mandates",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "STOCKAGE · GRAPHE",
+      "title": "Registre des mandats",
+      "purpose": "Mandats et rôles h2a en vigueur",
+      "detail": "lu par: engram live",
+      "footer": "écrit par: engram live",
+      "icon": "db",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cmp-guard",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "COMPOSANT",
+      "title": "Garde confidentialité",
+      "purpose": "Masque les données sensibles",
+      "detail": "exécuté par: CLI engram",
+      "footer": "repo: engram · @sentropic/engram",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "st-blacklist",
+      "parentId": "sys-engram",
+      "container": false,
+      "folded": false,
+      "kicker": "STOCKAGE · GRAPHE",
+      "title": "Liste noire",
+      "purpose": "Termes à masquer avant partage",
+      "detail": "lu par: Garde confidentialité",
+      "footer": "écrit par: engram live",
+      "icon": "db",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "act-memctl",
+      "parentId": null,
+      "container": false,
+      "folded": false,
+      "kicker": "ACTEUR · AGENT",
+      "title": "Contrôle mémoire",
+      "purpose": "Tient la liste noire",
+      "detail": "utilise: engram live",
+      "footer": "",
+      "icon": "robot",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "st-events",
+      "parentId": null,
+      "container": false,
+      "folded": false,
+      "kicker": "STOCKAGE · JSONL",
+      "title": "events.jsonl",
+      "purpose": "Journal du suivi, ajout seul",
+      "detail": "lu par: CLI h2a · Contrôle Track · +1",
+      "footer": "écrit par: CLI track",
+      "icon": "db",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-mesh",
+      "parentId": "sys-mesh",
+      "container": false,
+      "folded": false,
+      "kicker": "API · MCP",
+      "title": "Accès mémoire",
+      "purpose": "Relaie la mémoire vers h2a et Track",
+      "detail": "fourni par: engram live",
+      "footer": "repo: sentropic",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "api-mcp-registry",
+      "parentId": "sys-mesh",
+      "container": false,
+      "folded": false,
+      "kicker": "API · MCP",
+      "title": "Registre MCP",
+      "purpose": "Point d’entrée unique des CLI",
+      "detail": "fourni par: engram live · MCP h2a",
+      "footer": "repo: sentropic",
+      "icon": "link",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "svc-h2a-mcp",
+      "parentId": "sys-mesh",
+      "container": false,
+      "folded": false,
+      "kicker": "SERVICE",
+      "title": "MCP h2a",
+      "purpose": "Sert h2a_* et track_*",
+      "detail": "sur: Cluster mesh",
+      "footer": "opéré par: cluster-mesh",
+      "icon": "server",
+      "old": {
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "op-live",
+      "source": "sys-mesh",
+      "target": "svc-live",
+      "label": "opère · sert la mémoire"
+    },
+    {
+      "id": "da-h2a",
+      "source": "pkg-h2a",
+      "target": "rt-h2a",
+      "label": "déployé comme"
+    },
+    {
+      "id": "da-track",
+      "source": "pkg-track",
+      "target": "rt-track",
+      "label": "déployé comme"
+    },
+    {
+      "id": "do-h2a-track",
+      "source": "pkg-h2a",
+      "target": "pkg-track",
+      "label": "dépend de"
+    },
+    {
+      "id": "eb-track-in-h2a",
+      "source": "pkg-track",
+      "target": "rt-h2a",
+      "label": "exécuté par"
+    },
+    {
+      "id": "in-track",
+      "source": "rt-claude",
+      "target": "rt-track",
+      "label": "lance · écritures du suivi"
+    },
+    {
+      "id": "ca-claude",
+      "source": "rt-claude",
+      "target": "api-h2a",
+      "label": "appelle · outils h2a_*"
+    },
+    {
+      "id": "ca-dreaming-memory",
+      "source": "rt-dreaming",
+      "target": "api-memory",
+      "label": "appelle · propositions citées"
+    },
+    {
+      "id": "ac-record-append",
+      "source": "svc-live",
+      "target": "st-record",
+      "label": "ajoute à · le suivi vivant"
+    },
+    {
+      "id": "ac-write",
+      "source": "rt-track",
+      "target": "st-events",
+      "label": "ajoute à · aujourd'hui"
+    },
+    {
+      "id": "dc-track-op",
+      "source": "art-track-op",
+      "target": "rt-track",
+      "label": "documente"
+    },
+    {
+      "id": "dc-branch",
+      "source": "art-branch",
+      "target": "rt-track",
+      "label": "documente"
+    },
+    {
+      "id": "host-claude",
+      "source": "rt-claude",
+      "target": "rt-h2a",
+      "label": "lance · hooks de session"
+    },
+    {
+      "id": "host-codex",
+      "source": "rt-codex",
+      "target": "rt-h2a",
+      "label": "lance · app-server"
+    },
+    {
+      "id": "host-gemini",
+      "source": "rt-gemini",
+      "target": "rt-h2a",
+      "label": "lance · hooks Gemini"
+    },
+    {
+      "id": "host-agy",
+      "source": "rt-agy",
+      "target": "rt-h2a",
+      "label": "sondage"
+    },
+    {
+      "id": "host-hermes",
+      "source": "rt-hermes",
+      "target": "rt-h2a",
+      "label": "lance · hooks Hermes"
+    },
+    {
+      "id": "host-opencode",
+      "source": "rt-opencode",
+      "target": "rt-h2a",
+      "label": "lance · plugin OpenCode"
+    },
+    {
+      "id": "host-muse",
+      "source": "rt-muse",
+      "target": "rt-h2a",
+      "label": "sondage · cycle de vie Muse"
+    },
+    {
+      "id": "host-vibe",
+      "source": "rt-vibe",
+      "target": "rt-h2a",
+      "label": "lance · post_agent Vibe"
+    },
+    {
+      "id": "ac-live-blacklist",
+      "source": "svc-live",
+      "target": "st-blacklist",
+      "label": "écrit · à la demande de l'agent"
+    },
+    {
+      "id": "ac-guard-blacklist",
+      "source": "cmp-guard",
+      "target": "st-blacklist",
+      "label": "lit · masque avant partage"
+    },
+    {
+      "id": "ca-memctl",
+      "source": "act-memctl",
+      "target": "api-memory",
+      "label": "appelle · liste noire"
+    },
+    {
+      "id": "ac-live-events",
+      "source": "svc-live",
+      "target": "st-events",
+      "label": "écrit · cible, à chaque PR"
+    },
+    {
+      "id": "ac-control-events",
+      "source": "cmp-control",
+      "target": "st-events",
+      "label": "lit · valide avant fusion"
+    },
+    {
+      "id": "do-plugin-h2a",
+      "source": "pkg-plugin",
+      "target": "pkg-h2a",
+      "label": "dépend de"
+    },
+    {
+      "id": "ca-h2a-mesh",
+      "source": "rt-h2a",
+      "target": "api-mesh",
+      "label": "appelle · mémoire (propositions, questions)"
+    },
+    {
+      "id": "ca-mandates-mesh",
+      "source": "rt-mandates",
+      "target": "api-mesh",
+      "label": "appelle · mandats et rôles"
+    },
+    {
+      "id": "ac-live-mandates",
+      "source": "svc-live",
+      "target": "st-mandates",
+      "label": "écrit · à la demande de h2a"
+    },
+    {
+      "id": "ca-track-mesh",
+      "source": "rt-track",
+      "target": "api-mesh",
+      "label": "appelle · vérifie le mandat"
+    },
+    {
+      "id": "op-svc-h2a-mcp",
+      "source": "sys-mesh",
+      "target": "svc-h2a-mcp",
+      "label": "opère"
+    },
+    {
+      "id": "da-svc-h2a-mcp",
+      "source": "pkg-h2a",
+      "target": "svc-h2a-mcp",
+      "label": "déployé comme"
+    },
+    {
+      "id": "rg-h2a-mcp",
+      "source": "api-mcp-registry",
+      "target": "svc-h2a-mcp",
+      "label": "route · h2a_* / track_*"
+    },
+    {
+      "id": "rg-live-mcp",
+      "source": "api-mcp-registry",
+      "target": "svc-live",
+      "label": "route · engram_memory_*"
+    },
+    {
+      "id": "ca-mcp-claude",
+      "source": "rt-claude",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-codex",
+      "source": "rt-codex",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-gemini",
+      "source": "rt-gemini",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-agy",
+      "source": "rt-agy",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-hermes",
+      "source": "rt-hermes",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-opencode",
+      "source": "rt-opencode",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-muse",
+      "source": "rt-muse",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    },
+    {
+      "id": "ca-mcp-vibe",
+      "source": "rt-vibe",
+      "target": "api-mcp-registry",
+      "label": "appelle · outils MCP"
+    }
+  ]
+}

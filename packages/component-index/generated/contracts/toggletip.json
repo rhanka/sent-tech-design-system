@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:0e8301a03b6c5db88551ccb7f3c3eb650618265eefd3a54d6e4ec28984a6bbdf",
-  "entryDigest": "sha256:019ab78efa426aa61e92ad0513cf1c9268e55abb0d76c2f61d38b9aa0f7b86ae",
+  "digest": "sha256:62ab29f66e1d44af87ea11739ee08a05eb1857c10bfa4ff8d9d15f9cd5b9da8b",
+  "entryDigest": "sha256:0e3b25c8540b384b2add0700e6806bc00cae029f9a855d4f2dd4033b40771806",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/Toggletip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToggletipProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

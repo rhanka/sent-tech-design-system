@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SlideIndicator.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Dots or bars marking the current slide of a carousel.",
     "fr": "Points ou barres signalant la diapositive courante d'un carrousel."
   },
-  "digest": "sha256:28a332302ebe735466c874362f092f348494334b6cc57136800abaf99a486730",
+  "digest": "sha256:3197b5ee6792241cc3b197486ed4eaf8c64ca0d852cc943d929ceb3afa7de1e1",
   "displayName": "SlideIndicator",
   "format": "component-entry/v1",
   "frameworks": [

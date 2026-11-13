@@ -73,7 +73,7 @@ describe("fixed footprints", () => {
     // 16 top inset + header band + 16 rule gap + one row of 200-high cards + 16 bottom;
     // 16 + 460 + 24 gap + 460 + 16 wide.
     expect(box.height).toBe(16 + header.height + 16 + 200 + 16);
-    expect(box.width).toBe(16 + 460 + 24 + 460 + 16);
+    expect(box.width).toBe(16 + 460 + 96 + 460 + 16);
   });
 });
 
@@ -151,7 +151,7 @@ describe("legend keys", () => {
 });
 
 describe("measurement overflow", () => {
-  it("reports card-overflow with the box and every character kept", () => {
+  it("keeps fixed card geometry and reports informational truncation with full text retained", () => {
     const longBody = Array.from({ length: 50 }, (_, index) => `word${index}`).join(" ");
     const overflowing = makePresentation({
       forms: { C: "card", a: "card", b: "card", lone: "card" },
@@ -165,7 +165,10 @@ describe("measurement overflow", () => {
     const measured = layMeasured(buildMeasuredDocument(), overflowing, wordWrapMeasurer({ charWidth: 8 }));
     const codes = measured.warnings.map((warning) => warning.code);
     expect(codes).toContain("card-overflow");
-    expect(geometryOf(measured.view, "a")).toMatchObject({ width: 460, height: 200 });
+    expect(geometryOf(measured.view, "a").width).toBe(460);
+    expect(geometryOf(measured.view, "a").height).toBe(200);
+    expect(codes).not.toContain("card-grown");
+    expect(measured.warnings.find(w=>w.code==="card-overflow")?.severity).toBe("info");
     const body = measured.slots.find((slot) => slot.role === "body")!;
     expect(body.layout.overflow).toBe(true);
     expect(body.layout.lines.join(" ")).toBe(longBody);
@@ -185,8 +188,10 @@ describe("measurement overflow", () => {
     const measured = layMeasured2(asGeneric2Document(buildMeasuredDocument()), overflowing, wordWrapMeasurer({ charWidth: 8 }));
     expect(measured.warnings.map((warning) => warning.code)).toContain("zone-overflow");
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"))!;
-    expect(header.overflow).toBe(true);
-    expect(header.subtitle!.lines.join(" ")).toBe(longSubtitle);
+    expect(header.overflow).toBe(false);
+    expect(header.subtitle!.lines).toHaveLength(2);
+    expect(header.subtitle!.lines.at(-1)).toMatch(/…$/u);
+    expect(measured.warnings.find(w=>w.code==="zone-overflow")?.details?.hiddenLength).toBeGreaterThan(0);
   });
 });
 

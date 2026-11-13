@@ -2,7 +2,7 @@
 // the throwaway install project and runs there with `node`.
 //
 // This file is never executed from the repo directly. smoke-pack.mjs reads
-// it as text and replaces the two placeholder tokens below with real JSON
+// it as text and replaces the placeholder tokens below with real JSON
 // before writing it into the throwaway project, so it is kept here as a real
 // syntactically-valid module (readable, lintable) instead of being built as
 // an escaped string literal inside smoke-pack.mjs.
@@ -20,12 +20,15 @@
 //                                 tarball file-list check, so neither can
 //                                 silently drift stale as components are
 //                                 added.
+// SMOKE_RICH_TEXT_VERSION placeholder -> candidate neutral package version
+//                                 read from its workspace manifest.
 import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const targets = new Set(__SMOKE_TARGETS_JSON__);
 const minExportCounts = __SMOKE_MIN_EXPORT_COUNTS_JSON__;
+const richTextVersion = __SMOKE_RICH_TEXT_VERSION_JSON__;
 const failures = [];
 
 function fail(label, message) {
@@ -144,7 +147,7 @@ async function verifySvelte() {
       return;
     }
     const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
-    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== "0.1.0") {
+    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== richTextVersion) {
       fail("@sentropic/design-system-svelte", "rich-text resolved to an unexpected package: " + manifest.name + "@" + manifest.version);
       return;
     }

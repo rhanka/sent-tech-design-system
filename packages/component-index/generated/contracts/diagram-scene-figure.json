@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:8ff5ded7d282d203b98d0d444049b0f99bcd229f36aefe01595723f5288edf66",
-  "entryDigest": "sha256:99bb0720e4f73949e747c63fe26f4bed8047a00a23710cd8ef84d97bfab826f2",
+  "digest": "sha256:7d969eef44f47b896a2daa1fdd1b206b03acb4e6266da7cda8a43c8010b17a3d",
+  "entryDigest": "sha256:41ba5974df8abc27f679731dba6ab71bacd81be1ad716f4c778f183f717d5915",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,6 +199,70 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "channels": {
+                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutChannel"
+                    },
+                    "type": "array"
+                  },
+                  "edgeBundles": {
+                    "additionalProperties": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "chip": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "groups": {
+                              "items": {
+                                "$ref": "#/$defs/BundleLabelGroup"
+                              },
+                              "type": "array"
+                            },
+                            "header": {
+                              "type": "string"
+                            },
+                            "layout": {
+                              "$ref": "#/$defs/LineLayout"
+                            }
+                          },
+                          "required": [
+                            "groups",
+                            "header",
+                            "layout"
+                          ],
+                          "type": "object"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "members": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "relations": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "members",
+                        "title"
+                      ],
+                      "type": "object"
+                    },
+                    "description": "Lifted parallel relations share a route; semantic occurrences remain intact.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
                   },
@@ -307,7 +371,6 @@
                       ],
                       "type": "object"
                     },
-                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
                     "properties": {},
                     "type": "object"
                   },
@@ -425,6 +488,29 @@
       ],
       "props": {
         "$defs": {
+          "BundleLabelGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "lines": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "top": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "lines",
+              "top"
+            ],
+            "type": "object"
+          },
           "CategoryTokenBinding": {
             "additionalProperties": false,
             "properties": {
@@ -1268,6 +1354,77 @@
             ],
             "type": "object"
           },
+          "LayoutChannel": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "description": "Axis of the gap (horizontal gap separates columns).",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "edges": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "expected": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "labelled": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": "number"
+              },
+              "strips": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "height": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "height",
+                    "width",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "axis",
+              "edges",
+              "expected",
+              "gap",
+              "id",
+              "labelled",
+              "n",
+              "strips"
+            ],
+            "type": "object"
+          },
           "LayoutFit": {
             "additionalProperties": false,
             "properties": {
@@ -1457,6 +1614,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "card-icon-missing",
+                  "card-grown",
+                  "channel-unresolved",
                   "flow-bundled",
                   "badge-unplaced",
                   "flow-layout-unsupported",
@@ -1491,6 +1651,9 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "severity": {
+                "const": "info"
               }
             },
             "required": [
@@ -3694,6 +3857,30 @@
             "$ref": "#/$defs/LayoutHints",
             "description": "Declaration order (`rootOrder`, `ordering[parent]`) and the other layout hints."
           },
+          "iconBindings": {
+            "additionalProperties": {
+              "additionalProperties": false,
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "shape": {
+                  "enum": [
+                    "component",
+                    "flow",
+                    "erd",
+                    "note"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "properties": {},
+            "type": "object"
+          },
           "label": {
             "description": "Accessible name of the figure. Defaults to `title`.",
             "type": "string"
@@ -3729,6 +3916,9 @@
               "string",
               "null"
             ]
+          },
+          "strictIcons": {
+            "type": "boolean"
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -3919,6 +4109,12 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "iconBindings",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"icon\":{\"type\":\"string\"},\"role\":{\"type\":\"string\"},\"shape\":{\"enum\":[\"component\",\"flow\",\"erd\",\"note\"]}},\"additionalProperties\":false}",
+          "sourceType": "Readonly<Record<string, { readonly icon?: string | undefined; readonly role?: string | undefined; readonly shape?: \"component\" | \"flow\" | \"erd\" | \"note\" | undefined; }>>"
+        },
+        {
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -3953,6 +4149,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/Rect\"}",
           "sourceType": "Readonly<Record<string, Rect>>"
+        },
+        {
+          "name": "result.edgeBundles",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"chip\":{\"type\":\"object\",\"properties\":{\"groups\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/BundleLabelGroup\"}},\"header\":{\"type\":\"string\"},\"layout\":{\"$ref\":\"#/$defs/LineLayout\"}},\"additionalProperties\":false,\"required\":[\"groups\",\"header\",\"layout\"]},\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"relations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
+          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[] | undefined; chip?: { header: string; groups: BundleLabelGroup[]; layout: LineLayout; } | undefined; }>>"
         },
         {
           "name": "result.flowTargets",
@@ -3993,7 +4195,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ce10739046de5b434488f9a5ab9f57a111d4d83e12868ae8050f4e1de36cd9c6",
+        "declarationDigest": "sha256:ebfc6246b87514647f6791154de5c1cdb589489f1803c2018fc82d87cc2685d0",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -4346,6 +4548,70 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "channels": {
+                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutChannel"
+                    },
+                    "type": "array"
+                  },
+                  "edgeBundles": {
+                    "additionalProperties": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "chip": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "groups": {
+                              "items": {
+                                "$ref": "#/$defs/BundleLabelGroup"
+                              },
+                              "type": "array"
+                            },
+                            "header": {
+                              "type": "string"
+                            },
+                            "layout": {
+                              "$ref": "#/$defs/LineLayout"
+                            }
+                          },
+                          "required": [
+                            "groups",
+                            "header",
+                            "layout"
+                          ],
+                          "type": "object"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "members": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "relations": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "members",
+                        "title"
+                      ],
+                      "type": "object"
+                    },
+                    "description": "Lifted parallel relations share a route; semantic occurrences remain intact.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
                   },
@@ -4454,7 +4720,6 @@
                       ],
                       "type": "object"
                     },
-                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
                     "properties": {},
                     "type": "object"
                   },
@@ -4598,6 +4863,70 @@
                     "properties": {},
                     "type": "object"
                   },
+                  "channels": {
+                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutChannel"
+                    },
+                    "type": "array"
+                  },
+                  "edgeBundles": {
+                    "additionalProperties": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "chip": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "groups": {
+                              "items": {
+                                "$ref": "#/$defs/BundleLabelGroup"
+                              },
+                              "type": "array"
+                            },
+                            "header": {
+                              "type": "string"
+                            },
+                            "layout": {
+                              "$ref": "#/$defs/LineLayout"
+                            }
+                          },
+                          "required": [
+                            "groups",
+                            "header",
+                            "layout"
+                          ],
+                          "type": "object"
+                        },
+                        "label": {
+                          "type": "string"
+                        },
+                        "members": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "relations": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "title": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "label",
+                        "members",
+                        "title"
+                      ],
+                      "type": "object"
+                    },
+                    "description": "Lifted parallel relations share a route; semantic occurrences remain intact.",
+                    "properties": {},
+                    "type": "object"
+                  },
                   "fit": {
                     "$ref": "#/$defs/LayoutFit"
                   },
@@ -4706,7 +5035,6 @@
                       ],
                       "type": "object"
                     },
-                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
                     "properties": {},
                     "type": "object"
                   },
@@ -4880,6 +5208,29 @@
       ],
       "props": {
         "$defs": {
+          "BundleLabelGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "lines": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "top": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "lines",
+              "top"
+            ],
+            "type": "object"
+          },
           "CategoryTokenBinding": {
             "additionalProperties": false,
             "properties": {
@@ -5723,6 +6074,77 @@
             ],
             "type": "object"
           },
+          "LayoutChannel": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "description": "Axis of the gap (horizontal gap separates columns).",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "edges": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "expected": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "labelled": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": "number"
+              },
+              "strips": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "height": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "height",
+                    "width",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "axis",
+              "edges",
+              "expected",
+              "gap",
+              "id",
+              "labelled",
+              "n",
+              "strips"
+            ],
+            "type": "object"
+          },
           "LayoutFit": {
             "additionalProperties": false,
             "properties": {
@@ -5912,6 +6334,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "card-icon-missing",
+                  "card-grown",
+                  "channel-unresolved",
                   "flow-bundled",
                   "badge-unplaced",
                   "flow-layout-unsupported",
@@ -5946,6 +6371,9 @@
                   "type": "string"
                 },
                 "type": "array"
+              },
+              "severity": {
+                "const": "info"
               }
             },
             "required": [
@@ -8162,6 +8590,30 @@
             "$ref": "#/$defs/LayoutHints",
             "description": "Declaration order (`rootOrder`, `ordering[parent]`) and the other layout hints."
           },
+          "iconBindings": {
+            "additionalProperties": {
+              "additionalProperties": false,
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "shape": {
+                  "enum": [
+                    "component",
+                    "flow",
+                    "erd",
+                    "note"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "properties": {},
+            "type": "object"
+          },
           "label": {
             "description": "Accessible name of the figure. Defaults to `title`.",
             "type": "string"
@@ -8197,6 +8649,9 @@
               "string",
               "null"
             ]
+          },
+          "strictIcons": {
+            "type": "boolean"
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -8381,6 +8836,12 @@
           "sourceType": "Readonly<Record<string, Rect>>"
         },
         {
+          "name": "args.edgeBundles",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"chip\":{\"type\":\"object\",\"properties\":{\"groups\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/BundleLabelGroup\"}},\"header\":{\"type\":\"string\"},\"layout\":{\"$ref\":\"#/$defs/LineLayout\"}},\"additionalProperties\":false,\"required\":[\"groups\",\"header\",\"layout\"]},\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"relations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
+          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[] | undefined; chip?: { header: string; groups: BundleLabelGroup[]; layout: LineLayout; } | undefined; }>>"
+        },
+        {
           "name": "args.flowTargets",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"anyOf\":[{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"kind\":{\"const\":\"edge\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"badge\":{\"type\":\"boolean\"},\"id\":{\"type\":\"string\"},\"kind\":{\"const\":\"bundle\"},\"occurrence\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"badge\",\"id\",\"kind\",\"occurrence\"]},{\"type\":\"object\",\"properties\":{\"box\":{\"type\":\"string\"},\"kind\":{\"const\":\"internal\"}},\"additionalProperties\":false,\"required\":[\"box\",\"kind\"]}]}",
@@ -8423,6 +8884,12 @@
           "sourceType": "OccurrenceRef"
         },
         {
+          "name": "iconBindings",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"icon\":{\"type\":\"string\"},\"role\":{\"type\":\"string\"},\"shape\":{\"enum\":[\"component\",\"flow\",\"erd\",\"note\"]}},\"additionalProperties\":false}",
+          "sourceType": "Readonly<Record<string, { readonly icon?: string | undefined; readonly role?: string | undefined; readonly shape?: \"component\" | \"flow\" | \"erd\" | \"note\" | undefined; }>>"
+        },
+        {
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -8457,6 +8924,12 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"$ref\":\"#/$defs/Rect\"}",
           "sourceType": "Readonly<Record<string, Rect>>"
+        },
+        {
+          "name": "result.edgeBundles",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"chip\":{\"type\":\"object\",\"properties\":{\"groups\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/BundleLabelGroup\"}},\"header\":{\"type\":\"string\"},\"layout\":{\"$ref\":\"#/$defs/LineLayout\"}},\"additionalProperties\":false,\"required\":[\"groups\",\"header\",\"layout\"]},\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"relations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
+          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[] | undefined; chip?: { header: string; groups: BundleLabelGroup[]; layout: LineLayout; } | undefined; }>>"
         },
         {
           "name": "result.flowTargets",
@@ -8497,11 +8970,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f92f4b8285ccd141340f0bd98f400f3f0251025909347abe5d126abee608be27",
+        "declarationDigest": "sha256:bb9a7a94bad3b33a477e4d80f64b957f95cfdd6cca60c1a4e6cbb3913bbb5311",
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],

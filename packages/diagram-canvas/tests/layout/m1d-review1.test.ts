@@ -171,7 +171,7 @@ describe("RED item 4 — recursive group extents before header", () => {
       },
     });
     const parent = geometryOf(measured.view, "P");
-    expect(parent.width).toBe(976);
+    expect(parent.width).toBe(1048);
     const ax = geometryOf(measured.view, "a").x;
     const bx = geometryOf(measured.view, "b").x;
     expect(bx).toBeGreaterThan(ax);

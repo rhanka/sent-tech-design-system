@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OrderedList.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Numbered ordered list, with nesting.",
     "fr": "Liste ordonnée numérotée, avec imbrication."
   },
-  "digest": "sha256:5e7b8283d5658ca8bbf4c48cdd48ec114af250469e89ce58546a8cde010e4f26",
+  "digest": "sha256:3dc5109de0fec0686d648445dfe522b141147676df077206dd5d478183468437",
   "displayName": "OrderedList",
   "format": "component-entry/v1",
   "frameworks": [

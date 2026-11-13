@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Popover.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact contextual content anchored to a trigger.",
     "fr": "Contenu contextuel compact ancré à un déclencheur."
   },
-  "digest": "sha256:fa0e976066b9973c93cbd7c98d1d96d0bb390b15470b67dee93c6ec3c5650525",
+  "digest": "sha256:937d9cf2297a0e4c7919c40247c7824744713f7648a77a2c7f475e67b0a65e34",
   "displayName": "Popover",
   "format": "component-entry/v1",
   "frameworks": [

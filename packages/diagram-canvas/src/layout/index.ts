@@ -1,3 +1,5 @@
+export { measureBundleLabel, type BundleLabelGroup } from "./bundleLabel.js";
+export { channelMetrics, channelGap, type LayoutChannel, type ChannelMetrics } from "./channels.js";
 /**
  * The layout engine (SPEC §10.5, rules L-R1–L-R11): a `generic@1`
  * `SemanticDocument` in, a `diagram-core` `ViewDocument` out. Pure computation,

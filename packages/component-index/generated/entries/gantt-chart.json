@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/GanttChart.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category.",
     "fr": "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie."
   },
-  "digest": "sha256:a345d9c5343dbaf69d0c63ca76db34e6c5af9daf62766c0a22a91737546929c8",
+  "digest": "sha256:bac37de97bd94d463220cd1e0e6459929f1bb0be963a5347e604c85645705660",
   "displayName": "GanttChart",
   "format": "component-entry/v1",
   "frameworks": [

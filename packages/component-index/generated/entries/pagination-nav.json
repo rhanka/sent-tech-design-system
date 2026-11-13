@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PaginationNav.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:1e68c2bdb81bfbabd5600b03c46d3fd2d873745cc73e0d25f2e9db13d4bf5794",
+  "digest": "sha256:676ccbc1da70947e29e5783cd4bbcb67f512b239446fb48ccadf41324fe5f281",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

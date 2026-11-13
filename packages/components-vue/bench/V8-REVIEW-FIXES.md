@@ -1,8 +1,7 @@
-# PR 281 follow-up — Vue 0.41.0-next.3
+# PR 281 follow-up — Vue 0.41.0-next.2
 
 The resumed change fixes the Blocking and Major findings in the Carbon review.
-`origin/main` already contains `0.41.0-next.2`; the candidate and its consumers
-therefore use `0.41.0-next.3`.
+The candidate and its consumers use the requested `0.41.0-next.2` version.
 
 | Finding | Correction | Regression witness |
 | --- | --- | --- |
