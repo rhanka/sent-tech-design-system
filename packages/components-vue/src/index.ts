@@ -297,12 +297,12 @@ export { RenkoChart } from "./RenkoChart.js";
 export type { RenkoChartProps, RenkoChartDatum, RenkoChartDirection } from "./RenkoChart.js";
 export { PointAndFigureChart } from "./PointAndFigureChart.js";
 export type { PointAndFigureChartProps, PointAndFigureChartDatum, PointAndFigureChartMark } from "./PointAndFigureChart.js";
-export { WaffleChart } from "./WaffleChart.js";
+export { default as WaffleChart } from "./WaffleChart.vue";
 export type {
   WaffleChartProps,
   WaffleTone,
   WaffleChartDatum,
-} from "./WaffleChart.js";
+} from "./WaffleChart.vue";
 export { ColorSwatch } from "./ColorSwatch.js";
 export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.js";
 export { ColorScaleBar } from "./ColorScaleBar.js";
