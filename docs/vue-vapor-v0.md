@@ -118,13 +118,16 @@ TOTAL           Vapor-ready   16 /  347  (  4 %)   still h(): 331
 
 - Vue classic: 110 files, 1,872 tests. Vapor API/diagram: 2 files, 8 tests.
 - Dataviz Vue: 37 files, 160 tests. Component-index: 15 files, 139 tests.
+- Component-index repository guard: 13 tests; workflow invariants: 21 tests;
+  Vue toolchain/lint regression suite: 3 tests.
 - Packed consumers: strict declarations, graph checks and 2 runtime tests per
   leg; classic also repeats on the stable compiler output. Classic graph:
   2,419 modules. Vapor graph: 380 modules. A deliberately injected Vapor import
   fails the classic graph gate; the native graph also rejects DS VDOM modules.
 - K25, compiler/plugin pins, both type checks, stable compilation, licensing
-  and notices pass. The required component-index repository guard is also run
-  after regenerating the declaration/source digests.
+  and notices pass. The component-index repository guard passes after
+  regenerating the declaration/source digests. Shared compiler/lint inputs are
+  part of the Vue build cache key; rebuild-then-skip behavior was verified.
 
 V0b must address constructor/re-export visibility, slots and generic contract
 completeness, and the VNode semantic mapping. The existing extractor serializes
