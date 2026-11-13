@@ -221,8 +221,8 @@ export type { LineChartProps, LineChartDatum, LineChartTone } from "./LineChart.
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./chartScale.js";
 export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
 export type { DataLabelsProp, DataLabelsOptions, DataLabelPosition } from "./chartDataLabels.js";
-export { DonutChart } from "./DonutChart.js";
-export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
+export { default as DonutChart } from "./DonutChart.vue";
+export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.vue";
 export { ScatterPlot } from "./ScatterPlot.js";
 export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotTone, ScatterPlotCentroid } from "./ScatterPlot.js";
 export { PriorityMatrix } from "./PriorityMatrix.js";
