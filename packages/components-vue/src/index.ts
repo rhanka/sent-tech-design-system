@@ -336,7 +336,7 @@ export type {
 } from "./DecompositionTreeChart.js";
 export { Density2DChart } from "./Density2DChart.js";
 export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.js";
-export { GeoChart } from "./GeoChart.js";
+export { default as GeoChart } from "./GeoChart.vue";
 export type {
   GeoChartProps,
   GeoChartTone,
@@ -356,7 +356,7 @@ export type {
   GeoChartHexbinLayer,
   GeoChartClusterLayer,
   GeoChartLayer,
-} from "./GeoChart.js";
+} from "./GeoChart.vue";
 export { default as FunnelChart } from "./FunnelChart.vue";
 export type { FunnelChartProps, FunnelChartTone, FunnelChartDatum } from "./FunnelChart.vue";
 export { WaterfallChart } from "./WaterfallChart.js";
