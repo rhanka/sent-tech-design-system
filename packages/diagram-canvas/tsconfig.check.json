@@ -16,5 +16,6 @@
     // which is what keeps the shipped modules free of node and DOM.
     "types": ["node"]
   },
-  "include": ["src", "tests"]
+  "include": ["src", "tests"],
+  "exclude": ["dist", "node_modules", "tests/host-support"]
 }

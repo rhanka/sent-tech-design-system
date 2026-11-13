@@ -18414,6 +18414,413 @@
 .st-priorityMatrix__labelBox { fill: var(--st-semantic-surface-default); stroke: var(--st-semantic-border-subtle); stroke-width: 1; }
 .st-priorityMatrix__labelText { fill: var(--st-semantic-text-primary); font-size: 0.6875rem; }
 
+
+/* Diagram scene and card styles; geometry comes from diagram-canvas. */
+
+  .st-diagramSceneFigure-flowNavigator { display: flex; align-items: center; gap: var(--st-spacing-2); grid-column: 1 / -1; }
+  .st-diagramSceneFigure-flowHit { fill: none; stroke: var(--st-component-diagramScene-flowHitStroke); stroke-width: var(--st-component-diagramScene-flowHitWidth); pointer-events: stroke; cursor: pointer; }
+  .st-diagramSceneFigure-edge[data-flow-step] { stroke: var(--st-component-diagramScene-flowStroke); stroke-width: var(--st-component-diagramScene-flowStrokeWidth); }
+  .st-diagramSceneFigure-flowArrow { fill: var(--st-component-diagramScene-flowStroke); }
+  .st-diagramSceneFigure-flowBadge, .st-diagramSceneFigure-flowNode { position: absolute; box-sizing: border-box; color: var(--st-component-diagramScene-flowBadgeText); background: var(--st-component-diagramScene-flowBadgeBackground); border: var(--st-component-diagramScene-flowStrokeWidth) solid var(--st-component-diagramScene-flowBadgeBorder); border-radius: var(--st-component-diagramScene-flowBadgeRadius); font-family: var(--st-component-diagramCard-fontFamily); font-size: var(--st-component-diagramScene-flowBadgeFontSize); line-height: var(--st-component-diagramScene-flowBadgeLineHeight); padding: 0; cursor: pointer; }
+  .st-diagramSceneFigure-flowBadge::before { content: ""; position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); min-width: 100%; min-height: 100%; width: var(--st-diagramSceneFigure-flowHit); height: var(--st-diagramSceneFigure-flowHit); }
+  .st-diagramSceneFigure-flowNode { opacity: var(--st-component-diagramScene-flowHiddenOpacity); pointer-events: none; min-width: var(--st-diagramSceneFigure-flowHit); min-height: var(--st-diagramSceneFigure-flowHit); }
+  .st-diagramSceneFigure-flowNode:focus-visible { pointer-events: auto; }
+  .st-diagramSceneFigure-flowDescription { position: absolute; clip-path: inset(50%); width: 0; height: 0; overflow: hidden; }
+  [data-flow-active] [data-flow-state="dim"] { opacity: var(--st-component-diagramScene-flowDimOpacity); }
+  .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke: var(--st-component-diagramScene-flowPrimaryStroke); stroke-width: var(--st-component-diagramScene-flowPrimaryStrokeWidth); }
+  .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke: var(--st-component-diagramScene-flowStroke); stroke-width: var(--st-component-diagramScene-flowRelatedStrokeWidth); }
+  .st-diagramSceneFigure-flowArrow[data-flow-state="primary"] { fill: var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-node[data-flow-state="primary"] { outline: var(--st-component-diagramScene-flowOutlineWidth) solid var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-flowBadge[aria-pressed="true"] { color: var(--st-component-diagramScene-flowBadgeBackground); background: var(--st-component-diagramScene-flowPrimaryStroke); }
+  .st-diagramSceneFigure-flowNode:not(:focus-visible) { opacity: var(--st-component-diagramScene-flowHiddenOpacity); }
+  .st-diagramSceneFigure-flowBadge:focus-visible, .st-diagramSceneFigure-flowNode:focus-visible { opacity: var(--st-component-diagramScene-flowFullOpacity); outline: var(--st-component-diagramScene-flowOutlineWidth) solid var(--st-component-diagramScene-flowFocusOutline); }
+  .st-diagramSceneFigure {
+    /* Title and camera controls share the first row; the frame spans both. */
+    align-items: center;
+    display: grid;
+    gap: var(--st-spacing-2, 0.5rem);
+    grid-template-columns: minmax(0, 1fr) auto;
+    margin: 0;
+    min-width: 0;
+  }
+  .st-diagramSceneFigure--compact {
+    gap: var(--st-spacing-1, 0.25rem);
+  }
+  .st-diagramSceneFigure-title {
+    color: var(--st-semantic-text-primary);
+    grid-column: 1;
+    font-weight: 600;
+  }
+  .st-diagramSceneFigure--compact .st-diagramSceneFigure-title {
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
+  }
+  .st-diagramSceneFigure-controls {
+    align-items: center;
+    display: inline-flex;
+    gap: var(--st-spacing-1, 0.25rem);
+    grid-column: 2;
+  }
+  .st-diagramSceneFigure-readout {
+    color: var(--st-semantic-text-secondary);
+    font-size: var(--st-component-button-anatomy-density-sm-fontSize, 0.875rem);
+    font-variant-numeric: tabular-nums;
+    min-width: 4ch;
+    text-align: center;
+  }
+  .st-diagramSceneFigure-frame {
+    grid-column: 1 / -1;
+    min-width: 0;
+    width: 100%;
+  }
+  .st-diagramSceneFigure-viewport {
+    /* The fit box: its height comes from the camera (inline). It scrolls
+       only the axis the drawing overflows at the current zoom. */
+    box-sizing: border-box;
+    overflow: auto;
+    position: relative;
+    touch-action: pan-x pan-y;
+    width: 100%;
+  }
+  .st-diagramSceneFigure-viewport:focus-visible {
+    box-shadow: inset 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));
+    outline: none;
+  }
+  .st-diagramSceneFigure-extent {
+    min-height: 100%;
+    min-width: 100%;
+    position: relative;
+  }
+  .st-diagramSceneFigure-world {
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform-origin: 0 0;
+  }
+  .st-diagramSceneFigure-node {
+    position: absolute;
+  }
+  .st-diagramSceneFigure-label {
+    align-items: center;
+    box-sizing: border-box;
+    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
+    display: flex;
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    height: 100%;
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+    width: 100%;
+  }
+  .st-diagramSceneFigure-edges {
+    height: 1px;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 1px;
+  }
+  .st-diagramSceneFigure-edge {
+    fill: none;
+    stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
+    stroke-linejoin: round;
+    stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
+    vector-effect: non-scaling-stroke;
+  }
+  .st-diagramSceneFigure-edgeLabel {
+    align-items: center;
+    color: var(--st-semantic-text-secondary);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
+    justify-content: center;
+    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    pointer-events: none;
+    position: absolute;
+    white-space: nowrap;
+  }
+
+
+  .st-diagramCard {
+    width: var(--st-component-diagramCard-width, 460px);
+    height: var(--st-component-diagramCard-height, 200px);
+    box-sizing: border-box;
+    border: var(--st-component-diagramCard-borderWidth, 2px) solid
+      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
+    border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
+      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
+    border-radius: var(--st-component-diagramCard-radius, 0);
+    background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
+    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
+    padding: var(--st-component-diagramCard-padding, 8px);
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+  }
+  .st-diagramCard--center {
+    /* Owner variant: every text slot centred inside its allocation. */
+    text-align: center;
+  }
+  /* Neutral status prop: a proposed card is always drawn dashed,
+     independently of the tint (owner criterion 5). */
+  .st-diagramCard--proposed {
+    border-style: dashed;
+  }
+  .st-diagramCard-gap {
+    display: block;
+    height: var(--st-component-diagramCard-gap, 6px);
+    flex: 0 0 var(--st-component-diagramCard-gap, 6px);
+  }
+  .st-diagramCard-body {
+    /* margin-left and width both come from the shared layout: the body box
+       is exactly layout.bodyWidth wide at layout.bodyX — −2 px / 436 px for
+       leaf bodies (bodyInsetFromBar 14 vs headerInset 16), 16 px / 396 px
+       for the centred collapsed-subtitle measure (§6.2.1: the subtitle is
+       centred at 32 + 396/2 = 230, not over the wider content box). */
+    min-width: 0;
+    flex: 0 0 auto;
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
+  }
+  .st-diagramCard--subtitle .st-diagramCard-body {
+    /* §6.2.1: the collapsed-zone subtitle block is centred horizontally
+       and vertically inside the card body area. */
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+  }
+  .st-diagramCard-line,
+  .st-diagramCard-detail {
+    display: block;
+    min-width: 0;
+    /* No mid-word break: an over-long word overflows and is diagnosed
+       (Astra J4), never silently broken or cut. */
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .st-diagramCard-detail {
+    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
+  }
+  /* Rule and footer share one pinned wrapper (`.st-diagramCard-foot`):
+     the wrapper takes the automatic top margin, so spare body space grows
+     above the rule and the rule→footer gap stays the frozen 4 px. */
+  .st-diagramCard-foot {
+    margin-top: auto;
+    flex: 0 0 auto;
+  }
+  .st-diagramCard-rule {
+    display: block;
+    flex: 0 0 auto;
+    /* 1 screen px at every zoom, with a constant LAYOUT footprint (review
+       pass 2, item 5): the box height never reads --st-diagram-zoom, so at
+       overview zoom 0.25 the rule still occupies exactly 1 px of layout and
+       the pinned footer never moves. Only the painted stroke is
+       counter-scaled: the host scales the viewport by --st-diagram-zoom, so
+       scaleY(1/zoom) on the fixed 1 px box paints exactly 1 screen px — the
+       HTML twin of the SVG vector-effect="non-scaling-stroke". */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;
+    background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
+  }
+  .st-diagramCard-footer {
+    /* Pinned footer: text-box bottom at (height − border − inset); the flex
+       content bottom sits at (height − padding − border), so the margin is
+       (inset − padding) = 1.25 px at the frozen values. No margin-top:auto
+       here: the rule and the footer are positioned together by the shared
+       foot wrapper. */
+    margin-bottom: calc(
+      var(--st-component-diagramCard-footerBottomInset, 9.25px) -
+        var(--st-component-diagramCard-padding, 8px)
+    );
+    font-size: var(--st-component-diagramCard-footerFontSize, 24px);
+    font-weight: var(--st-component-diagramCard-footerFontWeight, 700);
+    line-height: var(--st-component-diagramCard-footerLineHeight, 1.3);
+  }
+  .st-diagramCard-footerLine {
+    display: block;
+    min-width: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+
+  .st-diagramCardHeader {
+    display: flex;
+    align-items: center;
+    gap: var(--st-component-diagramCard-iconTextGap, 6px);
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .st-diagramCardHeader-icon {
+    flex: 0 0 var(--st-component-diagramCard-iconSize, 70px);
+    width: var(--st-component-diagramCard-iconSize, 70px);
+    height: var(--st-component-diagramCard-iconSize, 70px);
+  }
+  .st-diagramCardHeader-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+  .st-diagramCard-kicker {
+    display: block;
+    min-width: 0;
+    font-size: var(--st-component-diagramCard-kickerFontSize, 22px);
+    font-weight: var(--st-component-diagramCard-kickerFontWeight, 400);
+    line-height: var(--st-component-diagramCard-kickerLineHeight, 1.3);
+    letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing, 0.04em);
+    text-transform: var(--st-component-diagramCard-kickerTextTransform, uppercase);
+    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));
+    /* No mid-word break: an over-long word is diagnosed, never broken. */
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .st-diagramCard-title {
+    display: block;
+    min-width: 0;
+    font-size: var(--st-component-diagramCard-titleFontSize, 32px);
+    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);
+    line-height: var(--st-component-diagramCard-titleLineHeight, 1.3);
+    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+  .st-diagramCard-toggle {
+    flex: 0 0 auto;
+    margin-left: auto;
+    /* Top right of the header row with the card's own top margin
+       (hrpn folded-card placement), not vertically centred. */
+    align-self: flex-start;
+  }
+
+
+  /* The positioning wrapper, present in collapsed AND expanded states:
+     folding never moves the occurrence (second review, blocking). */
+  .st-diagramZone-pos {
+    position: absolute;
+  }
+  .st-diagramZone {
+    /* Expanded frame: the containing block of every part below. The parts
+       are absolutely positioned from the shared layout's inline offsets
+       (review pass 4), so the frame is a plain bordered box — no flex
+       stack of border + padding + line boxes. */
+    position: relative;
+    box-sizing: border-box;
+    border: var(--st-component-diagramZone-borderWidth, 1.5px) solid
+      var(--st-component-diagramZone-border, var(--st-semantic-border-strong));
+    border-radius: var(--st-component-diagramZone-radius, 0);
+    background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
+    color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
+    text-align: left;
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+  }
+  .st-diagramZone--center {
+    /* Owner variant: every text slot centred inside its allocation. */
+    text-align: center;
+  }
+  /* Neutral status prop: a proposed zone is always drawn dashed,
+     independently of the tint (owner criterion 5). */
+  .st-diagramZone--proposed {
+    border-style: dashed;
+  }
+  /* Refusal state (overflow = refusal): no normal frame, a dashed
+     placeholder the host can see via data-zone-refused on the wrapper. */
+  .st-diagramZone--refused {
+    border-style: dashed;
+    background: transparent;
+  }
+  .st-diagramZone-header {
+    /* top/left/right/height come from the shared layout inline; the CSS
+       border is already accounted exactly once in those calc offsets
+       (frame-edge layout coordinate − border token). */
+    position: absolute;
+    min-width: 0;
+  }
+  .st-diagramZone-rule {
+    position: absolute;
+    display: block;
+    /* 1 screen px at every zoom with a constant LAYOUT footprint (review
+       pass 2, item 5): the box keeps a fixed 1 px height and only the
+       painted stroke is counter-scaled by scaleY(1/zoom), same contract
+       as the card rule — the zone footer never moves at overview zoom.
+       The rule's top/left/right come from the shared layout inline
+       (ruleY and the rule insets). */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
+    background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
+  }
+  .st-diagramZone-content {
+    /* top/left/right/bottom from the shared layout inline (contentTop and
+       the content insets); still the positioning context for the
+       host-rendered children. */
+    position: absolute;
+    min-height: 0;
+  }
+  .st-diagramZone-footerRule {
+    position: absolute;
+    display: block;
+    /* Same constant-footprint rule contract as the card and the header
+       rule (review pass 2, item 5): fixed 1 px layout box, paint-only
+       counter-scale. Top/left/right come from the shared layout inline
+       (footerRuleY and the rule insets). */
+    height: var(--st-component-diagramCard-ruleHeight, 1px);
+    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));
+    transform-origin: center;
+    background: var(--st-component-diagramZone-rule, var(--st-semantic-border-subtle));
+  }
+  .st-diagramZone-footer {
+    position: absolute;
+    /* Pinned at the frame bottom like the card footer: the model pins
+       footerBottom at (frame bottom − border − inset), and the padding
+       box already sits inside the border, so the whole bottom offset is
+       the footerBottomInset token (9.25 px) — no border subtraction in
+       the value (review pass 4). Inline insets: the layout's footerX. */
+    font-size: var(--st-component-diagramZone-footerFontSize, var(--st-component-diagramCard-footerFontSize, 24px));
+    font-weight: var(--st-component-diagramZone-footerFontWeight, var(--st-component-diagramCard-footerFontWeight, 700));
+    line-height: var(--st-component-diagramZone-footerLineHeight, var(--st-component-diagramCard-footerLineHeight, 1.3));
+    color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
+  }
+  .st-diagramZone-footerLine {
+    display: block;
+    min-width: 0;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+
+  .st-diagramZoneHeader {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 0 0 auto;
+  }
+  .st-diagramZoneHeader-subtitle {
+    /* subtitleGap aliases the card gap (§6.4). */
+    margin-top: var(--st-component-diagramZone-subtitleGap, var(--st-component-diagramCard-gap, 6px));
+    min-width: 0;
+  }
+  .st-diagramZone-subtitle {
+    display: block;
+    min-width: 0;
+    font-size: var(--st-component-diagramZone-subtitleFontSize, 24px);
+    font-weight: var(--st-component-diagramZone-subtitleFontWeight, 400);
+    line-height: var(--st-component-diagramZone-subtitleLineHeight, 1.3);
+    color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
+    /* No mid-word break: an over-long word overflows and is diagnosed
+       (Astra J4), never silently broken or cut. */
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+
 /* --- Checkbox vertical centring (2026-11-09) ------------------------------ */
 /* The box and the trailing slot centre on the FIRST label line, whatever the
    theme's label font size and line height. The row carries the label

@@ -1,8 +1,8 @@
 # DC-2c.1 numbered flows
 
-DC-2c.1 adds authored numbered interactions to the measured engine and Svelte
-DiagramSceneFigure. Package versions are unchanged. Vue integration is pending
-PR #267; animated direction, owned data and detail levels belong to DC-2c.2.
+DC-2c.1 adds authored numbered interactions to the measured engine and both Svelte and Vue
+DiagramSceneFigure. Package versions are unchanged. Animated direction, owned
+data and detail levels belong to DC-2c.2.
 
 ## Authoring
 
@@ -31,7 +31,7 @@ in `packages/diagram-core/tests/flows/mapping.ts` and the standalone
 ## Layout and interaction
 
 `flows: { fanOutMax, countTemplate }` configures measured layout. The cap defaults
-to 4. Svelte exposes `flows.fanOutMax` and uses `labels.count` as the count
+to 4. Both hosts expose `flows.fanOutMax` and uses `labels.count` as the count
 template (`{n}` by default). Fold bundles take precedence over fan-out bundles;
 obstructed groups get one whole-view repair. Unplaceable badges are omitted,
 with warnings and retained targets. All bundle-member text labels are suppressed;
@@ -59,24 +59,25 @@ shipped theme mode, including dimmed text/pressed/stroke/focus contrast. Card
 measurement's dependency-free geometry leaf mirrors badge typography; parity
 checks bind it to the canvas defaults and token leaves. Flow CSS has no motion.
 
-## Shared model and Vue handoff
+## Shared model and host parity
 
 Import `@sentropic/diagram-canvas/diagramSceneModel` for layout/scene geometry and
 `@sentropic/diagram-canvas/flowModel` for `visibleOf`, `effectiveTarget`,
 `highlightOf`, `reduce`, `describeTarget`, `announce`, `flowHitSize`, `stepChange`
 and `flowMarksSvg`. `SceneModel` carries ordered badges, arrows, bundle members,
 visible targets, node targets, endpoints, ancestors and entity representatives.
-The Vue host should bind these outputs; it must not reimplement these rules.
+Both hosts bind these outputs and use the same reducer and highlight rules.
 
-After #267 merges, port Svelte's controlled-state boundary, delegated DOM events,
-focus/scroll repair, navigator and token styles. Run the same unpublished
-`diagram-canvas/test-support/flowHostCases.ts` table through a Vue adapter, then
-compare the normalized DOM projections from both hosts. Canvas build emits this
-support into ignored `dist-test-support`; it is outside published `dist` and has
-no package export. Vue must also pass SSR arrows/badges, the 200-change budget,
-retained-selection idle checks, token literal scan and controlled repair cases.
-Vue host tests and cross-host DOM comparison remain pending; they are not
-represented as passing Svelte evidence.
+The hosts execute the same unpublished `diagram-canvas/test-support/flowHostCases.ts`
+table and assertion runner. The Svelte suite compares the complete normalized
+scene and flow navigator DOM against Vue after every case, including controlled
+proposals, acceptance, hover/focus, focus repair, fold changes and zoom.
+Canvas builds emit ignored `dist-test-support` and `dist-host-support`; neither
+is inside published `dist` or exposed by package exports. Both hosts also run
+SSR arrows/badges, 200-change work budgets and retained-selection idle checks.
+Card text measurement and frozen geometry are shared through
+`@sentropic/diagram-canvas/diagramCardModel`, with Svelte's old module retaining
+a compatible re-export.
 
 ## DC-2c.2 handoff
 
