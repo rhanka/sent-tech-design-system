@@ -1,7 +1,7 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:9e0b768dae211be92f05986240cd3e4a29772c6d18ec5a2e809e03d5ec029542",
+  "digest": "sha256:00d75630d4ab62f5d9e9aaaa3fbf72d612f309b5d7e7515dfd36a620199bbbbb",
   "entryDigest": "sha256:120f31cb202de9de31d843a1d2f785ce2e248df743d61e1326a659770d8263ac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -82,7 +82,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LoadingStateProps",

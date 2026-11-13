@@ -1,7 +1,7 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:825ef28f60529e4b8428becf84252e8c6dfe27a1769871553769e9faa7e88646",
+  "digest": "sha256:7932e60a5cb3fef48983827b2cdee28e2064d7f988da394f97b1db1464477704",
   "entryDigest": "sha256:fde79ab0a287ed417c7e3442b2eb96121adf486126ab393b6d19d86d635b7e3c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -170,7 +170,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppHeaderProps",

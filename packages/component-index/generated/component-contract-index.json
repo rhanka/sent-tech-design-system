@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:72f35eea28448f7510ee5389652862ee9b030c242a0a39391e29d28b5c0d2917",
+  "contractsRevision": "sha256:2cc63c801e7258473f756cafa46ada1006c530f31c5f901e6b50f86ad063b34f",
   "counts": {
     "byFramework": {
       "angular": {
@@ -34,7 +34,7 @@
         "vue": "partial"
       },
       "componentId": "accordion",
-      "contractDigest": "sha256:0a882162f80e76eb28c7c968775b09defdedaa0598073f80ae538016a46f9742",
+      "contractDigest": "sha256:fdfb549f2c425da681d6247f4c76901cc4a29e5a96e6b09cd13b8c5b3afb750a",
       "entryDigest": "sha256:e5c41bfd7df78c56678a9a53f56b0d7945ab7bf111cb6c3a9ec63f840e7c8926",
       "path": "contracts/accordion.json",
       "producerId": "sentropic-ds"
@@ -47,7 +47,7 @@
         "vue": "partial"
       },
       "componentId": "alert",
-      "contractDigest": "sha256:a4133a338545793d8ff20f6c156597c17fd0dc67e8f0de162f08da232d9f52e3",
+      "contractDigest": "sha256:30564838bced7c779ba2528cb451ca65e4aeb5e99fcb5419d8b3e9819395c7bd",
       "entryDigest": "sha256:8de629d9f963175d397aa8c225473902f63f4b7fa70704206f868f7ff9f8bde9",
       "path": "contracts/alert.json",
       "producerId": "sentropic-ds"
@@ -86,7 +86,7 @@
         "vue": "partial"
       },
       "componentId": "app-header",
-      "contractDigest": "sha256:825ef28f60529e4b8428becf84252e8c6dfe27a1769871553769e9faa7e88646",
+      "contractDigest": "sha256:7932e60a5cb3fef48983827b2cdee28e2064d7f988da394f97b1db1464477704",
       "entryDigest": "sha256:fde79ab0a287ed417c7e3442b2eb96121adf486126ab393b6d19d86d635b7e3c",
       "path": "contracts/app-header.json",
       "producerId": "sentropic-ds"
@@ -151,7 +151,7 @@
         "vue": "complete"
       },
       "componentId": "aspect-ratio",
-      "contractDigest": "sha256:bf13a1d5fc8039e9d3513cfac04b3f9e340afb66c24159322a8f65cd2838fa26",
+      "contractDigest": "sha256:69d842e20798632dcfc2e84fd1c2916b59341c6cb770b33ef54d69580583b8c8",
       "entryDigest": "sha256:d1b15bc2e08fcf8253016f630b8948f151741c3b37a3efe26239236cd4e730e4",
       "path": "contracts/aspect-ratio.json",
       "producerId": "sentropic-ds"
@@ -164,7 +164,7 @@
         "vue": "partial"
       },
       "componentId": "autosave",
-      "contractDigest": "sha256:53d40f1be726cd880d937ad209e2e0b595e0ab981c10ad71916cd2702a884ba4",
+      "contractDigest": "sha256:8410d7b1da21c3beb44599c04bd26526fb99446eadeffc3dbcb2ca3f06a10122",
       "entryDigest": "sha256:c30210c5a328a6bbcbcd3be8f27b45741ccdf175556a024985e982db106d6258",
       "path": "contracts/autosave.json",
       "producerId": "sentropic-ds"
@@ -255,7 +255,7 @@
         "vue": "partial"
       },
       "componentId": "breadcrumb",
-      "contractDigest": "sha256:0d6408a8fb56d126eca691ec2627c2d986d4d176433deccfd01f3b3d82a89963",
+      "contractDigest": "sha256:77740ae792ff2f2875b745dd46980714d9c1984272f9ea4ee0561d83f205da15",
       "entryDigest": "sha256:728d7831af526e3c01f66cc579c410f7b854f6c4c955c82c2fbe2bf64233512c",
       "path": "contracts/breadcrumb.json",
       "producerId": "sentropic-ds"
@@ -320,7 +320,7 @@
         "vue": "partial"
       },
       "componentId": "calendar",
-      "contractDigest": "sha256:cb5995f9b633be4ed8f966f2b22a46c0135fa5d8fe4d7e4a82f4cbd40d2bc848",
+      "contractDigest": "sha256:7cd923ed54a015e83399c6126c68e6b5b55f925910c31f26c20e22d39d3ab569",
       "entryDigest": "sha256:5a9e2f39b4b5405823f903844ba3c007b20eb02c65a5faad5df39ddee6b23aba",
       "path": "contracts/calendar.json",
       "producerId": "sentropic-ds"
@@ -372,7 +372,7 @@
         "vue": "partial"
       },
       "componentId": "chat-composer",
-      "contractDigest": "sha256:5b46f01f3d963ee942096a30784d5446c84bfaa2035ab333bdf446217b6ab881",
+      "contractDigest": "sha256:b678afdf14d64813623090ad3e5f90f456fd12e638e5f0a6aba4b0263b67f30f",
       "entryDigest": "sha256:2473910d3d07dcd0f81074630dd367386080bc533db2895ce2cc21f6e42f92e7",
       "path": "contracts/chat-composer.json",
       "producerId": "sentropic-ds"
@@ -385,7 +385,7 @@
         "vue": "partial"
       },
       "componentId": "chat-message",
-      "contractDigest": "sha256:4a4cf6b42289929f0ceab43395da6e2718da7e44193845af674a91d298e8055c",
+      "contractDigest": "sha256:316a946c51e6410805108bb1492f807f60f537a2625b07399dcdd075cb0a81a5",
       "entryDigest": "sha256:14a77d5c9a5d2b04242278874321edfffcb71b84a0b733c2d9771ad565a0119e",
       "path": "contracts/chat-message.json",
       "producerId": "sentropic-ds"
@@ -398,7 +398,7 @@
         "vue": "partial"
       },
       "componentId": "chat-thread",
-      "contractDigest": "sha256:45ce2aabcea54a4aeddf1604ba538c3b3b80c8a5c193a4e99a5989e6d3e6fcd5",
+      "contractDigest": "sha256:792c142875ce61a3671b595a2db0741ad7fb582f36be51dd45189c1a15149b30",
       "entryDigest": "sha256:f08b6c4fd24a39ab20032d8df898faa62b84672f786a3f6eeb21725c365b6843",
       "path": "contracts/chat-thread.json",
       "producerId": "sentropic-ds"
@@ -411,7 +411,7 @@
         "vue": "partial"
       },
       "componentId": "checkbox",
-      "contractDigest": "sha256:4a049d0f496037d54be2fc855f5de0aee69ed9911c4d7aff296bd9b62165e786",
+      "contractDigest": "sha256:20fde50ce8ae76ab8a8ee627e4ac4647b4239f6cb0934a3e07318408f27a27f0",
       "entryDigest": "sha256:d061fec47483b39551d72fa0ae76abbbfc5942c74c0825f345ad5cb171cbe826",
       "path": "contracts/checkbox.json",
       "producerId": "sentropic-ds"
@@ -450,7 +450,7 @@
         "vue": "complete"
       },
       "componentId": "code-snippet",
-      "contractDigest": "sha256:0a59f3a8e60808296a7c95a5f8a5ded1a56e7acc2e772f7b149ec18cddce52d4",
+      "contractDigest": "sha256:8a985ad9e445d7866a6c209133cc56c8533f782c7eed234dba10b837eb04f536",
       "entryDigest": "sha256:4f7b0690689e7188dd7025c461c9b9ded62ee4016dcdc5b8a466e03f761e06b7",
       "path": "contracts/code-snippet.json",
       "producerId": "sentropic-ds"
@@ -554,7 +554,7 @@
         "vue": "partial"
       },
       "componentId": "combobox",
-      "contractDigest": "sha256:16e3a2235caeb6c6331f845a1feb38e1bd8d9a85394ade9216d18bbbf8f6d31c",
+      "contractDigest": "sha256:21daa34a2d8825faa5e169b96f054871f28bd3d4555b5eb6af08344634582b21",
       "entryDigest": "sha256:539fffcf02811b75f745c627f2d090eb1a2239b29acfa3bb7fc07304c3b8ae89",
       "path": "contracts/combobox.json",
       "producerId": "sentropic-ds"
@@ -593,7 +593,7 @@
         "vue": "partial"
       },
       "componentId": "content-switcher",
-      "contractDigest": "sha256:d4d5546c1cf7d6b939320e57ae97878328ba0ed4e2f55a19d60afbc7ae25971f",
+      "contractDigest": "sha256:93b98dd9f010c9c67d6fa88526c937d14353f975fa93445b1fdc690b86b426f5",
       "entryDigest": "sha256:7c9e224510d981ae6c9fbddc5561371040ec725f97d62b151851a8865e8421f1",
       "path": "contracts/content-switcher.json",
       "producerId": "sentropic-ds"
@@ -619,7 +619,7 @@
         "vue": "partial"
       },
       "componentId": "copy-button",
-      "contractDigest": "sha256:26cf8cd8a6940f0c119d1e4a9231aa062cc4d8709a6fd813f3923effec7436fa",
+      "contractDigest": "sha256:c6b06a7688809644d3e742e6346d5aa002fe2e05b5464ce051727ee8cd5ed0f3",
       "entryDigest": "sha256:14d22101c50411a5b395b83a88478f4bf6b08db58875f255fbef646d90209853",
       "path": "contracts/copy-button.json",
       "producerId": "sentropic-ds"
@@ -710,7 +710,7 @@
         "vue": "partial"
       },
       "componentId": "date-picker",
-      "contractDigest": "sha256:8601b9cdf5db5d6021f99921c84892a25388cb72524fb39930c4a401fe216d7e",
+      "contractDigest": "sha256:e640fec3f16f66363beb03a7d520a6bb89afc30aa978972eda04fcd39fa00bd0",
       "entryDigest": "sha256:24892ee52aa07d58dbc50ec6d70197b2a52427630ecc8c7f5f901de7dc628b0c",
       "path": "contracts/date-picker.json",
       "producerId": "sentropic-ds"
@@ -775,7 +775,7 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:6e464fed0b390598f14b872e2766df3354c4cbd597602a6006ecc34c12fcd87c",
+      "contractDigest": "sha256:3830eda0ca6a8f8315a9b44160182b0af26501e58850bd2352b2486a713f8552",
       "entryDigest": "sha256:35ef036414e0ae0b934462656f1b3573a610a288d7023d6711f33aa5e226355d",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
@@ -853,7 +853,7 @@
         "vue": "partial"
       },
       "componentId": "drawer",
-      "contractDigest": "sha256:9d1f39db107b8bb2876a7835aca4162687702b24799b8d310361c52648398619",
+      "contractDigest": "sha256:f3abeccd71479bd234391c16567ec7f6b517b297c2df6d5b1f72307174901c39",
       "entryDigest": "sha256:5b085752954f172732aa5bf99169eb09d0ed846d90f819843708e3bd39e2fe2b",
       "path": "contracts/drawer.json",
       "producerId": "sentropic-ds"
@@ -866,7 +866,7 @@
         "vue": "partial"
       },
       "componentId": "dropdown",
-      "contractDigest": "sha256:74486143ac8a87181bcf706f2f4963261fef25b6eccec13492b6803ae6fa6523",
+      "contractDigest": "sha256:55dbb8e5eba4e1fa2d5f488a727822c9ff0e2b0c3358865cc1daafe08d312f85",
       "entryDigest": "sha256:00fc20951fc6e55006a333c841338310f49455120b51817fe65c71efa29c22b4",
       "path": "contracts/dropdown.json",
       "producerId": "sentropic-ds"
@@ -905,7 +905,7 @@
         "vue": "partial"
       },
       "componentId": "empty-state",
-      "contractDigest": "sha256:a5d679a5148e731ad079acd8a00f1ce5f36af084d79dccc06b8ce99f8ab5eadc",
+      "contractDigest": "sha256:719933589b6d6cb8ee3ac9b6d3963afbaa5e1770b576d9868d1765c40e723418",
       "entryDigest": "sha256:de6cef2f8a746461e4cb9d53afc8b486eb7b811aae27c0ad8ed8ca95aab41c5e",
       "path": "contracts/empty-state.json",
       "producerId": "sentropic-ds"
@@ -931,7 +931,7 @@
         "vue": "complete"
       },
       "componentId": "error-summary",
-      "contractDigest": "sha256:99798d31889b768ae1b3efc234d8ad96cf1559f72bfa0c708dfe6af16cb379a5",
+      "contractDigest": "sha256:d480139ac12c5580a34fbf21a1c457505c4f1351c4a3cf1c28c4d67953d75e5e",
       "entryDigest": "sha256:8a04908517b95eeebf941560a348b0a4a506af4a2269f30c8a1b074e6d70016b",
       "path": "contracts/error-summary.json",
       "producerId": "sentropic-ds"
@@ -970,7 +970,7 @@
         "vue": "partial"
       },
       "componentId": "file-uploader",
-      "contractDigest": "sha256:90c5a567b04ab002b599cfe21a41988c6bc528ed4cf8797383a55f43d7795cad",
+      "contractDigest": "sha256:25f66a86fb60831a24fca7c55ce585dc467a9d33dcfed7ab8785fcbcbfa3c665",
       "entryDigest": "sha256:dbe05c18e3d4f18d9a6fac398b06eafb59e9810cabb6f4e14afc6c9519e34465",
       "path": "contracts/file-uploader.json",
       "producerId": "sentropic-ds"
@@ -983,7 +983,7 @@
         "vue": "partial"
       },
       "componentId": "filter-bar",
-      "contractDigest": "sha256:0ced09b5401820d9056fe79746ea905bb9be8bf540855e730e36deb7433d01dc",
+      "contractDigest": "sha256:d05d597f2c216c7ed3ccf380b6d3003bef0c186775f7e9dc9fb42663c2380bf9",
       "entryDigest": "sha256:ce478e0d865a9a017945ffd4eb32681cd355aaa069c2bd627e578bde929693f3",
       "path": "contracts/filter-bar.json",
       "producerId": "sentropic-ds"
@@ -996,7 +996,7 @@
         "vue": "partial"
       },
       "componentId": "filter-pill",
-      "contractDigest": "sha256:43156b5f2a1fd2deffdf96690e61d65f3f622e6daa0dce97c0b73a83516578af",
+      "contractDigest": "sha256:573ca2e2873d76ad082fcd790d83d42a472d69227bdd9fab07c0401db263b4cf",
       "entryDigest": "sha256:3ae321e5dbce05f1f9090965823058659259523fd0e2163ae4081e9d640d67d2",
       "path": "contracts/filter-pill.json",
       "producerId": "sentropic-ds"
@@ -1035,7 +1035,7 @@
         "vue": "partial"
       },
       "componentId": "footer",
-      "contractDigest": "sha256:99c97da92e2dd3042937bed1fd483ae55b288f3dfb8003b17a99a17d3cd54ebc",
+      "contractDigest": "sha256:94579382a8875393caabd59a1c285ca621a04cea50d9c67672697be6e33d22da",
       "entryDigest": "sha256:b56290e11ca255a8a284af8922c6b8b3201a4b9a323f8c639fca99eae4f73ad0",
       "path": "contracts/footer.json",
       "producerId": "sentropic-ds"
@@ -1048,7 +1048,7 @@
         "vue": "partial"
       },
       "componentId": "force-graph",
-      "contractDigest": "sha256:9aa978899d50df80c8f488bb21674fa20ffbfba39a175d5427f0935edb840a0c",
+      "contractDigest": "sha256:4f4633b95675541971415db1a7499d68fe8f91aa850b2ecd523aacda61f9902e",
       "entryDigest": "sha256:a3711b65b0fb629b04215e1d71df5d7b2fe5f87c1511cf0b0c2e74c258e90d22",
       "path": "contracts/force-graph.json",
       "producerId": "sentropic-ds"
@@ -1061,7 +1061,7 @@
         "vue": "partial"
       },
       "componentId": "form",
-      "contractDigest": "sha256:b9e263593c92c306c7cb388bcac68db350e7ab5d79e327e177c35ec653eb3e9c",
+      "contractDigest": "sha256:c89bd8561fcb8549f307bd6b9e131402d658dde63a9badeb731e1ceb11e5c462",
       "entryDigest": "sha256:be49eae9f7d86de7afed9977382207e9bc8dbab908e4b2b85ac3ccf22e97fad9",
       "path": "contracts/form.json",
       "producerId": "sentropic-ds"
@@ -1074,7 +1074,7 @@
         "vue": "partial"
       },
       "componentId": "form-group",
-      "contractDigest": "sha256:88206eb3bebdf26343ab037cce81a2770ce443459e1dbdf0fe153b4e661dc4fa",
+      "contractDigest": "sha256:0077131dceabc8d06a2e532c0d63a66ed480e192212a9810acd7abe31b8aa152",
       "entryDigest": "sha256:892839d2c9c02c8daebfa2d872054a61059439cbe078ab2e15f05087ac1f2057",
       "path": "contracts/form-group.json",
       "producerId": "sentropic-ds"
@@ -1152,7 +1152,7 @@
         "vue": "partial"
       },
       "componentId": "header",
-      "contractDigest": "sha256:5ae456192a43447ece3090e108ff95288b883df716d95afb9a6ec75868fa80c0",
+      "contractDigest": "sha256:4c7b346b89e326167a72177abf62d9c347e7f837a8785ae4b4d4d76589383a91",
       "entryDigest": "sha256:139eeed0b2c5c8a0baf8d7b3b3ef808f2f3204881e7a72beabda88de248cfb7c",
       "path": "contracts/header.json",
       "producerId": "sentropic-ds"
@@ -1204,7 +1204,7 @@
         "vue": "partial"
       },
       "componentId": "highlight",
-      "contractDigest": "sha256:8b3a1de479f3d7ff250456a0c3825aae66d6802f96b0977515e184deda6256b4",
+      "contractDigest": "sha256:44be51f0e4897d1546b548f6dc3af57fb9e89bbd01fb01b7e7753096be02a003",
       "entryDigest": "sha256:e0fd4ea4e72dd93a45b086efecd5728f2f216139d9f4b18866957ff22c3d604f",
       "path": "contracts/highlight.json",
       "producerId": "sentropic-ds"
@@ -1256,7 +1256,7 @@
         "vue": "partial"
       },
       "componentId": "icon",
-      "contractDigest": "sha256:7bf107dc23709fc75530d06ad8f199c68da6eaf691774a8001dbbb4acb18a31b",
+      "contractDigest": "sha256:47993ee587a1ec5f6de288054d54ae1e5af2e1c371506d3cbcb56d0e9f0124a8",
       "entryDigest": "sha256:94cdec228615f1fdf8e5f839fd90a407f488be4f6a04eb953ab28c50f69e21cf",
       "path": "contracts/icon.json",
       "producerId": "sentropic-ds"
@@ -1269,7 +1269,7 @@
         "vue": "complete"
       },
       "componentId": "icon-button",
-      "contractDigest": "sha256:e2633bb9aa8fb21c240639c26e90b7c3c8ff97516d5d7ff5857ea8dcfcb55369",
+      "contractDigest": "sha256:5b23472978c81db301dca943eb54a751802d5a1d08f4f9b39aa2d8f1a4215979",
       "entryDigest": "sha256:e48ce5b918902658a9cc39fc82a779810dfd4a321d7658c7741322e8c5ca6cf1",
       "path": "contracts/icon-button.json",
       "producerId": "sentropic-ds"
@@ -1295,7 +1295,7 @@
         "vue": "partial"
       },
       "componentId": "inline-loading",
-      "contractDigest": "sha256:4ee0fa8c69b1c7fa79103fbf3b6e5f62e19c55d734b24c1d7e8470f81c7b1f5e",
+      "contractDigest": "sha256:2f5132e1f4f3aa0ebb3e931929ae8610df19d603eafa1a12750977bc59cc9057",
       "entryDigest": "sha256:789079366ae47ad17756371164628ab4312b621ba8c194722faa3d6ccead6a81",
       "path": "contracts/inline-loading.json",
       "producerId": "sentropic-ds"
@@ -1360,7 +1360,7 @@
         "vue": "partial"
       },
       "componentId": "language-selector",
-      "contractDigest": "sha256:5c04e48f168100280c681216b7571f8a188377849eb10214eac02d94effe295b",
+      "contractDigest": "sha256:50b374210060715c6b3c66e181247077e6ea8f95a328640d3c33532c5411af7f",
       "entryDigest": "sha256:15b22a97dd0b6f2e87a50304d5f6388576bb51561d24838abc8f17bb7ed0defa",
       "path": "contracts/language-selector.json",
       "producerId": "sentropic-ds"
@@ -1373,7 +1373,7 @@
         "vue": "partial"
       },
       "componentId": "language-toggle",
-      "contractDigest": "sha256:8763f277833af82c41c209a92ba03ddab275386d94712a7c1de2ae0eea54936d",
+      "contractDigest": "sha256:385e9ec366373afd98427b16acbb8726d76d6a590436e544fb27cb590a8b6f57",
       "entryDigest": "sha256:531d803d59cb47c270693cb2aa581dd7f9c9d2a332c83f52ff7c2d348d5a4435",
       "path": "contracts/language-toggle.json",
       "producerId": "sentropic-ds"
@@ -1399,7 +1399,7 @@
         "vue": "complete"
       },
       "componentId": "link",
-      "contractDigest": "sha256:ae6dd19aecafded076b5b4efc057102477173bd6667eb829f81c13a2b1f9b826",
+      "contractDigest": "sha256:84a7fef1c250d931cfc503a0dfce9fa47714a5e4cf289a9612904d5b080c6bdf",
       "entryDigest": "sha256:5c25c269bdb6094ff0c99f5636a5d75c9fb86a363cb10b79d829c8002375790c",
       "path": "contracts/link.json",
       "producerId": "sentropic-ds"
@@ -1412,7 +1412,7 @@
         "vue": "partial"
       },
       "componentId": "loading-state",
-      "contractDigest": "sha256:9e0b768dae211be92f05986240cd3e4a29772c6d18ec5a2e809e03d5ec029542",
+      "contractDigest": "sha256:00d75630d4ab62f5d9e9aaaa3fbf72d612f309b5d7e7515dfd36a620199bbbbb",
       "entryDigest": "sha256:120f31cb202de9de31d843a1d2f785ce2e248df743d61e1326a659770d8263ac",
       "path": "contracts/loading-state.json",
       "producerId": "sentropic-ds"
@@ -1464,7 +1464,7 @@
         "vue": "partial"
       },
       "componentId": "menu",
-      "contractDigest": "sha256:5762fc543d2a300f2c49c1f82452f481556150928af1a05e6a85f25b27d417d5",
+      "contractDigest": "sha256:c60c4eafa00efadea25b790768f02c24b231473b482ec4e95edbc838cd54ddf3",
       "entryDigest": "sha256:a4fe14e872e2501f018dc16d8c9732d2c3327c4a86bc9f10b7e840ed608a3d26",
       "path": "contracts/menu.json",
       "producerId": "sentropic-ds"
@@ -1477,7 +1477,7 @@
         "vue": "partial"
       },
       "componentId": "menu-popover",
-      "contractDigest": "sha256:3685d7a92c8b6b8273b508c72c1e9adbf5d90c67025a548159c40771a44ac5ee",
+      "contractDigest": "sha256:cd5a17d38feef820a33efcddcf6629cd433295d835c02e792f25441300146ca5",
       "entryDigest": "sha256:1057e62feca4d1182c91e9351aa3fd99f0d9f3d8e5a9e79bc644c6fc7bacabac",
       "path": "contracts/menu-popover.json",
       "producerId": "sentropic-ds"
@@ -1490,7 +1490,7 @@
         "vue": "complete"
       },
       "componentId": "menu-trigger-button",
-      "contractDigest": "sha256:99739553a9371a61f9494f9dc0d816a182b42619d2763b5ec68816e40662741b",
+      "contractDigest": "sha256:2f34e04200dbc206b542b6a169acdb1a72e66b41b1e77dca351852a71321ad23",
       "entryDigest": "sha256:58780eaa1653382654b9ca27404d406023511958a1a2013be93123906d61eb18",
       "path": "contracts/menu-trigger-button.json",
       "producerId": "sentropic-ds"
@@ -1503,7 +1503,7 @@
         "vue": "partial"
       },
       "componentId": "message-actions",
-      "contractDigest": "sha256:4a4f70f1de7009531d77752c97b621e55e76901365981244baa1b0fd2586a1c3",
+      "contractDigest": "sha256:4178fc64704e2856f356a67c5aeff21c23fbb07569fe30c3c87e8f11e4b81884",
       "entryDigest": "sha256:c37ff8ac1435aaa59ea231ff1351e87509f8fa631ad614d8a3156278159a5adb",
       "path": "contracts/message-actions.json",
       "producerId": "sentropic-ds"
@@ -1516,7 +1516,7 @@
         "vue": "partial"
       },
       "componentId": "message-status-badge",
-      "contractDigest": "sha256:01a18cdf8b46d53a596fd410580d1ab7ba07e4507995319929c354140acdb98d",
+      "contractDigest": "sha256:8a32fb76fde147bedd8675d79acbe9f0985091d346c209d59de2bb40dd91d742",
       "entryDigest": "sha256:8d2fbefe1c3dea377c99f3ceca13881a2c404d7f954012563541343853923545",
       "path": "contracts/message-status-badge.json",
       "producerId": "sentropic-ds"
@@ -1529,7 +1529,7 @@
         "vue": "partial"
       },
       "componentId": "modal",
-      "contractDigest": "sha256:6ad4d261e710e703fe5389ad781c23b83c0851ba0c7d610532a220f7b78c1339",
+      "contractDigest": "sha256:f3882dcaf34ef0a693f6c0e1d41971a5970f875bf66a2ea99d959aaeedf75eee",
       "entryDigest": "sha256:0264eb4dedc08182d37657937f2e8679f75744c33267e204c864dea6c6b9b055",
       "path": "contracts/modal.json",
       "producerId": "sentropic-ds"
@@ -1542,7 +1542,7 @@
         "vue": "partial"
       },
       "componentId": "multi-select",
-      "contractDigest": "sha256:73476d0591c0ddcb37188e4246e0ba36078740e11921a12b4d2187d8f65e0749",
+      "contractDigest": "sha256:5ab42015fa1cd771bc21e97b921cc4b3f0109fd4d0d16c192200b62750386790",
       "entryDigest": "sha256:e008b68688af7e43ad92bea2f08aac163de58a608ca217ccf5f08bf61313e54d",
       "path": "contracts/multi-select.json",
       "producerId": "sentropic-ds"
@@ -1607,7 +1607,7 @@
         "vue": "partial"
       },
       "componentId": "number-input",
-      "contractDigest": "sha256:2ac59d5f118d2d6a77d9d516f0752550dc4c77b354435d468931ab6a1d9dc90d",
+      "contractDigest": "sha256:aafd35de14a39aaa162b520ab12592c93072f57b851f87efb6cc010e478e00c9",
       "entryDigest": "sha256:a0f356a03d518bbe911771c1a6543c0508d00f079fdd743b1f900622d9a7b2b1",
       "path": "contracts/number-input.json",
       "producerId": "sentropic-ds"
@@ -1633,7 +1633,7 @@
         "vue": "partial"
       },
       "componentId": "ordered-list",
-      "contractDigest": "sha256:a7076a8c94ec803037afd9637e45fad05ba0eb05f521dc215dd7de6a0344ad42",
+      "contractDigest": "sha256:95dba850c153d41151e934941408643e48bc9b8954c7f5b74cf057e657b6a08e",
       "entryDigest": "sha256:6550598c5bada9d9048baa8c5f48c7b26bce0d4817741c154cdd6ecbe3811100",
       "path": "contracts/ordered-list.json",
       "producerId": "sentropic-ds"
@@ -1659,7 +1659,7 @@
         "vue": "partial"
       },
       "componentId": "overflow-menu",
-      "contractDigest": "sha256:c81ef8af9b92448d2a9fc6acdc8c81e2132338614312e5220a9da1d5736470fa",
+      "contractDigest": "sha256:17630ddf6b360c9909c471e0234d45b7704af8d813c1a8c4f0b04a7dafd2e264",
       "entryDigest": "sha256:66a16505bffc92bbce06d9bd647f918be7ebfda26d3735b0189664f79127dea1",
       "path": "contracts/overflow-menu.json",
       "producerId": "sentropic-ds"
@@ -1698,7 +1698,7 @@
         "vue": "partial"
       },
       "componentId": "pagination",
-      "contractDigest": "sha256:8e853a463e5fc89c2345519c958d1161b6523d949482aba2b7f8cc34cc0a956a",
+      "contractDigest": "sha256:7cf786dc58349ab73e1b13ed449924b923c6139a9efc10d90616a41b71b4091a",
       "entryDigest": "sha256:ad02d81e357293fb4bc05d5a25f300b4426d8e20fc92e105f26efa43d9686f32",
       "path": "contracts/pagination.json",
       "producerId": "sentropic-ds"
@@ -1711,7 +1711,7 @@
         "vue": "partial"
       },
       "componentId": "pagination-nav",
-      "contractDigest": "sha256:32669c358daa83d07f6f7fdf7dec8f944738bcc887fa7f8d3d12a2c7936a9df4",
+      "contractDigest": "sha256:67167abf63416f033901cf960d58312359e19f86db0e4cc8a223f9117fa37388",
       "entryDigest": "sha256:21d0d937d7b518ba767196d9029b2343e5b3a88e81330e492e19a2b6094e91e7",
       "path": "contracts/pagination-nav.json",
       "producerId": "sentropic-ds"
@@ -1763,7 +1763,7 @@
         "vue": "partial"
       },
       "componentId": "password-input",
-      "contractDigest": "sha256:22f26231b3ba2ceb5aa06e11c2242db2b08367a53faa31b33394b299c04f9d3c",
+      "contractDigest": "sha256:1f32afb5f073ba9cafd91747f88793a6dbe7a8e27400cc0775b44a1521ac4d6d",
       "entryDigest": "sha256:89580533cd189ecac3cab085aa72554e9d10f322642dd24230d6125f04315053",
       "path": "contracts/password-input.json",
       "producerId": "sentropic-ds"
@@ -1802,7 +1802,7 @@
         "vue": "partial"
       },
       "componentId": "popover",
-      "contractDigest": "sha256:6172aac431c97b340a67c7e94625cd741c29fc0653150ad53cd572a351f3f0b3",
+      "contractDigest": "sha256:15fe701787e7ae6dbb2775cdffb286ab3b85274b403df931acc1a4f3366cb2b1",
       "entryDigest": "sha256:26e638c726cfbc49be66113738821fcb9cf35da014abed64c89ea0c0e205b120",
       "path": "contracts/popover.json",
       "producerId": "sentropic-ds"
@@ -1854,7 +1854,7 @@
         "vue": "partial"
       },
       "componentId": "progress-bar",
-      "contractDigest": "sha256:0874d1459372b81191f4910d991f938b31d1ebe533d8a8469fb6941307d068c6",
+      "contractDigest": "sha256:4cd9e01dc163665cfbcb4f6a599203ef190c0ea93bff54edb2e3dfa39e57f0bc",
       "entryDigest": "sha256:6c7ada6754f0ba76b79548db77ccacb797daac8ae4a78226c68f25eb5cabb431",
       "path": "contracts/progress-bar.json",
       "producerId": "sentropic-ds"
@@ -1867,7 +1867,7 @@
         "vue": "partial"
       },
       "componentId": "progress-indicator",
-      "contractDigest": "sha256:4450374636566e4cc4d3e6f2bbd8642e6636d0cb917f98c955757f78d25506b9",
+      "contractDigest": "sha256:2e7a886139d3e07d872027d3c0fc674a0a0f3f50a7e6dd86ec89396ee954642a",
       "entryDigest": "sha256:2d9883bfe4040722d607114e1b8dd9bf09d3f8c3b535e5d3cecbaa04c1a7037a",
       "path": "contracts/progress-indicator.json",
       "producerId": "sentropic-ds"
@@ -1880,7 +1880,7 @@
         "vue": "partial"
       },
       "componentId": "quote",
-      "contractDigest": "sha256:ba242e8587decd2e67dda05afb146efa6d39f1379e3b251e58ba19c65d26e752",
+      "contractDigest": "sha256:85fa766aea57b6c6023827281f892a70092f0a86cecf3f76468faaa2f9b631cd",
       "entryDigest": "sha256:44bdbd9accfc9b58c4e881284ec4ba1bacbdb4725c5417352d889755282d3404",
       "path": "contracts/quote.json",
       "producerId": "sentropic-ds"
@@ -1906,7 +1906,7 @@
         "vue": "partial"
       },
       "componentId": "radio",
-      "contractDigest": "sha256:86e7b74156cdff373ce7c840fb433437ff376ec5a842f9c57350d4f2a4ea13bc",
+      "contractDigest": "sha256:bd77b0703f7f9e0f9611f9c2028419a414db8c7cf423c2a10c1f39a3bc88a699",
       "entryDigest": "sha256:62ed5037d3fbc40dab8a5ae05e07ba899cce3bb423d6636c86118aae993af3bd",
       "path": "contracts/radio.json",
       "producerId": "sentropic-ds"
@@ -1945,7 +1945,7 @@
         "vue": "partial"
       },
       "componentId": "rating",
-      "contractDigest": "sha256:2327195ea80a02b3688bd632b40a13484fd6289be6db8d5b0937a9cd6e7b3ca1",
+      "contractDigest": "sha256:0d8f6914140d7cc8d97c0239eca22cea4f2d56a42bc290492a9765f477fd542d",
       "entryDigest": "sha256:3e922300fb051d22273815af3429962ced6f068aebb2065f6c25b92447679a28",
       "path": "contracts/rating.json",
       "producerId": "sentropic-ds"
@@ -2049,7 +2049,7 @@
         "vue": "partial"
       },
       "componentId": "search",
-      "contractDigest": "sha256:e0d0a04ec2b0f3ac1fb5b04add2efbc58b747a4b5c40b6f249259110f966c947",
+      "contractDigest": "sha256:854daa60f2943dab892baa95bdf1c2e01f89daf8a03c10031e633c8574a9fe0d",
       "entryDigest": "sha256:9e538165939f2346fe468a2aca6d4c1084a53bb38d9321b095f65c7de38f10b6",
       "path": "contracts/search.json",
       "producerId": "sentropic-ds"
@@ -2062,7 +2062,7 @@
         "vue": "partial"
       },
       "componentId": "select",
-      "contractDigest": "sha256:a8a00b68a142194e15ae9acfb739616a1ac81e364320c0fd353c807b3e5a70bd",
+      "contractDigest": "sha256:f50e9701d6a680ffd900919438b168caf8f8ffd37a01cfa3c85d5e62b5620725",
       "entryDigest": "sha256:c1a91c57d406f2ab3e85953478fc61b38030a46bda77dafb859251a75282b277",
       "path": "contracts/select.json",
       "producerId": "sentropic-ds"
@@ -2101,7 +2101,7 @@
         "vue": "partial"
       },
       "componentId": "selection-chip",
-      "contractDigest": "sha256:d86b54dd147a00bfcdf1ae7827c94192a729f76dd1ec01df1b2ff81c665af6e2",
+      "contractDigest": "sha256:608de36f35c60ba4c489a0f3da88da5ab1cdaf8b3df015e3984e6d9433c0601f",
       "entryDigest": "sha256:54e11530506f8d0cae3987bf96d97ce9980003146d1ce8ea26ddd26498124e16",
       "path": "contracts/selection-chip.json",
       "producerId": "sentropic-ds"
@@ -2114,7 +2114,7 @@
         "vue": "partial"
       },
       "componentId": "side-nav",
-      "contractDigest": "sha256:5ca1b2a9e6bbe3bfdcc4043054ae126eb00365a65044f06da1a9de44462a369f",
+      "contractDigest": "sha256:a15444f98f673376e22b9099b505d873f79ec5b44624ce2e6742bce910cdc20d",
       "entryDigest": "sha256:a3d324b218aa75cc6866aaf42d8f6b37537055732254ffa01c56ec2d282d9188",
       "path": "contracts/side-nav.json",
       "producerId": "sentropic-ds"
@@ -2127,7 +2127,7 @@
         "vue": "complete"
       },
       "componentId": "skeleton-text",
-      "contractDigest": "sha256:39ea3282b24487c93a6c01793b1889c8d164f1064cb754a4826a000167042e50",
+      "contractDigest": "sha256:4c26dd8982277ce74019a00ba29218f7c00b17d249bf27440315a4d3c7ed3f11",
       "entryDigest": "sha256:b373faaef365170693766a764fb670d2e37bbfd6b765f3569d49a7ec44bb99f1",
       "path": "contracts/skeleton-text.json",
       "producerId": "sentropic-ds"
@@ -2140,7 +2140,7 @@
         "vue": "complete"
       },
       "componentId": "skip-link",
-      "contractDigest": "sha256:129222b3fbdb7c8cc20fd638a2ee9e33878ffb1287ea5ff5e87b93fab835b1f6",
+      "contractDigest": "sha256:20a2ae2b323a44d01b364d47aa4111c987fb103853d311da3069ecf8980000c2",
       "entryDigest": "sha256:ac4ed77930280614a4268c2dfca30759625d95f0990628955f5d5251176144df",
       "path": "contracts/skip-link.json",
       "producerId": "sentropic-ds"
@@ -2153,7 +2153,7 @@
         "vue": "partial"
       },
       "componentId": "slide-indicator",
-      "contractDigest": "sha256:a6d9daed98cb0dada81885c19c357620fc3c69ebe19602cafed63e041e45cb5c",
+      "contractDigest": "sha256:25c4358feab9c849adacec1f2546c2f0f886137d255d3ea607780e1b07ae2023",
       "entryDigest": "sha256:c9cb81aabb6d5ebf2b5780e355693fefe4ff73dd7835ea4575789057a8cba03a",
       "path": "contracts/slide-indicator.json",
       "producerId": "sentropic-ds"
@@ -2166,7 +2166,7 @@
         "vue": "partial"
       },
       "componentId": "slider",
-      "contractDigest": "sha256:27d2818b5026ddbbe2fdf81667a3d4a92bfdc6e52f88d35cfdfdbf2965b1b770",
+      "contractDigest": "sha256:bb5d3c84bce75ce769ad762bad181bc4e7a1ec77d57f22259396f01f3698a7a0",
       "entryDigest": "sha256:3e7b64ae809e675556b1569920c7dfa5590ce1301780c310c12f3652ccde1598",
       "path": "contracts/slider.json",
       "producerId": "sentropic-ds"
@@ -2309,7 +2309,7 @@
         "vue": "partial"
       },
       "componentId": "streaming-message",
-      "contractDigest": "sha256:14bc06ef8bdb77281fece132f44095c441b5febaef035f7b494024f02c274320",
+      "contractDigest": "sha256:fad50df15abc6b123c1d6a66838a0e028eeb1dc18d7a18be3e2cb1cf3799184e",
       "entryDigest": "sha256:23c026ddd7b86c0f0dcca59e9ec8e3e985932500cd79071ff89b687db5015132",
       "path": "contracts/streaming-message.json",
       "producerId": "sentropic-ds"
@@ -2322,7 +2322,7 @@
         "vue": "partial"
       },
       "componentId": "structured-list",
-      "contractDigest": "sha256:7750cabaf8c4f1fe5e0134b084b2fcdc719e6c8824cf20c7010c6fe5f69d2b2d",
+      "contractDigest": "sha256:b1296f90850c7509cde9c31cead762700b5fa68c4da2ae187895162e5cd43ca0",
       "entryDigest": "sha256:ffda1f7be415bdfbc752c19e504bf573e8af90c51c5b463dc43c7bb31399c84d",
       "path": "contracts/structured-list.json",
       "producerId": "sentropic-ds"
@@ -2348,7 +2348,7 @@
         "vue": "partial"
       },
       "componentId": "switch",
-      "contractDigest": "sha256:6e31b75f2d40022b0afa74460127fcfdb4a85bdc54b95fa184ea8ae15461c445",
+      "contractDigest": "sha256:1816fd1d27d12c028a68620146e0c08ae636fa46d110bebceb5db91ec0d23208",
       "entryDigest": "sha256:60411a8e3ad23aaa5284ffa013b927a0c95be779adc4506343da10ce7271d80d",
       "path": "contracts/switch.json",
       "producerId": "sentropic-ds"
@@ -2361,7 +2361,7 @@
         "vue": "partial"
       },
       "componentId": "table",
-      "contractDigest": "sha256:c89560c6ed01bd6de6c30dcedd66202f63486db321a21bc53f8252b1a077d33e",
+      "contractDigest": "sha256:910e6ef5be1a1ff3a57dd6adff98c2c242e3b11f90f87a1119babccf7a97b3f2",
       "entryDigest": "sha256:84d87cdc52df06f7d9a17b5a16a12674d8c9dabc110982fe42c2040e32eb0a4d",
       "path": "contracts/table.json",
       "producerId": "sentropic-ds"
@@ -2387,7 +2387,7 @@
         "vue": "partial"
       },
       "componentId": "tabs",
-      "contractDigest": "sha256:adbce1c9b447732fe7e7c0f1f2d527a1c1527337e9e4d5cc7599e7a65f159b36",
+      "contractDigest": "sha256:ce9157df3e99669befad990103986763d45b2d05fe351ed28112019154266cd4",
       "entryDigest": "sha256:41b26c76275d1b9034aca7ce6fa2de220c6da694f0a74ee40ac415ab0308476d",
       "path": "contracts/tabs.json",
       "producerId": "sentropic-ds"
@@ -2400,7 +2400,7 @@
         "vue": "partial"
       },
       "componentId": "tag",
-      "contractDigest": "sha256:cc29050488384c46d31b0487bdff3e21c5626dab62959141de912cef42690f3b",
+      "contractDigest": "sha256:d941e7b09625565a4f8cb39e440297475183161ac692715c48f948bf37d4c248",
       "entryDigest": "sha256:c9f137cf2735c0f5d8065b6ca31c6179928c7a3ab3bc853ddb27b5915d315ab9",
       "path": "contracts/tag.json",
       "producerId": "sentropic-ds"
@@ -2413,7 +2413,7 @@
         "vue": "partial"
       },
       "componentId": "textarea",
-      "contractDigest": "sha256:f6445238e72af3881d684f105753f16e47d8f742d2fecb091182f50ea90b0082",
+      "contractDigest": "sha256:616765cad5a27edaacf8cbca3d0df4e458cc07e779ba8bd43fec807da3c368eb",
       "entryDigest": "sha256:991422b454a840ded7626d93a95f245406acffc4e4a1f4d8c9536d983419ee32",
       "path": "contracts/textarea.json",
       "producerId": "sentropic-ds"
@@ -2426,7 +2426,7 @@
         "vue": "partial"
       },
       "componentId": "tile",
-      "contractDigest": "sha256:2d41377faac7ecb8161f71bdd5c6fa560f0d7db20e83368af7d5f6c40ef8f863",
+      "contractDigest": "sha256:6ecefddd40c1c2f4e8be7c1332a456c3b4017129fe485a701c380e3d09e19d2c",
       "entryDigest": "sha256:026ba8d5268e3f945aaf27e17dde23ac4da4aa52a172688db132c351f24634e5",
       "path": "contracts/tile.json",
       "producerId": "sentropic-ds"
@@ -2439,7 +2439,7 @@
         "vue": "partial"
       },
       "componentId": "tile-group",
-      "contractDigest": "sha256:bd9671371ef63970ff5f1021b6777897ba463f6adee958965b183c7f7ecc4446",
+      "contractDigest": "sha256:3ee150e073782ca3ad76d708434d7e56ce2e639fcc7be6f20144c07a5388cd9c",
       "entryDigest": "sha256:3c9e2dc927a5bec587382ec0181b61ebe9266c550c015de6d82455d8b1781c42",
       "path": "contracts/tile-group.json",
       "producerId": "sentropic-ds"
@@ -2465,7 +2465,7 @@
         "vue": "partial"
       },
       "componentId": "time-picker",
-      "contractDigest": "sha256:17f7ecbcc37df5e147c0d8fda7f4f466d21c1726ca8c743d6a40c5776b9b1d5f",
+      "contractDigest": "sha256:9f30c3bebe289b419f4362e1f550563d394997d2eab59ad5a42eda6a7e226431",
       "entryDigest": "sha256:473fcf72e8fe76323e5bd8436c31d20e1e0313b71ce5fe61a17836b76a0ec907",
       "path": "contracts/time-picker.json",
       "producerId": "sentropic-ds"
@@ -2530,7 +2530,7 @@
         "vue": "partial"
       },
       "componentId": "toast",
-      "contractDigest": "sha256:cb1898ae39492227b42fa2bb440483e310f98ab6e0e33d56b5b3f6adc7337fb3",
+      "contractDigest": "sha256:9526662a909bf4a2a54367690a08f1da57412b8f8f32c98522b1bcde63faac8c",
       "entryDigest": "sha256:77125b5d6305c76a5667c06ef842337febee84f5d42fb4e76ae1e073bfada2cf",
       "path": "contracts/toast.json",
       "producerId": "sentropic-ds"
@@ -2543,7 +2543,7 @@
         "vue": "partial"
       },
       "componentId": "toggle",
-      "contractDigest": "sha256:67864369e6ebc4c3834f02a0f3d9c6d96c3830faed4d90ac91cfb1d87a19369c",
+      "contractDigest": "sha256:49bedf4ee65b8e547c6cb958bac4e73ee5b0a73df79f2bbb16605bfd2956b079",
       "entryDigest": "sha256:67e8aad1f1c5cc79a7b9d86f4f0cfe254779878cc458a36b6d418030952debe1",
       "path": "contracts/toggle.json",
       "producerId": "sentropic-ds"
@@ -2556,7 +2556,7 @@
         "vue": "partial"
       },
       "componentId": "toggletip",
-      "contractDigest": "sha256:f6ec671c5089fe44a47211b3be85916b97f2467f96578e7427d7a99060c11006",
+      "contractDigest": "sha256:cb3a368f57d946662f3283535d0e18040d3d83d638bfcbfc346fb2c9fcc275b2",
       "entryDigest": "sha256:a9d28a273bd3de926147d2c87902cfc3f8d16bdfa69bf9ee9cda0571279fbe2d",
       "path": "contracts/toggletip.json",
       "producerId": "sentropic-ds"
@@ -2569,7 +2569,7 @@
         "vue": "partial"
       },
       "componentId": "tooltip",
-      "contractDigest": "sha256:b15ada8a268faeab765ed57f0cc6d94827735e741622a7513898630e4378a5c7",
+      "contractDigest": "sha256:d82598ecd6051be1352640ed0b7cbb661845532c421b428aebcdf1497d01ef3a",
       "entryDigest": "sha256:232bb4ea2107126e93e38c8abacb37648271d4967cd7cc5d17cf556acd9f8ffd",
       "path": "contracts/tooltip.json",
       "producerId": "sentropic-ds"
@@ -2608,7 +2608,7 @@
         "vue": "partial"
       },
       "componentId": "tree-view",
-      "contractDigest": "sha256:59748afb22940a2a5ebbb57d7de7ed5c55a2377dedb31f6d7852bf3e4fae4370",
+      "contractDigest": "sha256:3964cc51941e46059e51980df33679cc27d999d579272908bcfc52be1afbb402",
       "entryDigest": "sha256:0d52044a26d6596399f966588c45d94e18a3c40422155a3bb5b5c8a42fb40b90",
       "path": "contracts/tree-view.json",
       "producerId": "sentropic-ds"
@@ -2660,7 +2660,7 @@
         "vue": "partial"
       },
       "componentId": "unordered-list",
-      "contractDigest": "sha256:a1c3dc69ed04e0a756b7542af1edbe9092cd067d5c5387dc086759650719bd5b",
+      "contractDigest": "sha256:29625dfe5a9f40de4d021a6c31228d18d44f1e20e0ceb01c7e37f5dfafe7099e",
       "entryDigest": "sha256:b04f6491e7190643d880e7fcb04b7dd92f7dce449977b669582eb714d5916527",
       "path": "contracts/unordered-list.json",
       "producerId": "sentropic-ds"
@@ -2824,5 +2824,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "9ff8201e5f553c70a7f1ae664f28bf1f1c128e61"
+  "sourceCommit": "5168b509a5173e40a3ada70a1bfa3001960f97b6"
 }

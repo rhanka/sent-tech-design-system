@@ -1,7 +1,7 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:6172aac431c97b340a67c7e94625cd741c29fc0653150ad53cd572a351f3f0b3",
+  "digest": "sha256:15fe701787e7ae6dbb2775cdffb286ab3b85274b403df931acc1a4f3366cb2b1",
   "entryDigest": "sha256:26e638c726cfbc49be66113738821fcb9cf35da014abed64c89ea0c0e205b120",
   "format": "component-contract/v1",
   "frameworks": {
@@ -120,7 +120,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PopoverProps",

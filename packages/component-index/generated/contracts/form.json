@@ -1,7 +1,7 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:b9e263593c92c306c7cb388bcac68db350e7ab5d79e327e177c35ec653eb3e9c",
+  "digest": "sha256:c89bd8561fcb8549f307bd6b9e131402d658dde63a9badeb731e1ceb11e5c462",
   "entryDigest": "sha256:be49eae9f7d86de7afed9977382207e9bc8dbab908e4b2b85ac3ccf22e97fad9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -107,7 +107,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",

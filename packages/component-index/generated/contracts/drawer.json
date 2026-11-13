@@ -1,7 +1,7 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:9d1f39db107b8bb2876a7835aca4162687702b24799b8d310361c52648398619",
+  "digest": "sha256:f3abeccd71479bd234391c16567ec7f6b517b297c2df6d5b1f72307174901c39",
   "entryDigest": "sha256:5b085752954f172732aa5bf99169eb09d0ed846d90f819843708e3bd39e2fe2b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -128,7 +128,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DrawerProps",
