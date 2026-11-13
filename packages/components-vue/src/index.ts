@@ -368,12 +368,12 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
-export { WordCloudChart } from "./WordCloudChart.js";
+export { default as WordCloudChart } from "./WordCloudChart.vue";
 export type {
   WordCloudChartProps,
   WordCloudChartWord,
   WordCloudChartTone,
-} from "./WordCloudChart.js";
+} from "./WordCloudChart.vue";
 export { OrganizationChart } from "./OrganizationChart.js";
 export type {
   OrganizationChartProps,
