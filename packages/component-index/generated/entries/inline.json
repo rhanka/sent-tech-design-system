@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Inline.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:3aab39058d6fb30cc043cc62669412a7ed710c90db01e9affbb400e89bc915d5",
+      "digest": "sha256:87c99b931e8d2bf7d9039d92f5378c15d091f9dd0f4350fa8506662c70317463",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Inline.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Inline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Wrapping horizontal flow with uniform gap.",
     "fr": "Flux horizontal qui passe à la ligne, gap homogène."
   },
-  "digest": "sha256:85044a2a697f261c3744be2f0231adf400cd41eaf469a520d5e2b559b7631e46",
+  "digest": "sha256:28733196c8441f3391c3706d518990c5d8d58471d2178121e8374c9ef37148b0",
   "displayName": "Inline",
   "format": "component-entry/v1",
   "frameworks": [

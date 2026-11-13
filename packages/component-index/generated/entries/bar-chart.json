@@ -23,7 +23,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BarChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -39,7 +39,7 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "element",
@@ -54,7 +54,7 @@
     "en": "Bar chart (vertical or horizontal) with categorical tones.",
     "fr": "Graphique en barres (vertical ou horizontal) avec tons catégoriels."
   },
-  "digest": "sha256:2fe9de9fb05c6714f79d2cdb0838d13fe2400be22e72e2ce097803940a95ad53",
+  "digest": "sha256:e673ef8ae80245762bfc4194bd93b259ccb3f13b007402020915ecfc2d4bbe07",
   "displayName": "BarChart",
   "format": "component-entry/v1",
   "frameworks": [

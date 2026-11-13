@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AppChrome.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e40c1661bf58bbb281096002c63ce22913a59aa103364d06f1eecc52e9d44ccb",
+      "digest": "sha256:516669af8ecfcc242db1110124be05a9b7b8988c609aff5f9058a0d545838e90",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AppChrome.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AppChrome.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:c51f486e8b741d93cfeffbc4ea3116cc19c511a4f6f21826c3401bd1d7586fe1",
+  "digest": "sha256:83ba458a1dcfc4faaed9acf56e98c2f88cb4c4f6436401dffd818d7cbc119335",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

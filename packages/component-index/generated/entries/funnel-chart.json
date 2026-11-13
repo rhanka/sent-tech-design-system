@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FunnelChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FunnelChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical or horizontal funnel with per-step conversion percentages.",
     "fr": "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape."
   },
-  "digest": "sha256:4d0430a6985af180acbea46fba637a73344eea30096a4e66af933019ba3826d3",
+  "digest": "sha256:10d1c2add761d74279f4351226f7a8d015a04752f7345e08dc7697143a77ee0b",
   "displayName": "FunnelChart",
   "format": "component-entry/v1",
   "frameworks": [

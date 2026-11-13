@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:860ae520a038057375cb038fb93ef6b9dc61aa356dadc021ada115d1a8f15d3f",
-  "entryDigest": "sha256:6a571f623dc9dcfa1d8152ea6eec64694ba29b5e6e4cac3400607b128f298a65",
+  "digest": "sha256:ebce92beaff5e9ce6c3dc3ec540979655db22fd8e16777136ed73b39f182c623",
+  "entryDigest": "sha256:4d5d81e98585d901c18498f98ead7d597e8ce8e3ef84dea21619de3f2431739f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -75,7 +75,7 @@
         "declarationPath": "packages/components-angular/dist/SelectableRow.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectableRowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -164,7 +164,7 @@
         "declarationPath": "packages/components-react/dist/SelectableRow.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectableRowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

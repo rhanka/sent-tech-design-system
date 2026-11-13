@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:b582e0807dcf8ac2941736e846d0f1f8fa612ccb672d6e53c46304a90d420eb7",
-  "entryDigest": "sha256:6ce56ef3ac139eac567b204ba29a7de96c013fe7c9c3ee3cd51bc30fc7bf701a",
+  "digest": "sha256:36916c3234f6c7d7d9d6cb7dfebecb33024bcb620e72d1222874767e3d59b557",
+  "entryDigest": "sha256:c34907bbf0495428c1a58c758f51fe04a33fdc1d7843ceff2b52a49ad8287d29",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-angular/dist/NavActionStack.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NavActionStackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-react/dist/NavActionStack.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NavActionStackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

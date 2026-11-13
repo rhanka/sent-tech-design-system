@@ -1,8 +1,8 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:6e0ebefee33a7478a49a3f4293bac4e78309369000dca72d987825d87110cb31",
-  "entryDigest": "sha256:51b0f23ba3a0cfcbe3b174575701b9e8692bcb7214f584977322671195f8730b",
+  "digest": "sha256:f87bdddb14920b5c230d8a1d0cfbfd1db77387e8a6cb376cbc4d0cc1aa2361a3",
+  "entryDigest": "sha256:6bb4f8fed47337a173aaea4aa54e4b86325b18eaa36bb6f2ef725d2e4edf1fde",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -99,7 +99,7 @@
         "declarationPath": "packages/components-angular/dist/SolidGaugeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-react/dist/SolidGaugeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

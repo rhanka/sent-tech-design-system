@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:2efea1a56f39c3943f6da90876726891266be9d1a3d4f730753a008cba1033e6",
-  "entryDigest": "sha256:0f18fe77a86dcb6696f2ebd3a880c35bec7ded01300409e36747f8ebeaf5e6b2",
+  "digest": "sha256:148b28228f10d807367e030916ddc28e904925c51e5484df07a2b7e5d059fe8b",
+  "entryDigest": "sha256:cd954e05836ae9798317f6c660942d77f78e315cc68f2927b7dc69650cc8c04c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/PriorityMatrix.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PriorityMatrixProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-react/dist/PriorityMatrix.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PriorityMatrixProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

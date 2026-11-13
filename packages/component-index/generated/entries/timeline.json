@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Timeline.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e1047a1461674a6318ef220a48267d9adeec52a0d5230de9d28fc0c93e04eea6",
+      "digest": "sha256:b47126bbe1190556ee84932ce28093a6e36a2d52cc55cd19d734e373c19cf90a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Timeline.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Timeline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
     "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
   },
-  "digest": "sha256:73f0019711d02586baf73caa30349f6a2413efc1dc41af07cb236a5891571279",
+  "digest": "sha256:eb7747a6bf07161a818aa10986175d66fb6e5d525cf13a738c92373b87f547b7",
   "displayName": "Timeline",
   "format": "component-entry/v1",
   "frameworks": [

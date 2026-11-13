@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Row.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d30c017d790207fb32e69ec46c25e8fbc7ea13c9b751e441b3d297fdbd995cee",
+      "digest": "sha256:872fa4639d636115ae6589e9670e061f4b6f26dadc97b583ece49ba91a80f2d1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Row.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Row.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Row of a 12-column grid with configurable gutter.",
     "fr": "Ligne d'une grille 12 colonnes, gouttière paramétrable."
   },
-  "digest": "sha256:c29ebe38e42f82120aca449f76daed48612b7a7d066a6ae6a87f2865869228e0",
+  "digest": "sha256:22f4316fcbd71fe639698a159a396c5e2c822d0ab9b3426e44c4fd550bc11678",
   "displayName": "Row",
   "format": "component-entry/v1",
   "frameworks": [

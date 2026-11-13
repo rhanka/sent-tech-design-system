@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:07ad91182edf62dd3462fc382ef6f9197034bfb10dd94bb304524d23a8184ad5",
-  "entryDigest": "sha256:04fbf20795348525592e061865a5484ca85a2deb4592e1dde147c35486c29866",
+  "digest": "sha256:a74c93baea930d5b92bc66eed1dbbc818bd798a6bd7abd6c7ecf1b12692ac8b1",
+  "entryDigest": "sha256:b4ecb6990b64100bba1d59ac5995afb8ffcb4939c69e1095141a5dea6b66748c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/Quote.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "QuoteProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -89,7 +89,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "QuoteProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -181,16 +181,17 @@
       ],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "author"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "source"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:c9298308020f7d162a7fc528382645de658208eb3a83efec69c487e284424c59",
+        "declarationDigest": "sha256:a4757faf0af13c7c12d41605ae967f54d3c093828bb65a571259f848efbb2433",
         "declarationPath": "packages/components-vue/dist/Quote.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "QuoteProps",

@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LanguageSelector.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:26692b466094bd9361d1da253437baedffc22422defc7adb66e227fdbe86e433",
+      "digest": "sha256:8cc6968ec4e08ef2adb3f7e259764122e9a6a63587626835a03f2104a03d9359",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageSelector.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageSelector.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:f713ac3baf67cd01ca7e9823a646b9b5e80551fad454e76889d5d39cd1aaec51",
+  "digest": "sha256:84c0f214686024125eff864905afe37dfdb994a68a2b2c6677ce1de308c73558",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

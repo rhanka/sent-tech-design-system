@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ChatMessage.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChatMessage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Visual chat message bubble with role and status.",
     "fr": "Bulle de message visuelle avec rôles et statut."
   },
-  "digest": "sha256:eefe2f178a2e744b2818b5e51a07bcc86a5b72927f5a11fd648db132ff92602e",
+  "digest": "sha256:5327ff71a8499aef2c2f38c9090d34e05f79bd75b5cabd44e169caf588a9e54d",
   "displayName": "ChatMessage",
   "format": "component-entry/v1",
   "frameworks": [

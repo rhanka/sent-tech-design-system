@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:12d291af052784113288a0c1e24c8f504b92cd16e0b4c2c04c132e09714d71cf",
-  "entryDigest": "sha256:b97457720d396d8c8f2bd062246efb6873303565f8e1aecb265e12a67a331715",
+  "digest": "sha256:79f4da036df260f7f82697629709eeb18dc47de39ef1718010324b217f4d2dc8",
+  "entryDigest": "sha256:774a871d5694f2b61b5bcb7b6196df9201eed0e851ddac34dccf9da341f51b9e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -45,7 +45,7 @@
         "declarationPath": "packages/components-angular/dist/FilterBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FilterBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -93,7 +93,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:4ebecfe0d7ef305ecc312adda5411a830de0698e76e8178d90bd89de5d7a7778",
-  "entryDigest": "sha256:f49953a3f593a39d6c02eb98c613557e8e4dad8fbb8ef31a5569e8c217b0bc2d",
+  "digest": "sha256:6dfc7557b36001253a354621d2e2f38653a8a14d8a2455b43d064a75fea4caa9",
+  "entryDigest": "sha256:1bfe8094d8cccd5565dc2ca71f69625ce48b06eddc1c5019c0b36b4075b1e3ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-angular/dist/NumberInput.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NumberInputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -230,7 +230,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NumberInputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -358,8 +358,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -466,9 +465,19 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:29d61cb08ceaf0d0655879c242954f22aabe69f293788e3a82fa7bb3b575ace1",
+        "declarationDigest": "sha256:cf38af8080ca6c8e402946c0032305c3af5f67c133e08ab658015fc67658914b",
         "declarationPath": "packages/components-vue/dist/NumberInput.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NumberInputProps",

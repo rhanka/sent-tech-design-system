@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:8d31c8f4d79152296771b661ea262dbb8d27efc71d5b129068aa3f08a0d9f380",
-  "entryDigest": "sha256:3651eb7b76590a1fbf9ea722ffbb51c5b4e361490d4fccd586b609e3a92bb463",
+  "digest": "sha256:4eec651e9071ff83d4134587564cb936b471a6d237a56a04c9c85762b42c0d26",
+  "entryDigest": "sha256:252bb4813cf1c3891ab4ce426824a07d15b09f8671d698472216ec420b86095e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -66,7 +66,7 @@
         "declarationPath": "packages/components-angular/dist/Drawer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -132,7 +132,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

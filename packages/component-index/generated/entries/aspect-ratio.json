@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AspectRatio.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d8ce54f2b6675e5ad2f2d0864836397ff6ea69b5c369d88261dc12968c3ea678",
+      "digest": "sha256:d0bff8aefef7cf8582e6d6a3411dee7395cb6f43f53c0eec32e330a8481e149f",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AspectRatio.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AspectRatio.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Fixed aspect-ratio container (media, embeds).",
     "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
   },
-  "digest": "sha256:a9eee1635eef45395458f5b6201ad47cca594ef4395a56dc0b94b5cb59b0c4da",
+  "digest": "sha256:d1faae2883a0b635ab54e202329c6de4731c2544f8e95a49dd5499e663e0b39a",
   "displayName": "AspectRatio",
   "format": "component-entry/v1",
   "frameworks": [

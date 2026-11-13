@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:969edb476d01f9127c79c9fbbf266af79348c8a7a6b3070e398407afcabb6f02",
-  "entryDigest": "sha256:eefe2f178a2e744b2818b5e51a07bcc86a5b72927f5a11fd648db132ff92602e",
+  "digest": "sha256:68b51ce68fe766b863ff70cf774416c2a027c0a550fc58ee8fae4f510222ff11",
+  "entryDigest": "sha256:5327ff71a8499aef2c2f38c9090d34e05f79bd75b5cabd44e169caf588a9e54d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -168,7 +168,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

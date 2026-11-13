@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:c386ad516d1af2602e6773ce05de520509233f1e165788aa89cd941b10f70a57",
-  "entryDigest": "sha256:3c7f820a573c511a16591a459425252ab210eb973a620b0d3d8099ea6270b42d",
+  "digest": "sha256:cba38127dd31e68af1799271bc1642a1d776f0f543627b17206ace22c5c781aa",
+  "entryDigest": "sha256:0bf738967c9b2955fb1c89833ccc80e5cd67809059b414513498be8f9821753a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Tooltip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -172,9 +172,6 @@
             ]
           }
         },
-        "required": [
-          "content"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -187,11 +184,14 @@
       ],
       "slots": [
         {
+          "name": "content"
+        },
+        {
           "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:19364f24e5a31fde12fd488f537621660a613cd723f3c8630a0b26ae36aa7e88",
+        "declarationDigest": "sha256:16fd78bff6d4472af957e2edd47345b502c4e28b3f1a489f0d19c85abd8b0640",
         "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",

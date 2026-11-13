@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Table.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:39d0b411a40bb367d35828163ae966148ce9ff984d83b7089dfc9f268731cbe2",
+      "digest": "sha256:867d5b6540fb2f1051f522ba6866a965580bd3c7c466c4f952d37f8d4cfb162b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Table.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Table.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:5938fcd5fb6646bbed2869baa8ac75f27e43d63086a5d332e9cd4dc191a035ab",
+  "digest": "sha256:d9bfe59f6e00843e86ed689e3cc697def9914198ad1540614e00e12527316489",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

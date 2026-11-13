@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:41a268ee53fc4e72c26298f428551ae91f01521a34b0797538f2befd4f684c86",
-  "entryDigest": "sha256:9b246f8d60a0c412e0c4c38fae3c6de84a2db3457040de86f52e4d4acace4d67",
+  "digest": "sha256:4ebe968bb4a2145c9b8de246d8ab3e83c65f71a3a28c33676e93a23214b51da4",
+  "entryDigest": "sha256:83c7378a179faa881b8bbabf1f79eb4672d0eddd2d8dee9ddd28b0162ab03337",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -177,7 +177,7 @@
         "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverflowMenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -333,7 +333,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -884,6 +884,25 @@
           }
         },
         {
+          "name": "item-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
           "name": "item-label",
           "params": {
             "additionalProperties": false,
@@ -908,7 +927,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:9ffbff9ca15942b8386c58872bc7fe3b3cff6d5c2ca6c562d2030d6c891bb34e",
+        "declarationDigest": "sha256:981f48e0ac870d4eb5923ca6c8e8968c1ced443c68cb1bfc5495d4b7c7af74b2",
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",

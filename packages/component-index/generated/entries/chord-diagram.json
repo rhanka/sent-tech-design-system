@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ChordDiagram.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChordDiagram.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Chord diagram: weighted flows between nodes laid out on a circle.",
     "fr": "Diagramme en cordes : flux pondérés entre nœuds répartis sur un cercle."
   },
-  "digest": "sha256:96990b7f547424f2d8ad956662e14acbcca3223572c0e7341375f517f55e4658",
+  "digest": "sha256:86dacf8fdb261637d97279b850a9d33de655db7117a37915160d9638d919ebaa",
   "displayName": "ChordDiagram",
   "format": "component-entry/v1",
   "frameworks": [

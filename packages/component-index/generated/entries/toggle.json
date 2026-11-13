@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toggle.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:64eafdcf51b9a736500aa5668ae53533764a2f5783a651cea787fb46017478c5",
+      "digest": "sha256:f7cb589208443e9a05d49cac1323c461babfba111684ef2cd4f1df7c8110adce",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggle.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:074fe495bff1b9b428bf1dc3895031aae84864dc933d7203af2de121eb33d0d4",
+  "digest": "sha256:d69020c18da86c368f9f6e9c246da46fcb2c6dfa14beeb82c0f6d1f7d8230afd",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

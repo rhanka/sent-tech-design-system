@@ -1,8 +1,8 @@
 {
   "componentId": "chord-diagram",
   "contractSource": "derived",
-  "digest": "sha256:7d560ee3d38f798a1dd0de86fcc229aec6bbd3c0bb2bad267accf3ed7e2b7753",
-  "entryDigest": "sha256:96990b7f547424f2d8ad956662e14acbcca3223572c0e7341375f517f55e4658",
+  "digest": "sha256:505a1d07a158e3288165fb843a5e29b856f9c3d697103dc3e3f998fcf11039b1",
+  "entryDigest": "sha256:86dacf8fdb261637d97279b850a9d33de655db7117a37915160d9638d919ebaa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/ChordDiagram.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChordDiagramProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/ChordDiagram.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChordDiagramProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

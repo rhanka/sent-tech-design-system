@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Input.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:50ea711eab139617311eae6ba9cf38369228baac8e48baa4e95220b7f6ba2ffa",
+      "digest": "sha256:7a17e986778859518810c61a7ecba3b86c289c0cb22fa95fc4cfd6b49168f1d1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Input.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Input.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:fc7aee623796d9af87babec6883b0da306de165055fdb3bc0087aebac0316bb0",
+  "digest": "sha256:7b23b52de942ee2a820807b46e68aca889e0923ed6729bf8b8a8d533337defca",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

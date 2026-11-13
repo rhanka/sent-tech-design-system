@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Stepper.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:bf12199ee466424a8c02fd38e20b2b73fd614018e5e7cc6a889e44f960ce6d86",
+      "digest": "sha256:148762372d2d4c4234e7a70b50335c4779c5d87b065a3c9e8e4b0e282a906ffa",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Stepper.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Stepper.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Step indicator for a flow, horizontal or vertical.",
     "fr": "Indicateur d'étapes d'un parcours, horizontal ou vertical."
   },
-  "digest": "sha256:9592d8a709741443c7297f095af580f16bffeae1b8c2f2677e422700670e246e",
+  "digest": "sha256:7d42f5687a14bbad1642fc034fe48b70485b05f02358cfe6044245891a8dc734",
   "displayName": "Stepper",
   "format": "component-entry/v1",
   "frameworks": [

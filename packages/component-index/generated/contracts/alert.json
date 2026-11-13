@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:6d0825942912b0e062fce1330fcd69a46d5bffac9979373f9eccc7b4994a03e2",
-  "entryDigest": "sha256:d593ca94e7377af5f4a1c5f478a30eec13c9d703f69dfbc49e43fb6f6da45aac",
+  "digest": "sha256:270034a78df611077916a6695c1834141b827299316047ee83320265561805b3",
+  "entryDigest": "sha256:c23a020a224c7814f536be498fc4c809bc02ef010b6a77312aeddabf4ff1ad0d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Alert.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AlertProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -122,7 +122,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AlertProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -212,9 +212,6 @@
             ]
           }
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -252,7 +249,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:d1bcb046169193215cd1a15c0181497e554ec2a213fd12779db0eb68df52e660",
+        "declarationDigest": "sha256:bb02630ba68d503b9c695adda6118174708325f5c5e25eeddd0058e5b5435af0",
         "declarationPath": "packages/components-vue/dist/Alert.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",

@@ -1,8 +1,8 @@
 {
   "componentId": "table-of-contents",
   "contractSource": "derived",
-  "digest": "sha256:ecb04bdb5d1c479ca1633bddad326f48007c8268211c34f1f77ed7d056e37580",
-  "entryDigest": "sha256:958f564f827954e5a9a6f289d3cfd50865123153f18d1120be176cc39d8c046e",
+  "digest": "sha256:4178fff88b7f4a0ec765dd139e41dfa80f0fa2124ae5721f37ae6921cca89ce1",
+  "entryDigest": "sha256:8b4944a72515802a9763e1db89258c9c77b1ffe314d2709d6075a15fc6cd7b8c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/TableOfContents.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TableOfContentsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -133,7 +133,7 @@
         "declarationPath": "packages/components-react/dist/TableOfContents.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TableOfContentsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

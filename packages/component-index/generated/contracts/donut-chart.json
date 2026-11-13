@@ -1,8 +1,8 @@
 {
   "componentId": "donut-chart",
   "contractSource": "derived",
-  "digest": "sha256:3e95b7c5ffb28d4713c5da178ea2481e5982937958839376f7215e4856945d9b",
-  "entryDigest": "sha256:649b9baf74931ba92dffa6edc3f12437e3fda5be7c766db8321a1751ec3c9940",
+  "digest": "sha256:02196345914d84ba3063c715c5b4beefa97c23d22411089a45b29b18ae9bd3ea",
+  "entryDigest": "sha256:5984a3f57079a5eb932365f484689bd5e8697bcf88e5a06fbdf1eff269122448",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -112,7 +112,7 @@
         "declarationPath": "packages/components-angular/dist/DonutChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DonutChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-react/dist/DonutChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DonutChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

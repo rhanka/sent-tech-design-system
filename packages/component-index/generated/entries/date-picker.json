@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DatePicker.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:0b0d00281b60a837dfe08847ace17bc30be43d3bb7796fbd1c0cf93fc62b7de6",
+      "digest": "sha256:1dbbc75d1bbbfd2ab1fb2552a6a30b5d7132a129ebc1ed4e08a0a6a0500d8c17",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DatePicker.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DatePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Date picker, single or range mode.",
     "fr": "Sélecteur de date, mode simple ou plage."
   },
-  "digest": "sha256:2487a74fe8a2c1883fd2ac228e9fc812931bd6cadf1d196de075dc49c92443f8",
+  "digest": "sha256:e29fda30c032c3882e966df1ac54cb1f870fea631becd415ba801e22c65c2384",
   "displayName": "DatePicker",
   "format": "component-entry/v1",
   "frameworks": [

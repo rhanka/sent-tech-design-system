@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Checkbox.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:61cb49380deb9e42b488297501f88ac7279b17488d55c78758a6d55b6d5509ba",
+      "digest": "sha256:dcb8d4728fff864ce45bbe040a82a730188fee4d036854608d8fe133fdb7cc1c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Checkbox.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Checkbox.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Checkbox with error/disabled states and helper text.",
     "fr": "Case à cocher avec états error/disabled et helper text."
   },
-  "digest": "sha256:16d75cbaf94e1097031c1e6fb69327a85edb6bd469eac65061590af314ef5720",
+  "digest": "sha256:cc2cea961f92f5f70172ced46c3626ae0409723527486378a0e2ee52b85f4999",
   "displayName": "Checkbox",
   "format": "component-entry/v1",
   "frameworks": [

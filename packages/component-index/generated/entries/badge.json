@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Badge.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Badge.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact label with tone (success/warning/...).",
     "fr": "Étiquette compacte avec tonalité (success/warning/...)."
   },
-  "digest": "sha256:b8f567f95a60997d2791e7f947df7dbd3e655938ac2e2f376f8a19a4d01d77ec",
+  "digest": "sha256:7cd9e05e1ee1eeaf2f2d8c2a3bc14511edd3922b4e3a1aae0e81fe7bdbc1b6ec",
   "displayName": "Badge",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "divergent-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:24e4644a5d01b329802b3de14e3648690d6032675a7c6629a72c807c5255977c",
-  "entryDigest": "sha256:19bb03e7a8d2d20f0ddda75cd61c190080c47676fe5bbc85d52f388a2cec057f",
+  "digest": "sha256:c5fdaee2b752f1b741330cdc04e24e658d80eacc131a6075f10a7b1d6ea077fa",
+  "entryDigest": "sha256:05a4ff4b5ca908bf144c6a4dbb6acf1752590ff1414520a4da91e522c255d64d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -90,7 +90,7 @@
         "declarationPath": "packages/components-angular/dist/DivergentBarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DivergentBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -191,7 +191,7 @@
         "declarationPath": "packages/components-react/dist/DivergentBarChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DivergentBarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

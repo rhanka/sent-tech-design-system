@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StatusDot.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StatusDot.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
     "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
   },
-  "digest": "sha256:2e2f9dd0e89adc62099c8870d2dfedae0db26b181ba42387a380ba2151da9824",
+  "digest": "sha256:6d63d8083bcaeab099b565a71397eb2c0d620c7a69d62a519061bed85ec99f34",
   "displayName": "StatusDot",
   "format": "component-entry/v1",
   "frameworks": [

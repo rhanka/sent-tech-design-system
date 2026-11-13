@@ -183,6 +183,40 @@ describe("React accepts the canonical Svelte API", () => {
       expect(iconSlot).toBeTruthy();
       expect(iconSlot?.querySelector("svg")).toBeTruthy();
     });
+
+    it("accepts the Svelte menu cascade (children/selected/submenuSide) and relays (item, path)", () => {
+      const onSelect = vi.fn();
+      render(
+        <Menu
+          submenuSide="left"
+          items={[
+            {
+              value: "class-a",
+              label: "Class A",
+              selected: true,
+              children: [{ value: "reason-1", label: "Reason 1" }]
+            },
+          ]}
+          onSelect={onSelect}
+        />,
+      );
+      const parent = screen.getByRole("menuitem", { name: "Class A" });
+      // `selected: true` renders the selected state; the chevron follows the
+      // pinned `submenuSide="left"` side.
+      expect(parent.classList.contains("st-menu__item--selected")).toBe(true);
+      expect(parent.querySelector(".st-menu__itemChevron--start")).toBeTruthy();
+      expect(parent.getAttribute("aria-haspopup")).toBe("menu");
+      // Parent activation opens without emitting.
+      fireEvent.click(parent);
+      expect(onSelect).not.toHaveBeenCalled();
+      // Deep leaf relays the item unchanged plus the root→leaf path.
+      fireEvent.click(screen.getByRole("menuitem", { name: "Reason 1" }));
+      expect(onSelect).toHaveBeenCalledTimes(1);
+      expect(onSelect).toHaveBeenCalledWith(
+        expect.objectContaining({ value: "reason-1" }),
+        ["class-a", "reason-1"]
+      );
+    });
   });
 
   describe("OverflowMenu", () => {

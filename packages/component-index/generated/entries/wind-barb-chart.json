@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/WindBarbChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:33e43bfe6b328ee15c0db17d208a08cdbb1bd1af0b6941eb5ed1d4a6aac96f75",
+      "digest": "sha256:052a67b69939384177c7e5f2b162e8ca72a3cd95f83bc27dba0aa2f2bae6322c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WindBarbChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/WindBarbChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Wind barbs: one barb per point along a time axis, oriented shaft and feathers encoding the speed.",
     "fr": "Barbes de vent : une barbe par point le long d'un axe temporel, hampe orientée et barbules encodant la vitesse."
   },
-  "digest": "sha256:264a51108b3cb7e25a437213f36070fe1156d9f3e3c2bc4fb01503ae2de6f823",
+  "digest": "sha256:924801a4534b5e336545c3d1955573b71d4fdd4d31f3c7de5fde83ca34925baa",
   "displayName": "WindBarbChart",
   "format": "component-entry/v1",
   "frameworks": [

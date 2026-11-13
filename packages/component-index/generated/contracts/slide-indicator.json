@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:2c7625c7fa4b6dc7fedf0354d4f6ac9304d6bc5b3d46aff3bfcc10301c7c9fbf",
-  "entryDigest": "sha256:769e828400a29aff6fd774f4ac8cb1379c4a84210e7a4ffedd0687ecdd51d90c",
+  "digest": "sha256:88c14a88fbb07a731bc1d9b638165983c1a4f55cc0ab4b35753bdeb9ce820a5c",
+  "entryDigest": "sha256:5f29b1a25b54e8a5d9006b49592e587657ebdd95ccb4912df28a935a07ee241d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/SlideIndicator.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SlideIndicatorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -135,7 +135,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SlideIndicatorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

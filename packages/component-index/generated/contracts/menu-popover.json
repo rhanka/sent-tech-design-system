@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:3979a13837641be748bfc705aaa5ea28a2affbcbde1705058251bd936ef0bbfc",
-  "entryDigest": "sha256:eaa5365146d3b9362323bba10b804f8f7c5d8ce17cf553fd6eb641e4643798ce",
+  "digest": "sha256:edd5e1169cbcfdae775ac601b4b4d8e1f2d616bebb85e06437d4df525c0577a7",
+  "entryDigest": "sha256:227bdf0050e523d46e6293b506b06f5fe989133689856fedf73f081404b30f56",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -198,7 +198,7 @@
         "declarationPath": "packages/components-angular/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -392,7 +392,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuPopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -772,6 +772,25 @@
           }
         },
         {
+          "name": "item-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
           "name": "item-label",
           "params": {
             "additionalProperties": false,
@@ -796,7 +815,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:21c5df06d2c4c37e83e73dd4efb5714b9e485fe20ed7c822fd1aa2879cc65057",
+        "declarationDigest": "sha256:8083610a409eec78f902a985ee54071175aa41604bd23de6a40cfdc21453d854",
         "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuPopoverProps",

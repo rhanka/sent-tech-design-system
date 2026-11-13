@@ -1,8 +1,8 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:142ab502b5634b95980e33c1ba97b7aec189c8be2fd6a6d49ec341135b4df658",
-  "entryDigest": "sha256:90c021f950109262035f9e03a25eff4d48b7bab3340a2940bb501a9b99783d19",
+  "digest": "sha256:cbaa81f47c535329118bcbc5f8710f507cfde874544be1d9861e8fdd32621946",
+  "entryDigest": "sha256:cc695c7bafde27b1c6fb11f8f527aa9abedef4dfd61d3782bb1dc883eb064fbd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Link.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LinkProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LinkProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

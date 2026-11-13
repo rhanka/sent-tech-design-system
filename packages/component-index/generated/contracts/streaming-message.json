@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:c1efd8759b3d0c4dffc1b541a300bcdcdb137d25aa36a502d8a9af3961292ada",
-  "entryDigest": "sha256:6da0b9d98f15b8f69830190c6dce781db888ccbf719a43d3e440ed47b5a0a960",
+  "digest": "sha256:ea071a0375be5ac14ecd10ac34e65f82590ad1fb704b7c9e861eaa57576004da",
+  "entryDigest": "sha256:9a7c401d2865bf89e49d175c58faa26fcc8e34655241ae8270dca6ef562c0ad6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -102,7 +102,7 @@
         "declarationPath": "packages/components-angular/dist/StreamingMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StreamingMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -195,7 +195,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StreamingMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -679,8 +679,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -754,15 +753,41 @@
           "sourceType": "unknown"
         },
         {
+          "name": "scope.event",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "text",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "event-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "event": {}
+            },
+            "required": [
+              "event"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "placeholder"
+        },
+        {
+          "name": "text"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3ca73b87c59abf2f3c74d63f74fabfc62007e8198aefe59916419852ba18d8c6",
+        "declarationDigest": "sha256:4e2b7703329efd7e2d1d166979eba4d4717d559e8cd86df78e29f9e73ebd0b8f",
         "declarationPath": "packages/components-vue/dist/StreamingMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamingMessageProps",

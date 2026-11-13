@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:e9bbafc30fa20856af227b40e2795be2083deec2faaf617f55281c832cfa99a2",
-  "entryDigest": "sha256:dc6a29751272ec6901fcb73400d76dc36b96dc79a5c9de66550b1e0485db7984",
+  "digest": "sha256:f83dd8211e0fc4e365d9dc4eb960b58cf94262ac47f012ab54cf4ab92f0ca0e4",
+  "entryDigest": "sha256:772b546ee90dc7050cd8ec8f95073d26e6260f6736b554dbad7455d3417c553f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/ChatThread.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatThreadProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatThreadProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -342,6 +342,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "message.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
           "name": "messages[].content",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -354,10 +360,56 @@
         },
         {
           "name": "empty"
+        },
+        {
+          "name": "message-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "message": {
+                "additionalProperties": false,
+                "properties": {
+                  "content": {},
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "enum": [
+                      "user",
+                      "assistant",
+                      "system",
+                      "tool"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "error",
+                      "idle",
+                      "pending",
+                      "processing",
+                      "completed",
+                      "failed",
+                      "streaming",
+                      "sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "content",
+                  "id"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "message"
+            ],
+            "type": "object"
+          }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:581d310489afd50ec0cd9868036450dca0114c2cc140c7833791f898222f1a31",
+        "declarationDigest": "sha256:2f2016eaeb5c6cf695f3e7c4b6d60652c7cf0b88fe15af80e8eba443743dd132",
         "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",

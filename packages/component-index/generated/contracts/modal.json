@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:a3946abd014d40c7d12299c51ce0919729338a68f3db48e489a003c120823cb4",
-  "entryDigest": "sha256:e5980f731fac8139cc7a9c9ac4f26a8b4102a98a4589ed066785de89588c3e47",
+  "digest": "sha256:d3487e490df39a5ac32141aec994f4e173799a35550a81d59b9c58c5f23e3d72",
+  "entryDigest": "sha256:f8598dd195e5380f098b55946c971327e5a51f1ce6e0516a2cc5753d25d68962",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Modal.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ModalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ModalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

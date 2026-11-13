@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/NavItem.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:f014d47f041ae8aebe7997592a18fd5a864a023f18bc44ecd9cb485a30b6daf2",
+      "digest": "sha256:27d9a401c7f639d78d1afa0bb1c7c90e6a4398bfd24c4e3f2a9ecaa07212d0ea",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NavItem.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NavItem.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
     "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
   },
-  "digest": "sha256:f7894414d58d62cf9aaeb81d2e2f952d745aa206d853fef48c7033cd7a5e13ad",
+  "digest": "sha256:a1c576db3e62e5919597bd7de283dd27c5d0712086fae34df747cfe789b478e1",
   "displayName": "NavItem",
   "format": "component-entry/v1",
   "frameworks": [

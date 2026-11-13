@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:8b39645f1d3c3880e197a7a2fd14789f9b3b74b49736ce267f6c45ccfefe4983",
-  "entryDigest": "sha256:5d036249643c79ca554d2c8505d3a05d42635a67de583e2c205a3fb3af4c410f",
+  "digest": "sha256:4c270b8e7886d5b61fe1cea5b8a43c7096cae69cf7007e613f9c26ed69e27752",
+  "entryDigest": "sha256:31241a8be5abe1c3dcc211d1126cf2e3e5b63e2bc99f71223ceb435b5700868c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/HollowCandlestickChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/HollowCandlestickChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

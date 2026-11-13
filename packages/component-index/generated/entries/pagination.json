@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Pagination.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Pagination.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page navigation with current page.",
     "fr": "Navigation de pages avec page courante."
   },
-  "digest": "sha256:928108b28a9a0b096f8f288d2d6e38a1dbb8f5065ba174b8e27342430f37f1ab",
+  "digest": "sha256:4c2486261508d9b38edcb9aa18634758b7e225838eb7c626e96387b604a9346d",
   "displayName": "Pagination",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Autosave.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:b7962a35ab20c64bff27996fffb4d1bca7c03a2758803a1573968fc48e2c1332",
+      "digest": "sha256:b396370418675e0fa27792a8a847640055fee472ab0d8b3ff5b98cc09c52b545",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Autosave.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Autosave.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Autosave indicator: saving, saved, or failed states.",
     "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
   },
-  "digest": "sha256:5685bb4158acfa36e94fc2206227bfc533c655ad0e9859949cbd6c8d5799467c",
+  "digest": "sha256:2f51bafda94b6ac6648fc7b35a133b899f76eea64609920ad072f85f6324bfcb",
   "displayName": "Autosave",
   "format": "component-entry/v1",
   "frameworks": [

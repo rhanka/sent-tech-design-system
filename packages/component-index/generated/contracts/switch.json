@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:8c3f724980a94fc230dbc7cf25cd74b3de855335e7ffdd14d35f5fd5ac252441",
-  "entryDigest": "sha256:4ba6e364c442c9757f345691b9ede73310bb5f94ae169c01aabb835a5ed7d485",
+  "digest": "sha256:15bfa8d634ec3fb3e3d12996e6ee3528a4f65d1011d6533eb0f164b82e66812e",
+  "entryDigest": "sha256:d6ec684b92e99cf1a99b7b0647aba549a5a8360d77694c3c5f4d4ba567c0a431",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -58,7 +58,7 @@
         "declarationPath": "packages/components-angular/dist/Switch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -102,7 +102,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -208,9 +208,6 @@
             "type": "string"
           }
         },
-        "required": [
-          "label"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -236,7 +233,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:763c3e4c83d424f1771dcd29e906ed540ea70b36e2c357ffd721ca600201aa3b",
+        "declarationDigest": "sha256:3aeae06b670d62dbb7ed0649756c9f3c5c9060d46eefcff737318da62266ce27",
         "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",

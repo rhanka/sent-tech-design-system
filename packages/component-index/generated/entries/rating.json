@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Rating.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2a1a577a7afdf8b66dc54c9bff75d61c358948083d2220f4d943eafa46d0245c",
+      "digest": "sha256:486ac2b1a4de3450a1d889b09a8b21dff0c81393e6192db2e7ef1c0f4b16a0ba",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Rating.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Rating.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:ac084cc4cd9667623f7f53ab453f14d80dffac447c8ca5960262fe9a43425264",
+  "digest": "sha256:01ad3b25f3b1353b11daf54d805186e072c5f523c8fbdf43e46bd6fec44373b4",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

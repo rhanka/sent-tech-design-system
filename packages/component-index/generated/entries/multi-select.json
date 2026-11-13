@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MultiSelect.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:15e30c3985365a85a941394e9c1311333173d8ca990440ec4d37187d61c715cd",
+      "digest": "sha256:87fb7f29b9cd7e9e73c9c0fde313ccbb059dfd7785a13210369ba6858bae51d3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MultiSelect.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MultiSelect.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:883cbb7f19e78a1b08163d5c4064dcc235fab5ab463fc9b706f1a2f912e8a6cf",
+  "digest": "sha256:bf84ff43d245c26d8df06544fca4b46b74cc68a68a479c42f2c31b8528f08b6a",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:545aa207ba4c354973c7c3b06d8534c710b190bb9a39e3378565fa323ef2f356",
-  "entryDigest": "sha256:39596381b6dd87c96eec6ff89ed7470ab73df58b1fb6d6e2ead8be590a158f0a",
+  "digest": "sha256:f603693d8d38418069851d498fda2ac38ba5191fd0962316f6550d56fc479718",
+  "entryDigest": "sha256:2ca9fb2441d620b8d89c6209ae779e450984f25c487d4b23e54f10aac4307190",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/Icon.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -3960,7 +3960,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

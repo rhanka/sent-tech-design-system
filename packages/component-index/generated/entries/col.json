@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Col.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:bad90708b99dba94b68d454b0652079de10b17f90e0bc0ebceaf2d297ee54738",
+      "digest": "sha256:f4f428ad293961732e0ad734c32788f33d30efac027241a73eb9406f88ef3875",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Col.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Col.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:e4d07f3a6a9038cb346221c74cb0d3b18d123de6eb63344fd6e11e8f241bc07d",
+  "digest": "sha256:7b7dfa067c64cee006148e03ebb8a33c25f8480b07950e4eb93f390c0ceafef7",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

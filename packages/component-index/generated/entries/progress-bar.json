@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ProgressBar.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:49db95b3c928298b8c4dfc0f82d8cb054fe9ee0c2fc5173f0ab944df8a01ee15",
+      "digest": "sha256:306902055761071f651ed1d4b0228273b16b388ca020d03b2c0b961bf53c0379",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressBar.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ProgressBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Determinate or indeterminate progress bar.",
     "fr": "Barre de progression déterminée ou indéterminée."
   },
-  "digest": "sha256:f98f962cf22b40f8a79e708148658222075d4453db9a8bc2dcb883ddf5f041ae",
+  "digest": "sha256:54ab9721c15c234756f555a141e451b10c509cfddb0504b4d97153d2c4da6137",
   "displayName": "ProgressBar",
   "format": "component-entry/v1",
   "frameworks": [
