@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BackToTop.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Quick-access button to return to the top after scrolling.",
     "fr": "Bouton d’accès rapide qui remonte vers le haut de la page au défilement."
   },
-  "digest": "sha256:06c2f90727c4ad0eb1f9b33c132eb0f5ee37cac99e743d80b96325223f5063f5",
+  "digest": "sha256:0e6ffcbacec1ab8d6cb48fa07221ddf37a7bec668c407dd46b3ecaf021fab894",
   "displayName": "BackToTop",
   "format": "component-entry/v1",
   "frameworks": [

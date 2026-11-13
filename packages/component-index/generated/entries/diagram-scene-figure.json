@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramSceneFigure.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.2"
     }
   ],
   "description": {
     "en": "Diagram scene: measured diagram view with 16:9 row-pack autolayout, zoom capped at the maximum display size, fit to frame and fold transition.",
     "fr": "Scène de diagramme : vue mesurée avec disposition automatique en rangées au format 16:9, zoom plafonné à la taille maximale d’affichage, ajustement au cadre et transition de repli."
   },
-  "digest": "sha256:c617329d4a0d0cedcc31c7205dd3f5fa7b6828709c50eea13daa68a9066ace02",
+  "digest": "sha256:c4306563ca97e7a3fc9e7055d101c66faf9323f5d283212b25215739d110b545",
   "displayName": "DiagramSceneFigure",
   "format": "component-entry/v1",
   "frameworks": [
