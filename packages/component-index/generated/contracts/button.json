@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:c56199dc54eaf4772a8f6a0ca90227c62ab6b74660fca934541e8f7149982354",
-  "entryDigest": "sha256:cbada2e5a8702ba9a1848d5dff7572a730005a205b2567ecf982ded357bd0422",
+  "digest": "sha256:bdfcd9c491409cc0660e4532c44d966e817ae2fcd4325131aab462309e290295",
+  "entryDigest": "sha256:b6296546cb934cf887631493b9adba770123828c0bfeff179674bae169a4c063",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Button.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:8fec440e7afa1a1568bce55fe5515f294bf63470bf500b3b858c9b66cabb4c65",
-  "entryDigest": "sha256:c5042894436bf4a6956367bed02e7bc1fcdefb93546a66e8112b080a0b0a1cb3",
+  "digest": "sha256:4f80ff16a2bceef5ff8cbdf6fc26d678256c626ba027e2822acb9f6a9f93d383",
+  "entryDigest": "sha256:390b1de8792727acf1aba434d75ef58eac9da99371427f1248a366e32f41167e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/VariablePieChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VariablePieChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
