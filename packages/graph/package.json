@@ -30,6 +30,16 @@
     "./layout-client": {
       "types": "./dist/layout-client.d.ts",
       "import": "./dist/layout-client.js"
+    },
+    "./presentation": {
+      "types": "./dist/presentation.d.ts",
+      "import": "./dist/presentation.js",
+      "require": "./dist/presentation.cjs"
+    },
+    "./engine": {
+      "types": "./dist/engine.d.ts",
+      "import": "./dist/engine.js",
+      "require": "./dist/engine.cjs"
     }
   },
   "files": [
