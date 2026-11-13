@@ -71,7 +71,8 @@ export function cameraFit(input: CameraFitInput): CameraFit {
   }
   const zoomFit = Math.min(box.width / bounds.width, box.height / bounds.height, maxZoom);
   const zoom = Math.max(zoomFit, floor);
-  return { fitWidth: box.width, fitHeight: box.height, zoomFit, zoom, minZoom: zoomFit, maxZoom, pans: zoom > zoomFit };
+  const fitHeight = zoomFit === maxZoom ? Math.min(box.height, bounds.height * zoom) : box.height;
+  return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoomFit, maxZoom, pans: zoom > zoomFit };
 }
 
 /** Z-1/Z-7: any requested zoom lands inside `[minZoom, maxZoom]` of the current fit. */

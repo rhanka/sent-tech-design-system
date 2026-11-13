@@ -36,7 +36,7 @@ const token = (group: "diagramCard" | "diagramZone" | "diagramScene", leaf: stri
   if (match === null) throw new Error(`token leaf ${group}.${leaf} not found in packages/tokens/src/component.ts`);
   return match[1]!;
 };
-const model = readFileSync(new URL("../../../../components-svelte/src/lib/diagramCardModel.ts", import.meta.url), "utf8");
+const model = readFileSync(new URL("../../../../diagram-canvas/src/presentation/diagramCardModel.ts", import.meta.url), "utf8");
 
 describe("DC-2a tokens (AC-6)", () => {
   it("engine defaults equal the token values", () => {

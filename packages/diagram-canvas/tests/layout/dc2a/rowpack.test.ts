@@ -47,6 +47,7 @@ const GAP_CAP = 32;
 interface FillProof {
   readonly view: string;
   readonly leafCount: number;
+  readonly leafArea: number;
   readonly minimumWidth: number;
   readonly minimumHeight: number;
   readonly optimisticMaximumFill: number;
@@ -112,7 +113,8 @@ describe("DC-2a L2 row-pack gates", () => {
       const base = layScene(input, { metrics: { gapInlineMax: BASE_GAP, gapBlockMax: BASE_GAP } }, { rootOrder: input.rootOrder });
       const metrics = placementMetrics(base);
       expect(metrics.visibleLeaves, proof.view).toBe(proof.leafCount);
-      expect([metrics.bboxWidth, metrics.bboxHeight], proof.view).toEqual([proof.minimumWidth, proof.minimumHeight]);
+      expect([metrics.bboxWidth, metrics.bboxHeight], proof.view).toEqual(
+        [proof.minimumWidth, proof.minimumHeight].map(value => Math.round(value * 1000) / 1000));
       const shelves = levelShelves(base).map(({ level, rows, shelves }) => ({ level, rows, shelves }));
       // Empty expanded zones have no sibling level in emitted geometry.
       expect(proof.levels.filter((level) => level.shelves.length > 0).map(({ level, rows, shelves }) => ({ level, rows, shelves })), proof.view).toEqual(shelves);
@@ -120,7 +122,7 @@ describe("DC-2a L2 row-pack gates", () => {
       expect(after[proof.view]!.bboxHeight, proof.view).toBeGreaterThanOrEqual(proof.minimumHeight);
       expect(proof.requiredFill, proof.view).toBe(before[proof.view]!.fillRatio + 0.10);
       expect(proof.optimisticMaximumFill, proof.view).toBeLessThan(proof.requiredFill);
-      expect(proof.optimisticMaximumFill, proof.view).toBe(proof.leafCount * 460 * 200 / (proof.minimumWidth * proof.minimumHeight));
+      expect(proof.optimisticMaximumFill, proof.view).toBe(proof.leafArea / (proof.minimumWidth * proof.minimumHeight));
       expect(proof.threshold, proof.view).toBe(proof.optimisticMaximumFill - 0.02);
     }
   }, 120_000);
@@ -139,7 +141,7 @@ describe("DC-2a L2 row-pack gates", () => {
       expect(projected.y, view.key).toBeCloseTo(frame.fit.fitHeight - projected.y - projected.height, 9);
       expect(projected.x, view.key).toBeGreaterThanOrEqual(0);
       expect(projected.y, view.key).toBeGreaterThanOrEqual(0);
-      expect(projected.width * projected.height, view.key).toBeLessThan(frame.fit.fitWidth * frame.fit.fitHeight);
+      expect(projected.width * projected.height, view.key).toBeLessThanOrEqual(frame.fit.fitWidth * frame.fit.fitHeight);
     }
     expect(capped).toBeGreaterThan(0);
     expect(capped).toBeLessThan(views.length);
@@ -409,11 +411,14 @@ describe("DC-2a L2 row-pack gates", () => {
     expect(violations).toEqual([]);
   });
 
-  it("AC-10: cards and collapsed zones stay 460 × 200; no visible leaf overlaps another", () => {
+  it("AC-10: cards and collapsed zones keep 460 px width and grow for content; no visible leaf overlaps another", () => {
     for (const view of views) {
       const layout = layouts.get(view.key)!;
       const leaves = layout.input.leaves.map((id) => layout.rects.get(id)!);
-      for (const rect of leaves) expect([rect.width, rect.height]).toEqual([460, 200]);
+      for (const rect of leaves) {
+        expect(rect.width).toBe(460);
+        expect(rect.height).toBeGreaterThanOrEqual(200);
+      }
       leaves.forEach((a, index) => {
         for (const b of leaves.slice(index + 1)) {
           const apart = a.x + a.width <= b.x || b.x + b.width <= a.x || a.y + a.height <= b.y || b.y + b.height <= a.y;

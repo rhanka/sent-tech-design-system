@@ -236,6 +236,7 @@ export type LayoutWarningCode =
   | "route-obstructed"
   | "row-fill-partial"
   | "card-overflow"
+  | "card-grown"
   | "zone-overflow"
   | "docking-overflow";
 
@@ -290,6 +291,8 @@ export type LayoutResult =
        * bounds (DEC-5, BF-7).
        */
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
+      /** Lifted parallel relations share a route; semantic occurrences remain intact. */
+      readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string }>>;
     }
   | {
       readonly status: "refused";

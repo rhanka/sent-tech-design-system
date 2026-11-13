@@ -99,8 +99,8 @@ export function renderCardContent(
   props: DiagramCardProps,
   measure: CardLineMeasure = defaultCardMeasure,
 ): { readonly content: string; readonly layout: ReturnType<typeof layoutCard> } {
-  const g = CARD_GEOMETRY;
   const layout = layoutCard(props, measure);
+  const g = { ...CARD_GEOMETRY, height: layout.box.height };
   const parts: string[] = [];
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
@@ -227,8 +227,8 @@ export function renderCardSvg(
   props: DiagramCardProps,
   measure: CardLineMeasure = defaultCardMeasure,
 ): CardSvgResult {
-  const g = CARD_GEOMETRY;
   const { content, layout } = renderCardContent(props, measure);
+  const g = { ...CARD_GEOMETRY, height: layout.box.height };
   const refused = firstOverflowDiagnostic(layout.diagnostics);
   if (refused !== undefined) {
     return { kind: "refused", diagnostics: layout.diagnostics, layout };

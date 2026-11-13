@@ -95,18 +95,36 @@ function prove(view) {
     return { source: end("source"), target: end("target"), label: edge.label };
   }).filter((edge) => edge.source !== edge.target && edge.label !== null);
   const levels = [];
+  const wrap = (text, advance, available) => {
+    if (!text) return 0;
+    let lines = 1, line = '';
+    for (const word of text.split(/\s+/).filter(Boolean)) {
+      const next = line ? line + ' ' + word : word;
+      if (line && next.length * advance > available) { lines++; line = word; }
+      else line = next;
+    }
+    return lines;
+  };
+  const cardSize = card => {
+    const headerWidth = card.folded ? 368 : 434;
+    const header = wrap(card.kicker, 12, headerWidth) * 28.59375 + wrap(card.title, 17, headerWidth) * 41.59375;
+    const body = card.container ? 0 : wrap(card.purpose, 13, 436) + wrap(card.detail, 13, 436);
+    const footer = wrap(card.footer, 13, card.folded ? 434 : 436);
+    const bottom = footer ? footer * 31.1875 + 20.25 : 10;
+    return { width: WIDTH, height: Math.max(HEIGHT, Math.ceil(10 + header + 6 + body * 31.1875 + bottom)) };
+  };
   const level = (id, children, chromeWidth, chromeHeight) => {
     const choice = pack(children.map(size), chromeWidth, chromeHeight);
     levels.push({ level: id, rows: choice.rows, shelves: choice.shelves.map((shelf) => shelf.map((i) => children[i].id)), candidates: choice.candidates, score: choice.score });
     return choice;
   };
   function size(card) {
-    if (!card.container || card.folded) return { width: WIDTH, height: HEIGHT };
+    if (!card.container || card.folded) return cardSize(card);
     const children = visible.filter((child) => child.parentId === card.id);
     // The header-driven floor fits the unwrapped title/kicker, so heights
     // stay fixed as children or gaps grow. Empty zones retain their floor.
-    const floor = Math.max(WIDTH, Math.max((card.kicker ?? "").length * 12, (card.title ?? "").length * 17) + 2 * INSET + TOGGLE);
-    const headerHeight = 42 + (card.kicker === null ? 0 : RULE_GAP + 29);
+    const floor = Math.max(WIDTH, Math.max((card.kicker ?? "").length * 12, (card.title ?? "").length * 17) + 2 * INSET + TOGGLE + 4);
+    const headerHeight = 42 + (card.kicker === null ? 0 : 29) + RULE_GAP;
     const chromeHeight = INSET + headerHeight + RULE_TO_CHILD + BOTTOM;
     const choice = level(card.id, children, 2 * INSET, chromeHeight);
     let headroom = 0;
@@ -117,12 +135,16 @@ function prove(view) {
       const label = labelSize(edge.label);
       if ((choice.rows ? label.width : label.height) + 8 > GAP) headroom += label.height + 8;
     }
-    return { width: Math.max(floor, choice.width + (children.length ? 2 * INSET : 0)), height: choice.height + chromeHeight + headroom };
+    const width = Math.max(floor, choice.width + (children.length ? 2 * INSET : 0));
+    const footerLines = wrap(card.footer, 13, width - 32);
+    const footerReserve = footerLines ? footerLines * 31.1875 + 18.25 : 0;
+    return { width, height: choice.height + chromeHeight + headroom + footerReserve };
   }
   const root = level("root", visible.filter((card) => card.parentId === null), 0, 0);
   const leafCount = visible.filter((card) => !card.container || card.folded).length;
-  return { leafCount, minimumWidth: root.width, minimumHeight: root.height,
-    optimisticMaximumFill: leafCount * WIDTH * HEIGHT / (root.width * root.height),
+  const leafArea = visible.filter(card => !card.container || card.folded).reduce((sum, card) => sum + WIDTH * cardSize(card).height, 0);
+  return { leafCount, leafArea, minimumWidth: root.width, minimumHeight: root.height,
+    optimisticMaximumFill: leafArea / (root.width * root.height),
     levels: levels.sort((a, b) => a.level < b.level ? -1 : a.level > b.level ? 1 : 0) };
 }
 
@@ -148,4 +170,4 @@ const cappedFrame = { view: "migration-cluster-mesh/folded",
   requiredFrameFill: baseline["migration-cluster-mesh/folded"].frameFillRatio,
   scope: "capped; no fill gate (Appendix E)" };
 
-console.log(JSON.stringify({ method: "P-1/P-3/P-4/O-2 at base gaps; BF-6 frozen shelves; fixed chrome and U-channel reservation; bound minus 0.02", scenes, cappedFrame }, null, 2));
+console.log(JSON.stringify({ method: "P-1/P-3/P-4/O-2 at base gaps; BF-6 frozen shelves; measured card/chrome heights and U-channel reservation; bound minus 0.02", scenes, cappedFrame }, null, 2));

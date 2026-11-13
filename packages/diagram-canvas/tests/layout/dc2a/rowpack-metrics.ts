@@ -51,8 +51,8 @@ export function sceneFrame(layout: SceneLayout) {
     fit,
     capped: fit.zoomFit === MAX_DISPLAY_SCALE,
     camera: {
-      x: x + bounds.width / 2 - fit.fitWidth / (2 * fit.zoom),
-      y: y + bounds.height / 2 - fit.fitHeight / (2 * fit.zoom),
+      x: fit.fitWidth === bounds.width * fit.zoom ? x : x + bounds.width / 2 - fit.fitWidth / (2 * fit.zoom),
+      y: fit.fitHeight === bounds.height * fit.zoom ? y : y + bounds.height / 2 - fit.fitHeight / (2 * fit.zoom),
       zoom: fit.zoom,
     },
   };
