@@ -396,6 +396,7 @@ onUnmounted(teardown);
       'st-menuPopover',
       'st-menuPopover--' + effectivePlacement(props.placement, flipped),
       {
+        'st-menuPopover--hasCascade': hasCascade,
         'st-menuPopover--alignEnd': alignEnd,
         'st-menuPopover--alignCenter': alignCenter,
       },
