@@ -580,8 +580,8 @@ export type {
   StreamgraphChartSeriesValue,
   StreamgraphChartTone,
 } from "./StreamgraphChart.js";
-export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
-export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.js";
+export { default as CalendarHeatmapChart } from "./CalendarHeatmapChart.vue";
+export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.vue";
 export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";
 export type {
   ParallelCoordinatesChartProps,
