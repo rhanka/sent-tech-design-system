@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "57e0375fd1c42e5bce813266cc166657b58c4a5a53e5efd8ebbe66ea1a49e49a",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained."
+      "destinationSha256": "b411f63fde7b515fb23e6af7917f6c8f83538165e6115157deeccf4f864229d2",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained. PR 282: pin design-system-vue to main 0.41.0-next.2 and verify published declarations during build."
     },
     {
       "repository": "dataviz",
@@ -6984,7 +6984,7 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/build-sfc.sha256",
-      "sha256": "38a0808fac385aacde5fe199314d749c5d108b6400564c907af78d33a21cd247",
+      "sha256": "ed8cb09c482a0cc52a64b21a59c4526586bd87037355a3390a5103ea80250bd3",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -7272,7 +7272,7 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/fixtures/EventFeedPanel.fixtures.ts",
-      "sha256": "8181ff26a788a493e85d521dee0c21285ae8f7ecef65a9c2cc464832aa75f31e",
+      "sha256": "e75f091b5a397debeb6257252434ccd86f195e66701b9c793777ba6e28cf98fe",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -7992,7 +7992,7 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/goldens/EventFeedPanel.json",
-      "sha256": "01b6acc151744863dc6a22526981402c58d3c7641e3d859466764383a2a23e55",
+      "sha256": "2752bd5711859cbb2547d6e491e94f244176d82946638b9969f7aeba6ceba4aa",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -8448,7 +8448,7 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/interactions.test.mjs",
-      "sha256": "638027faa22d277a1a9c3833e45d1cf6fddd10062255992134fc2a6be212b9f2",
+      "sha256": "44f599951658811d1f67a4be7d9b80efb6c40309997d188d2c47bdda10aabb3a",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -8508,7 +8508,7 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/results/integration.json",
-      "sha256": "957cee56bdadf26ef631d3a872d8009d9b0d275340727fd5ad8ccaee8c4d7fb5",
+      "sha256": "11b1c37abd095a8b5361037a93fc411b443a8f5bf4d81fa477afb680af007276",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -8532,13 +8532,13 @@
     },
     {
       "destination": "packages/dataviz-vue/bench/review-corrections.mjs",
-      "sha256": "a4bf2059e2bcbc66a98cc62406f96c13cabe0444af39f365ac0220f0d1765aef",
+      "sha256": "9b1dfa8f61aefca9905fd92650df508dc1f416ea48f07ea3ce1a45311ecdb85c",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
     {
       "destination": "packages/dataviz-vue/bench/review-corrections.test.mjs",
-      "sha256": "d11c6a1894c6bf079d3728e7e4620d26496aa4bafd85a6dd4f1ccb7ffd3afd6f",
+      "sha256": "23351b0fa90bbb5eb29681a07177565274297f2c9627f16292c0fd15cc61a2d7",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
@@ -9778,6 +9778,24 @@
       "status": "local-monorepo-helper",
       "sha256": "0a74070c45c74ef34188cd4eeb52dcd858e419a223b7b399d947c046480cd1bc",
       "note": "diagram-vue: shared presentation helpers extracted from monorepo components-svelte ForceGraph.svelte in 9c5d044d; no upstream source; hash-pinned"
+    },
+    {
+      "destination": "packages/dataviz-vue/scripts/check-published-types.mjs",
+      "status": "local-monorepo-helper",
+      "sha256": "84fa2cd77c830d88d91583c48e2c9076c20cb755b5a080c288199d2529aa23e6",
+      "note": "PR 282: published Classic/Vapor type parity and callable helper regression; monorepo-authored, no upstream source."
+    },
+    {
+      "destination": "packages/dataviz-vue/tests/types/consumer.ts",
+      "status": "local-monorepo-helper",
+      "sha256": "efa8a52831b0a11ada82f14e3696402f36797df0222684a101ce422f89059023",
+      "note": "PR 282: published Classic/Vapor type parity and callable helper regression; monorepo-authored, no upstream source."
+    },
+    {
+      "destination": "packages/dataviz-vue/bench/results/PR282.md",
+      "status": "local-monorepo-helper",
+      "sha256": "5b3db57ff2d6cc8e06b28d54412cf3817dab0138ac932f8abbde2ab7d4039c50",
+      "note": "PR 282: evidence for published type parity, main-origin EventFeedPanel capture and final verification; monorepo-authored, no upstream source."
     }
   ]
 }

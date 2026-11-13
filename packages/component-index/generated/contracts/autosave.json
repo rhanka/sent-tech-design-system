@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:bddb96919859d6e6362dc1d9f2bba4f4a3ad17ce8e410306830c475d8f28ab67",
-  "entryDigest": "sha256:b0adb81a5d7a15919921d084fccf70865d7a8e83abb1dd36e68d04b97bd8db63",
+  "digest": "sha256:b91cbdf4458d34c9ddb16e985580bf349c16e7dbf05e95103aa14847665485f0",
+  "entryDigest": "sha256:8a831b380d5ffb51f34b2ad8eea51ae3c298b58e8dd0fcce81114696e9f58a8c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -390,7 +390,7 @@
         "declarationPath": "packages/components-vue/dist/Autosave.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.41.0-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],

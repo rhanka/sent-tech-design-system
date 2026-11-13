@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "component": "ComposerEditor",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "packages/components-svelte/src/lib/rich-text-editor/ComposerEditor.svelte",
+  "referenceFramework": "svelte",
+  "sourceSha256": "8de3e41d3fa1b95d6ceb3b4f67fd360df390787735f47344925cc79c9a460268",
+  "fixtureSha256": "e155be53f3ac6bee73247106a07c01c19137a7f81a5ec9913114895cf17d724d",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-rich-text-editor st-composer-editor\"><div class=\"st-rich-text-editor__surface\"></div></div>"
+    },
+    {
+      "id": "disabled",
+      "html": "<div class=\"st-rich-text-editor st-composer-editor consumer\"><div class=\"st-rich-text-editor__surface\"></div></div>"
+    },
+    {
+      "id": "placeholder",
+      "html": "<div class=\"st-rich-text-editor st-composer-editor\"><div class=\"st-rich-text-editor__surface\"></div></div>"
+    },
+    {
+      "id": "missing-messages",
+      "html": "<div class=\"st-rich-text-editor st-composer-editor\"><div class=\"st-rich-text-editor__surface\"></div></div>"
+    },
+    {
+      "id": "full-profile",
+      "html": "<div class=\"st-rich-text-editor st-composer-editor\"><div class=\"st-rich-text-editor__surface\"></div></div>"
+    }
+  ],
+  "publicExports": [
+    {
+      "name": "ComposerEditor",
+      "typeOnly": false
+    },
+    {
+      "name": "ComposerEditorProps",
+      "typeOnly": true
+    }
+  ]
+}

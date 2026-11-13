@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { require, normalizeHtml, mountedHtml } from './lib.mjs';
+import { bench, require, normalizeHtml, mountedHtml } from './lib.mjs';
 import { reviewCorrections } from './review-corrections.mjs';
 const { JSDOM } = require('jsdom');
 
@@ -34,4 +34,21 @@ test('G5 serializer keeps live properties and valid style declarations observabl
   assert.match(after, /value="new"/);
   assert.match(after, /<textarea>new<\/textarea>/);
   dom.window.close();
+});
+
+test('EventFeedPanel generated label IDs preserve suffixes and reference relationships', () => {
+  const html = (id, ref = id) => '<p id="st-eventFeedPanel-' + id + '-label">Events</p><ul aria-labelledby="st-eventFeedPanel-' + ref + '-label"></ul>';
+  const normalize = value => normalizeHtml(value, JSDOM);
+  assert.equal(normalize(html('0')), normalize(html('v-0')));
+  assert.notEqual(normalize(html('0')), normalize(html('v-0', 'v-1')));
+  assert.notEqual(normalize(html('0')), normalize(html('v-0').replace('-label', '-other')));
+});
+
+test('populated feed golden input is independent of the host timezone', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { resolve } = await import('node:path');
+  const outputs = ['UTC', 'Pacific/Honolulu'].map(TZ => JSON.parse(execFileSync(process.execPath,
+    [resolve(bench, 'worker.mjs'), 'ssr', 'EventFeedPanel'],
+    { encoding: 'utf8', env: { ...process.env, TZ } })).fixtures);
+  assert.deepEqual(outputs[0], outputs[1]);
 });
