@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:225e86fd48f8ff5d9b6c9ed4f7c60656e1dc91e7e1eb26cd9a8826b9bbfb0ddf",
-  "entryDigest": "sha256:b4034f51caa9d2301fc7376188c1ecdc058bd35c3375659715e4cc56b3a2fa3d",
+  "digest": "sha256:6082360c29f19dce2db3a8e159c22cee4102d05c9730d3d4819e1939822ea6c5",
+  "entryDigest": "sha256:b70f1bf6e6d851ea9f774d1a5296179109ec0daa4af250bf575adb65c2fc0f1b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FormGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
