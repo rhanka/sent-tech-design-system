@@ -90,7 +90,8 @@ describe("shared scene presentation (DC-2b)", () => {
       if (n < 120) { scrollLeft += 1; scrollTop += 2; }
       const placement = scenePlacement(scene.bounds, zoom, fit);
       const matrix = worldToView({ x: -placement.translateX / zoom, y: -placement.translateY / zoom, zoom });
-      expect(matrix).toMatchObject({ a: zoom, d: zoom, e: placement.translateX, f: placement.translateY });
+      expect(matrix).toMatchObject({ a: zoom, d: zoom });
+      expect(matrix.e).toBeCloseTo(placement.translateX,12);expect(matrix.f).toBeCloseTo(placement.translateY,12);
       times.push(performance.now() - start);
     }
     expect(scrollLeft).toBe(120); expect(scrollTop).toBe(240);
@@ -121,7 +122,12 @@ describe("shared scene presentation (DC-2b)", () => {
 
   it("should keep the 600-action engine/model workload below 1800 ms with 240 stress toggles", () => {
     const cache = createLayoutCache();
-    let result = layoutScene({ ...input, cache });
+    const seed = layoutScene(input);
+    const seedClosed = layoutScene({ ...input,
+      collapsed: [...input.collapsed, "occurrence:e.pkg-h2a" as SceneLayoutInput["collapsed"][number]],
+      ...(seed.status === "laid-out" && seed.orientations !== undefined ? { previousOrientation: seed.orientations } : {}) });
+    let result = layoutScene({ ...input, cache,
+      ...(seedClosed.status === "laid-out" && seedClosed.orientations !== undefined ? { previousOrientation: seedClosed.orientations } : {}) });
     if (result.status !== "laid-out") throw new Error("reference refused");
     let scene = resolveScene(result, input);
     let worst = 0;

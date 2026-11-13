@@ -1,0 +1,596 @@
+{
+  "viewId": "view:ontology",
+  "semanticDocumentId": "document:appctx-ontology",
+  "revision": 1,
+  "filters": [],
+  "portOccurrences": {},
+  "entityOccurrences": {
+    "occurrence:zone-normative": {
+      "id": "occurrence:zone-normative",
+      "entity": "entity:zone-normative",
+      "geometry": { "x": 40, "y": 40, "width": 1060, "height": 540 },
+      "z": 0
+    },
+    "occurrence:ent-spec": {
+      "id": "occurrence:ent-spec",
+      "entity": "entity:ent-spec",
+      "group": "grp.zone-normative",
+      "geometry": { "x": 80, "y": 136, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:ent-spec-section": {
+      "id": "occurrence:ent-spec-section",
+      "entity": "entity:ent-spec-section",
+      "group": "grp.zone-normative",
+      "geometry": { "x": 580, "y": 136, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:ent-requirement": {
+      "id": "occurrence:ent-requirement",
+      "entity": "entity:ent-requirement",
+      "group": "grp.zone-normative",
+      "geometry": { "x": 330, "y": 356, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:zone-delivery": {
+      "id": "occurrence:zone-delivery",
+      "entity": "entity:zone-delivery",
+      "geometry": { "x": 1140, "y": 40, "width": 1060, "height": 540 },
+      "z": 0
+    },
+    "occurrence:ent-track-wp": {
+      "id": "occurrence:ent-track-wp",
+      "entity": "entity:ent-track-wp",
+      "group": "grp.zone-delivery",
+      "geometry": { "x": 1180, "y": 136, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:ent-track-decision": {
+      "id": "occurrence:ent-track-decision",
+      "entity": "entity:ent-track-decision",
+      "group": "grp.zone-delivery",
+      "geometry": { "x": 1680, "y": 136, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:ent-track-item": {
+      "id": "occurrence:ent-track-item",
+      "entity": "entity:ent-track-item",
+      "group": "grp.zone-delivery",
+      "geometry": { "x": 1430, "y": 356, "width": 460, "height": 176 },
+      "z": 1
+    },
+    "occurrence:zone-interface": {
+      "id": "occurrence:zone-interface",
+      "entity": "entity:zone-interface",
+      "geometry": { "x": 40, "y": 632, "width": 760, "height": 588 },
+      "z": 0
+    },
+    "occurrence:ent-route": {
+      "id": "occurrence:ent-route",
+      "entity": "entity:ent-route",
+      "group": "grp.zone-interface",
+      "geometry": { "x": 68, "y": 728, "width": 336, "height": 196 },
+      "z": 1
+    },
+    "occurrence:ent-component": {
+      "id": "occurrence:ent-component",
+      "entity": "entity:ent-component",
+      "group": "grp.zone-interface",
+      "geometry": { "x": 436, "y": 728, "width": 336, "height": 196 },
+      "z": 1
+    },
+    "occurrence:ent-api-endpoint": {
+      "id": "occurrence:ent-api-endpoint",
+      "entity": "entity:ent-api-endpoint",
+      "group": "grp.zone-interface",
+      "geometry": { "x": 252, "y": 968, "width": 336, "height": 196 },
+      "z": 1
+    },
+    "occurrence:zone-data": {
+      "id": "occurrence:zone-data",
+      "entity": "entity:zone-data",
+      "geometry": { "x": 840, "y": 632, "width": 640, "height": 588 },
+      "z": 0
+    },
+    "occurrence:ent-data-entity": {
+      "id": "occurrence:ent-data-entity",
+      "entity": "entity:ent-data-entity",
+      "group": "grp.zone-data",
+      "geometry": { "x": 900, "y": 728, "width": 520, "height": 196 },
+      "z": 1
+    },
+    "occurrence:ent-data-field": {
+      "id": "occurrence:ent-data-field",
+      "entity": "entity:ent-data-field",
+      "group": "grp.zone-data",
+      "geometry": { "x": 900, "y": 968, "width": 520, "height": 196 },
+      "z": 1
+    },
+    "occurrence:zone-repo": {
+      "id": "occurrence:zone-repo",
+      "entity": "entity:zone-repo",
+      "geometry": { "x": 1520, "y": 632, "width": 680, "height": 588 },
+      "z": 0
+    },
+    "occurrence:ent-code-symbol": {
+      "id": "occurrence:ent-code-symbol",
+      "entity": "entity:ent-code-symbol",
+      "group": "grp.zone-repo",
+      "geometry": { "x": 1548, "y": 728, "width": 624, "height": 196 },
+      "z": 1
+    },
+    "occurrence:ent-file": {
+      "id": "occurrence:ent-file",
+      "entity": "entity:ent-file",
+      "group": "grp.zone-repo",
+      "geometry": { "x": 1548, "y": 968, "width": 296, "height": 196 },
+      "z": 1
+    },
+    "occurrence:ent-commit": {
+      "id": "occurrence:ent-commit",
+      "entity": "entity:ent-commit",
+      "group": "grp.zone-repo",
+      "geometry": { "x": 1876, "y": 968, "width": 296, "height": 196 },
+      "z": 1
+    }
+  },
+  "groups": {
+    "grp.zone-normative": {
+      "id": "grp.zone-normative",
+      "label": "Plan normatif (NormativeArtifact)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-normative"
+    },
+    "grp.zone-delivery": {
+      "id": "grp.zone-delivery",
+      "label": "Plan de suivi (DeliveryArtifact)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-delivery"
+    },
+    "grp.zone-interface": {
+      "id": "grp.zone-interface",
+      "label": "Plan interface & API (InterfaceArtifact)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-interface"
+    },
+    "grp.zone-data": {
+      "id": "grp.zone-data",
+      "label": "Plan modèle de données (DataArtifact)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-data"
+    },
+    "grp.zone-repo": {
+      "id": "grp.zone-repo",
+      "label": "Socle code & dépôt (RepositoryArtifact)",
+      "collapsed": false,
+      "occurrence": "occurrence:zone-repo"
+    }
+  },
+  "relationOccurrences": {
+    "occurrence:rel-ont-01": {
+      "id": "occurrence:rel-ont-01",
+      "relation": "relation:rel-ont-01",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-spec" },
+        { "role": "target", "occurrence": "occurrence:ent-spec-section" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-02": {
+      "id": "occurrence:rel-ont-02",
+      "relation": "relation:rel-ont-02",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-spec-section" },
+        { "role": "target", "occurrence": "occurrence:ent-requirement" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-03": {
+      "id": "occurrence:rel-ont-03",
+      "relation": "relation:rel-ont-03",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-spec" },
+        { "role": "target", "occurrence": "occurrence:ent-requirement" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-04": {
+      "id": "occurrence:rel-ont-04",
+      "relation": "relation:rel-ont-04",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-spec" },
+        { "role": "target", "occurrence": "occurrence:ent-route" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-05": {
+      "id": "occurrence:rel-ont-05",
+      "relation": "relation:rel-ont-05",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-spec-section" },
+        { "role": "target", "occurrence": "occurrence:ent-component" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-06": {
+      "id": "occurrence:rel-ont-06",
+      "relation": "relation:rel-ont-06",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-requirement" },
+        { "role": "target", "occurrence": "occurrence:ent-api-endpoint" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-07": {
+      "id": "occurrence:rel-ont-07",
+      "relation": "relation:rel-ont-07",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-requirement" },
+        { "role": "target", "occurrence": "occurrence:ent-data-entity" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-08": {
+      "id": "occurrence:rel-ont-08",
+      "relation": "relation:rel-ont-08",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-track-item" },
+        { "role": "target", "occurrence": "occurrence:ent-track-wp" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-09": {
+      "id": "occurrence:rel-ont-09",
+      "relation": "relation:rel-ont-09",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-track-item" },
+        { "role": "target", "occurrence": "occurrence:ent-requirement" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-10": {
+      "id": "occurrence:rel-ont-10",
+      "relation": "relation:rel-ont-10",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-track-wp" },
+        { "role": "target", "occurrence": "occurrence:ent-spec" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-11": {
+      "id": "occurrence:rel-ont-11",
+      "relation": "relation:rel-ont-11",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-track-decision" },
+        { "role": "target", "occurrence": "occurrence:ent-spec" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-12": {
+      "id": "occurrence:rel-ont-12",
+      "relation": "relation:rel-ont-12",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-track-decision" },
+        { "role": "target", "occurrence": "occurrence:ent-track-wp" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-13": {
+      "id": "occurrence:rel-ont-13",
+      "relation": "relation:rel-ont-13",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-route" },
+        { "role": "target", "occurrence": "occurrence:ent-component" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-14": {
+      "id": "occurrence:rel-ont-14",
+      "relation": "relation:rel-ont-14",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-component" },
+        { "role": "target", "occurrence": "occurrence:ent-component" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-15": {
+      "id": "occurrence:rel-ont-15",
+      "relation": "relation:rel-ont-15",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-component" },
+        { "role": "target", "occurrence": "occurrence:ent-api-endpoint" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-16": {
+      "id": "occurrence:rel-ont-16",
+      "relation": "relation:rel-ont-16",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-code-symbol" },
+        { "role": "target", "occurrence": "occurrence:ent-api-endpoint" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-17": {
+      "id": "occurrence:rel-ont-17",
+      "relation": "relation:rel-ont-17",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-api-endpoint" },
+        { "role": "target", "occurrence": "occurrence:ent-data-entity" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-18": {
+      "id": "occurrence:rel-ont-18",
+      "relation": "relation:rel-ont-18",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-api-endpoint" },
+        { "role": "target", "occurrence": "occurrence:ent-data-entity" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-19": {
+      "id": "occurrence:rel-ont-19",
+      "relation": "relation:rel-ont-19",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-code-symbol" },
+        { "role": "target", "occurrence": "occurrence:ent-data-entity" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-20": {
+      "id": "occurrence:rel-ont-20",
+      "relation": "relation:rel-ont-20",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-data-entity" },
+        { "role": "target", "occurrence": "occurrence:ent-data-field" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-21": {
+      "id": "occurrence:rel-ont-21",
+      "relation": "relation:rel-ont-21",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-data-field" },
+        { "role": "target", "occurrence": "occurrence:ent-data-entity" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-22": {
+      "id": "occurrence:rel-ont-22",
+      "relation": "relation:rel-ont-22",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-code-symbol" },
+        { "role": "target", "occurrence": "occurrence:ent-file" }
+      ],
+      "strokeStyle": "solid"
+    },
+    "occurrence:rel-ont-23": {
+      "id": "occurrence:rel-ont-23",
+      "relation": "relation:rel-ont-23",
+      "endpoints": [
+        { "role": "source", "occurrence": "occurrence:ent-file" },
+        { "role": "target", "occurrence": "occurrence:ent-commit" }
+      ],
+      "strokeStyle": "solid"
+    }
+  },
+  "presentation": {
+    "camera": { "x": 0, "y": 0, "zoom": 1 },
+    "diagram": {
+      "contractPin": {
+        "id": "diagram-presentation",
+        "version": "1",
+        "contentDigest": "74dadb9c31fff7653ca31692d8db3cfea782baea8d9268a3c20982ea8ab0aeae"
+      },
+      "entities": {
+        "occurrence:zone-normative": {
+          "form": "container",
+          "icon": "window",
+          "text": {
+            "kicker": "Plan ontologique",
+            "title": "Plan normatif (NormativeArtifact)",
+            "subtitle": "Spécifications, sections hiérarchiques et exigences explicites",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-spec": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Entité · Normatif",
+            "title": "Spec",
+            "body": "Document Markdown avec texte intégral UTF-8 dans Spec.content",
+            "detail": "relations: contains · specifies · governs · supersedes",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-spec-section": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Entité · Normatif",
+            "title": "SpecSection",
+            "body": "Section titrée adressable par slugPath et bornes de lignes",
+            "detail": "relations: contains · specifies · governs",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-requirement": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Entité · Normatif",
+            "title": "Requirement",
+            "body": "Exigence nommée rattachée à une spec ou une section",
+            "detail": "relations: governs (routes, composants, API, tables)",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:zone-delivery": {
+          "form": "container",
+          "icon": "link",
+          "text": {
+            "kicker": "Plan ontologique",
+            "title": "Plan de suivi (DeliveryArtifact)",
+            "subtitle": "Lots, items de réalisation et décisions issus du CLI track",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-track-wp": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Suivi",
+            "title": "TrackWorkpackage",
+            "body": "Lot de travaux Track dédupliqué sous node.track (twp:)",
+            "detail": "relations: tracks (réalise) · cible de in_workpackage",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-track-decision": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Suivi",
+            "title": "TrackDecision",
+            "body": "Décision d'architecture extraite via track decision ls (tdec:)",
+            "detail": "relations: decides (Spec, Requirement, TrackWorkpackage)",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-track-item": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Suivi",
+            "title": "TrackItem",
+            "body": "Item de suivi portant l'état realization sous node.track (titem:)",
+            "detail": "relations: in_workpackage · tracks (réalise)",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:zone-interface": {
+          "form": "container",
+          "icon": "window",
+          "text": {
+            "kicker": "Plan ontologique",
+            "title": "Plan interface & API (InterfaceArtifact)",
+            "subtitle": "Écrans UI, composants Svelte et routes HTTP statiques",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-route": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Interface",
+            "title": "Route",
+            "body": "Route UI caractérisée par chemin et type de routeur",
+            "detail": "relations: renders (Component) · gouvernée par Spec",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-component": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Entité · Interface",
+            "title": "Component",
+            "body": "Composant Svelte importé lexicalement et rendu dans l'UI",
+            "detail": "relations: uses (Component) · calls (ApiEndpoint)",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-api-endpoint": {
+          "form": "card",
+          "icon": "server",
+          "text": {
+            "kicker": "Entité · Interface",
+            "title": "ApiEndpoint",
+            "body": "Point d'entrée HTTP à méthode et chemin littéraux",
+            "detail": "relations: reads · writes (DataEntity) · handles",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:zone-data": {
+          "form": "container",
+          "icon": "db",
+          "text": {
+            "kicker": "Plan ontologique",
+            "title": "Plan modèle de données (DataArtifact)",
+            "subtitle": "Tables relationnelles Drizzle, colonnes typées et clés étrangères",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-data-entity": {
+          "form": "card",
+          "icon": "db",
+          "text": {
+            "kicker": "Entité · Données",
+            "title": "DataEntity",
+            "body": "Table relationnelle Drizzle (pgTable ou pgSchema.table)",
+            "detail": "relations: has_field (DataField) · cible reads / writes",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-data-field": {
+          "form": "card",
+          "icon": "db",
+          "text": {
+            "kicker": "Entité · Données",
+            "title": "DataField",
+            "body": "Colonne typée portant notNull, primaryKey et unique",
+            "detail": "relations: references (clé étrangère vers table/colonne)",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:zone-repo": {
+          "form": "container",
+          "icon": "link",
+          "text": {
+            "kicker": "Plan ontologique",
+            "title": "Socle code & dépôt (RepositoryArtifact)",
+            "subtitle": "Symboles TypeScript, fichiers versionnés et commit indexé",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-code-symbol": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Code",
+            "title": "CodeSymbol",
+            "body": "Fonction ou handler reliant endpoints HTTP et tables Drizzle",
+            "detail": "relations: handles · calls · reads · writes · defined_in",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-file": {
+          "form": "card",
+          "icon": "window",
+          "text": {
+            "kicker": "Entité · Dépôt",
+            "title": "File",
+            "body": "Fichier source identifié par son chemin relatif au dépôt",
+            "detail": "relations: at_commit (Commit) · cible defined_in",
+            "footer": "repo: engram · app-context@1"
+          }
+        },
+        "occurrence:ent-commit": {
+          "form": "card",
+          "icon": "link",
+          "text": {
+            "kicker": "Entité · Dépôt",
+            "title": "Commit",
+            "body": "Instantané Git immuable vérifié par la garde de fraîcheur",
+            "detail": "relations: cible de at_commit",
+            "footer": "repo: engram · app-context@1"
+          }
+        }
+      },
+      "legends": {},
+      "categoryTokens": []
+    }
+  }
+}

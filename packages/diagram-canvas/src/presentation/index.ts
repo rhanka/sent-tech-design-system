@@ -1,3 +1,4 @@
+export { renderSceneSvg } from "./renderSceneSvg.js";
 import {
   renderCardSvg,
   renderCardSvgFromPresentation,

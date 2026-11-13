@@ -1,4 +1,5 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramZoneHeader' });
 import DiagramCardHeader from "./DiagramCardHeader.vue";
 import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
@@ -48,7 +49,7 @@ const { kicker, title, subtitle, iconName, iconGlyph, headerTextWidth, headerBlo
   <template v-if="subtitle.length > 0">
     <div class="st-diagramZoneHeader-subtitle" :style="`width:${subtitleWidth}px`">
       <template v-for="(line, subtitleIndex) in subtitle" :key="subtitleIndex">
-        <span class="st-diagramZone-subtitle">{{ line.text }}</span>
+        <span class="st-diagramZone-subtitle" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
       </template>
     </div>
   </template>
