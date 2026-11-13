@@ -8,7 +8,7 @@ import { Menu } from "./Menu.js";
 import type { MenuItem } from "./Menu.js";
 import { MenuPopover } from "./MenuPopover.js";
 import { OverflowMenu } from "./OverflowMenu.js";
-import { Dropdown } from "./Dropdown.js";
+import Dropdown from './Dropdown.vue';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
