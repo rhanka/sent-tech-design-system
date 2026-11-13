@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:054db929d3166dfa120da0474bc3930d2fda2531d4dd9c4cde7bea2d5d1e1881",
+  "digest": "sha256:c434f6d2759032f6e7c949182cd591da9acb4c90513fcf712e490b1955855c5e",
   "entryDigest": "sha256:47e771526dc148b5481c90a7b1300345e4b15be9289495be3cfae2ee2df4d27d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -5087,6 +5087,61 @@
             ],
             "type": "object"
           },
+          "ChainProvenance": {
+            "additionalProperties": false,
+            "properties": {
+              "hops": {
+                "description": "Semantic relation refs in walk order from semanticTarget to the drawn entity.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@11963": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@11963",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "members": {
+                "description": "Aggregate only: complete carrier set in fixed source/target/relation order.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@11963": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@11963",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "predicateId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "hops",
+              "predicateId"
+            ],
+            "type": "object"
+          },
           "Diagnostic": {
             "additionalProperties": false,
             "properties": {
@@ -6973,6 +7028,10 @@
           "RelationOccurrenceEndpoint": {
             "additionalProperties": false,
             "properties": {
+              "chainProvenance": {
+                "$ref": "#/$defs/ChainProvenance",
+                "description": "Document-proven chain: requires semanticTarget and excludes sourceOccurrence."
+              },
               "occurrence": {
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
@@ -7049,11 +7108,11 @@
                     "type": "object"
                   }
                 ],
-                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (folded\nprojection, §4.4.2). A RelationRef is permitted only where the semantic\nrole admits relation targets."
+                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (fold or chain\nprovenance). A RelationRef is permitted only where the semantic\nrole admits relation targets."
               },
               "sourceOccurrence": {
                 "additionalProperties": false,
-                "description": "The original endpoint occurrence in the retained source view. Present iff\n`semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).",
+                "description": "The original endpoint occurrence in the retained source view. Present iff\nfold provenance is used; mutually exclusive with `chainProvenance`.",
                 "properties": {
                   "__@refBrand@11963": {
                     "const": "occurrence"
@@ -13567,7 +13626,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29351": {
+                    "__@refBrand@29356": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -13576,7 +13635,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29351",
+                    "__@refBrand@29356",
                     "length"
                   ],
                   "type": "object"
@@ -13592,7 +13651,7 @@
                   "occurrence": {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "occurrence"
                       },
                       "length": {
@@ -13601,7 +13660,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -13793,7 +13852,7 @@
               "legendRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "entity"
                   },
                   "length": {
@@ -13802,7 +13861,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -13815,6 +13874,61 @@
               "category",
               "legendRef",
               "token"
+            ],
+            "type": "object"
+          },
+          "ChainProvenance": {
+            "additionalProperties": false,
+            "properties": {
+              "hops": {
+                "description": "Semantic relation refs in walk order from semanticTarget to the drawn entity.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@29356": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@29356",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "members": {
+                "description": "Aggregate only: complete carrier set in fixed source/target/relation order.",
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "__@refBrand@29356": {
+                      "const": "relation"
+                    },
+                    "length": {
+                      "description": "Returns the length of a String object.",
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "__@refBrand@29356",
+                    "length"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "predicateId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "hops",
+              "predicateId"
             ],
             "type": "object"
           },
@@ -14265,7 +14379,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "entity"
                   },
                   "length": {
@@ -14274,7 +14388,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14302,7 +14416,7 @@
               "entity": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "entity"
                   },
                   "length": {
@@ -14311,7 +14425,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14326,7 +14440,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14335,7 +14449,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14358,7 +14472,7 @@
               "categoryRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "entity"
                   },
                   "length": {
@@ -14367,7 +14481,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14472,7 +14586,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14481,7 +14595,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14566,7 +14680,7 @@
                     {
                       "additionalProperties": false,
                       "properties": {
-                        "__@refBrand@29351": {
+                        "__@refBrand@29356": {
                           "const": "entity"
                         },
                         "length": {
@@ -14575,7 +14689,7 @@
                         }
                       },
                       "required": [
-                        "__@refBrand@29351",
+                        "__@refBrand@29356",
                         "length"
                       ],
                       "type": "object"
@@ -14622,7 +14736,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29351": {
+                    "__@refBrand@29356": {
                       "const": "entity"
                     },
                     "length": {
@@ -14631,7 +14745,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29351",
+                    "__@refBrand@29356",
                     "length"
                   ],
                   "type": "object"
@@ -14769,7 +14883,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29351": {
+                    "__@refBrand@29356": {
                       "const": "entity"
                     },
                     "length": {
@@ -14778,7 +14892,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29351",
+                    "__@refBrand@29356",
                     "length"
                   ],
                   "type": "object"
@@ -14836,7 +14950,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14845,7 +14959,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14899,7 +15013,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14908,7 +15022,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14919,7 +15033,7 @@
               "ownerOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14928,7 +15042,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -14936,7 +15050,7 @@
               "port": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "port"
                   },
                   "length": {
@@ -14945,7 +15059,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15103,7 +15217,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29351": {
+                          "__@refBrand@29356": {
                             "const": "entity"
                           },
                           "length": {
@@ -15112,7 +15226,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29351",
+                          "__@refBrand@29356",
                           "length"
                         ],
                         "type": "object"
@@ -15133,7 +15247,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29351": {
+                          "__@refBrand@29356": {
                             "const": "relation"
                           },
                           "length": {
@@ -15142,7 +15256,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29351",
+                          "__@refBrand@29356",
                           "length"
                         ],
                         "type": "object"
@@ -15163,7 +15277,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29351": {
+                          "__@refBrand@29356": {
                             "const": "port"
                           },
                           "length": {
@@ -15172,7 +15286,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29351",
+                          "__@refBrand@29356",
                           "length"
                         ],
                         "type": "object"
@@ -15536,7 +15650,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "relation"
                   },
                   "length": {
@@ -15545,7 +15659,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15578,7 +15692,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "entity"
                       },
                       "length": {
@@ -15587,7 +15701,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -15595,7 +15709,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "relation"
                       },
                       "length": {
@@ -15604,7 +15718,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -15612,7 +15726,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "port"
                       },
                       "length": {
@@ -15621,7 +15735,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -15648,7 +15762,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15657,7 +15771,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15665,7 +15779,7 @@
               "relation": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "relation"
                   },
                   "length": {
@@ -15674,7 +15788,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15704,11 +15818,15 @@
           "RelationOccurrenceEndpoint": {
             "additionalProperties": false,
             "properties": {
+              "chainProvenance": {
+                "$ref": "#/$defs/ChainProvenance",
+                "description": "Document-proven chain: requires semanticTarget and excludes sourceOccurrence."
+              },
               "occurrence": {
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15717,7 +15835,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15731,7 +15849,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "entity"
                       },
                       "length": {
@@ -15740,7 +15858,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -15748,7 +15866,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "relation"
                       },
                       "length": {
@@ -15757,7 +15875,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
@@ -15765,7 +15883,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29351": {
+                      "__@refBrand@29356": {
                         "const": "port"
                       },
                       "length": {
@@ -15774,19 +15892,19 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29351",
+                      "__@refBrand@29356",
                       "length"
                     ],
                     "type": "object"
                   }
                 ],
-                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (folded\nprojection, §4.4.2). A RelationRef is permitted only where the semantic\nrole admits relation targets."
+                "description": "The semantic endpoint target for this role, copied verbatim. Present iff\nthe drawn `occurrence` does not itself draw that target (fold or chain\nprovenance). A RelationRef is permitted only where the semantic\nrole admits relation targets."
               },
               "sourceOccurrence": {
                 "additionalProperties": false,
-                "description": "The original endpoint occurrence in the retained source view. Present iff\n`semanticTarget` is present (endpoint-occurrence provenance, §4.4.2).",
+                "description": "The original endpoint occurrence in the retained source view. Present iff\nfold provenance is used; mutually exclusive with `chainProvenance`.",
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15795,7 +15913,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15819,7 +15937,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "resource"
                   },
                   "length": {
@@ -15828,7 +15946,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -15896,7 +16014,7 @@
               "documentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "document"
                   },
                   "length": {
@@ -15905,7 +16023,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -16223,7 +16341,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "port"
                   },
                   "length": {
@@ -16232,7 +16350,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -16243,7 +16361,7 @@
               "owner": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "entity"
                   },
                   "length": {
@@ -16252,7 +16370,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -16284,7 +16402,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16293,7 +16411,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -16580,7 +16698,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29351": {
+                    "__@refBrand@29356": {
                       "const": "relation"
                     },
                     "length": {
@@ -16589,7 +16707,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29351",
+                    "__@refBrand@29356",
                     "length"
                   ],
                   "type": "object"
@@ -16601,7 +16719,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29351": {
+                    "__@refBrand@29356": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -16610,7 +16728,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29351",
+                    "__@refBrand@29356",
                     "length"
                   ],
                   "type": "object"
@@ -16620,7 +16738,7 @@
               "sourceOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16629,7 +16747,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -16644,7 +16762,7 @@
               "targetOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16653,7 +16771,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -17145,7 +17263,7 @@
               "semanticDocumentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "document"
                   },
                   "length": {
@@ -17154,7 +17272,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -17170,7 +17288,7 @@
               "viewId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "view"
                   },
                   "length": {
@@ -17179,7 +17297,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -17214,7 +17332,7 @@
                 "additionalProperties": false,
                 "description": "The entity occurrence this group folds (M3 §4.1.1). Present on every fold\ngroup in a completed-profile view. Membership is still derived through\n`EntityOccurrence.group`, never stored here.",
                 "properties": {
-                  "__@refBrand@29351": {
+                  "__@refBrand@29356": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -17223,7 +17341,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29351",
+                  "__@refBrand@29356",
                   "length"
                 ],
                 "type": "object"
@@ -17245,7 +17363,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29351": {
+                "__@refBrand@29356": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17254,7 +17372,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29351",
+                "__@refBrand@29356",
                 "length"
               ],
               "type": "object"
@@ -17272,7 +17390,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29351": {
+                "__@refBrand@29356": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17281,7 +17399,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29351",
+                "__@refBrand@29356",
                 "length"
               ],
               "type": "object"
