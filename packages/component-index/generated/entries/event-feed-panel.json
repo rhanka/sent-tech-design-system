@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/EventFeedPanel.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message.",
     "fr": "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message."
   },
-  "digest": "sha256:3f08e07bb045fe869c71d554764cd0152df80c1acfe3b2b4647e111f343211b4",
+  "digest": "sha256:b13c8ecdf58f99ff2bc8190606d8116ddcbb7c9e13083414afd297e5bc77423d",
   "displayName": "EventFeedPanel",
   "format": "component-entry/v1",
   "frameworks": [

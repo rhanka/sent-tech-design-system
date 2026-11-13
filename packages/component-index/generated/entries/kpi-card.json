@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/KpiCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "KPI card with value, delta, trend indicator, and optional sparkline.",
     "fr": "Carte indicateur clé avec valeur, delta, tendance et sparkline optionnelle."
   },
-  "digest": "sha256:998f648727268f61f8d9541a52e90cf68df090b6acd028dd68050e5e8a02afca",
+  "digest": "sha256:9853ac46df74d51b3fa7ce78f89cff50aa8d9b1a8dc9e6df67cc599537aef5df",
   "displayName": "KpiCard",
   "format": "component-entry/v1",
   "frameworks": [

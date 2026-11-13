@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/WaterfallChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Waterfall chart (increases, decreases, totals) with optional connectors.",
     "fr": "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs."
   },
-  "digest": "sha256:c014670cf6a1696632f2619bdfd7281e7a8783dbf8f5703d96eee46b3684a308",
+  "digest": "sha256:3bda665720c3e28a45afe05f10bcef04044d95ae04a08c3f04872b8f9b5b0016",
   "displayName": "WaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

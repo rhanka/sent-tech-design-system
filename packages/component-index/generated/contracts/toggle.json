@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:6f9b450829ca8955c0083b299c5775ead1b6fd72f31254d470a3afbd8105a25c",
-  "entryDigest": "sha256:281482426dc11b154be7453b1b6edf73254012e0fad8524e5f92cfeeda6d4139",
+  "digest": "sha256:043709eaeedce8bb370e9511600ad8fd44ae664c2eb6cebfa2677de6d80e770b",
+  "entryDigest": "sha256:f1836f531bb09565e54d815d2c53923d0a782c7f5749720ecf38c9da222b33e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/Toggle.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

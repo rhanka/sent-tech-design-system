@@ -1,8 +1,8 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:ec6fe4dc4b66a9478d6b1a1d26783e204d6f55a9b9eaabaf309ebec7fdb73bae",
-  "entryDigest": "sha256:b9c6f490498282ea25d96d2999e5c63035af7ee456c38e75d0f8e4e433e341b3",
+  "digest": "sha256:bc8576ab0d1fc25759c27cb15aadc2983190c05150b0a636586ef88c8ee65986",
+  "entryDigest": "sha256:7cbb64cf31de2879e7d0c2eb1f0d9d07f904da55ed38a813895ddc63b02fba47",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/BumpChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BumpChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

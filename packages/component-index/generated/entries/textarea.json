@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Textarea.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:0c76d4f7040bfaeb14572a1b09a1292834a761c5b4912e1d2655ee27a4598e6b",
+  "digest": "sha256:da97bdec1e372b1fd40a66f2fe27518de30497b1d393d97925e84b49e71ba784",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [

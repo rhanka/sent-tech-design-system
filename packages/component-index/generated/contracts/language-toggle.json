@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:a5fd6baef15105f0e3a0021672d2333e4b9ca19fd6831663c247e11b15118260",
-  "entryDigest": "sha256:c55344d7e98085ca42bfe89d82700a1a43c420eeaae91d0ad730927d4fbce700",
+  "digest": "sha256:19bb5acf215267ccaf6cf0732674652a198383c97820336cbe27d3461f93409f",
+  "entryDigest": "sha256:c04371ae44855d98a2bad2021018fe363a31f5559e2456a34b887b3c838c0c58",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/LanguageToggle.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LanguageToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

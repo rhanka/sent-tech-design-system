@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/RibbonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
     "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
   },
-  "digest": "sha256:cc79f9ffb5eb852a721fc9f28fdbcaa7007269795c87d07cbdaec248acfbe088",
+  "digest": "sha256:aaed62202052710a98d4a4404dff051014213ace71edad36e092b637ce691c66",
   "displayName": "RibbonChart",
   "format": "component-entry/v1",
   "frameworks": [

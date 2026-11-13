@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/EmptyState.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:f3f02830cb0704f3c58effd1dae8f8b139f255dcec5b1791353dc72b84d98494",
+  "digest": "sha256:e46e321087d61fa8833eea1cfed4170b51d247930b6a0a4d2752b8d2a645d95a",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

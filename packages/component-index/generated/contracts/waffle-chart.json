@@ -1,8 +1,8 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:2a5f2dfd47497a359d13b0df2cdddbddd760ccb6ff4c46bc7aa196c3e9ce2322",
-  "entryDigest": "sha256:bd476b3a9a60ea35868a619e7374b5e54767c11b86f99fdcc46963b25ae6f2cc",
+  "digest": "sha256:ce955b695bcc106bb653d52cb9818dc68f99c17c042dcaef6b0f7f65909cfbcc",
+  "entryDigest": "sha256:e6165f7114f860c662dbe47f8ba609ce77683f998b71a998edb6dfacd5231f39",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/WaffleChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WaffleChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

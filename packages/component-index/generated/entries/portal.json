@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Portal.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:9ea120220d8fe3cd67e6e41d752ed6cb1319db7efcc2a6a2dad3c8de88fb9fa4",
+  "digest": "sha256:b3ce0112ce96790839271d4967265245fce945501d12370e8db82922d8d0b29e",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

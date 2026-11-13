@@ -1,8 +1,8 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:5845cce7b62216cdb77ae51a2a4f3fdc4afbd349239cbffa84d55914a2d0aa72",
-  "entryDigest": "sha256:295742b824e7325880e1147f75bc0e8ef9609bd3706ad6e2557525c9238e2e33",
+  "digest": "sha256:dfcbf67b188c6850cd9a4b85f0618961ecb7bc41e129e919be9097811b6442ab",
+  "entryDigest": "sha256:2bf8e5aa1ffc7eb2eac5b32ddf2972bb4f39249e08c9cc6c3983356dc3f4cbbc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/SkeletonText.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SkeletonTextProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

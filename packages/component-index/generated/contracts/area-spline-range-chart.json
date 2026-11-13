@@ -1,8 +1,8 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:1c88ca2196095a7805c309523eeb39a21bb6e2a1d87037bb55221b3eea75f3a5",
-  "entryDigest": "sha256:874fbe9d076827634eaed8285258f4641575b3e5c42185c714b2d4f0cc4592ae",
+  "digest": "sha256:a33f89ac1c8c073b2067d2883aab8f13ecc68a2c7cc9bbaf32c187f777500401",
+  "entryDigest": "sha256:0b6370aa91f7077b0e58ff2253e8d18a8e7c8b839d12090f2ee078c968520646",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/AreaSplineRangeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AreaSplineRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

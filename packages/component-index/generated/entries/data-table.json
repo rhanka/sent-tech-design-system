@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DataTable.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Advanced table: sorting, multi-row selection.",
     "fr": "Table avancée: tri, sélection multi-lignes."
   },
-  "digest": "sha256:a4b98becfa83ea2219bad6d2b7478e9fa80239524a87cb30cddb81fd06f59ba3",
+  "digest": "sha256:a0aadb3fd330372e68611b8386d6fe105b68c103d37b856959615520e64631c6",
   "displayName": "DataTable",
   "format": "component-entry/v1",
   "frameworks": [

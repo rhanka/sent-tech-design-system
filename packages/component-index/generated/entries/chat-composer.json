@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ChatComposer.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Composer with action slots and send/stop handling.",
     "fr": "Barre de rédaction avec slots d’actions et envoi/arrêt."
   },
-  "digest": "sha256:e5fcc4feef7208949a25ccd1427a83495fdf70bcca420c3834bf626d90ad1da2",
+  "digest": "sha256:31f2bb06e9f81b66a2d6f78a4734fa78da6b504f773c95e4babe0323627fa358",
   "displayName": "ChatComposer",
   "format": "component-entry/v1",
   "frameworks": [

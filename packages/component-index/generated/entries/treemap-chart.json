@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TreemapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Squarified hierarchical treemap, 1 or 2 levels, with optional labels.",
     "fr": "Carte proportionnelle hiérarchique (squarified), 1 ou 2 niveaux, labels."
   },
-  "digest": "sha256:243ff265a7e656901bdbe5acd0ce72f81c69bd6263c630d8ecff47e2d175dab8",
+  "digest": "sha256:af3d039b52b42f747462c7a120ebf3d7142ccddc043f135b6c8c315f3bad1bfd",
   "displayName": "TreemapChart",
   "format": "component-entry/v1",
   "frameworks": [

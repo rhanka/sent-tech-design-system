@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StatusDot.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Status dot colored by tone (or arbitrary color), optional “live” halo and optional label.",
     "fr": "Pastille de statut colorée par tonalité (ou couleur arbitraire), halo « live » optionnel et libellé optionnel."
   },
-  "digest": "sha256:265562f90bd0f56f4c47b05af131552463d4b1825f9126f81a16d45a4b8b8fde",
+  "digest": "sha256:0a2fce1e0d0ffdfd7cfbac4bd7452335363a7bd5328c68cb406d6b25b54ee2ad",
   "displayName": "StatusDot",
   "format": "component-entry/v1",
   "frameworks": [

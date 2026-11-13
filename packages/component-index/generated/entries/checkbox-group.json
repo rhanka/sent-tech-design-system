@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CheckboxGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Set of checkboxes with a legend and multiple values.",
     "fr": "Ensemble de cases à cocher avec légende, valeurs multiples."
   },
-  "digest": "sha256:420f8983a8c6375bf41ac0d5f53edaa42ecb798f58fa0954c3e1e06d45c83da2",
+  "digest": "sha256:8a15e5e9a371dee24c7732a9728755a503bbb9840e56810e3dce3d7def6ef64b",
   "displayName": "CheckboxGroup",
   "format": "component-entry/v1",
   "frameworks": [

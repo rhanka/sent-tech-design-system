@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FieldCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Field group card: titled header, optional comment pill, bordered / plain / accent variants.",
     "fr": "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent."
   },
-  "digest": "sha256:f32586e3f0353143582569c4a0844c60c3276b3742fc94589d84079685ada71c",
+  "digest": "sha256:4c1d2dd47263a3b4f1ad4964a7a214e2858552ec083f08bed8f26e4ee6fae92b",
   "displayName": "FieldCard",
   "format": "component-entry/v1",
   "frameworks": [

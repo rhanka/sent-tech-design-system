@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Combobox.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:ebcc042eb1c302b771fbaffee8030ff35a022781e7a4e48a70249c8c8f548970",
+  "digest": "sha256:a0a198b6972789d754a0c568591a3d14be5f2ff34a0823c93b4703c9fa2f7597",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

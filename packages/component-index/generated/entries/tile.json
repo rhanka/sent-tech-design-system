@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tile.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
     "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
   },
-  "digest": "sha256:512c9048288b76f917ab7f237f28ebf06a7ecb5fde3414785b1a242a2afa0813",
+  "digest": "sha256:c3c1a8abd7c825631c1be7145c83529ecf5fcaa5ae7633eca606fc7b650e063d",
   "displayName": "Tile",
   "format": "component-entry/v1",
   "frameworks": [

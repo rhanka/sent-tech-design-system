@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PackedBubblesChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Packed bubbles whose area is proportional to value.",
     "fr": "Bulles tassées dont l'aire est proportionnelle à la valeur."
   },
-  "digest": "sha256:edad84459217bd0f98c65100dca848464719a9f647c6e4d194b352e8bdb33191",
+  "digest": "sha256:e1dbd8a03cddb4903f6964e4599fc9ea22e4779a751640c4a14ffec6f4dcd09b",
   "displayName": "PackedBubblesChart",
   "format": "component-entry/v1",
   "frameworks": [

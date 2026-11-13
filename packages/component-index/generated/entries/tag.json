@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tag.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:634a6e1859670045a3a18855df3b6050e6e6a9f83a160c6272e8a37432596497",
+  "digest": "sha256:e24a6a03f1d5df6eaca764a3b591825a5bd25f12e56c0ce54cc9e103853ba1f8",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

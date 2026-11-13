@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:8a126c42ae185b9449730d242e338c92af429b97cc989a56dc15ac4b54bb458e",
-  "entryDigest": "sha256:dd7b8e1ba4b59050a5549c794f6b24adf25a6be633525d9649f4da67b59adbd2",
+  "digest": "sha256:5feaedba6a76b75b974914b475ea51b1b0ee32ecb1777c15be49afe6f43ff321",
+  "entryDigest": "sha256:aad5addb8dba15855ef1899aa5c98b46e31ff9f9ad30da36ff6330243011dcc1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/MediaContent.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MediaContentProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
