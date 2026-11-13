@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount, type PropType } from 
 import { classNames } from './classNames.js';
 import { computePosition, splitPlacement } from './popper-position.js';
 import type { PopperPlacement, PopperStrategy } from './Popper.js';
-defineOptions({ name: 'Popper' });
+defineOptions({ name: 'Popper', inheritAttrs: false });
 const props = defineProps({
     anchor: {
       type: Object as PropType<HTMLElement | null>,
@@ -249,7 +249,8 @@ const side = computed(() => splitPlacement(resolvedPlacement.value).side);
   <Teleport v-if="props.open && props.anchor" to="body" :disabled="!props.portal">
     <div ref="panel" :class="classNames('st-popper', props.class)" :data-popper-placement="resolvedPlacement"
       :style="`position: ${props.strategy}; top: ${top}px; left: ${left}px;`"
-      :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined">
+      :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined"
+      v-bind="props.portal ? {} : $attrs">
       <slot />
       <span v-if="props.arrow" class="st-popper__arrow" :data-popper-side="side" aria-hidden="true" />
     </div>
