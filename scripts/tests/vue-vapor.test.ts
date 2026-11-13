@@ -41,6 +41,31 @@ it('should reject aliased and namespace render calls while accepting signal help
   expect(renderCalls(`// h('p')\nconst text = "Vue.h('p')"; const api = { h() {} }; api.h();`)).toEqual([]);
 });
 
+it('should resolve a dataviz child through its native DS SFC without adding DS-only helpers', () => {
+  const root = mkdtempSync(join(tmpdir(), 'dataviz-native-child-'));
+  try {
+    symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
+    const pkg = join(root, 'packages/dataviz-vue');
+    const ds = join(root, 'packages/components-vue/src');
+    mkdirSync(join(pkg, 'src'), { recursive: true });
+    mkdirSync(ds, { recursive: true });
+    writeFileSync(join(pkg, 'package.json'), '{"type":"module"}');
+    writeFileSync(join(ds, 'index.ts'), "export { ForceGraph } from './ForceGraph.js';");
+    writeFileSync(join(ds, 'ForceGraph.ts'), "import { defineComponent } from 'vue'; export const ForceGraph = defineComponent({});");
+    writeFileSync(join(ds, 'ForceGraph.vue'), '<script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/ForceGraph.vue'), `<script setup lang="ts">
+import { ForceGraph as Presenter } from '@sentropic/design-system-vue';
+</script><template><Presenter label="Native graph" /></template>`);
+    writeFileSync(join(pkg, 'src/index.ts'), "export { default as ForceGraph } from './ForceGraph.vue';");
+    const build = spawnSync(process.execPath, [resolve('scripts/vue-sfc-build.mjs')], { cwd: pkg, encoding: 'utf8' });
+    expect(build.status, build.stdout + build.stderr).toBe(0);
+    const entry = readFileSync(join(pkg, 'dist/vapor/index.js'), 'utf8');
+    expect(entry).toContain('default as ForceGraph');
+    expect(entry).not.toContain('nodeShapePath');
+    expect(entry).not.toContain('edgeDashArray');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 it('should compile a future dataviz SFC with imported props, slots and declarations in both modes', () => {
   const root = mkdtempSync(join(tmpdir(), 'dataviz-sfc-'));
   try {

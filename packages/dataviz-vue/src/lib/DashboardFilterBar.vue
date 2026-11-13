@@ -129,7 +129,7 @@ function removeFilter(i: number) {
     <Button v-if="props.export" variant="secondary" @click="exportClick">{{ props.export.label }}</Button>
     <FilterBar v-if="props.chips && props.activeFilters.length > 0" label="Filtres actifs">
       <FilterPill v-for="(f, i) in props.activeFilters" :key="i" :field="f.label ?? f.field" :value="String(f.value)"
-        :on-remove="() => removeFilter(i)" />
+        @remove="() => removeFilter(i)" />
     </FilterBar>
   </div>
 </template>

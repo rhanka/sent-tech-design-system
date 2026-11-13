@@ -87,7 +87,12 @@ if (!stable) {
           const declaration = dsIndex.statements.find(entry => ts.isExportDeclaration(entry) && !entry.isTypeOnly && entry.exportClause && ts.isNamedExports(entry.exportClause)
             && entry.exportClause.elements.some(entry => !entry.isTypeOnly && entry.name.text === imported));
           if (!declaration?.moduleSpecifier) return false;
-          const dependency = resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.js$/, '.ts'));
+          // Match the native barrel's SFC selection even when Classic keeps a
+          // compatibility .ts entry (ForceGraph also exports pure helpers).
+          const candidate = resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.(?:js|vue)$/, '.vue'));
+          const exported = declaration.exportClause.elements.find(entry => entry.name.text === imported);
+          const isComponent = (exported.propertyName ?? exported.name).text === 'default' || imported === basename(candidate, '.vue');
+          const dependency = existsSync(candidate) && isComponent ? candidate : resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.js$/, '.ts'));
           if (!native(dependency, seen)) return false;
         }
         continue;
@@ -118,13 +123,14 @@ if (!stable) {
         if (item.isTypeOnly) continue;
         if ((item.propertyName ?? item.name).text === 'default' || (item.propertyName ?? item.name).text === name)
           entries.push(`export { default as ${item.name.text} } from '${specifier(relative(resolve('src'), component))}.js';`);
+        else entries.push(`export { ${item.getText(index)} } from '${specifier(relative(resolve('src'), component))}.js';`);
       }
     } else if (!path.startsWith('.') || native(resolve('src', path.replace(/\.js$/, '.ts')))) {
       entries.push(node.getText(index).replace(path, shared));
     }
   }
   // These pure helpers share a compatibility wrapper with ForceGraph.
-  if (sfcs.some(file => file.endsWith('/ForceGraph.vue')))
+  if (basename(resolve('.')) === 'components-vue' && sfcs.some(file => file.endsWith('/ForceGraph.vue')))
     entries.push("export { nodeShapePath, edgeDashArray } from '@sentropic/graph/presentation';");
   const entry = entries.join('\n') + '\n';
   writeFileSync('dist/vapor/index.d.ts', entry);

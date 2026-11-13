@@ -54,6 +54,6 @@ const data = computed<LineChartDatum[]>(() => {
 <template>
   <LineChart :data="data" :width="props.width" :height="props.height" :label="props.label"
     :reference-lines="[{ axis: 'x', value: model.value, label: model.label, tone: 'info' }]"
-    :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey"
+    :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey"
     :class="['st-referenceLineChart', props.class].filter(Boolean).join(' ')" />
 </template>

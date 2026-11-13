@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
 import { drillLevel, onDrillSelect } from './drill.js';
-import { DrillChart } from './DrillChart.js';
+import DrillChart from './DrillChart.vue';
 
 const model: DataModel = {
   dimensions: [

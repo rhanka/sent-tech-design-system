@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "WebFrame",
+  "sourceRevision": "2678243775ccaabee15f672276b4cdd2cd1b6e0f",
+  "source": "src/lib/ObjectLayers.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<iframe loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" src=\"https://example.com/embed\" title=\"Embedded page\"></iframe>"
+    },
+    {
+      "id": "title",
+      "html": "<iframe loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" src=\"https://example.com/embed\" title=\"Report\"></iframe>"
+    },
+    {
+      "id": "policy",
+      "html": "<iframe allow=\"fullscreen\" loading=\"eager\" referrerpolicy=\"no-referrer\" sandbox=\"allow-scripts\" src=\"https://example.com/embed\" title=\"Embedded page\"></iframe>"
+    },
+    {
+      "id": "attrs",
+      "html": "<iframe class=\"consumer\" data-bench=\"frame\" id=\"explicit-frame\" loading=\"lazy\" referrerpolicy=\"strict-origin-when-cross-origin\" src=\"https://example.com/embed\" style=\"color:red\" title=\"Embedded page\"></iframe>"
+    }
+  ],
+  "sourceSha256": "84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
+  "fixtureSha256": "a2285d74f018a94da707c327e5f034274623319e7c3cef6a4c278e2916230602",
+  "publicExports": [
+    {
+      "name": "WebFrame",
+      "typeOnly": false
+    },
+    {
+      "name": "WebFrameProps",
+      "typeOnly": true
+    }
+  ]
+}
