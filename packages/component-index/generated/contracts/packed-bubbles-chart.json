@@ -1,8 +1,8 @@
 {
   "componentId": "packed-bubbles-chart",
   "contractSource": "derived",
-  "digest": "sha256:6df83219b64e9ad31ff9353a1be4ac0aaac2d059df98175fa0b25f839029b170",
-  "entryDigest": "sha256:a2ba6c880fc1cb39f61673e550a9ae544f5a251760e8c485beaaa4834b430fed",
+  "digest": "sha256:59046fc0f121e2dbf5705d86007c9d24a78b74d33f2320958fd72607e56d683a",
+  "entryDigest": "sha256:7ef9a058576e301797e0d28c0f9bebd00d0342ce362a9ae19175cc82ddd6cca2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/PackedBubblesChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -159,7 +159,7 @@
         "declarationPath": "packages/components-react/dist/PackedBubblesChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

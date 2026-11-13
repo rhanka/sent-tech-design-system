@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ColorScaleBar.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColorScaleBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels.",
     "fr": "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max."
   },
-  "digest": "sha256:725940dfcda25307e2326948bf8fae49fd92ecaefa82933af75bc181def9826a",
+  "digest": "sha256:8dce7f048d40ff1a1a4b44f1e973868608fe7ca1bea78ba075f839385d8cb5eb",
   "displayName": "ColorScaleBar",
   "format": "component-entry/v1",
   "frameworks": [

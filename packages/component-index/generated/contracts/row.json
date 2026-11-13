@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:6fe0faacd000188b24f4f6ec11037f86f8691aa5ec7407da72e84d1a4c234e4d",
-  "entryDigest": "sha256:c29ebe38e42f82120aca449f76daed48612b7a7d066a6ae6a87f2865869228e0",
+  "digest": "sha256:b6d1920d79c1490b17b600d6fcf7adeb95d7c8285101fee524a1dd6a5904beea",
+  "entryDigest": "sha256:22f4316fcbd71fe639698a159a396c5e2c822d0ab9b3426e44c4fd550bc11678",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Row.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Row.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -250,7 +250,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:757f4a11f7884e9744f1980bc453a6ba4eff1f4fe7413af316eef9d8103ebe25",
+        "declarationDigest": "sha256:5052253cd29be07133bd5c3a0be8b43b47e3280cbf399cb19745708b9789760f",
         "declarationPath": "packages/components-vue/dist/Row.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RowProps",

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/HeatmapChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/HeatmapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Colored matrix for crossing two categorical dimensions.",
     "fr": "Matrice colorée pour croiser deux dimensions catégorielles."
   },
-  "digest": "sha256:e0d25868f562e7482409511c051f60e3e858b21f8577bcdba703fce01cf574e2",
+  "digest": "sha256:94b9b9c43f0f94fb25514945995bc80612f5100614c96966c07ca16c2655e937",
   "displayName": "HeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

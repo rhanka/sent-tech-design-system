@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:ab4af5dccda85a89b00c83c16b4bacb350b20994b557104025372ab4a843fa0d",
-  "entryDigest": "sha256:49ef3c3cfe6fc46a1077b004624b0b89edb3a1ca848f91644839e87a0d684b6c",
+  "digest": "sha256:82358b18bbfb53dbb983b32ba6e18b9c91482493b0b9e623d25c92ce170f9920",
+  "entryDigest": "sha256:ac28df36f78fa3e9ad4d7da46e5c3e01c3b48ec4e6d5cdc89d5d4c47c474e11f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Toast.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToastProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToastProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:3d341dacc997acf6cb5ef11aac912f4b82bb41b5a004eeaa48c263b2dc1f9be7",
-  "entryDigest": "sha256:fe38f5a942200c33a4bf125d0dbcc19bee08d86a4c9d964198c99d970d796c50",
+  "digest": "sha256:27fb6fddd63018bf03f304dd103540fb31655cb8ddd100c307524841ec577084",
+  "entryDigest": "sha256:61d8ad6562230ffa9ad8b644c086de9423c7290b8cc92818a78a05440f5f4440",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/BellCurveChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BellCurveChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -133,7 +133,7 @@
         "declarationPath": "packages/components-react/dist/BellCurveChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BellCurveChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:0dcfe09e4b3a783b13175864574c94c6d2f24cfbc6ace8e3a27132809d2c6c6a",
-  "entryDigest": "sha256:5d952fc89fd77e945599d03b2e646e8d7e4b576ea78365607d1b75325577334f",
+  "digest": "sha256:61099b0b2ce254de7bcc50cc4d9773dc53948129f9f2aa704d3fba6c0559c771",
+  "entryDigest": "sha256:abcac28721fb601cf5901a9fd250b53b45da78cd047911468ec4b6f1f38f404f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/FormGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -92,7 +92,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -163,9 +163,6 @@
           "helperText": {},
           "legend": {}
         },
-        "required": [
-          "legend"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -187,6 +184,9 @@
           "name": "default"
         },
         {
+          "name": "helper-text"
+        },
+        {
           "name": "helperText"
         },
         {
@@ -194,7 +194,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:604432699de0203598fdd0163e43040c2aaf3438f7dcf9ae040af3d31a0f347e",
+        "declarationDigest": "sha256:aff4175f6fff246b6c15216130277ce2f1100c9068373a5c093bc6695395d0d1",
         "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",

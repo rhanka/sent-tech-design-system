@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/OHLCChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OHLCChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "OHLC bars: a vertical low→high bar with a left open tick and a right close tick.",
     "fr": "Bâtons OHLC : barre verticale low→high, tick gauche à l'ouverture, tick droite à la clôture."
   },
-  "digest": "sha256:f7bf97100b633fdb1ef55071cf32a1e86fa49502f0f15ad7c814cfd55c38591e",
+  "digest": "sha256:24d9bd751fc5ce1a5b23cdae2cd17fd041fbc7bc9911ff1bab7031bac0cbebc1",
   "displayName": "OHLCChart",
   "format": "component-entry/v1",
   "frameworks": [

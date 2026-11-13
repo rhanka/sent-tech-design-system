@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/StepLineChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/StepLineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Step line chart: the value stays flat until the next threshold.",
     "fr": "Courbe en paliers : la valeur reste stable jusqu'au prochain seuil."
   },
-  "digest": "sha256:aed8327409fad9f1c2c7a4fafffebc08891efa6a73a4087512d79c0891a78a23",
+  "digest": "sha256:ec937c66ac22393c9311ff9d074eb059ab9d5219a2d057fde87f164de13673d8",
   "displayName": "StepLineChart",
   "format": "component-entry/v1",
   "frameworks": [
