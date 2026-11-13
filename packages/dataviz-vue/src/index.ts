@@ -34,8 +34,8 @@ export { default as CrossfilteredBarChart } from './lib/CrossfilteredBarChart.vu
 export type { CrossfilteredBarChartProps } from './lib/CrossfilteredBarChart.vue';
 export { ParetoChart } from './lib/ParetoChart.js';
 export type { ParetoChartProps } from './lib/ParetoChart.js';
-export { DivergingBarChart } from './lib/DivergingBarChart.js';
-export type { DivergingBarChartProps } from './lib/DivergingBarChart.js';
+export { default as DivergingBarChart } from './lib/DivergingBarChart.vue';
+export type { DivergingBarChartProps } from './lib/DivergingBarChart.vue';
 export { ComboChart } from './lib/ComboChart.js';
 export type { ComboChartProps } from './lib/ComboChart.js';
 export { StackedBarChart } from './lib/StackedBarChart.js';
