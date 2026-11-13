@@ -1,8 +1,8 @@
 {
   "componentId": "inline",
   "contractSource": "derived",
-  "digest": "sha256:b3ed405becfa39be5bea350dde15c60ad93cf9313c0389d4271169a88a082062",
-  "entryDigest": "sha256:d724b93079a6980010008f9e7543ba1903f0518294c3ab18ea7e858200b11b8b",
+  "digest": "sha256:1ccb80e4a1e6d819d488ae7dda16668bf233ced2b65ecb366c7740063086b42e",
+  "entryDigest": "sha256:a80927d5e4e6d7ccc586461cf5accd0c0233918b35f973ea8bbf3c2029390ba6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/Inline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineProps",
-        "version": "0.40.0"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/Inline.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineProps",
-        "version": "0.39.0"
+        "version": "0.39.1"
       },
       "status": "complete",
       "unresolved": [],

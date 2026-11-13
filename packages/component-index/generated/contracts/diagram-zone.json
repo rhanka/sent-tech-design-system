@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:9f5d5958e575965bd466d1325d2dcd73e133f1a24f1d7136235eb464faa1629a",
-  "entryDigest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
+  "digest": "sha256:45c262ad12dce8ff8579b8940a84c5d3a2630780b85027b5fe78701239729455",
+  "entryDigest": "sha256:0a5fc3b6b49b136381eb7d712876bdd80ae46826155c7135d37bc8c0f4ed20cf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -140,8 +140,10 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-grown",
                   "zone-overflow",
-                  "zone-icon-unknown"
+                  "zone-icon-unknown",
+                  "zone-grown"
                 ]
               },
               "entityId": {
@@ -176,6 +178,9 @@
               "center",
               "left"
             ]
+          },
+          "autoSize": {
+            "type": "boolean"
           },
           "collapsed": {
             "type": "boolean"
@@ -244,7 +249,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.40.0"
+        "version": "0.40.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -358,8 +363,10 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-grown",
                   "zone-overflow",
-                  "zone-icon-unknown"
+                  "zone-icon-unknown",
+                  "zone-grown"
                 ]
               },
               "entityId": {
@@ -394,6 +401,9 @@
               "center",
               "left"
             ]
+          },
+          "autoSize": {
+            "type": "boolean"
           },
           "collapsed": {
             "type": "boolean"
@@ -458,7 +468,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.39.1"
       },
       "status": "partial",
       "unresolved": [],
