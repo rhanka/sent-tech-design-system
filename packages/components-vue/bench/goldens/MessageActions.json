@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "MessageActions",
+  "sourceRevision": "a8201915d68d7d7a1f97397ec4ed3ca9ff1e90af",
+  "source": "src/MessageActions.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Actions du message\" class=\"st-messageActions st-messageActions--hoverOnly\" role=\"group\"><button aria-label=\"Reply\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">Reply</button><button aria-label=\"Forward\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">Forward</button></div>"
+    },
+    {
+      "id": "icon-only",
+      "html": "<div aria-label=\"Actions du message\" class=\"st-messageActions\" role=\"group\"><button aria-label=\"pin\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">Pin</button><button aria-label=\"archive\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">Archive</button></div>"
+    },
+    {
+      "id": "danger-disabled",
+      "html": "<div aria-label=\"Actions du message\" class=\"st-messageActions st-messageActions--hoverOnly\" role=\"group\"><button aria-label=\"Delete\" class=\"st-iconButton st-iconButton--sm st-iconButton--danger\" disabled=\"\" type=\"button\">Delete</button></div>"
+    },
+    {
+      "id": "label-and-icon",
+      "html": "<div aria-label=\"Actions du message\" class=\"st-messageActions st-messageActions--hoverOnly consumer\" data-bench=\"actions\" role=\"group\" style=\"color:red;\"><button aria-label=\"Edit\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">Pen</button><button aria-label=\"No id\" class=\"st-iconButton st-iconButton--sm st-iconButton--ghost\" type=\"button\">No id</button></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div aria-label=\"Actions du message\" class=\"st-messageActions st-messageActions--hoverOnly\" role=\"group\"></div>"
+    }
+  ],
+  "sourceSha256": "51e0cec340c5aab6139ee6b16c1b507fd63cdc6d78681b1dea70ab67efdfb712",
+  "fixtureSha256": "cb453d78a96796c876e1ce13f41270a1d1250d00ece633f46ab015d1e212124d",
+  "publicExports": [
+    {
+      "name": "MessageActions",
+      "typeOnly": false
+    },
+    {
+      "name": "MessageActionsProps",
+      "typeOnly": true
+    },
+    {
+      "name": "MessageAction",
+      "typeOnly": true
+    },
+    {
+      "name": "MessageActionVariant",
+      "typeOnly": true
+    }
+  ]
+}
