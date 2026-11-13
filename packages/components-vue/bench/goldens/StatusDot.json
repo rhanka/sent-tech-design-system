@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "StatusDot",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "source": "src/StatusDot.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-statusDot\"><span aria-label=\"neutral\" class=\"st-statusDot__dot st-statusDot__dot--neutral\" role=\"img\" style=\"width:8px;height:8px;\"></span></span>"
+    },
+    {
+      "id": "variant-1",
+      "html": "<span class=\"st-statusDot\"><span aria-hidden=\"true\" class=\"st-statusDot__dot st-statusDot__dot--success st-statusDot__dot--pulse\" style=\"width:8px;height:8px;\"></span><span class=\"st-statusDot__label\">Online</span></span>"
+    },
+    {
+      "id": "variant-2",
+      "html": "<span class=\"st-statusDot\"><span aria-label=\"red\" class=\"st-statusDot__dot\" role=\"img\" style=\"width:1px;height:1px;background-color:red;\"></span></span>"
+    },
+    {
+      "id": "variant-3",
+      "html": "<span class=\"st-statusDot consumer\" data-bench=\"dot\"><span aria-label=\"error\" class=\"st-statusDot__dot st-statusDot__dot--error\" role=\"img\" style=\"width:8px;height:8px;\"></span></span>"
+    }
+  ],
+  "sourceSha256": "76e644f10b7501c1594a56da6c5fcf64f38d4b52c53de80bf85bb11c1ead7362",
+  "fixtureSha256": "551812797b2292319cca19d93b2b5e32b54a746c390fadc7220daf201b739027",
+  "publicExports": [
+    {
+      "name": "StatusDot",
+      "typeOnly": false
+    },
+    {
+      "name": "StatusDotProps",
+      "typeOnly": true
+    },
+    {
+      "name": "StatusDotTone",
+      "typeOnly": true
+    }
+  ]
+}
