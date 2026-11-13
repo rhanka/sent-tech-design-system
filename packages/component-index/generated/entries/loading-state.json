@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LoadingState.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LoadingState.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Full loading indicator or skeleton.",
     "fr": "Indicateur de chargement plein ou skeleton."
   },
-  "digest": "sha256:11984537f25d8532fddeca6e03c22da610462762176855576769234b967a0ec9",
+  "digest": "sha256:5473724ee116f3922e3a986f46e6fce75f8ecee03b96cac96328dedd3d1b5674",
   "displayName": "LoadingState",
   "format": "component-entry/v1",
   "frameworks": [

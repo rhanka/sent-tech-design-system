@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:7a843b89cad7eda9a5c5fd4f54857d7079748575053ff6be4c4d232f095212d9",
-  "entryDigest": "sha256:11984537f25d8532fddeca6e03c22da610462762176855576769234b967a0ec9",
+  "digest": "sha256:a764ac37f4826330c216b33b070a9799c1e8fa7798df7670fe25d8fd64afaa4c",
+  "entryDigest": "sha256:5473724ee116f3922e3a986f46e6fce75f8ecee03b96cac96328dedd3d1b5674",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -37,7 +37,7 @@
         "declarationPath": "packages/components-angular/dist/LoadingState.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LoadingStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -82,11 +82,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LoadingStateProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

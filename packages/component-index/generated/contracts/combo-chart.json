@@ -1,8 +1,8 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:1defccf4977752d0766bf1e2f474f4a61bf60992c353d0a95c2b8d3bd7af8df7",
-  "entryDigest": "sha256:bdb4f4225d3c66afd94f2774770405e1ffadbe9390c35670825282c0c7ab3750",
+  "digest": "sha256:91143327b05224c2e76af2ddd88578ff799f37c7d192300d195e0c0be44207bc",
+  "entryDigest": "sha256:84306ade469b5c1416d96b741fe349fdd074e78bcb8c599880c4c9000b9f7b58",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -377,7 +377,7 @@
         "declarationPath": "packages/components-angular/dist/ComboChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ComboChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -777,7 +777,7 @@
         "declarationPath": "packages/components-react/dist/ComboChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ComboChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

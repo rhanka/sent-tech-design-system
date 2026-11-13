@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:d7fddd3667a6702a70045f4994ce472b01d7ef0f80387a0d0f6616a6bedd9e81",
-  "entryDigest": "sha256:1556537d63ceb9d7f1c270e0ead66acca49b6895c2b341ec48f3ecf36f507f08",
+  "digest": "sha256:e62542915ea46b450b041aca9acc57fbf011da5001556a6ca85260c7a0661341",
+  "entryDigest": "sha256:3fb1f1d5eb2d38f1dac13ebfe6b765b0908a3b1680302e696998c62aafcd0a7a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/SelectableList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-react/dist/SelectableList.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectableListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

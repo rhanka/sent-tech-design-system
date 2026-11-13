@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:fbb7df2766a621fc7b7790f870e85c18067b943412c7e7a9a8de717c1b88a414",
-  "entryDigest": "sha256:bb97ccd378373dbb9e8bfda8440dbc910c714c9f6fe91783e32e9d4b35c521c8",
+  "digest": "sha256:10dc64586f59e16d6fdee296f88f3034df334498e49ea00d9fb27e1d23812033",
+  "entryDigest": "sha256:7c46484b9b73c8043079b43f32d655d43180a9a350766abf390fb11e0a33f7b4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/EventFeedPanel.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EventFeedPanelProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-react/dist/EventFeedPanel.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EventFeedPanelProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

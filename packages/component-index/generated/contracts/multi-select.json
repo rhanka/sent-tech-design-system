@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:42c35016e30285b221f8372df9bd6185139c0bc81269812da2f2ad7d3af2e041",
-  "entryDigest": "sha256:510627be9d47e54bad607e7c5a692627057af34ab209143f7ee536d149e53c6e",
+  "digest": "sha256:ec00fc0e11fc7526218f6e78a689949e784794701091fff09505879213b4b368",
+  "entryDigest": "sha256:b7eeac56eaee2253934b0f8b5136ebeb61a57b756dd38a6014b337e4741332d0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -155,7 +155,7 @@
         "declarationPath": "packages/components-angular/dist/MultiSelect.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MultiSelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -300,11 +300,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MultiSelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

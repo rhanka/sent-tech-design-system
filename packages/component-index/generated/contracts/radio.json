@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:0cc4d3e9b5116e2f6c79713d5fb1c1b5c906df0510b866343d7b5fb9cd2ff9a8",
-  "entryDigest": "sha256:6e2778238a19f578da93b40e7e353636704305082eb5cb8cfd4107ba835e700f",
+  "digest": "sha256:1320de971e0c79c5439cdf199757bb074505735302f055c91eb3a1f76088239d",
+  "entryDigest": "sha256:aa72ed47c10439fd932139ca65fd0f7f7c2da64a7f5e9c9b589304ef786c8930",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/Radio.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RadioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -132,11 +132,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RadioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

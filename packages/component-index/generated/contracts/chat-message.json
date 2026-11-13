@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:61d85fdf3c35b7b6e3b822397434c7e3845dccd184456deac3dbe88f3c863f11",
-  "entryDigest": "sha256:f11a21a15293d2804e90b0e3495dd8f98e598c84b98708d9628e404508e82f0b",
+  "digest": "sha256:45eb9d1ed64f99175b78bcb0dd6650530117c5ddc70b29681a6a72b57bdf835d",
+  "entryDigest": "sha256:bb61d4b766520f5747d9827eddaae88cfbb7af1b1e49bcc08b60a0732fca0c3d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -84,7 +84,7 @@
         "declarationPath": "packages/components-angular/dist/ChatMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -164,11 +164,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

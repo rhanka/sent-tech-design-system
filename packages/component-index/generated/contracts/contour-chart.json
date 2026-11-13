@@ -1,8 +1,8 @@
 {
   "componentId": "contour-chart",
   "contractSource": "derived",
-  "digest": "sha256:1884f990c76d6088f1a0bb335236a66db1585020f3df655961120837123db1c5",
-  "entryDigest": "sha256:e7ca7d21830ee72540efb4a9f70aa65f0191bdcbbbce167b787fd45ac5d6ad83",
+  "digest": "sha256:96a9b4748ea5e2c1c63004374fe5c97a20cf6c3c2fd5b36aee15c90f72a76b0c",
+  "entryDigest": "sha256:b25f7ba55c3128885dcbdb1fc2753434a0a1482082468d7c3f9f35ddf462b476",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -77,7 +77,7 @@
         "declarationPath": "packages/components-angular/dist/ContourChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ContourChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -165,7 +165,7 @@
         "declarationPath": "packages/components-react/dist/ContourChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ContourChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

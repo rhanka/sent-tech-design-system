@@ -1,8 +1,8 @@
 {
   "componentId": "col",
   "contractSource": "derived",
-  "digest": "sha256:64ba572bd1c425d1db1b20e1cd5140fe3c753e88ddcbab454ed2f84908765a1c",
-  "entryDigest": "sha256:62de206bca47f3d0d35d9ab004c9d0119eb177a653f7fdc46682f88bca55682e",
+  "digest": "sha256:1a8d558ddd860906ffc97cc042d1fdc1709b0a72fe4dfeb5cacbfeff2d8f8bbb",
+  "entryDigest": "sha256:d12a29b963b4e3e95de9e962579e54bed631f234dad3e68534364e8abdebbfba",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/Col.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -162,7 +162,7 @@
         "declarationPath": "packages/components-react/dist/Col.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:0cf17be1b524eef1b3295abe539c6e41b3e503a4344d7fae84e1d3e00e1f6867",
-  "entryDigest": "sha256:361b49384aea6a9fb0774140944efe843a0bb86919cd6cfef9edb3998e4ba6a0",
+  "digest": "sha256:3aca674044da97b5512bf68643cc2a397075bbbbecd389387400923dd3457947",
+  "entryDigest": "sha256:e131c369e8403005c45387526886613765c5b69926a524163c681fab0b9e2de8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -42,7 +42,7 @@
         "declarationPath": "packages/components-angular/dist/AspectRatio.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AspectRatioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -78,11 +78,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AspectRatioProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

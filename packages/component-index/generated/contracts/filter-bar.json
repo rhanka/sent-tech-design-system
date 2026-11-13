@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:9190fbb5f83cd85ada2dad9a2a46df69fa893c84b576a5fd8678788dfde217e2",
-  "entryDigest": "sha256:82902e2fea839db6a3d601057be4266981b16b7863781dc7a700aab95dcf2566",
+  "digest": "sha256:05fa845441d2d72c2129cf4d5e16613465b88af175937019cfad28580dc89939",
+  "entryDigest": "sha256:a73724ea89db2fabd601696f8f608cc06c01e6bd48401b55a41a1eb393433668",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -45,7 +45,7 @@
         "declarationPath": "packages/components-angular/dist/FilterBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FilterBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -89,11 +89,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FilterBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

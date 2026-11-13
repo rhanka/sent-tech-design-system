@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:abd2daa932a8bbb6e2b80da48053d94a0bc3cd2e450a90c564f1990152faabb3",
-  "entryDigest": "sha256:6921a23b13355a037b2609a54d4a202d70063f1251d30b8595e19e488141eb1d",
+  "digest": "sha256:7f69dba57e36dfc5d4d5bb7e2034320c03fe661a6943e3702d71b569eab0d039",
+  "entryDigest": "sha256:78e1d90a11bf01653a3236b3d37568b3d118360fc69c1605d46fb2b00d9dedfd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/ProgressBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ProgressBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -140,11 +140,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ProgressBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MediaContent.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MediaContent.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:28631a16c70a9703244e4f79d5092c67a9e1331af673c8eb0d1b21dc4a572849",
+  "digest": "sha256:9e640c97be3d41183a86cf4c127e529f0a70471f5fc99f1296b5ee727f294c5d",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

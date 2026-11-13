@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DivergentBarChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DivergentBarChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Divergent bars (positive, negative, neutral) around a shared zero axis.",
     "fr": "Barres divergentes positives, négatives et neutres autour d'un axe zéro."
   },
-  "digest": "sha256:fc43a3bd1acf8a725ec8affaeb9a58bfbe25419ce9ce8165603eb38a62d70c48",
+  "digest": "sha256:e550d6b589b18ee7551884faae51899ec3d38f30a55fef2f481aab6fdac94538",
   "displayName": "DivergentBarChart",
   "format": "component-entry/v1",
   "frameworks": [

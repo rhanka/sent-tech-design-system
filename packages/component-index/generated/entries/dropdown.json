@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Dropdown.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Dropdown.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Selection dropdown (listbox).",
     "fr": "Liste déroulante de sélection (listbox)."
   },
-  "digest": "sha256:a47ba87e2efba258b53a95ca80553a809d74c4a2aee12fd9668b234e1c82e65f",
+  "digest": "sha256:2cdd8ec21797de2430e0018a7b3ee9a8c2a16028cf1b382d7a50e6a672a612ba",
   "displayName": "Dropdown",
   "format": "component-entry/v1",
   "frameworks": [

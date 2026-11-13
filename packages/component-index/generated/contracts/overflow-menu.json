@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:4e970aaf78634a3bdac43ea6a348cc5c612f4815ec747333f774849b9b0c9daf",
-  "entryDigest": "sha256:b2b653f3858a404ee43c71f825d28c6f335bf142a0d5244861c3928a57a8f7ea",
+  "digest": "sha256:71e07da7d2f2f60a7eaa178c2ddc8d6a8974a08b1b4ba49c798474b621aff9ed",
+  "entryDigest": "sha256:dc550735ec4e98ae6d574079365bc0ccbac1253ac6543f4619c8310fb974f948",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -31,6 +31,12 @@
               }
             ]
           }
+        },
+        {
+          "name": "selectPath",
+          "payload": {
+            "$ref": "#/$defs/MenuSelectPath"
+          }
         }
       ],
       "limitations": [
@@ -41,6 +47,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -54,6 +76,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -106,6 +131,25 @@
             },
             "required": [
               "label"
+            ],
+            "type": "object"
+          },
+          "MenuSelectPath": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
             ],
             "type": "object"
           }
@@ -147,6 +191,13 @@
               "bottom-start",
               "bottom-end"
             ]
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "type": "object"
@@ -173,11 +224,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6d512c1fa41abd52f7f1c1fc9b3b242f36cac9c267db07493dfdfcd3da478b3f",
+        "declarationDigest": "sha256:6008e77fb1a81b86ce3c03fda0c65d81401c2c90740d493c0f6dc7683cf3befb",
         "declarationPath": "packages/components-angular/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OverflowMenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -188,19 +239,19 @@
       "dropped": [
         {
           "kind": "node",
-          "name": "ActionItem.icon",
+          "name": "MenuActionItem.icon",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "node",
-          "name": "ActionItem.label",
+          "name": "MenuActionItem.label",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "function",
-          "name": "ActionItem.onClick",
+          "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
         },
@@ -217,19 +268,62 @@
           "sourceType": "ReactNode"
         }
       ],
-      "events": [],
+      "events": [
+        {
+          "name": "onOpenChange",
+          "payload": {
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "items": false,
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "type": "array"
+          }
+        }
+      ],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "passthrough": {
         "base": "React.HTMLAttributes<HTMLDivElement>",
-        "omitted": []
+        "omitted": [
+          "onSelect"
+        ]
       },
       "props": {
         "$defs": {
-          "ActionItem": {
+          "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -238,6 +332,9 @@
               },
               "id": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -274,7 +371,7 @@
               },
               "items": {
                 "items": {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 "type": "array"
               },
@@ -297,7 +394,7 @@
             "items": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 {
                   "$ref": "#/$defs/MenuDividerItem"
@@ -319,6 +416,14 @@
               "bottom-start",
               "bottom-end"
             ]
+          },
+          "submenuSide": {
+            "description": "Forwarded to the inner `Menu`.",
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -329,11 +434,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

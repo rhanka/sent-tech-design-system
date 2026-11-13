@@ -1,8 +1,8 @@
 {
   "componentId": "marimekko-chart",
   "contractSource": "derived",
-  "digest": "sha256:3fd796762211afca428d500855b722422e559867d139d53f5f7200011df530a6",
-  "entryDigest": "sha256:b191d2b4ef646aac795eda13e66c2ef612f004c1d1d3fcbd0b85175cd25f4b1b",
+  "digest": "sha256:33c1e53a10bb37c71d72097c717bd0967e28eaff3ad08578e8133234295f6bdb",
+  "entryDigest": "sha256:753ba0c017773fe7364c72fa85c849bfc045697a5f02596321251c73726cbce1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -96,7 +96,7 @@
         "declarationPath": "packages/components-angular/dist/MarimekkoChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MarimekkoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -203,7 +203,7 @@
         "declarationPath": "packages/components-react/dist/MarimekkoChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MarimekkoChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
