@@ -18,3 +18,7 @@ export type BareProps = {
   label?: string;
 };
 export declare const Bare: DefineComponentLike<[], Readonly<{}>>;
+
+export type SceneWidgetProps = { label: string };
+declare const _default: DefineComponentLike<[], Readonly<{ onSelect?: (event: { entityId: string }) => void }>>;
+export default _default;

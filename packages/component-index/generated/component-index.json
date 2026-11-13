@@ -1554,7 +1554,7 @@
       "deliveryChannels": [
         "tokens"
       ],
-      "digest": "sha256:57f15e77c93c01036058558cb1138b5a501a358fb773b2ac43c78d40e4f46115",
+      "digest": "sha256:1b9bbad49ff07ed3288c9046b8ccceacaa0e44dafe260729f33d7fc4b157164d",
       "frameworks": [],
       "parity": {
         "angular": "no-counterpart",
@@ -1575,15 +1575,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a57dc54f29aa661c11621117ac5a195f9a60da681548e8742035571992b6740f",
+      "digest": "sha256:1cf0df01a6277b2eae8153cad5ad91266b450a9fa6f5f790ebd2aed126ff4ac0",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-card.json",
       "producerId": "sentropic-ds",
@@ -1599,15 +1600,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:face966bb8218d969ef8ee2e23ae17150eaedb3b766bcdbab4f8f4760c3df227",
+      "digest": "sha256:592bcd46508517a634a7149f627e2f8521177d66e3ef13b275cd0b265844ada0",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-scene-figure.json",
       "producerId": "sentropic-ds",
@@ -1623,15 +1625,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b3a92cb58abbbfb5eadd6217c5a756a99a5ca250962723bd6a026bb1bca11fb7",
+      "digest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-zone.json",
       "producerId": "sentropic-ds",
@@ -2160,7 +2163,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:912683107e720c08b0e79376f538219458b55bcaffa875eb8e5d065678c9212c",
+      "digest": "sha256:9738c9bde0a51b9e17cab54aaf5822c3efd62c7a21d4f4d36c39dc6745a6951c",
       "frameworks": [
         "svelte",
         "react",
@@ -5787,6 +5790,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:308d4904921f246bc0f0d36edc1b2a2bd4b82476ba141641836591e6014643ae",
-  "sourceCommit": "24d5c8f55589d1670ed7fd41f0753447241c368e"
+  "registryRevision": "sha256:bbaa0513a05ebad1e3cc91e446953cb510200ddc08af4f463c1636b3b9008285",
+  "sourceCommit": "48ff46855536648eaca1c15cb79b056a502c041c"
 }

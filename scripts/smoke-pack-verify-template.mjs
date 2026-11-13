@@ -230,6 +230,11 @@ async function verifyReact() {
 async function verifyVue() {
   const mod = await import("@sentropic/design-system-vue");
   assertModuleExports("@sentropic/design-system-vue", mod, minExportCounts["@sentropic/design-system-vue"] ?? 0);
+  for (const subpath of ["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn"]) {
+    if (!import.meta.resolve(`@sentropic/design-system-vue/${subpath}`).endsWith("/index.js")) {
+      throw new Error(`Vue subpath must resolve: ${subpath}`);
+    }
+  }
 }
 
 // Angular ships "partial" (linked) compilation output (compilationMode:
