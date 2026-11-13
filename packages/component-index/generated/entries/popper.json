@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Popper.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Positions a floating panel next to an anchor: flip, shift, arrow.",
     "fr": "Positionne un panneau flottant près d'une ancre : flip, shift, arrow."
   },
-  "digest": "sha256:5b7aaad90c09bccd849825c47d078a852d341ac3e2dcaf15b36ef1cd8f937a8e",
+  "digest": "sha256:407e048b3662c75ebe8a7d29ed35d321f742c468ad9588225c53492d3e3d161c",
   "displayName": "Popper",
   "format": "component-entry/v1",
   "frameworks": [

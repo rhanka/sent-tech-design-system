@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:5e4b184ca4f4bdbbb8c1b892c17b6598cf2755062821f92020b8001caaa248c1",
-  "entryDigest": "sha256:27d6ab2472ae121032fe56d49df2c91bed8a6393efe7b64d68991f145ee08153",
+  "digest": "sha256:5101f79c3cb55db978e2fbcb2efdbdc111402f447a06b5f56b69574bf2d90680",
+  "entryDigest": "sha256:f63d9c1982d7465a0d861eae56a78f8aac2ac0e9a4344e4fd6ca980b55b572f3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4111,7 +4111,7 @@
         "declarationPath": "packages/components-vue/dist/Icon.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

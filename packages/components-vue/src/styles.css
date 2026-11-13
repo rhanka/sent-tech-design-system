@@ -4066,6 +4066,93 @@
     text-transform: uppercase;
   }
 
+  /* Cascade marker: the root panel escapes the root scroll container, so it
+     must not clip the fixed sub-menu panels; both root and sub-menu panels
+     use the popover shadow chain (spec §5, D12). */
+  .st-menu--hasCascade {
+    box-shadow: var(
+      --st-component-popover-shadow,
+      var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14))
+    );
+    overflow: visible;
+  }
+
+  .st-menu__scroll {
+    display: grid;
+    max-height: var(--st-menu-maxHeight, 80vh);
+    overflow-y: auto;
+  }
+
+  .st-menu--submenu {
+    box-shadow: var(
+      --st-component-popover-shadow,
+      var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14))
+    );
+    max-height: var(--st-menu-maxHeight, 80vh);
+    overflow-y: auto;
+    position: fixed;
+    z-index: calc(var(--st-component-popover-zIndex, 80) + 2);
+  }
+
+  /* Sub-menu inside the popover panel restores its surface vs the neutralised
+     nesting (React `styles.css:4104` pattern, spec §5). */
+  .st-menuPopover .st-menu--submenu {
+    background: var(--st-component-menu-background, var(--st-semantic-surface-raised));
+    border: 1px solid var(--st-component-menu-border, var(--st-semantic-border-subtle));
+    border-radius: var(--st-component-menu-radius, 0.375rem);
+  }
+
+  .st-menu__itemWrap {
+    position: relative;
+  }
+
+  /* Selected parent line / `selected: true`: existing selectableRow tokens,
+     same no-color-mix fallback strategy as SelectableRow (no accent bar). */
+  .st-menu__item--selected {
+    background: var(
+      --st-component-selectableRow-selectedBackground,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
+    );
+    color: var(
+      --st-component-selectableRow-selectedText,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 78%, black)
+    );
+  }
+
+  @supports not (color: color-mix(in oklch, red, blue)) {
+    .st-menu__item--selected {
+      background: var(
+        --st-component-selectableRow-selectedBackground,
+        var(--st-semantic-surface-subtle, #eef2ff)
+      );
+      color: var(
+        --st-component-selectableRow-selectedText,
+        var(--st-semantic-text-primary, #0f172a)
+      );
+    }
+  }
+
+  .st-menu__itemChevron {
+    align-items: center;
+    display: inline-flex;
+    flex: 0 0 auto;
+    justify-content: center;
+    line-height: 1;
+  }
+
+  .st-menu__itemChevron--end {
+    margin-left: auto;
+  }
+
+  .st-menu__itemChevron--start {
+    margin-right: auto;
+    order: -1;
+  }
+
+  .st-menu__itemChevron--start + .st-menu__itemIcon {
+    order: 0;
+  }
+
 .st-menuPopover {
     background: var(--st-component-menu-background, var(--st-semantic-surface-raised, #ffffff));
     border: 1px solid var(--st-component-menu-border, var(--st-semantic-border-subtle));
@@ -4089,6 +4176,17 @@
   }
 
   
+  /* A transformed host is the fixed submenus' containing block. Let those
+     panels escape it; only the inner root list owns cascade scrolling. */
+  .st-menuPopover--hasCascade {
+    overflow: visible;
+  }
+
+  .st-menuPopover--hasCascade .st-menu--hasCascade,
+  .st-menuPopover--hasCascade .st-menu__scroll {
+    max-height: inherit;
+  }
+
   .st-menuPopover--alignEnd {
     
     transform: translateX(-100%);
@@ -4835,6 +4933,30 @@
     padding: 0.45rem 0.75rem 0.25rem;
     text-transform: uppercase;
     list-style: none;
+  }
+
+  .st-overflowMenu__item--selected {
+    background: var(
+      --st-component-selectableRow-selectedBackground,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 12%, transparent)
+    );
+    color: var(
+      --st-component-selectableRow-selectedText,
+      color-mix(in oklch, var(--st-semantic-action-primary, #2563eb) 78%, black)
+    );
+  }
+
+  @supports not (color: color-mix(in oklch, red, blue)) {
+    .st-overflowMenu__item--selected {
+      background: var(
+        --st-component-selectableRow-selectedBackground,
+        var(--st-semantic-surface-subtle, #eef2ff)
+      );
+      color: var(
+        --st-component-selectableRow-selectedText,
+        var(--st-semantic-text-primary, #0f172a)
+      );
+    }
   }
 
 .st-pagination {
