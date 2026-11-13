@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "DashboardFilterBar",
+  "sourceRevision": "0be6a3108a16f6c50bf4635216ed4689a46ba369",
+  "source": "src/lib/DashboardFilterBar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-dashboardFilterBar\"><div class=\"st-search st-search--md\"><label class=\"st-field__label\" for=\"st-search-1\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-1\" type=\"search\" value=\"\"></div></div>"
+    },
+    {
+      "id": "date-range",
+      "html": "<div class=\"st-dashboardFilterBar\"><div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-1\"><span class=\"st-field__label\">Period</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-1\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div></div>"
+    },
+    {
+      "id": "relative",
+      "html": "<div class=\"st-dashboardFilterBar\"><div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Range</span><select class=\"st-select st-select--md\" id=\"generated-1\"><option value=\"\">—</option><option value=\"-7d|now|7 days\">7 days</option></select></label></div></div>"
+    },
+    {
+      "id": "variable",
+      "html": "<div class=\"st-dashboardFilterBar\"><div aria-label=\"Region\" class=\"st-field\" role=\"group\"><span class=\"st-field__label\">Region</span><span class=\"st-multiSelect st-multiSelect--md\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-multiSelect__trigger\" type=\"button\"><span class=\"st-multiSelect__placeholder\">Sélectionner des éléments</span><span aria-hidden=\"true\" class=\"st-multiSelect__caret\"><svg aria-hidden=\"true\" class=\"lucide st-multiSelect__caretIcon lucide-chevron-down-icon lucide-chevron-down st-multiSelect__caretIcon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span><span class=\"st-visually-hidden\">Afficher les options</span></button></span></div></div>"
+    },
+    {
+      "id": "export-chips",
+      "html": "<div class=\"st-dashboardFilterBar\"><div class=\"st-search st-search--md\"><label class=\"st-field__label\" for=\"st-search-2\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-2\" type=\"search\" value=\"\"></div><button class=\"st-button st-button--secondary st-button--md\" type=\"button\">Export</button><div aria-label=\"Filtres actifs\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"><span aria-label=\"Filtre region\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">region</span><span class=\"st-filterPill__value\">North</span></span><button aria-label=\"Retirer le filtre region\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div></div></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-dashboardFilterBar consumer\" data-bench=\"filterbar\"><div class=\"st-search st-search--md\"><label class=\"st-field__label\" for=\"st-search-3\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-3\" type=\"search\" value=\"\"></div></div>"
+    }
+  ],
+  "sourceSha256": "d900f1ea79038b8a12ef88a2cc6cd700c293f7b27cabf4cb898da69b8dfe2011",
+  "fixtureSha256": "2aebeb038e2b9ff392ee7cdf7fcd5f111f8878ea070ca8d2d772a7083ca31367",
+  "publicExports": [
+    {
+      "name": "DashboardFilterBar",
+      "typeOnly": false
+    },
+    {
+      "name": "DashboardFilterBarProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ActiveFilter",
+      "typeOnly": true
+    },
+    {
+      "name": "FilterControl",
+      "typeOnly": true
+    },
+    {
+      "name": "ExportConfig",
+      "typeOnly": true
+    }
+  ]
+}
