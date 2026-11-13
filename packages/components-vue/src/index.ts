@@ -487,14 +487,14 @@ export { CheckboxGroup } from "./CheckboxGroup.js";
 export type { CheckboxGroupProps, CheckboxGroupOption } from "./CheckboxGroup.js";
 export { RadioGroup } from "./RadioGroup.js";
 export type { RadioGroupProps, RadioGroupOption } from "./RadioGroup.js";
-export { Typography } from "./Typography.js";
+export { default as Typography } from "./Typography.vue";
 export type {
   TypographyProps,
   TypographyVariant,
   TypographyWeight,
   TypographyTone,
   TypographyAlign,
-} from "./Typography.js";
+} from "./Typography.vue";
 export { Collapsible } from "./Collapsible.js";
 export type { CollapsibleProps } from "./Collapsible.js";
 export { Stepper } from "./Stepper.js";
