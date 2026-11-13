@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:2db080c8547a9e0234af915cf621489af629790a4401fc0f472c496eeb2b4f74",
-  "entryDigest": "sha256:fc4521579c6f1aeae78f2ed8abce4644783a4aab7dea2de56985838b0a912e47",
+  "digest": "sha256:d033bd256219cdc2dcad42425f2556541c5eeadffb5b6e3cf2f22515387aee77",
+  "entryDigest": "sha256:806633aa45a85e9d0921e8fad346cbbcc42bd8ea8095798141d31394d711a83f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -254,7 +254,7 @@
         "declarationPath": "packages/components-vue/dist/Row.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RowProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.1"
       },
       "status": "complete",
       "unresolved": [],

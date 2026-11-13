@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AreaRangeChart.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Filled band between a low and a high series along an X axis (e.g. daily temperature range, stock min/max).",
     "fr": "Bande remplie entre une série basse et une série haute le long d'un axe X (ex. fourchette de température jour par jour, min/max boursier)."
   },
-  "digest": "sha256:442d56f52b3291d3d4b26cc7bf70135a42003606b211ba5a257d3db902c38aec",
+  "digest": "sha256:3ccceb999113187647dbf52dadbc037678eaf0068b4a128c3e067decca9d5188",
   "displayName": "AreaRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

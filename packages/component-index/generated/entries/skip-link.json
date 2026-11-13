@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SkipLink.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:35fdae83882080436e526b9bbff35dc5721faed4e87f657b9c8d4772d585a1d6",
+  "digest": "sha256:b48ed5856e9f7278e09a4a2e9b2ce9624b3f7e784895303583da97d855b5186b",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toast.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:2b3b682e6897536fb13b4c69eb8203875fa71188680ebdc5488eb0a662a0ebf7",
+  "digest": "sha256:50ec219dbdbe1e01a8dc68570f447d47139319ab95d54c3ad022a209ba458222",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [
