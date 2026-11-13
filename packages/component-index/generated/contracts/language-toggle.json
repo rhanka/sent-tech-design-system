@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:1fce3b343697288f35e6ac4fd75cdfa23689445aa24fa052c7fbf1e675782e63",
-  "entryDigest": "sha256:9c08afea7bb57f3fe5996926f9cea41a449ebd1683a392cf11215705ceaebefa",
+  "digest": "sha256:3b2b35ef459b35856c0814b3977e1561eff8ab0200576b3531dc5fcdd649a775",
+  "entryDigest": "sha256:08aa4d755be34623c6bf5040934a8a07f2d8d08a31285b7f7f347a94383450ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
