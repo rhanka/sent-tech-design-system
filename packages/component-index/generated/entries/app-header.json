@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AppHeader.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact application header with menu trigger, navigation, and actions.",
     "fr": "En-tête applicatif compact avec burger, navigation et zone d’actions."
   },
-  "digest": "sha256:9574d3d10e192b3291ddab9ba2e5b1b69a213faf297466e9c19ddc2192d09ccd",
+  "digest": "sha256:d2967b9c8cc875d5d1ffec66a37cef2f35a6c6a5b48bb7cc83c64495e5d773a1",
   "displayName": "AppHeader",
   "format": "component-entry/v1",
   "frameworks": [
