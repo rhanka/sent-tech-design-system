@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:fac9b61e28d50515389096a6b3f014f0501f0ca51d96efe4c4a86b598f1f4604",
-  "entryDigest": "sha256:aa9fa6131e464dde4bd7d5880f6769ee7499d9d30fa7d4ba7e2ffc715808eb22",
+  "digest": "sha256:0cc9ecb2d66974b3afc9ebb82b42b80931e038f3a6e6774df8d5eb4c4e5f1c50",
+  "entryDigest": "sha256:67e8aad1f1c5cc79a7b9d86f4f0cfe254779878cc458a36b6d418030952debe1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -205,7 +205,7 @@
         "declarationPath": "packages/components-svelte/dist/Toggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToggleProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

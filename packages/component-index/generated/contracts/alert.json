@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:cce4d97eb22f6c5ee5dd50859868ee5813b5b5f5a32b324f9d77c97b0a2ac905",
-  "entryDigest": "sha256:1c3cf308e462a4e20831d3ffecec8349b133e8391919615ad58dce9dde669694",
+  "digest": "sha256:30564838bced7c779ba2528cb451ca65e4aeb5e99fcb5419d8b3e9819395c7bd",
+  "entryDigest": "sha256:8de629d9f963175d397aa8c225473902f63f4b7fa70704206f868f7ff9f8bde9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/Alert.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AlertProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
