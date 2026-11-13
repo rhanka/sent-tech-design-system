@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Slider",
+  "sourceRevision": "d120bfa1b6668be25d4da3cf986e1d0c1ef78a7d",
+  "source": "src/Slider.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><div class=\"st-slider__header\"><span class=\"st-field__label\">Volume</span><output aria-live=\"polite\" class=\"st-slider__value\">50</output></div><span class=\"st-slider st-slider--md\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 50%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 50%\"><span class=\"st-slider__tooltip\">50</span></span><input aria-label=\"Volume\" class=\"st-slider__input\" max=\"100\" min=\"0\" step=\"1\" type=\"range\" value=\"50\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span></div>"
+    },
+    {
+      "id": "value-alias",
+      "html": "<div class=\"st-field\"><div class=\"st-slider__header\"><span class=\"st-field__label\">Steps</span><output aria-live=\"polite\" class=\"st-slider__value\">25</output></div><span class=\"st-slider st-slider--md\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 25%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 25%\"><span class=\"st-slider__tooltip\">25</span></span><input aria-label=\"Steps\" class=\"st-slider__input\" max=\"100\" min=\"0\" step=\"5\" type=\"range\" value=\"25\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span></div>"
+    },
+    {
+      "id": "invalid-disabled",
+      "html": "<div class=\"st-field\"><div class=\"st-slider__header\"><span class=\"st-field__label\">Bad</span><output aria-live=\"polite\" class=\"st-slider__value\">80%</output></div><span class=\"st-slider st-slider--lg\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 80%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 80%\"><span class=\"st-slider__tooltip\">80%</span></span><input aria-invalid=\"true\" aria-label=\"Bad\" class=\"st-slider__input\" disabled=\"\" max=\"100\" min=\"0\" step=\"1\" type=\"range\" value=\"80\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span><span class=\"st-field__error\">Invalid</span></div>"
+    },
+    {
+      "id": "helper-hide",
+      "html": "<div class=\"st-field\"><div class=\"st-slider__header\"></div><span class=\"st-slider st-slider--md\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 10%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 10%\"></span><input class=\"st-slider__input\" max=\"100\" min=\"0\" step=\"1\" type=\"range\" value=\"10\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span><span class=\"st-field__help\">Pick one</span></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-field consumer\" data-bench=\"slider\" style=\"color:red;\"><div class=\"st-slider__header\"><span class=\"st-field__label\">Custom</span><output aria-live=\"polite\" class=\"st-slider__value\">33</output></div><span class=\"st-slider st-slider--md\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 33%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 33%\"><span class=\"st-slider__tooltip\">33</span></span><input aria-label=\"Custom\" class=\"st-slider__input\" max=\"100\" min=\"0\" step=\"1\" type=\"range\" value=\"33\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span></div>"
+    },
+    {
+      "id": "clamped",
+      "html": "<div class=\"st-field\"><div class=\"st-slider__header\"><span class=\"st-field__label\">Clamped</span><output aria-live=\"polite\" class=\"st-slider__value\">100</output></div><span class=\"st-slider st-slider--md\"><span aria-hidden=\"true\" class=\"st-slider__bounds\">0</span><span class=\"st-slider__track\"><span class=\"st-slider__fill\" style=\"--st-slider-fill: 100%\"></span><span aria-hidden=\"true\" class=\"st-slider__thumb\" style=\"left: 100%\"><span class=\"st-slider__tooltip\">100</span></span><input aria-label=\"Clamped\" class=\"st-slider__input\" max=\"100\" min=\"0\" step=\"1\" type=\"range\" value=\"100\"></span><span aria-hidden=\"true\" class=\"st-slider__bounds\">100</span></span></div>"
+    }
+  ],
+  "sourceSha256": "14bbd66b6e1e93de74170cd0971d506ae68fe30d826eef3d1b75f94ffeb5fa1a",
+  "fixtureSha256": "91f2101edff19e91db38dbe71d13f544d6a207c26b9a718947beaa69b0d68993",
+  "publicExports": [
+    {
+      "name": "Slider",
+      "typeOnly": false
+    },
+    {
+      "name": "SliderProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SliderSize",
+      "typeOnly": true
+    }
+  ]
+}

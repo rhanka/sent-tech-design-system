@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "Stack",
+  "sourceRevision": "a1da193194a4beabc494194ac8f71d9df14fc206",
+  "source": "src/Stack.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-2, 0.5rem);\"><span>A</span><span>B</span></div>"
+    },
+    {
+      "id": "aligned",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:var(--st-spacing-4, 1rem);\">Items</div>"
+    },
+    {
+      "id": "as-section",
+      "html": "<section class=\"st-flex st-stack consumer\" data-bench=\"stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-1, 0.25rem);\">Section</section>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;\"></div>"
+    }
+  ],
+  "sourceSha256": "975a508a50801d5187f66e4b8e5e9b6e2ed673de126e9996ab6a3e74ccfcc361",
+  "fixtureSha256": "8c27038ef55c437d33565f0df0516b1961cb18ca400678dffb953cc264de63f2",
+  "publicExports": [
+    {
+      "name": "Stack",
+      "typeOnly": false
+    },
+    {
+      "name": "StackProps",
+      "typeOnly": true
+    }
+  ]
+}
