@@ -1,10 +1,13 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type LanguageOption = {
   value: string;
-  label: unknown;
+
+  /** @slot option-label */
+  label?: unknown;
 };
 
 export type LanguageSelectorProps = {
@@ -23,16 +26,20 @@ const emit = defineEmits<{ change: [value: string] }>();
 const current = computed(() =>
   props.options.find((opt) => opt.value === props.value) ?? props.options[0],
 );
+defineSlots<{
+  'option-label'?: (scope: { option: LanguageOption | undefined }) => unknown;
+  'current-label'?: (scope: { option: LanguageOption | undefined }) => unknown;
+}>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-languageSelector', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-languageSelector', props.class)) }" >
     <button type="button" class="st-languageSelector__trigger">
-      <span class="st-languageSelector__current">{{ current?.label }}</span>
+      <span class="st-languageSelector__current"><slot v-if="$slots['current-label']" name="current-label" :option="current" /><template v-else>{{ scalarContent(current?.label) }}</template></span>
     </button>
     <ul v-if="props.open" class="st-languageSelector__menu">
       <li v-for="option in props.options" :key="option.value">
-        <button type="button" :class="classNames('st-languageSelector__option', option.value === props.value && 'st-languageSelector__option--active')" @click="emit('change', option.value)">{{ option.label }}</button>
+        <button type="button" :class="classNames('st-languageSelector__option', option.value === props.value && 'st-languageSelector__option--active')" @click="emit('change', option.value)"><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(option.label) }}</template></button>
       </li>
     </ul>
   </div>

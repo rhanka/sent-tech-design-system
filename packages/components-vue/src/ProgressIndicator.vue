@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -14,7 +15,11 @@ export interface ProgressIndicatorItem {
   id?: string;
   /** Svelte-canonical alias for the React/Vue `id`. */
   value?: string;
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
+
+  /** @slot item-description */
   description?: unknown;
   status?: ProgressIndicatorStatus;
 }
@@ -40,13 +45,17 @@ const resolvedOrientation = computed(() => (props.vertical ? 'vertical' : props.
 function itemStatus(item: ProgressIndicatorItem): ProgressIndicatorStatus {
   return item.status ?? 'upcoming';
 }
+defineSlots<{
+  'item-description'?: (scope: { item: ProgressIndicatorItem; index: number }) => unknown;
+  'item-label'?: (scope: { item: ProgressIndicatorItem; index: number }) => unknown;
+}>();
 </script>
 
 <template>
   <ol
-    v-bind="$attrs"
+    v-bind="{ ...($attrs), class: (classNames('st-progressIndicator', `st-progressIndicator--${resolvedOrientation}`, props.class)) }"
     :aria-label="props.label"
-    :class="classNames('st-progressIndicator', `st-progressIndicator--${resolvedOrientation}`, props.class)"
+
   >
     <li
       v-for="(item, index) in props.items"
@@ -64,8 +73,8 @@ function itemStatus(item: ProgressIndicatorItem): ProgressIndicatorStatus {
         <span v-if="index !== props.items.length - 1" class="st-progressIndicator__connector" />
       </span>
       <span class="st-progressIndicator__text">
-        <span class="st-progressIndicator__label">{{ item.label }}</span>
-        <span v-if="item.description" class="st-progressIndicator__description">{{ item.description }}</span>
+        <span class="st-progressIndicator__label"><slot v-if="$slots['item-label']" name="item-label" :item="item" :index="index" /><template v-else>{{ scalarContent(item.label) }}</template></span>
+        <span v-if="$slots['item-description'] || item.description" class="st-progressIndicator__description"><slot v-if="$slots['item-description']" name="item-description" :item="item" :index="index" /><template v-else>{{ scalarContent(item.description) }}</template></span>
       </span>
     </li>
   </ol>

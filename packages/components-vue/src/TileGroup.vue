@@ -7,9 +7,15 @@ import { scalarContent } from './slotContent.js';
 export interface TileGroupItem {
   value: string;
   /** Libellé du tile (canonique Svelte). */
+
+  /** @slot item-label */
   label?: unknown;
   /** @deprecated Alias de `label` (compat). Utilisez `label`. */
+
+  /** @slot item-label */
   title?: unknown;
+
+  /** @slot item-description */
   description?: unknown;
   disabled?: boolean;
 }
@@ -34,7 +40,7 @@ function change(event: Event) { emit('update:modelValue', (event.target as HTMLI
 </script>
 
 <template>
-  <fieldset v-bind="$attrs" :class="classNames('st-tileGroup', props.disabled && 'st-tileGroup--disabled', props.class)">
+  <fieldset v-bind="{ ...($attrs), class: (classNames('st-tileGroup', props.disabled && 'st-tileGroup--disabled', props.class)) }" >
     <legend v-if="props.legend || $slots.legend" :class="classNames('st-tileGroup__legend', props.legendHidden && 'st-tileGroup__legend--hidden')"><slot v-if="$slots['legend']" name="legend" /><template v-else>{{ scalarContent(props.legend) }}</template></legend>
     <div class="st-tileGroup__items">
       <label v-for="(item, index) in props.items" :key="item.value" :class="classNames('st-tileGroup__tile', item.value === props.value && 'st-tileGroup__tile--checked', item.disabled && 'st-tileGroup__tile--disabled')">

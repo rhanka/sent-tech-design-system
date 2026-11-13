@@ -517,7 +517,7 @@ function gridLine(tick: number) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-barChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-barChart', props.class)) }" >
     <div
       class="st-barChart__visual"
       role="img"

@@ -184,7 +184,7 @@ function handlePointerMove(event: PointerEvent) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-ganttChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-ganttChart', props.class)) }" >
     <div class="st-ganttChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="tick in geometry.ticks" :key="`g${tick}`">

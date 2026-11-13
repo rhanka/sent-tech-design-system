@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId, useAttrs } from 'vue';
+import { computed, useId } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
 import { labelColorForTone } from './chartScale.js';
@@ -154,7 +154,7 @@ function inset(r: Rect, pad: number): Rect {
 const LABEL_MIN_W = 44;
 const LABEL_MIN_H = 22;
 const VALUE_MIN_H = 38;
-defineOptions({ name: 'TreemapChart' });
+defineOptions({ name: 'TreemapChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TreemapChartProps>(), {
   tiling: 'squarified',
   showLabels: true,
@@ -163,7 +163,7 @@ const props = withDefaults(defineProps<TreemapChartProps>(), {
   height: 300,
   class: undefined,
 });
-const attrs = useAttrs();
+
 const hoveredIndex = ref<number | null>(null);
 function handleLeave() {
   hoveredIndex.value = null;
@@ -275,7 +275,7 @@ const geometry = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-treemapChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-treemapChart', props.class)) }" >
     <div
       class="st-treemapChart__visual"
       role="img"

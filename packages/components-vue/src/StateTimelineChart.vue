@@ -236,7 +236,7 @@ function isDim(seg: LaneSegment): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-stateTimelineChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-stateTimelineChart', props.class)) }" >
     <div
       class="st-stateTimelineChart__visual"
       role="img"

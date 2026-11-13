@@ -191,7 +191,7 @@ function isDim(si: number): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-streamgraphChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-streamgraphChart', props.class)) }" >
     <div
       class="st-streamgraphChart__visual"
       role="img"

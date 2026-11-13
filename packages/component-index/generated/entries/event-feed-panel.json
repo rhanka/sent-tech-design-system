@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/EventFeedPanel.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/EventFeedPanel.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:b31c4019dba3cc8c341f8e324353a3ae076a70fff5726ce7060cab122a491e31",
+      "digest": "sha256:752408e983bcc48240aea562d6ac42ee6ff961d7e509f6ea16a7b5501d42e94f",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/EventFeedPanel.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/EventFeedPanel.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Scrollable dated event feed: items sorted by time, severity badge, timestamp and message.",
     "fr": "Flux d'événements datés et scrollable : items triés par date, pastille de sévérité, horodatage et message."
   },
-  "digest": "sha256:bda94d57785b5b00a84c35d0063452b5d9b9c9655ae82f9975c1cceb006421f2",
+  "digest": "sha256:c9d87b46eafa160bbd6e8ab6480e45fd358f641bf77b7363b00d7045f8dcf564",
   "displayName": "EventFeedPanel",
   "format": "component-entry/v1",
   "frameworks": [

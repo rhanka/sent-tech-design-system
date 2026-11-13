@@ -123,7 +123,7 @@ const hoveredBar = computed(() => (hoveredIndex.value !== null ? bars.value[hove
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-divergentBarChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-divergentBarChart', props.class)) }" >
     <div class="st-divergentBarChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="g in grid" :key="g.tick">

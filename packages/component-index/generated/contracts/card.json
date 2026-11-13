@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:83f9d3e8a76bec4c6eb5f08603f95b397983a4712e0d9f35fe55a3906fee2e20",
-  "entryDigest": "sha256:977b622c0e9c095bccb15a87909be3c79da240243856d4dea08db11fdfcac2f8",
+  "digest": "sha256:ee466f2255f7f33e1f8dd4bcc370411f7dc395afd8c9428169fea4de15d9d7bf",
+  "entryDigest": "sha256:00ff1cf12a91329f49dfd00b6ef60863382c40006656873505709828d53189ec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -35,7 +35,7 @@
         "declarationPath": "packages/components-angular/dist/Card.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-react/dist/Card.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -110,7 +110,7 @@
         "declarationPath": "packages/components-svelte/dist/Card.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CardProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -138,16 +138,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:eea6ba324925aeabad0c6d663f8ca7d0517840e12579443cc829dc7a40369ec4",
+        "declarationDigest": "sha256:7ec2db47573fa43888a480d4a933a9e57b9021940b671ce9cbee4ca33cdd4848",
         "declarationPath": "packages/components-vue/dist/Card.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CardProps",

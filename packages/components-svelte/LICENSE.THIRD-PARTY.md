@@ -26,11 +26,12 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
 **Étendue mesurée.** 21 chaîne(s) de tracé distincte(s),
-21 occurrence(s), dans 1 fichier(s) source de ce paquet :
+24 occurrence(s), dans 2 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
 | `src/lib/cellDecoration.ts` | 21 |
+| `src/lib/flow-fixtures/before.html` | 3 |
 
 Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme tous) :
 `arrow-down`, `arrow-right`, `arrow-up`, `badge-percent`, `barcode`, `check`, `circle-check-big`, `circle-percent`, `circle-question-mark`, `circle-x`, `cloud-snow`, `file-exclamation-point`, `file-question-mark`, `flame`, `house-wifi`, `info`, `message-circle-question-mark`, `message-circle-x`, `minus`, `octagon-x`, `plus`, `shield-question-mark`, `square-check-big`, `square-percent`, `square-x`, `ticket-percent`, `trending-down`, `trending-up`, `triangle-alert`, `x`.

@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:1c0116c927e31c79dd68f011fa48b695a10c6511f3302ab036744944cb486cc8",
-  "entryDigest": "sha256:69fc0e389f499f4c468546af828e19decfbd520088a50ca50687e8f376d1222a",
+  "digest": "sha256:bd3c8653e9925fa50a9ab5e74c47045fe212255d32cbacc77d7fe90c6d9b8f80",
+  "entryDigest": "sha256:738b397a1dc9fdd2610065979942321dea550f714c88ad17d3077cd3e3b17d7d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/Typography.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TypographyProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/Typography.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TypographyProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

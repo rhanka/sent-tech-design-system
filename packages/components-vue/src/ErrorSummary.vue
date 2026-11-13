@@ -23,7 +23,7 @@ const props = withDefaults(defineProps<ErrorSummaryProps>(), {
 </script>
 
 <template>
-  <section v-bind="$attrs" :class="classNames('st-error-summary', props.class)" role="alert" tabindex="-1">
+  <section v-bind="{ ...($attrs), class: (classNames('st-error-summary', props.class)) }"  role="alert" tabindex="-1">
     <h2 class="st-error-summary__heading">{{ props.heading }}</h2>
     <ul v-if="props.errors.length > 0" class="st-error-summary__list">
       <li v-for="error in props.errors" :key="error.href" class="st-error-summary__item">

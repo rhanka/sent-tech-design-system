@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:c386ad516d1af2602e6773ce05de520509233f1e165788aa89cd941b10f70a57",
-  "entryDigest": "sha256:3c7f820a573c511a16591a459425252ab210eb973a620b0d3d8099ea6270b42d",
+  "digest": "sha256:3ae934b5e8421ec426d2dfb7047fcaa568911e7c2777c0c50f836a7bd9d4af37",
+  "entryDigest": "sha256:d45ae82c995631391e8218e1125659365f2974eacac198648401ed1de7a04c6c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Tooltip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -90,11 +90,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -145,7 +145,7 @@
         "declarationPath": "packages/components-svelte/dist/Tooltip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TooltipProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -172,9 +172,6 @@
             ]
           }
         },
-        "required": [
-          "content"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -187,11 +184,14 @@
       ],
       "slots": [
         {
+          "name": "content"
+        },
+        {
           "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:19364f24e5a31fde12fd488f537621660a613cd723f3c8630a0b26ae36aa7e88",
+        "declarationDigest": "sha256:16fd78bff6d4472af957e2edd47345b502c4e28b3f1a489f0d19c85abd8b0640",
         "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",

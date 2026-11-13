@@ -202,7 +202,7 @@ const sparklinePaths = computed(() => {
 </script>
 
 <template>
-  <article v-bind="$attrs" :class="classes" role="group" :aria-label="ariaLabel">
+  <article v-bind="{ ...($attrs), class: (classes) }"  role="group" :aria-label="ariaLabel">
     <p class="st-kpiCard__label">{{ props.label }}</p>
     <p class="st-kpiCard__value">
       <svg v-if="decorationNodes" class="st-cell__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><component v-for="([tag, nodeAttrs], i) in decorationNodes" :key="i" :is="tag" v-bind="nodeAttrs" /></svg>

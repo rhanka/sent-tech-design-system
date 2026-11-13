@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { useSlots, useAttrs } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { computed, useSlots, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
-export type HeaderNavItem = { label: unknown; href: string };
+export type HeaderNavItem = {
+  /** @slot nav-label */
+  label?: unknown; href: string };
 export type HeaderAccount = {
   name?: string;
   email?: string;
@@ -17,7 +20,7 @@ export type HeaderProps = {
   class?: string;
 };
 import { deriveInitials } from './header-initials.js';
-defineOptions({ name: 'Header' });
+defineOptions({ name: 'Header', inheritAttrs: false });
 const props = withDefaults(defineProps<HeaderProps>(), {
   brand: undefined,
   title: undefined,
@@ -34,26 +37,24 @@ defineSlots<{
   'nav-label'?: (scope: { item: HeaderNavItem }) => unknown;
 }>();
 const attrs = useAttrs();
+const links = computed(() => props.navigation ?? props.navItems ?? []);
 </script>
 
 <template>
-  <template v-for="links in [props.navigation ?? props.navItems ?? []]"
-    ><header
-      v-bind="attrs"
-      :class="
+  <header
+      v-bind="{ ...(attrs), class: (
         classNames(
           'st-header',
           props.sticky && 'st-header--sticky',
           props.class,
         )
-      "
+      ) }"
+
     >
       <div :class="'st-header__leading'">
         <template v-if="props.brand"
           ><a :class="'st-header__logo'" :href="'/'"
-            ><slot v-if="$slots['brand']" name="brand" /><template v-else>{{
-              props.brand
-            }}</template></a
+            ><slot v-if="$slots['brand']" name="brand" /><template v-else>{{ scalarContent(props.brand) }}</template></a
           ></template
         ><template v-else
           ><template v-if="slots.brand"
@@ -61,11 +62,9 @@ const attrs = useAttrs();
               ><slot name="brand" /></a></template
           ><template v-else></template
         ></template>
-        <template v-if="props.title"
+        <template v-if="$slots.title || props.title"
           ><span :class="'st-header__title'"
-            ><slot v-if="$slots['title']" name="title" /><template v-else>{{
-              props.title
-            }}</template></span
+            ><slot v-if="$slots['title']" name="title" /><template v-else>{{ scalarContent(props.title) }}</template></span
           ></template
         ><template v-else></template>
       </div>
@@ -76,7 +75,7 @@ const attrs = useAttrs();
               v-if="$slots['nav-label']"
               name="nav-label"
               :item="link"
-            /><template v-else>{{ link.label }}</template></a
+            /><template v-else>{{ scalarContent(link.label) }}</template></a
           ></template
         >
       </nav>
@@ -94,5 +93,5 @@ const attrs = useAttrs();
             }}</span></template
           ><template v-else></template></div></template
       ><template v-else></template></header
-  ></template>
+  >
 </template>

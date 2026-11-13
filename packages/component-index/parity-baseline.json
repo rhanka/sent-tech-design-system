@@ -1356,7 +1356,7 @@
         "vue": "match",
         "angular": "missing"
       },
-      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+      "reason": "DC-2c.1 exports Svelte and Vue scene hosts with shared behavioral and normalized DOM parity tests; React and Angular remain outside this lot."
     },
     {
       "componentId": "diagram-zone",
@@ -1468,6 +1468,7 @@
       "alignValue",
       "composeAbsolute",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1479,15 +1480,18 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "vue": [
       "AppShell",
+      "CellDecorationIcon",
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",
@@ -1557,6 +1561,7 @@
       "composeAbsolute",
       "computePanelStackAutoCollapse",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1568,13 +1573,15 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePanelStackPrimary",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "dataviz-svelte": [
       "AdvancedPivotDataTable",

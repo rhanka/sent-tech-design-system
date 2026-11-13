@@ -194,7 +194,7 @@ const hovered = computed(() => hoveredIndex.value !== null ? layout.value.circle
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-vennChart', props.class)"><div class="st-vennChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave"><svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
+  <div v-bind="{ ...($attrs), class: (classNames('st-vennChart', props.class)) }" ><div class="st-vennChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave"><svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
     <circle v-for="(circle, index) in layout.circles" :key="`c${circle.name}`" :class="classNames('st-vennChart__circle', `st-vennChart__circle--${circle.tone}`, hoveredIndex !== null && hoveredIndex !== index && 'st-vennChart__circle--dim')" :cx="circle.cx" :cy="circle.cy" :r="circle.r" :data-chart-index="index" />
     <text v-for="region in layout.regions" :key="`v${region.sets.join('|')}`" class="st-vennChart__value" :x="region.x" :y="region.y" text-anchor="middle" dominant-baseline="middle">{{ String(region.value) }}</text>
     <text v-for="circle in layout.circles" :key="`l${circle.name}`" class="st-vennChart__label" :x="circle.labelX" :y="circle.labelY" :text-anchor="circle.anchor" dominant-baseline="middle">{{ circle.name }}</text>

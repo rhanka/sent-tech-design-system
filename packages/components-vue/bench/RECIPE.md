@@ -12,7 +12,7 @@ public entries and SFCs. The non-component `cellDecoration` uses a reference-onl
 host for its original render helper, then checks its pure data resolver and
 `CellDecorationIcon.vue`. G2 pins both the package wrapper and shared compiler
 script. The added generated-ID patterns were fixed before reference capture.
-G5 mounts every frozen fixture, verifies overlay destinations and teardown, and
+G5 compares Classic and Vapor DOM for every frozen fixture, including live control properties, verifies overlay destinations and teardown for every component, and
 requires no browser or interop plugin. `hard-interactions.test.mjs` adds native
 Vapor event, state, provider, keyboard and SVG-namespace witnesses. Results are
 in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
@@ -37,7 +37,7 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
    and default import if needed. Do not leave a shadow `<Name>.ts` shim.
 5. Translate runtime props to `defineProps<<Name>Props>()` with `withDefaults`.
    Match **every runtime default**, even when the public type is optional.
-   Required props stay required. Array/object defaults use factories. An
+   Required data props stay required. A rich content prop replaced by a slot must become optional, so slot-only callers need no dummy prop. Array/object defaults use factories. An
    optional Boolean that previously defaulted to `undefined` needs an explicit
    `undefined` default, or Vue Boolean casting changes precedence (Checkbox's
    `modelValue ?? checked` is a witness). Keep `null`, `false`, empty string and
@@ -45,7 +45,7 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
    ordinary destructuring must not freeze reactive reads.
 6. Replace `emits` with typed `defineEmits`. Example:
    `defineEmits<{ 'update:modelValue': [value: string]; change: [event: Event] }>()`.
-   Keep payloads and emission order. Keep separately supported lowercase callback
+   Keep payloads and emission order. A declared emit already calls its onX listener: never also call props.onX for that event. Retain the callback prop type for compatibility. Keep separately supported lowercase callback
    props such as Tabs' `onchange` and call them once alongside `emit('change', v)`.
    Do not accidentally declare new emits that consume formerly native listeners.
 7. Move setup state and pure calculations into refs, computed values and ordinary
@@ -69,7 +69,7 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
 10. VNode-valued props/render callbacks become named slots. Use the prop name
     (kebab-case for new multiword names), or a documented scoped name for
     collection cells. Preserve existing slot names if they already cover the
-    same role. Render scalar props as slot fallbacks, retaining their public
+    same role. Render string/number props as slot fallbacks, retaining their public
     types/defaults for compatibility. Alert uses `title`, `message`, `actions`;
     Tabs uses `tab-label` with `{ item, index }` and `panel` with `{ item }`.
     An optional wrapper must test both the slot and scalar fallback, e.g.
@@ -85,16 +85,17 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
     from `v-bind` with explicit bindings; inspect precedence rather than assuming
     an object spread and template spread overwrite in the same way. Keep `class`
     a declared prop where it was one; otherwise it changes `$attrs` behavior.
-12. Audit **both** explicit attrs spreading and automatic fallthrough. For a
-    single-root component such as Badge, use `inheritAttrs: false` plus one
-    `v-bind="$attrs"` at its original root. For Input/Select/Checkbox the old
-    implementation forwards attrs to the native control **and** Vue automatically
-    falls them through to the outer root. Preserve both destinations for this
-    parity bench; the custom-attrs fixtures detect differences. Explicitly bind
-    `$attrs` at each destination with `inheritAttrs: false`, or retain automatic
-    root fallthrough and explicitly bind only at the control. Preserve consumer
-    `aria-describedby` when composing generated description IDs. Declared emits
-    are filtered out of `$attrs`; forward/emit them deliberately.
+12. Every explicit `$attrs` or `useAttrs()` path requires
+    `defineOptions({ name: '<Name>', inheritAttrs: false })`. Forward each
+    attribute and listener once to its intended element. Native form attributes
+    belong to the control; they must not also fall through onto its wrapper.
+    Do not cache an attrs spread/destructure in `computed`: an initially empty
+    attrs proxy may not track enumeration. Merge during rendering, e.g.
+    `v-bind="{ ...$attrs, ...controlProps }"`, or call a live binding function.
+    Make class/style precedence explicit in that object. Parse string styles
+    before object spreading (`normalizeStyle([attrs.style])`) and preserve
+    caller style when composing owned styles. Keep explicit native IDs and
+    their label/ARIA references. Declared emits are filtered out of attrs.
 13. Preserve v-model's `modelValue` / `update:modelValue` contract. Prefer the
     explicit binding and handler for this conversion: Input emits the string
     then `input`; Checkbox emits `checked` then `change`; Select emits the
@@ -102,7 +103,7 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
     acceptable only if its defaults, Boolean casting and extra events are
     identical; do not change a controlled component into local state.
 14. Replace ID-only counters and `getCurrentInstance().uid` with a single setup
-    `useId()` call, e.g. `const uid = \`st-tabs-${useId()}\``. Use an explicit
+    `useId()` call in setup, never a process-wide counter or an extracted counter helper, e.g. `const uid = \`st-tabs-${useId()}\``. Use an explicit
     typed provide/inject key for parent/group coordination; make injected
     reactive state explicit. Never depend on instance internals:
     `getCurrentInstance()` returns null in Vapor. Keep consumer-specified IDs.
@@ -111,12 +112,11 @@ in `HARD-RESULTS.md`, `results/hard/` and `CONTRACT-CHANGES.md`.
     `<Teleport>`. Compile in both modes; the Vapor compiler/runtime chooses its
     supported primitive. A successful compilation alone proves no portal
     behavior. Add portal fixtures and assert the destination DOM if converting
-    a portal component. G4 captures SSR teleport targets separately; G5 mounts
-    only the default fixture. None of these ten components teleports. Do not
+    a portal component. G4 captures SSR teleport targets separately; G5 compares every fixture mounted in Classic and Vapor, including all teleport targets, and checks complete teardown for every component. Do not
     introduce a detached mount fallback silently: that needs a separate witness.
 16. Run `node packages/components-vue/bench/check.mjs <Name>` from the repo root
     (or `node bench/check.mjs <Name> --json` from this package). Fix every failing
-    gate. Never refresh goldens to make a conversion pass. Record elapsed time,
+    gate. Never refresh goldens to make a conversion pass. A review-authorized behavior correction belongs in the bounded review-corrections.mjs adapter, with a failing regression and a documented reason; keep the archived captures intact. Record elapsed time,
     model, retries, final gate results and intentional contract migrations in
     the trial's own evidence. A passing trial is not authorization to merge.
 
@@ -561,3 +561,43 @@ function keydown(event: KeyboardEvent, index: number) {
 ```
 
 Badge keeps all public types and its span, classes, slot and attrs. Tabs keeps selection precedence, disabled tabs, focus and keyboard logic, while replacing its counter with useId and adding scoped tab-label/panel slots for rich content. The scalar prop fallbacks remain. The Badge example was executed through all six gates; Tabs is a worked recipe example rather than the required proof conversion.
+
+## Review rules shared with dataviz ports
+
+- Native Vapor must export every runtime component in the Classic barrel. The
+  build rejects a legacy dependency that would omit a component. Compare the
+  built runtime namespaces and packed consumers after every conversion lane.
+- New multiword slots use kebab-case. Retain pre-existing camelCase names as
+  deprecated aliases when adding the canonical spelling; forward scoped slot
+  payloads through every intermediate host. Record every migration in
+  CONTRACT-CHANGES.md, including prop optionality and slot-over-prop precedence.
+- Slot-only content must expose its wrapper and preserve related state. Include
+  error-slot presence in aria-invalid decisions, accessible naming, help/error
+  visibility and placeholder styling. Read dynamic slot presence in the render
+  path; test slot addition/removal without changing a scalar prop.
+- Exercise strings, numbers, empty strings and slot-only markup. Rich fixture
+  inputs pair legacyProps VNodes with template slots, without placeholder scalar
+  props. Scalar compatibility paths use scalarContent instead of serializing a
+  VNode object. Keep explicit nullish/empty-string precedence when it was public.
+- K25 checks attrs ownership, cached spreads/destructures, module counters,
+  duplicate callback/emit paths and new slot spelling with the TypeScript AST.
+  Its checks apply to all SFCs and to extracted TypeScript helpers, including
+  dataviz. The legacy renderer allow-list cannot grow.
+- K25 also checks optional rich props/item fields, declared and rendered slots,
+  local rich-type aliases, VNode import aliases, render callbacks, String-before-
+  scalarContent mistakes, unused Vue setup bindings/imports and explicit style
+  composition. Use @slot only to document an existing scoped/alias slot name;
+  @vaporData marks an input that the original consumes as data, never children.
+  Keep caller styles last when the h() root inherited attrs. The two original
+  explicit positioning SFCs document @attrsStyle owned-last. Compare conflicting
+  properties, late updates, string/object/array styles and caller class order.
+  Published type checks compare the complete Classic/Vapor type surface and each
+  resolved declaration; runtime export-name parity alone is insufficient.
+- G5 compares complete mounted DOM, including teleports and live form/media
+  properties, against the independently mounted Classic fixture. It canonicalizes
+  Vue markers, generated IDs, CSS declarations and class token redundancy; text,
+  ARIA, structure, attributes and reference relationships remain significant.
+  A changed-DOM negative control must fail. Check unmount cleanup for every fixture.
+- Run all six gates on every converted component, the complete package test
+  projects, both-runtime review regressions, vue-tsc, K25 with its negative cases,
+  component-index, licensing and real packed consumers before calling a lane done.

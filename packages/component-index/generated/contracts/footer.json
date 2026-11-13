@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:7b52d32701032369757a1ce489c91c208d8ad15185a5e70ec2a93e94f82c1f51",
-  "entryDigest": "sha256:7b877453fa841618c867f27ecf4e716313f8b119dddf5d2e25efd98be47e28fb",
+  "digest": "sha256:efe9c2ba2eb820d22664bca19a06beb70311b89c28e13964807b3ace2e0b29c3",
+  "entryDigest": "sha256:30ec3d9e7f628e11bf956fb469487855bcc0e24acba2e5d3c933b85cb12cc4fc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/Footer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FooterProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -234,11 +234,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FooterProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -369,8 +369,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -434,11 +433,45 @@
           "name": "brand"
         },
         {
+          "name": "column-title",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/FooterColumn"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "index"
+            ],
+            "type": "object"
+          }
+        },
+        {
           "name": "copyright"
+        },
+        {
+          "name": "link-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "link": {
+                "$ref": "#/$defs/FooterLink"
+              }
+            },
+            "required": [
+              "link"
+            ],
+            "type": "object"
+          }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:43c6a16fa8c78c6500c4876f7a86dc3b41557cecc06a1a62dd5c95725dd95e2e",
+        "declarationDigest": "sha256:64ab57176f3bdb52729069b2ec773234ac9e9ab119c67269c133ef707946fe34",
         "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",

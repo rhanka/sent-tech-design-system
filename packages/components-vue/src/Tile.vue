@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -46,8 +47,8 @@ function onSelect(event: Event) {
     <span class="st-tile__content">
       <template v-if="$slots.default"><slot /></template>
       <template v-else>
-        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ props.title }}</template></span>
-        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ props.description }}</template></span>
+        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ scalarContent(props.title) }}</template></span>
+        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ scalarContent(props.description) }}</template></span>
       </template>
     </span>
   </a>
@@ -55,8 +56,8 @@ function onSelect(event: Event) {
     <span class="st-tile__content">
       <template v-if="$slots.default"><slot /></template>
       <template v-else>
-        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ props.title }}</template></span>
-        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ props.description }}</template></span>
+        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ scalarContent(props.title) }}</template></span>
+        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ scalarContent(props.description) }}</template></span>
       </template>
     </span>
   </button>
@@ -65,8 +66,8 @@ function onSelect(event: Event) {
     <span class="st-tile__content">
       <template v-if="$slots.default"><slot /></template>
       <template v-else>
-        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ props.title }}</template></span>
-        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ props.description }}</template></span>
+        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ scalarContent(props.title) }}</template></span>
+        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ scalarContent(props.description) }}</template></span>
       </template>
     </span>
   </label>
@@ -74,8 +75,8 @@ function onSelect(event: Event) {
     <span class="st-tile__content">
       <template v-if="$slots.default"><slot /></template>
       <template v-else>
-        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ props.title }}</template></span>
-        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ props.description }}</template></span>
+        <span v-if="$slots.title || props.title" class="st-tile__title"><template v-if="$slots.title"><slot name="title" /></template><template v-else>{{ scalarContent(props.title) }}</template></span>
+        <span v-if="$slots.description || props.description" class="st-tile__description"><template v-if="$slots.description"><slot name="description" /></template><template v-else>{{ scalarContent(props.description) }}</template></span>
       </template>
     </span>
   </div>
