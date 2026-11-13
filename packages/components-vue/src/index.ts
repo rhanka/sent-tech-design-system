@@ -497,8 +497,8 @@ export type {
 } from "./Typography.js";
 export { Collapsible } from "./Collapsible.js";
 export type { CollapsibleProps } from "./Collapsible.js";
-export { Stepper } from "./Stepper.js";
-export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js";
+export { default as Stepper } from "./Stepper.vue";
+export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.vue";
 
 export { default as Rating } from "./Rating.vue";
 export type { RatingProps, RatingSize } from "./Rating.vue";
