@@ -675,11 +675,11 @@ export type {
   DashboardNavItem,
   DashboardKpi,
 } from "./Dashboard.js";
-export { Wizard } from "./Wizard.js";
+export { default as Wizard } from "./Wizard.vue";
 export type {
   WizardProps,
   WizardStep,
-} from "./Wizard.js";
+} from "./Wizard.vue";
 export { default as TimeRangePicker } from "./TimeRangePicker.vue";
 export type {
   TimeRangePickerProps,
