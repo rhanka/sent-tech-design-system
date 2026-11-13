@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "BackToTop",
+  "sourceRevision": "02e96c65a48a2c683c5cc4e0fa18e29fd8c5e333",
+  "source": "src/BackToTop.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button aria-hidden=\"true\" aria-label=\"Retour en haut\" aria-live=\"polite\" class=\"st-backToTop\" tabindex=\"-1\" type=\"button\"><span aria-hidden=\"true\" class=\"st-backToTop__icon\"><svg class=\"lucide lucide-arrow-up-icon lucide-arrow-up\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></span><span class=\"st-backToTop__label\">Retour en haut</span></button>"
+    },
+    {
+      "id": "no-auto-hide",
+      "html": "<button aria-label=\"Retour en haut\" class=\"st-backToTop\" type=\"button\"><span aria-hidden=\"true\" class=\"st-backToTop__icon\"><svg class=\"lucide lucide-arrow-up-icon lucide-arrow-up\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></span><span class=\"st-backToTop__label\">Retour en haut</span></button>"
+    },
+    {
+      "id": "disabled",
+      "html": "<button aria-hidden=\"true\" aria-label=\"Back to top\" aria-live=\"polite\" class=\"st-backToTop\" disabled=\"\" tabindex=\"-1\" type=\"button\"><span aria-hidden=\"true\" class=\"st-backToTop__icon\"><svg class=\"lucide lucide-arrow-up-icon lucide-arrow-up\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></span><span class=\"st-backToTop__label\">Back to top</span></button>"
+    },
+    {
+      "id": "smooth-false",
+      "html": "<button aria-hidden=\"true\" aria-label=\"Retour en haut\" aria-live=\"polite\" class=\"st-backToTop\" tabindex=\"-1\" type=\"button\"><span aria-hidden=\"true\" class=\"st-backToTop__icon\"><svg class=\"lucide lucide-arrow-up-icon lucide-arrow-up\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></span><span class=\"st-backToTop__label\">Retour en haut</span></button>"
+    },
+    {
+      "id": "custom",
+      "html": "<button aria-hidden=\"true\" aria-label=\"Retour en haut\" aria-live=\"polite\" class=\"st-backToTop consumer\" data-bench=\"totop\" style=\"color:red;\" tabindex=\"-1\" type=\"button\"><span aria-hidden=\"true\" class=\"st-backToTop__icon\"><svg class=\"lucide lucide-arrow-up-icon lucide-arrow-up\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m5 12 7-7 7 7\"></path><path d=\"M12 19V5\"></path></svg></span><span class=\"st-backToTop__label\">Retour en haut</span></button>"
+    }
+  ],
+  "sourceSha256": "d90aae1ec2cd0f7a4cd42b9526ef0b31f8e9bb57245e71b124aeb5b1c598b774",
+  "fixtureSha256": "384d6de269fea6128f91fe49171b57d8a6e4ab6d5d5dc45d4e465262cbb6d058",
+  "publicExports": [
+    {
+      "name": "BackToTop",
+      "typeOnly": false
+    },
+    {
+      "name": "BackToTopProps",
+      "typeOnly": true
+    }
+  ]
+}
