@@ -552,13 +552,13 @@ export { ArcDiagramChart } from "./ArcDiagramChart.js";
 export type { ArcDiagramChartProps, ArcDiagramChartLink, ArcDiagramChartTone } from "./ArcDiagramChart.js";
 export { PackedBubblesChart } from "./PackedBubblesChart.js";
 export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
-export { MarimekkoChart } from "./MarimekkoChart.js";
+export { default as MarimekkoChart } from "./MarimekkoChart.vue";
 export type {
   MarimekkoChartProps,
   MarimekkoChartDatum,
   MarimekkoChartSegment,
   MarimekkoChartTone,
-} from "./MarimekkoChart.js";
+} from "./MarimekkoChart.vue";
 export { CandlestickChart } from "./CandlestickChart.js";
 export type { CandlestickChartProps, CandlestickChartDatum } from "./CandlestickChart.js";
 export { OHLCChart } from "./OHLCChart.js";
