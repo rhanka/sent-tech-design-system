@@ -1,16 +1,16 @@
-import { defineComponent, h } from "vue";
-import { classNames } from "./classNames.js";
-import { chartDataList } from "./chartScale.js";
+<script setup lang="ts">
+import { computed } from 'vue';
+import { classNames } from './classNames.js';
 
 export type OrganizationChartTone =
-  | "category1"
-  | "category2"
-  | "category3"
-  | "category4"
-  | "category5"
-  | "category6"
-  | "category7"
-  | "category8";
+  | 'category1'
+  | 'category2'
+  | 'category3'
+  | 'category4'
+  | 'category5'
+  | 'category6'
+  | 'category7'
+  | 'category8';
 
 export type OrganizationChartNode = {
   id: string;
@@ -28,14 +28,14 @@ export type OrganizationChartProps = {
 };
 
 const TONES = [
-  "category1",
-  "category2",
-  "category3",
-  "category4",
-  "category5",
-  "category6",
-  "category7",
-  "category8",
+  'category1',
+  'category2',
+  'category3',
+  'category4',
+  'category5',
+  'category6',
+  'category7',
+  'category8',
 ] as const;
 
 type Box = {
@@ -167,98 +167,62 @@ function buildLayout(data: OrganizationChartNode[], width: number, height: numbe
 
 const clip = (s: string, n: number) => (s.length > n ? `${s.slice(0, Math.max(1, n - 1))}…` : s);
 
-export const OrganizationChart = defineComponent({
-  name: "OrganizationChart",
-  props: {
-    data: { type: Array as () => OrganizationChartNode[], required: true },
-    width: { type: Number, default: 640 },
-    height: { type: Number, default: 320 },
-    label: { type: String, required: true },
-    class: { type: String, default: undefined },
-  },
-  setup(props, { attrs }) {
-    return () => {
-      const width = props.width ?? 640;
-      const height = props.height ?? 320;
-      const label = props.label;
-
-      const { boxes, links, boxW } = buildLayout(props.data, width, height);
-
-      const fontSize = boxW < 56 ? 9 : boxW < 88 ? 10 : 12;
-      const maxChars = Math.max(2, Math.floor((boxW - 10) / (fontSize * 0.58)));
-
-      const dataValueItems = boxes.map((b) => {
-        const parent = b.parentId != null ? boxes.find((p) => p.id === b.parentId) : undefined;
-        return parent ? `${b.label} (${b.id}) → ${parent.label}` : `${b.label} (${b.id})`;
-      });
-
-      const svgChildren: ReturnType<typeof h>[] = [];
-
-      links.forEach((link) => {
-        const midY = (link.y1 + link.y2) / 2;
-        svgChildren.push(
-          h("path", {
-            key: `link-${link.id}`,
-            class: "st-organizationChart__link",
-            d: `M ${link.x1} ${link.y1} V ${midY} H ${link.x2} V ${link.y2}`,
-            fill: "none",
-          }),
-        );
-      });
-
-      boxes.forEach((box) => {
-        svgChildren.push(
-          h("g", { key: box.id, class: "st-organizationChart__node" }, [
-            h("rect", {
-              class: classNames(
-                "st-organizationChart__box",
-                `st-organizationChart__box--${box.tone}`,
-              ),
-              x: box.x - boxW / 2,
-              y: box.y,
-              width: boxW,
-              height: BOX_H,
-              rx: "6",
-            }),
-            h(
-              "text",
-              {
-                class: "st-organizationChart__label",
-                x: box.x,
-                y: box.y + BOX_H / 2,
-                "text-anchor": "middle",
-                "dominant-baseline": "central",
-                style: `font-size: ${fontSize}px`,
-              },
-              clip(box.label, maxChars),
-            ),
-          ]),
-        );
-      });
-
-      const children: (ReturnType<typeof h> | null)[] = [
-        h(
-          "div",
-          { class: "st-organizationChart__visual", role: "img", "aria-label": label },
-          [
-            h(
-              "svg",
-              {
-                viewBox: `0 0 ${width} ${height}`,
-                preserveAspectRatio: "xMidYMid meet",
-                width: "100%",
-                height: "100%",
-                focusable: "false",
-                "aria-hidden": "true",
-              },
-              svgChildren,
-            ),
-          ],
-        ),
-        chartDataList(label, dataValueItems),
-      ];
-
-      return h("div", { ...attrs, class: classNames("st-organizationChart", props.class) }, children);
-    };
-  },
+defineOptions({ name: 'OrganizationChart', inheritAttrs: false });
+const props = withDefaults(defineProps<OrganizationChartProps>(), {
+  width: 640, height: 320, class: undefined,
 });
+
+const width = computed(() => props.width ?? 640);
+const height = computed(() => props.height ?? 320);
+const layout = computed(() => buildLayout(props.data, width.value, height.value));
+const fontSize = computed(() => (layout.value.boxW < 56 ? 9 : layout.value.boxW < 88 ? 10 : 12));
+const maxChars = computed(() => Math.max(2, Math.floor((layout.value.boxW - 10) / (fontSize.value * 0.58))));
+const dataValueItems = computed(() => layout.value.boxes.map((b) => {
+  const parent = b.parentId != null ? layout.value.boxes.find((p) => p.id === b.parentId) : undefined;
+  return parent ? `${b.label} (${b.id}) → ${parent.label}` : `${b.label} (${b.id})`;
+}));
+</script>
+
+<template>
+  <div v-bind="$attrs" :class="classNames('st-organizationChart', props.class)">
+    <div class="st-organizationChart__visual" role="img" :aria-label="props.label">
+      <svg
+        :viewBox="`0 0 ${width} ${height}`"
+        preserveAspectRatio="xMidYMid meet"
+        width="100%"
+        height="100%"
+        focusable="false"
+        aria-hidden="true"
+      >
+        <path
+          v-for="link in layout.links"
+          :key="`link-${link.id}`"
+          class="st-organizationChart__link"
+          :d="`M ${link.x1} ${link.y1} V ${(link.y1 + link.y2) / 2} H ${link.x2} V ${link.y2}`"
+          fill="none"
+        />
+        <g v-for="box in layout.boxes" :key="box.id" class="st-organizationChart__node">
+          <rect
+            :class="classNames('st-organizationChart__box', `st-organizationChart__box--${box.tone}`)"
+            :x="box.x - layout.boxW / 2"
+            :y="box.y"
+            :width="layout.boxW"
+            :height="BOX_H"
+            rx="6"
+          />
+          <text
+            class="st-organizationChart__label"
+            :x="box.x"
+            :y="box.y + BOX_H / 2"
+            text-anchor="middle"
+            dominant-baseline="central"
+            :style="`font-size: ${fontSize}px`"
+          >{{ clip(box.label, maxChars) }}</text>
+        </g>
+      </svg>
+    </div>
+    <ul v-if="dataValueItems.length > 0" class="st-chartDataList" :aria-label="`Data values for ${props.label}`">
+      <li v-for="(item, i) in dataValueItems" :key="i">{{ item }}</li>
+    </ul>
+  </div>
+</template>
