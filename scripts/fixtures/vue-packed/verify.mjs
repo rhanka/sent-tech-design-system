@@ -19,14 +19,24 @@ assert.equal(diagnostics.length, 0, ts.formatDiagnosticsWithColorAndContext(diag
   getCanonicalFileName: file => file, getCurrentDirectory: ts.sys.getCurrentDirectory, getNewLine: () => '\n',
 }));
 let count = 0;
-await build({ configFile: false, logLevel: 'error', plugins: [{ name: 'classic-dependency-graph',
+const graphGuard = { name: 'classic-dependency-graph',
   transform(code, id) {
     count++;
     if (!vapor) {
       assert(!/\/dist\/vapor\/|@vue\/runtime-vapor/.test(id), `Classic graph pulled Vapor module: ${id}`);
       assert(!/\b(?:createVaporApp|defineVaporComponent|VaporTeleport|vaporInteropPlugin)\b/.test(code), `Classic graph pulled Vapor-only API: ${id}`);
+    } else if (/node_modules\/@sentropic\/(?:design-system-vue|dataviz-vue)\/dist\//.test(id)) {
+      assert(!/\bdefineComponent\b|\blucide-vue-next\b/.test(code), `Native Vapor graph pulled a VDOM component: ${id}`);
     }
   },
-}], build: { write: false, lib: { entry: resolve('consumer.ts'), formats: ['es'] } } });
+};
+await build({ configFile: false, logLevel: 'error', plugins: [graphGuard],
+  build: { write: false, lib: { entry: resolve('consumer.ts'), formats: ['es'] } } });
 assert(count > 10, 'Consumer graph did not traverse package dependencies');
 console.log(`${vapor ? 'Vapor' : 'Classic'} packed declarations + dependency graph: pass (${count} modules)`);
+if (!vapor) {
+  writeFileSync('negative.ts', "export { GraphLegend } from '@sentropic/design-system-vue/vapor';\n");
+  await assert.rejects(() => build({ configFile: false, logLevel: 'silent', plugins: [graphGuard],
+    build: { write: false, lib: { entry: resolve('negative.ts'), formats: ['es'] } } }), /Classic graph pulled Vapor module/);
+  console.log('Classic graph rejects a deliberately injected Vapor import: pass');
+}
