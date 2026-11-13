@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { AnalyticsClusterPlot } from './AnalyticsClusterPlot.js';
+import AnalyticsClusterPlot from './AnalyticsClusterPlot.vue';
 import ErrorBarsChart from './ErrorBarsChart.vue';
 import { ForecastLineChart } from './ForecastLineChart.js';
 import { PercentileBandChart } from './PercentileBandChart.js';
