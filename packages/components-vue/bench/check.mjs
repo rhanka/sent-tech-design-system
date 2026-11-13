@@ -165,6 +165,13 @@ try {
     const target = `${name}Props`;
     const expectedExports = JSON.parse(readFileSync(resolve(bench, 'goldens', `${name}.json`), 'utf8')).publicExports;
     if (!Array.isArray(expectedExports)) fail('Missing frozen public export manifest');
+    if (name === 'cellDecoration') {
+      for (const entry of expectedExports) {
+        if (!entry.typeOnly || !ast.statements.some(node => ts.isExportDeclaration(node) && node.isTypeOnly && node.moduleSpecifier?.text === './cellDecoration.js' && node.exportClause?.elements?.some(e => e.name.text === entry.name))) fail(`Helper export changed: ${entry.name}`);
+      }
+      typecheck([file, resolve(src, 'cellDecoration.ts')]);
+      return 'Decoration types retain their pure-helper barrel path; data resolver and template consumer type-check';
+    }
     if (!expectedExports.length) {
       temporary ??= mkdtempSync(resolve(bench, '.tmp-check-'));
       const probe = resolve(temporary, 'private.ts');
