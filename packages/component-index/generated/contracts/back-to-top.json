@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:bbae935bdaab2cb84bfac1ac69a7cf9c933df5ba9adfbc7a8e345385b1fdd868",
-  "entryDigest": "sha256:05ae330f0da42594686f96b7b78f489f03cfa40e6a96b5d8d7d8ed90d162e338",
+  "digest": "sha256:115ef70c2662a1b7720872434820193634e3dad16e7f89b825894ea312c095d7",
+  "entryDigest": "sha256:f5d7a6b5adad01edd2bf7c51ddac4724f528f1b80488fffe058d6806bc9aeb42",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -200,7 +200,7 @@
         "declarationPath": "packages/components-vue/dist/BackToTop.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BackToTopProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

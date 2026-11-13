@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BoxPlotChart.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Box plots for comparing distributions and outliers.",
     "fr": "Boîtes à moustaches pour comparer des distributions et leurs valeurs atypiques."
   },
-  "digest": "sha256:decc010f105be448234f9e019abd0ccd46470d3a708e4176a34ecad6703e65ba",
+  "digest": "sha256:99c48181db51cd73240e2410317dd1a12d0954abd5d89fe626ca38ba224b3fd4",
   "displayName": "BoxPlotChart",
   "format": "component-entry/v1",
   "frameworks": [

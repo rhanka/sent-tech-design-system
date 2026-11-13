@@ -1,11 +1,13 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
+  const descriptionId = $props.id();
   import type { Snippet } from "svelte";
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZoneHeader from "./DiagramZoneHeader.svelte";
   import {
     ZONE_GEOMETRY,
     defaultCardMeasure,
-    firstOverflowDiagnostic,
+    zoneFullText,
     layoutZone,
     zoneCollapsedCardProps,
     type CardLineMeasure,
@@ -27,10 +29,8 @@
    *
    * Both states render inside the SAME positioning wrapper
    * (`.st-diagramZone-pos`, absolute at `x`/`y`): folding never moves the
-   * zone occurrence. Overflow = refusal (owner criterion): a `zone-overflow`
-   * renders no normal zone — the wrapper carries the host-visible refusal
-   * state `data-zone-refused="<slot>"`, matching the pure renderer's refused
-   * result.
+   * zone occurrence. Owner A11 keeps all content visible and grows the zone;
+   * explicit hard-cap overflow remains diagnostic.
    *
    * The component owns no view state: `collapsed` is a prop (§4.3) and
    * activating the toggle emits the §7.2 intent through `onToggle`.
@@ -50,6 +50,8 @@
 
   let {
     entityId,
+    containerPadding,
+    autoSize,
     kicker,
     title,
     subtitle,
@@ -74,6 +76,8 @@
 
   const zoneProps = $derived({
     entityId,
+    ...(containerPadding === undefined ? {} : { containerPadding }),
+    ...(autoSize === undefined ? {} : { autoSize }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     ...(subtitle === undefined ? {} : { subtitle }),
@@ -116,7 +120,7 @@
   );
   // Overflow = refusal: the same predicate as the pure renderer
   // (`firstOverflowDiagnostic`), so both renderers refuse together.
-  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
+
 
   const header = $derived(layout.header);
   // Expanded subtitle measure: the layout's own `subtitleWidth`
@@ -143,7 +147,7 @@
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
+      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
   );
   const ruleStyle = $derived(
     header === undefined
@@ -153,7 +157,7 @@
   const contentStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(header.contentTop)};left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(ZONE_GEOMETRY.contentInsetBottom)}`,
+      : `top:${frameTop(header.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`,
   );
   const footerRuleStyle = $derived(
     header?.footerRuleY === undefined
@@ -163,7 +167,7 @@
   const footerStyle = $derived(
     header === undefined
       ? undefined
-      : `left:${frameInset(ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
+      : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
   );
 
   $effect(() => {
@@ -171,24 +175,6 @@
     for (const diagnostic of layout.diagnostics) onDiagnostic(diagnostic);
   });
 
-  function remapDiagnostic(diagnostic: {
-    code: string;
-    slot: string;
-    entityId: string;
-    neededPx: number;
-    allocatedPx: number;
-    text?: string;
-  }): void {
-    if (onDiagnostic === undefined) return;
-    onDiagnostic({
-      code: diagnostic.code === "card-icon-unknown" ? "zone-icon-unknown" : "zone-overflow",
-      slot: diagnostic.slot,
-      entityId: diagnostic.entityId,
-      neededPx: diagnostic.neededPx,
-      allocatedPx: diagnostic.allocatedPx,
-      ...(diagnostic.text === undefined ? {} : { text: diagnostic.text }),
-    });
-  }
 </script>
 
 <!-- One positioning wrapper in BOTH states (second review, blocking): the
@@ -200,23 +186,14 @@
   style={`left:${x}px;top:${y}px`}
   data-entity={entityId}
   data-collapsed={collapsed ? "true" : "false"}
-  data-zone-refused={refused === undefined ? undefined : refused.slot}
   data-zone-overflow={overflowSlot}
   data-zone-icon-unknown={unknownIcon ? "" : undefined}
 >
-  {#if refused !== undefined}
-    <div
-      class="st-diagramZone st-diagramZone--refused"
-      style={`width:${layout.box.width}px;height:${layout.box.height}px`}
-      role="group"
-      aria-label={title}
-    ></div>
-  {:else if collapsed}
+  {#if collapsed}
     <DiagramCard
       {...cardProps}
       measure={measure}
       onSelect={onSelect === undefined ? undefined : (event) => onSelect(event)}
-      onDiagnostic={onDiagnostic === undefined ? undefined : remapDiagnostic}
     />
   {:else}
     <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -228,9 +205,12 @@
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"
+      title={zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })}
       aria-label={title}
+      aria-describedby={descriptionId}
       onclick={() => onSelect?.({ entityId })}
     >
+      <span id={descriptionId} hidden>{zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })}</span>
       {#if header !== undefined}
         <!-- Every part below is absolutely positioned from the shared
              layout's inline offsets (review pass 4): the CSS border is
@@ -240,8 +220,8 @@
             kicker={header.kicker}
             title={header.title}
             subtitle={header.subtitle}
-            iconName={icon}
-            iconGlyph={iconGlyph}
+            iconName={layout.icon.name}
+            iconGlyph={layout.icon.glyph}
             headerTextWidth={header.headerTextWidth}
             headerBlockHeight={header.headerBlockHeight}
             subtitleWidth={subtitleWidth}
@@ -272,7 +252,7 @@
           {/if}
           <div class="st-diagramZone-footer" style={footerStyle}>
             {#each header.footer as line, footerIndex (footerIndex)}
-              <span class="st-diagramZone-footerLine">{line.text}</span>
+              <span class="st-diagramZone-footerLine" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
             {/each}
           </div>
         {/if}
@@ -300,7 +280,7 @@
     background: var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramZone-text, var(--st-semantic-text-primary));
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramZone--center {
     /* Owner variant: every text slot centred inside its allocation. */
@@ -310,12 +290,6 @@
      independently of the tint (owner criterion 5). */
   .st-diagramZone--proposed {
     border-style: dashed;
-  }
-  /* Refusal state (overflow = refusal): no normal frame, a dashed
-     placeholder the host can see via data-zone-refused on the wrapper. */
-  .st-diagramZone--refused {
-    border-style: dashed;
-    background: transparent;
   }
   .st-diagramZone-header {
     /* top/left/right/height come from the shared layout inline; the CSS

@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:a6bf4e9578eed858a9e654d60c252591cb613a8f692f889dc61c95ebab1b994c",
-  "entryDigest": "sha256:ad807aeb6077f8f8db44bf71bae643f6da2b9f301270273a50e8fc87dc8f16b6",
+  "digest": "sha256:4a115b2aa5bdcf3c1a06378d814e3c08b2be0b83b8c68de525a6891a31fdddbc",
+  "entryDigest": "sha256:61302c78df0f366a342470168ec9a63df0afc10cc57eb95d2b05fb3ac6cb6322",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -365,7 +365,7 @@
         "declarationPath": "packages/components-vue/dist/ColumnPyramidChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

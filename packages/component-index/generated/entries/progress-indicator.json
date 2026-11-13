@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressIndicator.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Step sequence with complete/current/upcoming status.",
     "fr": "Suite d’étapes avec statut complete/current/upcoming."
   },
-  "digest": "sha256:8b05a5fdb80056f79fc9e50958d880eb4f86ede79fcd6ebaafc0c9e16b4e7fb8",
+  "digest": "sha256:922995afe02c5129af686de4e44727ef06f8a616781d2deea4562c5f1ecb26c1",
   "displayName": "ProgressIndicator",
   "format": "component-entry/v1",
   "frameworks": [

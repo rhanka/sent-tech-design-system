@@ -58,7 +58,7 @@ describe("layout cache", () => {
     const first = cache.layout(document, options);
     expect(cache.layout(document, {
       ...options, rowPack: { targetAspect: 1.78, tallBias: 1.6, emptyPenaltyWeight: 0.4, orientationHysteresis: 0.08 },
-      metrics: { rowGapInline: 24, rowGapBlock: 24, gapInlineMax: 32, gapBlockMax: 32 },
+      metrics: { rowGapInline: 96, rowGapBlock: 72, gapInlineMax: 240, gapBlockMax: 240 },
     })).toBe(first);
     expect(run).toHaveBeenCalledTimes(1);
   });
@@ -192,7 +192,7 @@ describe("layout cache", () => {
     const probe = createLayoutCache();
     const result = probe.layout(document, options);
     if (result.status !== "laid-out") throw new Error("refused");
-    const size = Buffer.byteLength(canonicalise(result.view)) + Buffer.byteLength("null") * 2;
+    const size = Buffer.byteLength(canonicalise(result.view)) + Buffer.byteLength("null") * 4;
     expect(Buffer.byteLength(canonicalise(result.view))).toBeGreaterThan(canonicalise(result.view).length);
     expect(probe.stats().bytes).toBe(size);
     const cache = createLayoutCache({ maxBytes: size });
