@@ -81,9 +81,9 @@ function handleMenuSelect(item: MenuActionItem, path?: string[]) {
   } else {
     emit("select", item);
   }
-  // Hosts close fully after a leaf (never on a parent: parents never
-  // reach here because the Menu opens the sub-menu instead).
-  setOpen(false);
+  // Cascade Menu owns closing and modality-specific focus via requestClose.
+  // Flat leaves retain the host's legacy close.
+  if (path === undefined) setOpen(false);
 }
 
 function onTriggerKeyDown(event: KeyboardEvent) {
