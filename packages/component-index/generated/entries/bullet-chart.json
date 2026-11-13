@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BulletChart.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BulletChart.ts",
-      "version": "0.39.0"
+      "version": "0.39.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Bullet graph: measure vs target with qualitative range bands.",
     "fr": "Bullet graph : mesure vs cible avec bandes qualitatives."
   },
-  "digest": "sha256:d50befcea7d4c618e01e13211c6f727f6fe9509f3c27e987480cce825d49b418",
+  "digest": "sha256:dc8eaabe4561b63cf1ba6587095f494295f03968a5dc82df0d1c4b4341026bf8",
   "displayName": "BulletChart",
   "format": "component-entry/v1",
   "frameworks": [

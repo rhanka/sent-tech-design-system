@@ -5,26 +5,26 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:794c31facdf54f98ec38859b0a85ac215c90e460d094fa5ca881ab3eee756097",
+      "digest": "sha256:fc62dd7896739fd21cc839a997596ab2d7bc02ada80e3ac07b29a0a975887f2b",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DiagramZone.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
-      "digest": "sha256:daeb43fca99f25bec9dcd037f7126a2fcae7b16738f3df917e2b43fc6a1d456d",
+      "digest": "sha256:52183d4950a23098020184a256ceadeb68766c0a53279d58fb37a942fabe07f0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DiagramZone.vue",
-      "version": "0.39.0"
+      "version": "0.39.1"
     }
   ],
   "description": {
     "en": "Foldable diagram wrapper card: collapsed, the 460×200 atomic card with a “+” button; expanded, frame with header, rule and child cards.",
     "fr": "Carte enveloppante pliable de diagramme : repliée, la carte atomique 460×200 avec bouton « + » ; dépliée, cadre avec en-tête, filet et cartes enfants."
   },
-  "digest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
+  "digest": "sha256:0a5fc3b6b49b136381eb7d712876bdd80ae46826155c7135d37bc8c0f4ed20cf",
   "displayName": "DiagramZone",
   "format": "component-entry/v1",
   "frameworks": [

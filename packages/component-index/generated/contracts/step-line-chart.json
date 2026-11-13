@@ -1,8 +1,8 @@
 {
   "componentId": "step-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:cb1e5528dcd957f4d239c9e940bf8024e710f55b64a25e81f3117526a50b16bb",
-  "entryDigest": "sha256:a2bd3e1bec77bcbdfcae5a3eea0eb15950f40a91d6d2e009dcf9e2f1e96b9a7d",
+  "digest": "sha256:7df86e2c01b206789f71f979c78ebd02d6c6934cf196d80777425d74cd7c6b26",
+  "entryDigest": "sha256:940afc4f1334c88f007cffaec636784a74705757feddf088480529999bc68e1f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/StepLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepLineChartProps",
-        "version": "0.40.0"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -342,7 +342,7 @@
         "declarationPath": "packages/components-vue/dist/StepLineChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepLineChartProps",
-        "version": "0.39.0"
+        "version": "0.39.1"
       },
       "status": "complete",
       "unresolved": [],

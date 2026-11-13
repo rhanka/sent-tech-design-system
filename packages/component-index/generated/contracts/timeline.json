@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:26ea907f982ed3b5d7fb52a4bb22459ec49a74aa360aee187175cd7e0910906b",
-  "entryDigest": "sha256:3b36c07a260f8ce8fc1ac5e2d905b3951946152da35d7937a5733250de8047f0",
+  "digest": "sha256:aa4b49c56c53779814b4dd0d239173d69ad9cbfe969af1cd70464694e2d9e18e",
+  "entryDigest": "sha256:912469a5350822a5bb1ca4cccc51da0f0d2d212e60ef89e62ec218233308f8f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/Timeline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineProps",
-        "version": "0.40.0"
+        "version": "0.40.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -313,7 +313,7 @@
         "declarationPath": "packages/components-vue/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimelineProps",
-        "version": "0.39.0"
+        "version": "0.39.1"
       },
       "status": "complete",
       "unresolved": [],

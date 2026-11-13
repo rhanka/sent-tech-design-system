@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/diagram-canvas",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Headless diagram scenes, layout, hit testing and pure presentation models/SVG helpers. No DOM or framework.",
   "publishConfig": {
     "access": "public"

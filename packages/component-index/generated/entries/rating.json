@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Rating.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Rating.ts",
-      "version": "0.39.0"
+      "version": "0.39.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Star rating, read-only or interactive, with half-stars.",
     "fr": "Note par étoiles, lecture seule ou interactive, demi-étoiles."
   },
-  "digest": "sha256:de56d31ec816cb582c62d1cc2363af7b77109d180a37d8c333670086f7c3ae14",
+  "digest": "sha256:a768959f8249267a80b5eeff55d56b82e48bd1804ddacb0c8c49bd8be7bf9a2e",
   "displayName": "Rating",
   "format": "component-entry/v1",
   "frameworks": [

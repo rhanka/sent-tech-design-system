@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DashboardGrid.svelte",
-      "version": "0.40.0"
+      "version": "0.40.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DashboardGrid.ts",
-      "version": "0.39.0"
+      "version": "0.39.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Serializable panel grid on twelve columns.",
     "fr": "Grille de panneaux sérialisable sur douze colonnes."
   },
-  "digest": "sha256:49c8524f110fa6fd896cfbbf8600e15b6ef95f3ba3138d39eba37ea821fbd37d",
+  "digest": "sha256:5b66af5e5058c72d0bc60802c0e771bde427fae2d03b7b9f94e4a476a806ff64",
   "displayName": "DashboardGrid (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [
