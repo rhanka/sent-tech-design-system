@@ -730,3 +730,8 @@ export type { GraphCanvasProps } from './GraphCanvas.vue';
 export { useGraphEngine } from './useGraphEngine.js';
 export type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec } from './diagramCardModel.js';
 export type { SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from './diagramSceneModel.js';
+
+export { default as LabelledIconButton } from "./LabelledIconButton.vue";
+export type { LabelledIconButtonProps } from "./LabelledIconButton.vue";
+export { default as WebFrame } from "./WebFrame.vue";
+export type { WebFrameProps } from "./WebFrame.vue";

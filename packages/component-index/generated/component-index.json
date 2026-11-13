@@ -1,11 +1,11 @@
 {
   "counts": {
     "byRenderable": {
-      "doc-only": 215,
+      "doc-only": 218,
       "https": 0,
       "mcp": 0
     },
-    "entries": 215
+    "entries": 218
   },
   "entries": [
     {
@@ -1137,6 +1137,31 @@
         "vue": "match"
       },
       "path": "entries/combobox.json",
+      "producerId": "sentropic-ds",
+      "renderable": "doc-only",
+      "scope": "generic",
+      "status": "documented",
+      "visibility": "public"
+    },
+    {
+      "category": "chat",
+      "componentId": "composer-editor",
+      "dataClass": "public-safe",
+      "deliveryChannels": [
+        "source"
+      ],
+      "digest": "sha256:3bc9fb5d06c2f793a36c1d87ef7e3aeec5513bb8fb204129e687aac8ec1be8c8",
+      "frameworks": [
+        "svelte",
+        "vue"
+      ],
+      "parity": {
+        "angular": "missing",
+        "react": "missing",
+        "svelte": "source-of-truth",
+        "vue": "match"
+      },
+      "path": "entries/composer-editor.json",
       "producerId": "sentropic-ds",
       "renderable": "doc-only",
       "scope": "generic",
@@ -2595,7 +2620,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:39596381b6dd87c96eec6ff89ed7470ab73df58b1fb6d6e2ead8be590a158f0a",
+      "digest": "sha256:51d98d1072fbb53f12b02f3fd97f2937421fee6e4b7210412d69a44081464e9d",
       "frameworks": [
         "svelte",
         "react",
@@ -2784,15 +2809,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:668c7b38dff43b8920baaddc13325227805563ba639f277c71a072397e5e5692",
+      "digest": "sha256:e4ec513ce5322663c5f9ce797c5a8569837d9e596358142a873d4dd8c8346101",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/labelled-icon-button.json",
       "producerId": "sentropic-ds",
@@ -2930,6 +2956,31 @@
         "vue": "match"
       },
       "path": "entries/loading-state.json",
+      "producerId": "sentropic-ds",
+      "renderable": "doc-only",
+      "scope": "generic",
+      "status": "documented",
+      "visibility": "public"
+    },
+    {
+      "category": "feedback",
+      "componentId": "lock-presence-badge",
+      "dataClass": "public-safe",
+      "deliveryChannels": [
+        "source"
+      ],
+      "digest": "sha256:bfab98d3921f1f8e66cb7369021cb87a6b0b4bf5f1bd7a89c4757c5d85a958bd",
+      "frameworks": [
+        "svelte",
+        "vue"
+      ],
+      "parity": {
+        "angular": "missing",
+        "react": "missing",
+        "svelte": "source-of-truth",
+        "vue": "match"
+      },
+      "path": "entries/lock-presence-badge.json",
       "producerId": "sentropic-ds",
       "renderable": "doc-only",
       "scope": "generic",
@@ -4091,6 +4142,31 @@
         "vue": "match"
       },
       "path": "entries/ribbon-chart.json",
+      "producerId": "sentropic-ds",
+      "renderable": "doc-only",
+      "scope": "generic",
+      "status": "documented",
+      "visibility": "public"
+    },
+    {
+      "category": "form",
+      "componentId": "rich-text-editor",
+      "dataClass": "public-safe",
+      "deliveryChannels": [
+        "source"
+      ],
+      "digest": "sha256:23a024f0f82e90c202e21bb09214414ded13bdf871cf9afdea3c5fa0f46e0903",
+      "frameworks": [
+        "svelte",
+        "vue"
+      ],
+      "parity": {
+        "angular": "missing",
+        "react": "missing",
+        "svelte": "source-of-truth",
+        "vue": "match"
+      },
+      "path": "entries/rich-text-editor.json",
       "producerId": "sentropic-ds",
       "renderable": "doc-only",
       "scope": "generic",
@@ -5714,13 +5790,15 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
-      "frameworks": [],
+      "digest": "sha256:96c4605c19b1eeba62227e647fb163130afbd6f94847ff9770a429d1f3f2c01b",
+      "frameworks": [
+        "vue"
+      ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "missing",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/web-frame.json",
       "producerId": "sentropic-ds",
@@ -5790,6 +5868,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:4e0f6ec8cde778eddaf7040c4b167728b269be69f7976f42660cad4c0e82914c",
-  "sourceCommit": "1c998cfe4d554acf43c56dbbe8921f0fca0993cf"
+  "registryRevision": "sha256:1ff609bbd6c8ba9728306d3f74be70e54d4336944f1d567ac3f3972b73b21535",
+  "sourceCommit": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e"
 }

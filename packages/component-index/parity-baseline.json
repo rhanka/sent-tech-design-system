@@ -25,7 +25,7 @@
     "labelled-icon-button": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "link": {
@@ -427,7 +427,7 @@
     "web-frame": {
       "svelte": "missing",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "time-series-line-chart": {
@@ -1287,6 +1287,24 @@
       "react": "match",
       "vue": "match",
       "angular": "match"
+    },
+    "rich-text-editor": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
+    "composer-editor": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
+    "lock-presence-badge": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
     }
   },
   "gaps": [
@@ -1305,10 +1323,10 @@
       "parity": {
         "svelte": "missing",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "Documented embed frame; value-exported from dataviz svelte/react/vue (lib/ObjectLayers); absent from dataviz-angular and from all component packages."
+      "reason": "Vue component-package port is present; Svelte and React retain dataviz deliveries. Native component-package parity remains missing for Svelte, React and Angular."
     },
     {
       "componentId": "time-series-line-chart",
@@ -1355,10 +1373,40 @@
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "CA-L1 labelled icon button (lot feat/as1-comment-mode): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "rich-text-editor",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "composer-editor",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "lock-presence-badge",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
     }
   ],
   "barrelOnly": {
