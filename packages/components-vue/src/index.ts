@@ -285,8 +285,8 @@ export type {
   StatusHistoryBucket,
   StatusHistorySeries,
 } from "./StatusHistoryChart.js";
-export { EventFeedPanel } from "./EventFeedPanel.js";
-export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
+export { default as EventFeedPanel } from "./EventFeedPanel.vue";
+export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.vue";
 export { VectorFieldChart } from "./VectorFieldChart.js";
 export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.js";
 export { default as ContourChart } from "./ContourChart.vue";
