@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:d6eb54d2ed78aaca27777bc1d1ff42198dd429c16a24b9e96bd24973cdd38308",
-  "entryDigest": "sha256:2d8b631e387cda9a072d375dea244161f32c3af9015c6d57d83f88198add6f6c",
+  "digest": "sha256:24885e9c2753fff892afb1dcefc6bcd95d8bc187edc3cdf95f86682d5d254eee",
+  "entryDigest": "sha256:b7f0f91cea403c0b6fe4d73c24d8cbede77dbeb253be3f1dfe3d774162c301e2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageStatusBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -245,7 +245,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5fe2fcd6e665e716cfcbfea73a1131fa6643a77ab9b2974861987fbc691d8eb0",
+        "declarationDigest": "sha256:63be4c0ebc74b6a9dbd0f544ba878f428a525d68c5c782c167397c80cd8633f9",
         "declarationPath": "packages/components-vue/dist/MessageStatusBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",

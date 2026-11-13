@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Link.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:01f301dff5307bbd38b4f84b04c4e6c038f8ff13eb894e436f6619a6716f2946",
+  "digest": "sha256:745bf79df49e985cacae3d3fd50fec485cc107e815bcf4acdc0e45bd46d96d31",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [
