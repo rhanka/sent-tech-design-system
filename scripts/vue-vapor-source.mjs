@@ -114,6 +114,29 @@ export function sfcSafety(source, filename = 'Component.vue') {
   for (const statement of ast.statements) if (ts.isVariableStatement(statement)) for (const declaration of statement.declarationList.declarations) {
     if (declaration.initializer && ts.isCallExpression(declaration.initializer) && attrsCalls.has(declaration.initializer.expression.getText(ast))) attrs.add(declaration.name.getText(ast));
   }
+  // Follow render-time helpers and rest bindings as well as direct $attrs.
+  const bindings = new Map();
+  function collectBindings(node) {
+    if (ts.isVariableDeclaration(node) && node.initializer) {
+      if (ts.isIdentifier(node.name)) bindings.set(node.name.text, node.initializer);
+      if (ts.isObjectBindingPattern(node.name)) for (const entry of node.name.elements) {
+        if (entry.dotDotDotToken && ts.isIdentifier(entry.name)) bindings.set(entry.name.text, node.initializer);
+      }
+    }
+    if (ts.isFunctionDeclaration(node) && node.name && node.body) bindings.set(node.name.text, node.body);
+    ts.forEachChild(node, collectBindings);
+  }
+  collectBindings(ast);
+  function dependsOnAttrs(node, seen = new Set()) {
+    if (ts.isIdentifier(node)) {
+      if (attrs.has(node.text)) return true;
+      if (seen.has(node.text) || !bindings.has(node.text)) return false;
+      return dependsOnAttrs(bindings.get(node.text), new Set([...seen, node.text]));
+    }
+    let found = false;
+    ts.forEachChild(node, child => { found ||= dependsOnAttrs(child, seen); });
+    return found;
+  }
   const ownedStyleLast = ast.statements.some(node => ts.getJSDocTags(node).some(tag => tag.tagName.text === 'attrsStyle' && tag.comment?.trim() === 'owned-last'));
   const hasAttrsStyle = node => {
     let found = false;
@@ -165,6 +188,16 @@ export function sfcSafety(source, filename = 'Component.vue') {
     }
   }
   templateVisit(descriptor.template?.ast);
+  let forwardsAttrs = false;
+  function attrsPath(node, ancestorForwards = false) {
+    if (!node) return;
+    const forwards = node.type === 1 && node.props.some(prop => prop.type === 7 && prop.name === 'bind' && !prop.arg && prop.exp
+      && dependsOnAttrs(ts.createSourceFile('attrs.ts', `(${prop.exp.content})`, ts.ScriptTarget.Latest, true)));
+    if (forwards && ancestorForwards) errors.push('attrs forwarded on ancestor and descendant; choose one target per rendered path');
+    forwardsAttrs ||= forwards;
+    for (const child of node.children ?? []) attrsPath(child, ancestorForwards || forwards);
+  }
+  attrsPath(descriptor.template?.ast);
   let usesAttrs = /\$attrs\b/.test(source), inheritFalse = false;
   function visit(node) {
     if (ts.isVariableDeclaration(node) && node.initializer && ts.isCallExpression(node.initializer)) {
@@ -283,6 +316,8 @@ export function sfcSafety(source, filename = 'Component.vue') {
     }
   }
   if (usesAttrs && !inheritFalse) errors.push('explicit attrs require defineOptions({ inheritAttrs: false })');
+  const rejectsAttrs = ast.statements.some(node => ts.getJSDocTags(node).some(tag => tag.tagName.text === 'attrs' && /^none\b/.test(tag.comment ?? '')));
+  if (inheritFalse && !forwardsAttrs && !rejectsAttrs) errors.push('unforwarded attrs; forward attrs or document intentional rejection with @attrs none');
   for (const event of events) {
     const callback = 'on' + event.replace(/(^|-)(\w)/g,(_,dash,c)=>c.toUpperCase());
     if (callbacks.has(callback)) errors.push(`double notification: ${callback} and emit('${event}')`);

@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:5244ecf9816ad64660a296d8a46de4a945bd875b2d68df6b75fe5f0bc97ae81e",
+  "contractsRevision": "sha256:e0f9f1bbb0cabc8fe9533241eb465f8af6da7e9233ebbae9bbee5f24e0c652ee",
   "counts": {
     "byFramework": {
       "angular": {
@@ -567,8 +567,8 @@
         "vue": "partial"
       },
       "componentId": "composer-editor",
-      "contractDigest": "sha256:89029aa878c0e331f2b80054bdf8c38d7188717b20647ae0796234680a36cf43",
-      "entryDigest": "sha256:ca38ce2a7a0cbe03958f8adf1f8645ea84ce9f2e6c05b17be3496416542f72a9",
+      "contractDigest": "sha256:61cc1eab94a23a2fd84f1a26103a7aa903beb6962cc7472d357592112ffbfbcf",
+      "entryDigest": "sha256:31b15569c3827df421c4b9e732ff482aa496983db1ac7f152cfbe6d435c406b6",
       "path": "contracts/composer-editor.json",
       "producerId": "sentropic-ds"
     },
@@ -866,8 +866,8 @@
         "vue": "complete"
       },
       "componentId": "drawer",
-      "contractDigest": "sha256:19de25eb36151a9ca57e7d0776da00f1ce0cd461407538b9488c3a636cfe4b31",
-      "entryDigest": "sha256:19a4d42ec6116ea51f6d6c583b145c8ae738f9233ad33eff57d5275c17a67ec5",
+      "contractDigest": "sha256:97118227c7e2507ec46f41bc59e735365f1c8212a737d871a3d5f3c3e756e0b9",
+      "entryDigest": "sha256:6ffc9e09f3e823ba7f207717c618f315b0925b8f94a0d2423ff8058f21f3bf8f",
       "path": "contracts/drawer.json",
       "producerId": "sentropic-ds"
     },
@@ -1555,8 +1555,8 @@
         "vue": "complete"
       },
       "componentId": "modal",
-      "contractDigest": "sha256:45d3685276885268c382bd79700703a9abeeb5a65939ff00cff8adb68d0c992c",
-      "entryDigest": "sha256:d49c32eb5010f508b45e0e852f3bb1e4787464e29516f31233ceb80179b74ccf",
+      "contractDigest": "sha256:e832a4c58bd72964a4aa62cc3f925b3e05f120c3a96f9815b558edc9d15fd88c",
+      "entryDigest": "sha256:112eaa93dd52c4f2cd7cc5c5eb8bd08ddee9bb3dff82cb8d7161d21cac9aea08",
       "path": "contracts/modal.json",
       "producerId": "sentropic-ds"
     },
@@ -2010,8 +2010,8 @@
         "vue": "partial"
       },
       "componentId": "rich-text-editor",
-      "contractDigest": "sha256:7f378b4b1fe92155c353de4db724833c82d1b2c8c5d98a75beb8f565a26fd56c",
-      "entryDigest": "sha256:83480aae64b2891011480b98e86e20185f8b71f9619ac720f0b5c5e27ecd6664",
+      "contractDigest": "sha256:9d82cb16aae6f845ce1d413523f59e52326f0cda63d6fbce5aedc4d9fdc4be8d",
+      "entryDigest": "sha256:02ec1fe6f788f38ad2fc746226021ad860caf314803d9e24c44dfa17e3a5248e",
       "path": "contracts/rich-text-editor.json",
       "producerId": "sentropic-ds"
     },
@@ -2863,5 +2863,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "3e53293d1b350017af16c8b00787c5447116765f"
+  "sourceCommit": "c25210e7efe7e28d3bcb9c4c175666f5a05f81f1"
 }
