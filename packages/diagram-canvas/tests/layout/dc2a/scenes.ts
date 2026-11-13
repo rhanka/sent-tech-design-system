@@ -133,6 +133,7 @@ export const PINNED_ADVANCE: Readonly<Record<TextRole, number>> = {
   subtitle: 13,
   "legend-label": 13,
   "edge-label": 10,
+  "flow-badge": 8,
 };
 export const PINNED_LINE_HEIGHT: Readonly<Record<TextRole, number>> = {
   kicker: 29,
@@ -143,6 +144,7 @@ export const PINNED_LINE_HEIGHT: Readonly<Record<TextRole, number>> = {
   subtitle: 31,
   "legend-label": 31,
   "edge-label": 22,
+  "flow-badge": 20,
 };
 
 export const pinnedMeasurer: LineMeasurer = (request: MeasureRequest): LineLayout => {

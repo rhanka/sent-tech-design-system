@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Tile",
+  "sourceRevision": "6ea68b75df3d3630a7ae8e1d611043cedfabd8e8",
+  "source": "src/Tile.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-tile st-tile--static\"><span class=\"st-tile__content\"><span class=\"st-tile__title\">Title</span><span class=\"st-tile__description\">Desc</span></span></div>"
+    },
+    {
+      "id": "clickable-link",
+      "html": "<a class=\"st-tile st-tile--clickable\" href=\"https://example.com\"><span class=\"st-tile__content\"><span class=\"st-tile__title\">Link</span></span></a>"
+    },
+    {
+      "id": "clickable-button",
+      "html": "<button class=\"st-tile st-tile--clickable st-tile--disabled\" disabled=\"\" type=\"button\"><span class=\"st-tile__content\"><span class=\"st-tile__title\">Go</span></span></button>"
+    },
+    {
+      "id": "selectable",
+      "html": "<label class=\"st-tile st-tile--selectable st-tile--selected\"><input checked=\"\" class=\"st-tile__input\" type=\"checkbox\"><span class=\"st-tile__content\"><span class=\"st-tile__title\">Pick</span></span></label>"
+    },
+    {
+      "id": "rich-title",
+      "html": "<div class=\"st-tile st-tile--static\"><span class=\"st-tile__content\"><span class=\"st-tile__title\"><strong>Rich</strong></span><span class=\"st-tile__description\"><em>Desc</em></span></span></div>"
+    },
+    {
+      "id": "default-slot-wins",
+      "html": "<div class=\"st-tile st-tile--static\"><span class=\"st-tile__content\">Body</span></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-tile st-tile--static consumer\" data-bench=\"tile\" style=\"color:red;\"><span class=\"st-tile__content\"><span class=\"st-tile__title\">Custom</span></span></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-tile st-tile--static\"><span class=\"st-tile__content\"></span></div>"
+    }
+  ],
+  "sourceSha256": "168f547ef46fcab36ab63d9bdfb59b6320ced3921aa3e135b64545ef08e815ff",
+  "fixtureSha256": "b1e143e8728b04d5722f4d70070cbe3c85bd6efba3200a2a7f6387d6f76681a5",
+  "publicExports": [
+    {
+      "name": "Tile",
+      "typeOnly": false
+    },
+    {
+      "name": "TileProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TileVariant",
+      "typeOnly": true
+    }
+  ]
+}

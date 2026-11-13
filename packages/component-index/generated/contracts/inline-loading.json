@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:ff995a9e0421d75697e40ad11ea3328837802cb42f3cc98bf709f45fee609de4",
-  "entryDigest": "sha256:cd08aef480e538c1ba89ed21a9aba58ea2990e5bf77707a4243f834e14accdc7",
+  "digest": "sha256:6e4a7d78b1bffc9e15cf006118f218b33c07129df283692520880128b8161311",
+  "entryDigest": "sha256:71026f7a91b1a9fb2b0935af634ca7e5b5b871e153097831a71dc7b1c91e581f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -144,7 +144,7 @@
         "declarationPath": "packages/components-svelte/dist/InlineLoading.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InlineLoadingProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -155,8 +155,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -187,13 +186,17 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ee2a574c72258fe512a70948750726e2af22ad62d2529890a8ec79b6c35d8c92",
-        "declarationPath": "packages/components-vue/dist/InlineLoading.d.ts",
+        "declarationDigest": "sha256:6d26c6bfd79e6327fcb0be2fbf24ece918d1c102aebd611aa5460347e1f2acf0",
+        "declarationPath": "packages/components-vue/dist/InlineLoading.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineLoadingProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

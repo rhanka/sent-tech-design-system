@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TreegraphChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:35d1e7ae7874f912d3740704b747393fe3c4e2e97baf67c52c2ebd96fc950979",
+      "digest": "sha256:8f52f6df7f146e8ac628b675d247d24f75d6c62b4fee3df6a0de811df633321b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/TreegraphChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/TreegraphChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Horizontal tree/dendrogram (left→right): circular hierarchical nodes by depth, Bézier-curve links, leaves spread vertically.",
     "fr": "Arbre/dendrogramme horizontal (gauche→droite) : nœuds circulaires hiérarchiques par profondeur, liens en courbes de Bézier, feuilles réparties verticalement."
   },
-  "digest": "sha256:a1af5ad546c82c9eabb7d2364be089f5caaaabdb7055efe18f0c887011287d46",
+  "digest": "sha256:4c3a82d29b30fe0a593410749b889777e1ab0c6f1c946e33c6156dc4133d3813",
   "displayName": "TreegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:3f65228ef13c6b2627a8fed370d318b5dc5ee3bc3681b65370817f87d068e394",
-  "entryDigest": "sha256:a6ed9322928ec6c6df5067babacaf5d91426f1a26ed8649773f74441a419c376",
+  "digest": "sha256:c98629a371666363fa12eada2b31f4d8e6a07c2babf1d2160de249c2accd91d9",
+  "entryDigest": "sha256:81a58f7e5b97f10764a487fff0c14810a3acd947592cf06c1a83c790e700ba3b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/Density2DChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "Density2DChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -319,11 +319,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:0e3dae34eff4699b0321e648d613235c3a4fde0073fa43f209307ab5bde89f69",
-        "declarationPath": "packages/components-vue/dist/Density2DChart.d.ts",
+        "declarationDigest": "sha256:6936ba897c32b2dcb54c6792490239b5fce0226df52cd541b5dc4dfa4daa762f",
+        "declarationPath": "packages/components-vue/dist/Density2DChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "Density2DChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { HeikinAshiChart } from "./HeikinAshiChart.js";
+import HeikinAshiChart from "./HeikinAshiChart.vue";
 
 // Données OHLC brutes ; les valeurs Heikin-Ashi sont RECALCULÉES.
 // Lun : close brut 108 ≥ open 100 (haussier brut) MAIS haClose 103.25 < haOpen 104 → baisse HA.

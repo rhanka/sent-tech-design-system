@@ -1,6 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { WordCloudChart, type WordCloudChartWord } from "./WordCloudChart.js";
+import WordCloudChart from "./WordCloudChart.vue";
+import { type WordCloudChartWord } from "./WordCloudChart.vue";
 
 const words: WordCloudChartWord[] = [
   { text: "svelte", weight: 90 },

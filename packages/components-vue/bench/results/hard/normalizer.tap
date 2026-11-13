@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: attribute order, indentation, entities and Vue markers are canonical
+ok 1 - attribute order, indentation, entities and Vue markers are canonical
+  ---
+  duration_ms: 52.857865
+  type: 'test'
+  ...
+# Subtest: counter IDs and useId IDs match while reference relationships survive
+ok 2 - counter IDs and useId IDs match while reference relationships survive
+  ---
+  duration_ms: 5.771355
+  type: 'test'
+  ...
+# Subtest: static IDs, classes, text, styles, attributes and element order remain significant
+ok 3 - static IDs, classes, text, styles, attributes and element order remain significant
+  ---
+  duration_ms: 30.771257
+  type: 'test'
+  ...
+# Subtest: HARD generated identities normalize while explicit names and relationships remain distinct
+ok 4 - HARD generated identities normalize while explicit names and relationships remain distinct
+  ---
+  duration_ms: 3.525857
+  type: 'test'
+  ...
+# Subtest: SVG geometry and namespaced attributes survive normalization
+ok 5 - SVG geometry and namespaced attributes survive normalization
+  ---
+  duration_ms: 3.020256
+  type: 'test'
+  ...
+# Subtest: worked examples compile with the house options in classic and Vapor
+ok 6 - worked examples compile with the house options in classic and Vapor
+  ---
+  duration_ms: 202.355265
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1227.971545

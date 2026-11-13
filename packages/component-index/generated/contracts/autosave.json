@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:9ca00156504050b745888baadf871c81ebdd4fbf4b9e396a0a1f789f1182860a",
-  "entryDigest": "sha256:34a56222ca1220ca32c92ecfe460ab25cad31c526fe4d8c7ac0c446049397c58",
+  "digest": "sha256:b71defcac40abf492a37bc76950264036fd76f66769a6b7a018b6820d0f3668f",
+  "entryDigest": "sha256:3f740abaa3672497e60bba5891d1c061e2cba283ea37e60eef5b6b132b2dde69",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -386,16 +386,15 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:53978f73f86e3b60f33676555a954468cc4458c7130531a3a5697278d030d046",
-        "declarationPath": "packages/components-vue/dist/Autosave.d.ts",
+        "declarationDigest": "sha256:d5b10afe7bd53fee085ea4c41021bd344f4e7e0c3f7de5a673971a0b5c1972e9",
+        "declarationPath": "packages/components-vue/dist/Autosave.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"retry\": payload not in declaration",
         "event pair: emits \"retry\" and prop \"onRetry\" both listed verbatim"
       ]
     }

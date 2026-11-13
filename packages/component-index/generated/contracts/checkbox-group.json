@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:a3d9a7dcae28ba0eedb083a6a42275f5d85458748a865ac85d04a548d09ccb10",
-  "entryDigest": "sha256:de7a134b3db0e7ae437511a6b14bbc22719bde98962e7cb6e8c7e266af2252dd",
+  "digest": "sha256:c525c1a64db2e3741f7526c2c7863a8431b40106d3e1200c25cb5ff221e5c1e7",
+  "entryDigest": "sha256:7f13791931113bafa98e2517fad6fc9d86a8cf03a70a6d2475bc2389c3db65e4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -324,7 +324,7 @@
         "declarationPath": "packages/components-svelte/dist/CheckboxGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CheckboxGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -342,7 +342,13 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -355,8 +361,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -429,18 +434,21 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:1646eb04000a5f7f38160065d2224af8a4940bf3103409ea4953861d7343857e",
-        "declarationPath": "packages/components-vue/dist/CheckboxGroup.d.ts",
+        "declarationDigest": "sha256:b92d8760050b7e0828c8351bd3401b0de86b15f6c2fc97335d0892afaae3e22c",
+        "declarationPath": "packages/components-vue/dist/CheckboxGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CheckboxGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

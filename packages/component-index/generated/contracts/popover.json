@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:4e095c54038a59d5440cd05f9c61f8bacc0f4acd1583d1b4c62836ad53d832d4",
-  "entryDigest": "sha256:7aaa2398b27b1bc55de89ce0b7f2f12f3d8887f76abbd5b570fe63bb01fa5fbd",
+  "digest": "sha256:a579c1a4e8f51a262ef9c0216eb5d9c81f5b6b750ecde6a729b7427100f7c579",
+  "entryDigest": "sha256:1d8502be7e3c92a751f38e9cc8efa0cec5b8572b7493a9be6d0743a44cba2acd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -190,7 +190,7 @@
         "declarationPath": "packages/components-svelte/dist/Popover.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopoverProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -205,17 +205,18 @@
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -243,26 +244,28 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "content"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "trigger"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:86920c299665657bcb3c6e54cc7d53babc7d108404b8f740111cec9da91e8c72",
-        "declarationPath": "packages/components-vue/dist/Popover.d.ts",
+        "declarationDigest": "sha256:ee510146e1a503cda5694848da93ed3ba6be4f931d85448e58cd293c0b9a833f",
+        "declarationPath": "packages/components-vue/dist/Popover.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopoverProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
       ]

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "ThemeProvider",
+  "sourceRevision": "1c998cfe4d554acf43c56dbbe8921f0fca0993cf",
+  "source": "src/ThemeProvider.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div data-st-theme=\"sent-tech\"><span>Theme content</span></div>"
+    },
+    {
+      "id": "namespace",
+      "html": "<div data-st-theme=\"sent-tech\">Namespaced</div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"consumer\" data-bench=\"theme\" data-st-theme=\"sent-tech\" id=\"tenant\"><strong>Tenant</strong></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div data-st-theme=\"sent-tech\"></div>"
+    }
+  ],
+  "sourceSha256": "d6865bd25a5661959e3c0290be22c8a0c2c89411bbb873add816077784b59576",
+  "fixtureSha256": "11399d5091f4e4047356fa45d29e6424a6aa9b64015603e97d0069f9cc5d2f66",
+  "publicExports": [
+    {
+      "name": "ThemeProvider",
+      "typeOnly": false
+    },
+    {
+      "name": "ThemeProviderProps",
+      "typeOnly": true
+    }
+  ]
+}

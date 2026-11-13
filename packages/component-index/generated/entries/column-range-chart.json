@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColumnRangeChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e75ede05145e99fd0d4892f0f9f67fc981febea72e703d87a593ab2797d0311e",
+      "digest": "sha256:8687221d1d3810a3a81f2cedccbbc545a4143455c607ddd75ba9e2ac4ccaa594",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ColumnRangeChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/ColumnRangeChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:35a2c49a4a50c38f5f3b8827dc4a8144a202c475170a905bc3d82fd7c2fb85b6",
+  "digest": "sha256:1716b2019fe3c8621e99d7faf072a3244f423591ea250481db2f37ef455770ff",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

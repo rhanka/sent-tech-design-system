@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:afea74cf01d4dd149ca1fd383de235b98ec74579780c50ecbfb465648bc167eb",
-  "entryDigest": "sha256:fdef29631d9db41ec1ac75c236341aa2a6236f02815fb810c0b14aa0772487a9",
+  "digest": "sha256:db10ba1df0fb53df8b647d2f4665760e6f8eca535123c8c2e48353816792215d",
+  "entryDigest": "sha256:f13ccefb52c1ab768509a166afa5fade4bc29910244639466a8903737ceccafc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -291,7 +291,7 @@
         "declarationPath": "packages/components-svelte/dist/LollipopChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LollipopChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -385,11 +385,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7ef37b13588fb4c7a87cb9bd1c5205ea285f12bb70f78693fd331dcf17d5cbbe",
-        "declarationPath": "packages/components-vue/dist/LollipopChart.d.ts",
+        "declarationDigest": "sha256:48c422be38c47ea7a774dcd60c89e2e38cd57db88d2c8c7386613475b6474d94",
+        "declarationPath": "packages/components-vue/dist/LollipopChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LollipopChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:36d26e58d30d9a5feb1ffcab5a29b8b959cdbf0726f4dab5d6a492cde3aa375f",
-  "entryDigest": "sha256:8b3658e66f93bb2775162a367d4fc55dce1065d3b6ebeae3df53fc10cec63c7e",
+  "digest": "sha256:f0091fb7cd93cf244e646964f70193461ed9c859e1e45232facf85704aa9aa8a",
+  "entryDigest": "sha256:770b87ca25d769534e7f924eec6ac445b3e8fb3d1f2917705089cbad4549cb7e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -145,7 +145,7 @@
         "declarationPath": "packages/components-svelte/dist/Tooltip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TooltipProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,8 +156,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -173,9 +172,6 @@
             ]
           }
         },
-        "required": [
-          "content"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -186,13 +182,20 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c33f1afa82763ef2fbc308783678034d809e57c14eb38cb40ae26cf368917c0e",
-        "declarationPath": "packages/components-vue/dist/Tooltip.d.ts",
+        "declarationDigest": "sha256:16fd78bff6d4472af957e2edd47345b502c4e28b3f1a489f0d19c85abd8b0640",
+        "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:53f140faa6a522f8cb15a2a79f1df4ca85e232fffda7e8d59dcbda2cdc3dfcbf",
-  "entryDigest": "sha256:3b8353a2d129f14cb9668efc2e2bac7f4a446039f4af63d2d5d7ba535350606f",
+  "digest": "sha256:0724a01115c4e0d3ced64c848010ee2ecf132e1e1de1dd94ec39bac5905ea65c",
+  "entryDigest": "sha256:9fa74a3f6e5510735633723a4727d443373e233c0cf82232dc9197db37b52ae9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -404,7 +404,7 @@
         "declarationPath": "packages/components-svelte/dist/Calendar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CalendarProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -428,10 +428,41 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
         },
         {
-          "name": "monthChange"
+          "name": "monthChange",
+          "payload": {
+            "type": "string"
+          }
         },
         {
           "name": "onChange",
@@ -473,12 +504,64 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": false,
+                "prefixItems": [
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  },
+                  {
+                    "type": [
+                      "string",
+                      "null"
+                    ]
+                  }
+                ],
+                "type": "array"
+              }
+            ]
+          }
         }
       ],
       "limitations": [
@@ -555,28 +638,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2036c4c5e1dfcdb063f1c284f08738ddb04be3bff3a5e59004bac13440b8e17e",
-        "declarationPath": "packages/components-vue/dist/Calendar.d.ts",
+        "declarationDigest": "sha256:ad78162e357245b7e9259dda1794bead0840dc78c05b31da7f91cee57fae5118",
+        "declarationPath": "packages/components-vue/dist/Calendar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CalendarProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"monthChange\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"monthChange\" and prop \"onMonthChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"

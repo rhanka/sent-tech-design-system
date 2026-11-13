@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OrganizationChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:dd6f2277a436b921a46460d036a81eb8d058318125151c9858bcc0f5bf32f92e",
+      "digest": "sha256:8a5e74bd1b8731e358c97001058a0e4d89d458928b30b34d1e043a6a75f45984",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/OrganizationChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/OrganizationChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
     "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
   },
-  "digest": "sha256:03de0dc488235f816f0963512cdb75ca9e4fcb3c34883c1fdffe2420695d4195",
+  "digest": "sha256:810c6990190dd3296b4c1b148ef4be16845cddbc289d0212386b1ab29eb7bd20",
   "displayName": "OrganizationChart",
   "format": "component-entry/v1",
   "frameworks": [

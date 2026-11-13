@@ -1,8 +1,8 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:1c9674a404ef1244a07601faa7324665ee6580ceb55db7a0870b164306e1b2c7",
-  "entryDigest": "sha256:136453358f688fb25a4bf6822179c5b05cdf7107500663c5c6e551f356f2e916",
+  "digest": "sha256:db904da3e8d1f677f9535f160787d7191740bc08ada47d9bfe5af9a66e167e46",
+  "entryDigest": "sha256:d10f84d63766d54ed99521bfc8c42fcb33e35d8d01c8309300996a394eac64d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterPill.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterPillProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -298,11 +298,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d21ddb5c74a81125a82323ac403607344d74167bdbd4f330b830b4c5b5529da7",
-        "declarationPath": "packages/components-vue/dist/FilterPill.d.ts",
+        "declarationDigest": "sha256:2038e6d96fb7bec55ae5547cef4a72de6f45cffc80950bcaabed20745e6e7827",
+        "declarationPath": "packages/components-vue/dist/FilterPill.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterPillProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

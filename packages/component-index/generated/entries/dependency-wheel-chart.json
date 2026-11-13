@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DependencyWheelChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c90ac2d3b50f5704e557a704be169d473160d1b6b0eae002c48d9d7b6af5ae51",
+      "digest": "sha256:20e9c16bb249fa2089e9899456e754d52cdd8abd72af8b4bdfea1b781cfbb958",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/DependencyWheelChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/DependencyWheelChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Dependency wheel: nodes on a circle, weighted ribbons coloured by source.",
     "fr": "Roue de dépendances : nœuds sur un cercle, rubans pondérés colorés par source."
   },
-  "digest": "sha256:f1fafb8d4c867decd56385de65fefecc0cca52fd2614b4713ef35310224eb62f",
+  "digest": "sha256:d789a37e36bf4b158c8a1372de69fba885970a34c1e4a5ba261f147582da0d9a",
   "displayName": "DependencyWheelChart",
   "format": "component-entry/v1",
   "frameworks": [

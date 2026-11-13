@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Container",
+  "sourceRevision": "0f298ffdb7b6728a0b7b215dbc1dfa65e335f759",
+  "source": "src/Container.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-container st-container--lg st-container--padded\">Content</div>"
+    },
+    {
+      "id": "small-unpadded",
+      "html": "<div class=\"st-container st-container--sm\">Small</div>"
+    },
+    {
+      "id": "xl-section",
+      "html": "<section class=\"st-container st-container--xl st-container--padded\"><strong>Extra</strong> wide</section>"
+    },
+    {
+      "id": "full-main",
+      "html": "<main class=\"st-container st-container--full st-container--padded consumer\" data-bench=\"layout\" style=\"color:red;\">Full</main>"
+    },
+    {
+      "id": "md-nopad",
+      "html": "<div class=\"st-container st-container--md st-container--padded\">Medium padded</div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-container st-container--lg st-container--padded\"></div>"
+    }
+  ],
+  "sourceSha256": "a1be1de9c9e4e6d7764f2d9e871c637fcca605aaa64042f3c39b4ba4f545d3fa",
+  "fixtureSha256": "aa0753ad1c59a6515ec074e5ae68dd4b3fb81e66f133f7dfba56c02c222e26d0",
+  "publicExports": [
+    {
+      "name": "Container",
+      "typeOnly": false
+    },
+    {
+      "name": "ContainerProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ContainerSize",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:684fb1487e2766c26fb29dd8617b7b77aa8510e5fc50a200381c1cbd395b7092",
-  "entryDigest": "sha256:3586a7ee79f80b36b23f544cf2c43b2c4360ec64ea4d14dc2bb36f3e3bc895ea",
+  "digest": "sha256:186e7480553847e81b9be3124df535d315dd8a42ca20a4690fe82cb5a9929a89",
+  "entryDigest": "sha256:00e7fa9ac8772ad62f5465afcf6269485695ac64a82b4814e059076ce4463ba7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -220,7 +220,7 @@
         "declarationPath": "packages/components-svelte/dist/StructuredList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StructuredListProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -231,8 +231,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -293,13 +292,52 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "definition",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/StructuredListItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "term",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/StructuredListItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:26ecfe8ad617e6f777f202c4e7ae87d21ea27d8bb606fd0a8089702f9cf14381",
-        "declarationPath": "packages/components-vue/dist/StructuredList.d.ts",
+        "declarationDigest": "sha256:c1bce6d761eb80da6af7427499daac6cbb81231b2c1a6887b31749b21d67159e",
+        "declarationPath": "packages/components-vue/dist/StructuredList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StructuredListProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

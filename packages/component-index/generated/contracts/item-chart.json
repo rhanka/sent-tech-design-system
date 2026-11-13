@@ -1,8 +1,8 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:49e5471852a82da32aca7cca59bd93b42418a7dabd985b4c7ffe718064b31686",
-  "entryDigest": "sha256:5db3f94de95e80f7accb1df2b11578bc9d7f5d938ee26009ba905a73e6d3c06a",
+  "digest": "sha256:6540dd222131ba69976d86bf1c1745060f90b1a1dc0c3fc26345a1437d7b2131",
+  "entryDigest": "sha256:fff11b4ba2ec17ef30185e9db0249f76a7e358bfef1145dee4ebfb2c39833d04",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/ItemChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ItemChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:0a31daee3aa81b310665af0016b6771975909f206f9d3ce81100aba9ed3d27b3",
-        "declarationPath": "packages/components-vue/dist/ItemChart.d.ts",
+        "declarationDigest": "sha256:d6bf93324f95aaa148b2ea053f39778578a98406f7071bb87481b258acd7968d",
+        "declarationPath": "packages/components-vue/dist/ItemChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ItemChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

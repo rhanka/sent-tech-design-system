@@ -1,8 +1,8 @@
 {
   "componentId": "overline",
   "contractSource": "derived",
-  "digest": "sha256:2f976d4573f289c89d60d99ef98d2b9e6060f1883eb4cecde31a9fe1f3cbc095",
-  "entryDigest": "sha256:a3e6e6d7eaccd15ee974b6fe14446129cf522acd319d3a93c0c0a9e00aa75c1b",
+  "digest": "sha256:d2bda74de04142bee58b5b4155f46c7e6195eb1abc792df7517a153ebf83a867",
+  "entryDigest": "sha256:62214ae61651a9c48269f384e7775eb7b072f67283303b9c2d65cc2cb3627327",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -136,7 +136,7 @@
         "declarationPath": "packages/components-svelte/dist/Overline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverlineProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -147,8 +147,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -169,13 +168,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c36370d60cd75f190389548f786a31b3f4c3ffdad3d5d609b6136ff647e8b3b9",
-        "declarationPath": "packages/components-vue/dist/Overline.d.ts",
+        "declarationDigest": "sha256:65259fe6b21ceac3f5f573555fee7729a702c4b5cf0bbffb397830b430b1819b",
+        "declarationPath": "packages/components-vue/dist/Overline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverlineProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

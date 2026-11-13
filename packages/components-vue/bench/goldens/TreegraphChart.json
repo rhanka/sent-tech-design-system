@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "TreegraphChart",
+  "sourceRevision": "ab3ab49dbc085a0e0c49b131e53a45c9fcce4dee",
+  "source": "src/TreegraphChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Tree\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><path class=\"st-treegraphChart__link\" d=\"M 87 180 C 200 180 200 96 313 96\" fill=\"none\"></path><path class=\"st-treegraphChart__link\" d=\"M 87 180 C 200 180 200 264 313 264\" fill=\"none\"></path><path class=\"st-treegraphChart__link\" d=\"M 327 96 C 440 96 440 96 553 96\" fill=\"none\"></path><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"80\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"end\" x=\"69\" y=\"180\">Root</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category3\" cx=\"320\" cy=\"96\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"end\" x=\"309\" y=\"96\">Branch A</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"320\" cy=\"264\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"264\">Branch B</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category3\" cx=\"560\" cy=\"96\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"571\" y=\"96\">Leaf A1</text></g></svg></div><ul aria-label=\"Data values for Tree\" class=\"st-chartDataList\"><li>Root (root)</li><li>Branch A (a) → Root</li><li>Branch B (b) → Root</li><li>Leaf A1 (a1) → Branch A</li></ul></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Single\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"180\">Only node</text></g></svg></div><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>Only node (only)</li></ul></div>"
+    },
+    {
+      "id": "long-labels",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Clipped\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><path class=\"st-treegraphChart__link\" d=\"M 87 180 C 320 180 320 180 553 180\" fill=\"none\"></path><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"80\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"end\" x=\"69\" y=\"180\">A very lo…</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"560\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"571\" y=\"180\">Another e…</text></g></svg></div><ul aria-label=\"Data values for Clipped\" class=\"st-chartDataList\"><li>A very long root node label here (root)</li><li>Another extremely long child node label (child) → A very long root node label here</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Empty\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "custom-size",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Sized\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 800 300\" width=\"100%\"><path class=\"st-treegraphChart__link\" d=\"M 87 150 C 400 150 400 150 713 150\" fill=\"none\"></path><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"80\" cy=\"150\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"end\" x=\"69\" y=\"150\">Root</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"720\" cy=\"150\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"731\" y=\"150\">Child</text></g></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>Root (root)</li><li>Child (c) → Root</li></ul></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-treegraphChart consumer\" data-bench=\"treegraphChart\" style=\"color:red;\"><div aria-label=\"Custom\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"180\">Root</text></g></svg></div><ul aria-label=\"Data values for Custom\" class=\"st-chartDataList\"><li>Root (root)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "35d1e7ae7874f912d3740704b747393fe3c4e2e97baf67c52c2ebd96fc950979",
+  "fixtureSha256": "f66822ba8a1ff348b4d348c682ba624f2dfc79743085b08628009345345d4744",
+  "publicExports": [
+    {
+      "name": "TreegraphChart",
+      "typeOnly": false
+    },
+    {
+      "name": "TreegraphChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TreegraphChartNode",
+      "typeOnly": true
+    },
+    {
+      "name": "TreegraphChartTone",
+      "typeOnly": true
+    }
+  ]
+}

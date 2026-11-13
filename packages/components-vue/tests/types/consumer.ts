@@ -60,3 +60,41 @@ type ZoneEmit = Assert<Equal<InstanceType<typeof VaporZone>['$emit'], InstanceTy
 scene.setZoom('large');
 // @ts-expect-error Required component props must remain required.
 const missingLabel: InstanceType<typeof VaporForceGraph>['$props'] = { nodes: [], edges: [] };
+
+// Rich-content migrations support slot-only callers in both published modes.
+import { Alert, Switch, Toggle, Toggletip, FormGroup, Tooltip } from '@sentropic/design-system-vue';
+import { Alert as VaporAlert, Switch as VaporSwitch, Toggle as VaporToggle, Toggletip as VaporToggletip, FormGroup as VaporFormGroup, Tooltip as VaporTooltip } from '@sentropic/design-system-vue/vapor';
+({} satisfies InstanceType<typeof Alert>['$props']);
+({} satisfies InstanceType<typeof Switch>['$props']);
+({} satisfies InstanceType<typeof Toggle>['$props']);
+({} satisfies InstanceType<typeof Toggletip>['$props']);
+({} satisfies InstanceType<typeof FormGroup>['$props']);
+({} satisfies InstanceType<typeof Tooltip>['$props']);
+({} satisfies InstanceType<typeof VaporAlert>['$props']);
+({} satisfies InstanceType<typeof VaporSwitch>['$props']);
+({} satisfies InstanceType<typeof VaporToggle>['$props']);
+({} satisfies InstanceType<typeof VaporToggletip>['$props']);
+({} satisfies InstanceType<typeof VaporFormGroup>['$props']);
+({} satisfies InstanceType<typeof VaporTooltip>['$props']);
+
+import { EmptyState, NavShell, Notification } from '@sentropic/design-system-vue';
+import { EmptyState as VaporEmptyState, NavShell as VaporNavShell, Notification as VaporNotification } from '@sentropic/design-system-vue/vapor';
+import type { CellDecorationIconProps } from '@sentropic/design-system-vue';
+import type { CellDecorationIconProps as VaporDecorationProps } from '@sentropic/design-system-vue/vapor';
+type DecorationParity = Assert<Equal<CellDecorationIconProps, VaporDecorationProps>>;
+({} satisfies InstanceType<typeof EmptyState>['$props']);
+({} satisfies InstanceType<typeof VaporEmptyState>['$props']);
+type EmptySlotParity = Assert<Equal<InstanceType<typeof EmptyState>['$slots'], InstanceType<typeof VaporEmptyState>['$slots']>>;
+type EmptyTitleSlot = Assert<Equal<'title' extends keyof InstanceType<typeof EmptyState>['$slots'] ? true : false, true>>;
+type EmptyMessageSlot = Assert<Equal<'message' extends keyof InstanceType<typeof VaporEmptyState>['$slots'] ? true : false, true>>;
+type EmptyActionSlot = Assert<Equal<'action' extends keyof InstanceType<typeof VaporEmptyState>['$slots'] ? true : false, true>>;
+type NavSearchSlot = Assert<Equal<'search' extends keyof InstanceType<typeof NavShell>['$slots'] ? true : false, true>>;
+type NavFooterSlot = Assert<Equal<'footer' extends keyof InstanceType<typeof VaporNavShell>['$slots'] ? true : false, true>>;
+type NotificationActions = Assert<Equal<'actions' extends keyof InstanceType<typeof Notification>['$slots'] ? true : false, true>>;
+type VaporNotificationActions = Assert<Equal<'actions' extends keyof InstanceType<typeof VaporNotification>['$slots'] ? true : false, true>>;
+import type { BreadcrumbItem, AccordionItem, DataTableColumn, ChatThreadProps } from '@sentropic/design-system-vue';
+const slotOnlyBreadcrumbs: BreadcrumbItem[] = [{ href: '/' }, { current: true }];
+const slotOnlyPanels: AccordionItem[] = [{ id: 'one', title: 'Panel' }];
+const slotOnlyColumns: DataTableColumn[] = [{ key: 'name' }];
+const slotOnlyMessages: ChatThreadProps = { messages: [{ id: 'one' }] };
+void [slotOnlyBreadcrumbs, slotOnlyPanels, slotOnlyColumns, slotOnlyMessages];

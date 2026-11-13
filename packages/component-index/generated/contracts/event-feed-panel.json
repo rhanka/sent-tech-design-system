@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:8db4a97077824ba1dedfaf0567f41d4e6b3f57e9b21f812fe63c38c46a3f70c6",
-  "entryDigest": "sha256:18b26ab5bff6108541a214988b612fbc134f7896fedfa8f4bed3b33613e77dc2",
+  "digest": "sha256:a0142d6ba70a20078930f8a4806f64ccd58b9a056b244258aa559b489fb58519",
+  "entryDigest": "sha256:72183b43bc64542c676afe1dd3aab1ae1fd39cf9795286dde83c092cd2242d3e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/EventFeedPanel.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EventFeedPanelProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -367,11 +367,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:99364d7ce5bf5efeeb3edaeb37fcb9e60b841f5d896c6988556890c7bfd0b89d",
-        "declarationPath": "packages/components-vue/dist/EventFeedPanel.d.ts",
+        "declarationDigest": "sha256:a93959f38a301f1cb041602d19ff5d063b65e2ef9487f14032793fa88822dfb6",
+        "declarationPath": "packages/components-vue/dist/EventFeedPanel.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EventFeedPanelProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

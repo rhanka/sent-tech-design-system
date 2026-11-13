@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "ContentSwitcher",
+  "sourceRevision": "e2762817d60e3885b6da3708859734fd58637e58",
+  "source": "src/ContentSwitcher.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--md\" role=\"group\"><button aria-pressed=\"true\" class=\"st-contentSwitcher__option st-contentSwitcher__button st-contentSwitcher__option--selected\" type=\"button\">One</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">Two</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" disabled=\"\" type=\"button\">Three</button></div>"
+    },
+    {
+      "id": "selected-value",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--sm\" role=\"group\"><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">One</button><button aria-pressed=\"true\" class=\"st-contentSwitcher__option st-contentSwitcher__button st-contentSwitcher__option--selected\" type=\"button\">Two</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" disabled=\"\" type=\"button\">Three</button></div>"
+    },
+    {
+      "id": "active-id-custom",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--md consumer\" data-bench=\"switcher\" role=\"group\" style=\"color:red;\"><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">One</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">Two</button><button aria-pressed=\"true\" class=\"st-contentSwitcher__option st-contentSwitcher__button st-contentSwitcher__option--selected\" disabled=\"\" type=\"button\">Three</button></div>"
+    },
+    {
+      "id": "fallback-ids",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--md\" role=\"group\"><button aria-pressed=\"true\" class=\"st-contentSwitcher__option st-contentSwitcher__button st-contentSwitcher__option--selected\" type=\"button\">Plain</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" disabled=\"\" type=\"button\">Second</button></div>"
+    },
+    {
+      "id": "unknown-selection",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--lg\" role=\"group\"><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">One</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" type=\"button\">Two</button><button aria-pressed=\"false\" class=\"st-contentSwitcher__option st-contentSwitcher__button\" disabled=\"\" type=\"button\">Three</button></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-contentSwitcher st-contentSwitcher--md\" role=\"group\"></div>"
+    }
+  ],
+  "sourceSha256": "15fa87495b96dd30ec5c72a6279678bc0fb651969a4d0171310ea0e3508c85e9",
+  "fixtureSha256": "6a7bcfa21942f57ee751bdd2cc056286593a4a1da2e141d32132c0e712c29aab",
+  "publicExports": [
+    {
+      "name": "ContentSwitcher",
+      "typeOnly": false
+    },
+    {
+      "name": "ContentSwitcherProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ContentSwitcherItem",
+      "typeOnly": true
+    },
+    {
+      "name": "ContentSwitcherSize",
+      "typeOnly": true
+    }
+  ]
+}

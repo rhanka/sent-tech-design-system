@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:2d041b4a7128944dad8dfc153c519673625498ab3adc4c6a7a0b8a4fdd5d8be4",
-  "entryDigest": "sha256:dd03146a3b9bf7f932296b0a3b31902eae7e8e43d5b0114575fc8a688f69a7ed",
+  "digest": "sha256:d597bbb220fc46e846430031da4efb84fa7faa76767af6837da2d5159bfb4468",
+  "entryDigest": "sha256:e941c468afcbf163f4e45e2903b3af205ebe6cf52a4453ed1a1e589e73800566",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FormGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -152,8 +152,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -164,9 +163,6 @@
           "helperText": {},
           "legend": {}
         },
-        "required": [
-          "legend"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -183,13 +179,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "helperText"
+        },
+        {
+          "name": "legend"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:65441387835a8c524ad1a3dc7c00b9999aa264bc5afa0a3b94cc0e3559cd7f61",
-        "declarationPath": "packages/components-vue/dist/FormGroup.d.ts",
+        "declarationDigest": "sha256:aff4175f6fff246b6c15216130277ce2f1100c9068373a5c093bc6695395d0d1",
+        "declarationPath": "packages/components-vue/dist/FormGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

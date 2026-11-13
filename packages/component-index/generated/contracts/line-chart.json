@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:424d913e59b6a67e7f2e2a71c01e61fab87e64550999af75d89a14975b17729a",
-  "entryDigest": "sha256:d4151da28f51dc8e2944af856160684e031812888b0e8ad5dc8525c9debec194",
+  "digest": "sha256:a16136c0ecbac397d7fe199545edb96fc22f58292356d4a831944f3c0946c67f",
+  "entryDigest": "sha256:9b955d28e7dc6c99136129f824426430ad668410281907154db12b01424792d9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1371,7 +1371,7 @@
         "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LineChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -1843,11 +1843,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d81ed9b512e6e2818e4ed222f598ae800e77dd52c3b1942e1ff7f6711e6d7631",
-        "declarationPath": "packages/components-vue/dist/LineChart.d.ts",
+        "declarationDigest": "sha256:6980bf42b17726ec506ff160780a028cdfd2a0ef99d9c8e8bb186ea7f65612c2",
+        "declarationPath": "packages/components-vue/dist/LineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LineChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

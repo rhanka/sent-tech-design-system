@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:df9839f4704e333e4bbc16c386e7e4afa6ac5dad3b4411f21ebfda1102e3d0c7",
-  "entryDigest": "sha256:6019572101c12e23c2addf8b6a750a884dee10c2cb20ebfe05113129e81f5fc2",
+  "digest": "sha256:689e4173455f300814b95175a8b02bd1b5cf617414c43dce19d2f632848fa2a0",
+  "entryDigest": "sha256:225d5c68b6b2915087f81485d617d1d85c825c79fadc069c6508c0418e0db5cd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1120,7 +1120,7 @@
         "declarationPath": "packages/components-svelte/dist/ScatterPlot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScatterPlotProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -1212,7 +1212,6 @@
                 "type": "string"
               },
               "r": {
-                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
                 "type": "number"
               },
               "tone": {
@@ -1244,7 +1243,6 @@
         "additionalProperties": false,
         "properties": {
           "annotations": {
-            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
@@ -1425,7 +1423,6 @@
             "type": "array"
           },
           "centroids": {
-            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
             "items": {
               "$ref": "#/$defs/ScatterPlotCentroid"
             },
@@ -1464,21 +1461,18 @@
                 },
                 "type": "object"
               }
-            ],
-            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value (the datum `label` wins when present). Object → `format` /\n`position`. Default position is `top`. Labels are `aria-hidden`."
+            ]
           },
           "height": {
             "type": "number"
           },
           "hoverKey": {
-            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"`. Absent (`undefined`) keeps the uncontrolled\nbehaviour.",
             "type": [
               "string",
               "null"
             ]
           },
           "keyboardNav": {
-            "description": "FR-5 — roving-tabindex keyboard navigation of the data points.",
             "type": "boolean"
           },
           "label": {
@@ -1506,11 +1500,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f02c142e6aa0cf5ff6bc783c52b4d113863f96e397474b0dbbcdb77d9ce933d5",
-        "declarationPath": "packages/components-vue/dist/ScatterPlot.d.ts",
+        "declarationDigest": "sha256:4daa87cf0b809434eeda03efa69ab51c4c3820bed0a3b2798683a6944f5f9640",
+        "declarationPath": "packages/components-vue/dist/ScatterPlot.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScatterPlotProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

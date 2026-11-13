@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PriorityMatrix.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:fdc8ae40f2ea1b492145415c119270b1b26d42cf5384bb75b8fd443f6abbf532",
+      "digest": "sha256:eb86f5daa97b4af2ae873beb40b791afb4a6edaad2be285a43fac0503fe7b1a1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/PriorityMatrix.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/PriorityMatrix.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "2×2 priority matrix (complexity/value) with tinted quadrants and overlap-free label placement.",
     "fr": "Matrice de priorisation 2×2 (complexité/valeur), quadrants teintés et étiquettes placées sans chevauchement."
   },
-  "digest": "sha256:596da1e8b5971b0d23822ac5d9d698be140c5eeeafc0d487ed307bb9ee124884",
+  "digest": "sha256:dad453eb29ddfacc126ef8ea3a59ae4242600e96d25ed27c4d71b2e16dade0b5",
   "displayName": "PriorityMatrix",
   "format": "component-entry/v1",
   "frameworks": [

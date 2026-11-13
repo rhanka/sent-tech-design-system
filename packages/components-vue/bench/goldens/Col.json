@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Col",
+  "sourceRevision": "afc1e2242e0146878b1c506ab5a1bcca08de4c83",
+  "source": "src/Col.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-col st-col--auto\" style=\"flex-basis:auto;flex-grow:1;\"><span>Auto</span></div>"
+    },
+    {
+      "id": "numeric",
+      "html": "<div class=\"st-col\" style=\"flex-basis:calc(50% - var(--st-row-gutter, 0px) * 0.5);max-inline-size:calc(50% - var(--st-row-gutter, 0px) * 0.5);flex-grow:0;margin-inline-start:calc(16.666666666666664% + var(--st-row-gutter, 0px) * 0.16666666666666666);\"><span>Half</span></div>"
+    },
+    {
+      "id": "responsive",
+      "html": "<div class=\"st-col st-col--has-sm st-col--has-md st-col--has-lg\" style=\"flex-basis:calc(100% - var(--st-row-gutter, 0px) * 0);max-inline-size:calc(100% - var(--st-row-gutter, 0px) * 0);flex-grow:0;--st-col-sm:calc(50% - var(--st-row-gutter, 0px) * 0.5);--st-col-md:calc(33.33333333333333% - var(--st-row-gutter, 0px) * 0.6666666666666666);--st-col-lg:calc(25% - var(--st-row-gutter, 0px) * 0.75);\"><span>Responsive</span></div>"
+    },
+    {
+      "id": "section",
+      "html": "<section class=\"st-col consumer\" data-bench=\"col\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;flex-basis:calc(33.33333333333333% - var(--st-row-gutter, 0px) * 0.6666666666666666);max-inline-size:calc(33.33333333333333% - var(--st-row-gutter, 0px) * 0.6666666666666666);flex-grow:0;color:red;\"><span>Custom</span></section>"
+    },
+    {
+      "id": "auto-explicit",
+      "html": "<div class=\"st-col st-col--auto\" style=\"flex-basis:auto;flex-grow:1;margin-inline-start:calc(25% + var(--st-row-gutter, 0px) * 0.25);\"><span>Grows</span></div>"
+    }
+  ],
+  "sourceSha256": "1c6a12e49406d5169e3e217132514ab6459444da46adde10a49d84df596522c4",
+  "fixtureSha256": "1aac1f106765f6af0dc6c677d093a55b7484c741e24a9c67a7fc595a23b6619f",
+  "publicExports": [
+    {
+      "name": "Col",
+      "typeOnly": false
+    },
+    {
+      "name": "spanBasis",
+      "typeOnly": false
+    },
+    {
+      "name": "offsetMargin",
+      "typeOnly": false
+    },
+    {
+      "name": "ColProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ColSpan",
+      "typeOnly": true
+    }
+  ]
+}

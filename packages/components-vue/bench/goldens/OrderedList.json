@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "OrderedList",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/OrderedList.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<ol class=\"st-orderedList\"><li class=\"st-orderedList__item\">Alpha</li><li class=\"st-orderedList__item\">Beta</li></ol>"
+    },
+    {
+      "id": "recursive",
+      "html": "<ol class=\"st-orderedList\"><li class=\"st-orderedList__item\">Parent<ol class=\"st-orderedList st-orderedList--nested\"><li class=\"st-orderedList__item\">Child</li><li class=\"st-orderedList__item\">Branch<ol class=\"st-orderedList st-orderedList--nested\"><li class=\"st-orderedList__item\">Leaf</li></ol></li></ol></li></ol>"
+    },
+    {
+      "id": "attrs",
+      "html": "<ol class=\"st-orderedList st-orderedList--nested consumer\" start=\"3\"><li class=\"st-orderedList__item\">0</li><li class=\"st-orderedList__item\"></li><li class=\"st-orderedList__item\"></li><li class=\"st-orderedList__item\"></li></ol>"
+    },
+    {
+      "id": "empty",
+      "html": "<ol class=\"st-orderedList\"></ol>"
+    },
+    {
+      "id": "rich",
+      "html": "<ol class=\"st-orderedList\"><li class=\"st-orderedList__item\"><strong>Parent</strong><ol class=\"st-orderedList st-orderedList--nested\"><li class=\"st-orderedList__item\"><strong>Child</strong></li></ol></li></ol>"
+    }
+  ],
+  "sourceSha256": "13081ad51b01305430d9491e91f591e666827836ef6cd683163cd64980b69028",
+  "fixtureSha256": "6181f5de36e13844eb387675206bf036b1b2406df5598d57623fbb29232a1855",
+  "publicExports": [
+    {
+      "name": "OrderedList",
+      "typeOnly": false
+    },
+    {
+      "name": "OrderedListProps",
+      "typeOnly": true
+    },
+    {
+      "name": "OrderedListItem",
+      "typeOnly": true
+    },
+    {
+      "name": "OrderedListInput",
+      "typeOnly": true
+    }
+  ]
+}

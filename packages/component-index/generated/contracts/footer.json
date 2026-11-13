@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:8c762702c19f1099e0229bf87ef5c8a46d363a22040deef8a70476b9357829fe",
-  "entryDigest": "sha256:cad3f91ad3bf126bed62405ea428efce5f80e75cfbbe27d9b1705ec1ec5bbf60",
+  "digest": "sha256:9f2e8e19421e26d18cf90b8f8a2832b3a9f502482c64668b03b2f1952be362c5",
+  "entryDigest": "sha256:eceeb702314d2bbf251e56473ce0f5c50ab1469348db0fc946342cd8082c8fa3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -340,8 +340,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -370,8 +369,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -430,13 +428,54 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "brand"
+        },
+        {
+          "name": "column-title",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/FooterColumn"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "index"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "copyright"
+        },
+        {
+          "name": "link-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "link": {
+                "$ref": "#/$defs/FooterLink"
+              }
+            },
+            "required": [
+              "link"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3927c47c642b82b42bf5b7ee1e844506859db852771cf99ac2edb8849423ef4f",
-        "declarationPath": "packages/components-vue/dist/Footer.d.ts",
+        "declarationDigest": "sha256:64ab57176f3bdb52729069b2ec773234ac9e9ab119c67269c133ef707946fe34",
+        "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

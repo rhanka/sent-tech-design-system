@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:276bff32ba0f28d171b0e7939e6be6139d98906866be765673670396d4fa994e",
-  "entryDigest": "sha256:f3b77a64eabb918d76a013530ffdc25dc157859d64bd475c3cd1c2b4f850342f",
+  "digest": "sha256:c75e1bb48e9015f73c02d95a6220c64108b400074dec7a25318e860bdeace5fc",
+  "entryDigest": "sha256:deacabb43521427c47f9a3ee280d89fefac4079bd1ab4a1b7fc31ebc77e277d9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/Modal.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ModalProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -207,16 +207,11 @@
           "name": "close"
         },
         {
-          "name": "onClose",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onClose"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -239,26 +234,25 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
+        },
+        {
+          "name": "footer"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:9686157b213f925fd276a668039a4e0c7cb8d4a5b7c01aaa14270b73f50ea47d",
-        "declarationPath": "packages/components-vue/dist/Modal.d.ts",
+        "declarationDigest": "sha256:6c8fe33561f17fb76f016c3a4fc625265454b12528cf60ad8aa961590f083877",
+        "declarationPath": "packages/components-vue/dist/Modal.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ModalProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"
       ]
     }

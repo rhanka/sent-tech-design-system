@@ -1,8 +1,8 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:6e3172015610e0ede68936c8e4e310a07d093b80802a9f0424cf40d864169491",
-  "entryDigest": "sha256:96b7d143ace49815cef90228c23644bb4c6edbd8dc6ce111d928376c39092ace",
+  "digest": "sha256:9fff5868dd550e5410fac973450c770b567f0e75f3abb4e220b13c084812773d",
+  "entryDigest": "sha256:5f6349f74b2f3d76ae3fb2d4f2e4a0f8e95bbb1c26ce5b6a98744b657ca48e2d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/OrderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OrderedListProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -215,8 +215,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -230,6 +229,12 @@
           },
           "nested": {
             "type": "boolean"
+          },
+          "path": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array"
           }
         },
         "required": [
@@ -243,15 +248,46 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "scope.item",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {},
+              "path": {
+                "items": {
+                  "type": "number"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "index",
+              "item",
+              "path"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d4481f85e838c7c5bc62b3cad0fd19f269358249dfd52ec27232f7cc543d7d3e",
-        "declarationPath": "packages/components-vue/dist/OrderedList.d.ts",
+        "declarationDigest": "sha256:bdd88423a59ce33bc0803a88807fb3a61bd601f0b381a719c601948a38f1fb50",
+        "declarationPath": "packages/components-vue/dist/OrderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrderedListProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

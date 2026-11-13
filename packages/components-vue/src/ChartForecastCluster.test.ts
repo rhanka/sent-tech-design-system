@@ -3,8 +3,8 @@ import { join } from "node:path";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { LineChart, ScatterPlot } from "./index.js";
-import type { LineChartDatum } from "./LineChart.js";
-import type { ScatterPlotCentroid, ScatterPlotDatum } from "./ScatterPlot.js";
+import type { LineChartDatum } from "./LineChart.vue";
+import type { ScatterPlotCentroid, ScatterPlotDatum } from "./ScatterPlot.vue";
 
 // WP15 — DS surfaces for the dataviz fallbacks: LineChart forecast datum mode
 // (ForecastLineChart) + ScatterPlot per-datum size/tone & centroid markers

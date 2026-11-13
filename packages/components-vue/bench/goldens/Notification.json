@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Notification",
+  "sourceRevision": "ee562847bdd1211469ceeebc01dc122ca139de24",
+  "source": "src/Notification.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-notification st-notification--info\" role=\"status\"><div class=\"st-notification__content\"><h2 class=\"st-notification__title\">Saved</h2></div><div class=\"st-notification__meta\"></div></section>"
+    },
+    {
+      "id": "error-alert",
+      "html": "<section class=\"st-notification st-notification--error\" role=\"alert\"><div class=\"st-notification__content\"><h2 class=\"st-notification__title\">Failed</h2><p class=\"st-notification__message\">Try again.</p></div><div class=\"st-notification__meta\"><button aria-label=\"Fermer\" class=\"st-notification__close\" title=\"Fermer\" type=\"button\">×</button></div></section>"
+    },
+    {
+      "id": "success-dismiss-en",
+      "html": "<section class=\"st-notification st-notification--success\" role=\"status\"><div class=\"st-notification__content\"><h2 class=\"st-notification__title\">Done</h2><p class=\"st-notification__message\">All good.</p></div><div class=\"st-notification__meta\"><button aria-label=\"Dismiss\" class=\"st-notification__close\" title=\"Dismiss\" type=\"button\">×</button></div></section>"
+    },
+    {
+      "id": "actions-slot",
+      "html": "<section class=\"st-notification st-notification--warning\" role=\"status\"><div class=\"st-notification__content\"><h2 class=\"st-notification__title\">Careful</h2>Body text</div><div class=\"st-notification__meta\"><div class=\"st-notification__actions\"><button>Retry</button></div></div></section>"
+    },
+    {
+      "id": "custom-dismiss",
+      "html": "<section class=\"st-notification st-notification--info consumer\" data-bench=\"notif\" role=\"status\" style=\"color:red;\"><div class=\"st-notification__content\"><h2 class=\"st-notification__title\">Heads up</h2></div><div class=\"st-notification__meta\"></div></section>"
+    }
+  ],
+  "sourceSha256": "095e00311fa5516e76eccbcf6bed7b29f3a8a038dd276426d4e6dc4a154f5bb1",
+  "fixtureSha256": "6090d30450e2b2d5dfd2f20bd5bacd738e900102a09bbc3e475619e1e95d8889",
+  "publicExports": [
+    {
+      "name": "Notification",
+      "typeOnly": false
+    },
+    {
+      "name": "NotificationProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NotificationTone",
+      "typeOnly": true
+    }
+  ]
+}

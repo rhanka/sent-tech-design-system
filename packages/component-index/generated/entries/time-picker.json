@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimePicker.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d28d898ec735f8f10ff1210679049567eb9809b93c5cdd1250bebd5a3179ca1c",
+      "digest": "sha256:6c9f2a405536d04a617ff101941955947cb496b2b04838a12207bcf751f5334b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/TimePicker.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/TimePicker.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time selection from slots generated at a fixed step.",
     "fr": "Sélection d'une heure parmi des créneaux générés par pas."
   },
-  "digest": "sha256:9393dd331ad177a2f032e087c31939a0d407b6806c8ef38cece10b44bba622df",
+  "digest": "sha256:5fde084735516338c79e5ec303234b5b8212c2e90f750490bc9e1e69c3f711db",
   "displayName": "TimePicker",
   "format": "component-entry/v1",
   "frameworks": [

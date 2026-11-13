@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:7a7e66fc2e52c1a970b192993b6cee2285b6f87ec0d0145fa0c75e328a98522c",
-  "entryDigest": "sha256:cdd6a376c7ce6f3298adeb4c8f5f0a86417abe32387d4935065aad5dc1410183",
+  "digest": "sha256:06b26cd89b61b1f7bce429b919068376224a6c89c9a14fdcde395c2d7102aafb",
+  "entryDigest": "sha256:7161ce69415f33be3244080a546bf087031db5369ba8d050a482ab9351961d3b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -300,7 +300,10 @@
       ],
       "events": [
         {
-          "name": "diagnostic"
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/CardDiagnostic"
+          }
         },
         {
           "name": "onDiagnostic",
@@ -324,7 +327,19 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
         }
       ],
       "limitations": [
@@ -498,17 +513,15 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:189f373607f242a29590ad05c794266c88d1e0d35229cb7372006e81a11f73e2",
+        "declarationDigest": "sha256:2e95867d54e0162b687106b66be44b6291130772e99c8f19d8709efc72d2b1c7",
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"diagnostic\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]

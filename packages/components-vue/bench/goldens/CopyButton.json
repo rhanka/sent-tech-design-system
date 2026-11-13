@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "CopyButton",
+  "sourceRevision": "f1b3c94c286b817cb6b0afb3a83f95cc2f87f0e2",
+  "source": "src/CopyButton.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button class=\"st-copyButton st-copyButton--md\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copier</span></button>"
+    },
+    {
+      "id": "small-value",
+      "html": "<button class=\"st-copyButton st-copyButton--sm\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copier</span></button>"
+    },
+    {
+      "id": "english-labels",
+      "html": "<button class=\"st-copyButton st-copyButton--lg\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copy ID</span></button>"
+    },
+    {
+      "id": "custom-class",
+      "html": "<button class=\"st-copyButton st-copyButton--md consumer\" data-bench=\"copy\" style=\"color:red;\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copier</span></button>"
+    },
+    {
+      "id": "no-text",
+      "html": "<button class=\"st-copyButton st-copyButton--md\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copier</span></button>"
+    },
+    {
+      "id": "empty",
+      "html": "<button class=\"st-copyButton st-copyButton--md\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copier</span></button>"
+    }
+  ],
+  "sourceSha256": "1965c156f4843b74732260621a03b4e287c78497ad038b48b31b044a939e1f27",
+  "fixtureSha256": "dd57de28a1582aa08225cc883cab0363a9b4041e959f60d7f19ed947544b3c5c",
+  "publicExports": [
+    {
+      "name": "CopyButton",
+      "typeOnly": false
+    },
+    {
+      "name": "CopyButtonProps",
+      "typeOnly": true
+    },
+    {
+      "name": "CopyButtonSize",
+      "typeOnly": true
+    }
+  ]
+}

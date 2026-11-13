@@ -31,6 +31,6 @@ export declare const TemplateMenu: DefineComponentLike<
     (event: "update:open", value: boolean): void;
   };
 });
-export type SceneWidgetProps = { label: string };
-declare const _default: DefineComponentLike<[], Readonly<{ onSelect?: (event: { entityId: string }) => void }>>;
+export type UnrelatedProps = { label: string };
+declare const _default: DefineComponentLike<[], Readonly<{ onUnrelated?: () => void }>>;
 export default _default;

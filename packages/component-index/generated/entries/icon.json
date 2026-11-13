@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Icon.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d901c6fa88e17a4eb02c38b056f8590af75dde5da5ec9e8a50a21441cf01c7fd",
+      "digest": "sha256:ba846cef9f580df4b587a281ab60828fede10c8677eb70690df32ea63d558d65",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Icon.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Icon.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:06db37669379b99416dfb213180802f0ff6044c4e7c341a579898e79c18d7aa3",
+  "digest": "sha256:53328b94b779f07e91d13ade9b0208f68751cf235400ef484d2d196cda6c857b",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

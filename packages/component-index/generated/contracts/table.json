@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:0f9df7d49abd30aa56abdb6f73f203052389f8ec86ffaed8de456a0a460140b2",
-  "entryDigest": "sha256:6c785dce65fda2fd94ea097f59702447d24f14df651ad49b4781ab63d2308c89",
+  "digest": "sha256:9b2ce0e407a753900b7d775099f04dd5508800c57460cbc9c2291e91704defb1",
+  "entryDigest": "sha256:db80863996aaaa85334b6b7e75708be8fd036819e56ab1cc9d5879b74a1a48cb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -284,8 +284,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -307,8 +306,7 @@
               "label": {}
             },
             "required": [
-              "key",
-              "label"
+              "key"
             ],
             "type": "object"
           },
@@ -363,13 +361,32 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/TableColumn"
+              }
+            },
+            "required": [
+              "column"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:e998019276008faecf8985b33be9758cf3ada3ab14c73e0fea836ff372855d3d",
-        "declarationPath": "packages/components-vue/dist/Table.d.ts",
+        "declarationDigest": "sha256:c7b629defb6497bc41aeebe0298ac1a91f8b67ce989469a3ac035dcc9e655fe5",
+        "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

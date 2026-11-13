@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { StackedBarChart, ComboChart } from "./index.js";
-import type { StackedBarDatum } from "./StackedBarChart.js";
-import type { ComboChartBarSeries, ComboChartLineSeries } from "./ComboChart.js";
+import type { StackedBarDatum } from "./StackedBarChart.vue";
+import type { ComboChartBarSeries, ComboChartLineSeries } from "./ComboChart.vue";
 
 // FR-4 — interactive legend (toggle series visibility), strict tri-framework parity.
 

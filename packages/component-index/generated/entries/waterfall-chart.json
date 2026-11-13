@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WaterfallChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:7142f016b01d0ef9f7a3e969057ba898209c267ac85fc7d44ceb8ee062e8e467",
+      "digest": "sha256:5de66b92cdce7bdb518ade6b67ad110cad851d8c6691a1a1e6a9faaa9710f67e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/WaterfallChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/WaterfallChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Waterfall chart (increases, decreases, totals) with optional connectors.",
     "fr": "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs."
   },
-  "digest": "sha256:44f1826a1545ed9bdbd0853ad5dba4f01afd695dc251fb1a686fd82a0a0b03a8",
+  "digest": "sha256:765824fff836dc714adf5ac7734ac7d78fa26a487d62d3969dcf6eda4ec5e745",
   "displayName": "WaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

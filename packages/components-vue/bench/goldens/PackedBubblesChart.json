@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "PackedBubblesChart",
+  "sourceRevision": "13a399c0004e3ca1305d08787db001b183a835f8",
+  "source": "src/PackedBubblesChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"0\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category1\" cx=\"180\" cy=\"180\" data-chart-index=\"0\" r=\"73.92\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"0\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"180\" y=\"180\">Alpha</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"254.41790811985553\" cy=\"291.9279907398713\" data-chart-index=\"1\" r=\"58.43889115991165\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"254.41790811985553\" y=\"291.9279907398713\">Beta</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"2\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category3\" cx=\"91.2005778154717\" cy=\"108.77163729290181\" data-chart-index=\"2\" r=\"36.96\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"2\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"91.2005778154717\" y=\"108.77163729290181\">Gamma</text></g></svg></div><ul aria-label=\"Data values for Bubbles\" class=\"st-chartDataList\"><li>Alpha: 40</li><li>Beta: 25</li><li>Gamma: 10</li></ul></div>"
+    },
+    {
+      "id": "tones",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 360\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"0\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"240\" cy=\"180\" data-chart-index=\"0\" r=\"73.92\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"0\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"240\" y=\"180\">Alpha</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category8\" cx=\"361.2679897624609\" cy=\"243.756908284606\" data-chart-index=\"1\" r=\"60.35542726217751\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"361.2679897624609\" y=\"243.756908284606\">Beta</text></g></svg></div><ul aria-label=\"Data values for Bubbles\" class=\"st-chartDataList\"><li>Alpha: 30</li><li>Beta: 20</li></ul></div>"
+    },
+    {
+      "id": "zeros-filtered",
+      "html": "<div class=\"st-packedBubblesChart consumer\" data-bench=\"bubbles\" style=\"color:red;\"><div aria-label=\"Scale\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"2\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category3\" cx=\"180\" cy=\"180\" data-chart-index=\"2\" r=\"73.92\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"2\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"180\" y=\"180\">Ten</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"132.60531900069634\" cy=\"267.31205399584996\" data-chart-index=\"1\" r=\"23.37555646396466\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"132.60531900069634\" y=\"267.31205399584996\">One</text></g></svg></div><ul aria-label=\"Data values for Scale\" class=\"st-chartDataList\"><li>One: 1</li><li>Ten: 10</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"No data\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "395feab394f7a3528b7a5b7d28f00d820ebd16e50abef0855d4cc7f521c0561b",
+  "fixtureSha256": "c89af15797c4434abed4d20229e84d00e5b34ab666d284ef642dd1850367677a",
+  "publicExports": [
+    {
+      "name": "PackedBubblesChart",
+      "typeOnly": false
+    },
+    {
+      "name": "PackedBubblesChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "PackedBubblesChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "PackedBubblesChartTone",
+      "typeOnly": true
+    }
+  ]
+}

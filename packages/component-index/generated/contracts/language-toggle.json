@@ -1,8 +1,8 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:c9abe152c747345ecd4dd547b4e8e9201418ce05ed54ba81d98be51583e9de66",
-  "entryDigest": "sha256:e117a5c5710b5c19e7bb87405ab6fab3e187c3607695534bf6eeaa5b2bf790b3",
+  "digest": "sha256:b98b8fed762b2996d17512b251947b02b673a884291af1e99d79219fba76bf78",
+  "entryDigest": "sha256:379020ab0f7895cd91b16076a75c68cdb4bcb5de5e788de047bc9740ae56d871",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageToggle.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageToggleProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -227,13 +227,21 @@
       "dropped": [],
       "events": [
         {
-          "name": "localeChange"
+          "name": "localeChange",
+          "payload": {
+            "enum": [
+              "fr",
+              "en"
+            ]
+          }
         },
         {
           "name": "onLocaleChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "enum": [
+              "fr",
+              "en"
+            ]
           }
         }
       ],
@@ -279,26 +287,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onLocaleChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d65657680f724d0bf05cf4d6aa8b4222e17e17b6515cb86e9f10900e08898df1",
-        "declarationPath": "packages/components-vue/dist/LanguageToggle.d.ts",
+        "declarationDigest": "sha256:9633f7290ae0bae1db8489ecc1fe2a222cd364a1988f6b057e4937b2fa122c79",
+        "declarationPath": "packages/components-vue/dist/LanguageToggle.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageToggleProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"localeChange\": payload not in declaration",
         "event pair: emits \"localeChange\" and prop \"onLocaleChange\" both listed verbatim"
       ]
     }

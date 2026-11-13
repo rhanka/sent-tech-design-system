@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Card.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1f689504bb5200e1993cffe2073f26c3194351e91eedf58ddf9294e3b3e2dfc8",
+      "digest": "sha256:8083cea70a028641d5f330a36475ab9f5b9c0dde0b3bc7e0580199bebba97553",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Card.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Card.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Surface container with border and padding.",
     "fr": "Conteneur surface avec bordure et padding."
   },
-  "digest": "sha256:1a295926777b8b3daf1c8697769e9fcf6d762c8325459452a1673c14e5c56259",
+  "digest": "sha256:db33c750ded4a6e549264524eb1916f1c896bd6be03a92ae83cf1eb6352bfab6",
   "displayName": "Card",
   "format": "component-entry/v1",
   "frameworks": [

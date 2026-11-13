@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "EmptyState",
+  "sourceRevision": "57a6d522b8940b59d7cbe0435b904145117356d5",
+  "source": "src/EmptyState.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">No results</h2><p class=\"st-empty-state__message st-emptyState__message\">Try another search.</p></div></section>"
+    },
+    {
+      "id": "with-action",
+      "html": "<section class=\"st-empty-state st-emptyState consumer\" data-bench=\"empty\" style=\"color:red;\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Empty</h2><p class=\"st-empty-state__message st-emptyState__message\">Nothing here.</p><div class=\"st-empty-state__action\">Clear filters</div></div></section>"
+    },
+    {
+      "id": "title-only",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Just a title</h2></div></section>"
+    },
+    {
+      "id": "action-only",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Title</h2><div class=\"st-empty-state__action\">Retry</div></div></section>"
+    },
+    {
+      "id": "with-slot",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Slot title</h2><p class=\"st-empty-state__message st-emptyState__message\">Slot message</p><strong>Slot</strong> detail</div></section>"
+    },
+    {
+      "id": "bare-slot",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\">Bare</h2>Slot body</div></section>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<section class=\"st-empty-state st-emptyState\"><div class=\"st-empty-state__content\"><h2 class=\"st-empty-state__title st-emptyState__title\"><strong>Empty</strong></h2><p class=\"st-empty-state__message st-emptyState__message\"><em>Try again</em></p><div class=\"st-empty-state__action\"><button>Retry</button></div></div></section>"
+    }
+  ],
+  "sourceSha256": "e18f6c6db289b8551085a08d5e63f28bb4785171eee93577c2d298233cdb2755",
+  "fixtureSha256": "331e27d4e25edc6bf07b421e9052d2cdabe1d6d7f70918954cb7250a9d2e7b6f",
+  "publicExports": [
+    {
+      "name": "EmptyState",
+      "typeOnly": false
+    },
+    {
+      "name": "EmptyStateProps",
+      "typeOnly": true
+    }
+  ]
+}

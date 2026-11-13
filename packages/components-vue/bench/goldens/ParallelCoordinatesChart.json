@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ParallelCoordinatesChart",
+  "sourceRevision": "d2bfdc212bc5bf0ccb27da53f208afc3eec931ff",
+  "source": "src/ParallelCoordinatesChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-parallelCoordinatesChart\"><div aria-label=\"Lines\" class=\"st-parallelCoordinatesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category1\" d=\"M24.00,284.00 L456.00,32.00\" data-chart-index=\"0\" fill=\"none\"></path><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category2\" d=\"M24.00,32.00 L456.00,284.00\" data-chart-index=\"1\" fill=\"none\"></path><line class=\"st-parallelCoordinatesChart__axis\" x1=\"24\" x2=\"24\" y1=\"32\" y2=\"284\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"24\" y=\"22\">A</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"28\" y=\"284\">10</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"28\" y=\"32\">30</text><line class=\"st-parallelCoordinatesChart__axis\" x1=\"456\" x2=\"456\" y1=\"32\" y2=\"284\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"456\" y=\"22\">B</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"460\" y=\"284\">5</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"460\" y=\"32\">20</text></svg></div><ul aria-label=\"Data values for Lines\" class=\"st-chartDataList\"><li>A: 10, B: 20</li><li>A: 30, B: 5</li></ul></div>"
+    },
+    {
+      "id": "tones",
+      "html": "<div class=\"st-parallelCoordinatesChart\"><div aria-label=\"Lines\" class=\"st-parallelCoordinatesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category1\" d=\"M24.00,344.00 L616.00,344.00\" data-chart-index=\"0\" fill=\"none\"></path><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category3\" d=\"M24.00,32.00 L616.00,32.00\" data-chart-index=\"1\" fill=\"none\"></path><line class=\"st-parallelCoordinatesChart__axis\" x1=\"24\" x2=\"24\" y1=\"32\" y2=\"344\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"24\" y=\"22\">A</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"28\" y=\"344\">1</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"28\" y=\"32\">3</text><line class=\"st-parallelCoordinatesChart__axis\" x1=\"616\" x2=\"616\" y1=\"32\" y2=\"344\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"616\" y=\"22\">B</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"620\" y=\"344\">2</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"620\" y=\"32\">4</text></svg></div><ul aria-label=\"Data values for Lines\" class=\"st-chartDataList\"><li>A: 1, B: 2</li><li>A: 3, B: 4</li></ul></div>"
+    },
+    {
+      "id": "gap",
+      "html": "<div class=\"st-parallelCoordinatesChart consumer\" data-bench=\"parallel\" style=\"color:red;\"><div aria-label=\"Gaps\" class=\"st-parallelCoordinatesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category1\" d=\"M24.00,284.00\" data-chart-index=\"0\" fill=\"none\"></path><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category2\" d=\"M456.00,32.00\" data-chart-index=\"1\" fill=\"none\"></path><path class=\"st-parallelCoordinatesChart__line st-parallelCoordinatesChart__line--category3\" d=\"M24.00,32.00 L456.00,284.00\" data-chart-index=\"2\" fill=\"none\"></path><line class=\"st-parallelCoordinatesChart__axis\" x1=\"24\" x2=\"24\" y1=\"32\" y2=\"284\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"24\" y=\"22\">A</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"28\" y=\"284\">1</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"28\" y=\"32\">2</text><line class=\"st-parallelCoordinatesChart__axis\" x1=\"456\" x2=\"456\" y1=\"32\" y2=\"284\"></line><text class=\"st-parallelCoordinatesChart__axisLabel\" text-anchor=\"middle\" x=\"456\" y=\"22\">B</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"auto\" x=\"460\" y=\"284\">3</text><text class=\"st-parallelCoordinatesChart__tickLabel\" dominant-baseline=\"hanging\" x=\"460\" y=\"32\">4</text></svg></div><ul aria-label=\"Data values for Gaps\" class=\"st-chartDataList\"><li>A: 1, B: x</li><li>A: no, B: 4</li><li>A: 2, B: 3</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-parallelCoordinatesChart\"><div aria-label=\"No data\" class=\"st-parallelCoordinatesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "aed5675a92ec0b3c7d49700e619bc15dac369c52a4afb7126b499096ae4c9ca7",
+  "fixtureSha256": "55ee621305579d15bda8c233a77f488569818051dfb0bfb8270be5d9eab0acec",
+  "publicExports": [
+    {
+      "name": "ParallelCoordinatesChart",
+      "typeOnly": false
+    },
+    {
+      "name": "ParallelCoordinatesChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ParallelCoordinatesChartTone",
+      "typeOnly": true
+    },
+    {
+      "name": "ParallelAxis",
+      "typeOnly": true
+    }
+  ]
+}

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SolidGaugeChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:2943ccdf8292bb240c09c9d42ba1e48ec89fa3d26770556bb16abbbe9b445dc5",
+      "digest": "sha256:dcd5bc631580f4169f36edd6dbef76e0189adcdd03f187294adc624b073fc1c7",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SolidGaugeChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/SolidGaugeChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Solid progress ring: filled arc proportional to value, threshold-tinted, with centered value.",
     "fr": "Anneau de progression plein : arc rempli proportionnel à la valeur, teinté par seuils, valeur centrale."
   },
-  "digest": "sha256:25aee9540abf65ed4dbb2ada6598bdaf395237fd30c369dc3d4002e70545cd0e",
+  "digest": "sha256:3cb63c8ee66cee04b39fbd436980821f70ae9b68679869ec2e6f81d794d46269",
   "displayName": "SolidGaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

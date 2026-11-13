@@ -115,6 +115,7 @@ export const DEFAULT_ALLOCATED_LINES: Readonly<Record<TextRole, number>> = {
   subtitle: 2,
   "legend-label": 2,
   "edge-label": 1,
+  "flow-badge": 1,
 };
 
 /** Card inner width for a state: outer width minus content insets. */

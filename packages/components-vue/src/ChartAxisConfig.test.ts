@@ -1,8 +1,8 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { BarChart, LineChart } from "./index.js";
-import type { BarChartDatum } from "./BarChart.js";
-import type { LineChartDatum } from "./LineChart.js";
+import type { BarChartDatum } from "./BarChart.vue";
+import type { LineChartDatum } from "./LineChart.vue";
 
 // FR1 — value-axis config (scale / invertAxis / domain / showLegend) parity.
 

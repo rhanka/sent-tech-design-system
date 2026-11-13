@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:c1c06de510628cdfe145254f56a543b855fe2ac5a74fa1171f5f586ee22133c2",
-  "entryDigest": "sha256:002b30275f99f8172c3283aeb91f1c2403de3437f5282ecd0becd330c3849cfe",
+  "digest": "sha256:d985d7cb5120d3ed42569bef4196ba2eaf6c3de3948871b9a933e972db4a2d07",
+  "entryDigest": "sha256:9a363c2d0693015ee5a75b80d1d2a61bf6eb4b41531877daef22b7552ab0dc6f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -211,7 +211,7 @@
         "declarationPath": "packages/components-svelte/dist/Notification.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NotificationProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -225,16 +225,11 @@
           "name": "dismiss"
         },
         {
-          "name": "onDismiss",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onDismiss"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -271,26 +266,25 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onDismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "actions"
+        },
+        {
+          "name": "default"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:6804684010bff6cfcf903fe6911215d25f5a5ed1a769910467b01cda332f5bd8",
-        "declarationPath": "packages/components-vue/dist/Notification.d.ts",
+        "declarationDigest": "sha256:7af4a15c03d321858f748f87e2b5a97f1b84fd5ac2cea2b0b98774af0129a2e6",
+        "declarationPath": "packages/components-vue/dist/Notification.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NotificationProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]
     }

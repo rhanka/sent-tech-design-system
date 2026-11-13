@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DataImage.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:612d028854c2bbd59472fb385fafdf2b639593635d6f8f30ceff9732e41730a4",
+      "digest": "sha256:d67f3a56505ac483f46b414539a89ae78b4dc7c88e7d666a427a72c06bf2d3a8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/DataImage.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/DataImage.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Data-driven image controlled by props/state (src, alt, object-fit, sizing, radius).",
     "fr": "Image pilotée par props/état (src, alt, object-fit, dimensions, rayon)."
   },
-  "digest": "sha256:d70b55b86d344b8148996d2678ec8e3faa2bcd0937642aaa51279e5307312a95",
+  "digest": "sha256:e630a692124a195184eaa63b58ee44d299894f469c9c5ed10e3b791cddab6b62",
   "displayName": "DataImage",
   "format": "component-entry/v1",
   "frameworks": [

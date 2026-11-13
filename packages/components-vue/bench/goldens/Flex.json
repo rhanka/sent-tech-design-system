@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "component": "Flex",
+  "sourceRevision": "9790c144d4874420c9b451c24b1effcec1fba65c",
+  "source": "src/Flex.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flex\" style=\"display:flex;flex-direction:row;flex-wrap:nowrap;\">Hello</div>"
+    },
+    {
+      "id": "column-centered",
+      "html": "<div class=\"st-flex\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;align-items:center;justify-content:space-between;gap:var(--st-spacing-4, 1rem);\"><span>A</span><span>B</span></div>"
+    },
+    {
+      "id": "inline-wrap",
+      "html": "<section class=\"st-flex\" style=\"display:inline-flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><strong>Hi</strong></section>"
+    },
+    {
+      "id": "reversed",
+      "html": "<div class=\"st-flex\" style=\"display:flex;flex-direction:row-reverse;flex-wrap:nowrap;align-items:stretch;justify-content:space-evenly;gap:var(--st-spacing-12, 3rem);\">Rev</div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-flex consumer\" data-bench=\"flex\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;display:flex;flex-direction:row;flex-wrap:nowrap;color:red;\" title=\"Box\"><em>X</em></div>"
+    },
+    {
+      "id": "gap-zero",
+      "html": "<div class=\"st-flex\" style=\"display:flex;flex-direction:column-reverse;flex-wrap:nowrap;align-items:baseline;gap:0;\"></div>"
+    }
+  ],
+  "sourceSha256": "eefae3fa9a5767f792a8edb7cd249143c8966cb93d161899d3bac5c734a1450c",
+  "fixtureSha256": "98e99d39efbb081a58e0d3b866cde208b7aa49f7b2ae30d12cb476e2c90a8bb0",
+  "publicExports": [
+    {
+      "name": "Flex",
+      "typeOnly": false
+    },
+    {
+      "name": "spacingToken",
+      "typeOnly": false
+    },
+    {
+      "name": "alignValue",
+      "typeOnly": false
+    },
+    {
+      "name": "justifyValue",
+      "typeOnly": false
+    },
+    {
+      "name": "FlexProps",
+      "typeOnly": true
+    },
+    {
+      "name": "FlexDirection",
+      "typeOnly": true
+    },
+    {
+      "name": "FlexAlign",
+      "typeOnly": true
+    },
+    {
+      "name": "FlexJustify",
+      "typeOnly": true
+    }
+  ]
+}

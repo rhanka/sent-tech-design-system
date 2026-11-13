@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Button",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Button.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<button class=\"st-button st-button--primary st-button--md\" type=\"button\">Save</button>"
+    },
+    {
+      "id": "secondary-small",
+      "html": "<button class=\"st-button st-button--secondary st-button--sm\" type=\"submit\"><strong>Submit</strong></button>"
+    },
+    {
+      "id": "ghost-large",
+      "html": "<button aria-label=\"Open menu\" class=\"st-button st-button--ghost st-button--lg consumer\" style=\"color:red;\" type=\"button\">Menu</button>"
+    },
+    {
+      "id": "danger-disabled",
+      "html": "<button class=\"st-button st-button--danger st-button--md\" disabled=\"\" type=\"reset\">Reset</button>"
+    },
+    {
+      "id": "empty",
+      "html": "<button aria-label=\"Empty action\" class=\"st-button st-button--primary st-button--md\" type=\"button\"></button>"
+    }
+  ],
+  "sourceSha256": "797718abefe5fb0a74015e1422138bec508ef2b2a95009d71c8c3102f76491e0",
+  "fixtureSha256": "7727e7aff605c0acda38273ce3d7222db3d37e6a4d7857e9c62c746d2cffedd9",
+  "publicExports": [
+    {
+      "name": "Button",
+      "typeOnly": false
+    },
+    {
+      "name": "ButtonProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ButtonSize",
+      "typeOnly": true
+    },
+    {
+      "name": "ButtonVariant",
+      "typeOnly": true
+    }
+  ]
+}

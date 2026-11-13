@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PointAndFigureChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b31d4c40352802d91802ab74f086af6bccab17fd639787f3cc9e03c0bab4bd91",
+      "digest": "sha256:9651034374de9a37cd5f738e37e6059fc760bce4ccd3e49652781fba0edbf7ac",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/PointAndFigureChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/PointAndFigureChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:322a71ccd5a569b26b4ee35566e967f4ebebc09e68ae03fda7f01ad68b72f81c",
+  "digest": "sha256:ccc4a208b45940caeb98f170dac1b76a6d4fb42d13a265d2aebf11091b255394",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [

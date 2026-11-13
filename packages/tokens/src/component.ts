@@ -1,4 +1,5 @@
 import { DIAGRAM_SCENE_SPACING as spacing } from './diagramSpacing.js';
+import { flowInk } from "./flow-colors.js";
 import { foundation } from "./foundation.js";
 import { semantic } from "./semantic.js";
 import type { ComponentAnatomy, DensityAnatomy, FieldAnatomy, TypographyAnatomy } from "./anatomy.js";
@@ -1907,8 +1908,33 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       minReadableScale: "0.45",
       transitionDuration: "240ms",
       edgeLabelFontSize: "18px",
-      readoutMinWidth: "4ch",
-      edgeLabelLineHeight: "22px"
+      edgeLabelLineHeight: "22px",
+      flowStroke: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
+      flowStrokeWidth: "1.5px",
+      flowPrimaryStroke: flowInk(semantic.border.interactive, semantic.surface.raised, semantic.surface.default),
+      flowPrimaryStrokeWidth: "2.5px",
+      flowRelatedStrokeWidth: "2px",
+      flowOutlineWidth: "2px",
+      flowFocusOutline: flowInk(semantic.border.interactive, semantic.surface.raised, semantic.surface.default),
+      flowDimOpacity: "0.6",
+      flowFullOpacity: "1",
+      flowHiddenOpacity: "0",
+      flowHitStroke: "transparent",
+      flowHitWidth: "16px",
+      flowTargetMinSize: "24",
+      flowArrowPath: "M0 0L10 5L0 10Z",
+      flowArrowLength: "10",
+      flowArrowWidth: "10",
+      flowBadgeSize: "28",
+      flowBadgePaddingX: "6",
+      flowBadgeRadius: "999px",
+      flowBadgeFontSize: "16px",
+      flowBadgeLineHeight: "20px",
+      flowBadgeBackground: semantic.surface.raised,
+      flowBadgeBorder: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
+      flowBadgeText: flowInk(semantic.text.primary, semantic.surface.raised, semantic.surface.default),
+      flowFanOutMax: "4",
+      readoutMinWidth: "4ch"
     },
     // Existing BPMN element host footprint, shared by framework bindings.
     bpmnCanvas: { minHeight: "120px" },

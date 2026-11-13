@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:227a2fb232394fda2b95c6dfd51d3fdb3cdd377225fa78f31a2ccd8eecc3f5cb",
-  "entryDigest": "sha256:9d65f561f42d869de8473e74a641c5c6e2231df65d33a82d2bd7852eb7cd60e5",
+  "digest": "sha256:e10dc0c97f931a8420ac1d6eed5b92e9c77695a372bfee7b0267dd3c35fcb56a",
+  "entryDigest": "sha256:83212ef72b192bcbcf2bd7bdc19f93a0d1fb4a5e9b89df82c357a7bf524463b2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -717,7 +717,7 @@
         "declarationPath": "packages/components-svelte/dist/AppChrome.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppChromeProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -788,8 +788,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -957,13 +956,23 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "extra-selectors"
+        },
+        {
+          "name": "extraSelectors"
+        },
+        {
+          "name": "identity"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:a56bf7e96bd3b4e70049b87bf5b8dbd6d43a45f401f8c76ea99e0c65e19de513",
-        "declarationPath": "packages/components-vue/dist/AppChrome.d.ts",
+        "declarationDigest": "sha256:ab89e3dfa46de9035d153a844021864a0ff04001023909ed15c2da077fa7e70c",
+        "declarationPath": "packages/components-vue/dist/AppChrome.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppChromeProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

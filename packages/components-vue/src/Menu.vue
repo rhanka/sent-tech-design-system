@@ -1,7 +1,3 @@
-<script lang="ts">
-let menuInstanceCounter = 0;
-</script>
-
 <script setup lang="ts">
 import type {
   MenuActionItem,
@@ -10,7 +6,7 @@ import type {
   MenuItem,
   MenuSubmenuSide,
 } from "./Menu.js";
-import {
+import { useId,
   computed,
   useAttrs,
   inject,
@@ -19,9 +15,10 @@ import {
   ref,
   watch,
 } from "vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+
 import { classNames } from "./classNames.js";
-import { MenuLabel } from "./MenuLabel.js";
+import MenuLabel from './MenuLabel.vue';
+import type { MenuLabelSlots } from './menu-label-slots.js';
 import {
   CLOSE_DELAY,
   MENU_HOST_KEY,
@@ -82,6 +79,8 @@ interface ExpandedRow {
   action?: MenuActionItem;
 }
 
+defineSlots<MenuLabelSlots>();
+
 defineOptions({ name: "Menu", inheritAttrs: false });
 const props = defineProps({
   items: { type: Array as () => MenuItem[], required: true },
@@ -95,7 +94,7 @@ const attrs = useAttrs();
 
 const hostContext = inject(MENU_HOST_KEY, undefined);
 const isNested = hostContext !== undefined;
-const instanceId = ++menuInstanceCounter;
+const instanceId = useId();
 const fallbackRootId = `st-menu-${instanceId}`;
 const rootId = computed(
   () =>
@@ -932,10 +931,10 @@ const panelDepths = computed(() => [
 <template>
   <div
     v-if="!hasCascade"
-    v-bind="attrs"
+    v-bind="{ ...(attrs), class: (['st-menu', { 'st-menu--dense': props.dense }, props.class]) }"
     :id="rootId"
     ref="hostRef"
-    :class="['st-menu', { 'st-menu--dense': props.dense }, props.class]"
+
     :role="props.role ?? 'menu'"
     data-menu-level="0"
   >
@@ -962,7 +961,7 @@ const panelDepths = computed(() => [
         :id="rootId + '--group-' + 0 + '-' + row.index"
         role="presentation"
       >
-        <MenuLabel :label="(row.item as MenuGroupItem).label" />
+        <slot v-if="$slots['group-label']" name="group-label" :item="(row.item as MenuGroupItem)" :index="row.index" :depth="0" /><MenuLabel v-else :label="(row.item as MenuGroupItem).label" />
       </div>
       <button
         v-else
@@ -979,42 +978,37 @@ const panelDepths = computed(() => [
         @focus="roving[0] = row.index"
       >
         <span
-          v-if="row.action!.icon"
+          v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
           class="st-menu__itemIcon"
           aria-hidden="true"
         >
-          <template v-if="typeof row.action!.icon === 'string'">{{
+          <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
             row.action!.icon
           }}</template>
-          <component
-            :is="row.action!.icon"
-            v-else
-            :size="16"
-            :stroke-width="2"
-          />
+
         </span>
         <span class="st-menu__itemLabel">
-          <MenuLabel :label="row.action!.label" />
+          <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="0" /><MenuLabel v-else :label="row.action!.label" />
         </span>
       </button>
     </template>
   </div>
   <div
     v-else
-    v-bind="
+    v-bind="{ ...(
       Object.fromEntries(
         Object.entries(attrs).filter(
           ([key]) => !['id', 'aria-label', 'aria-labelledby'].includes(key),
         ),
       )
-    "
-    ref="hostRef"
-    :class="[
+    ), class: ([
       'st-menu',
       { 'st-menu--dense': props.dense },
       'st-menu--hasCascade',
       props.class,
-    ]"
+    ]) }"
+    ref="hostRef"
+
     @pointermove="onHostPointerMove"
   >
     <div
@@ -1063,7 +1057,7 @@ const panelDepths = computed(() => [
           :id="rootId + '--group-' + depth + '-' + row.index"
           role="presentation"
         >
-          <MenuLabel :label="(row.item as MenuGroupItem).label" />
+          <slot v-if="$slots['group-label']" name="group-label" :item="(row.item as MenuGroupItem)" :index="row.index" :depth="depth" /><MenuLabel v-else :label="(row.item as MenuGroupItem).label" />
         </div>
         <div
           v-else-if="rowIsParent(row, depth)"
@@ -1103,42 +1097,27 @@ const panelDepths = computed(() => [
               class="st-menu__itemChevron st-menu__itemChevron--start"
               aria-hidden="true"
             >
-              <component
-                :is="ChevronLeft"
-                :size="16"
-                :stroke-width="2"
-                aria-hidden="true"
-              />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
             </span>
             <span
-              v-if="row.action!.icon"
+              v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
               class="st-menu__itemIcon"
               aria-hidden="true"
             >
-              <template v-if="typeof row.action!.icon === 'string'">{{
+              <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
                 row.action!.icon
               }}</template>
-              <component
-                :is="row.action!.icon"
-                v-else
-                :size="16"
-                :stroke-width="2"
-              />
+
             </span>
             <span class="st-menu__itemLabel">
-              <MenuLabel :label="row.action!.label" />
+              <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />
             </span>
             <span
               v-if="chevronSide(depth, row.index) === 'right'"
               class="st-menu__itemChevron st-menu__itemChevron--end"
               aria-hidden="true"
             >
-              <component
-                :is="ChevronRight"
-                :size="16"
-                :stroke-width="2"
-                aria-hidden="true"
-              />
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
             </span>
           </button>
         </div>
@@ -1159,22 +1138,17 @@ const panelDepths = computed(() => [
           @focus="roving[depth] = row.index"
         >
           <span
-            v-if="row.action!.icon"
+            v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
             class="st-menu__itemIcon"
             aria-hidden="true"
           >
-            <template v-if="typeof row.action!.icon === 'string'">{{
+            <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
               row.action!.icon
             }}</template>
-            <component
-              :is="row.action!.icon"
-              v-else
-              :size="16"
-              :stroke-width="2"
-            />
+
           </span>
           <span class="st-menu__itemLabel">
-            <MenuLabel :label="row.action!.label" />
+            <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />
           </span>
         </button>
       </template>

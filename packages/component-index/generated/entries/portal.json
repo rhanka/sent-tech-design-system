@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Portal.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:93a93721a6b701f2449fe43a6b6650f3c81eb419e6f8ac087f756c29a420d7f1",
+      "digest": "sha256:c28422a8e57c1146843da49f309d244640583263e245c64c4ef0cd46f3b0699e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Portal.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Portal.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:9eb5b9d7ee607d21a1a89948c9fd0bdb0f469892d6670eb848760a9cb1e441e4",
+  "digest": "sha256:fe175fef1091f180c50b432df5d4a87268484f2904788f1100a3a587b29b47b2",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

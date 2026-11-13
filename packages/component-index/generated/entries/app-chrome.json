@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AppChrome.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:eba2ecfeae68f6c9c8c09e39176db15041203726d0f30d52e807d827aac9b1d6",
+      "digest": "sha256:e851e6d5dab613cc6e84724835a803c0ce20600cd083d0a8411863328742e653",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/AppChrome.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/AppChrome.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:9d65f561f42d869de8473e74a641c5c6e2231df65d33a82d2bd7852eb7cd60e5",
+  "digest": "sha256:83212ef72b192bcbcf2bd7bdc19f93a0d1fb4a5e9b89df82c357a7bf524463b2",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

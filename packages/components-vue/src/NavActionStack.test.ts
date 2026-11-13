@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { NavActionStack } from "./NavActionStack.js";
-import type { NavAction } from "./NavActionStack.js";
+import NavActionStack from './NavActionStack.vue';
+import type { NavAction } from './NavActionStack.vue';
 
 afterEach(() => {
   vi.restoreAllMocks();

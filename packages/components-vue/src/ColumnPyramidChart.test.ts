@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ColumnPyramidChart } from "./ColumnPyramidChart.js";
-import type { ColumnPyramidChartDatum } from "./ColumnPyramidChart.js";
+import ColumnPyramidChart from "./ColumnPyramidChart.vue";
+import type { ColumnPyramidChartDatum } from "./ColumnPyramidChart.vue";
 
 // ColumnPyramidChart : colonnes triangulaires (base sur l'axe X, sommet à la valeur).
 const data: ColumnPyramidChartDatum[] = [

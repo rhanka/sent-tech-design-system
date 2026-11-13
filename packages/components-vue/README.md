@@ -56,6 +56,17 @@ import { dsfrTheme } from "@sentropic/design-system-theme-dsfr";
 
 The package includes declarations through `dist/index.d.ts` and marks `dist/styles.css` as a side effect so bundlers keep the stylesheet import.
 
+## Numbered diagrams in Vapor
+
+The root `DiagramSceneFigure` export includes numbered flows, step badges, highlighting and navigation. The `/vapor` entry preserves the native SFC host for existing diagrams and delegates numbered flows to the shared Vue binding. With Vue 3.6, enable its official interop plugin when using numbered flows (or the layout-cache/content-size binding) through that entry:
+
+```ts
+import { createVaporApp, vaporInteropPlugin } from "vue";
+import { DiagramSceneFigure } from "@sentropic/design-system-vue/vapor";
+
+createVaporApp(DiagramSceneFigure, props).use(vaporInteropPlugin).mount("#diagram");
+```
+
 ## Build
 
 ```bash

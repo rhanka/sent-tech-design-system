@@ -1,8 +1,8 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:ce753c8805aaa43a7b965454338e67330cb6818bf85d1f00ee1566944223b6e1",
-  "entryDigest": "sha256:553c69ac9b6dcd655802035ee4e785897544a83fb6969b447332c6002fe896d0",
+  "digest": "sha256:afe934494d6d51d575b0877c333ed48d1f6ecf50890e3d1770a930e8ffb1b6fc",
+  "entryDigest": "sha256:8af4d0c386a44b6cef9347f296f6f953ecce2df119341d4abea5837783523b00",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/WordCloudChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WordCloudChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -312,11 +312,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c6fb1c21063c0bc31d175cdd3339002b814bfba4fb7aa775f4e716bcb669af5d",
-        "declarationPath": "packages/components-vue/dist/WordCloudChart.d.ts",
+        "declarationDigest": "sha256:6f6c93092229bb1a95f9cc6ea5c4ff8d630e7a63326c121fbed7ded919942bf7",
+        "declarationPath": "packages/components-vue/dist/WordCloudChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WordCloudChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

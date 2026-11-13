@@ -1,11 +1,12 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.40.1",
+  "version": "0.41.1-next.1",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   },
   "repository": {
     "type": "git",
@@ -52,14 +53,18 @@
     "dist"
   ],
   "scripts": {
-    "build": "vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/copy-styles.mjs && node scripts/check-published-types.mjs",
-    "check": "npm run build",
-    "test": "vitest run src"
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/copy-styles.mjs && node scripts/check-published-types.mjs",
+    "check": "npm run check:types",
+    "test": "vitest run src",
+    "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
+    "check:types": "vue-tsc -p tsconfig.json --noEmit",
+    "build:declarations": "vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly",
+    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.13.1",
+    "@sentropic/design-system-themes": "0.14.1",
     "lucide-vue-next": "^0.562.0",
-    "@sentropic/diagram-canvas": "0.1.1",
+    "@sentropic/diagram-canvas": "0.2.1",
     "@sentropic/graph": "0.3.0"
   },
   "peerDependencies": {
@@ -67,7 +72,7 @@
     "@sentropic/design-system-elements": "0.2.0"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "6.0.11",
     "@vue/compiler-sfc": "3.6.0-rc.15",
     "@vue/server-renderer": "3.6.0-rc.15",
     "@vue/test-utils": "^2.4.6",
@@ -76,7 +81,7 @@
     "vite": "^8.0.16",
     "vitest": "^4.1.11",
     "vue": "3.6.0-rc.15",
-    "vue-tsc": "^2.2.12"
+    "vue-tsc": "3.3.14"
   },
   "peerDependenciesMeta": {
     "@sentropic/design-system-elements": {

@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:93b07e954ca716ab0f0bddc6283cd3f5ae3f8e64872ccce78195eb475482a833",
-  "entryDigest": "sha256:06774f83e374c3eeee61fdef3fdb0d3bcb53ca48c0e303d862eb396377ab0ec8",
+  "digest": "sha256:2386e0853fc5c887653fb6febc99b26caa2d4be3d6067efee90c47e37401fda1",
+  "entryDigest": "sha256:0d92a6ea0b0b3322cf4f4d11115d301862cf8e8bcad26c0010ca912d38dfe5c0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -342,7 +342,7 @@
         "declarationPath": "packages/components-svelte/dist/NavActionStack.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NavActionStackProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -353,21 +353,9 @@
       "dropped": [
         {
           "kind": "function",
-          "name": "NavAction.icon",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "FunctionalComponent<any, {}, any, {}>"
-        },
-        {
-          "kind": "function",
           "name": "NavAction.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
-        },
-        {
-          "kind": "function",
-          "name": "NavActionDangerZone.icon",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "FunctionalComponent<any, {}, any, {}>"
         },
         {
           "kind": "function",
@@ -378,11 +366,48 @@
       ],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
+          "IconGlyph": {
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "nodes": {
+                "items": {
+                  "items": false,
+                  "prefixItems": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "additionalProperties": {
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ]
+                      },
+                      "properties": {},
+                      "type": "object"
+                    }
+                  ],
+                  "type": "array"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "nodes"
+            ],
+            "type": "object"
+          },
           "NavAction": {
             "additionalProperties": false,
             "properties": {
@@ -391,6 +416,10 @@
               },
               "href": {
                 "type": "string"
+              },
+              "icon": {
+                "$ref": "#/$defs/IconGlyph",
+                "description": "Icône optionnelle (composant), rendue avant le libellé."
               },
               "kind": {
                 "enum": [
@@ -413,6 +442,9 @@
             "properties": {
               "href": {
                 "type": "string"
+              },
+              "icon": {
+                "$ref": "#/$defs/IconGlyph"
               },
               "label": {
                 "type": "string"
@@ -457,25 +489,54 @@
       },
       "replaced": [
         {
-          "name": "NavAction.icon",
-          "reason": "library type not expanded",
-          "replacement": "{}",
-          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
-        },
-        {
-          "name": "NavActionDangerZone.icon",
-          "reason": "library type not expanded",
-          "replacement": "{}",
-          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
+          "name": "IconGlyph.nodes[][1]",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"anyOf\":[{\"type\":\"string\"},{\"type\":\"number\"}]}",
+          "sourceType": "Readonly<Record<string, string | number>>"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/NavAction"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "action",
+              "index"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "danger-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "action": {
+                "$ref": "#/$defs/NavActionDangerZone"
+              }
+            },
+            "required": [
+              "action"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c973e21c38fa43adc068b3037828ef127cad7b3823a3a51f1b6953a15eedf3a3",
-        "declarationPath": "packages/components-vue/dist/NavActionStack.d.ts",
+        "declarationDigest": "sha256:0f47dc8a5bf110402d780f82c4524526ad5c4aa501fd192e11b3d0d0c8a229c3",
+        "declarationPath": "packages/components-vue/dist/NavActionStack.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavActionStackProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

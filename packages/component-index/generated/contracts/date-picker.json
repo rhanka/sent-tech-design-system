@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:53611edc1812f513455b65062dfb196fc8a084c7ed5cc5b88131fd4a32393ba1",
-  "entryDigest": "sha256:02c2e3a76fb8259b26ead161f54fe59d4542bde5a1e22340f1293cdc7afe54b8",
+  "digest": "sha256:b330c068a3281e9f1d26a44d3e402e3c48f52f88da472248da0932c894098526",
+  "entryDigest": "sha256:fe76bbdadee7d3dd0db0dd19744d4ded4599e509bd96d990f52e43f19c314adf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -563,7 +563,7 @@
         "declarationPath": "packages/components-svelte/dist/DatePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DatePickerProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -576,29 +576,76 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/DatePickerRange"
+              }
+            ]
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -715,6 +762,12 @@
           "sourceType": "Date"
         },
         {
+          "name": "change.args",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
           "name": "errorText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -751,31 +804,45 @@
           "sourceType": "Date"
         },
         {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "onChange.value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
         },
         {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "onUpdate:modelValue.value",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
+        },
+        {
+          "name": "update:modelValue.args",
+          "reason": "runtime value is an object; JSON form is a string",
+          "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
+          "sourceType": "Date"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:09b59a84b554b09c9e05aab333ef40a90be2d382a281016c0eb7e0986fe4b0b3",
-        "declarationPath": "packages/components-vue/dist/DatePicker.d.ts",
+        "declarationDigest": "sha256:125f281993c31145b5d64f5bf72b1e76b82e8ce11cdc0836f29e72545f27ea33",
+        "declarationPath": "packages/components-vue/dist/DatePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DatePickerProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""

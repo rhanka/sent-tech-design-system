@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "NavShell",
+  "sourceRevision": "f093b7108103a8b146c43c711d10e285b1080400",
+  "source": "src/NavShell.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<aside aria-label=\"Main\" class=\"st-navShell st-navShell--rail\"><header class=\"st-navShell__header\"><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Main</p></div></header><div class=\"st-navShell__body\"><a>Home</a></div></aside>"
+    },
+    {
+      "id": "drawer-open",
+      "html": "<div class=\"st-drawer__backdrop\" data-testid=\"st-drawer-backdrop\" role=\"presentation\"><aside aria-label=\"Menu\" aria-modal=\"true\" class=\"st-drawer st-drawer--right st-navShell st-navShell--drawer\" role=\"dialog\" tabindex=\"-1\"><div class=\"st-drawer__header\"><h2 class=\"st-drawer__title\">Menu</h2><button aria-label=\"Close\" class=\"st-drawer__close\" type=\"button\">x</button></div><div class=\"st-drawer__body\"><header class=\"st-navShell__header\"><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Menu</p><p class=\"st-navShell__subtitle\">Sub</p></div></header><div class=\"st-navShell__body\"><a>Item</a></div></div></aside></div>"
+    },
+    {
+      "id": "back-search-footer",
+      "html": "<aside aria-label=\"Primary\" class=\"st-navShell st-navShell--rail\" search=\"true\"><header class=\"st-navShell__header\"><button aria-label=\"Retour\" class=\"st-navShell__back\" type=\"button\">←</button><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Nav</p></div></header><div class=\"st-navShell__search\"><input placeholder=\"Search\"></div><div class=\"st-navShell__body\"><a>Item</a></div><footer class=\"st-navShell__footer\"><button>Help</button></footer></aside>"
+    },
+    {
+      "id": "drawer-closed",
+      "html": ""
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<aside aria-label=\"Attrs\" class=\"st-navShell st-navShell--rail consumer\" data-bench=\"shell\" style=\"color:red;\"><header class=\"st-navShell__header\"><div class=\"st-navShell__heading\"><p class=\"st-navShell__title\">Attrs</p></div></header><div class=\"st-navShell__body\">Body</div></aside>"
+    }
+  ],
+  "sourceSha256": "a17a8c848baed82c60891f5fed40241dff92202ec67a769e6908af49b8eeca6d",
+  "fixtureSha256": "50f3ea6c62f056f0f9375dc525d4fa28081773e5dd15db1ed0d52aab3ff9dca2",
+  "publicExports": [
+    {
+      "name": "NavShell",
+      "typeOnly": false
+    },
+    {
+      "name": "NavShellProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NavShellSide",
+      "typeOnly": true
+    },
+    {
+      "name": "NavShellVariant",
+      "typeOnly": true
+    }
+  ]
+}

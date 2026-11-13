@@ -1,8 +1,8 @@
 {
   "componentId": "avatar-group",
   "contractSource": "derived",
-  "digest": "sha256:6420ceb9fd369165a25abcab0e052da86c2c9583da731fe1b1bd4e73db20165e",
-  "entryDigest": "sha256:ef1d4ab0956b9905bdb8942f261d02025ce2d61a295b90b91c42a6fe5e7b2b53",
+  "digest": "sha256:4b5db14f8eaa070cbde948e7a020b40841fc5436f52a686942a94291ca2356c2",
+  "entryDigest": "sha256:9b74064b650a2f954bc63f4925d1909a3bac5516eac8a4929a6d0c3cb63eab50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -154,7 +154,7 @@
         "declarationPath": "packages/components-svelte/dist/AvatarGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AvatarGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -165,8 +165,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -195,13 +194,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3b3e71b1e046b6e151193b2580814a49d600ca070d9f5c33b5e2f6790b2ef989",
-        "declarationPath": "packages/components-vue/dist/AvatarGroup.d.ts",
+        "declarationDigest": "sha256:6ae1a982bf04f4a2d1a0b2245f7fdc635662181485fac04c70e2e1d67a940e59",
+        "declarationPath": "packages/components-vue/dist/AvatarGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarGroupProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

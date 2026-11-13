@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NavActionStack.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:3b138dfedc00ce28f12f380ea18ae3d943bb5b887858e44bd449b550e9d36bac",
+      "digest": "sha256:e50dabdf8ec4fe20d7d7b1f283df1b4a9997a8ecae8dee91efba7414a50a7cea",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/NavActionStack.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/NavActionStack.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone.",
     "fr": "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée."
   },
-  "digest": "sha256:06774f83e374c3eeee61fdef3fdb0d3bcb53ca48c0e303d862eb396377ab0ec8",
+  "digest": "sha256:0d92a6ea0b0b3322cf4f4d11115d301862cf8e8bcad26c0010ca912d38dfe5c0",
   "displayName": "NavActionStack",
   "format": "component-entry/v1",
   "frameworks": [

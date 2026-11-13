@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ScoreCard.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:16603dde2abba2356b78e039501435d519c0fc19a2e1efeaeaf93fb5b6c6b72c",
+      "digest": "sha256:898875adeb754ad4fc75a6ab26f56137d819e3e3c107b843946e266b4c6657f8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ScoreCard.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/ScoreCard.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:9faa9934406193d43fbc7e9c75d9cc513192ec373e0467a68cfc7d308f0b8487",
+  "digest": "sha256:0404fdd0dee0ade0c90f69f7abed6405ae46ff8c1d3eba68b97c113aff703a16",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:347e7ab89fa464d51b2b654a06bc5ecde888728e25d69b8352a689db22f76471",
-  "entryDigest": "sha256:41b54d3c61b0944614a622b94cb65a6f5538099061fb48475b28f1aa5aee1014",
+  "digest": "sha256:fdf2511e4f7ebad3f03b6f3979e9d40ec6e4a61c3c69a73acab25388c6cdb88f",
+  "entryDigest": "sha256:fe96028a8eb510784215bebbf7706b1f58c9cef7539e0404d6100a91af0e001c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-svelte/dist/Popper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopperProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -416,12 +416,27 @@
           }
         },
         {
-          "name": "placementChange"
+          "name": "placementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -509,18 +524,21 @@
           "sourceType": "HTMLElement"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:2033b3e8da066e9ca9c9f9dbef303f07af0d8e88061af790faae5822ba73867e",
-        "declarationPath": "packages/components-vue/dist/Popper.d.ts",
+        "declarationDigest": "sha256:25eacea8e0d11a0fef3f3bbd9f5cbc4e6a5a31b661fe50e9f46a7247ac083316",
+        "declarationPath": "packages/components-vue/dist/Popper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopperProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"placementChange\": payload not in declaration",
         "event pair: emits \"placementChange\" and prop \"onPlacementChange\" both listed verbatim"
       ]
     }

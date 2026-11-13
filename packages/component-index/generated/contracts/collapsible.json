@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:630cda6c488fd2613a724874236478e09404eb9b18955aa8bab265b74892c1a4",
-  "entryDigest": "sha256:677a98b338a2c2ebc9f34f6bdbb380be612bc95f39bcbd94193e8a78c367e9a0",
+  "digest": "sha256:111e55c0a93fac3cc661f0f7e62a3ac08014f0a2f4b1119e0c7bd86bc9f613e0",
+  "entryDigest": "sha256:dfecf384ba8c2374ad0aa6339371d30ae8fe5b812d29659ec3e8d43a315067c0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/Collapsible.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CollapsibleProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -223,12 +223,14 @@
           }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -253,18 +255,24 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:883dfd9151d21b960b8e249fefbf48e844dca972663d4d6945d6990e19560f91",
-        "declarationPath": "packages/components-vue/dist/Collapsible.d.ts",
+        "declarationDigest": "sha256:8fe4b40443e84707f93c13ea0905606d82dceba5daad178e287111f68f406c51",
+        "declarationPath": "packages/components-vue/dist/Collapsible.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CollapsibleProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
       ]
     }

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Highlight.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4fb4385c659d08fad5ff1ed3bf3822442c94f24af63584bcc25f4eaf4df21fbb",
+      "digest": "sha256:6f54e0b5b30d012b7594d24096892db13adcba854f1322f4854f3c0cd79f274a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Highlight.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Highlight.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:209a8eda70193ecd2fb488b35cf8c54406c55f6f5aec75fd50adb31153356c8b",
+  "digest": "sha256:376af21ae2769c0fad5a1de47f8e79272191d00098bfac3682a269902201137b",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

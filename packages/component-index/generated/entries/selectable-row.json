@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectableRow.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:8fc2062d060208cbf8b39b23e512bb369d5e5c8f8dd59dbeb6d936318b7791ba",
+      "digest": "sha256:d72cbd38fc315a9904dd54ac47a30c4b1fa11547c3b11e102aa87ef327199f3b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SelectableRow.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/SelectableRow.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full-width selectable row: tinted surface + accented text, leading/trailing slots.",
     "fr": "Rangée sélectionnable pleine largeur : surface teintée + texte accentué, slots leading/trailing."
   },
-  "digest": "sha256:c30965719d9a244717afe872a658ddc25e062454e9db1383f287a8c59ab32099",
+  "digest": "sha256:3be0e098425083afcadb6735f5a1e2d08f74360bf9f6375ef294e4d2ee757639",
   "displayName": "SelectableRow",
   "format": "component-entry/v1",
   "frameworks": [

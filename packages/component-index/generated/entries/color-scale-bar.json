@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColorScaleBar.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f73704cbcf8a7ba34876a3ee52a76297b770bdc1051d9a9f575a4a2c9358b9ab",
+      "digest": "sha256:29c0f4446f0f432a43ed7dd1239ba008c066de705bdc61de38138d5494b94b73",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ColorScaleBar.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/ColorScaleBar.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous color scale (gradient) from arbitrary stops, with optional min/max end labels.",
     "fr": "Échelle de couleur continue (gradient) à partir de stops arbitraires, avec libellés d'extrémités min/max."
   },
-  "digest": "sha256:c07c30e01cc0a2e02609a20f5f18b76c52f1cf973927e63ea8e8740ea496472e",
+  "digest": "sha256:04ab27693e6f1800d2f1a6d4b66b419193a5fec2e41ff1cca1e78fa0f1121e95",
   "displayName": "ColorScaleBar",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:247b96837d54a3536709b1b64015e4ec2bfd127f595cffa093af9df1790bdb2d",
-  "entryDigest": "sha256:61eea4fd35cf2e08c6df73e45897ea48f9f7a1a3236c04e96d069271150c9816",
+  "digest": "sha256:0781f521a26bb14c4d92aa43b35661dd9cbe79279c9aabdf504739f7a0573ef2",
+  "entryDigest": "sha256:4e9e226072c8e934109068501fb88676fda53acad78b494c5aec18f56dd4905e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -307,7 +307,10 @@
       ],
       "events": [
         {
-          "name": "diagnostic"
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
         },
         {
           "name": "onDiagnostic",
@@ -350,15 +353,42 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -515,20 +545,21 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:843d221d211ef87bd9e2b6e5dced55e8df680c6c6e554b51fefbb8e0d8e9f1b8",
+        "declarationDigest": "sha256:1492d83246357d08b84ec8865425ab6e559f8f0ac089322d5b072cde3630b94a",
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"diagnostic\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"

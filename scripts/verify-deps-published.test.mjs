@@ -1,7 +1,7 @@
 // Guards for scripts/verify-deps-published.mjs (lot DC-1, review item 7).
 //
 // The release case: packages/components-svelte/package.json pins
-// @sentropic/design-system-themes 0.13.0, which is not on the npm registry
+// @sentropic/design-system-themes 0.14.0, which is not on the npm registry
 // yet, so publishing svelte before the core packages would ship a dependency
 // npm cannot resolve. The gate must fail closed on that exact pin, and pass
 // only when every exact @sentropic/* pin of the manifest resolves on the
@@ -65,20 +65,20 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
 
 test("verifyDeps reports pins the registry does not resolve to the exact version", () => {
   const deps = [
-    { name: "@sentropic/design-system-themes", version: "0.13.0" },
+    { name: "@sentropic/design-system-themes", version: "0.14.0" },
     { name: "@sentropic/graph", version: "0.3.0" },
   ];
   const allPresent = (name, version) => version;
   assert.deepEqual(verifyDeps(deps, allPresent), []);
   const missing = verifyDeps(deps, (name) => (name === "@sentropic/design-system-themes" ? null : "0.3.0"));
-  assert.deepEqual(missing, [{ name: "@sentropic/design-system-themes", version: "0.13.0", seen: null }]);
+  assert.deepEqual(missing, [{ name: "@sentropic/design-system-themes", version: "0.14.0", seen: null }]);
   const drifted = verifyDeps(deps, (name, version) => (name === "@sentropic/graph" ? "0.2.0" : version));
   assert.deepEqual(drifted, [{ name: "@sentropic/graph", version: "0.3.0", seen: "0.2.0" }]);
 });
 
-test("main fails closed on the release case: themes 0.13.0 not yet on npm", () => {
+test("main fails closed on the release case: themes 0.14.0 not yet on npm", () => {
   // Simulated registry state before the core release: rich-text 0.1.0, graph 0.3.0 and
-  // theme-dsfr 0.2.2 exist; tokens 0.13.0 and themes 0.13.0 do not (E404).
+  // theme-dsfr 0.2.2 exist; tokens 0.14.0 and themes 0.14.0 do not (E404).
   const registry = new Map([
     ["@sentropic/design-system-rich-text@0.1.0", "0.1.0"],
     ["@sentropic/graph@0.3.0", "0.3.0"],
@@ -86,7 +86,7 @@ test("main fails closed on the release case: themes 0.13.0 not yet on npm", () =
   ]);
   const view = (name, version) => registry.get(`${name}@${version}`) ?? null;
   const code = main(["--workspace", "packages/components-svelte"], view);
-  assert.equal(code, 1, "the gate must refuse to publish while themes@0.13.0 is missing");
+  assert.equal(code, 1, "the gate must refuse to publish while themes@0.14.0 is missing");
 });
 
 // DC-2a L4 release order: diagram-canvas → tokens (if changed) → svelte. With

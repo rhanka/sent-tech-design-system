@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ErrorBarChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f81a6ff02f5c5b7c8b3ca4daa8d92da7a5ad9cebacc2addcbd5079973a218320",
+      "digest": "sha256:389f9ea424f2ca242fbb3acbb8ce1919888a64765fe4752d670726f8cb561676",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ErrorBarChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/ErrorBarChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Per category, a marker at the central value (mean) and a whisker from the low to the high bound capped at each end (uncertainty / confidence interval).",
     "fr": "Pour chaque catégorie, un marqueur au point central (moyenne) et une moustache de la borne basse à la borne haute avec un capuchon à chaque extrémité (intervalle d'incertitude / de confiance)."
   },
-  "digest": "sha256:f2196ef474340c863735f6b9cc1b55d2b3c59fb876a7c80c39a3a68cf0333636",
+  "digest": "sha256:a4efd871ac3cc456e3ae6140bac88eece2a1a4124b47587473cebaff0ef5cda0",
   "displayName": "ErrorBarChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MarimekkoChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b83fa090e776cc3d4a68e067d8241eb44a19371ae5855f89f8c3564afb238d27",
+      "digest": "sha256:4f8cbd70a23db457b21ce348358eb9a2c39d54409d2957b5be19569fcd1e2227",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MarimekkoChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/MarimekkoChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Marimekko chart: weighted column width with stacked segments.",
     "fr": "Matrice Marimekko : largeur de colonne pondérée, segments en hauteur."
   },
-  "digest": "sha256:15c30bea057d6e5309183444a3bde546372b4aa1acd4c04a469785083d484e88",
+  "digest": "sha256:7441aa6035770be74dceb9a9985e2e49185985b1910b0c45ec4b70f1c661ee80",
   "displayName": "MarimekkoChart",
   "format": "component-entry/v1",
   "frameworks": [

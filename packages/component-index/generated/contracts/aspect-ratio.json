@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:ba42043b410c944f21ceb85e025a49ba9d1248281a9275f599eca91000a49d1c",
-  "entryDigest": "sha256:51df81f83ec233ac9bf8c569b3004f4424301cc8417fafebcd93c2dac11d9c0f",
+  "digest": "sha256:a4af586bee4c5298d9c491f03bbacb41b4539ff88773fa0cd771af5cf1d36715",
+  "entryDigest": "sha256:be3c36feb8fe1fac2a9eda7410d7750b6814294fb15e8ee5734637cb6778d545",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-svelte/dist/AspectRatio.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AspectRatioProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -135,8 +135,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -158,13 +157,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:5a3bdfb5467e4599ed5580210b082d3e994e5a86865e4af1cc2fb32b9b15f5d6",
-        "declarationPath": "packages/components-vue/dist/AspectRatio.d.ts",
+        "declarationDigest": "sha256:6e9060c7a21a6ac7dae3981424b5c3c4d931d17d49aaec027741a56a4b9cb3d4",
+        "declarationPath": "packages/components-vue/dist/AspectRatio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AspectRatioProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

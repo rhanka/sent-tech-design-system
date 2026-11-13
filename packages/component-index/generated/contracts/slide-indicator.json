@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:67b5f4e50566e5fcfdc1d5588f0891ad276cf664c5230e9bca033fec0e8ff743",
-  "entryDigest": "sha256:c3459ab7ce2d5ad5a5e0b04721c70312aa4cb44f227879245f0db6ed4b609982",
+  "digest": "sha256:55707b9d4de9a34588ab10d5b812ce775b5be53eaaf9eb1d5afaad9ea21f9be3",
+  "entryDigest": "sha256:eb77d05b156d3eec42dc6d40cd21b60cb38d1ef47a08e3c82c1d9e3a07043222",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SlideIndicatorProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -224,7 +224,10 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "type": "number"
+          }
         },
         {
           "name": "onChange",
@@ -235,12 +238,14 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "number"
+          }
         }
       ],
       "limitations": [
@@ -284,27 +289,18 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9d06de66e418bfb1efc6b9027c0b82fd5b8a920d80a6570042b48d827e85beae",
-        "declarationPath": "packages/components-vue/dist/SlideIndicator.d.ts",
+        "declarationDigest": "sha256:19fc8157849648ce77b9a6acf5df7282a5fe56f9f13dbec41f960c7e92b0043c",
+        "declarationPath": "packages/components-vue/dist/SlideIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SlideIndicatorProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
       ]

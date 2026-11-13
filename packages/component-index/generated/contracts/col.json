@@ -1,8 +1,8 @@
 {
   "componentId": "col",
   "contractSource": "derived",
-  "digest": "sha256:63b2ad36c295e38e257bcc3f7881422ec6a92d376affa44f47a807db66a197f5",
-  "entryDigest": "sha256:779de1663fb82179f4565e29209b012e28b8092e48de953ad544353024967a6f",
+  "digest": "sha256:7736c46607c1b08e3964daadaa165eefde14cae05a72c31cfc2f295da193fb9b",
+  "entryDigest": "sha256:9c76bce2d65b828a5ee056803c68bb5f004cdf03ec87a84fce667eacd5a4818b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -250,7 +250,7 @@
         "declarationPath": "packages/components-svelte/dist/Col.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -261,8 +261,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -323,13 +322,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ef1f01e4e55892ae0dcd5d81acdc8638972df29bd0510a6cedffba74d441a5ce",
-        "declarationPath": "packages/components-vue/dist/Col.d.ts",
+        "declarationDigest": "sha256:87fbdaf1780e680718b3583e50d3f57825eb8fbd23966db75ab5153bd6f0240f",
+        "declarationPath": "packages/components-vue/dist/Col.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

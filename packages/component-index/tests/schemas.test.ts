@@ -51,7 +51,7 @@ const buttonEntry = {
       framework: "vue",
       package: "@sentropic/design-system-vue",
       version: "0.38.0",
-      path: "packages/components-vue/src/Button.ts",
+      path: "packages/components-vue/src/Button.vue",
       digest: "sha256:797718abefe5fb0a74015e1422138bec508ef2b2a95009d71c8c3102f76491e0",
     },
     {

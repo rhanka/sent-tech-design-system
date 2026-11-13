@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { WaffleChart } from "./WaffleChart.js";
+import WaffleChart from "./WaffleChart.vue";
 
 const market = [
   { label: "Chrome", value: 65 },

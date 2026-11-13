@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "MediaContent",
+  "sourceRevision": "9790c144d4874420c9b451c24b1effcec1fba65c",
+  "source": "src/MediaContent.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<figure class=\"st-mediaContent\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:16/9;\"><img alt=\"A sunrise over the bay\" decoding=\"async\" loading=\"lazy\" src=\"https://example.test/photo.jpg\"></div><figcaption class=\"st-mediaContent__caption\"><p class=\"st-mediaContent__title\">Sunrise</p><p>Captured at dawn.</p><p class=\"st-mediaContent__byline\">J. Moreau</p></figcaption></figure>"
+    },
+    {
+      "id": "video-controls",
+      "html": "<figure class=\"st-mediaContent\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:16/9;\"><video aria-label=\"Interview\" controls=\"\" preload=\"metadata\" src=\"https://example.test/clip.mp4\"><track default=\"\" kind=\"captions\" label=\"Français\" src=\"data:text/vtt,WEBVTT\" srclang=\"fr\"></video></div><figcaption class=\"st-mediaContent__caption\"><p class=\"st-mediaContent__title\">Interview</p></figcaption></figure>"
+    },
+    {
+      "id": "video-no-controls-captions",
+      "html": "<figure class=\"st-mediaContent\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:16/9;\"><video aria-label=\"Contenu média\" preload=\"metadata\" src=\"https://example.test/clip.mp4\"><track default=\"\" kind=\"captions\" label=\"English\" src=\"https://example.test/fr.vtt\" srclang=\"en\"></video></div></figure>"
+    },
+    {
+      "id": "slot-fallback",
+      "html": "<figure class=\"st-mediaContent\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:4/3;\"><strong>Upload</strong> your image</div><figcaption class=\"st-mediaContent__caption\"><p class=\"st-mediaContent__title\">No media yet</p></figcaption></figure>"
+    },
+    {
+      "id": "custom-ratio",
+      "html": "<figure class=\"st-mediaContent consumer\" data-bench=\"media\" style=\"border:1px solid red;\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:1/1;\"><img alt=\"\" decoding=\"async\" loading=\"lazy\" src=\"https://example.test/photo.jpg\"></div></figure>"
+    },
+    {
+      "id": "caption-only",
+      "html": "<figure class=\"st-mediaContent\"><div class=\"st-mediaContent__media\" style=\"--st-mediaContent-ratio:16/9;\">Fallback text</div><figcaption class=\"st-mediaContent__caption\"><p>A caption without media.</p></figcaption></figure>"
+    }
+  ],
+  "sourceSha256": "c178f41ec1b3ee78f74cec32dc838163ea9bc6bb42e5290c4e2a561b22a38667",
+  "fixtureSha256": "ceb26ae5536bb507348c5dfd24dd72b6fbeec8fa836584298d08ba15bec68388",
+  "publicExports": [
+    {
+      "name": "MediaContent",
+      "typeOnly": false
+    },
+    {
+      "name": "MediaContentProps",
+      "typeOnly": true
+    },
+    {
+      "name": "MediaKind",
+      "typeOnly": true
+    }
+  ]
+}

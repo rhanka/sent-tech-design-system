@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { h } from "vue";
-import { Checkbox } from "./Checkbox.js";
+import Checkbox from "./Checkbox.vue";
 
 const root = (el: HTMLElement) =>
   el.classList.contains("st-choice") ? el : el.querySelector<HTMLElement>(".st-choice");

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/HLCChart.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:768258bea0eb5599d66637480b7a76956cae8511ca8581dfdc941fbffae5f883",
+      "digest": "sha256:f9b755e02c581b2fa39595845e44c68c02cbf61f5b00c0b993c31ae713ecb4a3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/HLCChart.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/HLCChart.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "HLC bars: a vertical low→high bar with a right close tick (an OHLC variant without an open tick).",
     "fr": "Bâtons HLC : barre verticale low→high, tick droite à la clôture (variante d'OHLC sans tick d'ouverture)."
   },
-  "digest": "sha256:921c2b88fc4ad910c71cce0922073101412b1cb5af4eb9c777b726ecaa2ca2a2",
+  "digest": "sha256:cadda8aa796eb05430faff58f4ddbf9eb98968a8829d6566d55416f67851dfaf",
   "displayName": "HLCChart",
   "format": "component-entry/v1",
   "frameworks": [

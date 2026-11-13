@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "DatePicker",
+  "sourceRevision": "23ff22a7acbbe7d75a61e0c1e8f45852990408d9",
+  "source": "src/DatePicker.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-1\"><span class=\"st-field__label\">Date</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-1\" placeholder=\"jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"15/01/2024\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "range-full",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-2\"><span class=\"st-field__label\">Period</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-2\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"05/01/2024 - 20/01/2024\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "range-partial",
+      "html": "<div class=\"st-field consumer\" data-bench=\"date\" style=\"color:red;\"><label class=\"st-field__control\" for=\"st-datepicker-3\"><span class=\"st-datepicker st-datepicker--sm\"><input class=\"st-datepicker__control\" id=\"st-datepicker-3\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"01/03/2024 - \"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "english-bounds",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"my-date\"><span class=\"st-field__label\">Date</span><span class=\"st-datepicker st-datepicker--lg\"><input class=\"st-datepicker__control\" id=\"my-date\" placeholder=\"mm/dd/yyyy\" readonly=\"\" type=\"text\" value=\"06/10/2024\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Open calendar\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "invalid-helper",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-5\"><span class=\"st-field__label\">Date</span><span class=\"st-datepicker st-datepicker--md\"><input aria-invalid=\"true\" class=\"st-datepicker__control\" id=\"st-datepicker-5\" placeholder=\"jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-6\"><span class=\"st-field__label\">Date</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-6\" placeholder=\"jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    }
+  ],
+  "sourceSha256": "7624d45fae5eae1f44f1a893a231d81d9195834182c9fcc5b713de3d97374e80",
+  "fixtureSha256": "65f101111c3f940008d45788000f9a23ee65a92e8ac4994e2ce3a4a74fd2a4ed",
+  "publicExports": [
+    {
+      "name": "DatePicker",
+      "typeOnly": false
+    },
+    {
+      "name": "DatePickerProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DatePickerSize",
+      "typeOnly": true
+    },
+    {
+      "name": "DatePickerRange",
+      "typeOnly": true
+    },
+    {
+      "name": "DatePickerValue",
+      "typeOnly": true
+    }
+  ]
+}

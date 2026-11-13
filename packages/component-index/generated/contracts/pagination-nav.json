@@ -1,8 +1,8 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:f82e61cbd30b4f542e0d3c1268ad50600d4407112c455c109305977c3a6c9108",
-  "entryDigest": "sha256:48dfa3f1b6a1e1d7e778e5f9805173dc97995b3e3d848e21765965b97dd361b6",
+  "digest": "sha256:bcff77a153afa21583f082f9116a27a411bc8a188df1925b7fff12447e8b57b8",
+  "entryDigest": "sha256:f08476b6924631388ff8471ebbc9fa0b7573ca08f4dcadad8a092fc2f1d63790",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-svelte/dist/PaginationNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationNavProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -206,12 +206,14 @@
         {
           "name": "onPage-change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
-          "name": "page-change"
+          "name": "page-change",
+          "payload": {
+            "type": "number"
+          }
         }
       ],
       "limitations": [
@@ -254,26 +256,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onPage-change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:923c29f4db3c026a5907de8e785365086c0d6818848df7b8273cf5507f389fe2",
-        "declarationPath": "packages/components-vue/dist/PaginationNav.d.ts",
+        "declarationDigest": "sha256:d902c9a445b330c6107004c591219fc7f3e2ed15212e2ab84b4b8fea2af90b13",
+        "declarationPath": "packages/components-vue/dist/PaginationNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationNavProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"page-change\": payload not in declaration",
         "event pair: emits \"page-change\" and prop \"onPage-change\" both listed verbatim"
       ]
     }

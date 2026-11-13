@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:f1b415ac7123b19e1c0b86434ffd8ec1c5fe09ee6d131a0fcc7f9e18b7b07370",
-  "entryDigest": "sha256:8caf26c2dd1c6f232ee328cbfd6907af5a026b2c82b539d5433b4e32b3d9471f",
+  "digest": "sha256:6832d17aa5011c4bb792c6de441776f7e6c9822b24d0ee7e91bd1ffe27408f8b",
+  "entryDigest": "sha256:e94f735e43bae802a5674fc5ccd4a7b9ddd6481c5506fcac24c8073145768480",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -431,7 +431,7 @@
         "declarationPath": "packages/components-svelte/dist/MultiSelect.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MultiSelectProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -444,39 +444,56 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
+            "type": "boolean"
+          }
+        },
+        {
+          "name": "update:modelValue",
+          "payload": {
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
         {
-          "name": "update:modelValue"
-        },
-        {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -492,7 +509,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -598,40 +614,44 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {
+                "$ref": "#/$defs/MultiSelectOption"
+              }
+            },
+            "required": [
+              "option"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:6dfc15980998e98254ac93fac586451c4900e42f3bedd95d621688b5880a1f2e",
-        "declarationPath": "packages/components-vue/dist/MultiSelect.d.ts",
+        "declarationDigest": "sha256:41bfa6958e6e94c7021a83fe6bb8df959fe273615931ed4de96684d8fc9fc00b",
+        "declarationPath": "packages/components-vue/dist/MultiSelect.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MultiSelectProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",

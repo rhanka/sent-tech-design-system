@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:b326045b9ea673592b770acc8877bfe8211ce49e15ee3d742c2b1c3e0959f00f",
-  "entryDigest": "sha256:9bf59a708f4dbb3c1ed3cb0ac6727f99d0cdde35a18392a99df175f86220284f",
+  "digest": "sha256:757f921e495dfc4314d22970103be0d14355b0c305be0a7d0b81802f88fde223",
+  "entryDigest": "sha256:3c254d7cb4d5e84a17f6e061261af262d4822f14a5602cece41e883f3a612003",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -266,6 +266,18 @@
           "name": "dismissLabel",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(title: unknown) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onClose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onDismiss",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
         }
       ],
       "events": [
@@ -273,26 +285,23 @@
           "name": "close"
         },
         {
-          "name": "dismiss"
+          "name": "dismiss",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "onClose",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onClose"
         },
         {
           "name": "onDismiss",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -315,8 +324,7 @@
               }
             },
             "required": [
-              "id",
-              "title"
+              "id"
             ],
             "type": "object"
           }
@@ -383,37 +391,72 @@
           "sourceType": "unknown"
         },
         {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onDismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "title",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        },
+        {
+          "name": "title",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:61edde93771b72cd742f323ba383dab11deeba9997a21d0e626223a2e0b0ec55",
-        "declarationPath": "packages/components-vue/dist/Toast.d.ts",
+        "declarationDigest": "sha256:7df0e065939abdba061b01be9453d30cc31ea0f722c83bf0b0776b0155f491f2",
+        "declarationPath": "packages/components-vue/dist/Toast.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]
