@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "ColorSwatch",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "source": "src/ColorSwatch.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--square\"><span aria-label=\"red\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:red;width:24px;height:24px;\"></span></span>"
+    },
+    {
+      "id": "variant-1",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"Swatch\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:var(--x);width:14px;height:14px;\"></span><span class=\"st-colorSwatch__label\">Swatch</span></span>"
+    },
+    {
+      "id": "variant-2",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--pill\"><span aria-label=\"blue\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:blue;width:1px;height:1px;\"></span></span>"
+    },
+    {
+      "id": "variant-3",
+      "html": "<span class=\"st-colorSwatch st-colorSwatch--square consumer\" data-bench=\"swatch\"><span aria-label=\"red\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:red;width:24px;height:24px;\"></span></span>"
+    }
+  ],
+  "sourceSha256": "09d9ca5b1d5af0d66a891735e7c099626d69fd4bc963330d5e3c11ffa00f0db5",
+  "fixtureSha256": "e6ee01ca030afd6616435b71d3a73dc18c3bc33f09d78d293f78e94827af9ff1",
+  "publicExports": [
+    {
+      "name": "ColorSwatch",
+      "typeOnly": false
+    },
+    {
+      "name": "ColorSwatchProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ColorSwatchShape",
+      "typeOnly": true
+    }
+  ]
+}
