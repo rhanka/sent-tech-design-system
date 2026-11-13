@@ -1,7 +1,7 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:17630ddf6b360c9909c471e0234d45b7704af8d813c1a8c4f0b04a7dafd2e264",
+  "digest": "sha256:3ebf99156f8c3ee0466707e9b4ae8ba73bb06d4f027d0b3a691b29a526ab322a",
   "entryDigest": "sha256:66a16505bffc92bbce06d9bd647f918be7ebfda26d3735b0189664f79127dea1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -762,10 +762,18 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -943,6 +951,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -956,8 +976,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""

@@ -1,7 +1,7 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:5ab42015fa1cd771bc21e97b921cc4b3f0109fd4d0d16c192200b62750386790",
+  "digest": "sha256:35f3f692495f0bc16df7a0a5b3329d7afde080005aee2f754b85904f3e1d7c98",
   "entryDigest": "sha256:e008b68688af7e43ad92bea2f08aac163de58a608ca217ccf5f08bf61313e54d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -444,7 +444,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -468,10 +472,18 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -582,6 +594,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "errorText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -616,6 +634,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -629,9 +659,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",

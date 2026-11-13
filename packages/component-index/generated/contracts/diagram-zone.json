@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:de821a1bbebdcb11ee1637e977450d97235f9fed689e1c337c901767e843619c",
+  "digest": "sha256:c2085733cb83887ede61611753cb6f8f5e8e8795ac100b7323ce53280c578d35",
   "entryDigest": "sha256:ac3823ad9043766b70eeade160449630e550fc5348c9d3e133404af05705b0d2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -280,7 +280,10 @@
       ],
       "events": [
         {
-          "name": "diagnostic"
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
         },
         {
           "name": "onDiagnostic",
@@ -323,15 +326,42 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -461,7 +491,16 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
         "declarationDigest": "sha256:af6c6d02a929c92f8a50875b456c17c85ab7d0fba90be9b97d943779fe671868",
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
@@ -472,9 +511,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"diagnostic\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"

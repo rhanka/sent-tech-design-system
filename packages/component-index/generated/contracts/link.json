@@ -1,7 +1,7 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:84a7fef1c250d931cfc503a0dfce9fa47714a5e4cf289a9612904d5b080c6bdf",
+  "digest": "sha256:75d313248e64b7d553d8a3bdfd106b74d21a68bf979bab0f9ba8cbf29b5bb317",
   "entryDigest": "sha256:5c25c269bdb6094ff0c99f5636a5d75c9fb86a363cb10b79d829c8002375790c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -250,7 +250,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a393dfbba5cb295fe15112724f0ce555da400103282b8721ddfc039870fd3c50",
+        "declarationDigest": "sha256:65edb6ae0e4a5066ea8bd6c7321dcde315b5676c935e7e6dbf3a0d19dfbb3d5b",
         "declarationPath": "packages/components-vue/dist/Link.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LinkProps",

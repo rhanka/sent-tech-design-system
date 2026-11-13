@@ -1,7 +1,7 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:50b374210060715c6b3c66e181247077e6ea8f95a328640d3c33532c5411af7f",
+  "digest": "sha256:9ced248f5c05b828a7d12dcca25bc3022ba810348144396237085fad48384efc",
   "entryDigest": "sha256:15b22a97dd0b6f2e87a50304d5f6388576bb51561d24838abc8f17bb7ed0defa",
   "format": "component-contract/v1",
   "frameworks": {
@@ -239,7 +239,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -301,6 +305,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -318,7 +328,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

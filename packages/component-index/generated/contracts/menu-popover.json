@@ -1,7 +1,7 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:cd5a17d38feef820a33efcddcf6629cd433295d835c02e792f25441300146ca5",
+  "digest": "sha256:8771e4ead94490c3fb1ba6c98ba476de11530b84065a71155b6d7a01b95f13c3",
   "entryDigest": "sha256:1057e62feca4d1182c91e9351aa3fd99f0d9f3d8e5a9e79bc644c6fc7bacabac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -632,15 +632,22 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -832,13 +839,34 @@
           "sourceType": "any"
         },
         {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "trigger",
           "reason": "library type not expanded",
           "replacement": "{}",
           "sourceType": "HTMLElement"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
         "declarationDigest": "sha256:21c5df06d2c4c37e83e73dd4efb5714b9e485fe20ed7c822fd1aa2879cc65057",
         "declarationPath": "packages/components-vue/dist/MenuPopover.d.ts",
@@ -849,8 +877,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""

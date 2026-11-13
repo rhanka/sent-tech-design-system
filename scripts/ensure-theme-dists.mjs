@@ -60,10 +60,18 @@ function sourceHash(pkgDir) {
     }
   };
   walk(pkgDir);
+  // Vue builds share their compiler/lint implementation at repository level.
+  // Include it in the content hash so a restored dist cannot bypass a gate
+  // after only a shared script, compiler pin or base TS config changes.
+  if (["components-vue", "dataviz-vue"].some((name) => pkgDir === join(root, "packages", name))) {
+    for (const file of ["scripts/vue-sfc-build.mjs", "scripts/vue-vapor-source.mjs",
+      "scripts/vue-vapor-lint.mjs", "scripts/vue-vapor-legacy.json", "package-lock.json",
+      "tsconfig.base.json", "packages/components-vue/scripts/vapor-sfc.d.ts"]) files.push(join(root, file));
+  }
   files.sort();
   const h = createHash("sha256");
   for (const f of files) {
-    h.update(f.slice(pkgDir.length));
+    h.update(f.startsWith(pkgDir + sep) ? f.slice(pkgDir.length) : "@shared" + f.slice(root.length));
     h.update("\0");
     h.update(readFileSync(f));
     h.update("\0");

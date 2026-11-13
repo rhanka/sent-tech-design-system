@@ -1,7 +1,7 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:3d04ea740db85be2202afe5af70ee6cd2fbe2b362b38d36b61564631198ca291",
+  "digest": "sha256:8b80adca9656c55b26f7ee1a58360958aaef77d61f49082c6606277406ffa716",
   "entryDigest": "sha256:187d4a87debc090f3602ef4c8e39bf1b4115d5239d94ab2d63c79569841144b2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -252,7 +252,23 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
         },
         {
           "name": "onChange",
@@ -328,7 +344,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }
