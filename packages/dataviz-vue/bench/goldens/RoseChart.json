@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "RoseChart",
+  "sourceRevision": "fb43780161945ab8917463ce9b98a150c60b5c9e",
+  "source": "src/lib/RoseChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 180 180 L 180 6 A 174 174 0 0 1 180 354 Z\" data-chart-index=\"0\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 180 180 L 180 314.7798204480181 A 134.7798204480181 134.7798204480181 0 0 1 179.99999999999997 45.220179551981886 Z\" data-chart-index=\"1\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"287.88\" y=\"180\">North</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"96.43651132222877\" y=\"180\">South</text></svg></div><ul aria-label=\"Data values for Rose\" class=\"st-chartDataList\"><li>North: 25</li><li>South: 15</li></ul></div>"
+    },
+    {
+      "id": "city",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 180 180 L 180 56.96342007354072 A 123.03657992645928 123.03657992645928 0 0 1 303.0365799264593 180 Z\" data-chart-index=\"0\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 180 180 L 330.68842025849233 180 A 150.68842025849233 150.68842025849233 0 0 1 180 330.68842025849233 Z\" data-chart-index=\"1\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category4\" d=\"M 180 180 L 6 180.00000000000003 A 174 174 0 0 1 179.99999999999997 6 Z\" data-chart-index=\"3\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"233.94\" y=\"126.06\">A</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"246.06273836286232\" y=\"246.06273836286232\">B</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"103.71732044559523\" y=\"103.71732044559526\">D</text></svg></div><ul aria-label=\"Data values for Rose\" class=\"st-chartDataList\"><li>A: 10</li><li>B: 15</li><li>C: 0</li><li>D: 20</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-roseChart consumer\" data-bench=\"rose\" style=\"color:red;\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 240 120 L 240 6 A 114 114 0 0 1 240 234 Z\" data-chart-index=\"0\"></path><path class=\"st-roseChart__sector st-roseChart__sector--category2\" d=\"M 240 120 L 240 208.3040202935291 A 88.3040202935291 88.3040202935291 0 0 1 239.99999999999997 31.695979706470894 Z\" data-chart-index=\"1\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"310.68\" y=\"120\">North</text><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"185.25150741801195\" y=\"120\">South</text></svg></div><ul aria-label=\"Data values for Rose\" class=\"st-chartDataList\"><li>North: 25</li><li>South: 15</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-roseChart__sector st-roseChart__sector--category1\" d=\"M 180 180 L 180 6 A 174 174 0 1 1 179.982600000029 6.000000870000008 Z\" data-chart-index=\"0\"></path><text class=\"st-roseChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"180\" y=\"287.88\">North</text></svg></div><ul aria-label=\"Data values for Rose\" class=\"st-chartDataList\"><li>North: 25</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-roseChart\"><div aria-label=\"Rose\" class=\"st-roseChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "c3f95c450f1e824b22e3b3a6bc52eeb87b89fe5be9c7a804ca866bdc1831b712",
+  "fixtureSha256": "074daa2260aef196b52ee96eabb16ba9674840fcc2fd645447c50e2560738140",
+  "publicExports": [
+    {
+      "name": "RoseChart",
+      "typeOnly": false
+    },
+    {
+      "name": "RoseChartProps",
+      "typeOnly": true
+    }
+  ]
+}

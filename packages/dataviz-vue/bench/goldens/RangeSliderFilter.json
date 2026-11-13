@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "RangeSliderFilter",
+  "sourceRevision": "c13d1fd962a974fdd93c3997020dc6395e6ad17c",
+  "source": "src/lib/RangeSliderFilter.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">sales</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">-5 – 20</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">-5</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:100%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"-5\" aria-valuetext=\"-5\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">-5</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"20\" aria-valuetext=\"20\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:100%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">20</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">20</span></span></div>"
+    },
+    {
+      "id": "bounds",
+      "html": "<div class=\"st-field\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">sales</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">0 – 20</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">0</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:100%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"20\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">0</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"20\" aria-valuemin=\"0\" aria-valuenow=\"20\" aria-valuetext=\"20\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:100%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">20</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">20</span></span></div>"
+    },
+    {
+      "id": "label",
+      "html": "<div class=\"st-field\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">Sales range</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">-5 – 20</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">-5</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:100%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"-5\" aria-valuetext=\"-5\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">-5</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"20\" aria-valuetext=\"20\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:100%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">20</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">20</span></span></div>"
+    },
+    {
+      "id": "min-only",
+      "html": "<div class=\"st-field\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">sales</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">-10 – 20</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">-10</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:100%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"20\" aria-valuemin=\"-10\" aria-valuenow=\"-10\" aria-valuetext=\"-10\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">-10</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"20\" aria-valuemin=\"-10\" aria-valuenow=\"20\" aria-valuetext=\"20\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:100%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">20</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">20</span></span></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-field consumer\" data-bench=\"range\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">sales</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">-5 – 20</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">-5</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:100%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"-5\" aria-valuetext=\"-5\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">-5</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"20\" aria-valuemin=\"-5\" aria-valuenow=\"20\" aria-valuetext=\"20\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:100%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">20</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">20</span></span></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><div class=\"st-rangeSlider__header\"><span class=\"st-field__label\">sales</span><output aria-live=\"polite\" class=\"st-rangeSlider__value\">0 – 0</output></div><span class=\"st-rangeSlider st-rangeSlider--md\"><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">0</span><span class=\"st-rangeSlider__track\"><span class=\"st-rangeSlider__fill\" style=\"left:0%;width:0%;\"></span><span aria-label=\"Valeur minimale\" aria-valuemax=\"0\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--low\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">0</span></span><span aria-label=\"Valeur maximale\" aria-valuemax=\"0\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0\" class=\"st-rangeSlider__thumb st-rangeSlider__thumb--high\" role=\"slider\" style=\"left:0%;\" tabindex=\"0\"><span class=\"st-rangeSlider__tooltip\">0</span></span></span><span aria-hidden=\"true\" class=\"st-rangeSlider__bounds\">0</span></span></div>"
+    }
+  ],
+  "sourceSha256": "7535902826a18b50675f9557aaba6e5817abbf0d254ef2bf880ab968859c2722",
+  "fixtureSha256": "c83a828070b0c9146c545fb1cc5f973f137ad344a7765c835e3c59ce2356768d",
+  "publicExports": [
+    {
+      "name": "RangeSliderFilter",
+      "typeOnly": false
+    },
+    {
+      "name": "numericDomain",
+      "typeOnly": false
+    },
+    {
+      "name": "rangeBoundsToSpec",
+      "typeOnly": false
+    },
+    {
+      "name": "RangeSliderFilterProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NumericDomain",
+      "typeOnly": true
+    }
+  ]
+}

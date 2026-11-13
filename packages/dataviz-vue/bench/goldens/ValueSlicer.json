@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ValueSlicer",
+  "sourceRevision": "f3e0100913aebaa5f73960a49e0444ee7248db32",
+  "source": "src/lib/ValueSlicer.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Region</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"North\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">North</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"South\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">South</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "legend-horizontal",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--horizontal\"><legend class=\"st-checkboxGroup__legend\">Regions</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"North\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">North</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"South\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">South</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "city",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">City</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"A\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">A</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"B\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">B</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"C\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">C</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"D\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">D</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "filtered",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Region</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input checked=\"\" class=\"st-choice__input\" type=\"checkbox\" value=\"North\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">North</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"South\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">South</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "attrs",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical consumer\" data-bench=\"slicer\" style=\"color:red;\"><legend class=\"st-checkboxGroup__legend\">Region</legend><div class=\"st-checkboxGroup__options\"><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"North\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">North</span></span></label><label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\" value=\"South\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">South</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "empty",
+      "html": "<fieldset class=\"st-checkboxGroup st-checkboxGroup--vertical\"><legend class=\"st-checkboxGroup__legend\">Region</legend><div class=\"st-checkboxGroup__options\"></div></fieldset>"
+    }
+  ],
+  "sourceSha256": "5e91cfc53965585513d463780c52d5f65cf2dddbaaea2914188358bdccf42dab",
+  "fixtureSha256": "e71f5cba9d6ec18407c85111640a9ea707eb1ddd775db628a00ecde546519b81",
+  "publicExports": [
+    {
+      "name": "ValueSlicer",
+      "typeOnly": false
+    },
+    {
+      "name": "ValueSlicerProps",
+      "typeOnly": true
+    }
+  ]
+}
