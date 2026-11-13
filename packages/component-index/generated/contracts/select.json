@@ -1,7 +1,7 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:18cab1e120cb2bce1eb31d5d7a78ae246bb609f62ce55f478734064ed6996535",
+  "digest": "sha256:cdf0c8bb5cdef3728bdff265330118332bc584704b79f4ac91d30203dac82fbc",
   "entryDigest": "sha256:6439af325cbd1e88d30cf9b10de45b24c814f6e3e5e3b233b4451e3cb7706fc5",
   "format": "component-contract/v1",
   "frameworks": {
@@ -203,7 +203,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectProps",
