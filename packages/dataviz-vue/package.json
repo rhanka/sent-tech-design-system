@@ -27,7 +27,7 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node ../../scripts/vue-sfc-build.mjs",
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs",
     "check": "npm run check:types",
     "test": "vitest run",
     "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
