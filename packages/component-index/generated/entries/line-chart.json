@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LineChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LineChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Line chart for temporal or numeric series.",
     "fr": "Graphique en courbes pour séries temporelles ou numériques."
   },
-  "digest": "sha256:19044cbabd47710a2d96cde8d9c35c77bfb8ad4504ed40d931a5a9edcdc5f3a8",
+  "digest": "sha256:d4151da28f51dc8e2944af856160684e031812888b0e8ad5dc8525c9debec194",
   "displayName": "LineChart",
   "format": "component-entry/v1",
   "frameworks": [

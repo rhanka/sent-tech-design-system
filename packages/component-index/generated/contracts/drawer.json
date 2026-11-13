@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:6b3a82ce8f0d2dd83620040289531b3d29c0f5913128654a1181508ef1571d65",
-  "entryDigest": "sha256:e72ec3768d3a88a504b9d045cce94690f703bff66aaf3239b7d72d79bf1032b6",
+  "digest": "sha256:07fe3a72fff76097ba1ec668015c40f4c66668eb5a0b1ca06f3a16074ed0c490",
+  "entryDigest": "sha256:3ac06085db341640c5128d459cfe0cd1c71f786209ba0af1099d00a0bb0fd682",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -66,7 +66,7 @@
         "declarationPath": "packages/components-angular/dist/Drawer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -128,11 +128,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DrawerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

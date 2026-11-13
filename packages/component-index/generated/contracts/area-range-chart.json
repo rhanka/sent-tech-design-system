@@ -1,8 +1,8 @@
 {
   "componentId": "area-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:d7b597a1987b0eb04f1455e8306d10071131c0c10e79dab2c8f739bb4ae17139",
-  "entryDigest": "sha256:66441a14791124dcd83b806f607f984dfc3369b1ed1668e669ba0ce1efadbc62",
+  "digest": "sha256:cc648a9e7706ef3cf78f1d896f47c1ab9cd040f13b6161da6702114e6e4e281d",
+  "entryDigest": "sha256:0713f84786d2d7358da1f2ea2fe6c8e61db7d9bf61b50a580fb25efaa19e473f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -87,7 +87,7 @@
         "declarationPath": "packages/components-angular/dist/AreaRangeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AreaRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -185,7 +185,7 @@
         "declarationPath": "packages/components-react/dist/AreaRangeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AreaRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

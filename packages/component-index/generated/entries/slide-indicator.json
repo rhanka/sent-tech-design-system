@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SlideIndicator.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SlideIndicator.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Dots or bars marking the current slide of a carousel.",
     "fr": "Points ou barres signalant la diapositive courante d'un carrousel."
   },
-  "digest": "sha256:8c7e15837cd04758b64b1b976d8e30c2575150aae8143ffb0533310370c45e41",
+  "digest": "sha256:c3459ab7ce2d5ad5a5e0b04721c70312aa4cb44f227879245f0db6ed4b609982",
   "displayName": "SlideIndicator",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:6190055af63e6740106fa0efa56fdcfd6a17094ed36c210c4db0cf46971f630f",
-  "entryDigest": "sha256:ffd53e4e815639498215892871e28a7e02aa7d7fe9c8e1b86d47bcb2f321dd7f",
+  "digest": "sha256:a6df107626defb27867bddb95a151008c383efe7431773f7374dd0ba98a09b81",
+  "entryDigest": "sha256:17c328f89128937b7479ee3b191f673f9ee47e6287c5be978c96465ccb3f527d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/CopyButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CopyButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -104,11 +104,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CopyButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

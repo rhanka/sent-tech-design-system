@@ -1,8 +1,8 @@
 {
   "componentId": "avatar-group",
   "contractSource": "derived",
-  "digest": "sha256:679a0ca12f80d468764adacf043f1f91a87df179b68645ed78917b269b546ae9",
-  "entryDigest": "sha256:7fe2b9319a91b97ad46207674eb561479ed09850c5a0669bca9677c5df4ddb2e",
+  "digest": "sha256:6420ceb9fd369165a25abcab0e052da86c2c9583da731fe1b1bd4e73db20165e",
+  "entryDigest": "sha256:ef1d4ab0956b9905bdb8942f261d02025ce2d61a295b90b91c42a6fe5e7b2b53",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/AvatarGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AvatarGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-react/dist/AvatarGroup.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AvatarGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

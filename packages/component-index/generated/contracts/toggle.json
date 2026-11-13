@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:2133ce56b4c56ceafcafce0bc0ec1ea7fd3ccf5debdf42c59837046797a895df",
-  "entryDigest": "sha256:df0ee4fdc5b4dc28f10057f47677e03e2d8c341ce80a0d4d52b6b1ad21132d72",
+  "digest": "sha256:82c96c283f423fc3fe4b5be388a5bd4dfc3673d7545c18dd98bf33d67e7d6ffb",
+  "entryDigest": "sha256:5034089fbb7448f22f6a5b3805e5dbc50962ea0b09538ed0fa21882bc8054408",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/Toggle.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -137,11 +137,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToggleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

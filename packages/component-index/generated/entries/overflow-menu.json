@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/OverflowMenu.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -29,18 +29,18 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e882cf47e3fe771b884939af7fce78216e48da6472cf50236c2855c02134ceab",
+      "digest": "sha256:3859619d886ce2e4f177a8de3730341258c5029f6630a69890fb74a32c65309d",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OverflowMenu.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Secondary actions menu accessible through a compact trigger.",
     "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
   },
-  "digest": "sha256:87afbe8ed11bf8f8548e5212976ee2034d33c365953198ea5d8bdbbb82d090c7",
+  "digest": "sha256:118509cae35f51cbbe20c2b207d7a6e3a1523a04c8a105274b47b22416f92270",
   "displayName": "OverflowMenu",
   "format": "component-entry/v1",
   "frameworks": [

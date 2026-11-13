@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:5bde8e5627b9d8d52be03690f5685ba047def9b7604f367096ea5e7e090bf55d",
-  "entryDigest": "sha256:ee20de7aa08af8e9e3644d87fe68c69911c932770640d8736ab1a762f226fe7a",
+  "digest": "sha256:edc3ebbd4e189bc69275205231f60974b7e8081e3f8dc76f08e7d8b01e3dbf79",
+  "entryDigest": "sha256:5b692ebf33d9de20b7922554c5d367fb75d99c075e495de055425b809860825d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/MessageStatusBadge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -118,11 +118,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

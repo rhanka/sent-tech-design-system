@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Form.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Form.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:9739cb1385c188abc44b04c665b5d757d576606a686f2d379c0949a1637ed282",
+  "digest": "sha256:91c31ee5ae97a7084f7c129df6dc9d75cba1f32bca9d1b55d691ec9808fd08cb",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

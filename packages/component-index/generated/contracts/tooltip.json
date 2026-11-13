@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:b0d4f7b3dd5b9ef8584075406004d24824a0ab1b89e41b6e41c973a1cef0ffd5",
-  "entryDigest": "sha256:7697007386527e42a1d8d1ed2fce0f644e15973392c7c506ad126adef99585ba",
+  "digest": "sha256:36d26e58d30d9a5feb1ffcab5a29b8b959cdbf0726f4dab5d6a492cde3aa375f",
+  "entryDigest": "sha256:8b3658e66f93bb2775162a367d4fc55dce1065d3b6ebeae3df53fc10cec63c7e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Tooltip.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -90,11 +90,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TooltipProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

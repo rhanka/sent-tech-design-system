@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:5db4b30c6d68c00c3b68bbe946f705d0d95cdee40fb50b8a63d7dacae44111c4",
-  "entryDigest": "sha256:55c58ae955d7a46475d9dd661c056db16e33e6b840e8b5fc9ea52d33c4642d4b",
+  "digest": "sha256:0df35f72a2065936b86d447348e19bd20715e846c1bc469b691590f58ba665b2",
+  "entryDigest": "sha256:a419250eb286b52c1f77661bd07bf384749817b7b08233d3f2c1428e6f05d9ce",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Row.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Row.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

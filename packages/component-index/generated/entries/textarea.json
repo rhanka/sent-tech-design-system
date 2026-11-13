@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Textarea.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Textarea.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:e21b8cd8015fe9224c750b843a31aec9d600f7281688e99b9a8b4495848cdbc1",
+  "digest": "sha256:b2ee927e867bb9b1e2024e092ddfb184ce14a61a46a54319fcf80d523afe7f88",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AspectRatio.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AspectRatio.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Fixed aspect-ratio container (media, embeds).",
     "fr": "Conteneur à ratio d'aspect fixe (média, embeds)."
   },
-  "digest": "sha256:4627f98cdaf9a01c129f5603875115c809895abb76bbc8072e6c048c5401940e",
+  "digest": "sha256:51df81f83ec233ac9bf8c569b3004f4424301cc8417fafebcd93c2dac11d9c0f",
   "displayName": "AspectRatio",
   "format": "component-entry/v1",
   "frameworks": [

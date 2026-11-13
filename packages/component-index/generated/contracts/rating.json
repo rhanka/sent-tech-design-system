@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:8bc2ab7e50ca2c6ed21b28aa0f48fd040faf2945dd5cb3c512d8ca086cbc516b",
-  "entryDigest": "sha256:62adb500f49bfe428a5612af48ce0cc8e6d6d586e62d5a945db23db7e9b616f5",
+  "digest": "sha256:0edac46311bc4c6a28f14e7b4e28cde8220152e159f97a54e1a940dcbbe8e4c3",
+  "entryDigest": "sha256:120488c2081a6162427ab4595c48712bbc7f75fa7bac2aea38a8fd360f01299c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/Rating.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RatingProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -137,11 +137,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RatingProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

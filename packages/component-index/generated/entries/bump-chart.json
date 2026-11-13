@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BumpChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BumpChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Rankings over time: rising and falling rank lines.",
     "fr": "Classements dans le temps : lignes qui montent et descendent."
   },
-  "digest": "sha256:b7e8a3549bbb7d1678f82f00e51dbc8ae30b23c6fbf676b04d516ead791028bd",
+  "digest": "sha256:a3b1ec4c9818aa37168364d99575be90b87034cdedd4b2a5bd6f514f9486019f",
   "displayName": "BumpChart",
   "format": "component-entry/v1",
   "frameworks": [

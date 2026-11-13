@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:46a85126651ae2908868666cecd21cf62956fdacd33f04dd6f16be84f8935952",
-  "entryDigest": "sha256:4665527189b14fc7cdf62231e329c683358af3682b774d3151ae018ab1aad21c",
+  "digest": "sha256:0f2ceb6138502cc1572a5505fdbc7a0226b590b530ebd7a7c426b0ab1a161c79",
+  "entryDigest": "sha256:fea8fda3feaa8de7e10b221a02130ccc99e15b26ad437ba6e2c9366f2b2480f7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -307,7 +307,7 @@
         "declarationPath": "packages/components-angular/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OHLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -636,7 +636,7 @@
         "declarationPath": "packages/components-react/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OHLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

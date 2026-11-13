@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:f8a0f284996a0265c60e8c36dcbc863a74d801e5b5600cbe031213b94ed49d3d",
-  "entryDigest": "sha256:40cb25335e9422105da8ffb1fcfe31c6e3ebdf7a09f640dc5e85ba1dc8691ee4",
+  "digest": "sha256:32548b68da745f8aa1456aab9e19493c4876a8370fd81771ee4a25005f1c970c",
+  "entryDigest": "sha256:c16e851e2d33c8e4362bd17322914db2952943d98c3a4161f6d08924c69cc97a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -102,7 +102,7 @@
         "declarationPath": "packages/components-angular/dist/StreamingMessage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StreamingMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -191,11 +191,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StreamingMessageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

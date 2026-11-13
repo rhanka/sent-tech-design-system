@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:b37e71706907377fb8cc89edb5e63530d5771e1dbdf34684af2a9649ef31fcc4",
-  "entryDigest": "sha256:f9e7ee50368ae34659fbd14d2340d4baecd3d60a27e2c3f75aefd47e66dea3dc",
+  "digest": "sha256:27e7a3f1a7cbfaae7410eabdbf2ade6ada32ef5bfbde11eab366762b15de79b3",
+  "entryDigest": "sha256:530883b7503d878282ef5a2556def8db2c4b4b52bbdf341066d7af35178ae45f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-angular/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DataTableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -593,7 +593,7 @@
         "declarationPath": "packages/components-react/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DataTableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

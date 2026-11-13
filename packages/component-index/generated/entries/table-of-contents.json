@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TableOfContents.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TableOfContents.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:2eff9269682fd09ff4f68282ddcb7a9c7bedecb78838e51bd2182a1ed542472b",
+  "digest": "sha256:9f4cc85333a757d8007153dacb37cc25b6d74b650c76099c2becf891d6d7fe0a",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

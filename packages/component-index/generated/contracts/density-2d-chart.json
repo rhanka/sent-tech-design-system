@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:89a5fd33ed5ac6cda8f283bef34bbb6420a2a116b829f4bf982bdf1a28d2a7ca",
-  "entryDigest": "sha256:cf3a614feaf09c71acfb52317c6c306e89156f517b27ef41d3bb0adcbadbb339",
+  "digest": "sha256:3f65228ef13c6b2627a8fed370d318b5dc5ee3bc3681b65370817f87d068e394",
+  "entryDigest": "sha256:a6ed9322928ec6c6df5067babacaf5d91426f1a26ed8649773f74441a419c376",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -76,7 +76,7 @@
         "declarationPath": "packages/components-angular/dist/Density2DChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "Density2DChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -162,7 +162,7 @@
         "declarationPath": "packages/components-react/dist/Density2DChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "Density2DChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

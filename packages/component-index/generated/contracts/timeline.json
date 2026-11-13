@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:2fadddb6e66486f291f050ae9e7d2d04a391026eb901f2d5f1f720998d36f7be",
-  "entryDigest": "sha256:552b607547280ea7cb53d0ab2cdfa5ff12933c2cef7cc72b4930791085535c2d",
+  "digest": "sha256:d80fde796e42e9a5ccbe76845625751704b15be718988dfe7c21df4a890cb408",
+  "entryDigest": "sha256:1096ab19a658b6d967d051e1f7105263a1373744a8b041a0d8022fe2f4fb4de9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimelineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimelineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

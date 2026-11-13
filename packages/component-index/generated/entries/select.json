@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Select.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Select.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled native select, sm/md/lg sizes.",
     "fr": "Sélecteur natif stylé, tailles sm/md/lg."
   },
-  "digest": "sha256:6c435ad787d6d8b4ef1699d05f738dd02e1c849264555316eec88b3d709ae9b2",
+  "digest": "sha256:37e3f98074ac1d7e9ec757e76d03c68362182d3a0480a51ee72a83ea64a37691",
   "displayName": "Select",
   "format": "component-entry/v1",
   "frameworks": [

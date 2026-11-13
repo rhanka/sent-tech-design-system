@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SkeletonText.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkeletonText.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:89d0f372cbf43dbb180357ebaf4f65ce865d76ff745f165d8ddb052993befe2d",
+  "digest": "sha256:402f0201a6b6cb25e7ff5e50cbeacc725467e29155404d32204b02307ab8a613",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LollipopChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LollipopChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Lollipop chart: thin stems and dots to compare values across categories.",
     "fr": "Diagramme en sucette : tige fine et pastille pour comparer des valeurs par catégorie."
   },
-  "digest": "sha256:c307a07654b51d1f9bd4b5584a0eeebfbb6509effb6bf61636f041345eafa2b7",
+  "digest": "sha256:fdef29631d9db41ec1ac75c236341aa2a6236f02815fb810c0b14aa0772487a9",
   "displayName": "LollipopChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ColumnRangeChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColumnRangeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:d552058bb33bf7613a7c809858dbf50bbb87e5147cb8e5786c6f87412e4da3ea",
+  "digest": "sha256:35a2c49a4a50c38f5f3b8827dc4a8144a202c475170a905bc3d82fd7c2fb85b6",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DataTable.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DataTable.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Advanced table: sorting, multi-row selection.",
     "fr": "Table avancée: tri, sélection multi-lignes."
   },
-  "digest": "sha256:f9e7ee50368ae34659fbd14d2340d4baecd3d60a27e2c3f75aefd47e66dea3dc",
+  "digest": "sha256:530883b7503d878282ef5a2556def8db2c4b4b52bbdf341066d7af35178ae45f",
   "displayName": "DataTable",
   "format": "component-entry/v1",
   "frameworks": [

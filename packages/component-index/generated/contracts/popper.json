@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:f8cd1f2c5655367c2551370802308a5b274ac23fec44f9c950303c074484f3b1",
-  "entryDigest": "sha256:bd99182529ce84e8fd2c88eec2c9c0f7d3be1bb8c5ebc0a6c03e163622361c62",
+  "digest": "sha256:347e7ab89fa464d51b2b654a06bc5ecde888728e25d69b8352a689db22f76471",
+  "entryDigest": "sha256:41b54d3c61b0944614a622b94cb65a6f5538099061fb48475b28f1aa5aee1014",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -106,7 +106,7 @@
         "declarationPath": "packages/components-angular/dist/Popper.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PopperProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -238,7 +238,7 @@
         "declarationPath": "packages/components-react/dist/Popper.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PopperProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

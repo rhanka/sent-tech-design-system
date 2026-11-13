@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Footer.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Footer.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Application footer: brand, link columns, copyright and legal links.",
     "fr": "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux."
   },
-  "digest": "sha256:2e092438c8b43dbfac9f1f50d0b3a8a79c3e4ee79559aab6abffb5403508efa9",
+  "digest": "sha256:cad3f91ad3bf126bed62405ea428efce5f80e75cfbbe27d9b1705ec1ec5bbf60",
   "displayName": "Footer",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/AreaChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/AreaChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Area chart to visualize temporal or numeric data.",
     "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
   },
-  "digest": "sha256:b37e09ad7b7a68cc7d8caec5303011b2f2c294bb6341b89f30fafbafadfb6c97",
+  "digest": "sha256:f8b43eb4ee8f12ac9118ac0ed1967da920dcda93d6f617ccc4a9cc6347ded18a",
   "displayName": "AreaChart",
   "format": "component-entry/v1",
   "frameworks": [

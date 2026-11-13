@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PanelSection.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PanelSection.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "One PanelStack section: collapsible header and scroll-owning body.",
     "fr": "Section d'un PanelStack : en-tête repliable et corps propriétaire du défilement."
   },
-  "digest": "sha256:44b837e2e2bd6aa1c939710f1eb63f8687b8a17cd6d78a4b3e14b1bbfdbdf170",
+  "digest": "sha256:047daccbbb536761369c015f088ebd78477726d1458a7b984ab58f521e353dbe",
   "displayName": "PanelSection",
   "format": "component-entry/v1",
   "frameworks": [

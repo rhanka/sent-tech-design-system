@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Avatar.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Avatar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Identity badge: colored initials or photo, multiple sizes.",
     "fr": "Vignette d'identité : initiales colorées ou photo, plusieurs tailles."
   },
-  "digest": "sha256:142b618f6115cc7306f8e12a8935c5f08a7a248d0ac09cf379540e03212538de",
+  "digest": "sha256:2da21556f41fbb1692e0657d942dcd0b7a64c11722476938a2c58aeb2f1dd55d",
   "displayName": "Avatar",
   "format": "component-entry/v1",
   "frameworks": [

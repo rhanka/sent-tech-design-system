@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:ab26cd11f842d02cce5df3321879f9e5436412ff97a2dd53f0736441d79de870",
-  "entryDigest": "sha256:a386ed7dcc34c469b8cf20f6e435065a676edf51abdd2247278c848b2463d53b",
+  "digest": "sha256:df9839f4704e333e4bbc16c386e7e4afa6ac5dad3b4411f21ebfda1102e3d0c7",
+  "entryDigest": "sha256:6019572101c12e23c2addf8b6a750a884dee10c2cb20ebfe05113129e81f5fc2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-angular/dist/ScatterPlot.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ScatterPlotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -743,7 +743,7 @@
         "declarationPath": "packages/components-react/dist/ScatterPlot.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ScatterPlotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

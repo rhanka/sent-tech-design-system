@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LanguageSelector.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LanguageSelector.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:0a48b9ec7b6cdc0a81b87e6fecb6f83c6f1791ccbfac223cda3cfad21c570139",
+  "digest": "sha256:c738e12cfc9640ee10fadf42823e471a3a740f4332fc32348f4235ff9c3d4d66",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

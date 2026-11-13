@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TileGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TileGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Selectable tile group (radio), with legend.",
     "fr": "Groupe de tuiles sélectionnables (radio), avec légende."
   },
-  "digest": "sha256:c36cea4147c6e3daf093004afb712b60c94ec46a9d5328402177bc3b127683b7",
+  "digest": "sha256:47520a3b1e91e79b4c7369fc9dbad9a8b69967e0839948541383f8691adaa8a0",
   "displayName": "TileGroup",
   "format": "component-entry/v1",
   "frameworks": [

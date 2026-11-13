@@ -1,8 +1,8 @@
 {
   "componentId": "state-timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:e22420b9d318dabbb5fde6c3766c715f6717933420e5ebdd45b0208c2e87f937",
-  "entryDigest": "sha256:5f0d75759e37e215468cb91d4da09e6abed31b9c4ac42de843ec372965842e22",
+  "digest": "sha256:824b8248225da024f269476d6c2fc465564c1b72cddc28855ceacfecdcab8a27",
+  "entryDigest": "sha256:dc7f4ea2879f63daa77aaf6b39bf469f15593981e6ae28d5d0ebaabfa62f768c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/StateTimelineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StateTimelineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -226,7 +226,7 @@
         "declarationPath": "packages/components-react/dist/StateTimelineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StateTimelineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

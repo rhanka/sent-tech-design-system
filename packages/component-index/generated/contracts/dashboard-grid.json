@@ -1,8 +1,8 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:0aef883e6045b8891216f1811b437395ca941f7b0cfffc85f1dcc0e18b3b1116",
-  "entryDigest": "sha256:6968e246ffc1d783b5286de2d752cbfff208ceef441dfe6e0702b4b566756bfa",
+  "digest": "sha256:67b63ef5c62b344125fc1d86481e821d7dfc18d2b14155108479063983f12d15",
+  "entryDigest": "sha256:579093b8056dc1abc94cf98378b69c60238455302011749c10313cf411c8dfe2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

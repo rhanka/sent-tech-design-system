@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:391aef628c50f655b81c0a76f4b8a984a5620ff94ed2b88bebbe2abaf506f39d",
-  "entryDigest": "sha256:f19e545f5b03f0da006ec0f6eb0c74e39cc0ec43f76cccffc891322952eca707",
+  "digest": "sha256:55929b4013983cb155863f251337bb9bfa35fd126cd0ef695751b95a82181c07",
+  "entryDigest": "sha256:9eb5b9d7ee607d21a1a89948c9fd0bdb0f469892d6670eb848760a9cb1e441e4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/Portal.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PortalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-react/dist/Portal.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PortalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

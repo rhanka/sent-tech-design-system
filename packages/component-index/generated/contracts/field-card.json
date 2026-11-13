@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:3f0454e60df9bcc896768c80aa503cc4146ddf95cb3289ae5a92400e3985714f",
-  "entryDigest": "sha256:269306dd93a1a00239a580b1fad706f3b60f1b1b6e49e0ba5833430c1ec60f93",
+  "digest": "sha256:d821b9eb746c76c8ed45ead1fb008ab64324b95702db14fd61d141f574e82ed9",
+  "entryDigest": "sha256:086dddadca2db6250f299008ff138df7ed2c541319562bb96ec4edbe11dcfb52",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -64,7 +64,7 @@
         "declarationPath": "packages/components-angular/dist/FieldCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FieldCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -139,7 +139,7 @@
         "declarationPath": "packages/components-react/dist/FieldCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FieldCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

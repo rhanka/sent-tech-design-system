@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Portal.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Portal.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:f19e545f5b03f0da006ec0f6eb0c74e39cc0ec43f76cccffc891322952eca707",
+  "digest": "sha256:9eb5b9d7ee607d21a1a89948c9fd0bdb0f469892d6670eb848760a9cb1e441e4",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

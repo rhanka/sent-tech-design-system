@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/EmptyState.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/EmptyState.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:ebac249722b565e1c42310250dab8be710b08525f0679c73c7f76b2af6dbe197",
+  "digest": "sha256:e4764797760ad0b3a57fa346c173fb5fdd5b2cddc65b35fe702179afe02075f2",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BackToTop.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BackToTop.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Quick-access button to return to the top after scrolling.",
     "fr": "Bouton d’accès rapide qui remonte vers le haut de la page au défilement."
   },
-  "digest": "sha256:5a9beefeda1cd458e458986f857493acc748d57ef051c02b4537b9f7f69a1794",
+  "digest": "sha256:279f3d638cf917d3a4b3e5c8df17314e096200f5b6112c522c46ca830bb51ce9",
   "displayName": "BackToTop",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TreemapChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TreemapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Squarified hierarchical treemap, 1 or 2 levels, with optional labels.",
     "fr": "Carte proportionnelle hiérarchique (squarified), 1 ou 2 niveaux, labels."
   },
-  "digest": "sha256:5db4cfc7ad64edc5f33f3457684ae77cec0db5089f5a3038e71d027fd79327d7",
+  "digest": "sha256:f83a7005078e5f791b8a3fea606d6878a44b5925451a2c0da7ecfafdf71764d4",
   "displayName": "TreemapChart",
   "format": "component-entry/v1",
   "frameworks": [

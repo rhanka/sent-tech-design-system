@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Switch.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Switch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:3ffb057da6d03369c3f2462e30fa0c588d03711c5a18ea12565b5ba4be35b785",
+  "digest": "sha256:67df3463e1b7bb4f1090f3b1c418e64bf946c472502055bc7836fe1ec0683991",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

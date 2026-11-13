@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/OrderedList.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OrderedList.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Numbered ordered list, with nesting.",
     "fr": "Liste ordonnée numérotée, avec imbrication."
   },
-  "digest": "sha256:21b9c783b8b74ec990ecab659bda47c0ec5eaa2175cf8666375fdd5a2282aaa3",
+  "digest": "sha256:96b7d143ace49815cef90228c23644bb4c6edbd8dc6ce111d928376c39092ace",
   "displayName": "OrderedList",
   "format": "component-entry/v1",
   "frameworks": [
