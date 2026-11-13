@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Accordion.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "List of collapsible panels.",
     "fr": "Liste de panneaux pliables."
   },
-  "digest": "sha256:daded63ad0fa092a830a7a86e67323103f277b40eebf892b128743aeadf4500b",
+  "digest": "sha256:97feed61fbbacd2daf505770fb0cfc9fe6e550ab5643db0cecbdc6053441be80",
   "displayName": "Accordion",
   "format": "component-entry/v1",
   "frameworks": [

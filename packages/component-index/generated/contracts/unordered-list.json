@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:9e6e29e244804ba5232c5a5cf1a715e39cf1ba972c2ab55e00c7c42691fde390",
-  "entryDigest": "sha256:b6da4352dc81f7c9a0a988fe22191cb3ef6d91ca3da0e5eefa0118068d05ca8c",
+  "digest": "sha256:0f083621646b0fc248fa9309587c3d75af7de54b08c8cf288c291d73d81b354b",
+  "entryDigest": "sha256:8088ece5cec4b62240e94a93b8eef74465c2367576af533518514456e9e0f36a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/UnorderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
