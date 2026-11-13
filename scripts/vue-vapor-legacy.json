@@ -35,7 +35,6 @@
   "packages/components-vue/src/ChordDiagram.ts",
   "packages/components-vue/src/CodeSnippet.ts",
   "packages/components-vue/src/Col.ts",
-  "packages/components-vue/src/Collapsible.ts",
   "packages/components-vue/src/ColorScaleBar.ts",
   "packages/components-vue/src/ColumnPyramidChart.ts",
   "packages/components-vue/src/ColumnRangeChart.ts",
