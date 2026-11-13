@@ -61,7 +61,6 @@
   "packages/components-vue/src/Divider.ts",
   "packages/components-vue/src/DonutChart.ts",
   "packages/components-vue/src/Drawer.ts",
-  "packages/components-vue/src/Dropdown.ts",
   "packages/components-vue/src/DumbbellChart.ts",
   "packages/components-vue/src/Embed.ts",
   "packages/components-vue/src/EmptyState.ts",
