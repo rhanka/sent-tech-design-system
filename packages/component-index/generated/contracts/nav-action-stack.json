@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:309582e7395a26cca01c68248b4801a73e996fb929f4b225353fe52d1cc8f863",
-  "entryDigest": "sha256:63a773ea36135cc00ac0f018199facded33c289ac767e5196be98cb96f5f8cb8",
+  "digest": "sha256:ff0da9b635da0ed69a8d96322cb26ac5810a8ff203c62b0562f137975addfecf",
+  "entryDigest": "sha256:dd44977c639138f5f714fc8d7c52d85143fceea87fab6f1dc824a3060fa48ddc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-angular/dist/NavActionStack.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NavActionStackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

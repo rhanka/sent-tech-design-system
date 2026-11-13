@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SideNav.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical side navigation.",
     "fr": "Navigation latérale verticale."
   },
-  "digest": "sha256:414c2fb5c4a5910d90f9d4ac440722e45d444a35c500a5f84c548bd85a997d18",
+  "digest": "sha256:31330e4a3e720c6010f53256153863b8cb7b738a825e810a7141128cd4520d9d",
   "displayName": "SideNav",
   "format": "component-entry/v1",
   "frameworks": [

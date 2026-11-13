@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/VariablePieChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius.",
     "fr": "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max."
   },
-  "digest": "sha256:d5f8fb92c0108dd85364b18d0aca113e30a1d81e04a3c31e7430df45978cd9a6",
+  "digest": "sha256:dfe0bfda6b80697fbcf96e2357193a7a92cb5acd95d54f105430be9d422962b4",
   "displayName": "VariablePieChart",
   "format": "component-entry/v1",
   "frameworks": [

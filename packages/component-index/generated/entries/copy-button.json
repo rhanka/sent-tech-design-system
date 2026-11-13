@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CopyButton.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Button dedicated to copying a value to the clipboard.",
     "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
-  "digest": "sha256:1c43da4454e775b1bf553a45423299930ec936181a9699ea3b34bf2db260c0c2",
+  "digest": "sha256:aa53de2ccf2c1b314dc7dda06a7a07fbe9087d47b05cbcd23cf606c809063741",
   "displayName": "CopyButton",
   "format": "component-entry/v1",
   "frameworks": [

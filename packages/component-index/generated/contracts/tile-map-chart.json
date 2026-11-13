@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:c15b020aa06394552ce0700280079867457ea5922c598d1d4abf1006c8ab8a73",
-  "entryDigest": "sha256:d093229953fb0bf11a71ffaca5192a67fef4464726230fb98e1c5658dd7c8c9f",
+  "digest": "sha256:c8bda79d7589340905b6a14c38da1a25fa2a41477a73a2490e49fa0746e914cf",
+  "entryDigest": "sha256:8d74cbad3399ff826262488af50c3b7efa3fbba0f0afbd504f65a7ad4ba013f4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/TileMapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileMapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

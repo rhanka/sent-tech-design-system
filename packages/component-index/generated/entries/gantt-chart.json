@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/GanttChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category.",
     "fr": "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie."
   },
-  "digest": "sha256:3ddbf868a02741171637fe3a07cd76f0de37d9cc8d851fd30384a0895b7e80ea",
+  "digest": "sha256:3fbcd88c1cf9d8607949614f452f4e69df9e016e73ab106f0f8ba9285cebc82c",
   "displayName": "GanttChart",
   "format": "component-entry/v1",
   "frameworks": [

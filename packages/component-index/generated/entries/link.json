@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Link.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:e9accb41dfe0ab435cb04a30b016dcc97f667f0bfdd84a65c50b9a7b213eb35f",
+  "digest": "sha256:102def3952d859ef3fd12787187a82dc9677b332ad216185ea121ff42274ee53",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [

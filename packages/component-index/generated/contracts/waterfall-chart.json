@@ -1,8 +1,8 @@
 {
   "componentId": "waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:08f6e3025a074567533741cf4f2886cc84ee79f0cf91efa83eadf3681767481b",
-  "entryDigest": "sha256:c014670cf6a1696632f2619bdfd7281e7a8783dbf8f5703d96eee46b3684a308",
+  "digest": "sha256:4c8cc6cdb77b1496051b1cd866b2d5c34baef535b73e54b474e4e6ad0d961b82",
+  "entryDigest": "sha256:3bda665720c3e28a45afe05f10bcef04044d95ae04a08c3f04872b8f9b5b0016",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/WaterfallChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WaterfallChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

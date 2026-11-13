@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Calendar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Monthly calendar: single date or range, with min/max bounds.",
     "fr": "Calendrier mensuel : date unique ou plage, bornes min/max."
   },
-  "digest": "sha256:56833615b7a4fdc1d35a94263df8b04d9b8ab68043ae47d11d3651eed58bb6e6",
+  "digest": "sha256:af2855a9791e50d78c37a6abdc216ac087d9df0cef5ce1b4d4069cc4d6686e64",
   "displayName": "Calendar",
   "format": "component-entry/v1",
   "frameworks": [

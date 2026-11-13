@@ -1,8 +1,8 @@
 {
   "componentId": "container",
   "contractSource": "derived",
-  "digest": "sha256:fb608534f859861cb669417e5fbb9479a16d5dea49919630cf5b0e5edc0be8e7",
-  "entryDigest": "sha256:23ba855e467bc82c8368e4bc5e9811ca16502535c1689766ca70a13dc0d27cc9",
+  "digest": "sha256:608837427b35d24e1e1c38612350b149ee750409de0ff84386f44d05d4872969",
+  "entryDigest": "sha256:6bb2b2d3259c07244010844debd282096ef2269a094ec2fdf771160bc8c30c24",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -47,7 +47,7 @@
         "declarationPath": "packages/components-angular/dist/Container.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ContainerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

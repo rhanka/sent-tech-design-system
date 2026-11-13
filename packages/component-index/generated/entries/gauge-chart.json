@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/GaugeChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Semi-circular gauge with color thresholds, centered value and unit.",
     "fr": "Jauge semi-circulaire avec seuils colorés, valeur et unité centrées."
   },
-  "digest": "sha256:3d8cabcd5dc27dd13a7a64f4396f283b8c5b4e78ddb632c3daad98c6d9e6a482",
+  "digest": "sha256:358904fc0e5a4a1fcb0a20cf5883972dd01b9d183dc120bd91481df0225df73b",
   "displayName": "GaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

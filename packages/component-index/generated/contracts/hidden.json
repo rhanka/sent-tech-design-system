@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:292d0305f32e6e99248c25132431b4e6697552609e30492870bba228fa95073b",
-  "entryDigest": "sha256:b4b412b43019c7aa7405c29e305d4c7961db4d37eff61e2f10207069eba5e03d",
+  "digest": "sha256:127a69e9a9a800945c9d79452db5f1198673e6047f2a450a0daa8b03d74666bc",
+  "entryDigest": "sha256:78b7c8d746f86476c1d21170531ae0f17d3605207b12f918387de337ca4a2e79",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -51,7 +51,7 @@
         "declarationPath": "packages/components-angular/dist/Hidden.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HiddenProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

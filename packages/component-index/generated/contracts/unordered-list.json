@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:fb5114eb8b8a3be5abba24023a4ade9754423fc2899a789645c4e817b479f785",
-  "entryDigest": "sha256:e222cf17ec1c8439cae9f6ce28d3d8eb6066c6aa2d021d96a67dcbeac8c38d01",
+  "digest": "sha256:292f4a554a87fd968f4ca03ee144b6736743161f7b77c3cd03dd37a75876493b",
+  "entryDigest": "sha256:44cca046dfda28fc86fa07307fbc038e7d31a8ace7b0789ba739de6d242371d8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/UnorderedList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

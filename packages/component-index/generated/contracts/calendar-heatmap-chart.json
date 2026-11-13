@@ -1,8 +1,8 @@
 {
   "componentId": "calendar-heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:075769e0a940b851053f1fc1085068d5019ffb3c4abac2dff614e0518d37c049",
-  "entryDigest": "sha256:87a17945dd6dfbc674aaf6a66336f75cd82db9e8125356973a38677b5af195be",
+  "digest": "sha256:b38dc4a05c4a90e7cf59c234a524f2e77c1ca68e83ab3f84c32af637a00b5ca8",
+  "entryDigest": "sha256:e68519935d1b3297d190d1a34efeafcd898f83c31fb00b489b68941325533593",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/CalendarHeatmapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CalendarHeatmapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:bb0f329d93d152456fbc6415ac15f62187f2937a04c65f350375b6af9d92209a",
-  "entryDigest": "sha256:0538f5d4fa1dffe56061e24e17dd44e4c03dbf0d8c4205da8260feeee1c14bc7",
+  "digest": "sha256:8818c47b5814f4d4bb53aed78d5717f2281d5bf3aab2421f52f490365a3805ae",
+  "entryDigest": "sha256:17eac9097e3e4ff593141197321d4a52e309f49b7562cde93ed28171ebc7d6c3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -95,7 +95,7 @@
         "declarationPath": "packages/components-angular/dist/ColumnRangeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

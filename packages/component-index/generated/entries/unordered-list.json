@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/UnorderedList.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Bulleted unordered list, with nesting.",
     "fr": "Liste à puces, avec imbrication."
   },
-  "digest": "sha256:e222cf17ec1c8439cae9f6ce28d3d8eb6066c6aa2d021d96a67dcbeac8c38d01",
+  "digest": "sha256:44cca046dfda28fc86fa07307fbc038e7d31a8ace7b0789ba739de6d242371d8",
   "displayName": "UnorderedList",
   "format": "component-entry/v1",
   "frameworks": [

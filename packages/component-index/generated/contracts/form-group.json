@@ -1,8 +1,8 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:b9b297a8158fa3b3c1ba07adac93a66343f3885be4d9d96d040ec485616718a9",
-  "entryDigest": "sha256:a66c05c4b65c1e77e8cee64c9a2b3e7f827f461ec716aae6cb1cc5789276236a",
+  "digest": "sha256:ac9eb2006256ab4e50da6f1e573ad178d3416f1866b44d19c6da2b6cc1b47e2a",
+  "entryDigest": "sha256:54fd1944387aacc3ae00c875c1fdcc0e6a166461c3dc522d516b017822fd0bd7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/FormGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

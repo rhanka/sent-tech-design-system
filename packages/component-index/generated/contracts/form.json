@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:82f5b7fb71ca123c259c8e261f2a97b0e964b7e483abb2180249cb3625779f70",
-  "entryDigest": "sha256:f8bbbfa2411bed25592c9d5444c8e00889deca90a6074fa7577fd910ec240215",
+  "digest": "sha256:68f3493e99ab738c6a8fcabc85957915e4ea09c24d141813377b353defb979dc",
+  "entryDigest": "sha256:b54504010db2f0159b766f79fd045e5fcd59d47ef894db1a4fcc1ae307d75e7b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -52,7 +52,7 @@
         "declarationPath": "packages/components-angular/dist/Form.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [

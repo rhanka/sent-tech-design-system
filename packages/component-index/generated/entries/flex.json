@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Flex.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Flex box: direction, gap, alignment, and justification.",
     "fr": "Boîte flex : direction, gap, alignement et justification."
   },
-  "digest": "sha256:ccdb16a74f16f99e8638997ec8af83c15e5c98a719ac30190671b59717d11eec",
+  "digest": "sha256:6fec13649c0a4a8af541ab2e03277826f1ce1cf5bdf35773a22100459428a495",
   "displayName": "Flex",
   "format": "component-entry/v1",
   "frameworks": [

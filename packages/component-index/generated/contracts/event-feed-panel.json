@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:7582410494756f44471877e76cdc6c087687f06a932b15c9fa318d17fc66d33d",
-  "entryDigest": "sha256:3f08e07bb045fe869c71d554764cd0152df80c1acfe3b2b4647e111f343211b4",
+  "digest": "sha256:3fbc84afa15fed8546889f8125450a15ed7ef49991d1b4fbc6eda022f6c4a35b",
+  "entryDigest": "sha256:b13c8ecdf58f99ff2bc8190606d8116ddcbb7c9e13083414afd297e5bc77423d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/EventFeedPanel.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EventFeedPanelProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

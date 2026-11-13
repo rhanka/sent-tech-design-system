@@ -1,8 +1,8 @@
 {
   "componentId": "code-snippet",
   "contractSource": "derived",
-  "digest": "sha256:28b17239365e8a616216201365da68ac135b989b0835fb962ed3c432d7745044",
-  "entryDigest": "sha256:c131281451ecdd0e51594170b7cece01fdf1c130b343c2fed836298c3387dd86",
+  "digest": "sha256:26fefcd94f471aa8107d23bb692c5f1b310578ff9bf0b1be52c0d2fbc1792aec",
+  "entryDigest": "sha256:3f6db76600870e2935fdbc80c93a37f14464ade3300846865b5ba3ce5468616a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/CodeSnippet.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CodeSnippetProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

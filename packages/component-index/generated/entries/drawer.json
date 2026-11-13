@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Drawer.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Side panel for secondary workflows.",
     "fr": "Panneau latéral pour workflows secondaires."
   },
-  "digest": "sha256:6c718dfc28622f747bb99a7a317453011f6b8e12c36ad12737a3e0986c037666",
+  "digest": "sha256:3580ef5d31b68a30dae62ef05940a093b45cb7d117add88a52f380ea03a20ede",
   "displayName": "Drawer",
   "format": "component-entry/v1",
   "frameworks": [

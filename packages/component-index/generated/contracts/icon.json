@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:acc846e66ca7e3d33887d975e47f3695f3e3adc2bdc05710fae7b904542c584f",
-  "entryDigest": "sha256:32121bbfa6050c4ecde45e20742c4f874124865f903e589d91fd1fb5109112c6",
+  "digest": "sha256:eee5d797172adfa13dd4ab4b93a845e28923794e986d49e3e7c4c3f62b82e94a",
+  "entryDigest": "sha256:ea829203838dafd65d6b49f057e29868f322940816af87b5e396a815b6e4b2e3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/Icon.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

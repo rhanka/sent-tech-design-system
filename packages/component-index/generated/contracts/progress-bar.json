@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:f78abe6b1b8f74b6d1c8626cd9e390ecefa1c2db87d5d34d5572f0cd82d245b0",
-  "entryDigest": "sha256:245ef69fea420af0fcaf1c789e9dd0b03414f1984c717de81ae7694f394bb43f",
+  "digest": "sha256:c74839a35d80725e0e3c144b5fbcf7690fc5963086b429567b46d2b26b0e8437",
+  "entryDigest": "sha256:e7fb90a8125ff7c882908c62f02b72dc69d0e05cced5cda9b48b9c64f4edf179",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/ProgressBar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ProgressBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

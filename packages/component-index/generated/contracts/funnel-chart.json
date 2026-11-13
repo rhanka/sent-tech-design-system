@@ -1,8 +1,8 @@
 {
   "componentId": "funnel-chart",
   "contractSource": "derived",
-  "digest": "sha256:f7cc0d1afdd2bd286ba03f427144e5d258093970126bdadd0cf91d08f601540b",
-  "entryDigest": "sha256:5f3e624d93df5441d43bda40e93fa5152316362f7f3f98a75a8c64277ccb1dc6",
+  "digest": "sha256:9dee54b3a7e9394b4eb57dc029b67a8c0b4ebdaa5f9e9dc9c486c6df08211de9",
+  "entryDigest": "sha256:c6d2ba97e9aec1319e911abd065550860c52bedad5021f84d07f59c01be73748",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FunnelChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

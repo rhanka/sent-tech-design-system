@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DataImage.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Image resolved from a data row ({{field}} templates).",
     "fr": "Image résolue depuis une ligne de données (gabarits {{champ}})."
   },
-  "digest": "sha256:041f9e399131c230a48c2d8e82965efcc0b427a260c07c06214275adcc2c1f84",
+  "digest": "sha256:bdfdb16376076b16939ea28b5a7b2ad3119de161b03b9c22c84005b341286419",
   "displayName": "DataImage (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ProgressBar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Determinate or indeterminate progress bar.",
     "fr": "Barre de progression déterminée ou indéterminée."
   },
-  "digest": "sha256:245ef69fea420af0fcaf1c789e9dd0b03414f1984c717de81ae7694f394bb43f",
+  "digest": "sha256:e7fb90a8125ff7c882908c62f02b72dc69d0e05cced5cda9b48b9c64f4edf179",
   "displayName": "ProgressBar",
   "format": "component-entry/v1",
   "frameworks": [

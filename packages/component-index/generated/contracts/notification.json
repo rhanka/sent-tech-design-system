@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:603bc112bc7e29f8df809b4b1258ff3c52fd8fe9d227d1dfd69ccada7a804725",
-  "entryDigest": "sha256:347364b61ce6a8e23de14ebca1e60b04dcb22d9c255319226da88d2718e6fc39",
+  "digest": "sha256:fa83f6aa14c3005a2109890edc721fa1c5c7a22522c8fc7d36ceecbbe63ca5b4",
+  "entryDigest": "sha256:85c691781ed1e71d73bfa5dfa91de4159fa412320c9c0a7fdb5cb9c7ae1f9a85",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Notification.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NotificationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

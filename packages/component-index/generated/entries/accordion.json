@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Accordion.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "List of collapsible panels.",
     "fr": "Liste de panneaux pliables."
   },
-  "digest": "sha256:9825517b489506d09d9deb2164fe48ce66684ae314e4628ff3dd26e53e3bf705",
+  "digest": "sha256:c5a365dfb217ac58f99061d9724c7ec6e8ad6e76bdc4a0bbadcd58485a6b0c4d",
   "displayName": "Accordion",
   "format": "component-entry/v1",
   "frameworks": [

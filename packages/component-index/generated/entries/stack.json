@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Stack.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical stack with uniform gap (Flex column shorthand).",
     "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
   },
-  "digest": "sha256:b479e747850ddb18ffab3fe580d3279e470464a3d5d6a0a4f72e0323c01c2cf4",
+  "digest": "sha256:3df48c057e2cc5816abe7baf16757b53c91a8935bb33776870696a4547db1cf3",
   "displayName": "Stack",
   "format": "component-entry/v1",
   "frameworks": [
