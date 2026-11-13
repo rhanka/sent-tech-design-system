@@ -323,8 +323,8 @@ export type {
   AnomalySwimLaneSeries,
   AnomalySwimLaneChartScale,
 } from "./AnomalySwimLaneChart.js";
-export { FlamegraphChart } from "./FlamegraphChart.js";
-export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
+export { default as FlamegraphChart } from "./FlamegraphChart.vue";
+export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.vue";
 export { TraceWaterfallChart } from "./TraceWaterfallChart.js";
 export type { TraceWaterfallChartProps, TraceSpan } from "./TraceWaterfallChart.js";
 export { default as DecompositionTreeChart } from "./DecompositionTreeChart.vue";
