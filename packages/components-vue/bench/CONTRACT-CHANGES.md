@@ -113,8 +113,9 @@ output. An absent pressed prop omits aria-pressed; false is rendered verbatim.
 There are no public slots.
 
 WebFrame's Svelte reference lives in dataviz-svelte, which owns that framework's
-implementation. The new components-vue export delegates to the same
-framework-neutral dataviz-core resolveWebFrame function. It retains iframe
+implementation. The new components-vue export follows the same
+iframe configuration contract with local attribute normalization, keeping the
+design-system package independent of the dataviz layer. It retains iframe
 src/title, sandbox array-or-string handling, loading/referrer-policy defaults,
 allow and optional class, with no events or slots. The Svelte object-layer
 iframe witness is ported alongside attribute/default/update checks.
