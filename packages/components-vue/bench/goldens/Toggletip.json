@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Toggletip",
+  "sourceRevision": "72c8f24785464dad57c95e610e4334732634816a",
+  "source": "src/Toggletip.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"false\" class=\"st-toggletip__trigger\" type=\"button\">Info</button></span>"
+    },
+    {
+      "id": "open",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Info</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\">Tip text</span></span></span>"
+    },
+    {
+      "id": "open-slot",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Details</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\">Slotted tip</span></span></span>"
+    },
+    {
+      "id": "content-precedence",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Help</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\">Prop tip</span></span></span>"
+    },
+    {
+      "id": "placement-bottom",
+      "html": "<span class=\"st-toggletip st-toggletip--bottom\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Bottom</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\">Below</span></span></span>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\"><strong>Info</strong></button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\"></span></span></span>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<span class=\"st-toggletip st-toggletip--top\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Info</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\"><em>Rich tip</em></span></span></span>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<span class=\"st-toggletip st-toggletip--top consumer\" data-bench=\"toggletip\" style=\"color:red;\"><button aria-expanded=\"true\" class=\"st-toggletip__trigger\" type=\"button\">Info</button><span class=\"st-toggletip__bubble\" role=\"status\"><span class=\"st-toggletip__content\">Tip</span></span></span>"
+    }
+  ],
+  "sourceSha256": "f3f7841caee0573e7fa9f0809c9fa304aca5123133d82107513329b3ca621c33",
+  "fixtureSha256": "ab3393e3f7b3493228f1a94bc4136cdb9e452da5025d238a5c82a339b457d11b",
+  "publicExports": [
+    {
+      "name": "Toggletip",
+      "typeOnly": false
+    },
+    {
+      "name": "ToggletipProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ToggletipPlacement",
+      "typeOnly": true
+    }
+  ]
+}

@@ -123,8 +123,8 @@ export { NavDrawer } from "./NavDrawer.js";
 export type { NavDrawerProps } from "./NavDrawer.js";
 export { default as ContextPanel } from "./ContextPanel.vue";
 export type { ContextPanelProps } from "./ContextPanel.vue";
-export { UtilityPanel } from "./UtilityPanel.js";
-export type { UtilityPanelMode, UtilityPanelProps, UtilityPanelSide } from "./UtilityPanel.js";
+export { default as UtilityPanel } from "./UtilityPanel.vue";
+export type { UtilityPanelMode, UtilityPanelProps, UtilityPanelSide } from "./UtilityPanel.vue";
 export { default as SkeletonText } from "./SkeletonText.vue";
 export type { SkeletonTextProps } from "./SkeletonText.vue";
 export { default as SkipLink } from "./SkipLink.vue";
@@ -135,20 +135,20 @@ export { default as RangeSlider } from "./RangeSlider.vue";
 export type { RangeSliderProps, RangeSliderSize } from "./RangeSlider.vue";
 export { default as StructuredList } from "./StructuredList.vue";
 export type { StructuredListProps, StructuredListItem } from "./StructuredList.vue";
-export { Switch } from "./Switch.js";
-export type { SwitchProps } from "./Switch.js";
-export { Tag } from "./Tag.js";
-export type { TagProps, TagTone, TagSize } from "./Tag.js";
-export { Textarea } from "./Textarea.js";
-export type { TextareaProps } from "./Textarea.js";
+export { default as Switch } from "./Switch.vue";
+export type { SwitchProps } from "./Switch.vue";
+export { default as Tag } from "./Tag.vue";
+export type { TagProps, TagTone, TagSize } from "./Tag.vue";
+export { default as Textarea } from "./Textarea.vue";
+export type { TextareaProps } from "./Textarea.vue";
 export { ThemeProvider } from "./ThemeProvider.js";
 export type { ThemeProviderProps } from "./ThemeProvider.js";
-export { Tile } from "./Tile.js";
-export type { TileProps, TileVariant } from "./Tile.js";
+export { default as Tile } from "./Tile.vue";
+export type { TileProps, TileVariant } from "./Tile.vue";
 export { TileGroup } from "./TileGroup.js";
 export type { TileGroupProps, TileGroupItem } from "./TileGroup.js";
-export { Toggle } from "./Toggle.js";
-export type { ToggleProps, ToggleSize } from "./Toggle.js";
+export { default as Toggle } from "./Toggle.vue";
+export type { ToggleProps, ToggleSize } from "./Toggle.vue";
 export { UnorderedList } from "./UnorderedList.js";
 export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from "./UnorderedList.js";
 export { default as Combobox } from "./Combobox.vue";
@@ -190,8 +190,8 @@ export { default as Tabs } from "./Tabs.vue";
 export type { TabsProps, TabItem } from "./Tabs.vue";
 export { Toast } from "./Toast.js";
 export type { ToastProps, ToastItem, ToastTone } from "./Toast.js";
-export { Toggletip } from "./Toggletip.js";
-export type { ToggletipProps, ToggletipPlacement } from "./Toggletip.js";
+export { default as Toggletip } from "./Toggletip.vue";
+export type { ToggletipProps, ToggletipPlacement } from "./Toggletip.vue";
 export { default as Tooltip } from "./Tooltip.vue";
 export type { TooltipProps, TooltipPlacement } from "./Tooltip.vue";
 export { TreeView } from "./TreeView.js";
@@ -206,8 +206,8 @@ export { default as ColumnPyramidChart } from "./ColumnPyramidChart.vue";
 export type { ColumnPyramidChartProps, ColumnPyramidChartDatum, ColumnPyramidChartTone } from "./ColumnPyramidChart.vue";
 export { default as PolygonChart } from "./PolygonChart.vue";
 export type { PolygonChartProps, PolygonChartPoint, PolygonChartTone } from "./PolygonChart.vue";
-export { TileMapChart } from "./TileMapChart.js";
-export type { TileMapChartProps, TileMapChartTile } from "./TileMapChart.js";
+export { default as TileMapChart } from "./TileMapChart.vue";
+export type { TileMapChartProps, TileMapChartTile } from "./TileMapChart.vue";
 export { default as DumbbellChart } from "./DumbbellChart.vue";
 export type { DumbbellChartProps, DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.vue";
 export { default as ErrorBarChart } from "./ErrorBarChart.vue";
@@ -287,28 +287,28 @@ export type {
 } from "./StatusHistoryChart.vue";
 export { default as EventFeedPanel } from "./EventFeedPanel.vue";
 export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.vue";
-export { VectorFieldChart } from "./VectorFieldChart.js";
-export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.js";
+export { default as VectorFieldChart } from "./VectorFieldChart.vue";
+export type { VectorFieldChartProps, VectorFieldChartDatum, VectorFieldChartTone } from "./VectorFieldChart.vue";
 export { default as ContourChart } from "./ContourChart.vue";
 export type { ContourChartProps, ContourChartDatum, ContourChartTone, ContourChartScale } from "./ContourChart.vue";
-export { WindBarbChart } from "./WindBarbChart.js";
-export type { WindBarbChartProps, WindBarbChartDatum, WindBarbChartTone } from "./WindBarbChart.js";
+export { default as WindBarbChart } from "./WindBarbChart.vue";
+export type { WindBarbChartProps, WindBarbChartDatum, WindBarbChartTone } from "./WindBarbChart.vue";
 export { default as RenkoChart } from "./RenkoChart.vue";
 export type { RenkoChartProps, RenkoChartDatum, RenkoChartDirection } from "./RenkoChart.vue";
 export { default as PointAndFigureChart } from "./PointAndFigureChart.vue";
 export type { PointAndFigureChartProps, PointAndFigureChartDatum, PointAndFigureChartMark } from "./PointAndFigureChart.vue";
-export { WaffleChart } from "./WaffleChart.js";
+export { default as WaffleChart } from "./WaffleChart.vue";
 export type {
   WaffleChartProps,
   WaffleTone,
   WaffleChartDatum,
-} from "./WaffleChart.js";
+} from "./WaffleChart.vue";
 export { default as ColorSwatch } from "./ColorSwatch.vue";
 export type { ColorSwatchProps, ColorSwatchShape } from "./ColorSwatch.vue";
 export { default as ColorScaleBar } from "./ColorScaleBar.vue";
 export type { ColorScaleBarProps, ColorScaleBarOrientation } from "./ColorScaleBar.vue";
-export { Timeline } from "./Timeline.js";
-export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.js";
+export { default as Timeline } from "./Timeline.vue";
+export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.vue";
 export { default as RibbonChart } from "./RibbonChart.vue";
 export type {
   RibbonChartProps,
@@ -325,8 +325,8 @@ export type {
 } from "./AnomalySwimLaneChart.vue";
 export { default as FlamegraphChart } from "./FlamegraphChart.vue";
 export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.vue";
-export { TraceWaterfallChart } from "./TraceWaterfallChart.js";
-export type { TraceWaterfallChartProps, TraceSpan } from "./TraceWaterfallChart.js";
+export { default as TraceWaterfallChart } from "./TraceWaterfallChart.vue";
+export type { TraceWaterfallChartProps, TraceSpan } from "./TraceWaterfallChart.vue";
 export { default as DecompositionTreeChart } from "./DecompositionTreeChart.vue";
 export type {
   DecompositionTreeChartProps,
@@ -359,8 +359,8 @@ export type {
 } from "./GeoChart.vue";
 export { default as FunnelChart } from "./FunnelChart.vue";
 export type { FunnelChartProps, FunnelChartTone, FunnelChartDatum } from "./FunnelChart.vue";
-export { WaterfallChart } from "./WaterfallChart.js";
-export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.js";
+export { default as WaterfallChart } from "./WaterfallChart.vue";
+export type { WaterfallChartProps, WaterfallChartDatum, WaterfallType } from "./WaterfallChart.vue";
 export { TreemapChart } from "./TreemapChart.js";
 export type {
   TreemapChartProps,
@@ -368,24 +368,24 @@ export type {
   TreemapChartDatum,
   TreemapTiling,
 } from "./TreemapChart.js";
-export { WordCloudChart } from "./WordCloudChart.js";
+export { default as WordCloudChart } from "./WordCloudChart.vue";
 export type {
   WordCloudChartProps,
   WordCloudChartWord,
   WordCloudChartTone,
-} from "./WordCloudChart.js";
+} from "./WordCloudChart.vue";
 export { default as OrganizationChart } from "./OrganizationChart.vue";
 export type {
   OrganizationChartProps,
   OrganizationChartTone,
   OrganizationChartNode,
 } from "./OrganizationChart.vue";
-export { TreegraphChart } from "./TreegraphChart.js";
+export { default as TreegraphChart } from "./TreegraphChart.vue";
 export type {
   TreegraphChartProps,
   TreegraphChartNode,
   TreegraphChartTone,
-} from "./TreegraphChart.js";
+} from "./TreegraphChart.vue";
 export { default as DashboardGrid } from "./DashboardGrid.vue";
 export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.vue";
 export { default as HeatmapChart } from "./HeatmapChart.vue";
@@ -404,12 +404,12 @@ export { default as RoseChart } from "./RoseChart.vue";
 export type { RoseChartProps, RoseChartDatum, RoseChartTone } from "./RoseChart.vue";
 export { default as ItemChart } from "./ItemChart.vue";
 export type { ItemChartProps, ItemChartDatum, ItemChartTone } from "./ItemChart.vue";
-export { VariablePieChart } from "./VariablePieChart.js";
-export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.js";
+export { default as VariablePieChart } from "./VariablePieChart.vue";
+export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.vue";
 export { VennChart } from "./VennChart.js";
 export type { VennChartProps, VennChartArea, VennChartTone } from "./VennChart.js";
-export { ViolinChart } from "./ViolinChart.js";
-export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.js";
+export { default as ViolinChart } from "./ViolinChart.vue";
+export type { ViolinChartProps, ViolinChartDatum, ViolinChartTone } from "./ViolinChart.vue";
 export { ForceGraph, nodeShapePath, edgeDashArray } from "./ForceGraph.vue";
 export type {
   ForceGraphProps,
@@ -449,10 +449,10 @@ export { default as MediaContent } from "./MediaContent.vue";
 export type { MediaContentProps, MediaKind } from "./MediaContent.vue";
 export { default as Notification } from "./Notification.vue";
 export type { NotificationProps, NotificationTone } from "./Notification.vue";
-export { TableOfContents } from "./TableOfContents.js";
-export type { TableOfContentsProps, TableOfContentsItem } from "./TableOfContents.js";
-export { Transcription } from "./Transcription.js";
-export type { TranscriptionProps, TranscriptionSegment } from "./Transcription.js";
+export { default as TableOfContents } from "./TableOfContents.vue";
+export type { TableOfContentsProps, TableOfContentsItem } from "./TableOfContents.vue";
+export { default as Transcription } from "./Transcription.vue";
+export type { TranscriptionProps, TranscriptionSegment } from "./Transcription.vue";
 export { Flex, spacingToken, alignValue, justifyValue } from "./Flex.js";
 export type { FlexProps, FlexDirection, FlexAlign, FlexJustify } from "./Flex.js";
 export { default as Stack } from "./Stack.vue";
@@ -487,14 +487,14 @@ export { default as CheckboxGroup } from "./CheckboxGroup.vue";
 export type { CheckboxGroupProps, CheckboxGroupOption } from "./CheckboxGroup.vue";
 export { default as RadioGroup } from "./RadioGroup.vue";
 export type { RadioGroupProps, RadioGroupOption } from "./RadioGroup.vue";
-export { Typography } from "./Typography.js";
+export { default as Typography } from "./Typography.vue";
 export type {
   TypographyProps,
   TypographyVariant,
   TypographyWeight,
   TypographyTone,
   TypographyAlign,
-} from "./Typography.js";
+} from "./Typography.vue";
 export { default as Collapsible } from "./Collapsible.vue";
 export type { CollapsibleProps } from "./Collapsible.vue";
 export { default as Stepper } from "./Stepper.vue";
@@ -502,8 +502,8 @@ export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.vu
 
 export { default as Rating } from "./Rating.vue";
 export type { RatingProps, RatingSize } from "./Rating.vue";
-export { TimePicker } from "./TimePicker.js";
-export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
+export { default as TimePicker } from "./TimePicker.vue";
+export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.vue";
 export { default as Calendar } from "./Calendar.vue";
 export type { CalendarProps, CalendarValue } from "./Calendar.vue";
 export { default as SlideIndicator } from "./SlideIndicator.vue";
@@ -569,8 +569,8 @@ export { default as HollowCandlestickChart } from "./HollowCandlestickChart.vue"
 export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.vue";
 export { default as HeikinAshiChart } from "./HeikinAshiChart.vue";
 export type { HeikinAshiChartProps, HeikinAshiChartDatum } from "./HeikinAshiChart.vue";
-export { TimelineChart } from "./TimelineChart.js";
-export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
+export { default as TimelineChart } from "./TimelineChart.vue";
+export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.vue";
 export { default as GanttChart } from "./GanttChart.vue";
 export type { GanttChartProps, GanttChartTask } from "./GanttChart.vue";
 export { default as StreamgraphChart } from "./StreamgraphChart.vue";
@@ -675,19 +675,19 @@ export type {
   DashboardNavItem,
   DashboardKpi,
 } from "./Dashboard.vue";
-export { Wizard } from "./Wizard.js";
+export { default as Wizard } from "./Wizard.vue";
 export type {
   WizardProps,
   WizardStep,
-} from "./Wizard.js";
-export { TimeRangePicker } from "./TimeRangePicker.js";
+} from "./Wizard.vue";
+export { default as TimeRangePicker } from "./TimeRangePicker.vue";
 export type {
   TimeRangePickerProps,
   TimeRangePickerSize,
   TimeRangePickerPlacement,
   TimeRangePickerAlign,
   TimeRangePickerTimeFormat,
-} from "./TimeRangePicker.js";
+} from "./TimeRangePicker.vue";
 export {
   DEFAULT_TIME_RANGE_PRESETS,
   parsePresetMs,
