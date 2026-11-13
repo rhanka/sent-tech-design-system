@@ -5,6 +5,7 @@
     "noEmit": true
   },
   "include": [
+    "vue-sfc.d.ts",
     "src/lib/diagram-card-parity/**/*.ts",
     "src/lib/diagram-zone-parity/**/*.ts",
     "src/lib/DiagramSceneFigure.flow-parity.test.ts",
