@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ToggleSize = 'sm' | 'md';
@@ -36,7 +36,7 @@ defineSlots<{
   'helper-text'?: () => unknown;
 }>();
 
-const attrs = useAttrs();
+
 const isChecked = computed(() => props.modelValue ?? props.checked ?? false);
 
 function onToggle(event: Event) {

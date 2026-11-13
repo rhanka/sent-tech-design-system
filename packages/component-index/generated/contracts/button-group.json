@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:17548b99cc1fed72c39c708cab178b7444d86f3455a6b8627c985b98d5c0bb94",
-  "entryDigest": "sha256:d9d3d04f22bcd20f88f55b50fee75aadeef8f0b650c815275e838d648ec6577d",
+  "digest": "sha256:269754c5314c9bbdb6f67988086407a7c87ac38f5fbc5d55ab91a39969e10c77",
+  "entryDigest": "sha256:5544b80eaf10d823157d6a043e853b669206aee60aca584de4704661e8bbe8f2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ButtonGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ButtonGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -231,16 +231,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:ae40e4ee3b7a859a13da72ad01dd19f73e46d13761ffa3ccf2f0a6be52d4c273",
+        "declarationDigest": "sha256:5677040c42e6ae6962edc6278f353b2551a2649418fff5cbd9dbe3c010c58c2e",
         "declarationPath": "packages/components-vue/dist/ButtonGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonGroupProps",

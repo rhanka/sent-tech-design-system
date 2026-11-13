@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:974608eb58909974759fba5f35e81b8c34b7571d6b4974392376fda348a69f8c",
-  "entryDigest": "sha256:b54aa965c9b489209ee8275bbf901cdb99fb59f74d2f8d9eb4a255b6563f0a35",
+  "digest": "sha256:90d7078deb4679d7e6e3cac597e3e1c2c0752fe2b0ad9754ea6023c1cc730d2b",
+  "entryDigest": "sha256:343d2c267b6aab941db6b882fb78222b62c55eff7a7aec7d2c3874624187a9a7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/SideNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SideNavProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,8 +242,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -294,7 +293,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:45012fb8ae9d370ca8ffd5b3d0b0bde3ffefa25f0431acde3b037e5daa6d7130",
+        "declarationDigest": "sha256:47341836e0dd30d283f5cf9f4d580b50f86a6e50eba2145e61e42168694cf643",
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",

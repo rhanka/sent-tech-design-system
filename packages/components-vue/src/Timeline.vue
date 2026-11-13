@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TimelineTone = 'neutral' | 'info' | 'success' | 'warning' | 'danger';
@@ -29,7 +29,7 @@ const props = withDefaults(defineProps<TimelineProps>(), {
   orientation: 'vertical', class: undefined,
 });
 
-const attrs = useAttrs();
+
 const orientation = computed(() => props.orientation ?? 'vertical');
 const items = computed(() => Array.isArray(props.items) ? props.items : []);
 const rootProps = computed(() => ({

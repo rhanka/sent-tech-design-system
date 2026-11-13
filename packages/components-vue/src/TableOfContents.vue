@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export interface TableOfContentsItem {
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<TableOfContentsProps>(), {
   title: undefined, activeId: '', class: undefined,
 });
 
-const attrs = useAttrs();
+
 const navProps = computed(() => ({
 
   class: classNames('st-tableOfContents', props.class),

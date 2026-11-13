@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { normalizeStyle, computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
@@ -20,7 +20,6 @@ const props = withDefaults(defineProps<StackProps>(), {
   gap: undefined, align: undefined, justify: undefined, as: 'div', class: undefined,
 });
 
-const attrs = useAttrs();
 const stackStyle = computed(() => {
   const style: CSSProperties = {
     display: 'flex',
@@ -29,16 +28,16 @@ const stackStyle = computed(() => {
     alignItems: alignValue(props.align),
     justifyContent: justifyValue(props.justify),
     gap: spacingToken(props.gap),
-    ...(normalizeStyle([attrs.style]) as CSSProperties),
   };
   return style;
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
   <component
     :is="props.as"
-    v-bind="{ ...($attrs), class: (classNames('st-flex st-stack', props.class)), style: (stackStyle) }"
+    v-bind="{ ...$attrs, class: classNames('st-flex st-stack', props.class), style: [stackStyle, $attrs.style] }"
 
 
   >

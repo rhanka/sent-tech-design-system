@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:eddcb811de5d7c5f3f515e2fd41e1344551c02016ca9628a8f3a433a4eafb17f",
-  "entryDigest": "sha256:bb32affe6ab84ba1b9f01200c3424f4e387ad8c316f889c816e6c1e2525a5d74",
+  "digest": "sha256:eb69640c2c79e1cea94ea5f8f8ae4d3e789ac65211c1564b3c7523de4ddd8354",
+  "entryDigest": "sha256:1575993bff4b48c59e1cada3c3a113f60d4f391026ba5006e7118bc558487e48",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-svelte/dist/TileMapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileMapChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

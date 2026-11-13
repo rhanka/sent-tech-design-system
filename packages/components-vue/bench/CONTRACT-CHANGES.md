@@ -148,3 +148,57 @@ and teleport destinations, reflects live control state, and asserts cleanup for
 every component. Normalization ignores only runtime markers, registered IDs,
 class redundancy/empty classes and CSS serialization differences. Element order,
 text, ARIA, attribute values and ID-reference relationships remain checked.
+
+## Round-2 fixes
+
+Rich collection fields are optional too: scoped-slot callers need no placeholder
+label, content or title. Existing scalar values remain fallbacks. The additional
+contracts found by the package audit are:
+
+| Component | Slots | Scope and precedence |
+| --- | --- | --- |
+| Breadcrumb | item-label | { item, index }, for both linked and current items. |
+| EmptyState | title, message, action | Named slots precede props; message/action slots expose their semantic wrappers. The default body slot remains. |
+| MessageStatusBadge | label | { status, label }; replaces labels[status] markup. |
+| ChatMessage | content | Precedes its existing default slot, then the scalar content prop. |
+| MenuLabel | label | Precedes its existing default slot, then the scalar label prop. |
+| Combobox | no-results-label | Replaces rich noResultsLabel content. |
+| Accordion | item-content | { item, index }; content is optional. Scalar strings/numbers, including callback results, remain fallbacks. |
+
+Combobox retains its associated wrapping input label; its listbox now references
+a slot-only label. MultiSelect references that label from its group, trigger and
+listbox. Non-scalar legacy labels no longer become serialized object text,
+input values or accessible names. DatePicker uses its existing dialog-name
+fallback; Toast uses its localized dismiss action for a slot-only queue title.
+ChatComposer preserves nullish Send defaults and explicit empty strings.
+
+Caller class/style order follows the original renderer. Root layout styles are
+composed before caller styles, preserving the original implicit-fallthrough
+precedence, including CSS custom properties and string/object/array styles.
+Composition runs during rendering, including styles added after mount.
+MenuPopover and inline Popper retain their original owned-positioning precedence
+and preserve unrelated caller styles. LanguageToggle forwards attrs to the select
+or accordion root. AppHeader retains header attrs with its compact drawer open.
+
+LanguageToggle selectId and AppHeader drawerId react to prop updates, keeping one
+stable generated fallback. EventFeedPanel label identities are per instance.
+LanguageToggle emits each SVG class token once. Menu omits unsupported Component
+icon spacers without item-icon, and preserves empty-string icon behavior.
+All statically rendered slots have declarations, including NavShell and
+Notification. Unused Vue setup bindings/imports and singleton Header/FileUploader
+loops were removed; FileUploader derives each row's metadata reactively.
+
+The Vapor barrel retains inline type exports from mixed statements. The published
+type gate compares every Classic/Vapor type name and its resolved declaration,
+including CellDecorationIconProps; runtime parity is checked separately.
+K25 now checks optional rich fields (including aliases and render callbacks),
+declared/rendered slots, scalar guards before String, attrs class/style composition,
+live style reads and unused Vue bindings/imports. @slot records existing scoped
+slot names. @vaporData documents the two data-only unknown fields: the serialized
+BPMN envelope and reserved, unrendered streaming-event text. Imported slot contracts
+remain subject to vue-tsc.
+
+The two new paired rich fixtures use archived Breadcrumb/EmptyState renderers;
+all previous expected HTML remains unchanged. G4's bounded correction replaces
+EventFeedPanel's original static label ID with a generated identity. Normalizer
+tests retain identity suffixes and reject broken references.

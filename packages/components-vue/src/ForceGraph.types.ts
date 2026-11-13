@@ -55,4 +55,3 @@ export type ForceGraphProps = {
   legendLabel?: string;
   class?: string;
 };
-

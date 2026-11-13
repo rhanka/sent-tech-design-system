@@ -17,6 +17,7 @@ const emit = defineEmits<{ submit: [event: Event] }>();
 function onSubmit(event: Event) {
   emit('submit', event);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

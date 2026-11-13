@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:eefc8cd08a8b569ddbe3209a7cb8e4fe804db6fa9b69d954fdc8916d1c112401",
-  "entryDigest": "sha256:0e96da201baf82797f0013a7d9137e80ac98ac1934b2a92ee0d7fd4704e7749d",
+  "digest": "sha256:218b6f93bf18448c7b634781380ba9cc721b9e7f37d2b7e0b0a4e44ba4a77877",
+  "entryDigest": "sha256:aec1df752f1e13de0281030023d17bc9b8666aa8b1a3aba9ee7e28801dcbef87",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatComposer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatComposerProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [
