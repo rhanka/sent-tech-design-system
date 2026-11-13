@@ -16,7 +16,7 @@
   appearance. Compatibility layout and label diagnosis refuse invalid flows.
 - Animated direction, owned state and detail controls follow in DC-2c.2.
 - Planned package minors: tokens/themes 0.14.0, diagram-canvas 0.2.0 and Svelte 0.41.0.
-# 0.41.0-next.3 — Vue V8 review corrections
+# 0.41.0-next.2 — Vue V8 review corrections
 
 - Guard Vue and dataviz publication on npm dependency and peer availability;
   include rich-text and the V8 subpaths in packed-consumer checks.

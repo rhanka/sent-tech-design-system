@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OrganizationChart.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
     "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
   },
-  "digest": "sha256:6fb72cc22be576bee0255eaead4c319ea116a4d3bb455bdcb3c9ba52efc5baf0",
+  "digest": "sha256:b6c83086a861b1e1a35ae3c49021c28dff31ec23a8fcdd0d9bd722e3e34755dd",
   "displayName": "OrganizationChart",
   "format": "component-entry/v1",
   "frameworks": [

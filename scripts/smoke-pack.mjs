@@ -680,7 +680,8 @@ function writeVerifyScript(installDir, targetNames) {
   );
   const content = template
     .replaceAll("__SMOKE_TARGETS_JSON__", JSON.stringify(targetNames))
-    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts));
+    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts))
+    .replaceAll("__SMOKE_RICH_TEXT_VERSION_JSON__", JSON.stringify(richTextManifest.version));
 
   const smokePath = join(installDir, "verify.mjs");
   writeFileSync(smokePath, content);

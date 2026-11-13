@@ -1,6 +1,6 @@
 # Overnight Vapor content migrations
 
-## 0.41.0-next.3 review corrections
+## 0.41.0-next.2 review corrections
 
 Content fallbacks now accept `string | number` in their public types. VNodes,
 components and callbacks returning VNodes must move into the named slots below;

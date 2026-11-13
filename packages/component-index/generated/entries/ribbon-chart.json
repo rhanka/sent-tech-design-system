@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RibbonChart.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
     "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
   },
-  "digest": "sha256:b13bdea247316e638eaca9520e301ec1c56963217540d2af5e7a19c7c913dc80",
+  "digest": "sha256:827db82ba2dc12478b4b8ea328da8d91f88320d01d902d6bd9dfcc84dc260e31",
   "displayName": "RibbonChart",
   "format": "component-entry/v1",
   "frameworks": [

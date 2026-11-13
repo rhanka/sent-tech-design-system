@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TimePicker.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Time selection from slots generated at a fixed step.",
     "fr": "Sélection d'une heure parmi des créneaux générés par pas."
   },
-  "digest": "sha256:6830e8c25a2cde4f3181cd46e584acf2795722bab27f4668d4c54eea8ad33d71",
+  "digest": "sha256:0b918315f00d67c54bf604123345ea785ebafd80d0f2421098b8dd8a23f39f8b",
   "displayName": "TimePicker",
   "format": "component-entry/v1",
   "frameworks": [

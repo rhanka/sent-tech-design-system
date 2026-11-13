@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:dc164dae5d05c71d46e67ee6a6e1e485166c5d0cc6346d2a3919020558b767d5",
-  "entryDigest": "sha256:17e59c68c0ae211d4656de9e3e14f00a874761cc71447a06ee26a4a41f090a93",
+  "digest": "sha256:0f3e13d287b416113f7dde0c449796e5eebe9ba270ac13393b4742bc7ded57d3",
+  "entryDigest": "sha256:1b45bcdad7f59a55cba0958127d0b53898f40bbb80ce8ac70cc3ab2dcdf57a7d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -104,20 +104,31 @@
               "code": {
                 "enum": [
                   "card-overflow",
-                  "card-icon-unknown"
+                  "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
                 "type": "string"
               }
             },
@@ -155,8 +166,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -176,6 +196,10 @@
               "center",
               "left"
             ]
+          },
+          "autoSize": {
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
+            "type": "boolean"
           },
           "body": {
             "description": "Body lines in order; trailing `detailCount` lines render secondary.",
@@ -199,6 +223,9 @@
           },
           "footer": {
             "type": "string"
+          },
+          "height": {
+            "type": "number"
           },
           "icon": {
             "type": "string"
@@ -233,7 +260,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7b0232a1f80f278c6081fa2290a95a8f0933112589aa1e65ee53ff6560a969d9",
+        "declarationDigest": "sha256:0e119fd0505517e8e681584a1f604511ab6372880dca599408e1fc9bbd85bea6",
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
@@ -330,20 +357,31 @@
               "code": {
                 "enum": [
                   "card-overflow",
-                  "card-icon-unknown"
+                  "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
                 "type": "string"
               }
             },
@@ -381,8 +419,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -402,6 +449,10 @@
               "center",
               "left"
             ]
+          },
+          "autoSize": {
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
+            "type": "boolean"
           },
           "body": {
             "description": "Body lines in order; trailing `detailCount` lines render secondary.",
@@ -425,6 +476,9 @@
           },
           "footer": {
             "type": "string"
+          },
+          "height": {
+            "type": "number"
           },
           "icon": {
             "type": "string"
@@ -459,11 +513,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:945607e5b4dc7970aaf3223b0b34ad1fbec067a7dd0070a7d399505e7c82c4d5",
+        "declarationDigest": "sha256:2e95867d54e0162b687106b66be44b6291130772e99c8f19d8709efc72d2b1c7",
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],
