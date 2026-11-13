@@ -37,7 +37,7 @@ import {
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
-import { cardLineMeasurer } from "./diagramCardModel.js";
+import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "./diagramCardModel.js";
 import {
   layoutScene,
   parseDurationMs,
@@ -458,8 +458,9 @@ describe("DiagramSceneFigure camera", () => {
       view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
       await tick();
       await fireEvent.click(view.button("Fit"));
-      const fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
+      let fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
       const raw = Math.min(width / bounds.width, fitHeight / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
+      if (raw === DEFAULT_MAX_DISPLAY_SCALE) fitHeight = Math.min(fitHeight, bounds.height * raw);
       expect(view.viewport.style.height).toBe(`${fitHeight}px`);
       // BF-2: the fit holds at the readability floor.
       expect(view.zoom()).toBeCloseTo(Math.max(raw, DEFAULT_MIN_READABLE_SCALE), 12);
@@ -872,7 +873,7 @@ describe("DiagramSceneFigure transition", () => {
 /* ── M1 production measurer and readability floor (BF-6) ─────── */
 
 describe("M1 production edge labels (BF-6) and readability floor", () => {
-  const productionLines = cardLineMeasurer();
+  const productionLines = cardLineMeasurer(sceneCardMeasure(defaultCardMeasure));
   const edgeSample = (text: string): { readonly height: number } =>
     productionLines({ text, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
 

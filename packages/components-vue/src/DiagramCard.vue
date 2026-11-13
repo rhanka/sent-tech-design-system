@@ -43,7 +43,7 @@ export interface DiagramCardProps extends DiagramCardData {
     /** One call per diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
-const { entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
+const { autoSize, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
 const emit = defineEmits<{
     select: [
         event: {
@@ -60,6 +60,8 @@ const onSelect = (event: {
 const onDiagnostic = (event: CardDiagnostic) => emit('diagnostic', event);
 const layout = computed(() => layoutCard({
     entityId,
+    ...(autoSize === undefined ? {} : { autoSize }),
+    ...(height === undefined ? {} : { height }),
     ...(kicker === undefined ? {} : { kicker }),
     title,
     body,
@@ -91,7 +93,7 @@ onMounted(() => {
 
   <div class="st-diagramCard st-diagramCard--refused" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :data-card-refused="refused.slot" :data-card-overflow="refused.slot" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })"></div>
 </template><template v-else>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="autoSize ? `height:${layout.box.height}px` : undefined" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
   <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="icon" :iconGlyph="iconGlyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div class="st-diagramCard-body" :style="`margin-left:${layout.bodyX - CARD_GEOMETRY.headerInset}px;width:${layout.bodyWidth}px`">
@@ -133,7 +135,7 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramCard--center {
     /* Owner variant: every text slot centred inside its allocation. */

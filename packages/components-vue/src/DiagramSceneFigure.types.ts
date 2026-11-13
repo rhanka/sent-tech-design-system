@@ -1,6 +1,6 @@
 import type { LayoutHints, LayoutMetrics, LayoutOptions, LayoutResult, LineMeasurer, RowPackOptions } from '@sentropic/diagram-canvas';
 import type { CardLineMeasure, DiagramGlyphPaths } from './diagramCardModel.js';
-import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef } from './diagramSceneModel.js';
+import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, SceneLayoutCache, DiagramSceneSize } from './diagramSceneModel.js';
 /** Named array boundary keeps emitted declarations within the public canvas layer. */
 export interface SceneCollapsedOccurrences extends ReadonlyArray<SceneOccurrenceRef> {}
   export interface DiagramSceneFigureLabels {
@@ -30,6 +30,9 @@ export interface SceneCollapsedOccurrences extends ReadonlyArray<SceneOccurrence
   }
 
   export interface DiagramSceneFigureProps {
+    layoutCache?: SceneLayoutCache;
+    contentSize?: DiagramSceneSize;
+    onSizeChange?: (size: DiagramSceneSize) => void;
     document: SceneDocument;
     /** Retained source view (occurrences, fold groups). Optional: the engine synthesises one. */
     view?: SceneView;

@@ -47,6 +47,8 @@
 
   let {
     entityId,
+    autoSize,
+    height,
     kicker,
     title,
     body,
@@ -68,6 +70,8 @@
     layoutCard(
       {
         entityId,
+        ...(autoSize === undefined ? {} : { autoSize }),
+        ...(height === undefined ? {} : { height }),
         ...(kicker === undefined ? {} : { kicker }),
         title,
         body,
@@ -127,6 +131,7 @@
   data-entity={entityId}
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
+  style={autoSize ? `height:${layout.box.height}px` : undefined}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
@@ -187,7 +192,7 @@
     display: flex;
     flex-direction: column;
     text-align: left;
-    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
   }
   .st-diagramCard--center {
     /* Owner variant: every text slot centred inside its allocation. */

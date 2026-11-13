@@ -18,8 +18,10 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
+  import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import {
     cardLineMeasurer,
+    sceneCardMeasure,
     defaultCardMeasure,
     projectCardProps,
     projectZoneProps,
@@ -213,7 +215,9 @@
     untrack(() => defaultFolds ?? collapsedOccurrencesOf(view)),
   );
   const collapsedNow = $derived(collapsed ?? foldState);
-  const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(measure));
+  let browserMeasure = $state.raw<CardLineMeasure>();
+  const effectiveMeasure = $derived(sceneCardMeasure(browserMeasure ?? measure));
+  const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
 
   // O-4: the orientation record last emitted, fed back to the next layout
   // call. Deliberately not reactive state: it is an input of the next pass,
@@ -280,6 +284,18 @@
   let windowHeight = $state<number>();
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
+
+  $effect(() => {
+    const element = frameEl;
+    if (element === undefined || measureLines !== undefined || measure !== defaultCardMeasure) return;
+    let active = true;
+    void document.fonts?.ready.then(() => {
+      if (!active) return;
+      const current = untrack(() => scene);
+      if (current !== undefined) browserMeasure = measureRenderedSceneFont(element, current, measure);
+    });
+    return () => { active = false; };
+  });
 
   function tokenValue(name: string): string | undefined {
     if (frameEl === undefined) return undefined;
@@ -599,7 +615,7 @@
       entityId: node.entity,
       ...(resolveGlyph === undefined ? {} : { resolveGlyph }),
     });
-    return projected.kind === "card" ? projected.props : undefined;
+    return projected.kind === "card" ? { ...projected.props, autoSize: true, height: node.rect.height } : undefined;
   };
 
   const zonePropsOf = (node: SceneNodeModel, rect: Rect) => {
@@ -611,7 +627,7 @@
       ...(node.collapsed ? {} : { width: rect.width, height: rect.height }),
       ...(resolveGlyph === undefined ? {} : { resolveGlyph }),
     });
-    return projected.kind === "zone" ? projected.props : undefined;
+    return projected.kind === "zone" ? { ...projected.props, autoSize: true, height: rect.height } : undefined;
   };
 
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
@@ -702,12 +718,12 @@
                 {#if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
-                    <DiagramCard {...cardProps} {measure} {onSelect} />
+                    <DiagramCard {...cardProps} measure={effectiveMeasure} {onSelect} />
                   {/if}
                 {:else if node.kind === "zone"}
                   {@const zoneProps = zonePropsOf(node, rect)}
                   {#if zoneProps !== undefined}
-                    <DiagramZone {...zoneProps} {measure} {onSelect} onToggle={() => toggleFold(node)} />
+                    <DiagramZone {...zoneProps} measure={effectiveMeasure} {onSelect} onToggle={() => toggleFold(node)} />
                   {/if}
                 {:else}
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
@@ -718,6 +734,7 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                title={edgeLabel.title}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
               >
                 {#each edgeLabel.lines as line, lineIndex (lineIndex)}
@@ -803,7 +820,7 @@
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
     line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
@@ -830,7 +847,7 @@
     color: var(--st-semantic-text-secondary);
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
     line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
