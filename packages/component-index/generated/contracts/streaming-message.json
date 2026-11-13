@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:fad50df15abc6b123c1d6a66838a0e028eeb1dc18d7a18be3e2cb1cf3799184e",
-  "entryDigest": "sha256:23c026ddd7b86c0f0dcca59e9ec8e3e985932500cd79071ff89b687db5015132",
+  "digest": "sha256:b83ba1c3e58e7407f98aba547dcd040333da3f382d097b27cc5b1fc386047540",
+  "entryDigest": "sha256:583d0694572c84a718f1113aaaaf16c54e86b09a303fc6d1605c2a7cc983c850",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -679,8 +679,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -706,8 +705,7 @@
               "text": {}
             },
             "required": [
-              "id",
-              "label"
+              "id"
             ],
             "type": "object"
           }
@@ -760,13 +758,35 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "event-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "event": {
+                "$ref": "#/$defs/StreamingMessageEvent"
+              }
+            },
+            "required": [
+              "event"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "placeholder"
+        },
+        {
+          "name": "text"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:6cb4b109e63782297abe6258862f524061b4a4d1958855cb00d374dcb4258c67",
-        "declarationPath": "packages/components-vue/dist/StreamingMessage.d.ts",
+        "declarationDigest": "sha256:70ab2263409566549632362c82ed238119766077fd70895cc959aa8283f2683c",
+        "declarationPath": "packages/components-vue/dist/StreamingMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamingMessageProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

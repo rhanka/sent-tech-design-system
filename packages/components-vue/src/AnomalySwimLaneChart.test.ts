@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { AnomalySwimLaneChart } from "./AnomalySwimLaneChart.js";
+import AnomalySwimLaneChart from "./AnomalySwimLaneChart.vue";
 
 const jobs = [
   {

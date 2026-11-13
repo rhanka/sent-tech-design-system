@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { mount } from "@vue/test-utils";
 import { h } from "vue";
-import { AppChrome } from "./AppChrome.js";
+import AppChrome from './AppChrome.vue';
 
 const themes = [
   { id: "sent-tech", label: "Sentropic" },

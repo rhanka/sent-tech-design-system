@@ -1,8 +1,8 @@
 {
   "componentId": "skip-link",
   "contractSource": "derived",
-  "digest": "sha256:20a2ae2b323a44d01b364d47aa4111c987fb103853d311da3069ecf8980000c2",
-  "entryDigest": "sha256:ac4ed77930280614a4268c2dfca30759625d95f0990628955f5d5251176144df",
+  "digest": "sha256:33daeb37cdbad4f34285109d4c63efc82f517901d7b2f88569799cc67933b033",
+  "entryDigest": "sha256:35fdae83882080436e526b9bbff35dc5721faed4e87f657b9c8d4772d585a1d6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -123,8 +123,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -139,13 +138,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:27959a845f947ee80924b790ac84418acff087d0aeb0ac1a78c4c6ee19091410",
-        "declarationPath": "packages/components-vue/dist/SkipLink.d.ts",
+        "declarationDigest": "sha256:d5f3fb640170508be805dad5099daf6b8ee479b0ccb5205bdaa11d416d1cd265",
+        "declarationPath": "packages/components-vue/dist/SkipLink.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SkipLinkProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

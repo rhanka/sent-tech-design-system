@@ -1,0 +1,42 @@
+{
+  "component": "SelectableRow",
+  "ok": true,
+  "gates": [
+    {
+      "gate": "G1",
+      "title": "Template source",
+      "status": "PASS",
+      "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+    },
+    {
+      "gate": "G2",
+      "title": "Classic + Vapor compile",
+      "status": "PASS",
+      "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+    },
+    {
+      "gate": "G3",
+      "title": "Scoped vue-tsc",
+      "status": "PASS",
+      "detail": "Target SFC and its transitive imports; inherited strict package settings"
+    },
+    {
+      "gate": "G4",
+      "title": "SSR golden parity",
+      "status": "PASS",
+      "detail": "5/5 fixtures (vue implementation)"
+    },
+    {
+      "gate": "G5",
+      "title": "Vapor jsdom mount",
+      "status": "PASS",
+      "detail": "createVaporApp; fixture=default, stacked, link, disabled, button; interop=false; mounted, flushed, unmounted"
+    },
+    {
+      "gate": "G6",
+      "title": "Public exports + Props",
+      "status": "PASS",
+      "detail": "SelectableRow, SELECTABLE_LIST_KEY, SelectableRowProps, SelectableListContext resolve through selected index.ts exports; value/type kinds preserved"
+    }
+  ]
+}

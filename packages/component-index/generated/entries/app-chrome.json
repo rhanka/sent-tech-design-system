@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:eba2ecfeae68f6c9c8c09e39176db15041203726d0f30d52e807d827aac9b1d6",
+      "digest": "sha256:e851e6d5dab613cc6e84724835a803c0ce20600cd083d0a8411863328742e653",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/AppChrome.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/AppChrome.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:8ceb5595e0cb07315a9003ee69c22f561070fe1018073f8096bba0fbd0820af9",
+  "digest": "sha256:7764a049c7493a60a3e2d9d91b1be78c0f1e6d1711ac398d7c935da14501229f",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [

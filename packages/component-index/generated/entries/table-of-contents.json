@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d98fa95e5542b7156d05492bc92ea975c72df211a1996c8cbd8bd00a4ff051e0",
+      "digest": "sha256:6398ae08a2606100fccf63aa413edfaba35cfa970337770ad5feab7b1b6aa5a4",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/TableOfContents.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/TableOfContents.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:bae02d86c032e0850c6c8fd8b66167d244a51b1ea3ddafbfb1874d120ec7ce40",
+  "digest": "sha256:a37ca4352239a938cae2c004f46eaa3bfcc1a2d07444a88c79dd1f1d8e6e5e3f",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

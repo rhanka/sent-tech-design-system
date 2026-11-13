@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Input",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Input.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><input class=\"st-control st-control--md\" id=\"generated-1\"></label></div>"
+    },
+    {
+      "id": "label-help-value",
+      "html": "<div class=\"st-field\" name=\"name\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Name</span><input class=\"st-control st-control--md\" id=\"generated-1\" name=\"name\" placeholder=\"Your name\" value=\"Ada &amp; Grace\"></label><span class=\"st-field__help\">Full name</span></div>"
+    },
+    {
+      "id": "error-small",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Email</span><input aria-invalid=\"true\" class=\"st-control st-control--sm\" id=\"generated-1\"></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "disabled-large",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Disabled</span><input class=\"st-control st-control--lg\" disabled=\"\" id=\"generated-1\" value=\"Fixed\"></label></div>"
+    },
+    {
+      "id": "readonly-custom-id",
+      "html": "<div aria-describedby=\"external-help\" class=\"st-field consumer\" data-bench=\"input\" style=\"color:red;\"><label class=\"st-field__control\" for=\"consumer-input\"><span class=\"st-field__label\">Reference</span><input aria-describedby=\"external-help\" class=\"st-control st-control--md\" data-bench=\"input\" id=\"consumer-input\" readonly=\"\" style=\"color: red\"></label></div>"
+    },
+    {
+      "id": "invalid-empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><input aria-invalid=\"true\" class=\"st-control st-control--md\" id=\"generated-1\" placeholder=\"Enter text\" value=\"\"></label></div>"
+    }
+  ],
+  "sourceSha256": "82668e45041224a120a0d9e988792c824a08ef8fc7e64dfa159c295eeb86279d",
+  "fixtureSha256": "621c1bf87fce8d49a80c704b2b5a1810790312f27ad88f02e19f34efc64e4672",
+  "publicExports": [
+    {
+      "name": "Input",
+      "typeOnly": false
+    },
+    {
+      "name": "InputProps",
+      "typeOnly": true
+    },
+    {
+      "name": "InputSize",
+      "typeOnly": true
+    }
+  ]
+}

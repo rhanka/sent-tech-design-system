@@ -1,4 +1,4 @@
-import { h, type VNode } from "vue";
+
 
 /**
  * Décoration sémantique d'une cellule (DataTable) ou d'une carte (KpiCard).
@@ -100,25 +100,7 @@ export function hasCellDecorationIcon(icon: string | undefined): boolean {
   return icon != null && Object.prototype.hasOwnProperty.call(cellDecorationIconNodes, icon);
 }
 
-/** Rend l'icône lucide en SVG inline, ou `null` si le nom est inconnu. */
-export function renderCellDecorationIcon(icon: string | undefined): VNode | null {
-  if (!hasCellDecorationIcon(icon)) return null;
-  const nodes = cellDecorationIconNodes[icon as string];
-  return h(
-    "svg",
-    {
-      class: "st-cell__icon",
-      width: "14",
-      height: "14",
-      viewBox: "0 0 24 24",
-      fill: "none",
-      stroke: "currentColor",
-      "stroke-width": "2",
-      "stroke-linecap": "round",
-      "stroke-linejoin": "round",
-      "aria-hidden": "true",
-      focusable: "false",
-    },
-    nodes.map(([tag, attrs], i) => h(tag, { key: i, ...attrs })),
-  );
+/** Resolve framework-neutral SVG nodes; unknown names remain absent. */
+export function renderCellDecorationIcon(icon: string | undefined): IconNode | null {
+  return hasCellDecorationIcon(icon) ? cellDecorationIconNodes[icon as string] : null;
 }

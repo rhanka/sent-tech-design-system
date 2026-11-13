@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:c67c750d52872fdcbe18e1b6ddeb6305bc77c7d6805c9bfaae39045843f708f8",
-  "entryDigest": "sha256:c1a91c57d406f2ab3e85953478fc61b38030a46bda77dafb859251a75282b277",
+  "digest": "sha256:70ccb17fb1e35e8caf5667117256c84f43d9cf5ef98056de59a6b4d05151eee2",
+  "entryDigest": "sha256:3f14b154075ccd4a83a943fe87a1815ac713d878a00531945124049096c393c6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -302,36 +302,27 @@
       "events": [
         {
           "name": "change",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -347,7 +338,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -394,12 +384,6 @@
           "sourceType": "unknown"
         },
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "errorText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -416,36 +400,59 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {
+                "$ref": "#/$defs/SelectOption"
+              }
+            },
+            "required": [
+              "option"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:760d44d8659102e6710132b717222e8016ffcee95387799c174e143898d1e0a9",
-        "declarationPath": "packages/components-vue/dist/Select.d.ts",
+        "declarationDigest": "sha256:703865bb752b1a8a130ff1d51bf4f85da7f3b43b450d8303dc3660b685dca99d",
+        "declarationPath": "packages/components-vue/dist/Select.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",

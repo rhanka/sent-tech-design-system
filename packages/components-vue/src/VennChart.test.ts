@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { VennChart } from "./VennChart.js";
-import type { VennChartArea } from "./VennChart.js";
+import VennChart from './VennChart.vue';
+import type { VennChartArea } from './VennChart.vue';
 
 const data: VennChartArea[] = [
   { sets: ["A"], value: 10 },

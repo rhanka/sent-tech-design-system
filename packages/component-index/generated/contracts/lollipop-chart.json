@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:024f3d8548edd2a919a053e6505aa9a3a01db081797fc97fe44798f360027eaf",
-  "entryDigest": "sha256:f368c3f1e03349b90d88062b06999f796116e6ccd3e4f38e06fa69e6059e46f7",
+  "digest": "sha256:bc1f666251d9d3be53abfb6abf95b3b67686c1810392f0928dfce892e451cfe9",
+  "entryDigest": "sha256:ca1a68db911ed61df0cd417e6e515942987301644c7861befc6fab5c1a55bb34",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -385,11 +385,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7ef37b13588fb4c7a87cb9bd1c5205ea285f12bb70f78693fd331dcf17d5cbbe",
-        "declarationPath": "packages/components-vue/dist/LollipopChart.d.ts",
+        "declarationDigest": "sha256:48c422be38c47ea7a774dcd60c89e2e38cd57db88d2c8c7386613475b6474d94",
+        "declarationPath": "packages/components-vue/dist/LollipopChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LollipopChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

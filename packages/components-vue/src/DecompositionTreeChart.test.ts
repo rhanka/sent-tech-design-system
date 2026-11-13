@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { DecompositionTreeChart } from "./DecompositionTreeChart.js";
+import DecompositionTreeChart from "./DecompositionTreeChart.vue";
 
 const data = {
   measure: "Revenu",

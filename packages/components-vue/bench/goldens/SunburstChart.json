@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "SunburstChart",
+  "sourceRevision": "80603ebd56e5cf67812e231eff429f271bfb5f26",
+  "source": "src/SunburstChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-sunburstChart\"><div aria-label=\"Sunburst\" class=\"st-sunburstChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category1\" d=\"M 160 160 L 160 6 A 154 154 0 0 1 293.3679121828036 236.99999999999997 Z\" data-chart-index=\"0\"></path><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category2\" d=\"M 160 160 L 293.3679121828036 236.99999999999997 A 154 154 0 1 1 159.99999999999997 6 Z\" data-chart-index=\"1\"></path><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"226.68395609140177\" y=\"121.5\">A</text><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"93.31604390859823\" y=\"198.50000000000003\">B</text></svg></div><ul aria-label=\"Data values for Sunburst\" class=\"st-chartDataList\"><li>Root, A: 10</li><li>Root, B: 20</li></ul></div>"
+    },
+    {
+      "id": "legend-custom",
+      "html": "<div class=\"st-sunburstChart consumer\" data-bench=\"sunburst\" style=\"color:red;\"><div aria-label=\"Sunburst\" class=\"st-sunburstChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 400 360\" width=\"100%\"><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category3\" d=\"M 200 180 L 200 93 A 87 87 0 0 1 257.6916712669492 245.1204350908858 Z\" data-chart-index=\"0\"></path><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category2\" d=\"M 200 180 L 257.6916712669492 245.1204350908858 A 87 87 0 1 1 199.99999999999997 93 Z\" data-chart-index=\"1\"></path><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category2\" d=\"M 315.3833425338984 310.2408701817716 A 174 174 0 1 1 199.99999999999997 6 L 199.99999999999997 93 A 87 87 0 1 0 257.6916712669492 245.1204350908858 Z\" data-chart-index=\"2\"></path><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"240.67320655681556\" y=\"164.5746874136497\">X</text><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"159.32679344318444\" y=\"195.42531258635032\">Y</text><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"77.98038032955338\" y=\"226.27593775905092\">Y1</text></svg></div><ul aria-label=\"Data values for Sunburst\" class=\"st-chartDataList\"><li>Root, X: 5</li><li>Root, Y, Y1: 8</li></ul><ul aria-hidden=\"true\" class=\"st-sunburstChart__legend\"><li class=\"st-sunburstChart__legendItem\"><span aria-hidden=\"true\" class=\"st-sunburstChart__legendSwatch st-sunburstChart__legendSwatch--category3\"></span> X</li><li class=\"st-sunburstChart__legendItem\"><span aria-hidden=\"true\" class=\"st-sunburstChart__legendSwatch st-sunburstChart__legendSwatch--category2\"></span> Y</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-sunburstChart\"><div aria-label=\"Empty\" class=\"st-sunburstChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "zero",
+      "html": "<div class=\"st-sunburstChart\"><div aria-label=\"Zero\" class=\"st-sunburstChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "deep",
+      "html": "<div class=\"st-sunburstChart\"><div aria-label=\"Deep\" class=\"st-sunburstChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 320 320\" width=\"100%\"><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category1\" d=\"M 160 160 L 160 108.66666666666666 A 51.333333333333336 51.333333333333336 0 1 1 159.99486666667522 108.66666692333334 Z\" data-chart-index=\"0\"></path><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category1\" d=\"M 160 57.33333333333333 A 102.66666666666667 102.66666666666667 0 1 1 159.98973333335044 57.33333384666666 L 159.99486666667522 108.66666692333334 A 51.333333333333336 51.333333333333336 0 1 0 160 108.66666666666666 Z\" data-chart-index=\"1\"></path><path class=\"st-sunburstChart__arc st-sunburstChart__arc--category1\" d=\"M 160 6 A 154 154 0 1 1 159.98460000002567 6.0000007699999856 L 159.98973333335044 57.33333384666666 A 102.66666666666667 102.66666666666667 0 1 0 160 57.33333333333333 Z\" data-chart-index=\"2\"></path><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"160\" y=\"185.66666666666666\">L1</text><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"160\" y=\"237\">L2</text><text class=\"st-sunburstChart__label\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"160\" y=\"288.33333333333337\">Leaf</text></svg></div><ul aria-label=\"Data values for Deep\" class=\"st-chartDataList\"><li>Root, L1, L2, Leaf: 12</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "8a5629479cd9b633538cd25ff0db661d1352caa678aa75bf1e5f874e260fecaa",
+  "fixtureSha256": "54b564fbc94146bb473f31ec41b4bbc1e0fb0cc012d591ec263703834235f506",
+  "publicExports": [
+    {
+      "name": "SunburstChart",
+      "typeOnly": false
+    },
+    {
+      "name": "SunburstChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SunburstChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "SunburstChartTone",
+      "typeOnly": true
+    }
+  ]
+}

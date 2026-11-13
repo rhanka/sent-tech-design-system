@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Grid",
+  "sourceRevision": "4eb97fb0aafc3cce8c03bd86035a9000d6965d05",
+  "source": "src/Grid.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-grid\" style=\"display:grid;\">Cells</div>"
+    },
+    {
+      "id": "three-columns",
+      "html": "<div class=\"st-grid\" style=\"display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));gap:var(--st-spacing-4, 1rem);\"><span>A</span><span>B</span><span>C</span></div>"
+    },
+    {
+      "id": "min-width",
+      "html": "<div class=\"st-grid\" style=\"display:grid;grid-template-columns:repeat(auto-fill, minmax(200px, 1fr));gap:var(--st-spacing-2, 0.5rem);\">Auto</div>"
+    },
+    {
+      "id": "min-width-priority",
+      "html": "<div class=\"st-grid\" style=\"display:grid;grid-template-columns:repeat(auto-fill, minmax(180px, 1fr));\">Wins</div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-grid consumer\" data-bench=\"grid\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));color:red;\" title=\"Grid\"><em>X</em></div>"
+    },
+    {
+      "id": "as-section",
+      "html": "<section class=\"st-grid\" style=\"display:grid;grid-template-columns:repeat(1, minmax(0, 1fr));\"></section>"
+    }
+  ],
+  "sourceSha256": "5f16bcd8dad591a42bcd3c6fc2524c6b5e95dfb1359900e4aa5016da891bb114",
+  "fixtureSha256": "44d70da4611924dca92101122352a108a6c948e0dd2945e0ec6bbf5472976048",
+  "publicExports": [
+    {
+      "name": "Grid",
+      "typeOnly": false
+    },
+    {
+      "name": "gridTemplateColumns",
+      "typeOnly": false
+    },
+    {
+      "name": "GridProps",
+      "typeOnly": true
+    }
+  ]
+}

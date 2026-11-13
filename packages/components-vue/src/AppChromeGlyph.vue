@@ -1,0 +1,10 @@
+<script setup lang="ts">
+import { useAttrs } from 'vue';
+import SvgNodes from './SvgNodes.vue';
+import type { IconNode } from './icon-data.js';
+defineOptions({ name: 'AppChromeGlyph', inheritAttrs: false });
+const nodes: Record<string, IconNode> = {"palette":[["path",{"d":"M12 22a1 1 0 0 1 0-20 10 9 0 0 1 10 9 5 5 0 0 1-5 5h-2.25a1.75 1.75 0 0 0-1.4 2.8l.3.4a1.75 1.75 0 0 1-1.4 2.6z"}],["circle",{"cx":13.5,"cy":6.5,"r":0.5,"fill":"currentColor"}],["circle",{"cx":17.5,"cy":10.5,"r":0.5,"fill":"currentColor"}],["circle",{"cx":6.5,"cy":12.5,"r":0.5,"fill":"currentColor"}],["circle",{"cx":8.5,"cy":7.5,"r":0.5,"fill":"currentColor"}]],"globe":[["circle",{"cx":12,"cy":12,"r":10}],["path",{"d":"M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"}],["path",{"d":"M2 12h20"}]],"chevron":[["path",{"d":"m6 9 6 6 6-6"}]],"sun":[["circle",{"cx":12,"cy":12,"r":4}],["path",{"d":"M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"}]],"moon":[["path",{"d":"M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9"}]],"github":[["path",{"d":"M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 4 5 4 5 4c-.3 1.15-.3 2.35 0 3.5a5.4 5.4 0 0 0-1 3.5c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"}],["path",{"d":"M9 18c-4.51 2-5-2-7-2"}]],"menu":[["line",{"x1":4,"x2":20,"y1":6,"y2":6}],["line",{"x1":4,"x2":20,"y1":12,"y2":12}],["line",{"x1":4,"x2":20,"y1":18,"y2":18}]]};
+const props = withDefaults(defineProps<{ kind: string; size: number; strokeWidth?: number; class?: string }>(), { strokeWidth: 2, class: undefined });
+const attrs = useAttrs();
+</script>
+<template><svg :width="props.size" :height="props.size" viewBox="0 0 24 24" fill="none" stroke="currentColor" :stroke-width="props.strokeWidth" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" v-bind="{ ...attrs, ...(props.class !== undefined ? { class: props.class } : {}), ...(!['menu', 'chevron'].includes(props.kind) ? { style: attrs.style ?? '' } : {}) }"><SvgNodes :nodes="nodes[props.kind]" /></svg></template>

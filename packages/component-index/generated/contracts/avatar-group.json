@@ -1,8 +1,8 @@
 {
   "componentId": "avatar-group",
   "contractSource": "derived",
-  "digest": "sha256:7a859ea4c8a37beafd9aff9650491a4516e963fbba199331cc23e6dccf84a67e",
-  "entryDigest": "sha256:6b9101de8279e01d306026b73028630f6d8c6c558761902409de89a7bcb72dbd",
+  "digest": "sha256:0686a681d303aad57e5daeb44c0001b37ae82c70d95215902a39100ef9bca300",
+  "entryDigest": "sha256:e590297c54096610248d7042779ec81789c4f9702cf46a8c13b65168ec74e837",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -165,8 +165,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -195,13 +194,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3b3e71b1e046b6e151193b2580814a49d600ca070d9f5c33b5e2f6790b2ef989",
-        "declarationPath": "packages/components-vue/dist/AvatarGroup.d.ts",
+        "declarationDigest": "sha256:6ae1a982bf04f4a2d1a0b2245f7fdc635662181485fac04c70e2e1d67a940e59",
+        "declarationPath": "packages/components-vue/dist/AvatarGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

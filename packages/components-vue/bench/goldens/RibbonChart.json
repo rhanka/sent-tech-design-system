@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "RibbonChart",
+  "sourceRevision": "daf4c9e116b672232acfaaaf491004491c7ecb72",
+  "source": "src/RibbonChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Ribbon\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category2\" d=\"M174.00,100.00 C242.80,100.00 277.20,41.20 346.00,41.20 L346.00,142.00 C277.20,142.00 242.80,268.00 174.00,268.00 Z\"></path><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M174.00,16.00 C242.80,16.00 277.20,142.00 346.00,142.00 L346.00,268.00 C277.20,268.00 242.80,100.00 174.00,100.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"138\" y=\"284\">2023</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"0-0-Beta\" height=\"168\" rx=\"2\" width=\"72\" x=\"102\" y=\"100\"></rect><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-1-Alpha\" height=\"84\" rx=\"2\" width=\"72\" x=\"102\" y=\"16\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"382\" y=\"284\">2024</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-Alpha\" height=\"126\" rx=\"2\" width=\"72\" x=\"346\" y=\"142\"></rect><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"1-1-Beta\" height=\"100.80000000000001\" rx=\"2\" width=\"72\" x=\"346\" y=\"41.19999999999999\"></rect></svg></div><ul aria-label=\"Catégories de Ribbon\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>Alpha</li><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category2\"></span>Beta</li></ul><ul aria-label=\"Data values for Ribbon\" class=\"st-chartDataList\"><li>Alpha: 2023 = 10, 2024 = 15</li><li>Beta: 2023 = 20, 2024 = 12</li></ul></div>"
+    },
+    {
+      "id": "tones-custom",
+      "html": "<div class=\"st-ribbonChart consumer\" data-bench=\"ribbon\" style=\"color:red;\"><div aria-label=\"Tones\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 280\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category3\" d=\"M194.00,103.00 C278.80,103.00 321.20,16.00 406.00,16.00 L406.00,248.00 C321.20,248.00 278.80,248.00 194.00,248.00 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"158\" y=\"264\">1</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category3\" data-chart-key=\"0-0-Sales\" height=\"145\" rx=\"2\" width=\"72\" x=\"122\" y=\"103\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"442\" y=\"264\">2</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category3\" data-chart-key=\"1-0-Sales\" height=\"232\" rx=\"2\" width=\"72\" x=\"406\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de Tones\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category3\"></span>Sales</li></ul><ul aria-label=\"Data values for Tones\" class=\"st-chartDataList\"><li>Sales: 1 = 5, 2 = 8</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Empty\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "single-period",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Single\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"260\" y=\"284\">Q1</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-0-Only\" height=\"252\" rx=\"2\" width=\"72\" x=\"224\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de Single\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>Only</li></ul><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>Only: Q1 = 10</li></ul></div>"
+    },
+    {
+      "id": "invalid",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Invalid\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "size-override",
+      "html": "<div class=\"st-ribbonChart\"><div aria-label=\"Sized\" class=\"st-ribbonChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 400 300\" width=\"100%\"><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category2\" d=\"M144.00,91.60 C188.80,91.60 211.20,16.00 256.00,16.00 L256.00,116.80 C211.20,116.80 188.80,268.00 144.00,268.00 Z\"></path><path class=\"st-ribbonChart__ribbon st-ribbonChart__ribbon--category1\" d=\"M144.00,16.00 C188.80,16.00 211.20,116.80 256.00,116.80 L256.00,268.00 C211.20,268.00 188.80,91.60 144.00,91.60 Z\"></path><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"108\" y=\"284\">P1</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"0-0-B\" height=\"176.39999999999998\" rx=\"2\" width=\"72\" x=\"72\" y=\"91.60000000000002\"></rect><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"0-1-A\" height=\"75.6\" rx=\"2\" width=\"72\" x=\"72\" y=\"16.00000000000003\"></rect><text class=\"st-ribbonChart__periodLabel\" text-anchor=\"middle\" x=\"292\" y=\"284\">P2</text><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category1\" data-chart-key=\"1-0-A\" height=\"151.2\" rx=\"2\" width=\"72\" x=\"256\" y=\"116.80000000000001\"></rect><rect class=\"st-ribbonChart__seg st-ribbonChart__seg--category2\" data-chart-key=\"1-1-B\" height=\"100.80000000000001\" rx=\"2\" width=\"72\" x=\"256\" y=\"16\"></rect></svg></div><ul aria-label=\"Catégories de Sized\" class=\"st-ribbonChart__legend\"><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category1\"></span>A</li><li class=\"st-ribbonChart__legendItem\"><span aria-hidden=\"true\" class=\"st-ribbonChart__legendSwatch st-ribbonChart__legendSwatch--category2\"></span>B</li></ul><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>A: P1 = 3, P2 = 6</li><li>B: P1 = 7, P2 = 4</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "4b2c44128d145b80675cc916249b73d868c35d3f4f34d2a3c33133dc8bb15d2c",
+  "fixtureSha256": "408d6af0ea5546b54929f06fd752311c4331f4ec6fa2b9ce62985db4cefdeded",
+  "publicExports": [
+    {
+      "name": "RibbonChart",
+      "typeOnly": false
+    },
+    {
+      "name": "RibbonChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "RibbonChartTone",
+      "typeOnly": true
+    },
+    {
+      "name": "RibbonChartDatum",
+      "typeOnly": true
+    }
+  ]
+}

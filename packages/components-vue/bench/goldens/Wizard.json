@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Wizard",
+  "sourceRevision": "06ebba192e72f06e1e17f77abb5f46fbb3b88c81",
+  "source": "src/Wizard.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-wz\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Progress</p><ol aria-label=\"Progress\" class=\"st-stepper\"><li class=\"st-stepper__item st-stepper__item--current\"><span class=\"st-stepper__index\">1</span><span class=\"st-stepper__label\">One</span></li><li class=\"st-stepper__item\"><span class=\"st-stepper__index\">2</span><span class=\"st-stepper__label\">Two</span><span class=\"st-stepper__description\">Second step</span></li><li class=\"st-stepper__item\"><span class=\"st-stepper__index\">3</span><span class=\"st-stepper__label\">Three</span></li></ol></div><div class=\"st-wz__body\"><div class=\"st-wz__content\"></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Cancel</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--primary\" type=\"button\">Next</button></div></div></div>"
+    },
+    {
+      "id": "midway",
+      "html": "<div class=\"st-wz\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Progress</p><ol aria-label=\"Progress\" class=\"st-stepper\"><li class=\"st-stepper__item st-stepper__item--complete\"><span class=\"st-stepper__index\">1</span><span class=\"st-stepper__label\">One</span></li><li class=\"st-stepper__item st-stepper__item--current\"><span class=\"st-stepper__index\">2</span><span class=\"st-stepper__label\">Two</span></li></ol></div><div class=\"st-wz__body\"><h3 class=\"st-wz__step-title\">Account details</h3><div class=\"st-wz__content\"><p>Form fields here.</p></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Cancel</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--secondary\" type=\"button\">Back</button><button class=\"st-button st-button--primary\" type=\"button\">Next</button></div></div></div>"
+    },
+    {
+      "id": "last",
+      "html": "<div class=\"st-wz\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Progress</p><ol aria-label=\"Progress\" class=\"st-stepper\"><li class=\"st-stepper__item st-stepper__item--complete\"><span class=\"st-stepper__index\">1</span><span class=\"st-stepper__label\">One</span></li><li class=\"st-stepper__item st-stepper__item--current\"><span class=\"st-stepper__index\">2</span><span class=\"st-stepper__label\">Two</span></li></ol></div><div class=\"st-wz__body\"><div class=\"st-wz__content\"></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Cancel</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--secondary\" type=\"button\">Back</button><button class=\"st-button st-button--primary\" type=\"button\">Finish</button></div></div></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div class=\"st-wz\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Steps</p><ol aria-label=\"Steps\" class=\"st-stepper\"><li class=\"st-stepper__item st-stepper__item--current\"><span class=\"st-stepper__index\">1</span><span class=\"st-stepper__label\">First</span></li><li class=\"st-stepper__item\"><span class=\"st-stepper__index\">2</span><span class=\"st-stepper__label\">Second</span></li></ol></div><div class=\"st-wz__body\"><h3 class=\"st-wz__step-title\">Review</h3><div class=\"st-wz__content\"></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Abort</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--primary\" type=\"button\">Continue</button></div></div></div>"
+    },
+    {
+      "id": "no-steps",
+      "html": "<div class=\"st-wz\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Progress</p><ol aria-label=\"Progress\" class=\"st-stepper\"></ol></div><div class=\"st-wz__body\"><div class=\"st-wz__content\"></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Cancel</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--primary\" type=\"button\">Next</button></div></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-wz consumer\" data-bench=\"wizard\" style=\"color:red;\"><div class=\"st-wz__stepper\"><p class=\"st-wz__stepper-label\">Progress</p><ol aria-label=\"Progress\" class=\"st-stepper\"><li class=\"st-stepper__item st-stepper__item--current\"><span class=\"st-stepper__index\">1</span><span class=\"st-stepper__label\">One</span></li></ol></div><div class=\"st-wz__body\"><div class=\"st-wz__content\"></div></div><div class=\"st-wz__footer\"><button class=\"st-button st-button--ghost\" type=\"button\">Cancel</button><div class=\"st-wz__footer-actions\"><button class=\"st-button st-button--primary\" type=\"button\">Next</button></div></div></div>"
+    }
+  ],
+  "sourceSha256": "afd4cc632a284544270a096b8a55ac039a6d11c2ef39d7094162d47e7f3fa880",
+  "fixtureSha256": "c62a7e74961d853cab792432a442f2c710a6851cc7c166f511fe066ddf929d83",
+  "publicExports": [
+    {
+      "name": "Wizard",
+      "typeOnly": false
+    },
+    {
+      "name": "WizardProps",
+      "typeOnly": true
+    },
+    {
+      "name": "WizardStep",
+      "typeOnly": true
+    }
+  ]
+}

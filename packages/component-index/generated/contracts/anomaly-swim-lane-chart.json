@@ -1,8 +1,8 @@
 {
   "componentId": "anomaly-swim-lane-chart",
   "contractSource": "derived",
-  "digest": "sha256:c9385c297c57bbd803e6803340453081cfcfbe3bd6206ec527a1a9de4dd9add6",
-  "entryDigest": "sha256:2bde421e1e252c5165395b67d34cd6c7b1549bed349658e365f4adb5a8362546",
+  "digest": "sha256:00d076a87d09de19dd28bbf5d61ca8c90fb2110105d32beb395c1e487e9a0040",
+  "entryDigest": "sha256:a366e2d835187be0de67d66a0c3094687e76f23692fffb4919e82ca191126578",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -383,11 +383,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f9317b63842536a18eef453611d81a5c19550dc9a4f1b4cb72c68436b9d82af6",
-        "declarationPath": "packages/components-vue/dist/AnomalySwimLaneChart.d.ts",
+        "declarationDigest": "sha256:b1664859c8bcab33e5ae278834fd75c457b16f00d3ace430b0b093013b436589",
+        "declarationPath": "packages/components-vue/dist/AnomalySwimLaneChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

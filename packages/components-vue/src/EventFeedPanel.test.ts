@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { EventFeedPanel } from "./EventFeedPanel.js";
+import EventFeedPanel from "./EventFeedPanel.vue";
 
 const events = [
   { at: 1_700_000_000_000, type: "deploy", severity: "info" as const, message: "Deployed v1.2.0" },
