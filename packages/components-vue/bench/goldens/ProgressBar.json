@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "ProgressBar",
+  "sourceRevision": "60a08d4aa5c9ab19eb6fe29f5127de0efe64c5fa",
+  "source": "src/ProgressBar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-progressBar\"><div class=\"st-progressBar__header\"><span class=\"st-progressBar__label\">Uploading</span></div><div aria-label=\"Uploading\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"40%\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:40%;\"></div></div></div>"
+    },
+    {
+      "id": "indeterminate",
+      "html": "<div class=\"st-progressBar\"><div class=\"st-progressBar__header\"><span class=\"st-progressBar__label\">Loading</span></div><div aria-label=\"Loading\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral st-progressBar__track--indeterminate\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:0%;\"></div></div></div>"
+    },
+    {
+      "id": "error-custom-value",
+      "html": "<div class=\"st-progressBar\"><div class=\"st-progressBar__header\"><span aria-hidden=\"true\" class=\"st-progressBar__value\">Total: 150</span></div><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"100\" aria-valuetext=\"Total: 150\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--error\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:100%;\"></div></div><span class=\"st-progressBar__help\">Over max.</span></div>"
+    },
+    {
+      "id": "size-lg",
+      "html": "<div class=\"st-progressBar consumer\" data-bench=\"bar\" style=\"color:red;\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"25\" aria-valuetext=\"25%\" class=\"st-progressBar__track st-progressBar__track--lg st-progressBar__track--success\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:25%;\"></div></div></div>"
+    },
+    {
+      "id": "zero",
+      "html": "<div class=\"st-progressBar\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0%\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:0%;\"></div></div></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-progressBar\"><div class=\"st-progressBar__header\"><span class=\"st-progressBar__label\"><strong>Progress</strong></span></div><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0%\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:0%;\"></div></div></div>"
+    }
+  ],
+  "sourceSha256": "98c4184b693f3c9170bab79320301509458050223244e6cc9b7817eb21c2fe30",
+  "fixtureSha256": "50e56cb22c39bac104d97d335aa18b518f17bef69c76de1975b90cae3c8a9bc0",
+  "publicExports": [
+    {
+      "name": "ProgressBar",
+      "typeOnly": false
+    },
+    {
+      "name": "ProgressBarProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ProgressBarTone",
+      "typeOnly": true
+    },
+    {
+      "name": "ProgressBarSize",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { PointAndFigureChart } from "./PointAndFigureChart.js";
+import PointAndFigureChart from "./PointAndFigureChart.vue";
 
 const series = [
   { date: 0, close: 100 },

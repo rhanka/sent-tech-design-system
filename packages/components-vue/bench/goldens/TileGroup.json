@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TileGroup",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/TileGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<fieldset class=\"st-tileGroup\"><div class=\"st-tileGroup__items\"><label class=\"st-tileGroup__tile\"><input class=\"st-tileGroup__input\" name=\"generated-1\" type=\"radio\" value=\"a\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Alpha</span><span class=\"st-tileGroup__description\">First</span></span></label><label class=\"st-tileGroup__tile st-tileGroup__tile--disabled\"><input class=\"st-tileGroup__input\" disabled=\"\" name=\"generated-1\" type=\"radio\" value=\"b\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Beta</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "checked",
+      "html": "<fieldset class=\"st-tileGroup\"><legend class=\"st-tileGroup__legend\">Choices</legend><div class=\"st-tileGroup__items\"><label class=\"st-tileGroup__tile\"><input class=\"st-tileGroup__input\" name=\"choice\" type=\"radio\" value=\"a\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Alpha</span><span class=\"st-tileGroup__description\">First</span></span></label><label class=\"st-tileGroup__tile st-tileGroup__tile--checked st-tileGroup__tile--disabled\"><input checked=\"\" class=\"st-tileGroup__input\" disabled=\"\" name=\"choice\" type=\"radio\" value=\"b\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Beta</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "disabled-hidden",
+      "html": "<fieldset class=\"st-tileGroup st-tileGroup--disabled consumer\" data-bench=\"tile\"><legend class=\"st-tileGroup__legend st-tileGroup__legend--hidden\">Hidden</legend><div class=\"st-tileGroup__items\"><label class=\"st-tileGroup__tile\"><input class=\"st-tileGroup__input\" disabled=\"\" name=\"generated-1\" type=\"radio\" value=\"a\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Alpha</span><span class=\"st-tileGroup__description\">First</span></span></label><label class=\"st-tileGroup__tile st-tileGroup__tile--disabled\"><input class=\"st-tileGroup__input\" disabled=\"\" name=\"generated-1\" type=\"radio\" value=\"b\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\">Beta</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "empty",
+      "html": "<fieldset class=\"st-tileGroup\"><div class=\"st-tileGroup__items\"></div></fieldset>"
+    },
+    {
+      "id": "rich",
+      "html": "<fieldset class=\"st-tileGroup\"><legend class=\"st-tileGroup__legend\"><b>Choices</b></legend><div class=\"st-tileGroup__items\"><label class=\"st-tileGroup__tile\"><input class=\"st-tileGroup__input\" name=\"rich\" type=\"radio\" value=\"a\"><span class=\"st-tileGroup__content\"><span class=\"st-tileGroup__label\"><strong>Alpha</strong></span><span class=\"st-tileGroup__description\"><em>First</em></span></span></label></div></fieldset>"
+    }
+  ],
+  "sourceSha256": "69b69a0d7a063a816071fdf6ef2ea393297ea82bf3105c1a77b29a5041f16c51",
+  "fixtureSha256": "4aa7430df69944c2e4025c7d410eea2325c2fe89094bbe15731ea26b09c2b3ee",
+  "publicExports": [
+    {
+      "name": "TileGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "TileGroupProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TileGroupItem",
+      "typeOnly": true
+    }
+  ]
+}

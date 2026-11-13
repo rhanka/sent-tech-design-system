@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:2bb397e2690d0cad048df572bb45e64d714152b0d18cc6af72d038f9a9c03f97",
+      "digest": "sha256:55798eec3c9ed54e44c8d5ac4a230968d5d811f9754b3a9d5fc8f1bb4d58b8bf",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Link.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Link.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:5c25c269bdb6094ff0c99f5636a5d75c9fb86a363cb10b79d829c8002375790c",
+  "digest": "sha256:3b82ec98fdea8e74a660d7d9f4dd66a2528e65790ad8f9979d7d5f1017f551e7",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [

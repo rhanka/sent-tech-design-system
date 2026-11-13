@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Toggle",
+  "sourceRevision": "38b725d8590aaab707120b53003758fb45444052",
+  "source": "src/Toggle.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\">Wi-Fi</span><span class=\"st-toggle__row\"><input aria-checked=\"false\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">Off</span></span></label>"
+    },
+    {
+      "id": "checked-controlled",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\">Wi-Fi</span><span class=\"st-toggle__row\"><input aria-checked=\"true\" checked=\"\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">On</span></span></label>"
+    },
+    {
+      "id": "checked-legacy",
+      "html": "<label class=\"st-toggle st-toggle--sm\"><span class=\"st-toggle__label\">Bluetooth</span><span class=\"st-toggle__row\"><input aria-checked=\"true\" checked=\"\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">On</span></span></label>"
+    },
+    {
+      "id": "disabled",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\">Airplane mode</span><span class=\"st-toggle__row\"><input aria-checked=\"false\" class=\"st-toggle__input\" disabled=\"\" name=\"plane\" role=\"switch\" type=\"checkbox\" value=\"on\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">Nope</span></span></label>"
+    },
+    {
+      "id": "helper",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\">Location</span><span class=\"st-toggle__row\"><input aria-checked=\"true\" checked=\"\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">On</span></span><span class=\"st-toggle__help\">Used for nearby suggestions.</span></label>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\"><strong>Wi-Fi</strong></span><span class=\"st-toggle__row\"><input aria-checked=\"false\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">Off</span></span></label>"
+    },
+    {
+      "id": "rich-helper",
+      "html": "<label class=\"st-toggle st-toggle--md\"><span class=\"st-toggle__label\">Location</span><span class=\"st-toggle__row\"><input aria-checked=\"false\" class=\"st-toggle__input\" role=\"switch\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">Off</span></span><span class=\"st-toggle__help\"><em>Rich help</em></span></label>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<label aria-describedby=\"toggle-help\" class=\"st-toggle st-toggle--md consumer\" data-bench=\"toggle\" id=\"consumer-toggle\" style=\"color:red;\"><span class=\"st-toggle__label\">Wi-Fi</span><span class=\"st-toggle__row\"><input aria-checked=\"false\" aria-describedby=\"toggle-help\" class=\"st-toggle__input\" data-bench=\"toggle\" id=\"consumer-toggle\" role=\"switch\" style=\"color: red\" type=\"checkbox\"><span aria-hidden=\"true\" class=\"st-toggle__track\"><span class=\"st-toggle__thumb\"></span></span><span aria-hidden=\"true\" class=\"st-toggle__state\">Off</span></span></label>"
+    }
+  ],
+  "sourceSha256": "5f492ea8f25baf7ac1198bc244bfd8a29f63a689e0b8161ef8ca69c033085f06",
+  "fixtureSha256": "f05487d222fba0f0cf18893686789b7db2fb5916859a99e1c3df09b3ed7e9bb6",
+  "publicExports": [
+    {
+      "name": "Toggle",
+      "typeOnly": false
+    },
+    {
+      "name": "ToggleProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ToggleSize",
+      "typeOnly": true
+    }
+  ]
+}

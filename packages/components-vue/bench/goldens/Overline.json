@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "Overline",
+  "sourceRevision": "4f341b0ed8b8947f0de7169487afd20f23512479",
+  "source": "src/Overline.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-overline\">Label</span>"
+    },
+    {
+      "id": "variant-1",
+      "html": "<h2 class=\"st-overline\">Label</h2>"
+    },
+    {
+      "id": "variant-2",
+      "html": "<h3 class=\"st-overline consumer\">Label</h3>"
+    },
+    {
+      "id": "variant-3",
+      "html": "<div class=\"st-overline\" data-bench=\"overline\">Label</div>"
+    }
+  ],
+  "sourceSha256": "b8defe44717e4c0dc2452e0e8b45f5f877eea3f33dabf71b2aba04f1ad353fbd",
+  "fixtureSha256": "008ce1e3af7f0d2e7d18effa73231b18ee7f4f743fa8b3869f70c784eb80185b",
+  "publicExports": [
+    {
+      "name": "Overline",
+      "typeOnly": false
+    },
+    {
+      "name": "OverlineProps",
+      "typeOnly": true
+    },
+    {
+      "name": "OverlineAs",
+      "typeOnly": true
+    }
+  ]
+}

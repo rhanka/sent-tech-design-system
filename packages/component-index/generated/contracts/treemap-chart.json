@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:78f62db6121cb63a5cce7268b1531ceea1670187f1843e81ecacd4c25870c370",
-  "entryDigest": "sha256:daeae447c7e1773f1b562e5fa984c4d55791aa354bcec6c689a9e5d592bf864e",
+  "digest": "sha256:c1fbcb93439f2c755e90f70b2bb2998dfcdff98b1e9c0043bc0b508fdc35cb90",
+  "entryDigest": "sha256:90b50dfb535c7ad85f66361df7767b1f67727e22892d0b5f198a5666a55f2d65",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -378,11 +378,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:bb3891192ef5fcae03a64ad92417fc0cb35e5076eb134b85c77281bdac9a3cc8",
-        "declarationPath": "packages/components-vue/dist/TreemapChart.d.ts",
+        "declarationDigest": "sha256:7682d3c06b2da183816b623b049320ac13c6c72a375a9170f7ec0d3d975d760a",
+        "declarationPath": "packages/components-vue/dist/TreemapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreemapChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

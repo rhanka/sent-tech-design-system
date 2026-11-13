@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "ProgressIndicator",
+  "sourceRevision": "f18d68c15ab000e904281fad1a0b17a01d528334",
+  "source": "src/ProgressIndicator.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<ol aria-label=\"Progress\" class=\"st-progressIndicator st-progressIndicator--horizontal\"><li class=\"st-progressIndicator__step st-progressIndicator__step--complete\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><svg aria-hidden=\"true\" class=\"lucide lucide-check-icon lucide-check\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M20 6 9 17l-5-5\"></path></svg></span><span class=\"st-progressIndicator__connector\"></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">One</span></span></li><li aria-current=\"step\" class=\"st-progressIndicator__step st-progressIndicator__step--current\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__dot\"></span></span><span class=\"st-progressIndicator__connector\"></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">Two</span></span></li><li class=\"st-progressIndicator__step st-progressIndicator__step--upcoming\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__index\">3</span></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">Three</span></span></li></ol>"
+    },
+    {
+      "id": "vertical-alias",
+      "html": "<ol aria-label=\"Progress\" class=\"st-progressIndicator st-progressIndicator--vertical\"><li class=\"st-progressIndicator__step st-progressIndicator__step--invalid\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></span><span class=\"st-progressIndicator__connector\"></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">A</span><span class=\"st-progressIndicator__description\">Broken</span></span></li><li class=\"st-progressIndicator__step st-progressIndicator__step--disabled\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__index\">2</span></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">B</span></span></li></ol>"
+    },
+    {
+      "id": "incomplete",
+      "html": "<ol aria-label=\"Progress\" class=\"st-progressIndicator st-progressIndicator--vertical consumer\" data-bench=\"indicator\" style=\"color:red;\"><li class=\"st-progressIndicator__step st-progressIndicator__step--incomplete\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__index\">1</span></span><span class=\"st-progressIndicator__connector\"></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">A</span></span></li><li class=\"st-progressIndicator__step st-progressIndicator__step--upcoming\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__index\">2</span></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\">B</span></span></li></ol>"
+    },
+    {
+      "id": "empty",
+      "html": "<ol aria-label=\"Progress\" class=\"st-progressIndicator st-progressIndicator--horizontal\"></ol>"
+    },
+    {
+      "id": "rich-items",
+      "html": "<ol aria-label=\"Progress\" class=\"st-progressIndicator st-progressIndicator--horizontal\"><li class=\"st-progressIndicator__step st-progressIndicator__step--upcoming\"><span class=\"st-progressIndicator__indicator\"><span class=\"st-progressIndicator__circle\"><span class=\"st-progressIndicator__index\">1</span></span></span><span class=\"st-progressIndicator__text\"><span class=\"st-progressIndicator__label\"><strong>One</strong></span><span class=\"st-progressIndicator__description\"><em>Details</em></span></span></li></ol>"
+    }
+  ],
+  "sourceSha256": "27c698b21cedafbed990ad70a2e2aef6e7a347423feafcdc1bc77f65d5b81e11",
+  "fixtureSha256": "fc6f47ae016cd4cc73902b5d45c06bfe04510914da496c0dddd278c8108b99ec",
+  "publicExports": [
+    {
+      "name": "ProgressIndicator",
+      "typeOnly": false
+    },
+    {
+      "name": "ProgressIndicatorProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ProgressIndicatorItem",
+      "typeOnly": true
+    },
+    {
+      "name": "ProgressIndicatorStatus",
+      "typeOnly": true
+    },
+    {
+      "name": "ProgressIndicatorOrientation",
+      "typeOnly": true
+    }
+  ]
+}

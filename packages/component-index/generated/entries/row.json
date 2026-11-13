@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:581ecf8d953aedefbcd2bb86d7d50e1336afd0b3defcfe5756febf8143172fe4",
+      "digest": "sha256:d9feab620170e0fc33453f0d77c66faf897a92690a266688ed2b59a92b7111e3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Row.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Row.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Row of a 12-column grid with configurable gutter.",
     "fr": "Ligne d'une grille 12 colonnes, gouttière paramétrable."
   },
-  "digest": "sha256:2b6ce25aa0fb93a844f114c393e562b10e0fba9b4f119686ea36c1f3af211676",
+  "digest": "sha256:fc4521579c6f1aeae78f2ed8abce4644783a4aab7dea2de56985838b0a912e47",
   "displayName": "Row",
   "format": "component-entry/v1",
   "frameworks": [

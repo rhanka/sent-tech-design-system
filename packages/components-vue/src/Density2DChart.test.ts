@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { Density2DChart } from "./Density2DChart.js";
+import Density2DChart from "./Density2DChart.vue";
 
 const data = [
   { x: 0, y: 0 },

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4edee505f5a1f4a6b0a93b95e9d7df03c31cc50d4c0bb459320f97f592132f61",
+      "digest": "sha256:18bdce6ebab706fe809603a9545c68803b6c91d69e104f9badc50d29ea88c033",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/DonutChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/DonutChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Donut chart (parts of a whole), tooltip and center total.",
     "fr": "Graphique en anneau (parts d'un total), tooltip et total au centre."
   },
-  "digest": "sha256:f8f8323cbfc4e52d1b27df18616e6bf6e99f4e5cd9d9f48ce22eb5e74d5ca350",
+  "digest": "sha256:fcb5f2b600859fcd96ae3e095d2994adcadd5f13dd92969e422d6a28892512a4",
   "displayName": "DonutChart",
   "format": "component-entry/v1",
   "frameworks": [

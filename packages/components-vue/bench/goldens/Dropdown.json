@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "component": "Dropdown",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/Dropdown.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-dropdown\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-dropdown__button\" type=\"button\"><span class=\"st-dropdown__label\">Sélectionner</span>: <span class=\"st-dropdown__value\">Sélectionner</span><svg aria-hidden=\"true\" class=\"lucide st-dropdown__icon lucide-chevron-down-icon lucide-chevron-down st-dropdown__icon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "selected",
+      "html": "<div class=\"st-dropdown\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-dropdown__button\" type=\"button\"><span class=\"st-dropdown__label\">Select</span>: <span class=\"st-dropdown__value\">Alpha</span><svg aria-hidden=\"true\" class=\"lucide st-dropdown__icon lucide-chevron-down-icon lucide-chevron-down st-dropdown__icon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "open",
+      "html": "<div class=\"st-dropdown\"><button aria-expanded=\"true\" aria-haspopup=\"listbox\" class=\"st-dropdown__button\" type=\"button\"><span class=\"st-dropdown__label\">Sélectionner</span>: <span class=\"st-dropdown__value\">Beta</span><svg aria-hidden=\"true\" class=\"lucide st-dropdown__icon st-dropdown__icon--open lucide-chevron-down-icon lucide-chevron-down st-dropdown__icon st-dropdown__icon--open\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><!--teleport start--><!--teleport end--></div>",
+      "teleports": {
+        "body": "<!--teleport start anchor--><div aria-label=\"Sélectionner\" class=\"st-dropdown__list\" role=\"listbox\" style=\"top:0px;left:0px;min-width:0px;\"><button aria-selected=\"false\" class=\"st-dropdown__option\" role=\"option\" type=\"button\">Alpha</button><button aria-disabled=\"true\" aria-selected=\"true\" class=\"st-dropdown__option\" disabled=\"\" role=\"option\" type=\"button\">Beta</button></div><!--teleport anchor-->"
+      }
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-dropdown consumer\" data-bench=\"dropdown\" style=\"color:red;\"><button aria-expanded=\"false\" aria-haspopup=\"listbox\" class=\"st-dropdown__button\" type=\"button\"><span class=\"st-dropdown__label\"></span>: <span class=\"st-dropdown__value\">Choose</span><svg aria-hidden=\"true\" class=\"lucide st-dropdown__icon lucide-chevron-down-icon lucide-chevron-down st-dropdown__icon\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "rich",
+      "html": "<div class=\"st-dropdown\"><button aria-expanded=\"true\" aria-haspopup=\"listbox\" class=\"st-dropdown__button\" type=\"button\"><span class=\"st-dropdown__label\">Sélectionner</span>: <span class=\"st-dropdown__value\"><strong>Alpha</strong></span><svg aria-hidden=\"true\" class=\"lucide st-dropdown__icon st-dropdown__icon--open lucide-chevron-down-icon lucide-chevron-down st-dropdown__icon st-dropdown__icon--open\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button><!--teleport start--><!--teleport end--></div>",
+      "teleports": {
+        "body": "<!--teleport start anchor--><div aria-label=\"Sélectionner\" class=\"st-dropdown__list\" role=\"listbox\" style=\"top:0px;left:0px;min-width:0px;\"><button aria-selected=\"true\" class=\"st-dropdown__option\" role=\"option\" type=\"button\"><strong>Alpha</strong></button></div><!--teleport anchor-->"
+      }
+    }
+  ],
+  "sourceSha256": "da36f02ad38e1b4f378f9b0b4ab75bdb161a6da3b01ce4b8ecc0f3fd01dbce2d",
+  "fixtureSha256": "a2a4c110de4ae265d8327251ae27f03333d695dea43188be7961f1eaefe210dc",
+  "publicExports": [
+    {
+      "name": "Dropdown",
+      "typeOnly": false
+    },
+    {
+      "name": "DropdownProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DropdownOption",
+      "typeOnly": true
+    }
+  ]
+}

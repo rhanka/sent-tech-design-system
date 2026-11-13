@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:5b23472978c81db301dca943eb54a751802d5a1d08f4f9b39aa2d8f1a4215979",
-  "entryDigest": "sha256:e48ce5b918902658a9cc39fc82a779810dfd4a321d7658c7741322e8c5ca6cf1",
+  "digest": "sha256:b4901152986554de01d4531d807e648b049c611957650a463f8a8f890183c021",
+  "entryDigest": "sha256:2fb5c1d4197edf90a22ac55fbbe2eece86a770f69bdec724f767666662d38eed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -186,8 +186,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -223,13 +222,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c5b085aa3ede0083435ddca04f70ef0fb4c6f936913d1b1b803b00797a21e663",
-        "declarationPath": "packages/components-vue/dist/IconButton.d.ts",
+        "declarationDigest": "sha256:de2a241b181c48fc111fda58e53ab25fea5ccf3050909e587b8348d8fff00122",
+        "declarationPath": "packages/components-vue/dist/IconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconButtonProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

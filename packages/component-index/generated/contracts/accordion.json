@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:f2e64150c5d49dd7aadcd31c83cc5aa73c2b97219c98a27496cd7139b81e02fc",
-  "entryDigest": "sha256:e5c41bfd7df78c56678a9a53f56b0d7945ab7bf111cb6c3a9ec63f840e7c8926",
+  "digest": "sha256:df082da77377bedf21f72cfc851dddbb80ad3f9a560fb9e3007576a177844aec",
+  "entryDigest": "sha256:affbabc78392bb26920f77686a005d99255d8dfd2d69a2e7419a73d58b93d6df",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -347,21 +347,24 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -440,27 +443,34 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "item-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/AccordionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:f4ff86c237520d074f5570f4d7284fdf78d7418af19a0f3d445007d68e8e636f",
-        "declarationPath": "packages/components-vue/dist/Accordion.d.ts",
+        "declarationDigest": "sha256:1181bd8cc3556129717d691ab501ae435c3529b432e02153918b69d6d34d9483",
+        "declarationPath": "packages/components-vue/dist/Accordion.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

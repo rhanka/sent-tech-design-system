@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TableOfContents",
+  "sourceRevision": "379ac7cb7e1b96ef3be6410c74177d9c17e50386",
+  "source": "src/TableOfContents.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<nav aria-label=\"Table des matières\" class=\"st-tableOfContents\"><ol class=\"st-tableOfContents__list\"><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:0;\"><a class=\"st-tableOfContents__link\" href=\"#intro\">Intro</a></li><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:1;\"><a aria-current=\"location\" class=\"st-tableOfContents__link\" href=\"#setup\">Setup</a></li></ol></nav>"
+    },
+    {
+      "id": "titled",
+      "html": "<nav aria-label=\"Contents\" class=\"st-tableOfContents\"><p class=\"st-tableOfContents__title\">Contents</p><ol class=\"st-tableOfContents__list\"><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:0;\"><a class=\"st-tableOfContents__link\" href=\"#a\">Alpha</a></li><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:2;\"><a class=\"st-tableOfContents__link\" href=\"#b\">Beta</a></li></ol></nav>"
+    },
+    {
+      "id": "hashes",
+      "html": "<nav aria-label=\"Sommaire\" class=\"st-tableOfContents\"><p class=\"st-tableOfContents__title\">Sommaire</p><ol class=\"st-tableOfContents__list\"><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:0;\"><a aria-current=\"location\" class=\"st-tableOfContents__link\" href=\"#one\">One</a></li><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:0;\"><a class=\"st-tableOfContents__link\" href=\"#two\">Two</a></li></ol></nav>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<nav aria-label=\"Guide\" class=\"st-tableOfContents consumer\" data-bench=\"tableOfContents\" style=\"color:red;\"><p class=\"st-tableOfContents__title\">Guide</p><ol class=\"st-tableOfContents__list\"><li class=\"st-tableOfContents__item\" style=\"--st-tableOfContents-level:0;\"><a class=\"st-tableOfContents__link\" href=\"#x\">X</a></li></ol></nav>"
+    },
+    {
+      "id": "empty",
+      "html": "<nav aria-label=\"Table des matières\" class=\"st-tableOfContents\"><ol class=\"st-tableOfContents__list\"></ol></nav>"
+    }
+  ],
+  "sourceSha256": "d98fa95e5542b7156d05492bc92ea975c72df211a1996c8cbd8bd00a4ff051e0",
+  "fixtureSha256": "bd6b3b0e1d816c8dcb912fb2656e9b2edd11b620ae825f332dcf1409e42ed70e",
+  "publicExports": [
+    {
+      "name": "TableOfContents",
+      "typeOnly": false
+    },
+    {
+      "name": "TableOfContentsProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TableOfContentsItem",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "component": "ChatThread",
+  "sourceRevision": "97cb1e57f8f3ef6906ec830d0c2cd1a2a918ebc1",
+  "source": "src/ChatThread.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section aria-label=\"Chat thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"><article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hi</div></div></div></article><article class=\"st-chatMessage st-chatMessage--user st-chatMessage--sent\" data-align=\"end\" data-role=\"user\" data-status=\"sent\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hello</div></div></div></article><article aria-live=\"polite\" class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--processing\" data-align=\"start\" data-role=\"assistant\" data-status=\"processing\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Typing</div><span aria-hidden=\"true\" class=\"st-chatMessage__pulse\"></span></div></div></article></div></section>"
+    },
+    {
+      "id": "slot-default",
+      "html": "<section aria-label=\"Conversation\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"><p>Custom message</p></div></section>"
+    },
+    {
+      "id": "empty-label",
+      "html": "<section aria-label=\"Chat thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"></div><div class=\"st-chatThread__empty\">No messages yet</div></section>"
+    },
+    {
+      "id": "empty-slot",
+      "html": "<section aria-label=\"Chat thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"></div><div class=\"st-chatThread__empty\"><p>Nothing here</p></div></section>"
+    },
+    {
+      "id": "custom",
+      "html": "<section aria-label=\"Thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread consumer\" data-bench=\"thread\" role=\"log\" style=\"color:red;\"><div class=\"st-chatThread__list\"><article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hi</div></div></div></article></div></section>"
+    },
+    {
+      "id": "rich-messages",
+      "html": "<section aria-label=\"Chat thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"><article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\"><strong>Hello</strong></div></div></div></article></div></section>"
+    }
+  ],
+  "sourceSha256": "80e47b51d6fb8da047260a11107f2f55a60175d635049e087bcfc84d10c56109",
+  "fixtureSha256": "7d020c9597f945fd2b5fa274d3229586678f0454e98572195532ef60bfcc7524",
+  "publicExports": [
+    {
+      "name": "ChatThread",
+      "typeOnly": false
+    },
+    {
+      "name": "ChatThreadProps",
+      "typeOnly": true
+    }
+  ],
+  "referenceDependencies": {
+    "ChatMessage": {
+      "sourceRevision": "99f8cf43943f37acbfaba40b12d4539f364073fc",
+      "sourceSha256": "cc27f5ec767245982e68b07698bf62ebfa651011ff555e780039edca002bedb5"
+    }
+  }
+}

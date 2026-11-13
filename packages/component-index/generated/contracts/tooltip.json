@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:d82598ecd6051be1352640ed0b7cbb661845532c421b428aebcdf1497d01ef3a",
-  "entryDigest": "sha256:232bb4ea2107126e93e38c8abacb37648271d4967cd7cc5d17cf556acd9f8ffd",
+  "digest": "sha256:3ae934b5e8421ec426d2dfb7047fcaa568911e7c2777c0c50f836a7bd9d4af37",
+  "entryDigest": "sha256:d45ae82c995631391e8218e1125659365f2974eacac198648401ed1de7a04c6c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -156,8 +156,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -173,9 +172,6 @@
             ]
           }
         },
-        "required": [
-          "content"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -186,13 +182,20 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "content"
+        },
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c33f1afa82763ef2fbc308783678034d809e57c14eb38cb40ae26cf368917c0e",
-        "declarationPath": "packages/components-vue/dist/Tooltip.d.ts",
+        "declarationDigest": "sha256:16fd78bff6d4472af957e2edd47345b502c4e28b3f1a489f0d19c85abd8b0640",
+        "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

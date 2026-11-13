@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:316a946c51e6410805108bb1492f807f60f537a2625b07399dcdd075cb0a81a5",
-  "entryDigest": "sha256:14a77d5c9a5d2b04242278874321edfffcb71b84a0b733c2d9771ad565a0119e",
+  "digest": "sha256:03a641cf250622c5c079dd3cd00a055a990982c8592bad72eb4af1de0bef8a03",
+  "entryDigest": "sha256:14ba59cb92fa8d3245b6f13d5dce3b55a305cafab755802494a521148a61fa09",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,8 +256,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -325,13 +324,32 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "avatar"
+        },
+        {
+          "name": "content"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "footer"
+        },
+        {
+          "name": "timestamp"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:4d3faec3f8457e6b0a86cf0fca5f955e29911c8691be95b998335b221278c60c",
-        "declarationPath": "packages/components-vue/dist/ChatMessage.d.ts",
+        "declarationDigest": "sha256:2d092e5ca35dda144930524da38406ab71f67d463eb1f06acd2d8d8673fb3cec",
+        "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

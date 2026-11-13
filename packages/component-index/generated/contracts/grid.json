@@ -1,8 +1,8 @@
 {
   "componentId": "grid",
   "contractSource": "derived",
-  "digest": "sha256:94162f31f1fb411646f8546afe5e1d8cf744078ceeffe9279584b660523d936f",
-  "entryDigest": "sha256:aa3b26e822b4ab900c75d6839bc0f3b89ad3c7715cbfc7eae44beb19f1822f4a",
+  "digest": "sha256:1b699ee699bbf2f0e0e91852144c6914f0ef11700d4ecd1550bcaa792cbd175b",
+  "entryDigest": "sha256:79a6e5503847664761285df5e8bdd638d8919d7de7499fa61e88ca02e7ab23d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -159,8 +159,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -187,13 +186,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:7dec5bb14efffaf809507d3b247051c399f104a80b8cf01b046cb2ffb7616006",
-        "declarationPath": "packages/components-vue/dist/Grid.d.ts",
+        "declarationDigest": "sha256:f6b6995013a07c9666f4e76f35dfeb0f42f76ad4f0df3b46de6c3eff136cb8b0",
+        "declarationPath": "packages/components-vue/dist/Grid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GridProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

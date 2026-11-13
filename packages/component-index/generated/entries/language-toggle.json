@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:417e3381e4d5b5c1a001304a6aab0218b88dbb18e6049382513d947c0bd0e7f7",
+      "digest": "sha256:fb2c2a840e127cd094f9213f8270a41330eb9ba17dc4ecff4209da130cd5fc91",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/LanguageToggle.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/LanguageToggle.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Controlled language toggle, as a desktop select or mobile accordion.",
     "fr": "Bascule de langue contrôlée, en select desktop ou accordéon mobile."
   },
-  "digest": "sha256:531d803d59cb47c270693cb2aa581dd7f9c9d2a332c83f52ff7c2d348d5a4435",
+  "digest": "sha256:3f2444c21254fce8431fce777a568336b6753f70bc3cc9b9698e56458460d3b1",
   "displayName": "LanguageToggle",
   "format": "component-entry/v1",
   "frameworks": [

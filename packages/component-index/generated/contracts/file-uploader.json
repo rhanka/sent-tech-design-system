@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:25f66a86fb60831a24fca7c55ce585dc467a9d33dcfed7ab8785fcbcbfa3c665",
-  "entryDigest": "sha256:dbe05c18e3d4f18d9a6fac398b06eafb59e9810cabb6f4e14afc6c9519e34465",
+  "digest": "sha256:ccfb095625a35f088c75ff9385b7dfebb8d4f7d8c387b9d3195124f7bdaa1122",
+  "entryDigest": "sha256:48b700024dbc910ed05618dc81769ff6f08904f5238d6b81eabbd3676a52cb91",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -553,11 +553,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:02cb3b5ab8a3d38038405a390291b9028f617c62e3df9087d9bed5e9c3b870ba",
-        "declarationPath": "packages/components-vue/dist/FileUploader.d.ts",
+        "declarationDigest": "sha256:751f038d02c543d84dae669144e4a49ddb5a3377bd80bab8e7f6306bdc2a4b67",
+        "declarationPath": "packages/components-vue/dist/FileUploader.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FileUploaderProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

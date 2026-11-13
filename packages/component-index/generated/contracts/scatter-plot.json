@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:fd0a8febbb478029b2765d19ed46f57f1144346fae5b3b5d57d2609676056986",
-  "entryDigest": "sha256:b91ce7d8c6988c37d3e312c5304dcb8e4c2be17c967c0987a64acd3dc3632da1",
+  "digest": "sha256:672e8b8c26ad2308c459f0d8a4ebd9e3f44528c3d6c837e8519a14f7ee012946",
+  "entryDigest": "sha256:75e718ec821bcd46c50c7e7393cacff79bb79f8759697c95bf3fc999d4607211",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1212,7 +1212,6 @@
                 "type": "string"
               },
               "r": {
-                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
                 "type": "number"
               },
               "tone": {
@@ -1244,7 +1243,6 @@
         "additionalProperties": false,
         "properties": {
           "annotations": {
-            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
@@ -1425,7 +1423,6 @@
             "type": "array"
           },
           "centroids": {
-            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
             "items": {
               "$ref": "#/$defs/ScatterPlotCentroid"
             },
@@ -1464,21 +1461,18 @@
                 },
                 "type": "object"
               }
-            ],
-            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value (the datum `label` wins when present). Object → `format` /\n`position`. Default position is `top`. Labels are `aria-hidden`."
+            ]
           },
           "height": {
             "type": "number"
           },
           "hoverKey": {
-            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"`. Absent (`undefined`) keeps the uncontrolled\nbehaviour.",
             "type": [
               "string",
               "null"
             ]
           },
           "keyboardNav": {
-            "description": "FR-5 — roving-tabindex keyboard navigation of the data points.",
             "type": "boolean"
           },
           "label": {
@@ -1506,11 +1500,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f02c142e6aa0cf5ff6bc783c52b4d113863f96e397474b0dbbcdb77d9ce933d5",
-        "declarationPath": "packages/components-vue/dist/ScatterPlot.d.ts",
+        "declarationDigest": "sha256:4daa87cf0b809434eeda03efa69ab51c4c3820bed0a3b2798683a6944f5f9640",
+        "declarationPath": "packages/components-vue/dist/ScatterPlot.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScatterPlotProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

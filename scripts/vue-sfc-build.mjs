@@ -93,8 +93,13 @@ if (!stable) {
     if (node.isTypeOnly) { entries.push(node.getText(index).replace(path, shared)); continue; }
     const component = resolve('src', path.replace(/\.(?:js|vue)$/, '.vue'));
     if (path.startsWith('.') && existsSync(component)) {
-      if (!native(component)) continue;
+      if (!native(component)) {
+        if (basename(resolve('.')) === 'components-vue') throw new Error(`Native Vapor export is blocked by a legacy dependency: ${component}`);
+        continue;
+      }
       const name = basename(component, '.vue');
+      const typeNames = node.exportClause?.elements.filter(item => item.isTypeOnly).map(item => item.getText(index)) ?? [];
+      if (typeNames.length) entries.push(`export { ${typeNames.join(', ')} } from '${shared}';`);
       for (const item of node.exportClause?.elements ?? []) {
         if (item.isTypeOnly) continue;
         if ((item.propertyName ?? item.name).text === 'default' || (item.propertyName ?? item.name).text === name)

@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:fdfdd91eac4d17b882582e4c85f69548ddee8a26e2688f183112b177ffd62b12",
-  "entryDigest": "sha256:97963a3661f03d99b3803aef13a7dfba197914059b6df4b07988e936b23ae753",
+  "digest": "sha256:0dcd770fdc3024cbc98848890ee5a58d8a793cfdef75ef0218132eb06aa44c8a",
+  "entryDigest": "sha256:bf2a2b28485c09c0be23064921a626dee8501bf9966dc69068400543d203780e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -344,7 +344,9 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
+            "items": {
+              "type": "string"
+            },
             "type": "array"
           }
         },
@@ -359,8 +361,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -432,21 +433,18 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:1646eb04000a5f7f38160065d2224af8a4940bf3103409ea4953861d7343857e",
-        "declarationPath": "packages/components-vue/dist/CheckboxGroup.d.ts",
+        "declarationDigest": "sha256:b92d8760050b7e0828c8351bd3401b0de86b15f6c2fc97335d0892afaae3e22c",
+        "declarationPath": "packages/components-vue/dist/CheckboxGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CheckboxGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

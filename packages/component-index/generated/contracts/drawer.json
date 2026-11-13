@@ -1,8 +1,8 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:957107ff43860d87a7861bd0ebdd44165efb3310730945f057e6fd9b0fbe9492",
-  "entryDigest": "sha256:5b085752954f172732aa5bf99169eb09d0ed846d90f819843708e3bd39e2fe2b",
+  "digest": "sha256:5bf01f088f3c759370efc6cff05ad934ef2ab07aacb08a80095a0cbdf6216d6b",
+  "entryDigest": "sha256:5333bd053f38e97f547e6f3c070f8ea6ce80f88a9db4711d8a905aed25804839",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -213,23 +213,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "close",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "close"
         },
         {
-          "name": "onClose",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onClose"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -259,29 +250,23 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "close.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
         },
         {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "footer"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb31f8dc9dc8088df19fa074e8c1d5eec75a858e78193e42a77d3924ec2b225",
-        "declarationPath": "packages/components-vue/dist/Drawer.d.ts",
+        "declarationDigest": "sha256:5d355f6a4dcbc92cee3257418847a690986deaf7643f1fa41ece650dc0e02ab1",
+        "declarationPath": "packages/components-vue/dist/Drawer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DrawerProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"

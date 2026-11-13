@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "component": "DisplaySettings",
+  "sourceRevision": "ec0ff65c92a6fd212cca5feac1744a9a53a1744c",
+  "source": "src/DisplaySettings.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-displaySettings\"><p class=\"st-displaySettings__title\">Paramètres d’affichage</p><div class=\"st-displaySettings__grid\"><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Taille de texte</span><select value=\"normal\"><option value=\"normal\">Normale</option><option value=\"large\">Grande</option><option value=\"extra-large\">Très grande</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Contraste</span><select value=\"default\"><option value=\"default\">Standard</option><option value=\"high\">Élevé</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Interligne</span><select value=\"normal\"><option value=\"normal\">Normal</option><option value=\"comfortable\">Confortable</option></select></label><label class=\"st-displaySettings__field st-displaySettings__field--switch\"><span class=\"st-displaySettings__label\">Animations (réduction)</span><input role=\"switch\" type=\"checkbox\"></label></div></div>"
+    },
+    {
+      "id": "custom-values",
+      "html": "<div class=\"st-displaySettings\"><p class=\"st-displaySettings__title\">Paramètres d’affichage</p><div class=\"st-displaySettings__grid\"><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Taille de texte</span><select value=\"large\"><option value=\"normal\">Normale</option><option value=\"large\">Grande</option><option value=\"extra-large\">Très grande</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Contraste</span><select value=\"high\"><option value=\"default\">Standard</option><option value=\"high\">Élevé</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Interligne</span><select value=\"comfortable\"><option value=\"normal\">Normal</option><option value=\"comfortable\">Confortable</option></select></label><label class=\"st-displaySettings__field st-displaySettings__field--switch\"><span class=\"st-displaySettings__label\">Animations (réduction)</span><input checked=\"\" role=\"switch\" type=\"checkbox\"></label></div></div>"
+    },
+    {
+      "id": "partial-values",
+      "html": "<div class=\"st-displaySettings consumer\" data-bench=\"display\" style=\"color:red;\"><p class=\"st-displaySettings__title\">Display</p><div class=\"st-displaySettings__grid\"><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Taille de texte</span><select value=\"extra-large\"><option value=\"normal\">Normale</option><option value=\"large\">Grande</option><option value=\"extra-large\">Très grande</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Contraste</span><select value=\"default\"><option value=\"default\">Standard</option><option value=\"high\">Élevé</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Interligne</span><select value=\"normal\"><option value=\"normal\">Normal</option><option value=\"comfortable\">Confortable</option></select></label><label class=\"st-displaySettings__field st-displaySettings__field--switch\"><span class=\"st-displaySettings__label\">Animations (réduction)</span><input role=\"switch\" type=\"checkbox\"></label></div></div>"
+    },
+    {
+      "id": "hide-font-scale",
+      "html": "<div class=\"st-displaySettings\"><p class=\"st-displaySettings__title\">Paramètres d’affichage</p><div class=\"st-displaySettings__grid\"><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Contraste</span><select value=\"default\"><option value=\"default\">Standard</option><option value=\"high\">Élevé</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Interligne</span><select value=\"normal\"><option value=\"normal\">Normal</option><option value=\"comfortable\">Confortable</option></select></label><label class=\"st-displaySettings__field st-displaySettings__field--switch\"><span class=\"st-displaySettings__label\">Animations (réduction)</span><input role=\"switch\" type=\"checkbox\"></label></div></div>"
+    },
+    {
+      "id": "hide-motion",
+      "html": "<div class=\"st-displaySettings\"><p class=\"st-displaySettings__title\">Paramètres d’affichage</p><div class=\"st-displaySettings__grid\"><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Taille de texte</span><select value=\"normal\"><option value=\"normal\">Normale</option><option value=\"large\">Grande</option><option value=\"extra-large\">Très grande</option></select></label><label class=\"st-displaySettings__field\"><span class=\"st-displaySettings__label\">Interligne</span><select value=\"normal\"><option value=\"normal\">Normal</option><option value=\"comfortable\">Confortable</option></select></label></div></div>"
+    },
+    {
+      "id": "hide-all",
+      "html": "<div class=\"st-displaySettings\"><p class=\"st-displaySettings__title\">Paramètres d’affichage</p><div class=\"st-displaySettings__grid\"></div></div>"
+    }
+  ],
+  "sourceSha256": "5e23a9c7467fcbaa42e4aff4425f7282ba0995f039c5393801559734644719e8",
+  "fixtureSha256": "0b836cff20aad9609576f01bc9384a24593e2ff28c1ab2bd1d8bdddee5760953",
+  "publicExports": [
+    {
+      "name": "DisplaySettings",
+      "typeOnly": false
+    },
+    {
+      "name": "DisplaySettingsProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DisplaySettingsState",
+      "typeOnly": true
+    },
+    {
+      "name": "DisplayFontScale",
+      "typeOnly": true
+    },
+    {
+      "name": "DisplayContrast",
+      "typeOnly": true
+    },
+    {
+      "name": "DisplayLineSpacing",
+      "typeOnly": true
+    }
+  ]
+}

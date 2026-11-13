@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:6858dbb668cfcb98fe7a62a27776d52cc32263ff4d569f2799fa1ad8a49ca1bd",
-  "entryDigest": "sha256:f2f81f112be3ec3660018c772d203253145e11c684d06b187103fc744af88874",
+  "digest": "sha256:2c0e483d7ce8077de61f401c0e197b3b071cacdb8c83f381ba86ede883494b3d",
+  "entryDigest": "sha256:2959052cef6e5423919ffcf877de879fdec4f9bdda7f7f29c05bc5f93232faef",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -225,14 +225,12 @@
         {
           "name": "toggle",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -256,21 +254,21 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "toggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
+        },
+        {
+          "name": "trailing"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:883dfd9151d21b960b8e249fefbf48e844dca972663d4d6945d6990e19560f91",
-        "declarationPath": "packages/components-vue/dist/Collapsible.d.ts",
+        "declarationDigest": "sha256:8fe4b40443e84707f93c13ea0905606d82dceba5daad178e287111f68f406c51",
+        "declarationPath": "packages/components-vue/dist/Collapsible.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CollapsibleProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

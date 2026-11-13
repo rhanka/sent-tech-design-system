@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import type { VueWrapper } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { ComboChart } from "./index.js";
-import type { ComboChartBarSeries, ComboChartLineSeries } from "./ComboChart.js";
+import type { ComboChartBarSeries, ComboChartLineSeries } from "./ComboChart.vue";
 import type { ChartAnnotation } from "./chartAnnotations.js";
 
 // ComboChart "Highcharts-class" extensions (FR-1/2/3/5) — strict tri-framework

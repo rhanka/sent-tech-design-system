@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "UtilityPanel",
+  "sourceRevision": "98f2e9168d56d9c362c8b4e9fb4661bec87c62e7",
+  "source": "src/UtilityPanel.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<aside aria-label=\"Utility panel\" class=\"st-utilityPanel st-utilityPanel--reserve st-utilityPanel--right\" data-mode=\"reserve\" data-side=\"right\"><div class=\"st-utilityPanel__body\"><p>Tools</p></div></aside>"
+    },
+    {
+      "id": "titled",
+      "html": "<aside aria-label=\"Settings\" class=\"st-utilityPanel st-utilityPanel--reserve st-utilityPanel--right\" data-mode=\"reserve\" data-side=\"right\"><header class=\"st-utilityPanel__header\"><h2 class=\"st-utilityPanel__title\">Settings</h2></header><div class=\"st-utilityPanel__body\"><p>Body</p></div></aside>"
+    },
+    {
+      "id": "header-footer",
+      "html": "<aside aria-label=\"Panel\" class=\"st-utilityPanel st-utilityPanel--reserve st-utilityPanel--right\" data-mode=\"reserve\" data-side=\"right\"><header class=\"st-utilityPanel__header\"><strong>Custom header</strong></header><div class=\"st-utilityPanel__body\"><p>Body</p></div><footer class=\"st-utilityPanel__footer\"><small>Footer</small></footer></aside>"
+    },
+    {
+      "id": "collapsed",
+      "html": "<aside aria-label=\"Settings\" class=\"st-utilityPanel st-utilityPanel--reserve st-utilityPanel--right st-utilityPanel--collapsed\" data-mode=\"reserve\" data-side=\"right\"><header class=\"st-utilityPanel__header\"><h2 class=\"st-utilityPanel__title\">Settings</h2></header></aside>"
+    },
+    {
+      "id": "overlay-left",
+      "html": "<aside aria-label=\"Cart\" class=\"st-utilityPanel st-utilityPanel--overlay st-utilityPanel--left\" data-mode=\"overlay\" data-side=\"left\"><header class=\"st-utilityPanel__header\"><h2 class=\"st-utilityPanel__title\">Cart</h2></header><div class=\"st-utilityPanel__body\"><p>Items</p></div></aside>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<aside aria-label=\"Env\" class=\"st-utilityPanel st-utilityPanel--reserve st-utilityPanel--right consumer\" data-bench=\"utilityPanel\" data-mode=\"reserve\" data-side=\"right\" style=\"color:red;\"><header class=\"st-utilityPanel__header\"><h2 class=\"st-utilityPanel__title\">Env</h2></header><div class=\"st-utilityPanel__body\"><p>Body</p></div></aside>"
+    }
+  ],
+  "sourceSha256": "f928a9365827bd417780df47cdd8be2e4f0f88e1c9fee8c60eb2f5a0f05cb3e8",
+  "fixtureSha256": "470f9901ef2ae483678754517da8a8baca61928113f219321b219e750cea947d",
+  "publicExports": [
+    {
+      "name": "UtilityPanel",
+      "typeOnly": false
+    },
+    {
+      "name": "UtilityPanelMode",
+      "typeOnly": true
+    },
+    {
+      "name": "UtilityPanelProps",
+      "typeOnly": true
+    },
+    {
+      "name": "UtilityPanelSide",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "StructuredList",
+  "sourceRevision": "8771b8132b5210ec2b43893a490519cb7c644e28",
+  "source": "src/StructuredList.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<dl class=\"st-structuredList\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">Name</dt><dd class=\"st-structuredList__definition\">Ada</dd></div><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">Age</dt><dd class=\"st-structuredList__definition\">30</dd></div></dl>"
+    },
+    {
+      "id": "label-value-bordered",
+      "html": "<dl class=\"st-structuredList st-structuredList--bordered\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">Email</dt><dd class=\"st-structuredList__definition\">a@b.c</dd></div></dl>"
+    },
+    {
+      "id": "empty",
+      "html": "<dl class=\"st-structuredList\"></dl>"
+    },
+    {
+      "id": "custom",
+      "html": "<dl class=\"st-structuredList consumer\" data-bench=\"structured\" style=\"color:red;\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">X</dt><dd class=\"st-structuredList__definition\">Y</dd></div></dl>"
+    },
+    {
+      "id": "partial",
+      "html": "<dl class=\"st-structuredList\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">Only</dt><dd class=\"st-structuredList__definition\"></dd></div><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\"></dt><dd class=\"st-structuredList__definition\">No term</dd></div></dl>"
+    },
+    {
+      "id": "rich-terms",
+      "html": "<dl class=\"st-structuredList\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\"><strong>Name</strong></dt><dd class=\"st-structuredList__definition\"><em>Ada</em></dd></div></dl>"
+    }
+  ],
+  "sourceSha256": "480b4cc6b80059417a4f9a21d9015c336719078617ecadc4f9dcacb70544517e",
+  "fixtureSha256": "ed1eb280448fbf65c75c224cecab51eb55530e24625fc8604d25417e641b3e18",
+  "publicExports": [
+    {
+      "name": "StructuredList",
+      "typeOnly": false
+    },
+    {
+      "name": "StructuredListProps",
+      "typeOnly": true
+    },
+    {
+      "name": "StructuredListItem",
+      "typeOnly": true
+    }
+  ]
+}

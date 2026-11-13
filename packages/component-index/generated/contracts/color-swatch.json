@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:6f7eb9da5f07f7d9e99d87e68f97abbc465fc0182c03e092917605774df3d69f",
-  "entryDigest": "sha256:6b0d62f230a7827e4ba2c03356fa6faa23bcd5fc2585778bdaac152c07a6b5cc",
+  "digest": "sha256:412d1831eecf719aa41678bfb7e29707277228272015fac21b5a34a3d9f0b12d",
+  "entryDigest": "sha256:12bf0e14b34790d5a6fb4f6ac4594570aca184deac9130b44e629c85d5e3b91a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -203,11 +203,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ee35c1cb649fc38456a28f0a48e2b73eb7733071c1502d4c5f85b546af0ccb02",
-        "declarationPath": "packages/components-vue/dist/ColorSwatch.d.ts",
+        "declarationDigest": "sha256:3e3bdec0fb2fff45475cb3c294a1e23b69f13cb717e00352e1f290e11c2cbb08",
+        "declarationPath": "packages/components-vue/dist/ColorSwatch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColorSwatchProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:1d3627eb77d7865c4e874226b6f75511f7f69a4065175bb790273c7a128edc98",
-  "entryDigest": "sha256:afd0bd71a3c721b73432d240b146772865e129641e898215a0f743a45f705949",
+  "digest": "sha256:c7a7f50d797bd0d9e763b258d34e4cb0bcaf31c4c241695024d01f0260dd5bb8",
+  "entryDigest": "sha256:9493d4d2c3a1e2c751ecbe10bfbc8b133f878f764576ab9180a07ee0935eaec9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -202,11 +202,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3fd00c102aae6a417a5a9275be70cf993a68a21e6a0da9079c6aa15010817bfa",
-        "declarationPath": "packages/components-vue/dist/Divider.d.ts",
+        "declarationDigest": "sha256:13eb685ea1969c735fa0315b742517938184ff39091415bd7f5cd916db7cb65e",
+        "declarationPath": "packages/components-vue/dist/Divider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DividerProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Checkbox",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Checkbox.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<label class=\"st-choice st-choice--checkbox\"><input class=\"st-choice__input\" type=\"checkbox\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Accept terms</span></span></label>"
+    },
+    {
+      "id": "model-checked",
+      "html": "<label class=\"st-choice st-choice--checkbox\"><input checked=\"\" class=\"st-choice__input\" name=\"choice\" type=\"checkbox\" value=\"yes\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Selected</span></span></label>"
+    },
+    {
+      "id": "checked-disabled",
+      "html": "<label class=\"st-choice st-choice--checkbox\"><input checked=\"\" class=\"st-choice__input\" disabled=\"\" type=\"checkbox\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Legacy checked</span></span></label>"
+    },
+    {
+      "id": "model-overrides-checked",
+      "html": "<label class=\"st-choice st-choice--checkbox\"><input aria-invalid=\"true\" class=\"st-choice__input\" type=\"checkbox\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Not selected</span></span></label>"
+    },
+    {
+      "id": "described-trailing",
+      "html": "<label aria-describedby=\"external-help\" class=\"st-choice st-choice--checkbox st-choice--described\"><input aria-describedby=\"external-help generated-1-description\" class=\"st-choice__input\" type=\"checkbox\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Subscribe</span><span class=\"st-choice__description\" id=\"generated-1-description\">Monthly news</span><span class=\"st-choice__help\">Optional</span></span><span class=\"st-choice__trailing\"><strong>New</strong></span></label>"
+    },
+    {
+      "id": "custom-help",
+      "html": "<label class=\"st-choice st-choice--checkbox consumer\" data-bench=\"checkbox\" style=\"color:red;\"><input class=\"st-choice__input\" data-bench=\"checkbox\" style=\"color: red\" type=\"checkbox\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Custom</span><span class=\"st-choice__help\">More details</span></span></label>"
+    }
+  ],
+  "sourceSha256": "e70ea95d64996db21cfe86aa490014cd02e4f5332c54ace52101bbcb28fedb6d",
+  "fixtureSha256": "f62cfc4e00fd8209c83bcfa9c8d73ac1603285e03b26b09ee45b02db6dfa80c2",
+  "publicExports": [
+    {
+      "name": "Checkbox",
+      "typeOnly": false
+    },
+    {
+      "name": "CheckboxProps",
+      "typeOnly": true
+    }
+  ]
+}

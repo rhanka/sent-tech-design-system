@@ -144,6 +144,7 @@ onMounted(() => {
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

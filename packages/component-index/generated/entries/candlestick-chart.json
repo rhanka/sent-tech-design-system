@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:6277e38064780f71b782c7b43674085b856f6a1785b07fa05cde0c131ab16dce",
+      "digest": "sha256:7de75539ad13d0caa55b11a3026e9bdf4c01749317805863504b5545d1e83d17",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/CandlestickChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/CandlestickChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "OHLC candlestick chart for financial price data.",
     "fr": "Bougies OHLC pour visualiser les cours financiers."
   },
-  "digest": "sha256:f4fe44216dfe161aec2062bdfc7902d17184ddb248b4c39fd8e70abf8256552a",
+  "digest": "sha256:592a8e33c8b8f518811b0125048a0f6b59102996c3167d125c4bc232507d04a7",
   "displayName": "CandlestickChart",
   "format": "component-entry/v1",
   "frameworks": [

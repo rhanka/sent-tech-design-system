@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:85b111387a0547c3ab4e4229b01ebf0d740fa474a64a4975466b2b4951f05abd",
-  "entryDigest": "sha256:1698fd8fc3bcb2a96a812828c78300c7f4ea98a9b668ff1fad1bf45f4adcd3b9",
+  "digest": "sha256:8421315acedf4b65353eb40077aa6c79f865d6065d086cf868a9453e7d1eb4e7",
+  "entryDigest": "sha256:22d19adf0ed5af31af3f13c6da0336c456c2e89350e22e245d68b91f38f317c9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -553,11 +553,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ca02035ca07be41ee53e7b59b68b2c632f5cae5916c6359f089ce7578d7d1e59",
-        "declarationPath": "packages/components-vue/dist/KpiCard.d.ts",
+        "declarationDigest": "sha256:495c231f007fb156132adf0805034298f811a25d9d379bfd6a8898cd02c07f53",
+        "declarationPath": "packages/components-vue/dist/KpiCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "KpiCardProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

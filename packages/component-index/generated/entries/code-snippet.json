@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:a055a684a796f2f3926358857fb9af111bbcc9a0e5674af963dddf797ef1c3ab",
+      "digest": "sha256:35db2780271894d424a4ab16d038c9b3fb5010f3a877b2fe07ef49d500d207fe",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/CodeSnippet.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/CodeSnippet.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:4f7b0690689e7188dd7025c461c9b9ded62ee4016dcdc5b8a466e03f761e06b7",
+  "digest": "sha256:3856bf4e9addb14d7f46707cfed37bdf0b87accce06dda3bd9c3815ea2f18ef6",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

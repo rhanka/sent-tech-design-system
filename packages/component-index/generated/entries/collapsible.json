@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b7e53bdec8b631eaa33f81397f6bcee57dd81e09636455cdfcc17d59eda67b70",
+      "digest": "sha256:d5c1cd1b1d21d468ea46bf53f34bfbc37a866b11d7370327993c43bd7f3efa90",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Collapsible.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Collapsible.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Clickable header revealing a collapsible content region.",
     "fr": "En-tête cliquable révélant une région de contenu repliable."
   },
-  "digest": "sha256:f2f81f112be3ec3660018c772d203253145e11c684d06b187103fc744af88874",
+  "digest": "sha256:2959052cef6e5423919ffcf877de879fdec4f9bdda7f7f29c05bc5f93232faef",
   "displayName": "Collapsible",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "component": "DataTable",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/DataTable.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"width: 10rem\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Name</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\">Value</th></tr></thead><tbody><tr class=\"\"><td class=\"\">Alpha</td><td class=\"st-dataTable__cell--end\">2</td></tr><tr class=\"\"><td class=\"\">Beta</td><td class=\"st-dataTable__cell--end\">1</td></tr><tr class=\"\"><td class=\"\">Gamma</td><td class=\"st-dataTable__cell--end\"></td></tr></tbody></table></div>"
+    },
+    {
+      "id": "multiple-page",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--sm\"><caption>Data</caption><thead><tr><th class=\"st-dataTable__select\" scope=\"col\"><label class=\"st-dataTable__selectLabel\"><input aria-label=\"Select all rows\" indeterminate=\"true\" type=\"checkbox\"><span class=\"st-visually-hidden\">Select all rows</span></label></th><th aria-sort=\"descending\" class=\"\" scope=\"col\" style=\"width: 10rem\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Name</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↓</span><span class=\"st-visually-hidden\">Sorted descending</span></button></th><th class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\">Value</th></tr></thead><tbody><tr class=\"\"><td class=\"st-dataTable__select\"><label class=\"st-dataTable__selectLabel\"><input aria-label=\"Select row c\" type=\"checkbox\"><span class=\"st-visually-hidden\">Select row</span></label></td><td class=\"\">Gamma</td><td class=\"st-dataTable__cell--end\"></td></tr><tr class=\"st-dataTable__row--selected\"><td class=\"st-dataTable__select\"><label class=\"st-dataTable__selectLabel\"><input aria-label=\"Select row b\" checked=\"\" type=\"checkbox\"><span class=\"st-visually-hidden\">Select row</span></label></td><td class=\"\">Beta</td><td class=\"st-dataTable__cell--end\">1</td></tr></tbody></table><div class=\"st-dataTable__footer\"><span aria-live=\"polite\" class=\"st-dataTable__range\">1–2 of 3</span><nav aria-label=\"Pagination\" class=\"st-dataTable__pager\"><button class=\"st-dataTable__pagerBtn\" disabled=\"\" type=\"button\">Précédent</button><span aria-live=\"polite\" class=\"st-dataTable__pagerStatus\">1 / 2</span><button class=\"st-dataTable__pagerBtn\" type=\"button\">Suivant</button></nav></div></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--lg\"><thead><tr><th aria-label=\"Select row\" class=\"st-dataTable__select\" scope=\"col\"></th><th class=\"\" scope=\"col\" style=\"width: 10rem\">Name</th><th class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\">Value</th></tr></thead><tbody><tr class=\"\"><td class=\"st-dataTable__select\"><label class=\"st-dataTable__selectLabel\"><input aria-label=\"Select row c\" name=\"st-dataTable-select\" type=\"radio\"><span class=\"st-visually-hidden\">Select row</span></label></td><td class=\"\">Gamma</td><td class=\"st-dataTable__cell--end\"></td></tr></tbody></table><div class=\"st-dataTable__footer\"><span aria-live=\"polite\" class=\"st-dataTable__range\">3–3 of 3</span><nav aria-label=\"Pagination\" class=\"st-dataTable__pager\"><button class=\"st-dataTable__pagerBtn\" type=\"button\">Previous</button><span aria-live=\"polite\" class=\"st-dataTable__pagerStatus\">3 / 3</span><button class=\"st-dataTable__pagerBtn\" disabled=\"\" type=\"button\">Next</button></nav></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th class=\"st-dataTable__select\" scope=\"col\"><label class=\"st-dataTable__selectLabel\"><input aria-label=\"Select all rows\" indeterminate=\"false\" type=\"checkbox\"><span class=\"st-visually-hidden\">Select all rows</span></label></th><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"width: 10rem\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Name</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\">Value</th></tr></thead><tbody><tr><td class=\"st-dataTable__empty\" colspan=\"3\">Empty</td></tr></tbody></table><div class=\"st-dataTable__footer\"><span aria-live=\"polite\" class=\"st-dataTable__range\">0–0 of 0</span><nav aria-label=\"Pagination\" class=\"st-dataTable__pager\"><button class=\"st-dataTable__pagerBtn\" disabled=\"\" type=\"button\">Précédent</button><span aria-live=\"polite\" class=\"st-dataTable__pagerStatus\">1 / 1</span><button class=\"st-dataTable__pagerBtn\" disabled=\"\" type=\"button\">Suivant</button></nav></div></div>"
+    },
+    {
+      "id": "decorations",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Value</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"st-cell st-cell--intent-positive\" title=\"tendance positive\"><span class=\"st-cell__content\"><svg aria-hidden=\"true\" class=\"st-cell__icon\" fill=\"none\" focusable=\"false\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\"><path d=\"M16 7h6v6\"></path><path d=\"m22 7-8.5 8.5-5-5L2 17\"></path></svg><span>2</span><span class=\"st-visually-hidden\">tendance positive</span></span></td></tr><tr class=\"\"><td class=\"st-cell st-cell--intent-negative\" title=\"tendance négative\"><span class=\"st-cell__content\"><span>1</span><span class=\"st-visually-hidden\">tendance négative</span></span></td></tr><tr class=\"\"><td class=\"st-cell st-cell--intent-warning\" title=\"avertissement\"><span class=\"st-cell__content\"><svg aria-hidden=\"true\" class=\"st-cell__icon\" fill=\"none\" focusable=\"false\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\"><path d=\"m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3\"></path><path d=\"M12 9v4\"></path><path d=\"M12 17h.01\"></path></svg><span></span><span class=\"st-visually-hidden\">avertissement</span></span></td></tr></tbody></table></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-dataTable-wrap\" data-bench=\"table\" style=\"color:red;\"><table class=\"st-dataTable st-dataTable--md consumer\" data-bench=\"table\" style=\"color: red\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"width: 10rem\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Name</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th><th class=\"st-dataTable__cell--end\" scope=\"col\" style=\"\">Value</th></tr></thead><tbody><tr class=\"st-dataTable__row--clickable\"><td class=\"\">Beta</td><td class=\"st-dataTable__cell--end\">1</td></tr><tr class=\"st-dataTable__row--clickable\"><td class=\"\">Alpha</td><td class=\"st-dataTable__cell--end\">2</td></tr><tr class=\"st-dataTable__row--clickable\"><td class=\"\">Gamma</td><td class=\"st-dataTable__cell--end\"></td></tr></tbody></table></div>"
+    },
+    {
+      "id": "scalar-cell",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span>Name</span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\">Name: Alpha</td></tr><tr class=\"\"><td class=\"\">Name: Beta</td></tr><tr class=\"\"><td class=\"\">Name: Gamma</td></tr></tbody></table></div>"
+    },
+    {
+      "id": "rich",
+      "html": "<div class=\"st-dataTable-wrap\"><table class=\"st-dataTable st-dataTable--md\"><caption><em>Data</em></caption><thead><tr><th aria-sort=\"none\" class=\"\" scope=\"col\" style=\"\"><button class=\"st-dataTable__sortBtn\" type=\"button\"><span><strong>Name</strong></span><span aria-hidden=\"true\" class=\"st-dataTable__sortIcon\">↕</span><span class=\"st-visually-hidden\">Not sorted</span></button></th></tr></thead><tbody><tr class=\"\"><td class=\"\"><b>Alpha</b></td></tr></tbody></table></div>"
+    }
+  ],
+  "sourceSha256": "61822ab7127f4dbe9a49e5c8f7526533459d26cd9d50c1f3c1ab089c4d7cda72",
+  "fixtureSha256": "cfdb16b333938886679b3218875bda6514035f5c1b6166216edef8261dcae04e",
+  "publicExports": [
+    {
+      "name": "DataTable",
+      "typeOnly": false
+    },
+    {
+      "name": "DataTableProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DataTableColumn",
+      "typeOnly": true
+    },
+    {
+      "name": "DataTableRow",
+      "typeOnly": true
+    },
+    {
+      "name": "DataTableSize",
+      "typeOnly": true
+    },
+    {
+      "name": "DataTableSelectMode",
+      "typeOnly": true
+    },
+    {
+      "name": "DataTableSort",
+      "typeOnly": true
+    }
+  ]
+}

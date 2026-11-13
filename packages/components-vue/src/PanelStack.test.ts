@@ -3,8 +3,10 @@ import { join } from "node:path";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick, type PropType } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { PanelStack, PANEL_STACK_MAX_SECTIONS, PRIMARY_MIN_BLOCK_SIZE_PX, type PanelStackShape } from "./PanelStack.js";
-import { PanelSection } from "./PanelSection.js";
+import PanelStack from './PanelStack.vue';
+import type { PanelStackShape } from './PanelStack.vue';
+import { PANEL_STACK_MAX_SECTIONS, PRIMARY_MIN_BLOCK_SIZE_PX } from './panel-stack-context.js';
+import PanelSection from './PanelSection.vue';
 
 // ---------------------------------------------------------------------------
 // Test-only fixture: a PanelStack wrapping real PanelSection children so the

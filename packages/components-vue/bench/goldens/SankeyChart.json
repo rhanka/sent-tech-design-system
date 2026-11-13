@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "SankeyChart",
+  "sourceRevision": "4076c606bfe56b5cc88d970b28579bb1d0ec5d22",
+  "source": "src/SankeyChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-sankeyChart\"><div aria-label=\"Flow\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 280\" width=\"100%\"><path class=\"st-sankeyChart__link st-sankeyChart__link--category1\" d=\"M 40 140 C 156.5 140, 156.5 140, 273 140\" data-link-index=\"0\" stroke-width=\"18\"></path><path class=\"st-sankeyChart__link st-sankeyChart__link--category2\" d=\"M 287 140 C 403.5 140, 403.5 140, 520 140\" data-link-index=\"1\" stroke-width=\"14.4\"></path><rect class=\"st-sankeyChart__node st-sankeyChart__node--category1\" height=\"72\" rx=\"2\" width=\"14\" x=\"26\" y=\"104\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"46\" y=\"140\">Source</text><rect class=\"st-sankeyChart__node st-sankeyChart__node--category2\" height=\"72\" rx=\"2\" width=\"14\" x=\"273\" y=\"104\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"293\" y=\"140\">Middle</text><rect class=\"st-sankeyChart__node st-sankeyChart__node--category3\" height=\"61.2\" rx=\"2\" width=\"14\" x=\"520\" y=\"109.4\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"540\" y=\"140\">Target</text></svg></div><ul aria-label=\"Data values for Flow\" class=\"st-chartDataList\"><li>Source -&gt; Middle: 10</li><li>Middle -&gt; Target: 8</li></ul></div>"
+    },
+    {
+      "id": "tones-custom",
+      "html": "<div class=\"st-sankeyChart consumer\" data-bench=\"sankey\" style=\"color:red;\"><div aria-label=\"Tones\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 300\" width=\"100%\"><path class=\"st-sankeyChart__link st-sankeyChart__link--category3\" d=\"M 40 150 C 300 150, 300 150, 560 150\" data-link-index=\"0\" stroke-width=\"18\"></path><rect class=\"st-sankeyChart__node st-sankeyChart__node--category3\" height=\"72\" rx=\"2\" width=\"14\" x=\"26\" y=\"114\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"46\" y=\"150\">X</text><rect class=\"st-sankeyChart__node st-sankeyChart__node--category5\" height=\"72\" rx=\"2\" width=\"14\" x=\"560\" y=\"114\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"580\" y=\"150\">Y</text></svg></div><ul aria-label=\"Data values for Tones\" class=\"st-chartDataList\"><li>X -&gt; Y: 5</li></ul></div>"
+    },
+    {
+      "id": "orphan",
+      "html": "<div class=\"st-sankeyChart\"><div aria-label=\"Orphan\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 280\" width=\"100%\"><path class=\"st-sankeyChart__link st-sankeyChart__link--category1\" d=\"M 534 140 C 566 140, 502 140, 534 140\" data-link-index=\"0\" stroke-width=\"18\"></path><path class=\"st-sankeyChart__link st-sankeyChart__link--category2\" d=\"M 40 140 C 280 140, 280 140, 520 140\" data-link-index=\"1\" stroke-width=\"12\"></path><rect class=\"st-sankeyChart__node st-sankeyChart__node--category1\" height=\"72\" rx=\"2\" width=\"14\" x=\"520\" y=\"104\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"540\" y=\"140\">A</text></svg></div><ul aria-label=\"Data values for Orphan\" class=\"st-chartDataList\"><li>A -&gt; missing: 3</li><li>missing2 -&gt; A: 2</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-sankeyChart\"><div aria-label=\"Empty\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 280\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "single-node",
+      "html": "<div class=\"st-sankeyChart\"><div aria-label=\"Solo\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 280\" width=\"100%\"><rect class=\"st-sankeyChart__node st-sankeyChart__node--category1\" height=\"24\" rx=\"2\" width=\"14\" x=\"273\" y=\"128\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"293\" y=\"140\">Solo</text></svg></div></div>"
+    },
+    {
+      "id": "zero-value",
+      "html": "<div class=\"st-sankeyChart\"><div aria-label=\"Zero\" class=\"st-sankeyChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 280\" width=\"100%\"><path class=\"st-sankeyChart__link st-sankeyChart__link--category1\" d=\"M 40 140 C 280 140, 280 140, 520 140\" data-link-index=\"0\" stroke-width=\"2\"></path><rect class=\"st-sankeyChart__node st-sankeyChart__node--category1\" height=\"24\" rx=\"2\" width=\"14\" x=\"26\" y=\"128\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"46\" y=\"140\">A</text><rect class=\"st-sankeyChart__node st-sankeyChart__node--category2\" height=\"24\" rx=\"2\" width=\"14\" x=\"520\" y=\"128\"></rect><text class=\"st-sankeyChart__nodeLabel\" dominant-baseline=\"middle\" x=\"540\" y=\"140\">B</text></svg></div><ul aria-label=\"Data values for Zero\" class=\"st-chartDataList\"><li>A -&gt; B: 0</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "e10df1e2bd2b9f9fd2b516217aaab898efbcb783604290a23879bd13f06dd704",
+  "fixtureSha256": "2d60e4a146a9453a7014cc3b4d1ce30666df0aae7aae8491382c5ee77affee5e",
+  "publicExports": [
+    {
+      "name": "SankeyChart",
+      "typeOnly": false
+    },
+    {
+      "name": "SankeyChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SankeyChartNode",
+      "typeOnly": true
+    },
+    {
+      "name": "SankeyChartLink",
+      "typeOnly": true
+    },
+    {
+      "name": "SankeyChartTone",
+      "typeOnly": true
+    }
+  ]
+}

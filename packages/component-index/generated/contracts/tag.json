@@ -1,8 +1,8 @@
 {
   "componentId": "tag",
   "contractSource": "derived",
-  "digest": "sha256:f1f62c9208a5d3badecfdc726836e9ae5f3ce02112840fbb049f9a00b7f12d07",
-  "entryDigest": "sha256:c9f137cf2735c0f5d8065b6ca31c6179928c7a3ab3bc853ddb27b5915d315ab9",
+  "digest": "sha256:b378f41e4790676e462375214e5bd287a2d2f0492ea5f6f282985076ef0d7672",
+  "entryDigest": "sha256:61de90a212e24d662d7a7e11ece61136f6722c7f695855f0f8bf1867d3291145",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,10 +235,7 @@
       "events": [
         {
           "name": "dismiss",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onDismiss",
@@ -246,8 +243,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -282,24 +278,27 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "dismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:549acd1db6013377420df3a0fab6269d40e6bbe0ccb0c171bfdb8421a428f699",
-        "declarationPath": "packages/components-vue/dist/Tag.d.ts",
+        "declarationDigest": "sha256:9e084d542d586e634feffabcbd7f014b9e672dacff318a3507780e37ca31ccda",
+        "declarationPath": "packages/components-vue/dist/Tag.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TagProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [
+        {
+          "kind": "other",
+          "name": "dismiss.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        },
         {
           "kind": "other",
           "name": "onDismiss.event",

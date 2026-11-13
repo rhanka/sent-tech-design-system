@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:bcbe16dc2401e896afb46be55e6089b789e9e87ef0ec10750017963d5011da15",
+      "digest": "sha256:96cb191ddab168e816ebbe102fc06e41b4ccba364d38624422aac7294bbbb2de",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Combobox.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Combobox.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:539fffcf02811b75f745c627f2d090eb1a2239b29acfa3bb7fc07304c3b8ae89",
+  "digest": "sha256:17047236feb9966922bcff4c314bdab55519ddae896556ff8d47be27e7d2c7f6",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "StatusHistoryChart",
+  "sourceRevision": "635a07a764d9f02657ac9e34df07e8a2f1a81f22",
+  "source": "src/StatusHistoryChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-statusHistoryChart\"><div aria-label=\"History\" class=\"st-statusHistoryChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><text class=\"st-statusHistoryChart__tickLabel\" text-anchor=\"middle\" x=\"255\" y=\"304\">1</text><text class=\"st-statusHistoryChart__tickLabel\" text-anchor=\"middle\" x=\"501\" y=\"304\">2</text><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"132\" y1=\"16\" y2=\"288\"></line><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"624\" y1=\"288\" y2=\"288\"></line><text class=\"st-statusHistoryChart__seriesLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"124\" y=\"152\">S1</text><rect class=\"st-statusHistoryChart__cell st-statusHistoryChart__cell--category1\" data-chart-key=\"0-0\" height=\"28\" rx=\"2\" width=\"244\" x=\"132\" y=\"138\"></rect><rect class=\"st-statusHistoryChart__cell st-statusHistoryChart__cell--error\" data-chart-key=\"0-1\" height=\"28\" rx=\"2\" width=\"244\" x=\"378\" y=\"138\"></rect></svg></div><ul aria-label=\"Statuts de History\" class=\"st-statusHistoryChart__legend\"><li class=\"st-statusHistoryChart__legendItem\"><span aria-hidden=\"true\" class=\"st-statusHistoryChart__legendSwatch st-statusHistoryChart__legendSwatch--category1\"></span>up</li><li class=\"st-statusHistoryChart__legendItem\"><span aria-hidden=\"true\" class=\"st-statusHistoryChart__legendSwatch st-statusHistoryChart__legendSwatch--error\"></span>down</li></ul><ul aria-label=\"Data values for History\" class=\"st-chartDataList\"><li>S1: 1 = up, 2 = down</li></ul></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-statusHistoryChart consumer\" data-bench=\"history\" style=\"color:red;\"><div aria-label=\"Custom\" class=\"st-statusHistoryChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 500 280\" width=\"100%\"><text class=\"st-statusHistoryChart__tickLabel\" text-anchor=\"middle\" x=\"308\" y=\"264\">10</text><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"132\" y1=\"16\" y2=\"248\"></line><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"484\" y1=\"248\" y2=\"248\"></line><text class=\"st-statusHistoryChart__seriesLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"124\" y=\"132\">A</text><rect class=\"st-statusHistoryChart__cell st-statusHistoryChart__cell--category1\" data-chart-key=\"0-0\" height=\"28\" rx=\"2\" width=\"350\" x=\"132\" y=\"118\"></rect></svg></div><ul aria-label=\"Statuts de Custom\" class=\"st-statusHistoryChart__legend\"><li class=\"st-statusHistoryChart__legendItem\"><span aria-hidden=\"true\" class=\"st-statusHistoryChart__legendSwatch st-statusHistoryChart__legendSwatch--category1\"></span>1</li></ul><ul aria-label=\"Data values for Custom\" class=\"st-chartDataList\"><li>A: 10 = 1</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-statusHistoryChart\"><div aria-label=\"Empty\" class=\"st-statusHistoryChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"132\" y1=\"16\" y2=\"288\"></line><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"624\" y1=\"288\" y2=\"288\"></line></svg></div></div>"
+    },
+    {
+      "id": "invalid",
+      "html": "<div class=\"st-statusHistoryChart\"><div aria-label=\"Invalid\" class=\"st-statusHistoryChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"132\" y1=\"16\" y2=\"288\"></line><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"624\" y1=\"288\" y2=\"288\"></line></svg></div><ul aria-label=\"Data values for Invalid\" class=\"st-chartDataList\"><li>Bad: </li></ul></div>"
+    },
+    {
+      "id": "numeric",
+      "html": "<div class=\"st-statusHistoryChart\"><div aria-label=\"Numeric\" class=\"st-statusHistoryChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><text class=\"st-statusHistoryChart__tickLabel\" text-anchor=\"middle\" x=\"378\" y=\"304\">0</text><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"132\" y1=\"16\" y2=\"288\"></line><line class=\"st-statusHistoryChart__axis\" x1=\"132\" x2=\"624\" y1=\"288\" y2=\"288\"></line><text class=\"st-statusHistoryChart__seriesLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"124\" y=\"152\">N</text><rect class=\"st-statusHistoryChart__cell st-statusHistoryChart__cell--category1\" data-chart-key=\"0-0\" height=\"28\" rx=\"2\" width=\"490\" x=\"132\" y=\"138\"></rect></svg></div><ul aria-label=\"Statuts de Numeric\" class=\"st-statusHistoryChart__legend\"><li class=\"st-statusHistoryChart__legendItem\"><span aria-hidden=\"true\" class=\"st-statusHistoryChart__legendSwatch st-statusHistoryChart__legendSwatch--category1\"></span>0</li></ul><ul aria-label=\"Data values for Numeric\" class=\"st-chartDataList\"><li>N: 0 = 0</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "00fd91fd4cd79e35017cc5ebebef61673189540dd505feedcf885751f0b0a2e1",
+  "fixtureSha256": "e6a0e4904627da904e4c45118325608f5004d20db4f52233647ba0e2d7c0809c",
+  "publicExports": [
+    {
+      "name": "StatusHistoryChart",
+      "typeOnly": false
+    },
+    {
+      "name": "StatusHistoryChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "StatusHistoryTone",
+      "typeOnly": true
+    },
+    {
+      "name": "StatusHistoryBucket",
+      "typeOnly": true
+    },
+    {
+      "name": "StatusHistorySeries",
+      "typeOnly": true
+    }
+  ]
+}

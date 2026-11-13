@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Tooltip",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Tooltip.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\"><button type=\"button\">Help</button></span><span aria-hidden=\"true\" class=\"st-tooltip__content\" id=\"generated-1\" role=\"tooltip\">More information</span></span>"
+    },
+    {
+      "id": "bottom",
+      "html": "<span class=\"st-tooltip st-tooltip--bottom\"><span class=\"st-tooltip__trigger\">Trigger text</span><span aria-hidden=\"true\" class=\"st-tooltip__content\" id=\"generated-1\" role=\"tooltip\">Below the trigger</span></span>"
+    },
+    {
+      "id": "custom",
+      "html": "<span class=\"st-tooltip st-tooltip--top consumer\" data-bench=\"tooltip\" style=\"color:red;\" tabindex=\"0\"><span class=\"st-tooltip__trigger\"><strong>Focus me</strong></span><span aria-hidden=\"true\" class=\"st-tooltip__content\" id=\"generated-1\" role=\"tooltip\">A &amp; B &lt; C</span></span>"
+    },
+    {
+      "id": "empty-content",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\">Empty tooltip</span><span aria-hidden=\"true\" class=\"st-tooltip__content\" id=\"generated-1\" role=\"tooltip\"></span></span>"
+    },
+    {
+      "id": "empty-trigger",
+      "html": "<span class=\"st-tooltip st-tooltip--top\"><span class=\"st-tooltip__trigger\"></span><span aria-hidden=\"true\" class=\"st-tooltip__content\" id=\"generated-1\" role=\"tooltip\">No trigger content</span></span>"
+    }
+  ],
+  "sourceSha256": "19c6d7d6861f344b37385d98fd8a89933a5ce7a6649f3dbeed01ae9960f233ec",
+  "fixtureSha256": "15349b1be3d3f107174babca337cf717a7fec8924197a5bbb0026ac899ce5d56",
+  "publicExports": [
+    {
+      "name": "Tooltip",
+      "typeOnly": false
+    },
+    {
+      "name": "TooltipProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TooltipPlacement",
+      "typeOnly": true
+    }
+  ]
+}

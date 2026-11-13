@@ -1443,6 +1443,7 @@
     ],
     "vue": [
       "AppShell",
+      "CellDecorationIcon",
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",

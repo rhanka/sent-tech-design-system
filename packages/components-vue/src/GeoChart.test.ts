@@ -3,7 +3,7 @@ import { join } from "node:path";
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { GeoChart } from "./index.js";
-import type { GeoChartBounds, GeoChartFeature, GeoChartLayer, GeoChartPoint } from "./GeoChart.js";
+import type { GeoChartBounds, GeoChartFeature, GeoChartLayer, GeoChartPoint } from "./GeoChart.vue";
 
 // WP15 — GeoChart générique à couches : surface DS native qui remplace les 7
 // fallbacks géo de dataviz (GeoPointMap, ChoroplethMap, GeoFlowMap,

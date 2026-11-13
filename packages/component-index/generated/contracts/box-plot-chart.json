@@ -1,8 +1,8 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:29967cb84aae9cbe57f8832737db371244870679c501e9c8e72f89fb2ce2a7f8",
-  "entryDigest": "sha256:f636ac851242ebb4f1459ce524160291742038428b6182a1b78d8d3e8bb7bb40",
+  "digest": "sha256:dbaeaa9da89970156ae0979c4f36a98b459cef06fd8935ce91a9c08369e8817c",
+  "entryDigest": "sha256:6f93c8dc855cbe78dea6dc6f0e46d9868aea19bcfdefce368781f319499432f6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -398,11 +398,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:cbc28c055852ca236f34086d63f7f497a35f5ca830f018b6b1ca16b70c4900cc",
-        "declarationPath": "packages/components-vue/dist/BoxPlotChart.d.ts",
+        "declarationDigest": "sha256:8ed2f0bcdb5365013ff48c0407a03eb7590f56401e88a64d58dad249f369b90b",
+        "declarationPath": "packages/components-vue/dist/BoxPlotChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BoxPlotChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:41cd7dd3a1fd3ee966b4851271b52ff5db043a607b345cf4834402c878db7eb7",
-  "entryDigest": "sha256:c9cb81aabb6d5ebf2b5780e355693fefe4ff73dd7835ea4575789057a8cba03a",
+  "digest": "sha256:547a1a4c887a05baa0fed466578b05ad732fe657cac75a27dbc155dcf0dd266c",
+  "entryDigest": "sha256:a6a6cab5c7c0ec510fe33f5160b19eeb90b51907bd3ca045ffb64933f72e98de",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -226,8 +226,7 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
@@ -239,15 +238,13 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         }
       ],
@@ -292,33 +289,14 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9d06de66e418bfb1efc6b9027c0b82fd5b8a920d80a6570042b48d827e85beae",
-        "declarationPath": "packages/components-vue/dist/SlideIndicator.d.ts",
+        "declarationDigest": "sha256:19fc8157849648ce77b9a6acf5df7282a5fe56f9f13dbec41f960c7e92b0043c",
+        "declarationPath": "packages/components-vue/dist/SlideIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SlideIndicatorProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

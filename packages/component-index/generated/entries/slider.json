@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:14bbd66b6e1e93de74170cd0971d506ae68fe30d826eef3d1b75f94ffeb5fa1a",
+      "digest": "sha256:7d4380f7e1d1f284adeaee993d070999037ed120c7f26d25f9fcd337bb0e7b35",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Slider.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Slider.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous value slider.",
     "fr": "Curseur de valeur continue."
   },
-  "digest": "sha256:3e7b64ae809e675556b1569920c7dfa5590ce1301780c310c12f3652ccde1598",
+  "digest": "sha256:4dc9e2078ab737afaea3e4a2006999d037b4b52beb88fc0025ae8e1642053886",
   "displayName": "Slider",
   "format": "component-entry/v1",
   "frameworks": [

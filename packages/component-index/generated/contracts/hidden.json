@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:9a75c2d8005ebb115f57d40f768a1176a7bf44d272843fc55ce66ed18b58b5a9",
-  "entryDigest": "sha256:14021bf36327045f03324b4b68569abbf66508441423648c00a444b166dbe00b",
+  "digest": "sha256:c1968f95448e0853dec3df357bc6835f8100f75662a5ff01ca37dcb82268eb33",
+  "entryDigest": "sha256:0eceba12a9a69b5ba3cceac2ab46c358ac5dcf306e9193cfcba362b81255e5e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -178,8 +178,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -212,13 +211,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:eacf1d2a1ed06d73f4502e861f06de26d8ca96f2a994812403acdfb6c2f37089",
-        "declarationPath": "packages/components-vue/dist/Hidden.d.ts",
+        "declarationDigest": "sha256:f40e31da35b94b1b0d21e6a2c4e04c9a7c6812fcae7323d04273c85561e059f7",
+        "declarationPath": "packages/components-vue/dist/Hidden.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HiddenProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

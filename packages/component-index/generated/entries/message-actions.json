@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:51e0cec340c5aab6139ee6b16c1b507fd63cdc6d78681b1dea70ab67efdfb712",
+      "digest": "sha256:6afb4183ecdec774b0de184de4faa5f493a348aadcb0f134773fda353bb23a17",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MessageActions.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/MessageActions.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Message action row with icon buttons and optional overflow.",
     "fr": "Rangée d’actions d’un message avec boutons icône et overflow optionnel."
   },
-  "digest": "sha256:c37ff8ac1435aaa59ea231ff1351e87509f8fa631ad614d8a3156278159a5adb",
+  "digest": "sha256:54fa4896c36103e7737b802206830a419bfa73a032688e733719179b74578f44",
   "displayName": "MessageActions",
   "format": "component-entry/v1",
   "frameworks": [

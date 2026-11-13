@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:334dc46a75b18a65bc0355678e387b84d29c584ec744306830170e45f9eec79f",
-  "entryDigest": "sha256:0d52044a26d6596399f966588c45d94e18a3c40422155a3bb5b5c8a42fb40b90",
+  "digest": "sha256:158684d2d8458c0d1977247a0dd9f274e5edc11485e3d76961052b4beb527655",
+  "entryDigest": "sha256:700a13a24bc1fb1bad78132700e5d681bf0a66cccdf3c62dc0dc1465c512c8c6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -318,40 +318,48 @@
       "bindable": [
         "selectedId"
       ],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUpdate:selectedId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
       "events": [
         {
           "name": "onSelect",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onUpdate:selectedId",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "select",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:selectedId",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -373,8 +381,7 @@
               "label": {}
             },
             "required": [
-              "id",
-              "label"
+              "id"
             ],
             "type": "object"
           }
@@ -432,39 +439,39 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:selectedId.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "select.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:selectedId.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "node-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "level": {
+                "type": "number"
+              },
+              "node": {
+                "$ref": "#/$defs/TreeNode"
+              }
+            },
+            "required": [
+              "index",
+              "level",
+              "node"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:95d986f3d7aee90287a5f86fb5233216fcd3f0c9c252b52a8eeff2ffeb62f02f",
-        "declarationPath": "packages/components-vue/dist/TreeView.d.ts",
+        "declarationDigest": "sha256:79cfcb2f4a8a15dbbb5e717549337e31cecd80399d4659b0d49f34d5fb3febf7",
+        "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

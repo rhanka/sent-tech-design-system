@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { Search } from "./Search.js";
+import Search from './Search.vue';
 
 const root = (el: HTMLElement) =>
   (el.classList.contains("st-search") ? el : el.querySelector<HTMLElement>(".st-search"));

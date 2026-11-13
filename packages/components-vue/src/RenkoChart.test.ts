@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { RenkoChart } from "./RenkoChart.js";
+import RenkoChart from "./RenkoChart.vue";
 
 const series = [
   { date: 0, close: 100 },

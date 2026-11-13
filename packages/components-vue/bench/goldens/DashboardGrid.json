@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "DashboardGrid",
+  "sourceRevision": "baf58cb1543f89fb2bff680b63c160b4dd0c43ec",
+  "source": "src/DashboardGrid.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section aria-label=\"Dashboard grid\" class=\"st-dashboardGrid\" style=\"--st-dashboardGrid-columns:12;--st-dashboardGrid-row-height:88px;--st-dashboardGrid-gap:16px;\"><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 1 / span 6; grid-row: 1 / span 2;\"><div class=\"st-dashboardGrid__content\"><h3 class=\"st-dashboardGrid__title\">Alpha</h3><p class=\"st-dashboardGrid__value\">7</p></div></article></section>"
+    },
+    {
+      "id": "multiple-described",
+      "html": "<section aria-label=\"My grid\" class=\"st-dashboardGrid\" style=\"--st-dashboardGrid-columns:12;--st-dashboardGrid-row-height:100px;--st-dashboardGrid-gap:8px;\"><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 1 / span 4; grid-row: 1 / span 1;\"><div class=\"st-dashboardGrid__content\"><h3 class=\"st-dashboardGrid__title\">Alpha</h3><p class=\"st-dashboardGrid__value\">1</p><p class=\"st-dashboardGrid__description\">First</p></div></article><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 9 / span 4; grid-row: 3 / span 1;\"><div class=\"st-dashboardGrid__content\"><h3 class=\"st-dashboardGrid__title\">Beta</h3></div></article></section>"
+    },
+    {
+      "id": "editable-clamped",
+      "html": "<section aria-label=\"Dashboard grid\" class=\"st-dashboardGrid st-dashboardGrid--editable consumer\" data-bench=\"grid\" style=\"--st-dashboardGrid-columns:6;--st-dashboardGrid-row-height:88px;--st-dashboardGrid-gap:16px;color:red;\"><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 1 / span 6; grid-row: 1 / span 1;\"><div class=\"st-dashboardGrid__content\"><h3 class=\"st-dashboardGrid__title\">Wide</h3></div><div aria-label=\"Layout controls for Wide\" class=\"st-dashboardGrid__controls\"><button aria-label=\"Move Wide up\" type=\"button\">↑</button><button aria-label=\"Move Wide left\" type=\"button\">←</button><button aria-label=\"Move Wide right\" type=\"button\">→</button><button aria-label=\"Move Wide down\" type=\"button\">↓</button><button aria-label=\"Widen Wide\" type=\"button\">W+</button><button aria-label=\"Narrow Wide\" type=\"button\">W-</button><button aria-label=\"Taller Wide\" type=\"button\">H+</button><button aria-label=\"Shorter Wide\" type=\"button\">H-</button></div></article></section>"
+    },
+    {
+      "id": "bare-tiles",
+      "html": "<section aria-label=\"Dashboard grid\" class=\"st-dashboardGrid\" style=\"--st-dashboardGrid-columns:12;--st-dashboardGrid-row-height:88px;--st-dashboardGrid-gap:16px;\"><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 1 / span 2; grid-row: 1 / span 1;\"><div class=\"st-dashboardGrid__content\"></div></article><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 3 / span 2; grid-row: 2 / span 1;\"><div class=\"st-dashboardGrid__content\"></div></article></section>"
+    },
+    {
+      "id": "zero-columns",
+      "html": "<section aria-label=\"Dashboard grid\" class=\"st-dashboardGrid\" style=\"--st-dashboardGrid-columns:12;--st-dashboardGrid-row-height:32px;--st-dashboardGrid-gap:0px;\"><article class=\"st-dashboardGrid__tile\" style=\"grid-column: 1 / span 1; grid-row: 1 / span 1;\"><div class=\"st-dashboardGrid__content\"></div></article></section>"
+    },
+    {
+      "id": "empty",
+      "html": "<section aria-label=\"Dashboard grid\" class=\"st-dashboardGrid\" style=\"--st-dashboardGrid-columns:12;--st-dashboardGrid-row-height:88px;--st-dashboardGrid-gap:16px;\"></section>"
+    }
+  ],
+  "sourceSha256": "bf5b76459dd2d6cf6cbca4a0a0d205497a625a445712e37eb112c8047e1fd9d2",
+  "fixtureSha256": "cc23171ac8d9fad5b926f22480dcfadf72cff84846e6f5dc0459417a960a5121",
+  "publicExports": [
+    {
+      "name": "DashboardGrid",
+      "typeOnly": false
+    },
+    {
+      "name": "DashboardGridProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DashboardGridTile",
+      "typeOnly": true
+    }
+  ]
+}

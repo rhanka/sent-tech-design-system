@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { AreaSplineRangeChart } from "./AreaSplineRangeChart.js";
-import type { AreaSplineRangeChartDatum } from "./AreaSplineRangeChart.js";
+import AreaSplineRangeChart from './AreaSplineRangeChart.vue';
+import type { AreaSplineRangeChartDatum } from "./AreaSplineRangeChart.vue";
 
 const data: AreaSplineRangeChartDatum[] = [
   { x: "Jan", low: -4, high: 3 },

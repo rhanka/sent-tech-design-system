@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Form",
+  "sourceRevision": "375cc47d1decc64403b794ef64dd0be34125b2b5",
+  "source": "src/Form.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<form class=\"st-form\"><div class=\"st-form__body\"><input value=\"x\"></div></form>"
+    },
+    {
+      "id": "submitted-message",
+      "html": "<form class=\"st-form\"><div class=\"st-form__body\">OK</div><p class=\"st-form__message st-form__message--success\">Saved.</p></form>"
+    },
+    {
+      "id": "error-message",
+      "html": "<form class=\"st-form\"><div class=\"st-form__body\">Retry</div><p class=\"st-form__message st-form__message--error\">Failed.</p></form>"
+    },
+    {
+      "id": "submitting-help",
+      "html": "<form class=\"st-form\"><div class=\"st-form__body\">Busy</div><p class=\"st-form__message st-form__message--help\">Wait…</p></form>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<form class=\"st-form consumer\" data-bench=\"form\" novalidate=\"\"><div class=\"st-form__body\"><button>Go</button></div></form>"
+    }
+  ],
+  "sourceSha256": "f6710a48e9aab9d54ee56912cf2890b5207daf498fde7213268a5c90b87b4db6",
+  "fixtureSha256": "b8d42a9afdd2c98d1c3f211bfae9ddaaf11aa39bd9bb461ad3e2c4ec924b3d20",
+  "publicExports": [
+    {
+      "name": "Form",
+      "typeOnly": false
+    },
+    {
+      "name": "FormProps",
+      "typeOnly": true
+    },
+    {
+      "name": "FormStatus",
+      "typeOnly": true
+    }
+  ]
+}

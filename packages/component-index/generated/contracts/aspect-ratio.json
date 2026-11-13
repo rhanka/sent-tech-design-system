@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:69d842e20798632dcfc2e84fd1c2916b59341c6cb770b33ef54d69580583b8c8",
-  "entryDigest": "sha256:d1b15bc2e08fcf8253016f630b8948f151741c3b37a3efe26239236cd4e730e4",
+  "digest": "sha256:e805a7b25c673f8465b1f1a5601fbcaeb38b4be3c7e95506b1b1c17c1a16a21f",
+  "entryDigest": "sha256:557c8d4e4bd680304e1299909ad5881efefbbe650140867dfccfe8f584e8ec28",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -135,8 +135,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -158,13 +157,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:5a3bdfb5467e4599ed5580210b082d3e994e5a86865e4af1cc2fb32b9b15f5d6",
-        "declarationPath": "packages/components-vue/dist/AspectRatio.d.ts",
+        "declarationDigest": "sha256:6e9060c7a21a6ac7dae3981424b5c3c4d931d17d49aaec027741a56a4b9cb3d4",
+        "declarationPath": "packages/components-vue/dist/AspectRatio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AspectRatioProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

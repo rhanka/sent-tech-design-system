@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "SkipLink",
+  "sourceRevision": "d65431536df693afe5f51cc72530db1c6a9bb410",
+  "source": "src/SkipLink.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<a class=\"st-skipLink\" href=\"#main\">Skip to content</a>"
+    },
+    {
+      "id": "custom-href",
+      "html": "<a class=\"st-skipLink\" href=\"#content\">Skip link</a>"
+    },
+    {
+      "id": "fallback",
+      "html": "<a class=\"st-skipLink\" href=\"#main\">Skip to content</a>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<a class=\"st-skipLink consumer\" data-bench=\"skip\" href=\"#main\" style=\"color:red;\">Skip</a>"
+    }
+  ],
+  "sourceSha256": "7f1edd5a2cb0834b12c6b0e9fd8a6eb98e00b4c6a5421078a243769ca5bfc2be",
+  "fixtureSha256": "2d57beab7fca7612edb07ec57acd5f0ea18d37413c9ab6e7e53ff27f155d34c9",
+  "publicExports": [
+    {
+      "name": "SkipLink",
+      "typeOnly": false
+    },
+    {
+      "name": "SkipLinkProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "SideNav",
+  "sourceRevision": "4a0e3ab04cb5cce077ed929e3e5e2942e422350a",
+  "source": "src/SideNav.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<nav aria-label=\"Navigation\" class=\"st-sidenav st-sideNav\"><a class=\"st-sidenav__link st-sideNav__link st-sidenav__link--active st-sideNav__link--active\" href=\"/\">Home</a><a class=\"st-sidenav__link st-sideNav__link\" href=\"/settings\">Settings</a></nav>"
+    },
+    {
+      "id": "custom-label",
+      "html": "<nav aria-label=\"Main\" class=\"st-sidenav st-sideNav\"><a class=\"st-sidenav__link st-sideNav__link\" href=\"/a\">Alpha</a></nav>"
+    },
+    {
+      "id": "empty",
+      "html": "<nav aria-label=\"Navigation\" class=\"st-sidenav st-sideNav\"></nav>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<nav aria-label=\"Navigation\" class=\"st-sidenav st-sideNav consumer\" data-bench=\"sidenav\" style=\"color:red;\"><a class=\"st-sidenav__link st-sideNav__link\" href=\"/1\">One</a></nav>"
+    },
+    {
+      "id": "many",
+      "html": "<nav aria-label=\"Navigation\" class=\"st-sidenav st-sideNav\"><a class=\"st-sidenav__link st-sideNav__link st-sidenav__link--active st-sideNav__link--active\" href=\"/a\">A</a><a class=\"st-sidenav__link st-sideNav__link\" href=\"/b\">B</a><a class=\"st-sidenav__link st-sideNav__link\" href=\"/c\">C</a></nav>"
+    }
+  ],
+  "sourceSha256": "1d8ca1d483c166f68a62107b8e18cafc9627b2c603b495ca7671ac2dbd4998fa",
+  "fixtureSha256": "d7cae0593f058a34873178f6a07844306cd72a49a2a7505d004bbafc4be11f1b",
+  "publicExports": [
+    {
+      "name": "SideNav",
+      "typeOnly": false
+    },
+    {
+      "name": "SideNavProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SideNavItem",
+      "typeOnly": true
+    }
+  ]
+}

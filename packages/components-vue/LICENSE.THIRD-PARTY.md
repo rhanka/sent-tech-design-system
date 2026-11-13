@@ -25,19 +25,42 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
-**Étendue mesurée.** 27 chaîne(s) de tracé distincte(s),
-32 occurrence(s), dans 5 fichier(s) source de ce paquet :
+**Étendue mesurée.** 44 chaîne(s) de tracé distincte(s),
+89 occurrence(s), dans 28 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
-| `src/AppChrome.ts` | 4 |
-| `src/AppHeader.ts` | 4 |
+| `src/Accordion.vue` | 2 |
+| `src/AppHeader.vue` | 4 |
+| `src/Autosave.vue` | 2 |
+| `src/BackToTop.vue` | 2 |
+| `src/Calendar.vue` | 2 |
 | `src/cellDecoration.ts` | 21 |
+| `src/ChatComposer.vue` | 2 |
+| `src/Combobox.vue` | 3 |
+| `src/CopyButton.vue` | 2 |
 | `src/DiagramControlGlyph.vue` | 2 |
-| `src/IdentityMenu.ts` | 1 |
+| `src/FileUploader.vue` | 9 |
+| `src/FilterPill.vue` | 2 |
+| `src/IdentityMenu.vue` | 1 |
+| `src/InlineLoading.vue` | 2 |
+| `src/LanguageToggle.vue` | 1 |
+| `src/Menu.vue` | 2 |
+| `src/MenuTriggerButton.vue` | 1 |
+| `src/Modal.vue` | 2 |
+| `src/MultiSelect.vue` | 3 |
+| `src/PaginationNav.vue` | 4 |
+| `src/PasswordInput.vue` | 5 |
+| `src/ProgressIndicator.vue` | 3 |
+| `src/Search.vue` | 3 |
+| `src/SelectionChip.vue` | 2 |
+| `src/Stepper.vue` | 2 |
+| `src/Tag.vue` | 2 |
+| `src/TimePicker.vue` | 1 |
+| `src/TimeRangePicker.vue` | 2 |
 
 Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme tous) :
-`align-center-horizontal`, `align-vertical-justify-center`, `arrow-down`, `arrow-right`, `arrow-up`, `badge-percent`, `barcode`, `bath`, `check`, `chevron-down`, `circle-check-big`, `circle-percent`, `circle-question-mark`, `circle-x`, `cloud-snow`, `cooking-pot`, `file-exclamation-point`, `file-question-mark`, `flame`, `github`, `globe`, `house-wifi`, `info`, `keyboard-music`, `menu`, `message-circle-question-mark`, `message-circle-x`, `minus`, `move`, `move-horizontal`, `octagon-x`, `plus`, `shield-question-mark`, `square-check-big`, `square-percent`, `square-x`, `ticket-percent`, `trending-down`, `trending-up`, `triangle-alert`, `x`.
+`alarm-clock-off`, `arrow-down`, `arrow-right`, `arrow-up`, `badge-check`, `badge-percent`, `barcode`, `beer-off`, `bell-off`, `bluetooth-off`, `bug-off`, `calendar-off`, `camera-off`, `candy-off`, `cannabis-off`, `captions-off`, `check`, `chevron-down`, `chevron-left`, `chevron-right`, `cigarette-off`, `circle-check`, `circle-check-big`, `circle-chevron-down`, `circle-off`, `circle-parking-off`, `circle-percent`, `circle-question-mark`, `circle-x`, `clock`, `clock-4`, `clock-alert`, `clock-check`, `clock-fading`, `cloud-off`, `cloud-snow`, `copy`, `copy-check`, `copy-minus`, `copy-plus`, `copy-slash`, `copy-x`, `dna-off`, `download`, `droplet-off`, `egg-off`, `eye`, `eye-off`, `file`, `file-archive`, `file-axis-3d`, `file-badge`, `file-box`, `file-braces`, `file-braces-corner`, `file-chart-column`, `file-chart-column-increasing`, `file-chart-line`, `file-chart-pie`, `file-check`, `file-check-corner`, `file-clock`, `file-code`, `file-code-corner`, `file-cog`, `file-diff`, `file-digit`, `file-down`, `file-exclamation-point`, `file-headphone`, `file-heart`, `file-image`, `file-input`, `file-key`, `file-lock`, `file-minus`, `file-minus-corner`, `file-music`, `file-output`, `file-pen`, `file-play`, `file-plus`, `file-plus-corner`, `file-question-mark`, `file-scan`, `file-search`, `file-search-corner`, `file-signal`, `file-sliders`, `file-spreadsheet`, `file-symlink`, `file-terminal`, `file-text`, `file-type`, `file-type-corner`, `file-up`, `file-user`, `file-video-camera`, `file-volume`, `file-x`, `file-x-corner`, `flag-off`, `flame`, `flashlight-off`, `flask-conical-off`, `headphone-off`, `heart-off`, `hop-off`, `house-wifi`, `import`, `info`, `keyboard-off`, `lightbulb-off`, `loader-circle`, `locate-off`, `map-pin-off`, `megaphone-off`, `menu`, `message-circle-off`, `message-circle-question-mark`, `message-circle-x`, `message-square-off`, `mic-off`, `minus`, `monitor-off`, `octagon-x`, `pen-off`, `pencil-off`, `pin-off`, `plus`, `pointer-off`, `power-off`, `route-off`, `save-off`, `search`, `send`, `server-off`, `shield-check`, `shield-off`, `shield-question-mark`, `shredder`, `square-check`, `square-check-big`, `square-chevron-down`, `square-parking-off`, `square-percent`, `square-x`, `ticket-check`, `ticket-percent`, `timer-off`, `touchpad-off`, `trending-down`, `trending-up`, `triangle-alert`, `umbrella-off`, `upload`, `video-off`, `volume-off`, `vote`, `webhook-off`, `wifi-off`, `x`, `zap-off`.
 
 **Pourquoi c'est une redistribution.** Le jeu d'icônes du design system est lucide : `packages/components-angular/src/Icon.ts` le dit explicitement (« the same lucide (stroke-24) path data the other frameworks wrap — the single visual source of truth »). Inliner les données plutôt que dépendre du paquet ne supprime pas l'obligation : cela la déplace du `node_modules` du consommateur vers notre propre tarball. Le port Angular ne déclare aucune dépendance lucide et n'embarque que des copies ; les ports React, Vue et Svelte dépendent du paquet lucide ET en recopient une partie.
 

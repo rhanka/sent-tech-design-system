@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:454d8d110925f801e567754639a1643855f41881432105158616976f54e14ba9",
-  "entryDigest": "sha256:117078a2a131f47ecaf541244294b524c7d5412c606034f48ae69b77a34c0282",
+  "digest": "sha256:bd3c8653e9925fa50a9ab5e74c47045fe212255d32cbacc77d7fe90c6d9b8f80",
+  "entryDigest": "sha256:738b397a1dc9fdd2610065979942321dea550f714c88ad17d3077cd3e3b17d7d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -269,8 +269,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -330,13 +329,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ad586ac76fc538946db0360a77d681f0a882949487b93abfbceb95b21844e426",
-        "declarationPath": "packages/components-vue/dist/Typography.d.ts",
+        "declarationDigest": "sha256:f0161e102d37d3369a74ec865b8acc27a8ccc464be3e665009e575546c7ac216",
+        "declarationPath": "packages/components-vue/dist/Typography.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

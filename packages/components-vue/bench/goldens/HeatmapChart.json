@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "HeatmapChart",
+  "sourceRevision": "dba08afa75ed1c497d2715b01bf622b7b80b11e2",
+  "source": "src/HeatmapChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--categorical\"><div aria-label=\"Traffic\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"85\">9h</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"199\">12h</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"163.5\" y=\"276\">Mon</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"362.5\" y=\"276\">Tue</text><rect class=\"st-heatmapChart__plot\" height=\"228\" width=\"398\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category1\" data-chart-index=\"0\" height=\"112\" rx=\"2\" width=\"197\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category3\" data-chart-index=\"1\" height=\"112\" rx=\"2\" width=\"197\" x=\"263\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category6\" data-chart-index=\"2\" height=\"112\" rx=\"2\" width=\"197\" x=\"64\" y=\"142\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category8\" data-chart-index=\"3\" height=\"112\" rx=\"2\" width=\"197\" x=\"263\" y=\"142\"></rect></svg></div><ul aria-label=\"Data values for Traffic\" class=\"st-chartDataList\"><li>9h, Mon: 10</li><li>9h, Tue: 20</li><li>12h, Mon: 30</li><li>12h, Tue: 40</li></ul></div>"
+    },
+    {
+      "id": "sequential-legend",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--sequential\"><div aria-label=\"Load\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"142\">Top</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"163.5\" y=\"276\">A</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"362.5\" y=\"276\">B</text><rect class=\"st-heatmapChart__plot\" height=\"228\" width=\"398\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category1\" data-chart-index=\"0\" height=\"226\" rx=\"2\" width=\"197\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category8\" data-chart-index=\"1\" height=\"226\" rx=\"2\" width=\"197\" x=\"263\" y=\"28\"></rect></svg></div><ul aria-label=\"Data values for Load\" class=\"st-chartDataList\"><li>Top, A: 5</li><li>Top, B: 15</li></ul><div aria-hidden=\"true\" class=\"st-heatmapChart__legend\"><span class=\"st-heatmapChart__legendText\">Low</span><span class=\"st-heatmapChart__legendRamp\"><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category1\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category2\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category3\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category4\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category5\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category6\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category7\"></span><span class=\"st-heatmapChart__legendSwatch st-heatmapChart__legendSwatch--category8\"></span></span><span class=\"st-heatmapChart__legendText\">High</span></div></div>"
+    },
+    {
+      "id": "custom-tones",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--categorical\"><div aria-label=\"Cats\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"142\">Top</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"163.5\" y=\"276\">A</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"362.5\" y=\"276\">B</text><rect class=\"st-heatmapChart__plot\" height=\"228\" width=\"398\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category5\" data-chart-index=\"0\" height=\"226\" rx=\"2\" width=\"197\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category7\" data-chart-index=\"1\" height=\"226\" rx=\"2\" width=\"197\" x=\"263\" y=\"28\"></rect></svg></div><ul aria-label=\"Data values for Cats\" class=\"st-chartDataList\"><li>Top, A: 1</li><li>Top, B: 2</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--categorical\"><div aria-label=\"Empty grid\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><rect class=\"st-heatmapChart__plot\" height=\"228\" width=\"398\" x=\"64\" y=\"28\"></rect></svg></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--categorical consumer\" data-bench=\"heatmap\" style=\"color:red;\"><div aria-label=\"Sized\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 360\" width=\"100%\"><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"172\">Top</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"323\" y=\"336\">A</text><rect class=\"st-heatmapChart__plot\" height=\"288\" width=\"518\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category1\" data-chart-index=\"0\" height=\"286\" rx=\"2\" width=\"516\" x=\"64\" y=\"28\"></rect></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>Top, A: 9</li></ul></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-heatmapChart st-heatmapChart--categorical\"><div aria-label=\"One\" class=\"st-heatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--y\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"56\" y=\"142\">Cell</text><text class=\"st-heatmapChart__axisLabel st-heatmapChart__axisLabel--x\" text-anchor=\"middle\" x=\"263\" y=\"276\">Only</text><rect class=\"st-heatmapChart__plot\" height=\"228\" width=\"398\" x=\"64\" y=\"28\"></rect><rect class=\"st-heatmapChart__cell st-heatmapChart__cell--category1\" data-chart-index=\"0\" height=\"226\" rx=\"2\" width=\"396\" x=\"64\" y=\"28\"></rect></svg></div><ul aria-label=\"Data values for One\" class=\"st-chartDataList\"><li>Cell, Only: 0</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "4e04feda92c0064ec4ac95188bbe3739e812eefab05f453b957d4ac66dfe705a",
+  "fixtureSha256": "f2eab5e217dea436274d7fddeed6963104a24e379df067e96d78d2eef5693946",
+  "publicExports": [
+    {
+      "name": "HeatmapChart",
+      "typeOnly": false
+    },
+    {
+      "name": "HeatmapChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "HeatmapChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "HeatmapChartScale",
+      "typeOnly": true
+    },
+    {
+      "name": "HeatmapChartTone",
+      "typeOnly": true
+    }
+  ]
+}

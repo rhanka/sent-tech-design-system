@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:d901c6fa88e17a4eb02c38b056f8590af75dde5da5ec9e8a50a21441cf01c7fd",
+      "digest": "sha256:ba846cef9f580df4b587a281ab60828fede10c8677eb70690df32ea63d558d65",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Icon.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Icon.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:94cdec228615f1fdf8e5f839fd90a407f488be4f6a04eb953ab28c50f69e21cf",
+  "digest": "sha256:74ec9710391197a291349ce5268753bffb2caaee1e9f9486cee2e45d38567c2f",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

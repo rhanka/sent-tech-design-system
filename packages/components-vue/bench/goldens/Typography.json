@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "component": "Typography",
+  "sourceRevision": "bd378612f5ccb0d0a279c95ce48e94c36fd75116",
+  "source": "src/Typography.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<p class=\"st-typography st-typography--body\">Hello world</p>"
+    },
+    {
+      "id": "h1-variant",
+      "html": "<h1 class=\"st-typography st-typography--h1\">Title</h1>"
+    },
+    {
+      "id": "custom-as",
+      "html": "<span class=\"st-typography st-typography--h2\">As span</span>"
+    },
+    {
+      "id": "weight-tone-align",
+      "html": "<p class=\"st-typography st-typography--body-sm st-typography--weight-semibold st-typography--tone-secondary st-typography--align-center\">Styled</p>"
+    },
+    {
+      "id": "truncate",
+      "html": "<p class=\"st-typography st-typography--body st-typography--truncate\">A very long line that should be cut off with an ellipsis</p>"
+    },
+    {
+      "id": "caption",
+      "html": "<span class=\"st-typography st-typography--caption\">Small note</span>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<h3 class=\"st-typography st-typography--h3 consumer\" data-bench=\"typography\" style=\"color:red;\">With attrs</h3>"
+    }
+  ],
+  "sourceSha256": "757ce5b80bcd8e8b4169153ab50a5b26974d595a9a316c50aadc19e68d7813da",
+  "fixtureSha256": "f55638bada43e49a20c19990c5299393fe09f1cd640e1c2d4794bfb33a1b2417",
+  "publicExports": [
+    {
+      "name": "Typography",
+      "typeOnly": false
+    },
+    {
+      "name": "TypographyProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TypographyVariant",
+      "typeOnly": true
+    },
+    {
+      "name": "TypographyWeight",
+      "typeOnly": true
+    },
+    {
+      "name": "TypographyTone",
+      "typeOnly": true
+    },
+    {
+      "name": "TypographyAlign",
+      "typeOnly": true
+    }
+  ]
+}

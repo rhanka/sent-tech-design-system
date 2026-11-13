@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { VariablePieChart } from "./VariablePieChart.js";
-import type { VariablePieChartDatum } from "./VariablePieChart.js";
+import VariablePieChart from "./VariablePieChart.vue";
+import type { VariablePieChartDatum } from "./VariablePieChart.vue";
 
 const data: VariablePieChartDatum[] = [
   { label: "Alpha", value: 40, z: 10 },

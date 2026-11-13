@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ColorScaleBar",
+  "sourceRevision": "e1fd921d2507903c1d6ed9dec15d0d7bafb1d035",
+  "source": "src/ColorScaleBar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Scale</span><div class=\"st-colorScaleBar__track\"><div aria-label=\"Scale\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #fff, #f00, #00f);\"></div></div></div>"
+    },
+    {
+      "id": "vertical",
+      "html": "<div class=\"st-colorScaleBar st-colorScaleBar--vertical\"><div class=\"st-colorScaleBar__track\"><div class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to top, #000, #fff);height:120px;width:16px;\"></div></div></div>"
+    },
+    {
+      "id": "ends",
+      "html": "<div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\">100</span><div class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #fff, #000);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\">0</span></div></div>"
+    },
+    {
+      "id": "single-color",
+      "html": "<div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><div class=\"st-colorScaleBar__track\"><div class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #f00, #f00);\"></div></div></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-colorScaleBar st-colorScaleBar--horizontal consumer\" data-bench=\"scale\" style=\"color:red;\"><span class=\"st-colorScaleBar__label\">S</span><div class=\"st-colorScaleBar__track\"><div aria-label=\"S\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #fff, #123456);\"></div></div></div>"
+    }
+  ],
+  "sourceSha256": "f73704cbcf8a7ba34876a3ee52a76297b770bdc1051d9a9f575a4a2c9358b9ab",
+  "fixtureSha256": "5b156f156153e2ca7bea14a47c771d9e2d653708975faa65866166f30ec3463b",
+  "publicExports": [
+    {
+      "name": "ColorScaleBar",
+      "typeOnly": false
+    },
+    {
+      "name": "ColorScaleBarProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ColorScaleBarOrientation",
+      "typeOnly": true
+    }
+  ]
+}

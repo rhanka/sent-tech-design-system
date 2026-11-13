@@ -2,7 +2,7 @@
 // API witness for Dropdown's conditional listbox + Teleport shape. Production
 // Dropdown retains its VNode-valued labels until the V0b semantic mapping.
 import { ref } from 'vue';
-import type { DropdownProps } from '../Dropdown.js';
+import type { DropdownProps } from '../Dropdown.vue';
 const props = withDefaults(defineProps<DropdownProps>(), { open: undefined });
 const emit = defineEmits<{ select: [value: string]; 'update:open': [value: boolean] }>();
 const localOpen = ref(false);

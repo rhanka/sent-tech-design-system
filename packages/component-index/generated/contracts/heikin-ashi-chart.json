@@ -1,8 +1,8 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:4364d09b84e20eb8c188a208e7fdb4c7b12b8c3b499115857f3dba989c949c6b",
-  "entryDigest": "sha256:73d5dc1824858bb9704ff929b9e560124aad6132579460175550102c72a891ab",
+  "digest": "sha256:e01c250004e006f4008b6822c304869cbbae93840ca823f541154c97870c74a9",
+  "entryDigest": "sha256:9bac8f95d11d0305439f2c4b30199c26f3259eb5da72fd846de11f8ab03db63b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:dea4c640c162d66e8a8aed32f76048fd2996d9a231df2325d2e4de623e313696",
-        "declarationPath": "packages/components-vue/dist/HeikinAshiChart.d.ts",
+        "declarationDigest": "sha256:ee0029cd3bc3c0421b2aa07931262d003717c1eb9f61e00a323446748fc08b7d",
+        "declarationPath": "packages/components-vue/dist/HeikinAshiChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

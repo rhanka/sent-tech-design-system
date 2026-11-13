@@ -1,8 +1,8 @@
 {
   "componentId": "divergent-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:f0e00bc2a5c49dc7c8310370e3cdf624381fefe9f8aab986721e1497e12ffdea",
-  "entryDigest": "sha256:8c94b341d329f42d6fc1cdcaa2af3f39974d1eee879245a994274b213ce23e05",
+  "digest": "sha256:528dbd6bfd8f0fb09a1ad5096a6fd08d32d3baa6422719b0b42fc871be7e1a9c",
+  "entryDigest": "sha256:372e1cfb33faea8b291a1631553984476b18cbfe546924ba952dd999019cbe30",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -378,11 +378,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d1e7d8493a45ded1c80675d79404710217c3cae0f697c4796f8aa21d140a3fa6",
-        "declarationPath": "packages/components-vue/dist/DivergentBarChart.d.ts",
+        "declarationDigest": "sha256:e36998d734d47110a356d76fb7bfe6d0c67976a87e1c2b29fbc4089c78f04910",
+        "declarationPath": "packages/components-vue/dist/DivergentBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DivergentBarChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

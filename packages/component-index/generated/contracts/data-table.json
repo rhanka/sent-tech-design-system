@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:740e384e74e0ff476bb2be6b9b1549fe4f210aeec9a75bc8ddca1e98daafd814",
-  "entryDigest": "sha256:4762cf05ef652c975bb9ada5275ed7db363a81f3f43c5985cb07826c57ea39f9",
+  "digest": "sha256:5934505ea7cff1dfdaf36165abc383ee8cea738ce4569f48799990ad8fe72067",
+  "entryDigest": "sha256:0213a68d6e3a27b44a915f3cc8e8360438a64fb8d79cda7b8fe63ca640f0e683",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -962,8 +962,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -1164,15 +1163,73 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
           "sourceType": "Record<string, Record<string, CellDecoration>>"
+        },
+        {
+          "name": "scope.value",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "cell",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              },
+              "row": {
+                "$ref": "#/$defs/DataTableRow"
+              },
+              "rowIndex": {
+                "type": "number"
+              },
+              "value": {}
+            },
+            "required": [
+              "column",
+              "columnIndex",
+              "row",
+              "rowIndex",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "column-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "columnIndex"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3f8f002d80da6eeab59d6d21d5604925441727bc6029febd8d2aeea11aa7ee80",
-        "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
+        "declarationDigest": "sha256:4b6227a6806be747ebd47b59164e92033cfbdbf86ebcc15348dcbfeab25de6e8",
+        "declarationPath": "packages/components-vue/dist/DataTable.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

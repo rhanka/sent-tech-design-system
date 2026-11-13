@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:849790108cb5313dd24f05aa2c6d58fcbb3daf9c81fee97f9b63e0fb351023d7",
+      "digest": "sha256:82703da049699884371bd70658489a146b7b7dfc7991a52992a8c4d9ded6255e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/PolygonChart.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/PolygonChart.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:af02e3bedc06604ba29f0322720f1ee95bb2592b713fceb040bb889ef6a41658",
+  "digest": "sha256:ab8a53cceb03accf7f7ddd3b968acab3d9c6ff63350b26c83694fdbc75e0abb0",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

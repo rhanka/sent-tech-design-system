@@ -1,8 +1,8 @@
 {
   "componentId": "flex",
   "contractSource": "derived",
-  "digest": "sha256:a97e63ebf9356d28e8d1a1d9fb4336b4b4aa7e735916a82c55d1fccff4641d23",
-  "entryDigest": "sha256:fb60543b6f9ff13783112fd7c413e7872bf182aa206616e53b409b2e0e8aa176",
+  "digest": "sha256:53a64aadfa85d0d42a051cbefbbedeae3e5033483a608ac525ea9c0e0b7ca55c",
+  "entryDigest": "sha256:4cc42c408b5ee3e160b6f369535ffbf632c27077a97aafc204e5703f6a671717",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -236,8 +236,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -289,13 +288,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:bca532af6ff1dc7cf1466d57cafbd1855eef0083f7896ff3504e5981cc0636d0",
-        "declarationPath": "packages/components-vue/dist/Flex.d.ts",
+        "declarationDigest": "sha256:a8ebd1642a24e31bacb2ae67ccbc305057bb7db6522fa88ea6ec58c07c02ec67",
+        "declarationPath": "packages/components-vue/dist/Flex.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlexProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

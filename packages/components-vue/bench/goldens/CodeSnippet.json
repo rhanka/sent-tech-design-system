@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "CodeSnippet",
+  "sourceRevision": "09c0e60a59b2bbddf372f55172f83dd2c0b900df",
+  "source": "src/CodeSnippet.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-codeSnippet__wrapper\"><pre class=\"st-codeSnippet\"><code class=\"st-codeSnippet__code\">const x = 1;</code></pre><span class=\"st-codeSnippet__copy\"><button class=\"st-copyButton st-copyButton--sm\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copy</span></button></span></div>"
+    },
+    {
+      "id": "inline",
+      "html": "<code class=\"st-codeSnippet--inline\" data-language=\"sh\">npm run dev</code>"
+    },
+    {
+      "id": "no-copy",
+      "html": "<div class=\"st-codeSnippet__wrapper\"><pre class=\"st-codeSnippet\" data-language=\"js\"><code class=\"st-codeSnippet__code\">let y = 2;</code></pre></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-codeSnippet__wrapper\" data-bench=\"code\" style=\"color:red;\"><pre class=\"st-codeSnippet consumer\" data-language=\"ts\"><code class=\"st-codeSnippet__code\">export {}</code></pre><span class=\"st-codeSnippet__copy\"><button class=\"st-copyButton st-copyButton--sm\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copy code</span></button></span></div>"
+    },
+    {
+      "id": "empty-code",
+      "html": "<div class=\"st-codeSnippet__wrapper\"><pre class=\"st-codeSnippet\"><code class=\"st-codeSnippet__code\"></code></pre><span class=\"st-codeSnippet__copy\"><button class=\"st-copyButton st-copyButton--sm\" type=\"button\"><span aria-hidden=\"true\" class=\"st-copyButton__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-copy-icon lucide-copy\" fill=\"none\" height=\"14\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"14\" xmlns=\"http://www.w3.org/2000/svg\"><rect height=\"14\" rx=\"2\" ry=\"2\" width=\"14\" x=\"8\" y=\"8\"></rect><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"></path></svg></span><span class=\"st-copyButton__label\">Copy</span></button></span></div>"
+    }
+  ],
+  "sourceSha256": "a055a684a796f2f3926358857fb9af111bbcc9a0e5674af963dddf797ef1c3ab",
+  "fixtureSha256": "8046e5bc59c67b08fa44f192f02eda0d4474700fb649940b24a8898c285f2062",
+  "publicExports": [
+    {
+      "name": "CodeSnippet",
+      "typeOnly": false
+    },
+    {
+      "name": "CodeSnippetProps",
+      "typeOnly": true
+    }
+  ]
+}

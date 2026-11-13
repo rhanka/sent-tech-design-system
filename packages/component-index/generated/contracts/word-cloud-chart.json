@@ -1,8 +1,8 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:1bf240872e962c9c9400aa81aa911ffc5f8c46cc602d3782516066fd5dc102ba",
-  "entryDigest": "sha256:e224b764bd61fc030cdc2cbb0c219e71b76e2ba1941c283514bbc32729b0d9c4",
+  "digest": "sha256:45e89bab1005d033cf8c2c37a8810fb09987f7704aa53026c897c1012db3c2da",
+  "entryDigest": "sha256:a7cedf36d8d31906bc4fda7169d5baa6ab4285ea657b6fe343a75503fec78adf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -312,11 +312,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c6fb1c21063c0bc31d175cdd3339002b814bfba4fb7aa775f4e716bcb669af5d",
-        "declarationPath": "packages/components-vue/dist/WordCloudChart.d.ts",
+        "declarationDigest": "sha256:6f6c93092229bb1a95f9cc6ea5c4ff8d630e7a63326c121fbed7ded919942bf7",
+        "declarationPath": "packages/components-vue/dist/WordCloudChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WordCloudChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

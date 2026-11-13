@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:792c142875ce61a3671b595a2db0741ad7fb582f36be51dd45189c1a15149b30",
-  "entryDigest": "sha256:f08b6c4fd24a39ab20032d8df898faa62b84672f786a3f6eeb21725c365b6843",
+  "digest": "sha256:6064a2181d0a3a693b7f3e6dab037a29bb858ed598760872cef66a38f79e1f36",
+  "entryDigest": "sha256:26461d9f2da9e8260d9435612bfa6ab9a566321bdb25aaa06f47069cbc972ebb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -279,8 +279,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -325,7 +324,6 @@
                 }
               },
               "required": [
-                "content",
                 "id"
               ],
               "type": "object"
@@ -343,19 +341,77 @@
           "sourceType": "unknown"
         },
         {
+          "name": "message.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
           "name": "messages[].content",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "empty"
+        },
+        {
+          "name": "message-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "message": {
+                "additionalProperties": false,
+                "properties": {
+                  "content": {},
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "enum": [
+                      "user",
+                      "assistant",
+                      "system",
+                      "tool"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "error",
+                      "idle",
+                      "pending",
+                      "processing",
+                      "completed",
+                      "failed",
+                      "streaming",
+                      "sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "message"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:48266f950a2196ff3f102bcbf5f97161350485b0b9f4e18ffa164273b8be2c9d",
-        "declarationPath": "packages/components-vue/dist/ChatThread.d.ts",
+        "declarationDigest": "sha256:30e6203e3e0d2568dd171a92596e898b2a69e87bcf5cc3e5d682771b3c27fb58",
+        "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
