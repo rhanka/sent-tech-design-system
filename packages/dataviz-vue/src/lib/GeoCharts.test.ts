@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { ChoroplethMap } from './ChoroplethMap.js';
+import ChoroplethMap from './ChoroplethMap.vue';
 import { GeoClusterMap } from './GeoClusterMap.js';
 import { GeoDensityMap } from './GeoDensityMap.js';
 import { GeoFlowMap } from './GeoFlowMap.js';

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "PackedBubbleChart",
+  "sourceRevision": "5de6ca979d191fbc21119203bb22a974db50453d",
+  "source": "src/lib/PackedBubbleChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 320\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"0\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category1\" cx=\"210\" cy=\"160\" data-chart-index=\"0\" r=\"65.52\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"0\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"210\" y=\"160\">North</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"161.90141229498929\" cy=\"269.6916972641384\" data-chart-index=\"1\" r=\"50.75157376870199\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"161.90141229498929\" y=\"269.6916972641384\">South</text></g></svg></div><ul aria-label=\"Data values for Packed bubbles\" class=\"st-chartDataList\"><li>North: 25</li><li>South: 15</li></ul></div>"
+    },
+    {
+      "id": "city-sort-label",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 320\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"3\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category4\" cx=\"210\" cy=\"160\" data-chart-index=\"3\" r=\"65.52\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"3\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"210\" y=\"160\">D</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"2\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category3\" cx=\"319.07495857150866\" cy=\"98.13110916539938\" data-chart-index=\"2\" r=\"56.74198445595641\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"2\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"319.07495857150866\" y=\"98.13110916539938\">B</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"305.922632159885\" cy=\"225.73891574280353\" data-chart-index=\"1\" r=\"46.329636303342596\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"305.922632159885\" y=\"225.73891574280353\">A</text></g></svg></div><ul aria-label=\"Data values for Packed bubbles\" class=\"st-chartDataList\"><li>A: 10</li><li>B: 15</li><li>D: 20</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-packedBubblesChart consumer\" data-bench=\"packed\" style=\"color:red;\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"0\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category1\" cx=\"240\" cy=\"120\" data-chart-index=\"0\" r=\"48.72\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"0\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"240\" y=\"120\">North</text></g><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"1\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category2\" cx=\"204.23438350140225\" cy=\"201.56562104256457\" data-chart-index=\"1\" r=\"37.73834972544507\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"1\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"204.23438350140225\" y=\"201.56562104256457\">South</text></g></svg></div><ul aria-label=\"Data values for Packed bubbles\" class=\"st-chartDataList\"><li>North: 25</li><li>South: 15</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 320\" width=\"100%\"><g class=\"st-packedBubblesChart__bubble\" data-chart-index=\"0\"><circle class=\"st-packedBubblesChart__circle st-packedBubblesChart__circle--category1\" cx=\"210\" cy=\"160\" data-chart-index=\"0\" r=\"65.52\"></circle><text class=\"st-packedBubblesChart__label\" data-chart-index=\"0\" dominant-baseline=\"middle\" fill=\"oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"210\" y=\"160\">North</text></g></svg></div><ul aria-label=\"Data values for Packed bubbles\" class=\"st-chartDataList\"><li>North: 25</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-packedBubblesChart\"><div aria-label=\"Packed bubbles\" class=\"st-packedBubblesChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 320\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "7da91716c252a9ea310d2d127e658a30d7cad67a74dc9403b79c3d858071b68d",
+  "fixtureSha256": "ccfc9e9420225a31e70ed21c3a0967a3b4d686aea35b8cc5095c3a951e97560e",
+  "publicExports": [
+    {
+      "name": "PackedBubbleChart",
+      "typeOnly": false
+    },
+    {
+      "name": "PackedBubbleChartProps",
+      "typeOnly": true
+    }
+  ]
+}
