@@ -605,14 +605,14 @@ export { SelectionChip } from "./SelectionChip.js";
 export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.js";
 export { default as AppHeader } from './AppHeader.vue';
 export type { AppHeaderProps } from './AppHeader.vue';
-export { AppChrome } from "./AppChrome.js";
+export { default as AppChrome } from './AppChrome.vue';
 export type {
   AppChromeProps,
   AppChromeNavItem,
   AppChromeThemeOption,
   AppChromeColorMode,
   AppChromeLocale
-} from "./AppChrome.js";
+} from './AppChrome.vue';
 export { LanguageToggle } from "./LanguageToggle.js";
 export type { LanguageToggleProps, LanguageToggleLocale } from "./LanguageToggle.js";
 export { IdentityMenu, identityInitial } from "./IdentityMenu.js";

@@ -2,7 +2,6 @@
   "packages/components-vue/src/Accordion.ts",
   "packages/components-vue/src/Alert.ts",
   "packages/components-vue/src/AnomalySwimLaneChart.ts",
-  "packages/components-vue/src/AppChrome.ts",
   "packages/components-vue/src/ArcDiagramChart.ts",
   "packages/components-vue/src/AreaChart.ts",
   "packages/components-vue/src/AreaRangeChart.ts",
