@@ -18,6 +18,9 @@ import { collectSentropicDeps, main, verifyDeps } from "./verify-deps-published.
 const svelteManifest = JSON.parse(
   readFileSync(new URL("../packages/components-svelte/package.json", import.meta.url), "utf8"),
 );
+const themesManifest = JSON.parse(
+  readFileSync(new URL("../packages/themes/package.json", import.meta.url), "utf8"),
+);
 const npmWorkflow = readFileSync(new URL("../.github/workflows/npm-publish.yml", import.meta.url), "utf8");
 const svelteWorkflow = readFileSync(new URL("../.github/workflows/svelte-publish.yml", import.meta.url), "utf8");
 const canvasWorkflow = readFileSync(
@@ -46,7 +49,7 @@ const PINNED_SHA = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*@[0-9
 test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte manifest", () => {
   const deps = collectSentropicDeps(svelteManifest);
   const byName = new Map(deps.map((d) => [d.name, d.version]));
-  assert.equal(byName.get("@sentropic/design-system-themes"), "0.13.0");
+  assert.equal(byName.get("@sentropic/design-system-themes"), themesManifest.version);
   assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
   assert.equal(byName.get("@sentropic/graph"), "0.3.0");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
