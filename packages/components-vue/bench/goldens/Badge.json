@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "Badge",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Badge.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-badge st-badge--neutral st-badge--pill st-badge--md\">New</span>"
+    },
+    {
+      "id": "success-small-circle",
+      "html": "<span class=\"st-badge st-badge--success st-badge--circle st-badge--sm\">2</span>"
+    },
+    {
+      "id": "warning-circle-overflow",
+      "html": "<span class=\"st-badge st-badge--warning st-badge--circle st-badge--md\">1234</span>"
+    },
+    {
+      "id": "error-custom",
+      "html": "<span class=\"st-badge st-badge--error st-badge--pill st-badge--md consumer\" data-bench=\"badge\" style=\"color:red;\" title=\"Failure\"><strong>Failed</strong> &amp; retry</span>"
+    },
+    {
+      "id": "info-small",
+      "html": "<span class=\"st-badge st-badge--info st-badge--pill st-badge--sm\">Info</span>"
+    },
+    {
+      "id": "empty",
+      "html": "<span class=\"st-badge st-badge--neutral st-badge--pill st-badge--md\"></span>"
+    }
+  ],
+  "sourceSha256": "cad3d2a14e33c66349e08c446942ad72f173c1107df8290915e23d834cd89e68",
+  "fixtureSha256": "24b350f3848a63278b547f81197a0c37a2ca4f24620987a8cfd4f7e28acad8a3",
+  "publicExports": [
+    {
+      "name": "Badge",
+      "typeOnly": false
+    },
+    {
+      "name": "BadgeProps",
+      "typeOnly": true
+    },
+    {
+      "name": "BadgeTone",
+      "typeOnly": true
+    },
+    {
+      "name": "BadgeShape",
+      "typeOnly": true
+    },
+    {
+      "name": "BadgeSize",
+      "typeOnly": true
+    }
+  ]
+}
