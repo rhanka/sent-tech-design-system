@@ -553,7 +553,7 @@ function extractOne(
     throw new Error(`emit: declaration missing: ${declRel} (missing source: declaration build)`);
   }
   const resolvedAbs =
-    followExportChain(loaded.program, startAbs, `${identifier}Props`) ?? startAbs;
+    framework === "vue" ? startAbs : followExportChain(loaded.program, startAbs, `${identifier}Props`) ?? startAbs;
   const resolvedRel = relative(repoRoot, resolvedAbs).split("\\").join("/");
   const declarationDigest = `sha256:${createHash("sha256").update(readFileSync(resolvedAbs)).digest("hex")}`;
   const declFile = loaded.program.getSourceFile(resolvedAbs);

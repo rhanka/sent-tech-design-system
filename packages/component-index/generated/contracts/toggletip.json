@@ -1,7 +1,7 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:cb3a368f57d946662f3283535d0e18040d3d83d638bfcbfc346fb2c9fcc275b2",
+  "digest": "sha256:f6e16ff5c13912ed9704abebaf05851666eec6f31ca525bcbb16c713187f62f4",
   "entryDigest": "sha256:a9d28a273bd3de926147d2c87902cfc3f8d16bdfa69bf9ee9cda0571279fbe2d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -198,7 +198,11 @@
           }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -248,6 +252,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -261,7 +271,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
       ]

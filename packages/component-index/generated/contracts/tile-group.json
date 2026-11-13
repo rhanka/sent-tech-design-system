@@ -1,7 +1,7 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:3ee150e073782ca3ad76d708434d7e56ce2e639fcc7be6f20144c07a5388cd9c",
+  "digest": "sha256:ee3e15829cccd3061a78d2d361062c8682f79014eb9820ad8c81417a08b1f86d",
   "entryDigest": "sha256:3c9e2dc927a5bec587382ec0181b61ebe9266c550c015de6d82455d8b1781c42",
   "format": "component-contract/v1",
   "frameworks": {
@@ -307,7 +307,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -324,7 +328,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -404,6 +412,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "legend",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -420,6 +434,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -433,8 +453,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
       ]

@@ -84,7 +84,7 @@ it('should preserve numbered flow navigation through the published Vapor scene e
     document: fixture.document, registry: fixture.options.registry,
     bindings: fixture.options.bindings, presentation: fixture.presentation,
     measureLines: flowMeasure, onStepChange,
-  }, true);
+  });
   await nextTick();
   expect(scene.root.querySelectorAll('[data-flow-badge]')).toHaveLength(2);
   const next = [...scene.root.querySelectorAll('button')].find(button => button.textContent === 'Next step')!;

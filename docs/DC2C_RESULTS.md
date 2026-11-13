@@ -64,3 +64,14 @@ Rendered appearance is not covered: no browser was launched. No root test,
 Track command, Python, stash, push, tag or publication was used. DC-2c.2 remains
 outside this branch. The supplied independent review was addressed; no new h2a
 consensus review is claimed.
+
+## Merge with Vue classic/Vapor foundation (#279)
+
+The numbered-flow scene and its internal card/zone renderers now use compiled
+SFC templates. The shared flow reducer, layout/cache, geometry and callbacks
+are retained; the public scene wrapper keeps the existing no-flow host.
+K25 keeps its original baseline and shrink-only rule. The published Vapor
+numbered-flow navigation witness runs without the interop plugin.
+Cross-host parity compiles the internal Vue SFC alongside the Svelte host.
+Vue pack smoke derives its minimum export count from the public source barrel,
+while still checking all emitted files in the tarball.

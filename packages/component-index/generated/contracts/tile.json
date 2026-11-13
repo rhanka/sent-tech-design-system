@@ -1,7 +1,7 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:6ecefddd40c1c2f4e8be7c1332a456c3b4017129fe485a701c380e3d09e19d2c",
+  "digest": "sha256:19278d04b2c1d4e0d6829511dc42c2742d857c9bd90ccb0fc9fcc5d6e3e548b5",
   "entryDigest": "sha256:026ba8d5268e3f945aaf27e17dde23ac4da4aa52a172688db132c351f24634e5",
   "format": "component-contract/v1",
   "frameworks": {
@@ -253,7 +253,11 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -303,6 +307,12 @@
           "sourceType": "any"
         },
         {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "title",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -320,7 +330,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

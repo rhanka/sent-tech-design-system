@@ -1,9 +1,10 @@
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { svelteTesting } from "@testing-library/svelte/vite";
 import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
-  plugins: [svelte(), svelteTesting()],
+  plugins: [svelte(), svelteTesting(), vue()],
   ssr: { noExternal: ["@lucide/svelte"] },
   test: {
     environment: "jsdom",

@@ -1,7 +1,7 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:c60c4eafa00efadea25b790768f02c24b231473b482ec4e95edbc838cd54ddf3",
+  "digest": "sha256:360dcfb43cd727a2f3b4157ae2c6dcce179c4a14baa2f5e3f36dd7d036769ae1",
   "entryDigest": "sha256:a4fe14e872e2501f018dc16d8c9732d2c3327c4a86bc9f10b7e840ed608a3d26",
   "format": "component-contract/v1",
   "frameworks": {
@@ -618,7 +618,11 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -779,6 +783,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -792,7 +802,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

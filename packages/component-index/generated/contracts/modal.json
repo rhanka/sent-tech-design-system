@@ -1,7 +1,7 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:f3882dcaf34ef0a693f6c0e1d41971a5970f875bf66a2ea99d959aaeedf75eee",
+  "digest": "sha256:a5431b67544cf87ce178d7f1ea3c2971ba728a700d92d6fc6484bdd6acd2808b",
   "entryDigest": "sha256:0264eb4dedc08182d37657937f2e8679f75744c33267e204c864dea6c6b9b055",
   "format": "component-contract/v1",
   "frameworks": {
@@ -204,7 +204,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "close"
+          "name": "close",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onClose",
@@ -241,6 +245,12 @@
       },
       "replaced": [
         {
+          "name": "close.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onClose.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -258,7 +268,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"
       ]
     }

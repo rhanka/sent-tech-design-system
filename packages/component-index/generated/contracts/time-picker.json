@@ -1,7 +1,7 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:9f30c3bebe289b419f4362e1f550563d394997d2eab59ad5a42eda6a7e226431",
+  "digest": "sha256:172e99e4169317135e4a0497c44f006a42693bd939975e75d0a12567967fb771",
   "entryDigest": "sha256:473fcf72e8fe76323e5bd8436c31d20e1e0313b71ce5fe61a17836b76a0ec907",
   "format": "component-contract/v1",
   "frameworks": {
@@ -260,7 +260,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -276,7 +280,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -333,7 +341,19 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
@@ -350,8 +370,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
       ]

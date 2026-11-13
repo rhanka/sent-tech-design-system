@@ -59,3 +59,4 @@ export interface Props {
   unknownField?: unknown;
   stamp?: Date;
 }
+export interface TwoBoxes { text: GenericBox<string>; count: GenericBox<number> }

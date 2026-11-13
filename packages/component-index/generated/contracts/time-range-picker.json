@@ -1,7 +1,7 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:9d028b30b8064b5d3da0f46d1fa533be695a3fa251649ec856af5526b4bcb3ba",
+  "digest": "sha256:0d7052a7724d97c4b25e26c68fe452b23b6e76a6ed7c470fa3d2c8adb4cb4a1f",
   "entryDigest": "sha256:fc3e44b6014033ac257fad8eecdc16839782115e7fbe638a8f86828adb5a2247",
   "format": "component-contract/v1",
   "frameworks": {
@@ -574,7 +574,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -597,10 +601,18 @@
           }
         },
         {
-          "name": "openChange"
+          "name": "openChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -740,6 +752,12 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onOpenChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -747,6 +765,18 @@
         },
         {
           "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "openChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
@@ -763,9 +793,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"openChange\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"openChange\" and prop \"onOpenChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",

@@ -1,7 +1,7 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:0d8f6914140d7cc8d97c0239eca22cea4f2d56a42bc290492a9765f477fd542d",
+  "digest": "sha256:1cb97cba6f4f535d7bdafbe5ad3744b39b1935b1971d9e7c6b5d18d5272425e1",
   "entryDigest": "sha256:3e922300fb051d22273815af3429962ced6f068aebb2065f6c25b92447679a28",
   "format": "component-contract/v1",
   "frameworks": {
@@ -233,7 +233,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -249,7 +253,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -298,7 +306,19 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
@@ -315,8 +335,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"
       ]

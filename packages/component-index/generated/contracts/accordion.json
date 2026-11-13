@@ -1,7 +1,7 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:fdfb549f2c425da681d6247f4c76901cc4a29e5a96e6b09cd13b8c5b3afb750a",
+  "digest": "sha256:f2e64150c5d49dd7aadcd31c83cc5aa73c2b97219c98a27496cd7139b81e02fc",
   "entryDigest": "sha256:e5c41bfd7df78c56678a9a53f56b0d7945ab7bf111cb6c3a9ec63f840e7c8926",
   "format": "component-contract/v1",
   "frameworks": {
@@ -345,7 +345,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -438,6 +442,12 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -455,7 +465,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

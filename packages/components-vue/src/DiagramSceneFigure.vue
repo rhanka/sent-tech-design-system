@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, shallowRef } from 'vue';
 import DiagramSceneFigureBase from './DiagramSceneFigureBase.vue';
-import { DiagramSceneFigure as NumberedScene } from './DiagramSceneFigure.js';
+import NumberedScene from './DiagramNumberedScene.vue';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
 import type { LayoutResult } from '@sentropic/diagram-canvas';
 import type { StepChange, EffectiveTarget } from '@sentropic/diagram-canvas/flowModel';

@@ -1,7 +1,7 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:c89bd8561fcb8549f307bd6b9e131402d658dde63a9badeb731e1ceb11e5c462",
+  "digest": "sha256:62d0e3c946bfcd6066835d5c52ffe9296ce2727984e70e56ff4addf5b260ffba",
   "entryDigest": "sha256:be49eae9f7d86de7afed9977382207e9bc8dbab908e4b2b85ac3ccf22e97fad9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -206,7 +206,11 @@
           }
         },
         {
-          "name": "submit"
+          "name": "submit",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -239,6 +243,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "submit.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -252,7 +262,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"submit\": payload not in declaration",
         "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
       ]
     }
