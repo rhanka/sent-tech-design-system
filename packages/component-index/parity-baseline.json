@@ -475,7 +475,7 @@
     "diagram-scene-figure": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "diagram-zone": {
@@ -1335,10 +1335,10 @@
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC2a L4 diagram scene host (lot feat/dc2a-l4-host): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/angular counterparts are outside this lot and the Vue port lands in a later PR."
+      "reason": "DC-2c.1 exports Svelte and Vue scene hosts with shared behavioral and normalized DOM parity tests; React and Angular remain outside this lot."
     },
     {
       "componentId": "diagram-zone",
