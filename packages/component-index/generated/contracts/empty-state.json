@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:5e3de96d6fc22384a5ce0ebc4a159e312cea534fdd64f9eb7cfd5571954cccf8",
-  "entryDigest": "sha256:d27e95e3372c70dbfbabe8494d062486521fc2bc182cea5ec024903488cb71dc",
+  "digest": "sha256:99ee7af742a83961eecdbb8c7233ed35abbba91a4eda8f0b6a9212c41075a607",
+  "entryDigest": "sha256:cefdc60531ae90584c5b6c108b17c96ebb6f150373d70cf7590ed036d5610638",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -176,9 +176,6 @@
           "message": {},
           "title": {}
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -203,11 +200,20 @@
       ],
       "slots": [
         {
+          "name": "action"
+        },
+        {
           "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:e8feb7656ace4d37ba62fdf83ea7f04d3fcf3c045502780ed9109ffe3facccab",
+        "declarationDigest": "sha256:7fd317c1f570889d85282827b1f6f6a9adddf3809f1ccfac1a511f40c25b1905",
         "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",

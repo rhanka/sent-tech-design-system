@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TileMapChartTile = {
@@ -47,7 +47,7 @@ const props = withDefaults(defineProps<TileMapChartProps>(), {
   width: 480, height: 360, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-tileMapChart', props.class),

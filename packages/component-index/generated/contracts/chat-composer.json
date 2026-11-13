@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:3d82a6994d5e9a7576610e3ff4d99a59f46895f69e26f98ab5c2d19ac5a4747f",
-  "entryDigest": "sha256:aa348261ffd8fe69f6d5f119b12d938ab995e8ad7a31a929f78d3c3c0e53321d",
+  "digest": "sha256:218b6f93bf18448c7b634781380ba9cc721b9e7f37d2b7e0b0a4e44ba4a77877",
+  "entryDigest": "sha256:aec1df752f1e13de0281030023d17bc9b8666aa8b1a3aba9ee7e28801dcbef87",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

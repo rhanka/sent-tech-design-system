@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:973f70a637d0e5745d9afb47184fe1cd338c7b65ed157040053418bacb862ab3",
+      "digest": "sha256:d67f3a56505ac483f46b414539a89ae78b4dc7c88e7d666a427a72c06bf2d3a8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DataImage.vue",
@@ -40,7 +40,7 @@
     "en": "Image resolved from a data row ({{field}} templates).",
     "fr": "Image résolue depuis une ligne de données (gabarits {{champ}})."
   },
-  "digest": "sha256:333402149047d56f8ef774b713b4e02d9668c992417cc8c6786ecd93abf41fbf",
+  "digest": "sha256:3d36db7bdadb71dc49354ff65099b36d99e82e1a4962b785c459259ee0efe9dc",
   "displayName": "DataImage (dataviz)",
   "format": "component-entry/v1",
   "frameworks": [

@@ -36,6 +36,7 @@ function select(optionValue: string) {
 
   emit('change', optionValue);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

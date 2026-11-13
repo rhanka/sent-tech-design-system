@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:160ddaec3050de0b7c48972b98661a6d289a0b9c652c31fd172f692b1f571e18",
-  "entryDigest": "sha256:5ee06695fad6075111d218315475ce1f064fd0b59c140074bf4cca85c2e99f73",
+  "digest": "sha256:c1968f95448e0853dec3df357bc6835f8100f75662a5ff01ca37dcb82268eb33",
+  "entryDigest": "sha256:0eceba12a9a69b5ba3cceac2ab46c358ac5dcf306e9193cfcba362b81255e5e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -213,16 +213,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:72104a1b5ef00c00955c2bedba84ddc68f5fba54ecedb294f478dde05efee183",
+        "declarationDigest": "sha256:f40e31da35b94b1b0d21e6a2c4e04c9a7c6812fcae7323d04273c85561e059f7",
         "declarationPath": "packages/components-vue/dist/Hidden.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HiddenProps",

@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:4db48393e20174e3efb7b939d677ae58b4065a1fdf5863d406b65b9b163b67e3",
-  "entryDigest": "sha256:2d1893919ad1edc0aee5779a143334bae086baf4cb9d3136a8ec6975c136cf79",
+  "digest": "sha256:d322526843f4fea78127e33c1ad56a0cd4ff625aa0fbe7aa98cafd555b64f24a",
+  "entryDigest": "sha256:a033429ca1b0a7d3a6b03a1ab3890ab1ff035e82cf06e396787c1f93efc46e5b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -207,8 +207,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -223,9 +222,6 @@
               },
               "label": {}
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -257,9 +253,29 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/BreadcrumbItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:a80fa7aca335e551d89ef8fd28fe4ce9ff8f5971c3225ec040b7f904085b14a8",
+        "declarationDigest": "sha256:3a6c5473a914869d9d4aa2645c179194c17a54b74e1ec53dfdcd2a7e2b8abf14",
         "declarationPath": "packages/components-vue/dist/Breadcrumb.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BreadcrumbProps",

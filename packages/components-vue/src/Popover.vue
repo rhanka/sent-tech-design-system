@@ -57,6 +57,7 @@ onUnmounted(() => {
   document.removeEventListener('mousedown', onMouseDown);
   document.removeEventListener('keydown', onKeyDown);
 });
+defineSlots<{ "trigger"?: () => unknown; "default"?: () => unknown; "content"?: () => unknown }>();
 </script>
 
 <template>

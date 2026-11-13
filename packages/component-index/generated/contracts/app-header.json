@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:d107dd3cf43054eaf7eed819bd6fd7a58085cc30b42db0d93fee7949d26410e8",
-  "entryDigest": "sha256:32c45cad41b90b7fde95c6f4da96b1b598d1a9950294a89d05e87fb77496cddf",
+  "digest": "sha256:a703864cd4abdbb632d59b3ea7be6a9731da6d0cbad957cd6ffd783a433e72a5",
+  "entryDigest": "sha256:7f44d0081787b0f9a373a9640a049d2c1960936ab3dedd187e6fc01a70413935",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

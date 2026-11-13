@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 import { contrastTextForTone } from './chartContrast.js';
 
@@ -70,7 +70,7 @@ const props = withDefaults(defineProps<VariablePieChartProps>(), {
   width: 360, height: 360, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-variablePieChart', props.class),

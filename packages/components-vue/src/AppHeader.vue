@@ -35,12 +35,12 @@ const props = withDefaults(defineProps<AppHeaderProps>(), { compact: false, menu
 defineSlots<{ logo?: () => unknown; nav?: () => unknown; actions?: () => unknown; drawer?: () => unknown }>();
 const emit = defineEmits<{ menuToggle: [] }>();
 const uid = useId();
-const resolvedDrawerId = props.drawerId ?? `st-appHeader-drawer-${uid}`;
+const resolvedDrawerId = computed(() => props.drawerId ?? `st-appHeader-drawer-${uid}`);
 const resolvedBrandLabel = computed(() => props.brandLabel ?? [props.brandName, props.productName].filter(Boolean).join(' '));
 </script>
 
 <template>
-  <header v-bind="{ ...(props.compact && props.menuOpen && $slots.drawer ? {} : $attrs), class: (classNames('st-appHeader', props.class)) }" ><div class="st-appHeader__bar">
+  <header v-bind="{ ...$attrs, class: classNames('st-appHeader', props.class) }" ><div class="st-appHeader__bar">
     <div v-if="$slots.logo" class="st-appHeader__logo"><slot name="logo" /></div><a v-else-if="props.brandName || props.productName || props.logoSrc" class="st-appHeader__brand" :href="props.brandHref" :aria-label="resolvedBrandLabel || undefined"><img v-if="props.logoSrc" class="st-appHeader__brandMark" :src="props.logoSrc" :alt="props.logoAlt" :aria-hidden="props.logoAlt ? undefined : 'true'" /><span v-if="props.brandName || props.productName" class="st-appHeader__brandCopy"><span v-if="props.brandName" class="st-appHeader__brandName">{{ props.brandName }}</span><span v-if="props.productName" class="st-appHeader__brandProduct">{{ props.productName }}</span></span></a>
     <nav v-if="!props.compact" class="st-appHeader__nav" aria-label="Primary"><slot name="nav" /></nav><div v-if="!props.compact" class="st-appHeader__actions"><slot name="actions" /></div>
     <div v-if="props.compact" class="st-appHeader__burger"><button type="button" class="st-appHeader__burgerButton" :aria-label="props.menuLabel" :aria-expanded="props.menuOpen ? 'true' : 'false'" :aria-controls="resolvedDrawerId" aria-haspopup="menu" @click="emit('menuToggle')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" class="st-appHeader__burgerIcon"><template v-if="props.menuOpen"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></template><template v-else><path d="M4 5h16" /><path d="M4 12h16" /><path d="M4 19h16" /></template></svg></button></div>

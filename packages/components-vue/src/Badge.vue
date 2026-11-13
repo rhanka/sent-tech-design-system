@@ -15,6 +15,7 @@ defineOptions({ name: 'Badge', inheritAttrs: false });
 const props = withDefaults(defineProps<BadgeProps>(), {
   tone: 'neutral', shape: 'pill', size: 'md', class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
