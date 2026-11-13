@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AppChrome.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Full, parameterized navigation shell: brand, nav, controls (theme, color mode, language, GitHub, identity) and mobile drawer.",
     "fr": "Coque de navigation complète et paramétrable : marque, nav, contrôles (thème, mode couleur, langue, GitHub, identité) et tiroir mobile."
   },
-  "digest": "sha256:1dca89c8e75854798dda777ecabb094bde9295e678e5bac4db8f8178df5d0f3c",
+  "digest": "sha256:6c1e27f21446dc4d63c4fdd386a802981805b369fe0ba50a2e40acbd075a09cc",
   "displayName": "AppChrome",
   "format": "component-entry/v1",
   "frameworks": [
