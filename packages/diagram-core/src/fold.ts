@@ -235,10 +235,11 @@ export function projectRelationOccurrences(
       relationOccurrences[key] = {
         id: occurrence.id,
         relation: occurrence.relation,
-        endpoints: occurrence.endpoints.map((endpoint) => ({
-          role: endpoint.role,
-          occurrence: endpoint.occurrence,
-        })),
+        endpoints: occurrence.endpoints.map((endpoint) =>
+          endpoint.chainProvenance !== undefined
+            ? endpoint
+            : { role: endpoint.role, occurrence: endpoint.occurrence },
+        ),
         ...(occurrence.waypoints === undefined
           ? {}
           : { waypoints: occurrence.waypoints.map((point) => ({ ...point })) }),
@@ -247,6 +248,7 @@ export function projectRelationOccurrences(
       continue;
     }
     const endpoints: RelationOccurrenceEndpoint[] = occurrence.endpoints.map((endpoint) => {
+      if (endpoint.chainProvenance !== undefined) return endpoint;
       const original = endpoint.occurrence;
       const isRelation = sourceView.relationOccurrences[original] !== undefined;
       const hidden = isRelation ? internal.has(original) : hiddenByFold(sourceView, collapsed, original);
@@ -287,7 +289,9 @@ export function projectView(
 ): ViewDocument {
   for (const key of Object.keys(sourceView.relationOccurrences).sort()) {
     const occurrence = sourceView.relationOccurrences[key] as RelationOccurrence;
-    const index = occurrence.endpoints.findIndex((endpoint) => endpoint.semanticTarget !== undefined);
+    const index = occurrence.endpoints.findIndex(
+      (endpoint) => endpoint.semanticTarget !== undefined && endpoint.chainProvenance === undefined,
+    );
     if (index !== -1) {
       const endpoint = occurrence.endpoints[index] as RelationOccurrenceEndpoint;
       const refusal: Diagnostic = {
@@ -362,9 +366,11 @@ export function reprojectRetained(view: ViewDocument, document: SemanticDocument
     stripped[key] = {
       ...occurrence,
       endpoints: occurrence.endpoints.map((endpoint) =>
-        endpoint.sourceOccurrence === undefined
-          ? { role: endpoint.role, occurrence: endpoint.occurrence }
-          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+        endpoint.chainProvenance !== undefined
+          ? endpoint
+          : endpoint.sourceOccurrence === undefined
+            ? { role: endpoint.role, occurrence: endpoint.occurrence }
+            : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
       ),
     };
   }

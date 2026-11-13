@@ -33,6 +33,7 @@ import {
 } from "./bindings.js";
 import { retainedExecutorBindings } from "./profiles/index.js";
 import { tryCanonicalise } from "./canonical.js";
+import { createChainValidator } from "./chain.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import {
   CURRENT_SCHEMA_VERSION,
@@ -2055,6 +2056,7 @@ export function validateView(
   const hiddenMask = new Set<string>(hidden?.projectedHiddenRelationOccurrences ?? []);
   const resolver = createTypeResolver(document);
   const collapsed = collapsedOf(view);
+  let chainDiagnostic: ReturnType<typeof createChainValidator> | undefined;
   const internal = classifyInternalRelations(view, document, collapsed);
   const admittedBindings =
     options.bindings !== undefined && verifyExecutorBindings(options.bindings, options.registry).length === 0
@@ -2201,8 +2203,29 @@ export function validateView(
       const endpointPath = `${path}.endpoints[${index}]`;
       // Provenance-carrying endpoints validate provenance first, even when
       // the drawn occurrence is missing (C.4 priority).
-      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined) {
+      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined || endpoint.chainProvenance !== undefined) {
         if (relation === undefined) return;
+        if (endpoint.chainProvenance !== undefined) {
+          if (endpoint.semanticTarget === undefined || endpoint.sourceOccurrence !== undefined) {
+            diagnostics.push(diagnostic({
+              code: "occurrence-endpoint-mismatch", path: `${endpointPath}.occurrence`,
+              message: `projected endpoint for role ${endpoint.role} fails check provenance-missing`,
+              refs: [occurrence.id, endpoint.occurrence], details: { role: endpoint.role, check: "provenance-missing" },
+            }));
+          } else {
+            if (chainDiagnostic === undefined) {
+              const drawnTargets = new Map<OccurrenceRef, EntityRef | PortRef | RelationRef>([
+                ...Object.values(view.entityOccurrences).map((o) => [o.id, o.entity] as const),
+                ...Object.values(view.portOccurrences).map((o) => [o.id, o.port] as const),
+                ...Object.values(view.relationOccurrences).map((o) => [o.id, o.relation] as const),
+              ]);
+              chainDiagnostic = createChainValidator(document, options.registry, resolver, drawnTargets);
+            }
+            const failure = chainDiagnostic(relation, occurrence.id, endpoint, endpointPath, scopedTargets);
+            if (failure !== undefined) diagnostics.push(failure);
+          }
+          return;
+        }
         const failure = projectedEndpointDiagnostic(
           view,
           document,

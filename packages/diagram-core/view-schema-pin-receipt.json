@@ -30,15 +30,15 @@
       "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
     },
     "record": "packages/diagram-core/src/view-schema-pin.ts",
-    "recordSha256": "ae163797f25e84b975c7df701173f9135a044d294173a7fa3ed68c4551e34aa6",
+    "recordSha256": "2355f819d5a2a4efe6b727f128d6b69730256114d071bc670840c78cc6a263ad",
     "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
   },
   "dsRevision": {
-    "note": "Files that implement validation of summaryLabels, with sha256 of their bytes at receipt time.",
+    "note": "Current implementation file hashes after endpoint provenance; @1/@2 canonical schemas and presentation pin remain unchanged.",
     "files": {
-      "packages/diagram-core/src/view.ts": "c1270cbcb4b8cc87e5511d67165ad66636a3ac56173a56537949ab9d8787af32",
-      "packages/diagram-core/src/fold.ts": "76de11412a5a8cfd3baae2459ce816b1d0f61daed9c08b1a5d0fcd8c71e6fd15",
-      "packages/diagram-core/src/validate.ts": "c3c7ebbaf69522f14aad7554268b5e7867c142017cedd3cdb2b096d4380dc5ac"
+      "packages/diagram-core/src/view.ts": "4115f3f9c16cb7d734fcb0103610e3c8921d143d65c68f1af81738c68ac3edb5",
+      "packages/diagram-core/src/fold.ts": "dc37adc1312c0c339573fdfc310ee503909dd3bdb056b9903d05c111d0cf8009",
+      "packages/diagram-core/src/validate.ts": "ee45a8cbb4f5445be33a3c9d30e9ac6c29bee6efac65a2f105e52eb63131c17e"
     }
   },
   "presentation": {
