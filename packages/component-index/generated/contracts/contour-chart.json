@@ -1,8 +1,8 @@
 {
   "componentId": "contour-chart",
   "contractSource": "derived",
-  "digest": "sha256:d892977d6246f6e2a12834c279e2e3f2b36a6b00ce4fab9ec58df14588d09dc1",
-  "entryDigest": "sha256:46b512c74d5d619a5d7bb340d268d7362e9ca4ee2dcc8903b0e9e998a9aefdae",
+  "digest": "sha256:af04c99695ad23605989db29d8e29b6f22d49584d7c2da3459dcb98387239a5a",
+  "entryDigest": "sha256:b829c1677d42c9b744c85769c0f46948e6e0d4c9774b8878b9d3ea74a7ba7ad5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/ContourChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContourChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -326,11 +326,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:20a8a1b58c322afadf4ea7534ae3b36ce8bbf2a2184adc8343cbedf9c8d7d0d6",
-        "declarationPath": "packages/components-vue/dist/ContourChart.d.ts",
+        "declarationDigest": "sha256:c699d50199a96ed3a7f03225d40fb712a556624198b54e8f73af40fd938c55e1",
+        "declarationPath": "packages/components-vue/dist/ContourChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContourChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

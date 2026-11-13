@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:0ad6de50b1c48fa0840c6a5f1232398c035360bea43e128d28f36808c1c794d0",
-  "entryDigest": "sha256:1b121e681fc4f9b8d596a1e8b0279c99f1dba0501c631c3c1e3b5b2d56523561",
+  "digest": "sha256:a9252ed129fd7bc02ade47d9fd3e3e4a9d6c3facd4ad8af47d034b06ee3219fc",
+  "entryDigest": "sha256:4e73e03c9781d50338812ac9c5c22e23bd5dd555f2d013a745d2f4fa6ec8622f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/Dropdown.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DropdownProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -305,20 +305,24 @@
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -334,7 +338,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -378,27 +381,39 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "option": {
+                "$ref": "#/$defs/DropdownOption"
+              }
+            },
+            "required": [
+              "index",
+              "option"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3606aa0eb8fb6ab8eaa2142158d862eec95e8007cd67942b3f7b421b51eeb607",
-        "declarationPath": "packages/components-vue/dist/Dropdown.d.ts",
+        "declarationDigest": "sha256:5c080c4d70013b492cd8bcaf12c18989405134182a0ddd8505ae19bd6f1d2748",
+        "declarationPath": "packages/components-vue/dist/Dropdown.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DropdownProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""

@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "NavActionStack",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/NavActionStack.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Actions\" class=\"st-navActionStack st-navActionStack--vertical\" role=\"group\"><div class=\"st-navActionStack__actions\"><button class=\"st-button st-button--primary st-button--md st-navActionStack__item\" type=\"button\">Save</button><button class=\"st-button st-button--ghost st-button--md st-navActionStack__item\" type=\"button\">Cancel</button></div></div>"
+    },
+    {
+      "id": "links",
+      "html": "<div aria-label=\"Actions\" class=\"st-navActionStack st-navActionStack--horizontal\" role=\"group\"><div class=\"st-navActionStack__actions\"><a class=\"st-button st-button--secondary st-button--md st-navActionStack__item\" href=\"/a\">Link</a><button class=\"st-button st-button--secondary st-button--md st-navActionStack__item\" disabled=\"\" type=\"button\">Disabled</button></div></div>"
+    },
+    {
+      "id": "danger",
+      "html": "<div aria-label=\"Actions\" class=\"st-navActionStack st-navActionStack--vertical consumer\" data-bench=\"actions\" role=\"group\"><div class=\"st-navActionStack__actions\"></div><div aria-label=\"Zone sensible\" class=\"st-navActionStack__danger\" role=\"group\"><div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid\" role=\"separator\" style=\"\"></div><span class=\"st-navActionStack__dangerLabel\">Zone sensible</span><button class=\"st-button st-button--danger st-button--md st-navActionStack__item st-navActionStack__dangerAction\" type=\"button\">Delete</button></div></div>"
+    },
+    {
+      "id": "danger-link",
+      "html": "<div aria-label=\"Actions\" class=\"st-navActionStack st-navActionStack--vertical\" role=\"group\"><div class=\"st-navActionStack__actions\"></div><div aria-label=\"Danger\" class=\"st-navActionStack__danger\" role=\"group\"><div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid\" role=\"separator\" style=\"\"></div><span class=\"st-navActionStack__dangerLabel\">Danger</span><a class=\"st-button st-button--danger st-button--md st-navActionStack__item st-navActionStack__dangerAction\" href=\"/delete\">Delete</a></div></div>"
+    },
+    {
+      "id": "rich-icons",
+      "html": "<div aria-label=\"Actions\" class=\"st-navActionStack st-navActionStack--vertical\" role=\"group\"><div class=\"st-navActionStack__actions\"><button class=\"st-button st-button--secondary st-button--md st-navActionStack__item\" type=\"button\"><i aria-hidden=\"true\">Icon</i>Save</button></div><div aria-label=\"Zone sensible\" class=\"st-navActionStack__danger\" role=\"group\"><div aria-orientation=\"horizontal\" class=\"st-divider st-divider--horizontal st-divider--solid\" role=\"separator\" style=\"\"></div><span class=\"st-navActionStack__dangerLabel\">Zone sensible</span><button class=\"st-button st-button--danger st-button--md st-navActionStack__item st-navActionStack__dangerAction\" type=\"button\"><i aria-hidden=\"true\">Icon</i>Delete</button></div></div>"
+    }
+  ],
+  "sourceSha256": "7e0ae658f24f16bbeed4efb820b8e91b52790d855649c066a44ec44d20f505d7",
+  "fixtureSha256": "b9b973942d59dec4b55814588cb3244bea91dd346d298a54f2dd296a4d7e3916",
+  "publicExports": [
+    {
+      "name": "NavActionStack",
+      "typeOnly": false
+    },
+    {
+      "name": "NavActionStackProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NavAction",
+      "typeOnly": true
+    },
+    {
+      "name": "NavActionKind",
+      "typeOnly": true
+    },
+    {
+      "name": "NavActionDangerZone",
+      "typeOnly": true
+    },
+    {
+      "name": "NavActionStackOrientation",
+      "typeOnly": true
+    }
+  ]
+}

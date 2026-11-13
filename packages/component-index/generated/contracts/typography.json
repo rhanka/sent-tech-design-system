@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:fad1ba02feed72ac0cfd9e18066910ac75bf720507c3abea5b88d1360c65a23a",
-  "entryDigest": "sha256:c6533545152e08ee4e30402c52b37470c578bdfbd8341ca6e1ad7feb3e54a1e8",
+  "digest": "sha256:c25202942836c2a68c21fb0303c20802c46258d098187900bec2bacd903658c2",
+  "entryDigest": "sha256:94c9ab54b412839b279ef8468627b90ba23293bbc461282f0a8cf0443968e002",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -269,8 +269,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -330,13 +329,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ad586ac76fc538946db0360a77d681f0a882949487b93abfbceb95b21844e426",
-        "declarationPath": "packages/components-vue/dist/Typography.d.ts",
+        "declarationDigest": "sha256:f0161e102d37d3369a74ec865b8acc27a8ccc464be3e665009e575546c7ac216",
+        "declarationPath": "packages/components-vue/dist/Typography.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

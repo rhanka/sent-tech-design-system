@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { HLCChart } from "./HLCChart.js";
+import HLCChart from "./HLCChart.vue";
 
 // close vs. close précédent : index 0 = hausse (1re barre), index 2 = baisse (143 < 149).
 const week = [

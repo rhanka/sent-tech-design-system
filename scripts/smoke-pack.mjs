@@ -54,6 +54,7 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
 
 import { collectViolations as collectLicensingViolations } from "./verify-publishable-licensing.mjs";
 
@@ -533,9 +534,19 @@ const deepVerify = {
   },
 };
 
+function vuePublicExportCount() {
+  // Internal SFCs and their emitted helpers are tarball files, not public
+  // exports. Keep the file-membership check above, and measure the public
+  // runtime contract independently from the source barrel.
+  const source = ts.createSourceFile("index.ts", readFileSync(join(root, "packages/components-vue/src/index.ts"), "utf8"), ts.ScriptTarget.Latest, true);
+  return source.statements.filter(ts.isExportDeclaration).filter(node => !node.isTypeOnly)
+    .flatMap(node => node.exportClause && ts.isNamedExports(node.exportClause)
+      ? node.exportClause.elements.filter(entry => !entry.isTypeOnly) : []).length;
+}
+
 const minExportCounts = {
   "@sentropic/design-system-react": () => reactComponentFiles().length,
-  "@sentropic/design-system-vue": () => vueComponentFiles().length,
+  "@sentropic/design-system-vue": vuePublicExportCount,
   "@sentropic/design-system-angular": () => angularComponentFiles().length,
   "@sentropic/dataviz-react": () => datavizReactLibFiles().length,
   "@sentropic/dataviz-vue": () => datavizVueLibFiles().length,

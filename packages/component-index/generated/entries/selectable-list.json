@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectableList.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:92a16c8ae391ca1fcfd5f1f91d3e31d42188485c409cf07786cd0bb831830330",
+      "digest": "sha256:54a3d10f04f501d3c48e999b558760a08e36d0a1cbb2f634f02f69e5d31c4a4e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SelectableList.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/SelectableList.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Accessible listbox driving its rows: single or multiple selection, keyboard navigation.",
     "fr": "Listbox accessible pilotant ses rangées : sélection unique ou multiple, navigation clavier."
   },
-  "digest": "sha256:f695b50f5cc926442511c70eb2ddae74c6f23fb38e285e8863afce64bcc6e69e",
+  "digest": "sha256:8885f5502c02720c775b1ebb1e28e792f2273102a1b369e37c4a944d4923162d",
   "displayName": "SelectableList",
   "format": "component-entry/v1",
   "frameworks": [

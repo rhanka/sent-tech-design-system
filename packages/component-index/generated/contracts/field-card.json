@@ -1,8 +1,8 @@
 {
   "componentId": "field-card",
   "contractSource": "derived",
-  "digest": "sha256:d821b9eb746c76c8ed45ead1fb008ab64324b95702db14fd61d141f574e82ed9",
-  "entryDigest": "sha256:086dddadca2db6250f299008ff138df7ed2c541319562bb96ec4edbe11dcfb52",
+  "digest": "sha256:fa39419541c482834daf95471946d56b6e302e0c4d06848e3c5b4035a3fafef6",
+  "entryDigest": "sha256:abe34d322104e7231a27d0dfd622d65feb41e901521455b1d06a03b46d516f4a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-svelte/dist/FieldCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FieldCardProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -236,8 +236,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -277,13 +276,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:f4805e7324a841124d9204fd6e14b8e192ca8c321b823ad3fe7818285b6a02cb",
-        "declarationPath": "packages/components-vue/dist/FieldCard.d.ts",
+        "declarationDigest": "sha256:72869d1c26449e98a46ffa972d41ff6fef259b75a0e311478288534cad85672d",
+        "declarationPath": "packages/components-vue/dist/FieldCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FieldCardProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

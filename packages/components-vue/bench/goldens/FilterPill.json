@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "FilterPill",
+  "sourceRevision": "8e86801b00fdc681b25a965010cbf97efd1798dc",
+  "source": "src/FilterPill.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span aria-label=\"Filtre Country\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Country</span><span class=\"st-filterPill__value\">France</span></span><button aria-label=\"Retirer le filtre Country\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "with-operator",
+      "html": "<span aria-label=\"Filtre Age\" class=\"st-filterPill st-filterPill--info st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Age</span><span aria-hidden=\"true\" class=\"st-filterPill__operator\">&gt;</span><span class=\"st-filterPill__value\">30</span></span><button aria-label=\"Retirer le filtre Age\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "inactive",
+      "html": "<span aria-label=\"Filtre Status\" class=\"st-filterPill st-filterPill--warning consumer\" data-bench=\"pill\" role=\"group\" style=\"color:red;\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Status</span><span class=\"st-filterPill__value\">Open</span></span><button aria-label=\"Retirer le filtre Status\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "static-body",
+      "html": "<span aria-label=\"Filtre Owner\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active\" role=\"group\"><span class=\"st-filterPill__body st-filterPill__body--static\"><span class=\"st-filterPill__field\">Owner</span><span class=\"st-filterPill__value\">Me</span></span></span>"
+    },
+    {
+      "id": "clickable",
+      "html": "<span aria-label=\"Filtre Tag\" class=\"st-filterPill st-filterPill--success st-filterPill--active\" role=\"group\"><button aria-pressed=\"true\" class=\"st-filterPill__body\" type=\"button\"><span class=\"st-filterPill__field\">Tag</span><span class=\"st-filterPill__value\">urgent</span></button><button aria-label=\"Retirer le filtre Tag\" class=\"st-filterPill__remove\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "disabled",
+      "html": "<span aria-label=\"Filtre Lock\" class=\"st-filterPill st-filterPill--neutral st-filterPill--active st-filterPill--disabled\" role=\"group\"><button aria-pressed=\"true\" class=\"st-filterPill__body\" disabled=\"\" type=\"button\"><span class=\"st-filterPill__field\">Lock</span><span class=\"st-filterPill__value\">val</span></button><button aria-label=\"Retirer le filtre Lock\" class=\"st-filterPill__remove\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"12\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"12\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    }
+  ],
+  "sourceSha256": "33cf6dfe030dc2abea2579257b1ebd64a025b6bbff8c3e72dcced5d41d2eb7e5",
+  "fixtureSha256": "ff832d812c9fba4283d6fdac5496c0f9c8a92dbdeece283b46a788bad1583b8d",
+  "publicExports": [
+    {
+      "name": "FilterPill",
+      "typeOnly": false
+    },
+    {
+      "name": "FilterPillProps",
+      "typeOnly": true
+    },
+    {
+      "name": "FilterPillTone",
+      "typeOnly": true
+    }
+  ]
+}

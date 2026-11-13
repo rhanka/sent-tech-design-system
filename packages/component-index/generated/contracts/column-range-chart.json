@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:5ba34183d1c39aac9943b0436b77c34cc9989268121c530936239a068d2f7599",
-  "entryDigest": "sha256:35a2c49a4a50c38f5f3b8827dc4a8144a202c475170a905bc3d82fd7c2fb85b6",
+  "digest": "sha256:3ed9f2f54f6acf9d8723126e48a5cb18202e270c2ed044b7f8268940e2481f37",
+  "entryDigest": "sha256:1716b2019fe3c8621e99d7faf072a3244f423591ea250481db2f37ef455770ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnRangeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -401,11 +401,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5a594f5e0434dffe34fb8cbea6c09d0a482a6b1fbff51885e2714bd766d30e40",
-        "declarationPath": "packages/components-vue/dist/ColumnRangeChart.d.ts",
+        "declarationDigest": "sha256:5a8f2906af58d5191eed1ec466cfa982374d3e963b0fb8d51d90d20cc8d0b27d",
+        "declarationPath": "packages/components-vue/dist/ColumnRangeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

@@ -4,11 +4,11 @@ import { fileURLToPath } from "node:url";
 import { mount } from "@vue/test-utils";
 import { defineComponent, h, nextTick, reactive, ref, toRaw, version } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { Menu } from "./Menu.js";
+import Menu from "./Menu.vue";
 import type { MenuItem } from "./Menu.js";
-import { MenuPopover } from "./MenuPopover.js";
-import { OverflowMenu } from "./OverflowMenu.js";
-import { Dropdown } from "./Dropdown.js";
+import MenuPopover from "./MenuPopover.vue";
+import OverflowMenu from "./OverflowMenu.vue";
+import Dropdown from './Dropdown.vue';
 
 const here = dirname(fileURLToPath(import.meta.url));
 
@@ -166,11 +166,11 @@ function mountMenu(
 }
 
 describe("Menu cascade — flat compatibility (AC-01)", () => {
-  it("renders VNode and array labels and preserves the selected flat item", async () => {
-    const item = { value: "edit", label: [h("strong", "Edit"), " now"] };
+  it("renders rich label slots and preserves the selected flat item", async () => {
+    const item = { value: "edit", label: "Edit" };
     const wrapper = mountMenu({
-      items: [{ kind: "group", label: h("em", "Actions"), items: [item] }],
-    });
+      items: [{ kind: "group", label: "Actions", items: [item] }],
+    }, { "group-label": ({ item }: { item: { label: string } }) => h("em", item.label), "item-label": ({ item }: { item: { label: string } }) => [h("strong", item.label), " now"] });
     expect(wrapper.find(".st-menu__group em").text()).toBe("Actions");
     expect(wrapper.find(".st-menu__itemLabel strong").text()).toBe("Edit");
     expect(wrapper.find(".st-menu__itemLabel").text()).toBe("Edit now");
@@ -179,12 +179,12 @@ describe("Menu cascade — flat compatibility (AC-01)", () => {
     expect(toRaw(wrapper.emitted("select")![0][0])).toBe(item);
   });
 
-  it("renders VNode and array labels in cascade parents, groups and leaves", async () => {
-    const leaf = { value: "leaf", label: h("i", "Leaf") };
+  it("renders rich label slots in cascade parents, groups and leaves", async () => {
+    const leaf = { value: "leaf", label: "Leaf" };
     const wrapper = mountMenu({ items: [{
-      value: "parent", label: [h("strong", "Parent"), " row"],
-      children: [{ kind: "group", label: [h("em", "Group"), " heading"] }, leaf],
-    }] });
+      value: "parent", label: "Parent",
+      children: [{ kind: "group", label: "Group" }, leaf],
+    }] }, { "group-label": ({ item }: { item: { label: string } }) => [h("em", item.label), " heading"], "item-label": ({ item }: { item: { label: string } }) => item.label === "Leaf" ? h("i", item.label) : [h("strong", item.label), " row"] });
     expect(wrapper.find(".st-menu__itemLabel strong").text()).toBe("Parent");
     await buttonByText(wrapper, "Parent row").trigger("click");
     expect(wrapper.find(".st-menu__group em").text()).toBe("Group");
@@ -1671,7 +1671,8 @@ describe("control review regressions", () => {
   it("ships the required Vue minor version with matching lock metadata", () => {
     const manifest = JSON.parse(readFileSync(join(here, "../package.json"), "utf8"));
     const lock = JSON.parse(readFileSync(join(here, "../../../package-lock.json"), "utf8"));
-    expect(manifest.version).toBe("0.40.1");
+    expect(manifest.version).toBe("0.41.1-next.1");
+    expect(manifest.publishConfig.tag).toBe("next");
     expect(lock.packages["packages/components-vue"].version).toBe(manifest.version);
     expect(version).toMatch(/^3\.6\./);
   });

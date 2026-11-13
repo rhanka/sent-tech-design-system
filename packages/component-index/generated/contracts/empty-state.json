@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:b70fdb500df3333f38e50f02faaffd531cb83ca58c7e445d61e51e6917dc2e93",
-  "entryDigest": "sha256:e4764797760ad0b3a57fa346c173fb5fdd5b2cddc65b35fe702179afe02075f2",
+  "digest": "sha256:287e9758d98170f717ac6a714c66542d0997d23cf2aeeafdca8dabfe30420596",
+  "entryDigest": "sha256:a47eff11e13983f65157a46e11562219e217e86359108c47fd1b2c0cf9b17584",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -153,7 +153,7 @@
         "declarationPath": "packages/components-svelte/dist/EmptyState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmptyStateProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -164,8 +164,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -177,9 +176,6 @@
           "message": {},
           "title": {}
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -202,13 +198,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "action"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:cb11e160cbcced60a31bdae84c093dd75b7cd75675fdc119a82a4d48735aea65",
-        "declarationPath": "packages/components-vue/dist/EmptyState.d.ts",
+        "declarationDigest": "sha256:7fd317c1f570889d85282827b1f6f6a9adddf3809f1ccfac1a511f40c25b1905",
+        "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

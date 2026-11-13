@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:2fd3adaa90976102d79877603699386ca008dea268480478f7650553e0bea39c",
-  "entryDigest": "sha256:c30965719d9a244717afe872a658ddc25e062454e9db1383f287a8c59ab32099",
+  "digest": "sha256:ae61fbc5d650419d41183184e8a1c1a69644f319c8e766a60312277abcffbea9",
+  "entryDigest": "sha256:3be0e098425083afcadb6735f5a1e2d08f74360bf9f6375ef294e4d2ee757639",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableRow.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableRowProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -263,12 +263,14 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -304,18 +306,30 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "leading"
+        },
+        {
+          "name": "trailing"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:66f11d447728828d8317f671c7103712a3081f2079df2f13eceef51363094e23",
-        "declarationPath": "packages/components-vue/dist/SelectableRow.d.ts",
+        "declarationDigest": "sha256:9dec14d2f138a2bf05f72ecaff8f65cce0b6527d04b6703eed4b81aef0238770",
+        "declarationPath": "packages/components-vue/dist/SelectableRow.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableRowProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

@@ -39,6 +39,10 @@ const DECL_CANDIDATES: { match: RegExp; replace: (stem: string) => string }[] = 
     replace: (stem) => `packages/dataviz-react/dist/${stem}.d.ts`,
   },
   {
+    match: /^packages\/dataviz-vue\/src\/(.+)\.vue$/,
+    replace: (stem) => `packages/dataviz-vue/dist/${stem}.vue.d.ts`,
+  },
+  {
     match: /^packages\/dataviz-vue\/src\/(.+)\.ts$/,
     replace: (stem) => `packages/dataviz-vue/dist/${stem}.d.ts`,
   },
@@ -73,98 +77,21 @@ export function followExportChain(
   startAbsoluteFile: string,
   symbolName: string,
 ): string | null {
-  const visited = new Set<string>();
-  let current: string | null = startAbsoluteFile;
-  while (current !== null) {
-    if (visited.has(current)) return null;
-    visited.add(current);
-    const source = program.getSourceFile(current);
-    if (source === undefined) return null;
-    if (declaresSymbol(source, symbolName)) return current;
-    current = followOneLevel(source, current, symbolName);
-  }
-  return null;
-}
-
-function declaresSymbol(source: ts.SourceFile, symbolName: string): boolean {
-  for (const statement of source.statements) {
-    if (
-      (ts.isTypeAliasDeclaration(statement) ||
-        ts.isInterfaceDeclaration(statement) ||
-        ts.isEnumDeclaration(statement) ||
-        ts.isClassDeclaration(statement) ||
-        ts.isFunctionDeclaration(statement) ||
-        ts.isVariableStatement(statement) ||
-        ts.isModuleDeclaration(statement)) &&
-      named(statement)?.text === symbolName
-    ) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function named(statement: ts.Statement): ts.Identifier | undefined {
-  if ("name" in statement) {
-    const name = (statement as { name?: unknown }).name;
-    if (name !== undefined && ts.isIdentifier(name as ts.Node)) return name as ts.Identifier;
-  }
-  return undefined;
-}
-
-function followOneLevel(
-  source: ts.SourceFile,
-  currentAbsoluteFile: string,
-  symbolName: string,
-): string | null {
-  const dir = dirname(currentAbsoluteFile);
-  for (const statement of source.statements) {
-    if (!ts.isExportDeclaration(statement)) continue;
-    if (statement.exportClause === undefined) {
-      // `export * from`: only follows when the target declares the symbol.
-      const specifier = moduleSpecifierText(statement);
-      if (specifier === null || !specifier.startsWith(".")) continue;
-      const resolved = resolveDeclSpecifierText(dir, specifier);
-      if (resolved !== null && declaresSymbolInFile(resolved, symbolName)) return resolved;
-      continue;
-    }
-    if (ts.isNamespaceExport(statement.exportClause)) continue;
-    const matches = statement.exportClause.elements.some((element) => element.name.text === symbolName);
-    if (!matches) continue;
-    const specifier = moduleSpecifierText(statement);
-    if (specifier === null) return currentAbsoluteFile;
-    if (!specifier.startsWith(".")) return null;
-    return resolveDeclSpecifierText(dir, specifier);
-  }
-  return null;
-}
-
-function moduleSpecifierText(statement: ts.ExportDeclaration): string | null {
-  if (statement.moduleSpecifier !== undefined && ts.isStringLiteral(statement.moduleSpecifier)) {
-    return statement.moduleSpecifier.text;
-  }
-  return null;
+  const source = program.getSourceFile(startAbsoluteFile);
+  if (source === undefined) return null;
+  const checker = program.getTypeChecker();
+  const module = checker.getSymbolAtLocation(source);
+  if (module === undefined) return null;
+  const exported = checker.getExportsOfModule(module).find(symbol => symbol.name === symbolName);
+  if (exported === undefined) return null;
+  const target = (exported.flags & ts.SymbolFlags.Alias) !== 0 ? checker.getAliasedSymbol(exported) : exported;
+  return target.declarations?.[0]?.getSourceFile().fileName ?? null;
 }
 
 const fileCache = new Map<string, ts.SourceFile>();
 
-function declaresSymbolInFile(absoluteFile: string, symbolName: string): boolean {
-  let source = fileCache.get(absoluteFile);
-  if (source === undefined) {
-    // Cheap parse for the chain probe; the program owns type truth.
-    source = ts.createSourceFile(absoluteFile, readFileSync(absoluteFile, "utf8"), ts.ScriptTarget.Latest, true);
-    fileCache.set(absoluteFile, source);
-  }
-  return declaresSymbol(source, symbolName);
-}
-
-function resolveDeclSpecifierText(fromDir: string, specifier: string): string | null {
-  const stem = specifier.endsWith(".js") ? specifier.slice(0, -3) : specifier;
-  for (const extension of [".d.ts", ".svelte.d.ts"]) {
-    const candidate = join(fromDir, `${stem}${extension}`);
-    if (existsSync(candidate)) return candidate;
-  }
-  return null;
+function moduleSpecifierText(statement: ts.ExportDeclaration): string | null {
+  return statement.moduleSpecifier && ts.isStringLiteral(statement.moduleSpecifier) ? statement.moduleSpecifier.text : null;
 }
 
 /**

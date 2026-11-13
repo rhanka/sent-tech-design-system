@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Timeline.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f336c9bf517fc74019e4d4a72a290bc262f3203e8f512ad5e558640a5c62e205",
+      "digest": "sha256:6ef14d89f8358c0f172d630336b3d691dd6fac5db2d55c3d30752c660671c78f",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Timeline.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Timeline.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
     "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
   },
-  "digest": "sha256:1096ab19a658b6d967d051e1f7105263a1373744a8b041a0d8022fe2f4fb4de9",
+  "digest": "sha256:4223f296e380b71b8f9391155ea167bfa8e1b6197c8739052b2168c886bdd6d6",
   "displayName": "Timeline",
   "format": "component-entry/v1",
   "frameworks": [

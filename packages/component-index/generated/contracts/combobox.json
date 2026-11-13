@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:7c69ff411e1538b4a8661bdf02dc7343a99e41ac2db0dfeb7ee688bd924adda6",
-  "entryDigest": "sha256:0bf1828b109afaa0a1691a21e501123cda5aa11187fa19565f54cbf1e94302f1",
+  "digest": "sha256:09d9b1af2ff44ebe41434bb424f27092fc0e56c2b69c1389d4244706f33cd319",
+  "entryDigest": "sha256:70898917a9fb8295c4fc80b19ade1ba4d7d5433e5e54776baf923ee7d3fe7c8c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -385,7 +385,7 @@
         "declarationPath": "packages/components-svelte/dist/Combobox.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboboxProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -398,49 +398,56 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "type": "string"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onSelect",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onUpdate:open",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -456,7 +463,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -539,47 +545,47 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:open.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "no-results-label"
+        },
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {
+                "$ref": "#/$defs/ComboboxOption"
+              }
+            },
+            "required": [
+              "option"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b0c9439eb22cd0df8cb2bf10a51d12bc13abf141b0957e468c588ba2a71b45df",
-        "declarationPath": "packages/components-vue/dist/Combobox.d.ts",
+        "declarationDigest": "sha256:3a63175d34ca8fc971cf9a5de7a5a93fd55170b4d378522029780ab477b29f35",
+        "declarationPath": "packages/components-vue/dist/Combobox.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboboxProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",

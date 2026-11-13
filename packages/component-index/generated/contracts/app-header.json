@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:252ba8329c9a2f318944bdf89b24a52a1ed1e922a192755c0f36795ba3ad32b0",
-  "entryDigest": "sha256:175ae3c3e55fd4f9058b47516927107b217ffab675ef14d1d3fd6ce690a3cbe7",
+  "digest": "sha256:584998870d67d64b852ad2e23003502bf2f21923cd20c64c7e764ef03a1bac32",
+  "entryDigest": "sha256:8ea8b1362961f7c8b0b94f87c45bc05db9782db8051d07e5d50b53ba371e752c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -274,7 +274,7 @@
         "declarationPath": "packages/components-svelte/dist/AppHeader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppHeaderProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -288,16 +288,11 @@
           "name": "menuToggle"
         },
         {
-          "name": "onMenuToggle",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onMenuToggle"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -345,26 +340,31 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onMenuToggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "actions"
+        },
+        {
+          "name": "drawer"
+        },
+        {
+          "name": "logo"
+        },
+        {
+          "name": "nav"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:249ebd653fd129c11d9356778dafb2b02c857dae5c6f3ca687c78e44b0175801",
-        "declarationPath": "packages/components-vue/dist/AppHeader.d.ts",
+        "declarationDigest": "sha256:324f74398b60ab2a4304cbd5d0e4b85c1b7dc60e58748d9828717849cca93e1b",
+        "declarationPath": "packages/components-vue/dist/AppHeader.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppHeaderProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"menuToggle\": payload not in declaration",
         "event pair: emits \"menuToggle\" and prop \"onMenuToggle\" both listed verbatim"
       ]
     }

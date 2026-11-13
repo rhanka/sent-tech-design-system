@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Grid.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:5f16bcd8dad591a42bcd3c6fc2524c6b5e95dfb1359900e4aa5016da891bb114",
+      "digest": "sha256:e3926014c0e08bd784bfb48a87e26ca241cb2627f3b0506f90035e9eb27bf526",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Grid.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Grid.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
     "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
   },
-  "digest": "sha256:c65b976a2fd72388db789de9b424cc7ce5d7fe5d421296abed64c7890b9e1ab5",
+  "digest": "sha256:ec28adbf6c1e6b8ad62de538fafec78bb5e086f96873dcbf783290b4efb5acf9",
   "displayName": "Grid",
   "format": "component-entry/v1",
   "frameworks": [

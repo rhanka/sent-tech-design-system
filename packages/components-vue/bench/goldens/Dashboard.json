@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Dashboard",
+  "sourceRevision": "f1d8f806f2d428c2e7b3471795eb77c598a5bd1c",
+  "source": "src/Dashboard.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-dashboard\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">Overview</h1></div><div class=\"st-dashboard__content\">Main content</div></main></div></div>"
+    },
+    {
+      "id": "with-nav-kpis",
+      "html": "<div class=\"st-dashboard\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><div class=\"st-dashboard__app-title\">App</div><nav class=\"st-sidenav\"><a class=\"st-sidenav__item st-sidenav__item--active\" href=\"/\">Home</a><a class=\"st-sidenav__item\" href=\"/settings\">Settings</a></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">Overview</h1></div><div class=\"st-dashboard__kpi-row\"><div class=\"st-kpi-card\"><span class=\"st-kpi-card__label\">Users</span><span class=\"st-kpi-card__value\">1.2k</span></div><div class=\"st-kpi-card\"><span class=\"st-kpi-card__label\">Revenue</span><span class=\"st-kpi-card__value\">$9k</span><span class=\"st-kpi-card__delta\">+4%</span></div></div><div class=\"st-dashboard__content\"></div></main></div></div>"
+    },
+    {
+      "id": "title-only",
+      "html": "<div class=\"st-dashboard\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><nav class=\"st-sidenav\"><a class=\"st-sidenav__item\" href=\"/only\">Only</a></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">Plain</h1></div><div class=\"st-dashboard__content\"></div></main></div></div>"
+    },
+    {
+      "id": "custom-class",
+      "html": "<div class=\"st-dashboard consumer\" data-bench=\"dash\" style=\"color:red;\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><div class=\"st-dashboard__app-title\">A</div><nav class=\"st-sidenav\"></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">Styled</h1></div><div class=\"st-dashboard__content\"><em>Slot</em> body</div></main></div></div>"
+    },
+    {
+      "id": "kpi-no-delta",
+      "html": "<div class=\"st-dashboard\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">KPIs</h1></div><div class=\"st-dashboard__kpi-row\"><div class=\"st-kpi-card\"><span class=\"st-kpi-card__label\">A</span><span class=\"st-kpi-card__value\">1</span></div></div><div class=\"st-dashboard__content\">Body</div></main></div></div>"
+    },
+    {
+      "id": "empty-nav",
+      "html": "<div class=\"st-dashboard\"><div class=\"st-dashboard__layout\"><aside class=\"st-dashboard__aside\"><nav class=\"st-sidenav\"></nav></aside><main class=\"st-dashboard__main\"><div class=\"st-dashboard__titlebar\"><h1 class=\"st-dashboard__title\">Empty</h1></div><div class=\"st-dashboard__content\"></div></main></div></div>"
+    }
+  ],
+  "sourceSha256": "405d5db7242ab7aff34ffe0b2066b780dc263a7dcbeb411e1a972a02f3ebea3b",
+  "fixtureSha256": "4cd80bbe9090e79ef2c2f20a3aa2f4343a413391301ebca9aca8c7361389efe3",
+  "publicExports": [
+    {
+      "name": "Dashboard",
+      "typeOnly": false
+    },
+    {
+      "name": "DashboardProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DashboardNavItem",
+      "typeOnly": true
+    },
+    {
+      "name": "DashboardKpi",
+      "typeOnly": true
+    }
+  ]
+}

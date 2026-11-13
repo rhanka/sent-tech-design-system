@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:41cc345de8dc6b9cdd02180ad48e4780c2acfb94a74439354690c4e126e8195c",
-  "entryDigest": "sha256:89247dbd260d55130af6afdb09e57a9b1c12f3bfe2e39628007a82b3d1443119",
+  "digest": "sha256:8bf13fee140346f3a02e56cc22da9ac85242d004bee9a626b70466e75a96940f",
+  "entryDigest": "sha256:16c14599da000bb1863d4b4717f1c0655dfc653bb313407d6c6854ab60cd74d9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -333,7 +333,13 @@
       ],
       "events": [
         {
-          "name": "layout"
+          "name": "layout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onLayout",
@@ -424,16 +430,15 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7169050c8d6979851ea5522bc9a4f35030415a37ba7e4cdc6cc04c9db546db3",
-        "declarationPath": "packages/components-vue/dist/DashboardGrid.d.ts",
+        "declarationDigest": "sha256:dc0e31254b1409ba97bd9e5c85666c29ef518bcbe1a6e35490aa5acd193ae7bb",
+        "declarationPath": "packages/components-vue/dist/DashboardGrid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DashboardGridProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"layout\": payload not in declaration",
         "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim"
       ]
     }

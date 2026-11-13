@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Col.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1c6a12e49406d5169e3e217132514ab6459444da46adde10a49d84df596522c4",
+      "digest": "sha256:79665fa35f762c87791aa60afcb63b027e8313dd54ba82572c07359698688b93",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Col.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Col.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Column of a 12-grid (span, offset, responsive overrides).",
     "fr": "Colonne d'une grille 12 (span, offset, surcharges responsives)."
   },
-  "digest": "sha256:779de1663fb82179f4565e29209b012e28b8092e48de953ad544353024967a6f",
+  "digest": "sha256:9c76bce2d65b828a5ee056803c68bb5f004cdf03ec87a84fce667eacd5a4818b",
   "displayName": "Col",
   "format": "component-entry/v1",
   "frameworks": [

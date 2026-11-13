@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Embed.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:2d0ec6d3f1be6fa1ea126ef0a4101f3a80a1f3bd77f6c968be55fc585ac66672",
+      "digest": "sha256:5c118c7d218229b56b1e2ffdfa3c1f332f21a93b75d6592cfed2b669aeba0e8d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Embed.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Embed.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Controlled iframe wrapper with strict sandbox, ratio, and loading control.",
     "fr": "Iframe contrôlée avec sandbox strict, ratio et chargement configurable."
   },
-  "digest": "sha256:85bfad149bb9178d5005c5a52066f858a041f6981530ba58a2d7e776754b74fe",
+  "digest": "sha256:7d6856a1f2b527bbbe6052de3588e49cab36bb0982af2bb138c660b973691d92",
   "displayName": "Embed",
   "format": "component-entry/v1",
   "frameworks": [

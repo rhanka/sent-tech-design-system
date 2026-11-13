@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Avatar",
+  "sourceRevision": "b6c083a51d683d86b15a253274a406b81297cf5d",
+  "source": "src/Avatar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span aria-label=\"Ada Lovelace\" class=\"st-avatar st-avatar--md st-avatar--circle st-avatar--category1\" role=\"img\"><span aria-hidden=\"true\" class=\"st-avatar__initials\">AL</span></span>"
+    },
+    {
+      "id": "with-src",
+      "html": "<span aria-label=\"Ada Lovelace\" class=\"st-avatar st-avatar--md st-avatar--circle st-avatar--image\" role=\"img\"><img alt=\"Ada Lovelace\" class=\"st-avatar__image\" src=\"/ada.png\"></span>"
+    },
+    {
+      "id": "sizes",
+      "html": "<span aria-label=\"Bob\" class=\"st-avatar st-avatar--lg st-avatar--square st-avatar--category3\" role=\"img\"><span aria-hidden=\"true\" class=\"st-avatar__initials\">B</span></span>"
+    },
+    {
+      "id": "alt-override",
+      "html": "<span aria-label=\"Photo of Cy\" class=\"st-avatar st-avatar--sm st-avatar--circle st-avatar--category1\" role=\"img\"><span aria-hidden=\"true\" class=\"st-avatar__initials\">C</span></span>"
+    },
+    {
+      "id": "custom",
+      "html": "<span aria-label=\"Di\" class=\"st-avatar st-avatar--md st-avatar--circle st-avatar--category1 consumer\" data-bench=\"avatar\" role=\"img\" style=\"color:red;\"><span aria-hidden=\"true\" class=\"st-avatar__initials\">D</span></span>"
+    }
+  ],
+  "sourceSha256": "a6e65c5908ef3ddbeaee92c43e8b37c7cb103c210b08312f535366d530c416cc",
+  "fixtureSha256": "4ac5cf74603bc6be731c85aca778e147e8bb8ad7e57e4fa6724ca448bd40132e",
+  "publicExports": [
+    {
+      "name": "Avatar",
+      "typeOnly": false
+    },
+    {
+      "name": "AvatarProps",
+      "typeOnly": true
+    },
+    {
+      "name": "AvatarSize",
+      "typeOnly": true
+    },
+    {
+      "name": "AvatarShape",
+      "typeOnly": true
+    },
+    {
+      "name": "AvatarTone",
+      "typeOnly": true
+    }
+  ]
+}

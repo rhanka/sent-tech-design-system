@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Input.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:82668e45041224a120a0d9e988792c824a08ef8fc7e64dfa159c295eeb86279d",
+      "digest": "sha256:0eeb5bb2a8029cd17052e90994971d8d34be9d33dd552587812a487e87fbfbd8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Input.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Input.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:29c1daf0bb5b0314dfbe3ca97026c98d5f70810c0b6ab5d779de927b0d44077b",
+  "digest": "sha256:ea14b8e04206d1392c2cc87b5984374b81c4f85e6cfa31f65ac81a3a18ecddd0",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

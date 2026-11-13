@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "ChatMessage",
+  "sourceRevision": "99f8cf43943f37acbfaba40b12d4539f364073fc",
+  "source": "src/ChatMessage.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hello</div></div></div></article>"
+    },
+    {
+      "id": "user",
+      "html": "<article class=\"st-chatMessage st-chatMessage--user st-chatMessage--sent\" data-align=\"end\" data-role=\"user\" data-status=\"sent\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hi there</div></div></div></article>"
+    },
+    {
+      "id": "streaming",
+      "html": "<article aria-live=\"polite\" class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--processing\" data-align=\"start\" data-role=\"assistant\" data-status=\"processing\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Thinking</div><span aria-hidden=\"true\" class=\"st-chatMessage__pulse\"></span></div><div class=\"st-chatMessage__footer\"><span class=\"st-chatMessage__timestamp\">12:00</span></div></div></article>"
+    },
+    {
+      "id": "rich-content",
+      "html": "<article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div aria-hidden=\"true\" class=\"st-chatMessage__avatar\"><strong>A</strong></div><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hello</div></div><div class=\"st-chatMessage__footer\"><em>F</em></div><div class=\"st-chatMessage__actions\"><button type=\"button\">Retry</button></div></div></article>"
+    },
+    {
+      "id": "timestamp-only",
+      "html": "<article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hey</div></div><div class=\"st-chatMessage__footer\"><span class=\"st-chatMessage__timestamp\">12:34</span></div></div></article>"
+    },
+    {
+      "id": "actions-prop",
+      "html": "<article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hey</div></div><div class=\"st-chatMessage__actions\">Retry</div></div></article>"
+    },
+    {
+      "id": "custom",
+      "html": "<article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--failed consumer\" data-align=\"start\" data-bench=\"chat\" data-role=\"assistant\" data-status=\"failed\" style=\"color:red;\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Failed</div></div></div></article>"
+    }
+  ],
+  "sourceSha256": "cc27f5ec767245982e68b07698bf62ebfa651011ff555e780039edca002bedb5",
+  "fixtureSha256": "163d00bfa67052328a9fc81c1fa7b662c033a5b06fc23c109d6ef74e27f83b18",
+  "publicExports": [
+    {
+      "name": "ChatMessage",
+      "typeOnly": false
+    },
+    {
+      "name": "ChatMessageProps",
+      "typeOnly": true
+    },
+    {
+      "name": "ChatMessageRole",
+      "typeOnly": true
+    },
+    {
+      "name": "ChatMessageStatus",
+      "typeOnly": true
+    }
+  ]
+}

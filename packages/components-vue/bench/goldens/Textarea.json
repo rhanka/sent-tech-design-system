@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Textarea",
+  "sourceRevision": "e5e0cc6d0a38693265433ba3eeaac6d8fb5cbafb",
+  "source": "src/Textarea.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-textarea-1\"><span class=\"st-field__label\">Comment</span><textarea class=\"st-textarea st-control\" id=\"st-textarea-1\">hello</textarea></label></div>"
+    },
+    {
+      "id": "helper",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-textarea-2\"><span class=\"st-field__label\">Notes</span><textarea class=\"st-textarea st-control\" disabled=\"\" id=\"st-textarea-2\" placeholder=\"Type here\" rows=\"3\"></textarea></label><span class=\"st-field__help\">Plain help</span></div>"
+    },
+    {
+      "id": "error",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-textarea-3\"><span class=\"st-field__label\">Name</span><textarea aria-invalid=\"true\" class=\"st-textarea st-control\" id=\"st-textarea-3\"></textarea></label><span class=\"st-field__error\">Required</span></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-textarea-4\"><span class=\"st-field__label\"><strong>Rich</strong></span><textarea class=\"st-textarea st-control\" id=\"st-textarea-4\"></textarea></label><span class=\"st-field__help\"><em>Help</em></span></div>"
+    },
+    {
+      "id": "rich-error",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-textarea-5\"><span class=\"st-field__label\">Name</span><textarea aria-invalid=\"true\" class=\"st-textarea st-control\" id=\"st-textarea-5\"></textarea></label><span class=\"st-field__error\"><strong>Err</strong></span></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div aria-describedby=\"external-help\" class=\"st-field consumer\" data-bench=\"textarea\" id=\"consumer-area\" style=\"color:red;\"><label class=\"st-field__control\" for=\"st-textarea-6\"><span class=\"st-field__label\">X</span><textarea aria-describedby=\"external-help\" class=\"st-textarea st-control\" data-bench=\"textarea\" id=\"st-textarea-6\" style=\"color: red\"></textarea></label></div>"
+    }
+  ],
+  "sourceSha256": "af543ca7056b3418f21dcdbd06fefa7f4cfae1fda9a998edd478d97a1b7be214",
+  "fixtureSha256": "8f06ebd89cb9a863fe60b4f221ab27edf6514f9557de5c506b0a6b751237b2bd",
+  "publicExports": [
+    {
+      "name": "Textarea",
+      "typeOnly": false
+    },
+    {
+      "name": "TextareaProps",
+      "typeOnly": true
+    }
+  ]
+}

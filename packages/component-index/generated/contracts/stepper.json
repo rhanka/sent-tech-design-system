@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:813b21b84ac59f0ada0652f933434b47eea11b0f4c66c13f4069db200823fcb5",
-  "entryDigest": "sha256:3f67017c81dc7e07361b18518e44d02e3e75be38a1e3e3a61fe972cc4fd85929",
+  "digest": "sha256:7de0ed594b45d3faf3a262effd83511bfa55e7f5293c22c9bbf2849b0aa4e397",
+  "entryDigest": "sha256:ef09139a95f75672d17e0c6349c511d6725e28e7d993e4bd9b8b861418dc79cc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepperProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -276,7 +276,10 @@
           }
         },
         {
-          "name": "stepClick"
+          "name": "stepClick",
+          "payload": {
+            "type": "number"
+          }
         }
       ],
       "limitations": [
@@ -339,16 +342,15 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:21247175993fd054a0a94c48da6f374f2b48f9a1cced6cccc46473c0d4326626",
-        "declarationPath": "packages/components-vue/dist/Stepper.d.ts",
+        "declarationDigest": "sha256:aceeffbe71d89765855972b01c0bec0a0ca65ecd9b570fed9663c2a32f9f8c10",
+        "declarationPath": "packages/components-vue/dist/Stepper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepperProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"stepClick\": payload not in declaration",
         "event pair: emits \"stepClick\" and prop \"onStepClick\" both listed verbatim"
       ]
     }

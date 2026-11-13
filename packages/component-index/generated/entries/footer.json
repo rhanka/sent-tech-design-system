@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Footer.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4e8d833a7eb998a8157d6210e0d0b0e89ed645b5a68c5b50749a99580e78f0e1",
+      "digest": "sha256:59a218cdf14d4e56d3f780caaeaec3076637128a14f3ce03677e63d76e6637a5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Footer.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Footer.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Application footer: brand, link columns, copyright and legal links.",
     "fr": "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux."
   },
-  "digest": "sha256:cad3f91ad3bf126bed62405ea428efce5f80e75cfbbe27d9b1705ec1ec5bbf60",
+  "digest": "sha256:eceeb702314d2bbf251e56473ce0f5c50ab1469348db0fc946342cd8082c8fa3",
   "displayName": "Footer",
   "format": "component-entry/v1",
   "frameworks": [

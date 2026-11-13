@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { ColorScaleBar } from "./ColorScaleBar.js";
+import ColorScaleBar from "./ColorScaleBar.vue";
 
 const bar = (el: HTMLElement) => el.querySelector<HTMLElement>(".st-colorScaleBar__bar");
 

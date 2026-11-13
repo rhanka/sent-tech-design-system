@@ -1,8 +1,8 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:59909f18be94ed68d9791753a7e786499068b191bc71de612d31aa8d9aa8b6c5",
-  "entryDigest": "sha256:e7dc31a3401dc25ee8224a2f2e38f5942e8604ccb1387127000fbc88b979cd6d",
+  "digest": "sha256:189c359e289fa8b8c8557bc8e0e21eecb2a888b8f3a020d19e2b462536586250",
+  "entryDigest": "sha256:dc48adef6f4de12359f89a08de39964a8d2d6eba7a9ea9958793bf23a9231e55",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-svelte/dist/IconButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconButtonProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -186,8 +186,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -223,13 +222,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c5b085aa3ede0083435ddca04f70ef0fb4c6f936913d1b1b803b00797a21e663",
-        "declarationPath": "packages/components-vue/dist/IconButton.d.ts",
+        "declarationDigest": "sha256:de2a241b181c48fc111fda58e53ab25fea5ccf3050909e587b8348d8fff00122",
+        "declarationPath": "packages/components-vue/dist/IconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "IconButtonProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

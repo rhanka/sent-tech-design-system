@@ -1,8 +1,8 @@
 {
   "componentId": "range-slider",
   "contractSource": "derived",
-  "digest": "sha256:1fdf2415c870fe1fe6acf94d5116e50c82af8bffc84447460e3e489670bdfc51",
-  "entryDigest": "sha256:1dd6136e2141c5541db55cbfd65933ef3df8aac455b61c1f6aca4183f2725445",
+  "digest": "sha256:f6ebef1e8ec4f8db80f8cd3bd427450107ea31712c46c04f67c7a1a4a8a71cee",
+  "entryDigest": "sha256:95780141ce58e9e7e193b6414bfc3e7ab8dcc620bb244be3d270c0c92cb496d5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -376,7 +376,7 @@
         "declarationPath": "packages/components-svelte/dist/RangeSlider.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RangeSliderProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -396,24 +396,64 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
             "type": "array"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": false,
+            "prefixItems": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "number"
+              }
+            ],
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -508,33 +548,18 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:58ccb972027586f41565a7611fc5fa2f2598f7a58552bd6a906324a646ef92f8",
-        "declarationPath": "packages/components-vue/dist/RangeSlider.d.ts",
+        "declarationDigest": "sha256:e2bacd5b7fea538d62c3c7e5da74708fc6c1b944ca25688ed08e9cb072228e2a",
+        "declarationPath": "packages/components-vue/dist/RangeSlider.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RangeSliderProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""

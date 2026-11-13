@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StreamingMessage.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:a65b01c0405f2600da2bd3085854f55e5bb0938ca49a34f825872a352c67d108",
+      "digest": "sha256:f104d8ec84162aa04e247a223beb7c964c0f69369e0c5bc2e72875a3ec8f284c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/StreamingMessage.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/StreamingMessage.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Assistant bubble with streaming event rendering (deltas, reasoning, tools, permissions).",
     "fr": "Bulle assistant avec affichage d’événements de streaming (deltas, raisonnement, outils, permissions)."
   },
-  "digest": "sha256:c16e851e2d33c8e4362bd17322914db2952943d98c3a4161f6d08924c69cc97a",
+  "digest": "sha256:568b6177654877d0c0a132ad7e6685a6715e4ca700566ed1c203e41c0b5bb8dc",
   "displayName": "StreamingMessage",
   "format": "component-entry/v1",
   "frameworks": [

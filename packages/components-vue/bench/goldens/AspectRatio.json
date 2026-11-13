@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "AspectRatio",
+  "sourceRevision": "72bf12c2b21c66c288069d3e743f87ab205b481c",
+  "source": "src/AspectRatio.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-aspectRatio\" style=\"aspect-ratio:16 / 9;\"><img alt=\"\" src=\"/x.svg\"></div>"
+    },
+    {
+      "id": "numeric",
+      "html": "<div class=\"st-aspectRatio\" style=\"aspect-ratio:1.7777777777777777;\"><video autoplay=\"\" muted=\"\" playsinline=\"\"></video></div>"
+    },
+    {
+      "id": "wide",
+      "html": "<div class=\"st-aspectRatio\" style=\"aspect-ratio:21 / 9;\"><span>Wide</span></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div class=\"st-aspectRatio consumer\" data-bench=\"aspect\" style=\"0:c;1:o;2:l;3:o;4:r;5::;6: ;7:r;8:e;9:d;aspect-ratio:4 / 3;color:red;\">Text</div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-aspectRatio\" style=\"aspect-ratio:16 / 9;\"></div>"
+    }
+  ],
+  "sourceSha256": "92ca5e66fb6c6d8545d9c6900db110a7c90e93538b1c20806f4a9313434b529a",
+  "fixtureSha256": "513d5192c7ea1d8e4e6a1864b85bc8de3cf95e363268204a16187369ffcda837",
+  "publicExports": [
+    {
+      "name": "AspectRatio",
+      "typeOnly": false
+    },
+    {
+      "name": "AspectRatioProps",
+      "typeOnly": true
+    }
+  ]
+}

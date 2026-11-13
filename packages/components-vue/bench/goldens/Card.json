@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "Card",
+  "sourceRevision": "fb101b53d00b9426bc731be087f4c9e5b7b5c9ac",
+  "source": "src/Card.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-card\"><p>Card content</p></section>"
+    },
+    {
+      "id": "interactive",
+      "html": "<section class=\"st-card st-card--interactive\"><h3>Title</h3><p>Body</p></section>"
+    },
+    {
+      "id": "custom",
+      "html": "<section class=\"st-card st-card--interactive consumer\" data-bench=\"card\" style=\"color:red;\">Text</section>"
+    },
+    {
+      "id": "empty",
+      "html": "<section class=\"st-card\"></section>"
+    }
+  ],
+  "sourceSha256": "1f689504bb5200e1993cffe2073f26c3194351e91eedf58ddf9294e3b3e2dfc8",
+  "fixtureSha256": "6f3c36fdac314b0b5303b6b5830400fbf498ea78b396624dd40dc09be5c4eedf",
+  "publicExports": [
+    {
+      "name": "Card",
+      "typeOnly": false
+    },
+    {
+      "name": "CardProps",
+      "typeOnly": true
+    }
+  ]
+}
