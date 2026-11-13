@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { BarChart } from "./index.js";
-import type { BarChartDatum } from "./BarChart.js";
+import type { BarChartDatum } from "./BarChart.vue";
 
 const data: BarChartDatum[] = [
   { label: "A", value: 4 },

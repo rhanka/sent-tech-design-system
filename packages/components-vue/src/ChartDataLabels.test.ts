@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
 import { AreaChart, BarChart, DonutChart, LineChart, StackedBarChart } from "./index.js";
-import type { BarChartDatum } from "./BarChart.js";
+import type { BarChartDatum } from "./BarChart.vue";
 import type { DonutChartDatum } from "./DonutChart.js";
 import type { StackedBarDatum } from "./StackedBarChart.js";
 
