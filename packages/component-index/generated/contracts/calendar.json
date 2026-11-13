@@ -1,7 +1,7 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:938a5405656c4c1c32630af78ba982d8a5c5cd6986a9a10d8fe21898e3645a05",
+  "digest": "sha256:c53158d653e2c5cd8d92db2be61f47b122eae68e655be0b99a3045671416c3b7",
   "entryDigest": "sha256:8db16a3cd4bc6bdb303a3c3783ee4e505888096a367ab6ddc26f459f92b0ea9d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -428,10 +428,18 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "monthChange"
+          "name": "monthChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -478,7 +486,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -557,7 +569,25 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "monthChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onUpdate:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
@@ -574,9 +604,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"monthChange\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"monthChange\" and prop \"onMonthChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"

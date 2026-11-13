@@ -1,7 +1,7 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:92f5a307ce7c7bd143f4a5d61c5396e32f8a23c925f65760a65d149f3b488f98",
+  "digest": "sha256:157d95f4865f8b38c9589a984cd12c20ae109f2c49be0d1f7fe2ba6cc5e06671",
   "entryDigest": "sha256:0c96e735763d2237169a9173b2f0e4fc7fe4773081f3ccc4f960d57b360398de",
   "format": "component-contract/v1",
   "frameworks": {
@@ -335,10 +335,18 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:selectedId"
+          "name": "update:selectedId",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -436,6 +444,18 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:selectedId.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -449,8 +469,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:selectedId\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:selectedId\" and prop \"onUpdate:selectedId\" both listed verbatim",
         "two-way binding: prop \"selectedId\" paired with emit \"update:selectedId\""

@@ -1,7 +1,7 @@
 {
   "componentId": "drawer",
   "contractSource": "derived",
-  "digest": "sha256:bd7a9529b16dd2d647689511346e5630a9f982df35662df5c4feff451fe6fd57",
+  "digest": "sha256:d05bcad7c5d50540502963a1d4a25ec4714135934484386210effcef9d5a6f19",
   "entryDigest": "sha256:2677ac7527ca2d4e3bc518e0956b0105d14d75538fe668d3ccbae08b62fa918f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -213,7 +213,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "close"
+          "name": "close",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onClose",
@@ -257,6 +261,12 @@
       },
       "replaced": [
         {
+          "name": "close.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onClose.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -274,7 +284,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim"
       ]
     }
