@@ -84,6 +84,30 @@ describe("Portal", () => {
 });
 
 describe("Popper", () => {
+  it("should forward attributes and merge styles and listeners when portal is false", async () => {
+    const onClick = vi.fn();
+    const onKeydown = vi.fn();
+    const wrapper = track(mount(Popper, {
+      props: { anchor: mockAnchor(), open: true, portal: false, trapFocus: true, class: "custom-panel" },
+      attrs: { id: "popup", role: "dialog", "aria-label": "Details", style: { color: "red" }, onClick, onKeydown },
+      slots: { default: panelContent },
+    }));
+    const panel = wrapper.get(".st-popper");
+    expect(panel.attributes("id")).toBe("popup");
+    expect(panel.attributes("role")).toBe("dialog");
+    expect(panel.attributes("aria-label")).toBe("Details");
+    expect(panel.classes()).toContain("custom-panel");
+    expect((panel.element as HTMLElement).style.color).toBe("red");
+    expect((panel.element as HTMLElement).style.position).toBe("absolute");
+    expect((panel.element as HTMLElement).style.top).toMatch(/px$/);
+    await panel.trigger("click");
+    expect(onClick).toHaveBeenCalledTimes(1);
+    const event = new KeyboardEvent("keydown", { key: "Tab", cancelable: true });
+    panel.element.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(onKeydown).toHaveBeenCalledTimes(1);
+  });
+
   it("renders nothing when open is false", () => {
     track(mount(Popper, {
       props: { anchor: mockAnchor(), open: false },

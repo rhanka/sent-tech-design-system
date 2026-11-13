@@ -5,13 +5,40 @@ import { tmpdir } from 'node:os';
 import { resolve, join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { renderCalls } from '../vue-vapor-source.mjs';
 
+const aliasFixtures = readdirSync(resolve('scripts/fixtures/vue-render-aliases'));
+
+it.each(aliasFixtures)('should reject %s aliases in K25 and exclude them from the native barrel', (fixture) => {
+  const root = mkdtempSync(join(tmpdir(), 'k25-alias-'));
+  try {
+    mkdirSync(join(root, 'scripts'));
+    symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
+    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
+    for (const name of ['components-vue', 'dataviz-vue']) mkdirSync(join(root, 'packages', name, 'src'), { recursive: true });
+    writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
+    const pkg = join(root, 'packages/dataviz-vue');
+    writeFileSync(join(pkg, 'src/Widget.ts'), readFileSync(resolve('scripts/fixtures/vue-render-aliases', fixture), 'utf8'));
+    writeFileSync(join(pkg, 'src/index.ts'), "export { Widget } from './Widget.js';");
+    writeFileSync(join(pkg, 'package.json'), '{"type":"module"}');
+    const lint = spawnSync(process.execPath, [join(root, 'scripts/vue-vapor-lint.mjs')], { encoding: 'utf8' });
+    expect(lint.status, lint.stdout + lint.stderr).toBe(1);
+    expect(lint.stderr).toContain('new render-function module: packages/dataviz-vue/src/Widget.ts');
+    const build = spawnSync(process.execPath, [resolve('scripts/vue-sfc-build.mjs')], { cwd: pkg, encoding: 'utf8' });
+    expect(build.status, build.stdout + build.stderr).toBe(0);
+    expect(readFileSync(join(pkg, 'dist/vapor/index.js'), 'utf8')).not.toContain('Widget');
+    expect(readFileSync(join(pkg, 'dist/vapor/index.d.ts'), 'utf8')).not.toContain('Widget');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
 it('should reject aliased and namespace render calls while accepting signal helpers', () => {
-  expect(renderCalls(`import {h as render, defineComponent as component} from 'vue'; component({setup:()=>()=>render('p')})`)).toHaveLength(2);
-  expect(renderCalls(`import * as Vue from 'vue'; Vue.defineComponent({}); Vue.h('p');`)).toHaveLength(2);
+  expect(renderCalls(`import {h as render, defineComponent as component} from 'vue'; component({setup:()=>()=>render('p')})`)).not.toHaveLength(0);
+  expect(renderCalls(`import * as Vue from 'vue'; Vue.defineComponent({}); Vue.h('p');`)).not.toHaveLength(0);
   expect(renderCalls(`import { ref, computed } from 'vue'; const value=ref(1); computed(()=>value.value);`)).toEqual([]);
+  expect(renderCalls(`import * as Vue from 'vue'; const value=Vue.ref(1); Vue['computed'](()=>value.value);`)).toEqual([]);
+  expect(renderCalls(`import type { h } from 'vue'; import { type defineComponent } from 'vue';`)).toEqual([]);
+  expect(renderCalls(`// h('p')\nconst text = "Vue.h('p')"; const api = { h() {} }; api.h();`)).toEqual([]);
 });
 
 it('should compile a future dataviz SFC with imported props, slots and declarations in both modes', () => {
