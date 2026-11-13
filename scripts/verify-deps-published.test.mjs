@@ -51,7 +51,7 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   const byName = new Map(deps.map((d) => [d.name, d.version]));
   assert.equal(byName.get("@sentropic/design-system-themes"), themesManifest.version);
   assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
-  assert.equal(byName.get("@sentropic/graph"), "0.3.0");
+  assert.equal(byName.get("@sentropic/graph"), "0.3.1");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
   // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
   // must stay an exact pin — a range would drop out of the gate in silence.
