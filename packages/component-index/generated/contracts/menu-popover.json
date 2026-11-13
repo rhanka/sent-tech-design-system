@@ -1,8 +1,8 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:f0015995dfcd037fa9aa2002c4ba15566f22dd7cdcacb1bed49ddf65fd5ea919",
-  "entryDigest": "sha256:4017d28396c410a43cf240f36bf4e9ef60d5da860cbffc7f85dbc9f3e6222eb2",
+  "digest": "sha256:3181a41efc3c53676d2f90712494a6e60a8dec547715e326aa9e2ae193dbc5ff",
+  "entryDigest": "sha256:404889219b5b583ecd7e4b29adce6665fc405e552daf03ea701c709a1332b3d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
