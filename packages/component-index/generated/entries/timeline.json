@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Timeline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
     "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
   },
-  "digest": "sha256:5ded67c0b6ab2515d6b48b7987725588d151d142f824c1ac2e2bfe854956109a",
+  "digest": "sha256:ab753c787f6579021cb410d566732307632a68c24be9037d9c0f292416447e70",
   "displayName": "Timeline",
   "format": "component-entry/v1",
   "frameworks": [

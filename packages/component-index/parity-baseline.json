@@ -1464,6 +1464,7 @@
       "alignValue",
       "composeAbsolute",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1475,11 +1476,13 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
       "splitPlacement",
+      "toContainingBlockPosition",
       "useGraphEngine"
     ],
     "angular": [

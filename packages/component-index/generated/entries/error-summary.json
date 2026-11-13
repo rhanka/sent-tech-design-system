@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ErrorSummary.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Aggregated list of a form's errors, each entry linked to the offending field.",
     "fr": "Liste agrégée des erreurs d’un formulaire, chaque entrée reliée au champ fautif."
   },
-  "digest": "sha256:40c178377f53bd18d115fe95d621c716925d2bc0d60d112d34fc6d1864ecfbea",
+  "digest": "sha256:fcfd03a495037d1ae7f3fc6e3ac6325d0462d2ec71e0fc40673cb69925c37250",
   "displayName": "ErrorSummary",
   "format": "component-entry/v1",
   "frameworks": [

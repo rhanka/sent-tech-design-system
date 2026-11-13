@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WaterfallChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Waterfall chart (increases, decreases, totals) with optional connectors.",
     "fr": "Graphique en cascade (augmentations, diminutions, totaux) avec connecteurs."
   },
-  "digest": "sha256:19fee8fd3946f2b9e771e904a4863f0a648c35fd11107ec3b6e07d1595e0f795",
+  "digest": "sha256:71c63f304fa116ef171f95e269993bdbc1b4e7ba926ab4b354af94bd232c8c20",
   "displayName": "WaterfallChart",
   "format": "component-entry/v1",
   "frameworks": [

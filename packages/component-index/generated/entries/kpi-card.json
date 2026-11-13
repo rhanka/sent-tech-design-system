@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/KpiCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "KPI card with value, delta, trend indicator, and optional sparkline.",
     "fr": "Carte indicateur clé avec valeur, delta, tendance et sparkline optionnelle."
   },
-  "digest": "sha256:5e28f0a5aec72532e1a3311c52188a355b157d233bca8ebb485d286243f5b22f",
+  "digest": "sha256:69ba294b5b688481a9f65dd41cd4c7fc4c9e3b00c72d822747e9b0a0a921acb9",
   "displayName": "KpiCard",
   "format": "component-entry/v1",
   "frameworks": [

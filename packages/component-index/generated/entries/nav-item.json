@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NavItem.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Canonical navigation row: leading (color swatch or tone), title, muted caption, count bubble, typographic depth, and semantic status.",
     "fr": "Rangée de navigation canonique : tête (pastille couleur ou ton), titre, caption muette, bulle de compte, profondeur typographique et statut sémantique."
   },
-  "digest": "sha256:3c78c9faa60247605ff23a7f87aad583f39bd597b8091c9d8ae93c9bdcfd728f",
+  "digest": "sha256:adad6a8643bb499e8d6f0c05f701982b4313939d93612914f12884d4c0eccc66",
   "displayName": "NavItem",
   "format": "component-entry/v1",
   "frameworks": [
