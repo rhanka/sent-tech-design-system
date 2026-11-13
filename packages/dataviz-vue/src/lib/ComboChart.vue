@@ -70,7 +70,7 @@ const lines = computed<ComboChartLineSeries[]>(() =>
 <template>
   <DsComboChart :categories="seriesModel.categories" :bars="bars" :lines="lines" :left-axis-label="props.leftAxisLabel"
     :right-axis-label="props.rightAxisLabel" :legend="props.legend" :hidden-series="props.hiddenSeries"
-    :on-toggle-series="props.onToggleSeries" :annotations="props.annotations" :data-labels="props.dataLabels"
-    :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey"
+    @toggle-series="props.onToggleSeries" :annotations="props.annotations" :data-labels="props.dataLabels"
+    :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey"
     :width="props.width" :height="props.height" :label="props.label" :class="props.class" />
 </template>

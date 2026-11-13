@@ -2,12 +2,12 @@ import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
 import ChoroplethMap from './ChoroplethMap.vue';
-import { GeoClusterMap } from './GeoClusterMap.js';
-import { GeoDensityMap } from './GeoDensityMap.js';
-import { GeoFlowMap } from './GeoFlowMap.js';
-import { GeoHexbinMap } from './GeoHexbinMap.js';
-import { GeoJsonMap } from './GeoJsonMap.js';
-import { GeoPointMap } from './GeoPointMap.js';
+import GeoClusterMap from './GeoClusterMap.vue';
+import GeoDensityMap from './GeoDensityMap.vue';
+import GeoFlowMap from './GeoFlowMap.vue';
+import GeoHexbinMap from './GeoHexbinMap.vue';
+import GeoJsonMap from './GeoJsonMap.vue';
+import GeoPointMap from './GeoPointMap.vue';
 
 const model: DataModel = {
   dimensions: [

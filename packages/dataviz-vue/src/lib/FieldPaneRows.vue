@@ -28,6 +28,6 @@ const caretClass = (node: FieldPaneNode) => [
       <span :class="caretClass(node)">›</span><span class="st-treeView__label">{{ node.label }}</span>
     </div>
     <FieldPaneRows v-if="node.children?.length && props.expanded.has(node.id)" :nodes="node.children!"
-      :expanded="props.expanded" :selected-id="props.selectedId" :on-select="props.onSelect" />
+      :expanded="props.expanded" :selected-id="props.selectedId" @select="props.onSelect" />
   </div>
 </template>

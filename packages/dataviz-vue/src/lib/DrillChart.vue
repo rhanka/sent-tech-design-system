@@ -6,7 +6,7 @@ import { useDashboard } from '../adapter.js';
 import { drillLevel, onDrillSelect } from './drill.js';
 import DrillBarChart from './DrillBarChart.vue';
 import DonutChart from './DonutChart.vue';
-import { TreemapChart } from './TreemapChart.js';
+import TreemapChart from './TreemapChart.vue';
 
 /** Which design-system chart renders the current drill level. */
 export type DrillChartKind = 'bar' | 'donut' | 'treemap';

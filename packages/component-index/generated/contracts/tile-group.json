@@ -1,7 +1,7 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:761e7b69e8b6d04aecf68001a7fd1facbb4282e4988d7be4a708a3257035cfa8",
+  "digest": "sha256:e97340d84a19ce5000f2fd001a6614b8d0e80cfdb747fb54a05bf3e5274fe39e",
   "entryDigest": "sha256:8e619784058a7ad1eda3ca36a07803644d50b8612daa6c9c560c3f8260367729",
   "format": "component-contract/v1",
   "frameworks": {
@@ -199,7 +199,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileGroupProps",

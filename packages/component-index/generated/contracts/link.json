@@ -1,7 +1,7 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:156e146f31aa8df6320b08ca6474f35bb00f18e202b345731dc2b6855e908863",
+  "digest": "sha256:367f237f49f2cf00dce8eee9a6858b1721a6e7798e95e8667840c23fd986b380",
   "entryDigest": "sha256:01f301dff5307bbd38b4f84b04c4e6c038f8ff13eb894e436f6619a6716f2946",
   "format": "component-contract/v1",
   "frameworks": {
@@ -107,7 +107,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LinkProps",

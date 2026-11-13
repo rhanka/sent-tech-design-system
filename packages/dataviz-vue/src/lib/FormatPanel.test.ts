@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import { createFormatPanelState, type FormatPanelState } from '@sentropic/dataviz-core';
-import { FormatPanel } from './FormatPanel.js';
+import FormatPanel from './FormatPanel.vue';
 
 const state = (): FormatPanelState =>
   createFormatPanelState({

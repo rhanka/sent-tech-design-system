@@ -16,11 +16,11 @@ Apply the mechanical conversion procedure and worked examples in [the shared rec
 
 | Gate | Check | Boundary |
 | --- | --- | --- |
-| G1 | Typed inline script setup/template; old .ts absent; render/JSX/Options API scan | Target source only |
+| G1 | Typed inline script setup/template; old .ts absent; render/JSX/Options API and K25 safety AST checks | Target source only |
 | G2 | Classic and Vapor compilation with build options and SHA-256 drift guard | In-memory compile, no package emission |
 | G3 | Real scoped vue-tsc with strict inherited settings | Target + transitive imports |
 | G4 | Classic SSR equals every frozen original fixture | HTML/teleports, no interactions |
-| G5 | Native createVaporApp mount/flush/unmount in Node jsdom, no interop | Default fixture only; no layout engine |
+| G5 | Every fixture mounted independently in Classic and native Vapor; compare DOM and live control properties; flush/unmount and complete DOM teardown; warnings/errors fail | Package-local jsdom, no layout engine or browser |
 | G6 | All frozen public exports/kinds/destinations and typed import probe | Selected barrel entries, no exhaustive Props structural diff |
 
 The wrappers in this directory use `scripts/vue-conversion-bench`; components-vue has its own bench. G2 hashes the package build wrapper concatenated with `scripts/vue-sfc-build.mjs`; reconcile compiler changes before updating the pin. Source and fixture SHA-256 plus source revision are recorded in each golden. Fixture hashes are checked at G4. G4 applies the current HTML normalizer to both frozen and candidate HTML/teleports without rewriting goldens. It masks generated control and SVG gradient/clip IDs with relationships and cell suffixes preserved; classes, style strings, SVG geometry and child order stay significant.
@@ -33,4 +33,15 @@ Run `node --test scripts/vue-conversion-bench/selftest.mjs scripts/vue-conversio
 
 ## Multiple exports in one module
 
-ObjectLayers.ts exports WebFrame, DataImage and ObjectLayerPanel. Split its runtime components into same-named SFCs and retain pure helper exports separately; capture fixtures/goldens for each public component from the original module before removing it. The bench factory supports a `modules` name-to-original-path mapping for this case. Keep every original public type and helper export.
+ObjectLayers.ts exports WebFrame, DataImage and ObjectLayerPanel. Split its runtime components into same-named SFCs and retain pure helper exports separately; capture fixtures/goldens for each public component from the original module before removing it. The bench factory supports a `legacyModules` name-to-original-path mapping: it selects the original module while its `.ts` exists and the component's own SFC after removal. Each capture records that component and its Props; together the three manifests preserve the original six exports. Keep every original public type and helper export.
+
+## Integration checks
+
+Apply the class-wide rules from `packages/components-vue/bench/RECIPE.md`: explicit attrs forwarding disables inheritance, attrs merges happen during rendering, setup `useId()` replaces generated-ID counters, declared emits notify their listener once, existing slots retain their names, and new rich-content slots use kebab-case. Bind callback listeners with `@event`, so Vue generates the proper `onEvent` key; `:on-event` is a literal hyphenated prop. Form adapters subscribe once to `update:modelValue`, rather than repeating the same edit on `input` or `change`.
+
+`review-corrections.mjs` applies PR 280's bounded native-control wrapper correction to archived captures with those nested controls. Date-picker and range-slider destinations remain unchanged. The frozen fixture and golden files are never rewritten. Generated identity normalization also accepts identities already masked in archived captures and preserves their relationships.
+
+- `node packages/dataviz-vue/bench/check-all.mjs`: all six gates for every public converted component, four checks at a time; writes `results/integration.json`.
+- `DATAVIZ_MODE=classic node --test packages/dataviz-vue/bench/interactions.test.mjs` and the same command with `DATAVIZ_MODE=vapor`: native interaction, callback-count, scoped-slot, identity, SVG and cleanup regressions.
+- `node --test packages/dataviz-vue/bench/review-corrections.test.mjs`: correction boundaries and live-property/style serialization.
+- Build Classic/Vapor, build the separate stable 3.5 output, then run `scripts/vue-vapor-packed.mjs`: isolated npm 10.9.9 installations, strict declarations, dependency graphs, runtime exports and native chart mounts.

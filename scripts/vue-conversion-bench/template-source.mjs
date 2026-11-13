@@ -1,7 +1,8 @@
 import ts from 'typescript';
+import { sfcSafety } from '../vue-vapor-source.mjs';
 
 export function checkTemplateSource(source, file, compilers) {
-  const problems = [];
+  const problems = sfcSafety(source, file);
   const { descriptor, errors } = compilers.classic.parse(source, { filename: file });
   if (errors.length) throw new Error(errors.map(String).join('; '));
   if (!descriptor.scriptSetup || descriptor.scriptSetup.lang !== 'ts') problems.push('Requires <script setup lang="ts">');

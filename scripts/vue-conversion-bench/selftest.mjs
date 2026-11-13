@@ -40,6 +40,19 @@ test('setup and template retain render guards', () => {
   assert.throws(() => check(source('').replace('{{ value }}', '{{ h("div") }}')));
 });
 
+test('dataviz G1 applies the K25 attrs, notification, slot and identity rules', () => {
+  for (const body of [
+    'import { useAttrs } from "vue"; const attrs = useAttrs();',
+    'import { useAttrs, computed } from "vue"; defineOptions({inheritAttrs:false}); const attrs=useAttrs(); const cached=computed(()=>({...attrs}));',
+    'const props=defineProps<{onChange?:Function}>(); const emit=defineEmits(["change"]); function update(){props.onChange?.(1);emit("change",1)}',
+    'defineSlots<{helperText?:()=>unknown}>();',
+  ]) {
+    const input = `<script setup lang="ts">${body}</script><template><div /></template>`;
+    assert.throws(() => check(input));
+  }
+  assert.throws(() => check(source('export function id(){return ++sequence}').replace('export function', 'let sequence=0; export function')));
+});
+
 const normalize = html => normalizeHtml(html, JSDOM);
 test('random SVG IDs and useId references match without losing suffix relationships', () => {
   const svg = (id, ref = '1') => `<svg><defs><clipPath id="${id}-0"></clipPath><clipPath id="${id}-1"></clipPath></defs><g clip-path="url(#${id}-${ref})"></g></svg>`;

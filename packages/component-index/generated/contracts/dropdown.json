@@ -1,7 +1,7 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:da5dbc41e6835126388343ac0fece5aebcdfa87255783352aaae24c092b27800",
+  "digest": "sha256:1b8af744f3c55a87595d61c736b856a9b0d5bd7ec1b0471ad1c4ad683428da62",
   "entryDigest": "sha256:8f170707ca9125617a7d450e1d9c5c5978eaccb0c7e7ee2e96326cd570ac25d7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -184,7 +184,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DropdownProps",

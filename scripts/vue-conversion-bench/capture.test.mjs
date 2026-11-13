@@ -16,11 +16,12 @@ function sandbox(action) {
   }
   writeFileSync(resolve(bench, 'worker.mjs'), "console.log(JSON.stringify({ok:true,implementation:'ts',fixtures:['default','a','b','c'].map(id=>({id,html:'<div></div>'}))}));");
   const argv = process.argv;
+  let modulePath = name => name;
   const capture = (...selected) => {
     process.argv = [process.execPath, 'generate-goldens.mjs', ...selected];
-    return generateGoldens({ bench, pkg: bench, src, packageSrc: resolve(bench, 'src'), names: ['Proof', 'Other'], modulePath: name => name });
+    return generateGoldens({ bench, pkg: bench, src, packageSrc: resolve(bench, 'src'), names: ['Proof', 'Other'], modulePath });
   };
-  try { action({ bench, src, capture }); }
+  try { action({ bench, src, capture, setModulePath: value => { modulePath = value; } }); }
   finally { process.argv = argv; rmSync(bench, { recursive: true, force: true }); }
 }
 
@@ -34,6 +35,15 @@ test('captures selected originals under src/lib with every auxiliary public type
   assert.match(frozen.fixtureSha256, /^[a-f0-9]{64}$/);
   assert.deepEqual(frozen.publicExports, [{ name: 'Proof', typeOnly: false }, { name: 'ProofProps', typeOnly: true }, { name: 'Extra', typeOnly: true }]);
   assert.equal(existsSync(resolve(bench, 'goldens/Other.json')), false);
+}));
+
+test('captures each component of a shared original before splitting its destinations', () => sandbox(({ bench, capture, setModulePath }) => {
+  writeFileSync(resolve(bench, 'src/index.ts'), "export { Proof, Other } from './lib/Proof.js';\nexport type { ProofProps, OtherProps } from './lib/Proof.js';\n");
+  setModulePath(() => 'Proof');
+  capture('Proof', 'Other');
+  const captures = ['Proof', 'Other'].map(name => JSON.parse(readFileSync(resolve(bench, 'goldens', name + '.json'))));
+  assert.equal(captures[0].sourceSha256, captures[1].sourceSha256);
+  assert.deepEqual(captures.flatMap(c => c.publicExports).map(e => e.name).sort(), ['Other', 'OtherProps', 'Proof', 'ProofProps']);
 }));
 
 test('refuses overwriting a frozen original capture byte for byte', () => sandbox(({ bench, capture }) => {

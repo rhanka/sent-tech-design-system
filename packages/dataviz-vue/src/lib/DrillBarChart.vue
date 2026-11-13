@@ -45,5 +45,5 @@ function onSelect(key: string) {
 
 <template>
   <BarChart :data="data" :label="props.label" :orientation="props.orientation" :width="props.width" :height="props.height"
-    :class="props.class" :selected-keys="selectedKeys" :on-select="onSelect" />
+    :class="props.class" :selected-keys="selectedKeys" @select="onSelect" />
 </template>

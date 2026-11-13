@@ -1,7 +1,7 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:2d74b0441b23a3e673af8922e666adcc221168924dde61d6995dce36a1b2da1f",
+  "digest": "sha256:9b1419946014fb6fe60647a27a50dd5ea21035bb88e23e183b8602e0332b40e9",
   "entryDigest": "sha256:db8b9865e6f7bfeb65c12e525fb4946cd65a0f61d8d669dcd05123aaaec9ddb8",
   "format": "component-contract/v1",
   "frameworks": {
@@ -120,7 +120,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PaginationNavProps",

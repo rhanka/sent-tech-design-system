@@ -88,7 +88,6 @@ function titleFor(panel: PanelLayout): string {
 function commit(next: DashboardLayout): void {
   const normalized = normalizeLayout(next);
   editedLayout.value = normalized;
-  props.onLayoutChange?.(normalized);
   emit('layoutChange', normalized);
 }
 function moveBy(panel: PanelLayout, dx: number, dy: number): void {

@@ -1,7 +1,7 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:8e72ad70face776978aeb2d46cd8e7a1d06ce818e972b6f366ea9e119bebe3ef",
+  "digest": "sha256:75be5e49aefca8615c59afcce0fa22efe81041ae211845607d67c8c9a3e33d62",
   "entryDigest": "sha256:922bd48318b82efc693db4a0d22cab8332c8617fe3cec4db4414af680702835e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -146,7 +146,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CheckboxProps",

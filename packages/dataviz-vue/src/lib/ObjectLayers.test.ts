@@ -1,7 +1,9 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { type DashboardObjectLayer, type Row } from '@sentropic/dataviz-core';
-import { DataImage, ObjectLayerPanel, WebFrame } from './ObjectLayers.js';
+import WebFrame from './WebFrame.vue';
+import DataImage from './DataImage.vue';
+import ObjectLayerPanel from './ObjectLayerPanel.vue';
 
 const row: Row = { customer: 'Acme', slug: 'acme' };
 

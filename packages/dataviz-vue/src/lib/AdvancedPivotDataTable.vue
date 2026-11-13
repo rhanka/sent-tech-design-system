@@ -50,5 +50,5 @@ const onRowClick = computed(() => (props.onToggleRowPath
 
 <template>
   <DataTable :columns="table.columns" :rows="table.rows" :caption="props.caption" :size="props.size"
-    :on-row-click="onRowClick" :class="props.class" />
+    @row-click="onRowClick" :class="props.class" />
 </template>

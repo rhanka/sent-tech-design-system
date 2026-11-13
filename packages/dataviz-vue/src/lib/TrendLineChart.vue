@@ -34,5 +34,5 @@ const data = computed<LineChartDatum[]>(() => {
 </script>
 
 <template>
-  <LineChart :data="data" :width="props.width" :height="props.height" :label="props.label" :annotations="props.annotations" :data-labels="props.dataLabels" :trend="true" :hover-key="props.hoverKey" :on-hover-key-change="props.onHoverKeyChange" :on-select-key="props.onSelectKey" :class="['st-trendLineChart', props.class].filter(Boolean).join(' ')" />
+  <LineChart :data="data" :width="props.width" :height="props.height" :label="props.label" :annotations="props.annotations" :data-labels="props.dataLabels" :trend="true" :hover-key="props.hoverKey" @hover-key-change="props.onHoverKeyChange" @select-key="props.onSelectKey" :class="['st-trendLineChart', props.class].filter(Boolean).join(' ')" />
 </template>

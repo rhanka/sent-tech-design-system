@@ -1,7 +1,9 @@
+import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
-export async function runWorker({ bench, src, names, modulePath, installSourceLoader, wrapperSource, normalizeHtml }) {
+export async function runWorker({ bench, src, names, modulePath, installSourceLoader, wrapperSource, normalizeHtml, mountedHtml, require }) {
 
 const [operation, name] = process.argv.slice(2);
 // Keep stdout as a single JSON record, including when Vue's development runtime
@@ -10,10 +12,10 @@ console.log = console.info = (...args) => console.error(...args);
 const report = value => process.stdout.write(JSON.stringify(value) + '\n');
 let temporary;
 try {
-  if (!names.includes(name) || !['ssr', 'vapor'].includes(operation)) throw new Error('Invalid worker arguments');
-  const { JSDOM } = await import('jsdom');
+  if (!names.includes(name) || !['ssr', 'vapor', 'classic-mount'].includes(operation)) throw new Error('Invalid worker arguments');
+  const { JSDOM } = require('jsdom');
   let dom;
-  if (operation === 'vapor') {
+  if (operation !== 'ssr' || name === 'Dropdown' || name === 'Popper' || ['ThemeProvider', 'Menu', 'MenuPopover', 'OverflowMenu'].includes(name)) {
     dom = new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>', { url: 'http://localhost/' });
     for (const key of ['window', 'document', 'Node', 'Element', 'HTMLElement', 'SVGElement', 'Text', 'Comment', 'Document', 'DocumentFragment', 'MutationObserver', 'Event', 'CustomEvent']) {
       Object.defineProperty(globalThis, key, { value: dom.window[key], configurable: true });
@@ -46,30 +48,55 @@ try {
     report({ ok: true, implementation: legacy ? 'ts' : 'vue', fixtures: results });
   } else {
     if (legacy) throw new Error('G5 requires the converted .vue');
-    const { createVaporApp, nextTick } = await import('vue');
-    if (typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
+    const { createVaporApp, createApp, nextTick } = await import('vue');
+    if (operation === 'vapor' && typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
     const { default: Target } = await import(pathToFileURL(resolve(src, `${modulePath(name)}.vue`)).href);
-    if (Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
-    const file = resolve(temporary, 'mount.vue');
-    writeFileSync(file, wrapperSource(name, fixtures[0]));
-    const { default: Component } = await import(pathToFileURL(file).href);
-    const app = createVaporApp(Component);
+    if (operation === 'vapor' && Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
+    const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', name + '.json'), 'utf8'));
+    const classic = operation === 'vapor' ? (() => {
+      const child = spawnSync(process.execPath, [resolve(bench, 'worker.mjs'), 'classic-mount', name], { encoding: 'utf8', timeout: 60000, maxBuffer: 16 * 1024 * 1024 });
+      const result = JSON.parse(child.stdout.trim());
+      if (child.status !== 0 || !result.ok) throw new Error(result.error ?? child.stderr);
+      return result.fixtures;
+    })() : null;
+    const results = [];
     const errors = [];
-    app.config.errorHandler = error => errors.push(String(error));
-    app.config.warnHandler = warning => errors.push(warning);
     dom.window.addEventListener('error', event => errors.push(String(event.error ?? event.message)));
-    try {
-      app.mount(document.querySelector('#app'));
-      await nextTick();
-      await new Promise(done => setTimeout(done, 0));
-      if (!document.querySelector('#app').querySelector('*')) throw new Error('Mount produced no element');
-    } finally {
-      app.unmount();
-      await nextTick();
-      dom.window.close();
+    const mounted = [];
+    for (const fixture of fixtures) {
+      document.body.innerHTML = '<div id="app"></div><div id="destination"></div>';
+      const file = resolve(temporary, 'mount-' + fixture.id + '.vue');
+      writeFileSync(file, wrapperSource(name, fixture));
+      const { default: Component } = await import(pathToFileURL(file).href);
+      const app = (operation === 'vapor' ? createVaporApp : createApp)(Component);
+      app.config.errorHandler = error => errors.push(String(error));
+      app.config.warnHandler = warning => errors.push(warning);
+      // Vue retains this host marker after unmount in both runtimes.
+      document.querySelector('#app').setAttribute('data-v-app', '');
+      const beforeMount = normalizeHtml(document.body.innerHTML, JSDOM);
+      try {
+        app.mount(document.querySelector('#app'));
+        await nextTick();
+        await new Promise(done => setTimeout(done, 0));
+        const expected = golden.fixtures.find(f => f.id === fixture.id);
+        if ((expected.html || Object.values(expected.teleports ?? {}).some(Boolean)) && !document.body.textContent && !document.querySelector('#app *') && !document.querySelector('.st-popper,.st-portal')) throw new Error(fixture.id + ': mount produced no content');
+        const html = mountedHtml(document.body, JSDOM);
+        results.push({ id: fixture.id, html });
+        if (classic) {
+          const expectedHtml = classic.find(f => f.id === fixture.id)?.html;
+          let at = 0; while (at < Math.min(html.length, expectedHtml?.length ?? 0) && html[at] === expectedHtml[at]) at++;
+          assert.ok(html === expectedHtml, fixture.id + ': Vapor/Classic DOM differ at ' + at + '\nVapor: ' + html.slice(Math.max(0, at - 80), at + 180) + '\nClassic: ' + expectedHtml?.slice(Math.max(0, at - 80), at + 180));
+        }
+        mounted.push(fixture.id);
+      } finally {
+        app.unmount();
+        await nextTick();
+      }
+      assert.equal(normalizeHtml(document.body.innerHTML, JSDOM), beforeMount, fixture.id + ': content survived unmount');
+      if (errors.length) throw new Error(fixture.id + ': ' + errors.join('; '));
     }
-    if (errors.length) throw new Error(errors.join('; '));
-    report({ ok: true, fixture: 'default', runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
+    dom.window.close();
+    report({ ok: true, fixtures: results, fixture: mounted.join(', '), runtime: 'vue/dist/vue.runtime-with-vapor.esm-browser.js', interop: false });
   }
 } catch (error) {
   report({ ok: false, error: error.stack ?? String(error) });

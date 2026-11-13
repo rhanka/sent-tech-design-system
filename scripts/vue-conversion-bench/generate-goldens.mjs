@@ -30,8 +30,12 @@ export function generateGoldens({ bench, pkg, src, packageSrc, names, modulePath
     const result = JSON.parse(child.stdout.trim());
     if (!result.ok || result.implementation !== 'ts') throw new Error(name + ': invalid capture');
     if (hash(file) !== sourceSha256 || hash(fixture) !== fixtureSha256) throw new Error(name + ': source or fixture changed during capture');
+    // Shared legacy modules are captured once per public component; collectively
+    // these manifests preserve every component and its Props export.
+    const sharedModule = names.filter(other => modulePath(other) === modulePath(name)).length > 1;
     const publicExports = index.statements.filter(node => ts.isExportDeclaration(node) && node.moduleSpecifier?.text === route && node.exportClause && ts.isNamedExports(node.exportClause))
-      .flatMap(node => node.exportClause.elements.map(entry => ({ name: entry.name.text, typeOnly: node.isTypeOnly || entry.isTypeOnly })));
+      .flatMap(node => node.exportClause.elements.map(entry => ({ name: entry.name.text, typeOnly: node.isTypeOnly || entry.isTypeOnly })))
+      .filter(entry => !sharedModule || entry.name === name || entry.name === name + 'Props');
     if (!publicExports.some(entry => entry.name === name) || !publicExports.some(entry => entry.name === name + 'Props')) throw new Error(name + ': missing public component/Props exports');
     captures.push([name, { schema: 1, component: name, sourceRevision: revision.stdout.trim(), source: relative(pkg, file), fixtures: result.fixtures, sourceSha256, fixtureSha256, publicExports }]);
   }
