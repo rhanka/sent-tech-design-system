@@ -10,7 +10,7 @@ import { PackedBubbleChart } from './PackedBubbleChart.js';
 import { RadarChart } from './RadarChart.js';
 import { RoseChart } from './RoseChart.js';
 import { SankeyChart } from './SankeyChart.js';
-import { SunburstChart } from './SunburstChart.js';
+import SunburstChart from './SunburstChart.vue';
 import { TreemapChart } from './TreemapChart.js';
 import { WaterfallChart } from './WaterfallChart.js';
 
