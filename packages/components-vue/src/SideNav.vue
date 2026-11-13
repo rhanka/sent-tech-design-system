@@ -5,7 +5,7 @@ import { classNames } from './classNames.js';
 export type SideNavItem = {
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
   href: string;
   active?: boolean;
   children?: SideNavItem[];

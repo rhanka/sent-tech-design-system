@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:f104d8ec84162aa04e247a223beb7c964c0f69369e0c5bc2e72875a3ec8f284c",
+      "digest": "sha256:13e96743a907a96889cee5e275ad9d08ca441e89e7be3cb5ad6e7d415502f077",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/StreamingMessage.vue",
@@ -40,7 +40,7 @@
     "en": "Assistant bubble with streaming event rendering (deltas, reasoning, tools, permissions).",
     "fr": "Bulle assistant avec affichage d’événements de streaming (deltas, raisonnement, outils, permissions)."
   },
-  "digest": "sha256:1888d66a4f80044ee119c91c35a3103410d43b8473723798bb2258d998d4a84e",
+  "digest": "sha256:5c51af5c57b42d326d77b4c2b78c82cd25b84f589707a5d21994f5238a7b011f",
   "displayName": "StreamingMessage",
   "format": "component-entry/v1",
   "frameworks": [

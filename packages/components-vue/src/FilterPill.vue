@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { ref, watch } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -90,6 +91,6 @@ const handleBodyKeydown = (event: KeyboardEvent) => {
       <span v-if="props.operator" class="st-filterPill__operator" aria-hidden="true">{{ props.operator }}</span>
       <span class="st-filterPill__value">{{ props.value }}</span>
     </span>
-    <button v-if="props.removable" type="button" class="st-filterPill__remove" :aria-label="`Retirer le filtre ${props.field}`" :disabled="props.disabled || undefined" @click="handleRemove"><svg aria-hidden="true" class="lucide lucide-x-icon lucide-x" fill="none" height="12" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewBox="0 0 24 24" width="12" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
+    <button v-if="props.removable" type="button" class="st-filterPill__remove" :aria-label="`Retirer le filtre ${props.field}`" :disabled="props.disabled || undefined" @click="handleRemove"><Icon name="x" :size="12" /></button>
   </span>
 </template>

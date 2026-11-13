@@ -7,7 +7,7 @@ export type LanguageOption = {
   value: string;
 
   /** @slot option-label */
-  label?: unknown;
+  label?: string | number;
 };
 
 export type LanguageSelectorProps = {

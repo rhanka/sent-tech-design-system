@@ -1,20 +1,21 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { scalarContent } from './slotContent.js';
 import { useSlots, useId, computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type MultiSelectOption = {
   value: string;
-  label?: unknown;
+  label?: string | number;
   disabled?: boolean;
 };
 
 export type MultiSelectSize = 'sm' | 'md' | 'lg';
 
 export type MultiSelectProps = {
-  label?: unknown;
-  helperText?: unknown;
-  errorText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
+  errorText?: string | number;
   invalid?: boolean;
   options: MultiSelectOption[];
   value?: string[];
@@ -75,7 +76,7 @@ const slots = useSlots();
 const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 const caretIconClass = computed(() => {
   const custom = `st-multiSelect__caretIcon${isOpen.value ? ' st-multiSelect__caretIcon--open' : ''}`;
-  return `lucide ${custom} lucide-chevron-down-icon lucide-chevron-down`;
+  return custom;
 });
 
 function setOpen(val: boolean) {
@@ -135,7 +136,7 @@ defineSlots<{
           :disabled="props.disabled"
           @click="removeOption(option.value)"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          <Icon name="x" :size="14" />
         </button>
       </span>
     </span>
@@ -153,7 +154,7 @@ defineSlots<{
         <span v-if="selectedOptions.length === 0" class="st-multiSelect__placeholder">{{ resolvedPlaceholder }}</span>
         <span v-else class="st-multiSelect__count">{{ `${selectedOptions.length} ${isFr ? 'sélectionné(s)' : 'selected'}` }}</span>
         <span class="st-multiSelect__caret" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" :class="caretIconClass" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          <Icon name="chevron-down" :class="caretIconClass" :size="18" />
         </span>
         <span class="st-visually-hidden">{{ resolvedToggleLabel }}</span>
       </button>

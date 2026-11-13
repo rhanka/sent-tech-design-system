@@ -13,7 +13,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { collectSentropicDeps, main, verifyDeps } from "./verify-deps-published.mjs";
+import { collectRuntimeDeps, collectSentropicDeps, main, verifyDeps, verifyRuntimeDeps } from "./verify-deps-published.mjs";
 
 const svelteManifest = JSON.parse(
   readFileSync(new URL("../packages/components-svelte/package.json", import.meta.url), "utf8"),
@@ -50,7 +50,7 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
   const deps = collectSentropicDeps(svelteManifest);
   const byName = new Map(deps.map((d) => [d.name, d.version]));
   assert.equal(byName.get("@sentropic/design-system-themes"), themesManifest.version);
-  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
+  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.1");
   assert.equal(byName.get("@sentropic/graph"), "0.3.1");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
   // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
@@ -77,10 +77,10 @@ test("verifyDeps reports pins the registry does not resolve to the exact version
 });
 
 test("main fails closed on the release case: themes 0.14.0 not yet on npm", () => {
-  // Simulated registry state before the core release: rich-text 0.1.0, graph 0.3.0 and
+  // Simulated registry state before the core release: rich-text 0.1.1, graph 0.3.0 and
   // theme-dsfr 0.2.2 exist; tokens 0.14.0 and themes 0.14.0 do not (E404).
   const registry = new Map([
-    ["@sentropic/design-system-rich-text@0.1.0", "0.1.0"],
+    ["@sentropic/design-system-rich-text@0.1.1", "0.1.1"],
     ["@sentropic/graph@0.3.0", "0.3.0"],
     ["@sentropic/design-system-theme-dsfr@0.2.2", "0.2.2"],
   ]);
@@ -113,6 +113,10 @@ test("the diagram-canvas gate fails closed while @sentropic/diagram-core is not 
 test("main passes when every pinned @sentropic/* version is on npm", () => {
   const view = (name, version) => version;
   assert.equal(main(["--workspace", "packages/components-svelte"], view), 0);
+});
+
+test('Vue publication requires the new rich-text release before Vue, even when 0.1.0 exists', () => {
+  assert.equal(main(['--workspace', 'packages/components-vue', '--runtime'], (name, version) => name === '@sentropic/design-system-rich-text' ? '0.1.0' : version), 1);
 });
 
 test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v lockstep), OIDC only, pinned SHAs", () => {
@@ -163,4 +167,24 @@ test("diagram-canvas-publish.yml runs the fail-closed dep gate on its own manife
   assert.ok(checkoutAt >= 0, "publish job must check out the repository (the gate reads scripts/)");
   assert.ok(gateAt > checkoutAt, "dep gate must run after checkout, on packages/diagram-canvas");
   assert.ok(publishStepAt > gateAt, "dep gate must run before npm publish — fail closed");
+});
+
+for (const [workflow, workspace] of [['vue-publish.yml', 'components-vue'], ['dataviz-publish.yml', 'dataviz-core']]) {
+  test(`${workflow} gates every publish on registry dependency availability`, () => {
+    const text = readFileSync(new URL(`../.github/workflows/${workflow}`, import.meta.url), 'utf8');
+    const job = publishJobLines(text, workflow).join('\n');
+    const gate = `node scripts/verify-deps-published.mjs --workspace packages/${workspace}`;
+    assert.ok(job.indexOf(gate) > job.indexOf('actions/checkout@'), 'gate runs after checkout');
+    assert.ok(job.indexOf(gate) < job.indexOf('npm publish --workspace'), 'gate runs before first publication');
+    if (workflow === 'dataviz-publish.yml') assert.match(job, /verify-deps-published\.mjs --workspace "packages\/\$\{package#@sentropic\/\}" --runtime/,
+      'each adapter is checked after core exists and before publishing that adapter');
+  });
+}
+
+test('runtime gate checks all dependencies and peers, including optional external exact pins and ranges', () => {
+  const deps = collectRuntimeDeps({ dependencies: { external: '1.2.3', '@sentropic/core': '2.0.0' }, peerDependencies: { vue: '^3.5', optional: '4.5.6' }, peerDependenciesMeta: { optional: { optional: true } }, devDependencies: { test: '1.0.0' } });
+  assert.equal(deps.length, 4);
+  assert.equal(verifyRuntimeDeps(deps, (_, version) => version === '^3.5' ? '3.5.45' : version).length, 0);
+  for (const missing of deps) assert.equal(verifyRuntimeDeps(deps, (name, version) => name === missing.name ? null : version === '^3.5' ? '3.5.45' : version).length, 1);
+  assert.equal(verifyRuntimeDeps([{ name: 'external', version: '1.2.3' }], () => '1.2.4').length, 1);
 });
