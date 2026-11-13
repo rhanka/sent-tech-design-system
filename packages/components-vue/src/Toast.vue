@@ -2,6 +2,7 @@
 import { computed, onMounted, onUnmounted } from 'vue';
 import { classNames } from './classNames.js';
 import { scalarContent } from './slotContent.js';
+import { hasListener, type Listener } from './hasListener.js';
 
 
 export type ToastTone = "info" | "success" | "warning" | "error";
@@ -10,18 +11,20 @@ export type ToastTone = "info" | "success" | "warning" | "error";
 export type ToastItem = {
   id: string;
   tone?: ToastTone;
-  title?: unknown;
-  message?: unknown;
-  actions?: unknown;
+  title?: string | number;
+  message?: string | number;
+  actions?: string | number;
 };
 
 
 export type ToastProps = {
-  onClose?: () => void;
-  onDismiss?: (id: string) => void;
+  onClose?: Listener;
+  onCloseOnce?: Listener;
+  onDismiss?: Listener<[id: string]>;
+  onDismissOnce?: Listener<[id: string]>;
   tone?: ToastTone;
-  title?: unknown;
-  message?: unknown;
+  title?: string | number;
+  message?: string | number;
   items?: ToastItem[];
   autoDismiss?: boolean;
   duration?: number;
@@ -47,8 +50,8 @@ const emit = defineEmits<{ close: []; dismiss: [id: string] }>();
       return text === '' ? action : `${action} ${text}`;
     }));
 
-    const hasClose = () => typeof props.onClose === 'function';
-    const hasDismiss = () => typeof props.onDismiss === 'function';
+    const hasClose = () => hasListener(props.onClose, props.onCloseOnce);
+    const hasDismiss = () => hasListener(props.onDismiss, props.onDismissOnce);
     const roleFor = (t: string) => (t === "error" ? "alert" : "status");
 
     let timer: ReturnType<typeof setTimeout> | null = null;

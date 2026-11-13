@@ -1,4 +1,4 @@
-import { afterEach, expect, it } from 'vitest';
+import { afterEach, expect, it, vi } from 'vitest';
 import * as Vue from 'vue';
 
 const vapor = process.env.VUE_PACKED_MODE === 'vapor';
@@ -6,6 +6,7 @@ const ds = await import(vapor ? '@sentropic/design-system-vue/vapor' : '@sentrop
 const dataviz = await import(vapor ? '@sentropic/dataviz-vue/vapor' : '@sentropic/dataviz-vue');
 const editors = await import(vapor ? '@sentropic/design-system-vue/vapor/rich-text-editor' : '@sentropic/design-system-vue/rich-text-editor');
 const presence = await import(vapor ? '@sentropic/design-system-vue/vapor/presence-badge' : '@sentropic/design-system-vue/presence-badge');
+const { parseFullMarkdown } = await import('@sentropic/design-system-rich-text');
 const apps = [];
 afterEach(() => { apps.splice(0).forEach(app => app.unmount()); document.body.replaceChildren(); });
 
@@ -25,19 +26,18 @@ it('should expose the installed dataviz adapter without claiming unconverted cha
 });
 
 const messages = { editorLabel: 'Installed editor', placeholder: 'Write', preservedBlockLabel: 'Preserved {kind}', externalConflictLabel: 'Conflict' };
-for (const name of ['RichTextEditor', 'ComposerEditor']) {
-  it(`should mount and capture the installed ${name} through its public subpath`, async () => {
+for (const name of ['RichTextEditor', 'ComposerEditor']) for (const profile of ['p0', 'full']) {
+  it(`should mount and capture the installed ${name} ${profile} through its public subpath`, async () => {
     const root = document.createElement('div'); document.body.append(root);
     const value = name === 'RichTextEditor'
-      ? { format: 'focus.markdown.p0@1', blocks: [{ paragraphId: 'p:1', kind: 'paragraph', text: 'Packed text' }] }
+      ? profile === 'full' ? parseFullMarkdown('Packed text', () => 'p:1').document : { format: 'focus.markdown.p0@1', blocks: [{ paragraphId: 'p:1', kind: 'paragraph', text: 'Packed text' }] }
       : 'Packed text';
-    const app = (vapor ? Vue.createVaporApp : Vue.createApp)(editors[name], { value, messages });
+    const app = (vapor ? Vue.createVaporApp : Vue.createApp)(editors[name], { value, messages, profile });
     apps.push(app); const handle = app.mount(root);
-    await Vue.nextTick();
+    const capture = name === 'RichTextEditor' ? await handle.captureDocument() : await handle.captureComposer();
     expect(root.querySelector('[role="textbox"]').getAttribute('aria-label')).toBe('Installed editor');
     expect(root.textContent).toContain('Packed text');
-    const capture = name === 'RichTextEditor' ? await handle.captureDocument() : await handle.captureComposer();
-    expect(name === 'RichTextEditor' ? capture.document.blocks[0].text : capture.text).toBe('Packed text');
+    expect(name === 'RichTextEditor' ? capture.document.blocks[0].text ?? capture.document.blocks[0].segments.map(segment => segment.text ?? '').join('') : capture.text).toBe('Packed text');
   });
 }
 
@@ -52,6 +52,19 @@ it('should mount the installed badge, labelled icon button and WebFrame', async 
     apps.push(app); app.mount(root); await Vue.nextTick();
     expect(root.querySelector(selector)).not.toBeNull();
   }
+});
+
+it('should share the installed WebFrame implementation across both public packages', () => {
+  expect(dataviz.WebFrame).toBe(ds.WebFrame);
+});
+
+it('should intercept idiomatic keydown once in capture phase through the packed composer subpath', async () => {
+  const seen = vi.fn(() => true), root = document.createElement('div'); document.body.append(root);
+  const app = (vapor ? Vue.createVaporApp : Vue.createApp)(editors.ComposerEditor,
+    { value: 'Draft', messages, ...(vapor ? { onKeydown: () => seen } : { onKeydown: seen }) });
+  apps.push(app); const handle = app.mount(root); await handle.captureComposer();
+  const native = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }); root.querySelector('.ProseMirror').dispatchEvent(native);
+  expect(seen).toHaveBeenCalledTimes(1); expect(seen.mock.calls[0][0]).not.toBeInstanceOf(KeyboardEvent); expect(native.defaultPrevented).toBe(true); expect((await handle.captureComposer()).text).toBe('Draft');
 });
 
 it('should expose every Classic runtime export from the installed Vapor barrel', async () => {

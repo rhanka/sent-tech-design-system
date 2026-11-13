@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c6b83a622e49a6c4f056693d87eaedb1c0a55fcb711d861e66cad5800d548c2c",
+      "digest": "sha256:240a6fa0fe415e53cc98a25a864eb011c69edd5a5fe775ec921a6e2abe7c5103",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Header.vue",
@@ -40,7 +40,7 @@
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:3f33b04164c5d0ee7d4d588552919ff2e45cf34c46434f403e6c1e6aea8eb385",
+  "digest": "sha256:3b1b6dc12f837a8cb5c84708725810d345d35fdb2bde2117c0e94451854867c3",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

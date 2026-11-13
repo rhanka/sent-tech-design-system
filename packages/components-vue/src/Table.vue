@@ -4,14 +4,14 @@ import { computed } from 'vue';
 import { classNames } from './classNames.js';
 export type TableColumn = {
   key: string;
-  label?: unknown;
+  label?: string | number;
   align?: 'left' | 'center' | 'right' | 'start' | 'end';
 };
 export type TableRow = Record<string, unknown>;
 export type TableProps = {
   columns: TableColumn[];
   rows: TableRow[];
-  caption?: unknown;
+  caption?: string | number;
   class?: string;
 };
 defineOptions({ name: 'Table', inheritAttrs: false });

@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
+import Icon from './Icon.vue';
+import { ICONS, type IconName } from './icon-data.js';
 
 export type MessageActionVariant = 'default' | 'danger';
 export type MessageAction = {
   id?: string;
 
   /** @slot action-content */
-  label?: unknown;
+  label?: string | number;
 
-  /** @slot action-content */
-  icon?: unknown;
+  /** @slot action-icon */
+  icon?: string | number;
   disabled?: boolean;
   variant?: MessageActionVariant;
   onClick?: () => void;
@@ -26,7 +28,7 @@ defineOptions({ name: 'MessageActions', inheritAttrs: false });
 const props = withDefaults(defineProps<MessageActionsProps>(), {
   visibility: 'hover', class: undefined,
 });
-defineSlots<{'action-content'?: (scope: {action: MessageAction; index: number}) => unknown;}>();
+defineSlots<{'action-content'?: (scope: {action: MessageAction; index: number}) => unknown; 'action-icon'?: (scope: {action: MessageAction; index: number}) => unknown;}>();
 </script>
 
 <template>
@@ -42,10 +44,10 @@ defineSlots<{'action-content'?: (scope: {action: MessageAction; index: number}) 
       type="button"
       :class="classNames('st-iconButton st-iconButton--sm', action.variant === 'danger' ? 'st-iconButton--danger' : 'st-iconButton--ghost')"
       :disabled="action.disabled"
-      :aria-label="typeof action.label === 'string' ? action.label : action.id"
+      :aria-label="action.label != null ? String(action.label) : action.id"
       @click="action.onClick"
     >
-      <slot name="action-content" :action="action" :index="index">{{ scalarContent(action.icon ?? action.label) }}</slot>
+      <slot name="action-content" :action="action" :index="index"><slot name="action-icon" :action="action" :index="index"><Icon v-if="typeof action.icon === 'string' && Object.hasOwn(ICONS, action.icon)" :name="action.icon as IconName" :size="16" /><template v-else>{{ scalarContent(action.icon) || scalarContent(action.label) }}</template></slot></slot>
     </button>
   </div>
 </template>

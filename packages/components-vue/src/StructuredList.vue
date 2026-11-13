@@ -3,16 +3,16 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type StructuredListItem = {
-  term?: unknown;
+  term?: string | number;
 
   /** @slot term */
-  label?: unknown;
+  label?: string | number;
 
   /** @slot definition */
-  description?: unknown;
+  description?: string | number;
 
   /** @slot definition */
-  value?: unknown;
+  value?: string | number;
 };
 
 export type StructuredListProps = {

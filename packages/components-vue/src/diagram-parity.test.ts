@@ -1,3 +1,4 @@
+import { withControlIconTokens } from './test-support/control-icon-contract.js';
 import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
@@ -106,7 +107,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       const vue = mount(DiagramCard, { props });
       const svelte = render(SvelteCard, { props });
       await nextTick(); await tick();
-      expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
       vue.unmount(); svelte.unmount();
     });
@@ -119,7 +120,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
         ...(collapsed ? {} : { width: 492, height: 975 }) };
       const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
       await nextTick(); await tick();
-      expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
       const button = vue.find('button');
       if (button.exists()) { await button.trigger('click'); expect(vue.emitted('toggle')).toEqual([[{ entityId: zone.id, collapsed }]]); }
@@ -133,7 +134,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
-      await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
@@ -141,7 +142,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   }
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!)); vue.unmount(); svelte.unmount();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount(); svelte.unmount();
   });
   it('should render no unknown icon', () => {
     const vue = mount(DiagramIcon, { props: { name: 'unmapped-glyph' } }); expect(vue.find('svg').exists()).toBe(false); vue.unmount();
@@ -151,13 +152,13 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   it('should match graph legend shapes and dash styles', () => {
     const props = { entries, title: 'Legend' };
     const vue = mount(GraphLegend, { props }); const svelte = render(SvelteLegend, { props });
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!)); vue.unmount();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount();
   });
   it('should match force graph geometry and keyboard/hover intents', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     const props = { nodes: [{ id: 'a', shape: 'star' as const }, { id: 'b', group: 'two' }], edges: [{ source: 'a', target: 'b', dash: 'dotted' as const }], label: 'Graph', legend: entries, selectedIds: ['a'], iterations: 5 };
     const vue = mount(ForceGraph, { props }); const svelte = render(SvelteForce, { props });
-    await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+    await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
     const button = vue.find('[role="button"]'); await button.trigger('keydown', { key: 'Enter' });
     expect(vue.emitted('select')).toEqual([['a']]); expect(vue.emitted('openEntity')).toEqual([['a']]);
     await button.trigger('focus'); expect(vue.emitted('nodeHover')?.[0]?.[0]).toEqual(props.nodes[0]);
@@ -334,7 +335,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     const props = { ...host, ...fixture, title: 'Dossier' };
     const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
     await nextTick(); await tick(); await nextTick();
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
     expect(vue.emitted('layout')).toHaveLength(1);
     const passCount = vue.emitted('layout')!.length;
     vue.vm.setZoom(Number.POSITIVE_INFINITY);

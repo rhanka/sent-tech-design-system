@@ -6,9 +6,9 @@ import { scalarContent } from './slotContent.js';
 // Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
 export type UnorderedListItem = {
   /** @slot item */
-  content?: unknown; children?: UnorderedListInput[] };
+  content?: string | number; children?: UnorderedListInput[] };
 
-export type UnorderedListInput = unknown;
+export type UnorderedListInput = string | number | UnorderedListItem;
 
 
 export type UnorderedListProps = {

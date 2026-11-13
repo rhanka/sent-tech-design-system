@@ -1,11 +1,11 @@
 {
   "schema": 1,
   "component": "RichTextEditor",
-  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "sourceRevision": "3e53293d1b350017af16c8b00787c5447116765f",
   "source": "packages/components-svelte/src/lib/rich-text-editor/RichTextEditor.svelte",
   "referenceFramework": "svelte",
   "sourceSha256": "596dbcc748dd8b956b8a11e5e518382cba97bff2020bba95c13c28d4ae12a12e",
-  "fixtureSha256": "5da10572112a8cfc201ee04123350ac2aa4a47b4c9aed74add38313a859b4633",
+  "fixtureSha256": "87fae98a4b522932bc191598dee278290f98a248437623a80e2f5211c09e7f6e",
   "fixtures": [
     {
       "id": "default",
@@ -22,6 +22,10 @@
     {
       "id": "live-lock",
       "html": "<div class=\"st-rich-text-editor\"><div class=\"st-rich-text-editor__surface\"></div><div class=\"st-rich-text-editor__live\" data-testid=\"live-seam\"><span class=\"st-rich-text-editor__presence\">3 viewers</span><span class=\"st-rich-text-editor__lock\">Held by Sam</span><button class=\"st-rich-text-editor__unlock\" disabled=\"\" type=\"button\">Request unlock</button></div><div class=\"st-rich-text-editor__status\">Conflict</div></div>"
+    },
+    {
+      "id": "full-profile",
+      "html": "<div class=\"st-rich-text-editor\"><div class=\"st-rich-text-editor__surface\"></div><div class=\"st-rich-text-editor__status\">Conflict</div></div>"
     }
   ],
   "publicExports": [

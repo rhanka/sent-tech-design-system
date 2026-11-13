@@ -659,7 +659,7 @@ describe("distribution wiring (RT-1)", () => {
     };
     expect(
       manifest.dependencies?.["@sentropic/design-system-rich-text"],
-    ).toBe("0.1.0");
+    ).toBe(JSON.parse(readFileSync(join(NEUTRAL_PACKAGE_DIR, "package.json"), "utf8")).version);
   });
 });
 

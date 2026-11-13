@@ -12,7 +12,7 @@ export type ProgressBarTone =
 export type ProgressBarSize = 'sm' | 'md' | 'lg';
 
 export type ProgressBarProps = {
-  label?: unknown;
+  label?: string | number;
   helperText?: string;
   value?: number;
   max?: number;

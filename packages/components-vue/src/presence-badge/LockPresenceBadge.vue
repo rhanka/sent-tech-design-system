@@ -1,5 +1,6 @@
 <script setup lang="ts">
   import { computed, useId } from "vue";
+  import { classNames } from '../classNames.js';
   import type {
     CollaborationActor,
     CollaborationCapabilities,
@@ -24,6 +25,7 @@
     nowIso: string;
     readOnly?: boolean;
     binding?: FieldBindingIdentity | null;
+    class?: string;
     onRequestUnlock?: () => void;
     onAcceptUnlock?: () => void;
     onForceUnlock?: () => void;
@@ -185,8 +187,9 @@
 
 <template>
 <div
-  class="st-presence-badge"
-  data-testid="presence-badge"
+  v-bind="$attrs"
+  :class="classNames('st-presence-badge', props.class)"
+  :data-testid="$attrs['data-testid'] ?? 'presence-badge'"
   :data-role="state.role"
   :data-lock-active="state.lockActive ? 'true' : 'false'"
   :data-live="liveMode ? 'true' : 'false'"

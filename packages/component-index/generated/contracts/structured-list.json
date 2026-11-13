@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:cc7ac17a01346a4e5a101b6d0a309ffb5b3e437d7839a7e2bc0f8e2f8e180ce7",
-  "entryDigest": "sha256:a57c7fb1446bca0569f429c0a941c961eb0ae81ab16d8eddc106230f6aa6e148",
+  "digest": "sha256:241a646cb627486c029c0f6e228b07ef94d165ee852891edb9faa9e0baedfcbe",
+  "entryDigest": "sha256:7f641ba2c2cee9b0712b43e2fcb61b076fa8916658a06ab741b6cd95f1c3e24a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -238,10 +238,46 @@
           "StructuredListItem": {
             "additionalProperties": false,
             "properties": {
-              "description": {},
-              "label": {},
-              "term": {},
-              "value": {}
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "term": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "type": "object"
           }
@@ -266,32 +302,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "StructuredListItem.description",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "StructuredListItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "StructuredListItem.term",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "StructuredListItem.value",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "definition",
@@ -333,13 +344,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:c1bce6d761eb80da6af7427499daac6cbb81231b2c1a6887b31749b21d67159e",
+        "declarationDigest": "sha256:64d986cbbcec6b4edbdbb6fd6709fd52e17d927f71645686febebdf05253d954",
         "declarationPath": "packages/components-vue/dist/StructuredList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StructuredListProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

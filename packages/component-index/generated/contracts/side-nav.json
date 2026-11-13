@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:39a82b181547cd4a3337925dbb7c4aac6d61965825391633f65d7ed0aeb7bed1",
-  "entryDigest": "sha256:bb0db84565d98fceb6f7e4f0918bd6ddd297c22789f299d287d4ccae6202af5e",
+  "digest": "sha256:418934863d957821e0a6c9d0b8ccdfeb2c6f94e1c55587bf86ca7769f0f50362",
+  "entryDigest": "sha256:4f2f55cae90a082010540fe563f3d00891eb66041ddbc4c45535dd3a4257c5e7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,16 @@
               "href": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "href"
@@ -267,14 +276,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "SideNavItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "item-label",
@@ -293,13 +295,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:47341836e0dd30d283f5cf9f4d580b50f86a6e50eba2145e61e42168694cf643",
+        "declarationDigest": "sha256:79e233361e573734e19f33591e09603d1237655cbb4b7f60621bab2a98ecb48b",
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

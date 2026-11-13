@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:55621595da5627c9ccdf3a255c68ab729384a09b3173715dae6e94d9d967c667",
-  "entryDigest": "sha256:b4558f19c4a9edbd5093db8151c696ac4f11d256435637895b8326aab86b1473",
+  "digest": "sha256:9a699ba9b1b857304d7d38554b979c814d6e52cb860ef9688367847e55517457",
+  "entryDigest": "sha256:fc9e067ecd73d76b0756f38668ae3ac168aee67b3f82c49769c46c52b60e36e6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -332,7 +332,16 @@
               "disabled": {
                 "type": "boolean"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -351,12 +360,39 @@
           "disabled": {
             "type": "boolean"
           },
-          "errorText": {},
-          "helperText": {},
+          "errorText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "invalid": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "modelValue": {
             "type": "string"
           },
@@ -376,32 +412,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "SelectOption.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "errorText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -432,7 +443,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:703865bb752b1a8a130ff1d51bf4f85da7f3b43b450d8303dc3660b685dca99d",
+        "declarationDigest": "sha256:3de18787e699ee3a409ef457a419d6cbc41cd5f5d42fd648b26b00df24b942f1",
         "declarationPath": "packages/components-vue/dist/Select.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectProps",

@@ -1,8 +1,8 @@
 {
   "componentId": "tabs",
   "contractSource": "derived",
-  "digest": "sha256:8fcc671de5c744d4a450a5825cf90b5d7855e9b806f18c071d1b77a4fa2f478c",
-  "entryDigest": "sha256:8af05a1da92a971793f803bf0e1636abb575ed57d1d65a03d82c9ccd0dd06b51",
+  "digest": "sha256:0cc9a9bedeb1d53580c5d5fb586e3d68a6923f7dcf0d8f3af4a6db2ca4d555cd",
+  "entryDigest": "sha256:852659eb6510ff3f09e02a036a8ac4f102940a17c6544c6521898f7323c82bf4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,14 +310,32 @@
           "TabItem": {
             "additionalProperties": false,
             "properties": {
-              "content": {},
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "disabled": {
                 "type": "boolean"
               },
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -351,20 +369,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "TabItem.content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "TabItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "panel",
@@ -399,7 +404,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:056a95822112053ad9f91ba6396b67fcf3078526bd03ef81697e6391372aa702",
+        "declarationDigest": "sha256:06fa973059ff258478004b30cdde463e6b164c7f223f929da67134467f71db1b",
         "declarationPath": "packages/components-vue/dist/Tabs.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TabsProps",

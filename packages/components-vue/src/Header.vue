@@ -4,15 +4,15 @@ import { computed, useSlots, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
 export type HeaderNavItem = {
   /** @slot nav-label */
-  label?: unknown; href: string };
+  label?: string | number; href: string };
 export type HeaderAccount = {
   name?: string;
   email?: string;
   avatarUrl?: string;
 };
 export type HeaderProps = {
-  brand?: unknown;
-  title?: unknown;
+  brand?: string | number;
+  title?: string | number;
   navigation?: HeaderNavItem[];
   navItems?: HeaderNavItem[];
   account?: HeaderAccount;

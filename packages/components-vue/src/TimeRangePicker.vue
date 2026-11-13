@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { useId,
   computed,
   ref,
@@ -464,9 +465,9 @@ const popoverClass = computed(() => classNames(
       :disabled="props.disabled"
       @click="toggle"
     >
-      <svg aria-hidden="true" class="lucide lucide-clock-icon lucide-clock" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v6l4 2" /><circle cx="12" cy="12" r="10" /></svg>
+      <Icon name="clock" :size="16" />
       <span class="st-timeRangePicker__triggerLabel" :id="triggerTextId">{{ triggerLabel }}</span>
-      <svg aria-hidden="true" class="lucide lucide-chevron-down-icon lucide-chevron-down" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="m6 9 6 6 6-6" /></svg>
+      <Icon name="chevron-down" :size="16" />
     </button>
     <div v-if="panelOpen" :class="popoverClass" role="dialog" :aria-label="panelLabel">
       <div ref="panelRef" class="st-timeRangePicker__panel" tabindex="-1">

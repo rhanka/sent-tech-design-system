@@ -2,6 +2,24 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import * as source from './vue-vapor-source.mjs';
 const sfc=script=>`<script setup lang="ts">${script}</script><template><input v-bind="$attrs" /></template>`;
+test('K25 should reject disabled fallthrough without forwarding attrs', () => {
+  const input = '<script setup>defineOptions({inheritAttrs:false});</script><template><div /></template>';
+  assert.ok(source.sfcSafety(input).some(error => error.includes('unforwarded attrs')));
+});
+test('K25 should reject attrs forwarded on an ancestor and its descendant', () => {
+  for (const bindings of [
+    ['v-bind="$attrs"', 'v-bind="$attrs"'],
+    ['v-bind="{...attrs}"', 'v-bind="attrs"'],
+    ['v-bind="outer()"', 'v-bind="inner"'],
+  ]) {
+    const input = `<script setup>import {useAttrs} from 'vue';defineOptions({inheritAttrs:false});const attrs=useAttrs();const outer=()=>({...attrs});const inner={...attrs};</script><template><div ${bindings[0]}><button ${bindings[1]} /></div></template>`;
+    assert.ok(source.sfcSafety(input).some(error => error.includes('ancestor and descendant')));
+  }
+});
+test('K25 should accept deliberate editor attr rejection and independent sibling targets', () => {
+  assert.deepEqual(source.sfcSafety('<script setup>/** @attrs none Editor owns its inner textbox. */\ndefineOptions({inheritAttrs:false});</script><template><div /></template>'), []);
+  assert.deepEqual(source.sfcSafety('<script setup>defineOptions({inheritAttrs:false});</script><template><button v-if="open" v-bind="$attrs"/><input v-else v-bind="$attrs"/></template>'), []);
+});
 for(const [title,input,expected]of [
  ['fallthrough',sfc('defineOptions({name:"X"});'),'inheritAttrs'],
  ['cached attrs',sfc('import {useAttrs as attrsOf,computed as memo} from "vue";defineOptions({inheritAttrs:false});const extra=attrsOf();const p=memo(()=>({...extra}));'),'cached attrs'],

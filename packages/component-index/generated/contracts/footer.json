@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:50e7a988062d9d07219d0e0dc54841313706883cbcd762e8f98151bfcfb841e9",
-  "entryDigest": "sha256:67a80c144f0857a4287b97d89d892125589f201d9ec5401ca9acd91a582f340e",
+  "digest": "sha256:45be9bf376b316a9b35f1746c2bcf852a153d0bcc45bfbddf36407fa63396336",
+  "entryDigest": "sha256:13a8527255544fb3e891750e4ee1e000b5f7fedb5737f87f9f4f84f77618ab2e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -353,7 +353,16 @@
                 },
                 "type": "array"
               },
-              "title": {}
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "links"
@@ -366,7 +375,16 @@
               "href": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "href"
@@ -376,7 +394,16 @@
         },
         "additionalProperties": false,
         "properties": {
-          "brand": {},
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -386,7 +413,16 @@
             },
             "type": "array"
           },
-          "copyright": {},
+          "copyright": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "legalLinks": {
             "items": {
               "$ref": "#/$defs/FooterLink"
@@ -402,32 +438,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "FooterColumn.title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "FooterLink.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "brand",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "copyright",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "brand"
@@ -471,13 +482,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:64ab57176f3bdb52729069b2ec773234ac9e9ab119c67269c133ef707946fe34",
+        "declarationDigest": "sha256:90e7a1c7f2420f81c921c1438076fd4e640a5d4dfe890622f0921017dc8f008f",
         "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

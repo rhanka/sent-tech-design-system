@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:2c4efb2e610a2b767a53425016aad74819c9b821f16d2d7da2c09593c7e281ac",
-  "entryDigest": "sha256:dec353529af33dce127b004c8be05dc6151007ecf9ada41641d7d04ec8e9baa2",
+  "digest": "sha256:5e3a21e0aa34d8701e0d86f1ea3796147b387955002a9bb84b3e813bffff8938",
+  "entryDigest": "sha256:7294d02701d618496dfbc7c819f819d458b75651bd561fb7d841c75d98dbf62b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -149,8 +149,26 @@
           "class": {
             "type": "string"
           },
-          "label": {},
-          "title": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "variant": {
             "enum": [
               "spinner",
@@ -160,20 +178,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "label"
@@ -183,13 +188,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0498759d9cb01628a3d2a929029850ea0620b8c51396220b73597acda26ec352",
+        "declarationDigest": "sha256:9fb56dae1d61eb1c59eaa5f94de391ac05be415dee139a7e485049763422e5a6",
         "declarationPath": "packages/components-vue/dist/LoadingState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LoadingStateProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

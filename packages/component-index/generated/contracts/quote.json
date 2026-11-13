@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:2bd86810d822bcd89887a82977b5311f33b16aae9d6747f605c2d1a6e157de62",
-  "entryDigest": "sha256:d4e119954b76be3f8e5b86b18f3c2331c5182b1586c8fc41ee5da14c61e85ee5",
+  "digest": "sha256:4b5aee5f652ae496a22a8ef3d4989cb5aad9cc8054953d6053d7d8ca728aeae0",
+  "entryDigest": "sha256:10c7f66bcdb293092658d840d68f215e5416a10d91122d2cdc9edcf94e0630e8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -157,28 +157,33 @@
       "props": {
         "additionalProperties": false,
         "properties": {
-          "author": {},
+          "author": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
-          "source": {}
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "author",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "source",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "author"
@@ -191,13 +196,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:a4757faf0af13c7c12d41605ae967f54d3c093828bb65a571259f848efbb2433",
+        "declarationDigest": "sha256:b8deaae22ca09102143d9d516b6eee3176cdec36cf41d67704f645e7b34890d0",
         "declarationPath": "packages/components-vue/dist/Quote.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "QuoteProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

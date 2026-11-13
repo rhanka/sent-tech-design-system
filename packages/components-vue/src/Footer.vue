@@ -5,17 +5,17 @@ import { classNames } from './classNames.js';
 
 export type FooterLink = {
   /** @slot link-label */
-  label?: unknown; href: string };
+  label?: string | number; href: string };
 export type FooterColumn = {
   /** @slot column-title */
-  title?: unknown; links: FooterLink[] };
+  title?: string | number; links: FooterLink[] };
 
 export type FooterProps = {
-  brand?: unknown;
+  brand?: string | number;
   columns?: FooterColumn[];
   links?: FooterLink[];
   legalLinks?: FooterLink[];
-  copyright?: unknown;
+  copyright?: string | number;
   class?: string;
 };
 

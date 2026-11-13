@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ab02af047c57f1e1c3435e2d4682923e0641f51023ee9714c7ae6ad8d1ea7869",
+      "digest": "sha256:f0ed3b708d43feac3395e534e8c73ac3cf60089ec26993aadfdb01c2cb4c2b13",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Textarea.vue",
@@ -40,7 +40,7 @@
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:849cc867040bd6ecd3bde20c0e2dc60686a45cb67c0088c63cb47ae3868baad8",
+  "digest": "sha256:48e1a89e09cc56ba0b37aee5ec824ec434b0be3773e6ff517cc974cf56627a97",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [

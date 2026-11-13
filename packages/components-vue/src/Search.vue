@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { scalarContent } from './slotContent.js';
 import { computed, useId } from 'vue';
 import { ref } from 'vue';
@@ -6,7 +7,7 @@ import { classNames } from './classNames.js';
 
 export type SearchSize = 'sm' | 'md' | 'lg';
 export type SearchProps = {
-  label?: unknown;
+  label?: string | number;
   size?: SearchSize;
   modelValue?: string;
   /** Svelte/React-canonical alias for `modelValue`. */
@@ -75,22 +76,7 @@ const currentValue = computed(() => props.modelValue ?? props.value ?? '');
       ><label :class="'st-field__label'" :for="inputId"><slot v-if="$slots.label" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></label></template
     ><template v-else></template>
     <span :class="'st-search__icon'" :aria-hidden="'true'"
-      ><svg
-        xmlns="http://www.w3.org/2000/svg"
-        :width="16"
-        :height="16"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="lucide lucide-search-icon lucide-search"
-        :aria-hidden="'true'"
-      >
-        <path d="m21 21-4.34-4.34" />
-        <circle cx="11" cy="11" r="8" /></svg
-    ></span>
+      ><Icon name="search" :size="16" /></span>
     <input v-bind="{ ...$attrs, ...controlBindings }" />
     <template v-if="currentValue"
       ><button
@@ -105,22 +91,7 @@ const currentValue = computed(() => props.modelValue ?? props.value ?? '');
           }
         "
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          :width="16"
-          :height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="lucide lucide-x-icon lucide-x"
-          :aria-hidden="'true'"
-        >
-          <path d="M18 6 6 18" />
-          <path d="m6 6 12 12" />
-        </svg></button></template
+        <Icon name="x" :size="16" /></button></template
     ><template v-else></template>
   </div>
 </template>

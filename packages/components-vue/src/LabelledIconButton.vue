@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import Icon from './Icon.vue';
 import IconButton from './IconButton.vue';
-import { ICONS, type IconName } from './icon-data.js';
-import { classNames } from './classNames.js';
+import Tooltip from './Tooltip.vue';
+import type { IconName } from './icon-data.js';
 
 export type LabelledIconButtonProps = {
   /** Hover/focus label and accessible name. */
@@ -32,12 +32,9 @@ function clicked(event: MouseEvent) {
 </script>
 
 <template>
-  <span :class="classNames('st-tooltip', 'st-tooltip--' + props.tooltipPlacement, props.class)">
-    <span class="st-tooltip__trigger">
-      <IconButton :aria-label="props.label" :size="props.size" :variant="props.variant" :disabled="props.disabled" :aria-pressed="props.pressed" :aria-keyshortcuts="props.ariaKeyshortcuts" @click="clicked">
-        <Icon :name="props.icon" :svg-class="`lucide-icon lucide lucide-${ICONS[props.icon].name} st-icon`" />
-      </IconButton>
-    </span>
-    <span class="st-tooltip__content" role="tooltip">{{ props.tooltipContent ?? props.label }}</span>
-  </span>
+  <Tooltip :content="props.tooltipContent ?? props.label" :placement="props.tooltipPlacement" :class="props.class">
+    <IconButton v-bind="$attrs" :aria-label="props.label" :size="props.size" :variant="props.variant" :disabled="props.disabled" :aria-pressed="props.pressed" :aria-keyshortcuts="props.ariaKeyshortcuts" @click="clicked">
+      <Icon :name="props.icon" />
+    </IconButton>
+  </Tooltip>
 </template>

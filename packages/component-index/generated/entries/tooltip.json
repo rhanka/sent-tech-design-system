@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:7984cdcd6f75138fb22b9e142f42e24eb5e843e6908c6f3103007bb42afd4f87",
+      "digest": "sha256:8351bc8e4f1dd31c0f11e49a1dab01e6a0f1c6ebd1cbdab08011707ef0ae9d2e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tooltip.vue",
@@ -40,7 +40,7 @@
     "en": "Contextual hint on hover/focus.",
     "fr": "Info contextuelle au survol/focus."
   },
-  "digest": "sha256:dc6b6311a16074a31ad1c836d03c1dd4f55b243df496d57f2848715a8d4a516e",
+  "digest": "sha256:91fe3cd6c1f2a017e353b8fc4054db0f1a825448e7b341c3eec647b8fbaf869b",
   "displayName": "Tooltip",
   "format": "component-entry/v1",
   "frameworks": [

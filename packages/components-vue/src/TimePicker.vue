@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { useId, computed, onBeforeUnmount, onMounted, ref } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -283,7 +284,7 @@ const onListKeyDown = (event: KeyboardEvent) => {
           :disabled="props.disabled"
           @click="toggleOpen"
         >
-          <svg aria-hidden="true" class="lucide lucide-clock-icon lucide-clock" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M12 6v6l4 2" /><circle cx="12" cy="12" r="10" /></svg>
+          <Icon name="clock" :size="16" />
         </button>
       </span>
     </div>

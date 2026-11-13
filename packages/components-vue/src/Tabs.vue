@@ -8,10 +8,10 @@ export type TabItem = {
   value?: string;
 
   /** @slot tab-label */
-  label?: unknown;
+  label?: string | number;
 
   /** @slot panel */
-  content?: unknown;
+  content?: string | number;
   disabled?: boolean;
 };
 export type TabsProps = {

@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:ffe42ec7bdb0a170fe2b1148d32d1ed154c196dd64453b3918bc9de621100aaa",
-  "entryDigest": "sha256:07c5d0379cea4eca3d7fbed219011eb1e1f3bc6020648bcda1170c7386bc9b6e",
+  "digest": "sha256:7859e5c18fb018be802eab79bf7e123180d00545c5f7416facb3ca1c5195c9a0",
+  "entryDigest": "sha256:68a31e48b9b675b880488becfa255a2102f7657b9cda121dbcd4daf1fc28b392",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,16 @@
               "key": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "key"
@@ -318,7 +327,16 @@
         },
         "additionalProperties": false,
         "properties": {
-          "caption": {},
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -343,22 +361,10 @@
       },
       "replaced": [
         {
-          "name": "TableColumn.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
           "name": "TableRow",
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{}",
           "sourceType": "TableRow"
-        },
-        {
-          "name": "caption",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
         }
       ],
       "slots": [
@@ -382,7 +388,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:c7b629defb6497bc41aeebe0298ac1a91f8b67ce989469a3ac035dcc9e655fe5",
+        "declarationDigest": "sha256:40d7d010c1a384270070c3b396f981e50a784fb68c1ca39d6db9d29911161b21",
         "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",

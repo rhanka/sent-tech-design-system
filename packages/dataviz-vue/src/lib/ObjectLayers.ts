@@ -4,39 +4,13 @@ import {
   buildObjectLayerTree,
   isObjectLayerVisible,
   resolveDataImage,
-  resolveWebFrame,
   type DashboardObjectLayer,
   type DataImageConfig,
   type Row,
-  type WebFrameConfig,
 } from '@sentropic/dataviz-core';
 
-export type WebFrameProps = {
-  frame: WebFrameConfig;
-  class?: string;
-};
-
-export const WebFrame = defineComponent({
-  name: 'WebFrame',
-  props: {
-    frame: { type: Object as PropType<WebFrameConfig>, required: true },
-    class: { type: String, default: undefined },
-  },
-  setup(props) {
-    return () => {
-      const resolved = resolveWebFrame(props.frame);
-      return h('iframe', {
-        src: resolved.src,
-        title: resolved.title,
-        sandbox: resolved.sandbox,
-        referrerpolicy: resolved.referrerPolicy,
-        loading: resolved.loading,
-        allow: resolved.allow,
-        class: props.class,
-      });
-    };
-  },
-});
+export { WebFrame } from '@sentropic/design-system-vue';
+export type { WebFrameProps } from '@sentropic/design-system-vue';
 
 export type DataImageProps = {
   image: DataImageConfig;

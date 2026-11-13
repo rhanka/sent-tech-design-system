@@ -6,9 +6,9 @@ import { classNames } from './classNames.js';
 export type NumberInputSize = 'sm' | 'md' | 'lg';
 
 export type NumberInputProps = {
-  label?: unknown;
-  helperText?: unknown;
-  errorText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
+  errorText?: string | number;
   size?: NumberInputSize;
   modelValue?: number | string;
   /** Svelte/React-canonical alias for `modelValue`. */

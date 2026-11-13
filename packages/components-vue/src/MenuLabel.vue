@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-export type MenuLabelProps = { label?: unknown };
+export type MenuLabelProps = { label?: string | number };
 defineOptions({ name: 'MenuLabel' });
 const props = withDefaults(defineProps<MenuLabelProps>(), { label: undefined });
 defineSlots<{ label?: () => unknown; default?: () => unknown }>();

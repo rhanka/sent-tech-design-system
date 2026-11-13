@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:7031dae6d990163ebfac4736ea5402dd562af41a58c14870a2917b19fb8c256a",
-  "entryDigest": "sha256:1888d66a4f80044ee119c91c35a3103410d43b8473723798bb2258d998d4a84e",
+  "digest": "sha256:686a0310e1e73a6f212bf268334d8798a0eb9b8ecc689cf1deb10dfce27482a7",
+  "entryDigest": "sha256:5c51af5c57b42d326d77b4c2b78c82cd25b84f589707a5d21994f5238a7b011f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -689,7 +689,16 @@
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "status": {
                 "enum": [
                   "error",
@@ -727,32 +736,32 @@
               "passive"
             ]
           },
-          "placeholder": {},
-          "text": {}
+          "placeholder": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
       "replaced": [
         {
-          "name": "StreamingMessageEvent.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
           "name": "StreamingMessageEvent.text",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "placeholder",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "text",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
@@ -782,7 +791,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:70ab2263409566549632362c82ed238119766077fd70895cc959aa8283f2683c",
+        "declarationDigest": "sha256:869d343320c017f49144402ebf40e51ee356ed96bf69dc0ae22e60e66961c2f5",
         "declarationPath": "packages/components-vue/dist/StreamingMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamingMessageProps",
