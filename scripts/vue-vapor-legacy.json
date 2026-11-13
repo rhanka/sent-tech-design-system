@@ -139,8 +139,6 @@
   "packages/components-vue/src/PointAndFigureChart.ts",
   "packages/components-vue/src/PolygonChart.ts",
   "packages/components-vue/src/Popover.ts",
-  "packages/components-vue/src/Popper.ts",
-  "packages/components-vue/src/Portal.ts",
   "packages/components-vue/src/PriorityMatrix.ts",
   "packages/components-vue/src/ProgressBar.ts",
   "packages/components-vue/src/ProgressIndicator.ts",
