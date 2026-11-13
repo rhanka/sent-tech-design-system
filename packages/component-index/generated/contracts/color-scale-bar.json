@@ -1,8 +1,8 @@
 {
   "componentId": "color-scale-bar",
   "contractSource": "derived",
-  "digest": "sha256:025cce4c569d4f204f1bca93c678d772f6d6f90f7313b0fd1752a0809afe6245",
-  "entryDigest": "sha256:0846c011a8422fab579901cfef464e37083216e571e2de957bccae613e0a7ee4",
+  "digest": "sha256:784891abc92afbab9890b3d05f5706749721baea5d8827f80487b088fb3b2085",
+  "entryDigest": "sha256:0c7392e363d1620462ca8a092632636c381d75622cfcbfabb6ea2243c322e675",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/ColorScaleBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColorScaleBarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
