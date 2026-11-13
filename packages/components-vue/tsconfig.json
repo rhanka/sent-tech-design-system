@@ -8,12 +8,7 @@
     "outDir": "dist",
     "rootDir": "src",
     "jsx": "preserve",
-    "jsxImportSource": "vue",
-    "paths": {
-      "vue": [
-        "./node_modules/vue/dist/vue.d.ts"
-      ]
-    }
+    "jsxImportSource": "vue"
   },
   "include": [
     "src/**/*.ts",
@@ -22,6 +17,7 @@
   ],
   "exclude": [
     "src/**/*.test.ts",
-    "src/**/*.test.tsx"
+    "src/**/*.test.tsx",
+    "src/test-support/**"
   ]
 }
