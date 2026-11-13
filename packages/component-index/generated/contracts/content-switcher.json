@@ -1,7 +1,7 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:b6ffd208ade78fb44f78cf55f0d1fc6f485278abe5c14a20f4a2b4787bb8cd27",
+  "digest": "sha256:75d057c9ffb5599f8723e5c60db2a73df816dcd725907ee45057c357836a1fbc",
   "entryDigest": "sha256:f81187708b13261b25272b2c92b8cfb273566387d6636978f380fec3acfd7eec",
   "format": "component-contract/v1",
   "frameworks": {
@@ -274,7 +274,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -348,6 +352,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -365,7 +375,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

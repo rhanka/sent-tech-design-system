@@ -1,7 +1,7 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:81e41bc2a656e2f30e34f59c6b8c316b7000f175757a41c8ec266ae5c2c7a575",
+  "digest": "sha256:57190cca1f32807a6cfc6b7651cd94d0b6991d2a82f99439ae0b92ef03dda955",
   "entryDigest": "sha256:ed1b1e1a02c9cb9f1bf6fa4c9ecc5ee9d12f0f359d3aef5f52ea8ea81d92bdb5",
   "format": "component-contract/v1",
   "frameworks": {
@@ -282,13 +282,25 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "clear"
+          "name": "clear",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "input"
+          "name": "input",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -319,7 +331,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -368,6 +384,24 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "clear.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "input.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "label",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -396,6 +430,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -409,10 +449,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"clear\": payload not in declaration",
-        "emit \"input\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"clear\" and prop \"onClear\" both listed verbatim",
         "event pair: emits \"input\" and prop \"onInput\" both listed verbatim",

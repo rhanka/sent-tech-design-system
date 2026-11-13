@@ -1,7 +1,7 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:6e20d182fdb3003b38e52707e329c7bfef709d396bf89bfb7333fb286ce168e6",
+  "digest": "sha256:8c22b94273ae63986ea77744b67f3cfe266961ec8c7c153788ba245ee0aeb2d1",
   "entryDigest": "sha256:da42dde68143278d0e1d9bf45b63e1fa20ba7b229e469c20f9c998271658ee52",
   "format": "component-contract/v1",
   "frameworks": {
@@ -285,7 +285,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "menuToggle"
+          "name": "menuToggle",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onMenuToggle",
@@ -347,6 +351,12 @@
       },
       "replaced": [
         {
+          "name": "menuToggle.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onMenuToggle.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -364,7 +374,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"menuToggle\": payload not in declaration",
         "event pair: emits \"menuToggle\" and prop \"onMenuToggle\" both listed verbatim"
       ]
     }

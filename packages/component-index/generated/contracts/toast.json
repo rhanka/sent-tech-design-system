@@ -1,7 +1,7 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:315d93657ade667572c5ffaeea8009f93eb26eaea86a4315e3f21d72513281c9",
+  "digest": "sha256:5728714da43a3c39764232f1435a3de575e73048cbc914a15b79acc652111313",
   "entryDigest": "sha256:6dbb0a67816c97354ab8fda9db56a29c7993981af48b73543f1d116b8765e6d6",
   "format": "component-contract/v1",
   "frameworks": {
@@ -270,10 +270,18 @@
       ],
       "events": [
         {
-          "name": "close"
+          "name": "close",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "dismiss"
+          "name": "dismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onClose",
@@ -377,6 +385,18 @@
           "sourceType": "unknown"
         },
         {
+          "name": "close.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "dismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "message",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -412,8 +432,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]
