@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FunnelChart.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Vertical or horizontal funnel with per-step conversion percentages.",
     "fr": "Entonnoir vertical ou horizontal avec pourcentages de conversion par étape."
   },
-  "digest": "sha256:5a8aaa82921ffc727043b4e23540469161b61077737dab07648c9bdf83e8a54f",
+  "digest": "sha256:9d0735cb513b15354bb5e2a09d3c32a84ece63f01a87c2e3ca028dee52f00cf8",
   "displayName": "FunnelChart",
   "format": "component-entry/v1",
   "frameworks": [
