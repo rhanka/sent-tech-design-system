@@ -118,7 +118,9 @@ try {
     };
     jsxWalk(jsxAst);
     if (problems.length) fail([...new Set(problems)].join('; '));
-    return 'Old .ts absent; typed script setup + template; forbidden syntax absent';
+    return name === 'cellDecoration'
+      ? 'Pure TypeScript data helper; typed template SVG consumer; forbidden rendering syntax absent'
+      : 'Old .ts absent; typed script setup + template; forbidden syntax absent';
   });
   gate('G2', 'Classic + Vapor compile', () => {
     const build = readFileSync(resolve(pkg, 'scripts/build-sfc.mjs'));
