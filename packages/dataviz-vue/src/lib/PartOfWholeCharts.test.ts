@@ -7,7 +7,7 @@ import { DonutChart } from './DonutChart.js';
 import { FunnelChart } from './FunnelChart.js';
 import MekkoChart from './MekkoChart.vue';
 import PackedBubbleChart from './PackedBubbleChart.vue';
-import { RadarChart } from './RadarChart.js';
+import RadarChart from './RadarChart.vue';
 import { RoseChart } from './RoseChart.js';
 import { SankeyChart } from './SankeyChart.js';
 import { SunburstChart } from './SunburstChart.js';
