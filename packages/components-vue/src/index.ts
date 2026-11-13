@@ -104,8 +104,8 @@ export { Search } from "./Search.js";
 export type { SearchProps, SearchSize } from "./Search.js";
 export { default as Select } from "./Select.vue";
 export type { SelectProps, SelectSize, SelectOption } from "./Select.vue";
-export { SideNav } from "./SideNav.js";
-export type { SideNavProps, SideNavItem } from "./SideNav.js";
+export { default as SideNav } from "./SideNav.vue";
+export type { SideNavProps, SideNavItem } from "./SideNav.vue";
 export { AppShell } from "./AppShell.js";
 export type {
   AppShellPanelCollapse,
