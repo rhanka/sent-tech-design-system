@@ -229,8 +229,8 @@ export { PriorityMatrix } from "./PriorityMatrix.js";
 export type { PriorityMatrixProps, PriorityMatrixDatum, PriorityMatrixTone } from "./PriorityMatrix.js";
 export { default as Sparkline } from "./Sparkline.vue";
 export type { SparklineProps, SparklineTone } from "./Sparkline.vue";
-export { StackedBarChart } from "./StackedBarChart.js";
-export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
+export { default as StackedBarChart } from "./StackedBarChart.vue";
+export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.vue";
 export { KpiCard } from "./KpiCard.js";
 export type {
   KpiCardProps,
