@@ -1,8 +1,8 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:dcbf848b94181a477f563b7fef5a9303a7d06dc9ee2f69d6623d42586e447a7b",
-  "entryDigest": "sha256:49262947506834ff35e6cd4ada2fdeba8e9da16132535f1763adee535bc040d5",
+  "digest": "sha256:938a5405656c4c1c32630af78ba982d8a5c5cd6986a9a10d8fe21898e3645a05",
+  "entryDigest": "sha256:8db16a3cd4bc6bdb303a3c3783ee4e505888096a367ab6ddc26f459f92b0ea9d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -134,7 +134,7 @@
         "declarationPath": "packages/components-angular/dist/Calendar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CalendarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -265,11 +265,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CalendarProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

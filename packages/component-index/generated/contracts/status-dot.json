@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:a3446f9f4c3af9fe5d1842674ddff511360826e4c76ac21fe0c956aa1916b0cd",
-  "entryDigest": "sha256:1ea96dab4f89d256d64a5b1726af01e6033e6c46c68a8fbdb81d42bc954b61d4",
+  "digest": "sha256:22db2272cb5b416e074ac55b48c16801d0e783cd9835037a4a34a57660ad2547",
+  "entryDigest": "sha256:e35fcb28df12995c2a185a676165245ddf36041e0ce3b0e99bedf47d1a721b17",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StatusDotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StatusDotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
