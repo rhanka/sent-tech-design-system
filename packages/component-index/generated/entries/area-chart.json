@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/AreaChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Area chart to visualize temporal or numeric data.",
     "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
   },
-  "digest": "sha256:f88a658cf97b1049bdb272f8229c62b6081a005e6abbe315a94d1eee71eaf206",
+  "digest": "sha256:b672892b7183ac8f8933e318f9bfe1a31f8458e92748f406eaa279ad8f64c2a8",
   "displayName": "AreaChart",
   "format": "component-entry/v1",
   "frameworks": [

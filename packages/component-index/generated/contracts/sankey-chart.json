@@ -1,8 +1,8 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:79ce7222e991903426ae95de1b1bf436552565118f2bbb543750a05377038999",
-  "entryDigest": "sha256:2d7391d5da28ef39d24a10bd24596b82b852073b86acb38d4afc4c052abb4823",
+  "digest": "sha256:92170bbd6f788a74e020fd003387869b30869ec04197ff69119cb5d6b02997a1",
+  "entryDigest": "sha256:611fa5576e7aeef0b11c63d6f05fa97bbc225085430c76e24b7ad346d2d7f904",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -351,7 +351,7 @@
         "declarationPath": "packages/components-svelte/dist/SankeyChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SankeyChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

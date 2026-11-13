@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tile.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
     "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
   },
-  "digest": "sha256:8f56c4858843bd978118838f462e2a44e6e7473ee4979507267b75429db1c5db",
+  "digest": "sha256:ec174d6003cc0af121a1d9f6ff3cd0e5b7bfd49fb6dea7b04a4948d9a62aac2d",
   "displayName": "Tile",
   "format": "component-entry/v1",
   "frameworks": [

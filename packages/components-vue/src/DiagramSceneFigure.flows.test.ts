@@ -8,7 +8,8 @@ import { flowHitSize,type StepChange } from "@sentropic/diagram-canvas/flowModel
 import { runFlowHostCase } from "../../diagram-canvas/dist-host-support/host-support/flowHostContract.js";
 import { flowHostCases } from "../../diagram-canvas/dist-test-support/flowHostCases.js";
 import { flowFixture,flowMeasure } from "../../diagram-canvas/dist-test-support/flowFixture.js";
-import { DiagramSceneFigure, type DiagramSceneFigureProps } from "./DiagramSceneFigure.js";
+import DiagramSceneFigure from "./DiagramSceneFigure.vue";
+import type { DiagramSceneFigureProps } from "./DiagramSceneFigure.types.js";
 const mounted:{unmount:()=>void;container:HTMLElement}[]=[];
 function render(_component:typeof DiagramSceneFigure,props:DiagramSceneFigureProps){const container=document.createElement("div");document.body.append(container);const view=mount(DiagramSceneFigure,{props,attachTo:container});mounted.push({unmount:()=>view.unmount(),container});return {container,rerender:(next:Partial<DiagramSceneFigureProps>)=>view.setProps(next)};}
 function cleanup(){for(const view of mounted.splice(0)){view.unmount();view.container.remove();}}

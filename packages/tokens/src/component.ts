@@ -1889,8 +1889,11 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       flowBadgeBackground: semantic.surface.raised,
       flowBadgeBorder: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
       flowBadgeText: flowInk(semantic.text.primary, semantic.surface.raised, semantic.surface.default),
-      flowFanOutMax: "4"
+      flowFanOutMax: "4",
+      readoutMinWidth: "4ch"
     },
+    // Existing BPMN element host footprint, shared by framework bindings.
+    bpmnCanvas: { minHeight: "120px" },
     // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
     // resolve through the semantic feedback-info and surface tokens; no
     // per-glyph colour, no raw hex in the asset. Stroke weights are in

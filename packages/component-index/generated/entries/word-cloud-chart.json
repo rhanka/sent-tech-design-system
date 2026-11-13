@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/WordCloudChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Word cloud: font size ∝ weight, deterministic Archimedean-spiral placement with no overlap.",
     "fr": "Nuage de mots : taille de police ∝ poids, placement déterministe en spirale d'Archimède sans chevauchement."
   },
-  "digest": "sha256:131b1641fc68018d6ba9e6daeac9f9584cdbbe7c999fbfde6aa3c427b6e82918",
+  "digest": "sha256:ea468b5879c2824200d9f3692bbdd6dd3f785c097231b92db8f4ff9b7459f214",
   "displayName": "WordCloudChart",
   "format": "component-entry/v1",
   "frameworks": [
