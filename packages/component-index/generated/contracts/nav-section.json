@@ -1,8 +1,8 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:d6d97edd162683dca3de211bf573081b9058fccaaf1d44d8d05bf41898a9a013",
-  "entryDigest": "sha256:ac9ca27d7be3823d0c935de5fa6eb338a254f7bcb579e1058dca867882cce4e4",
+  "digest": "sha256:82e74bf48d6daf770a186ba84f7347346af1092bf85b22b229e1ac3cc2613b67",
+  "entryDigest": "sha256:dad67fdc8261065ea24f87218cd1ad520d84800bc24c5192af1137e6961dfbef",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -207,14 +207,12 @@
         {
           "name": "toggle",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -251,21 +249,21 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "toggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "action"
+        },
+        {
+          "name": "default"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:f7a299287c946dce717ebfbf84a5bc698983be6922154a1392d273c7dd5a3661",
-        "declarationPath": "packages/components-vue/dist/NavSection.d.ts",
+        "declarationDigest": "sha256:ca5ad6a310d77d1784d997b0bf6a64e9b063f76f18b9434247b708d1dfe3f90f",
+        "declarationPath": "packages/components-vue/dist/NavSection.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavSectionProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:d7cb18f695f1b469570095e81ebf24108688f9a4db42d5c888e047083ed414be",
-  "entryDigest": "sha256:61922f6da5fe47fb94fbf553a509436450d17ca6e1c682005be75a92f39ff786",
+  "digest": "sha256:309c1b8171aababa9369ff96ee7c1c5cc21ee13e247b7b354bc103bf864c641c",
+  "entryDigest": "sha256:d9cea489f1cc61609159ebca184fd7f04d46bfa41048653b00bf8ffb6ff952ba",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -326,11 +326,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:69bea11c154d6bb3c274b2d40d9ddd267d8572ba389c701d6f33232fe2588529",
-        "declarationPath": "packages/components-vue/dist/VariablePieChart.d.ts",
+        "declarationDigest": "sha256:913ceeb10735b2c9c7869e12ba3d88e8af8f92f8bd350f5f8358e495ad30ce5c",
+        "declarationPath": "packages/components-vue/dist/VariablePieChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VariablePieChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

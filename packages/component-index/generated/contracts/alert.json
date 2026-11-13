@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:f4ab0ad4c3a0d06477ad04ce1a57f4e557672d7d18ba93bdd2854a57579df10b",
-  "entryDigest": "sha256:d60f054e34ad08508df97d2ed928180d36a571235252f927007f6291e6ab2558",
+  "digest": "sha256:6d0825942912b0e062fce1330fcd69a46d5bffac9979373f9eccc7b4994a03e2",
+  "entryDigest": "sha256:d593ca94e7377af5f4a1c5f478a30eec13c9d703f69dfbc49e43fb6f6da45aac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,8 +192,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -238,13 +237,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:76468bc782c131138840423c5c9c2c5151b6dddec8677a9055bd24040e8071ce",
-        "declarationPath": "packages/components-vue/dist/Alert.d.ts",
+        "declarationDigest": "sha256:d1bcb046169193215cd1a15c0181497e554ec2a213fd12779db0eb68df52e660",
+        "declarationPath": "packages/components-vue/dist/Alert.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

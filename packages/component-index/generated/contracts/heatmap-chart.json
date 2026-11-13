@@ -1,8 +1,8 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:bcac99cdb2c9e38c9396c859a9e422a3c1bdd1cfeea999f363f3484536b7ab9d",
-  "entryDigest": "sha256:8169940047caeb67b5b3365dfd059eacbdc90141f4bc4fc07433b1773e592e66",
+  "digest": "sha256:dd01404e666cea0e2810a21c924974a9b5a437c6b7e51ed32d8c89a62aa47de8",
+  "entryDigest": "sha256:e0d25868f562e7482409511c051f60e3e858b21f8577bcdba703fce01cf574e2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -362,11 +362,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:07aa679b7051ac7c5eaa78a5c755a5b40c0743da2b093a404e8b95fd5f2b9179",
-        "declarationPath": "packages/components-vue/dist/HeatmapChart.d.ts",
+        "declarationDigest": "sha256:cfd630368f1f293ca34311beb3662459a0cdb13f0144df5dc816a40b185eb2f7",
+        "declarationPath": "packages/components-vue/dist/HeatmapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeatmapChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

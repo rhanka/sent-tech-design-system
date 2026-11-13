@@ -1,8 +1,8 @@
 {
   "componentId": "badge",
   "contractSource": "derived",
-  "digest": "sha256:a849d9b27b724abd35e6e17deb6a8f366c3a07fcb2bd6e8f54039071bcdd88a8",
-  "entryDigest": "sha256:ba0f683502a90b19076636a1c1463c0d1e4649ce2667b3fa5ca0dfbaf1b6b134",
+  "digest": "sha256:4a6684d4485946b7c005bbccdcd9d7877f71f01d2cbe035f3810558aa6bb88d6",
+  "entryDigest": "sha256:b8f567f95a60997d2791e7f947df7dbd3e655938ac2e2f376f8a19a4d01d77ec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -185,8 +185,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -219,13 +218,22 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b27c87f180f0d476cddbda0fc947481ab3686fe1ce0ab6faa9873854967d823d",
-        "declarationPath": "packages/components-vue/dist/Badge.d.ts",
+        "declarationDigest": "sha256:a53be2265b4f2c714f8b11ce2c7238cf87093a0255504e32e089bae50926e6b0",
+        "declarationPath": "packages/components-vue/dist/Badge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BadgeProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

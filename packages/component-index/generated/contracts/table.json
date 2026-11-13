@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:9db6e50d3a53f6947096a58f247995525eca55471d0ff338df73087678c1c5c9",
-  "entryDigest": "sha256:c62fa3625d00c86e6a1aff857d1ddf2b77ca2812f534ed61a84f04c858ef1861",
+  "digest": "sha256:9718560684dadab6a28c9131076119d323808921a1e26596cc097862078a3f26",
+  "entryDigest": "sha256:5938fcd5fb6646bbed2869baa8ac75f27e43d63086a5d332e9cd4dc191a035ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -284,8 +284,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -363,13 +362,32 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/TableColumn"
+              }
+            },
+            "required": [
+              "column"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:e998019276008faecf8985b33be9758cf3ada3ab14c73e0fea836ff372855d3d",
-        "declarationPath": "packages/components-vue/dist/Table.d.ts",
+        "declarationDigest": "sha256:50f1797851fc23223dab58780eb4dafa7d2e8ad1ceb2a42a24700913b152b4b6",
+        "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

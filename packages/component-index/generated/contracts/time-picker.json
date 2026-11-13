@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:55f84818399a58a47c2607095dbf97535284437d7618e9fdc9407a6f6236f064",
-  "entryDigest": "sha256:2f9dde737bf408bc24ab6036fa1bba80d385afcfc1d1c438e06d7bbe548d084f",
+  "digest": "sha256:8e9bb618952e199390fde4deca5ae7879ad2ff0735a347995266a7267c412526",
+  "entryDigest": "sha256:d68060bffacba1073f1417571c618f0aa383e069f4e73753fdf2878462d1e25b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -262,8 +262,7 @@
         {
           "name": "change",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
@@ -275,15 +274,13 @@
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
@@ -339,33 +336,14 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:232ea2eb2c42852089818ca59b0f3141d635a2240e38a8d814c6bf21a4808f25",
-        "declarationPath": "packages/components-vue/dist/TimePicker.d.ts",
+        "declarationDigest": "sha256:052beb985a9036b181cf71f8970081dcbc6ee0b85032c03d18a4a006f123fc72",
+        "declarationPath": "packages/components-vue/dist/TimePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimePickerProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

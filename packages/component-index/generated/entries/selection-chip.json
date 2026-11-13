@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:28125fcba1d32a9b58a633e62b25ecdf12750253c62b4b493ccaa63bd7a7e57a",
+      "digest": "sha256:b9f40e0304e2e658f7f5bcd6f4a5898aa34c13961c3dd07af546464b1b7f4899",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SelectionChip.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/SelectionChip.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact chip showing a selection with count and optional clear button.",
     "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
   },
-  "digest": "sha256:30e7dcb01081db519bae66472d2f7b2e5ca12c4a2a42a7859b3d709288ffa6a8",
+  "digest": "sha256:496a42d68b52741ba656874946c7c6d53a8f028e760150e155fff09258132b6a",
   "displayName": "SelectionChip",
   "format": "component-entry/v1",
   "frameworks": [

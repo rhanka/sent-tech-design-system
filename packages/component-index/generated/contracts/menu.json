@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:0be2aa69859c0b6712ecbf7ea1f23ed0791b0ea8f82b38113e97431fcf3d13d4",
-  "entryDigest": "sha256:a85ba76e995dfca594540723838241df85b2f0ae8be6f8268dbf63bf0cfd4db2",
+  "digest": "sha256:18408d1d41b1e1f218018442b66cf0461c1b440cda9c7595a0d219c0acda29e1",
+  "entryDigest": "sha256:bc0a7157cc38ff1a49515e6599358751b721bbe25e83e1420bddc28e9fe4c2ca",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -544,8 +544,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -586,8 +585,8 @@
               },
               "variant": {
                 "enum": [
-                  "default",
-                  "danger"
+                  "danger",
+                  "default"
                 ]
               }
             },
@@ -709,13 +708,60 @@
           "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "group-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuGroupItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:cd15895d30651503523a23e762a10a1b51062d3dde13608c80e9c81ddfc12640",
+        "declarationDigest": "sha256:532bda1817eb511714b0a65f25b391d6b239f85752bbe099bcedfbd3f6414f97",
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:d253225d5c7a1955b7e789a1b967f10e4d7d2820b7962cff575298514533e968",
-  "entryDigest": "sha256:3d3f838f421b24a991726850cdca3f7dd82636435708a0a5aa6e6da53e6b2090",
+  "digest": "sha256:4ebecfe0d7ef305ecc312adda5411a830de0698e76e8178d90bd89de5d7a7778",
+  "entryDigest": "sha256:f49953a3f593a39d6c02eb98c613557e8e4dad8fbb8ef31a5569e8c217b0bc2d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -324,44 +324,36 @@
       "events": [
         {
           "name": "change",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "input",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onInput",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": [
+              "number",
+              "null"
+            ]
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": [
+              "number",
+              "null"
+            ]
           }
         }
       ],
@@ -456,12 +448,6 @@
       },
       "replaced": [
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "errorText",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -474,52 +460,47 @@
           "sourceType": "unknown"
         },
         {
-          "name": "input.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "label",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onInput.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d86c2a393baee2dc0162b08e4603d5005b07ca20cbab22feef2d4369798f48ce",
-        "declarationPath": "packages/components-vue/dist/NumberInput.d.ts",
+        "declarationDigest": "sha256:29d61cb08ceaf0d0655879c242954f22aabe69f293788e3a82fa7bb3b575ace1",
+        "declarationPath": "packages/components-vue/dist/NumberInput.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NumberInputProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "input.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onInput.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"input\" and prop \"onInput\" both listed verbatim",

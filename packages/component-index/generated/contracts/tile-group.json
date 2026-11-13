@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:a2e30d13c298035322cc4c622d64f77d461a6ea1a6884191d2988acd8d552401",
-  "entryDigest": "sha256:df0d466f18ffbaeb9149e7344e188ef5f343665b069901636691c29dd26000f4",
+  "digest": "sha256:1dba9cedb0d1408cf4064a20edd7f7cb0aad76dbefef224938be5e3d881f13b8",
+  "entryDigest": "sha256:4a1445850e1ae80fe01b26a2bd90d2ee8fd4b034d4c489611a3f8452821da082",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -308,36 +308,27 @@
       "events": [
         {
           "name": "change",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "update:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -412,46 +403,77 @@
           "sourceType": "unknown"
         },
         {
-          "name": "change.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "legend",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "update:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-description",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/TileGroupItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/TileGroupItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "legend"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:0f8c04b8c27a4c8b720ebbb3853f60fcfb996a3a719919674a2ea9601cb0d2c6",
-        "declarationPath": "packages/components-vue/dist/TileGroup.d.ts",
+        "declarationDigest": "sha256:5f425694883a2f1509b6d97ff96b8167c9208fcf3ccfeded6c135c780e7a5eb5",
+        "declarationPath": "packages/components-vue/dist/TileGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim"

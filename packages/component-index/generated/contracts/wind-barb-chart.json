@@ -1,8 +1,8 @@
 {
   "componentId": "wind-barb-chart",
   "contractSource": "derived",
-  "digest": "sha256:d061f810877fa54f7b0cde6a555f509699868dfbffbbf2883e3adc04dd9c30ac",
-  "entryDigest": "sha256:4d823be6ee2ad4f61fa1d50958eeadbf88bb1a01eb8691d09c8bc65a700a864d",
+  "digest": "sha256:1b8257dceab441d98b1c3991f9986b3433fda69a8dcfa2f419be91bc65b1f5ba",
+  "entryDigest": "sha256:264a51108b3cb7e25a437213f36070fe1156d9f3e3c2bc4fb01503ae2de6f823",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -296,11 +296,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:0693e23c1c6fa46fad5ce823718beb47dab9b86725eb9126b4ce4b95e6cfddb8",
-        "declarationPath": "packages/components-vue/dist/WindBarbChart.d.ts",
+        "declarationDigest": "sha256:b92a3b2c7827adb2c9fd4d7fe9b1c932b1ad4e53e85a1d7e74f87b7468a67ab4",
+        "declarationPath": "packages/components-vue/dist/WindBarbChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WindBarbChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

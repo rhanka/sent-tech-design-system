@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b96a7d3adacb5a3281cadedb7c880bbc4339df7009de9fc7eab0f994f58659c8",
+      "digest": "sha256:d95941c194403d88d3f2402803ea48c1d605527062872e11d990166cf1dab28b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Pagination.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Pagination.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Page navigation with current page.",
     "fr": "Navigation de pages avec page courante."
   },
-  "digest": "sha256:0ccbe9e1bdc303c64da6ee7d753f4786f8c7662b52e18b593a07b080a7549e12",
+  "digest": "sha256:928108b28a9a0b096f8f288d2d6e38a1dbb8f5065ba174b8e27342430f37f1ab",
   "displayName": "Pagination",
   "format": "component-entry/v1",
   "frameworks": [

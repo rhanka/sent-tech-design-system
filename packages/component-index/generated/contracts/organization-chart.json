@@ -1,8 +1,8 @@
 {
   "componentId": "organization-chart",
   "contractSource": "derived",
-  "digest": "sha256:62d8c545812eee5ec13b782053d5a4007c6a175480feceae688a3a787d0369ec",
-  "entryDigest": "sha256:ae21dfa12af52ef7616ebf5e83d2a0ade11cc3c1329c2ef32b0ca5e0bbe85ba4",
+  "digest": "sha256:32595bbc3a1f2883ee557c2a93657513213b8869cff8c0ed2ad4a865970b7a9d",
+  "entryDigest": "sha256:a95ff2ffc91f4e2796e68502b661aeb73efa6e93b61fcd7842037700b6e8c1f1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -336,11 +336,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6071f42657353a15d1c98f965b28bd7d7248ad5e1c6af54439449bc11997bd86",
-        "declarationPath": "packages/components-vue/dist/OrganizationChart.d.ts",
+        "declarationDigest": "sha256:5070847fc8a50386ba375031d26669be1f7aec464b5e25cbd1a55312f52e1243",
+        "declarationPath": "packages/components-vue/dist/OrganizationChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OrganizationChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

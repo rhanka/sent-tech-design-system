@@ -1,8 +1,8 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:8fd70dea18ea6818df669b05dcdc619ab52e72888dd947b62bc0180d1b2e2cb4",
-  "entryDigest": "sha256:9580bbd2e8568f3ad8086dd3de0b5c76bfd7f32ca581d6b03483a040d9ce721b",
+  "digest": "sha256:72befc178c2a4b3470b4523efb64d2999e143044e7c6958c1bad67d93adc00e2",
+  "entryDigest": "sha256:8f6dc32484469c2662b4cf08a5035121e5738cf788995452d3751de666d5e506",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -300,8 +300,8 @@
               "label": {},
               "variant": {
                 "enum": [
-                  "default",
-                  "danger"
+                  "danger",
+                  "default"
                 ]
               }
             },
@@ -347,11 +347,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4bdb3ca9f11f6330a050d785ba3478086bd924a4a78693c2e0e79444fd5c0188",
-        "declarationPath": "packages/components-vue/dist/MessageActions.d.ts",
+        "declarationDigest": "sha256:d1dc61069f36e225eb90dc1a4d0a38527b1b2a699e271a609d511631369b0bea",
+        "declarationPath": "packages/components-vue/dist/MessageActions.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageActionsProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],

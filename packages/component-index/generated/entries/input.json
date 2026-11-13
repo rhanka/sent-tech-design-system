@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:82668e45041224a120a0d9e988792c824a08ef8fc7e64dfa159c295eeb86279d",
+      "digest": "sha256:50ea711eab139617311eae6ba9cf38369228baac8e48baa4e95220b7f6ba2ffa",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Input.ts",
-      "version": "0.40.0"
+      "path": "packages/components-vue/src/Input.vue",
+      "version": "0.41.0-next.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Standard text field, sm/md/lg sizes.",
     "fr": "Champ texte standard, tailles sm/md/lg."
   },
-  "digest": "sha256:be85e3ce54123b9a02fc6bfc67e95a371d6a7a16ba5d9f98fdd0af8b612a333e",
+  "digest": "sha256:fc7aee623796d9af87babec6883b0da306de165055fdb3bc0087aebac0316bb0",
   "displayName": "Input",
   "format": "component-entry/v1",
   "frameworks": [

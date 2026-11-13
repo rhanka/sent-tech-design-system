@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:c01a377b34b295372cf20d8f82e88ea0a356217eeb297b4862464bc8d3bebf13",
-  "entryDigest": "sha256:762f8aeb56fe8933aacf47712b2d6fef76890ed2ff3ebb4cd68fe9acaf2b367f",
+  "digest": "sha256:cc858f42562f817829b0f77a84097e187a6fa4d8bfda407b746d7d2fcfffa798",
+  "entryDigest": "sha256:7c76e07efcc2590bc373f1168137dae981a499bc5b6b4519e7fa2c188fa87d38",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -222,23 +222,14 @@
       "dropped": [],
       "events": [
         {
-          "name": "dismiss",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "dismiss"
         },
         {
-          "name": "onDismiss",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onDismiss"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -275,29 +266,33 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "dismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "actions",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         },
         {
-          "name": "onDismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:6804684010bff6cfcf903fe6911215d25f5a5ed1a769910467b01cda332f5bd8",
-        "declarationPath": "packages/components-vue/dist/Notification.d.ts",
+        "declarationDigest": "sha256:7a2c57494a4a17732b43442b8eb46edce072a5699396cc8b19b5340557c3e6b6",
+        "declarationPath": "packages/components-vue/dist/Notification.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NotificationProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"

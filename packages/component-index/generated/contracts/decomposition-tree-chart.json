@@ -1,8 +1,8 @@
 {
   "componentId": "decomposition-tree-chart",
   "contractSource": "derived",
-  "digest": "sha256:7c2332dec7aec07dfb54d3b3203f1ea16d43995bbf00833f592702bb5cbb5a45",
-  "entryDigest": "sha256:6f8a469f56e4d5237de678905559f89e3d8fec183fdccbe7f2bfce0dd53fc83d",
+  "digest": "sha256:d2b62f64d4a97f8eb6f01ac7f7146d3aa089731a3814e065e6fd995206d189db",
+  "entryDigest": "sha256:c17b6edd23a6e6a8c33125d01ef01e981034775d36d9a612d3d0533cbb42a108",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -423,11 +423,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ee9e22714d5e2a340420bcb5e6f844ec0d7880bd51448b512bea174f3d3fcf89",
-        "declarationPath": "packages/components-vue/dist/DecompositionTreeChart.d.ts",
+        "declarationDigest": "sha256:86fd8b32e3b07d8a86bebd34235b196bfd8f2f0028f0a8ee1b956a5e57900237",
+        "declarationPath": "packages/components-vue/dist/DecompositionTreeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DecompositionTreeChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "complete",
       "unresolved": [],

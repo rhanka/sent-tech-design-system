@@ -4,11 +4,11 @@ let overflowMenuInstanceCounter = 0;
 
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
-import type { OverflowMenuPlacement } from "./OverflowMenu.vue";
+import type { OverflowMenuPlacement } from "./OverflowMenu.js";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { Ellipsis } from "lucide-vue-next";
 import Menu from "./Menu.vue";
-import type { MenuActionItem, MenuItem } from "./Menu.vue";
+import type { MenuActionItem, MenuItem } from "./Menu.js";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
 
 function treeHasCascade(list: MenuItem[]): boolean {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { classNames } from './classNames.js';
-import { deriveInitials } from './Header.js';
+import { deriveInitials } from './header-initials.js';
 
 export type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
 export type AvatarShape = 'circle' | 'square';

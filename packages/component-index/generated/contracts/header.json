@@ -1,8 +1,8 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:cb5679ee06d0a9856858e0228835395b2c4adad00fbf7478a676a88e7ce72332",
-  "entryDigest": "sha256:325e6e883292268e7ab0c7dec13adcb06a4eaec3d5d83b807a24186e11f97355",
+  "digest": "sha256:360ae728649a747e776ef50cb03efe53255844706c582cbe1e0ed6e052c9266a",
+  "entryDigest": "sha256:94ae2336815a390a0c10abab632cf81a7d1920ef926a4608c1e8e317a4968dd4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -332,8 +332,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -415,13 +414,35 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "brand"
+        },
+        {
+          "name": "nav-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/HeaderNavItem"
+              }
+            },
+            "required": [
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:70b70036d3f3da71b0fc6868a4a46451aa89aab325df9a65cd8282df9ba6b70b",
-        "declarationPath": "packages/components-vue/dist/Header.d.ts",
+        "declarationDigest": "sha256:304e78277418f87654df4eee729afbf045fe4b375ded69aa3f3ee99b07ce0514",
+        "declarationPath": "packages/components-vue/dist/Header.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HeaderProps",
-        "version": "0.40.0"
+        "version": "0.41.0-next.0"
       },
       "status": "partial",
       "unresolved": [],
