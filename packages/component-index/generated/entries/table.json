@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Table.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Table.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:c62fa3625d00c86e6a1aff857d1ddf2b77ca2812f534ed61a84f04c858ef1861",
+  "digest": "sha256:4a8df402690f02ff1c2bfdd0eed2aa2686a730d2c7b233e8850c3cf310f34965",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

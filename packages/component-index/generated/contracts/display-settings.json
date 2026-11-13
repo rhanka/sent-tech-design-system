@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:38ac3d9eb458977effcd3be6d7d0e2ad38cae85426c9e97946e1cbaf466bb440",
-  "entryDigest": "sha256:98e6515cdf5bdfda881a037ab25114830113bbf002dc8089531b94d65a4abe9b",
+  "digest": "sha256:bb8214611a7290610f0e7b73124bc8e2fcde72d368cf7764c9948aaa047d16f8",
+  "entryDigest": "sha256:ff15edde1bd8dfb7cc863adae80192a51e310d81e484f6353d5ec3a84f402142",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DisplaySettingsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-react/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DisplaySettingsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

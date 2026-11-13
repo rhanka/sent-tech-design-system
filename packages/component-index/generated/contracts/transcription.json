@@ -1,8 +1,8 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:b63b2ba6a1d4e5fb2363e92c8b3568c80908e13393c1e52043fab4550f3f261e",
-  "entryDigest": "sha256:60f2bd1f7bfe21a92d8dd0ba6c2d47acd76d127e3a6a23da06c71895237dbc81",
+  "digest": "sha256:63702cc5f3a0f8fa4b7aafb7a9e04e99d4e4353d78d0c770aa9c1d903d1d85f8",
+  "entryDigest": "sha256:b5b82456f029e561cdbefe842da569b235040f04b52a2c631802bc3ae5d7a842",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -93,7 +93,7 @@
         "declarationPath": "packages/components-angular/dist/Transcription.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TranscriptionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-react/dist/Transcription.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TranscriptionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

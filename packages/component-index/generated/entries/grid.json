@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Grid.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Grid.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
     "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
   },
-  "digest": "sha256:3fcc6db27495578e5934fae9551c48ee8aba022aa1d1aa1b3faf3e5d51718ae9",
+  "digest": "sha256:12f1bf61f534d9bd90ec3b3fcc148a84301ecbc3606168289b3412c3995d5509",
   "displayName": "Grid",
   "format": "component-entry/v1",
   "frameworks": [

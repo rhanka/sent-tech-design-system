@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:ecaf6590d315e3095ecbeb5719c03321fe31b4c8c436d1e3bd42351dd00813a4",
-  "entryDigest": "sha256:7a90e1d0d6d9186fd82a02627926bed509f6242f4715d9d473d1cdf49876c57e",
+  "digest": "sha256:624f5e732e0a4626ff64d41113edb56656a45fa913af839ebb63b29da4a77fc8",
+  "entryDigest": "sha256:3d10ce2b96a9c2493c52c2c304a9ead7813a5c2164cbd79ebe68a8d2bfb4fccf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/HLCChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-react/dist/HLCChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

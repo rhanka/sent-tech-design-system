@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/VectorFieldChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/VectorFieldChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vector field: grid of arrows whose length encodes magnitude and orientation encodes direction.",
     "fr": "Champ de vecteurs : grille de flèches dont la longueur encode la magnitude et l'orientation la direction."
   },
-  "digest": "sha256:5c7592c27bb4832b782ce9b8554c31523ad2e9f2c664de46ec0a4ad5ee6c3689",
+  "digest": "sha256:8f98c5ec630d715db2ba7ad5f9738832b21dbbb7f2922c7be3f7d673396222d3",
   "displayName": "VectorFieldChart",
   "format": "component-entry/v1",
   "frameworks": [

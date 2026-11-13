@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TimeRangePicker.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimeRangePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time-range selector: relative presets or an absolute range.",
     "fr": "Sélecteur de plage temporelle : presets relatifs ou plage absolue."
   },
-  "digest": "sha256:77c025c276ec1d7e8621a645900ba31554f4048f20f1f3e655e6c067d45b7716",
+  "digest": "sha256:5c25a8aa8661c353ee2a480cea978f11786d26724db93d4395bbb0d39b6e4251",
   "displayName": "TimeRangePicker",
   "format": "component-entry/v1",
   "frameworks": [
