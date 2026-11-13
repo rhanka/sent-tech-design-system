@@ -1,8 +1,8 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:a5b9559f81db358645f78c12d428a7a3ad2bce2da722bfddbc76a51da72924da",
-  "entryDigest": "sha256:43ec09c85042e2cdeb6b003e838684ffab35b1b7ff2730f70d84b808561532b0",
+  "digest": "sha256:93b089984b3fa6a82de19eee58a2314bb7235157087a4f2dd59a4efad56056fd",
+  "entryDigest": "sha256:6a671de58e0624821557baccb6391032476731975672a395a24144dadd46ca79",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-vue/dist/Avatar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.2"
       },
       "status": "complete",
       "unresolved": [],

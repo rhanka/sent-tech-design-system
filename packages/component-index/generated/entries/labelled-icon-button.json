@@ -17,14 +17,14 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LabelledIconButton.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.2"
     }
   ],
   "description": {
     "en": "Labelled icon button: the hover tooltip and the aria-label share the same label.",
     "fr": "Bouton icône étiqueté : infobulle au survol et aria-label partagent le même libellé."
   },
-  "digest": "sha256:f9a73646ecae4d41ec81070b527b75d3a026c9cef5b024a22359dedb8bb51742",
+  "digest": "sha256:0afd17f5ea2c85db977e88a31d125c53b04d9634d697b61992fc22eb1bf81025",
   "displayName": "LabelledIconButton",
   "format": "component-entry/v1",
   "frameworks": [

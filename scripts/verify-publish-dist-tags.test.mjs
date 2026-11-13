@@ -62,6 +62,7 @@ for (const [file, prefix, publishName, packageCount] of [
 
   for (const [version, distTag] of [
     ["0.41.0-next.0", "next"],
+    ["0.41.0-next.1", "next"],
     ["0.41.0-beta.2", "beta"],
     ["0.41.0-rc.1+build.7", "rc"],
     ["0.41.0", "latest"],
