@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { scalarContent } from './slotContent.js';
 import { useSlots, useId, computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ComboboxOption = {
   value: string;
-  label?: unknown;
+  label?: string | number;
   disabled?: boolean;
 };
 
 export type ComboboxSize = 'sm' | 'md' | 'lg';
 
 export type ComboboxProps = {
-  label?: unknown;
+  label?: string | number;
   helperText?: string;
   errorText?: string;
   invalid?: boolean;
@@ -23,7 +24,7 @@ export type ComboboxProps = {
   disabled?: boolean;
   open?: boolean;
   allowCustomValue?: boolean;
-  noResultsLabel?: unknown;
+  noResultsLabel?: string | number;
   listLabel?: string;
   clearLabel?: string;
   toggleLabel?: string;
@@ -119,7 +120,7 @@ const listLabel = computed(() => props.listLabel ?? (props.label ? String(scalar
 const noResults = computed(() => scalarContent(props.noResultsLabel ?? 'No results'));
 const toggleIconClass = computed(() => {
   const cls = classNames('st-combobox__toggleIcon', open.value && 'st-combobox__toggleIcon--open');
-  return `lucide ${cls} lucide-chevron-down-icon lucide-chevron-down`;
+  return cls;
 });
 
 function onFocus() {
@@ -184,8 +185,8 @@ defineSlots<{
       <span v-if="$slots['label'] || props.label" class="st-field__label" :id="$slots.label ? labelId : undefined"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
       <span :class="classNames('st-combobox', `st-combobox--${props.size}`)">
         <input :id="inputId" class="st-combobox__control" role="combobox" :aria-expanded="open" aria-autocomplete="list" :aria-controls="listId" :aria-invalid="isInvalid() ? 'true' : undefined" :aria-activedescendant="activeDescendant" :placeholder="props.placeholder" :disabled="props.disabled" :value="displayValue" @focus="onFocus" @input="onInput" @keydown="onKeydown" />
-        <button v-if="displayValue" type="button" class="st-combobox__clear" :aria-label="props.clearLabel" :disabled="props.disabled" @click="onClear"><svg aria-hidden="true" class="lucide lucide-x-icon lucide-x" fill="none" height="16" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>
-        <button type="button" class="st-combobox__toggle" :aria-label="props.toggleLabel" :aria-expanded="open" :disabled="props.disabled" @click="onToggle"><svg aria-hidden="true" :class="toggleIconClass" fill="none" height="18" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg"><path d="m6 9 6 6 6-6"></path></svg></button>
+        <button v-if="displayValue" type="button" class="st-combobox__clear" :aria-label="props.clearLabel" :disabled="props.disabled" @click="onClear"><Icon name="x" :size="16" /></button>
+        <button type="button" class="st-combobox__toggle" :aria-label="props.toggleLabel" :aria-expanded="open" :disabled="props.disabled" @click="onToggle"><Icon name="chevron-down" :class="toggleIconClass" :size="18" /></button>
       </span>
     </label>
     <div v-if="open" :id="listId" class="st-combobox__list" role="listbox" :aria-label="props.listLabel ?? (String(scalarContent(props.label)) || ($slots.label ? undefined : listLabel))" :aria-labelledby="!props.listLabel && $slots.label ? labelId : undefined">

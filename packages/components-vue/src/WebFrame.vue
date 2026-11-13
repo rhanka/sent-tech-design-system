@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-type WebFrameLoading = 'eager' | 'lazy';
+export type WebFrameLoading = 'eager' | 'lazy';
 
-type WebFrameReferrerPolicy =
+export type WebFrameReferrerPolicy =
   | 'no-referrer'
   | 'no-referrer-when-downgrade'
   | 'origin'
@@ -12,7 +12,7 @@ type WebFrameReferrerPolicy =
   | 'strict-origin-when-cross-origin'
   | 'unsafe-url';
 
-type WebFrameSandboxToken =
+export type WebFrameSandboxToken =
   | 'allow-downloads'
   | 'allow-forms'
   | 'allow-modals'
@@ -27,7 +27,7 @@ type WebFrameSandboxToken =
   | 'allow-top-navigation'
   | 'allow-top-navigation-by-user-activation';
 
-interface WebFrameConfig {
+export interface WebFrameConfig {
   src: string;
   title?: string;
   sandbox?: readonly WebFrameSandboxToken[] | string;
@@ -54,5 +54,5 @@ const frameAttrs = computed(() => {
 </script>
 
 <template>
-  <iframe v-bind="frameAttrs"></iframe>
+  <iframe v-bind="{ ...$attrs, ...frameAttrs }"></iframe>
 </template>

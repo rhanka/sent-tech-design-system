@@ -25,42 +25,19 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
-**Étendue mesurée.** 44 chaîne(s) de tracé distincte(s),
-88 occurrence(s), dans 28 fichier(s) source de ce paquet :
+**Étendue mesurée.** 25 chaîne(s) de tracé distincte(s),
+29 occurrence(s), dans 5 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
-| `src/Accordion.vue` | 2 |
 | `src/AppHeader.vue` | 4 |
-| `src/Autosave.vue` | 2 |
-| `src/BackToTop.vue` | 2 |
-| `src/Calendar.vue` | 2 |
 | `src/cellDecoration.ts` | 21 |
-| `src/ChatComposer.vue` | 2 |
-| `src/Combobox.vue` | 3 |
-| `src/CopyButton.vue` | 2 |
 | `src/DiagramControlGlyph.vue` | 2 |
-| `src/FileUploader.vue` | 9 |
-| `src/FilterPill.vue` | 2 |
 | `src/IdentityMenu.vue` | 1 |
-| `src/InlineLoading.vue` | 2 |
-| `src/LanguageToggle.vue` | 1 |
 | `src/Menu.vue` | 1 |
-| `src/MenuTriggerButton.vue` | 1 |
-| `src/Modal.vue` | 2 |
-| `src/MultiSelect.vue` | 3 |
-| `src/PaginationNav.vue` | 4 |
-| `src/PasswordInput.vue` | 5 |
-| `src/ProgressIndicator.vue` | 3 |
-| `src/Search.vue` | 3 |
-| `src/SelectionChip.vue` | 2 |
-| `src/Stepper.vue` | 2 |
-| `src/Tag.vue` | 2 |
-| `src/TimePicker.vue` | 1 |
-| `src/TimeRangePicker.vue` | 2 |
 
 Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme tous) :
-`alarm-clock-off`, `arrow-down`, `arrow-right`, `arrow-up`, `badge-check`, `badge-percent`, `barcode`, `beer-off`, `bell-off`, `bluetooth-off`, `bug-off`, `calendar-off`, `camera-off`, `candy-off`, `cannabis-off`, `captions-off`, `check`, `chevron-down`, `chevron-left`, `chevron-right`, `cigarette-off`, `circle-check`, `circle-check-big`, `circle-chevron-down`, `circle-off`, `circle-parking-off`, `circle-percent`, `circle-question-mark`, `circle-x`, `clock`, `clock-4`, `clock-alert`, `clock-check`, `clock-fading`, `cloud-off`, `cloud-snow`, `copy`, `copy-check`, `copy-minus`, `copy-plus`, `copy-slash`, `copy-x`, `dna-off`, `download`, `droplet-off`, `egg-off`, `eye`, `eye-off`, `file`, `file-archive`, `file-axis-3d`, `file-badge`, `file-box`, `file-braces`, `file-braces-corner`, `file-chart-column`, `file-chart-column-increasing`, `file-chart-line`, `file-chart-pie`, `file-check`, `file-check-corner`, `file-clock`, `file-code`, `file-code-corner`, `file-cog`, `file-diff`, `file-digit`, `file-down`, `file-exclamation-point`, `file-headphone`, `file-heart`, `file-image`, `file-input`, `file-key`, `file-lock`, `file-minus`, `file-minus-corner`, `file-music`, `file-output`, `file-pen`, `file-play`, `file-plus`, `file-plus-corner`, `file-question-mark`, `file-scan`, `file-search`, `file-search-corner`, `file-signal`, `file-sliders`, `file-spreadsheet`, `file-symlink`, `file-terminal`, `file-text`, `file-type`, `file-type-corner`, `file-up`, `file-user`, `file-video-camera`, `file-volume`, `file-x`, `file-x-corner`, `flag-off`, `flame`, `flashlight-off`, `flask-conical-off`, `headphone-off`, `heart-off`, `hop-off`, `house-wifi`, `import`, `info`, `keyboard-off`, `lightbulb-off`, `loader-circle`, `locate-off`, `map-pin-off`, `megaphone-off`, `menu`, `message-circle-off`, `message-circle-question-mark`, `message-circle-x`, `message-square-off`, `mic-off`, `minus`, `monitor-off`, `octagon-x`, `pen-off`, `pencil-off`, `pin-off`, `plus`, `pointer-off`, `power-off`, `route-off`, `save-off`, `search`, `send`, `server-off`, `shield-check`, `shield-off`, `shield-question-mark`, `shredder`, `square-check`, `square-check-big`, `square-chevron-down`, `square-parking-off`, `square-percent`, `square-x`, `ticket-check`, `ticket-percent`, `timer-off`, `touchpad-off`, `trending-down`, `trending-up`, `triangle-alert`, `umbrella-off`, `upload`, `video-off`, `volume-off`, `vote`, `webhook-off`, `wifi-off`, `x`, `zap-off`.
+`arrow-down`, `arrow-right`, `arrow-up`, `badge-percent`, `barcode`, `check`, `chevron-down`, `chevron-left`, `circle-check-big`, `circle-percent`, `circle-question-mark`, `circle-x`, `cloud-snow`, `file-exclamation-point`, `file-question-mark`, `flame`, `house-wifi`, `info`, `menu`, `message-circle-question-mark`, `message-circle-x`, `minus`, `octagon-x`, `plus`, `shield-question-mark`, `square-check-big`, `square-percent`, `square-x`, `ticket-percent`, `trending-down`, `trending-up`, `triangle-alert`, `x`.
 
 **Pourquoi c'est une redistribution.** Le jeu d'icônes du design system est lucide : `packages/components-angular/src/Icon.ts` le dit explicitement (« the same lucide (stroke-24) path data the other frameworks wrap — the single visual source of truth »). Inliner les données plutôt que dépendre du paquet ne supprime pas l'obligation : cela la déplace du `node_modules` du consommateur vers notre propre tarball. Le port Angular ne déclare aucune dépendance lucide et n'embarque que des copies ; les ports React, Vue et Svelte dépendent du paquet lucide ET en recopient une partie.
 
@@ -113,86 +90,5 @@ Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme 
 
 ## 2. Dépendances installées avec ce paquet
 
-Fermeture **transitive** de `dependencies` et `optionalDependencies`, dérivée
-de `package-lock.json` : 2 paquet(s), 1 famille(s) de licences.
-Ces paquets ne sont pas recopiés dans notre tarball — npm les récupère du
-registre avec leurs propres fichiers de licence. Ils sont recensés ici parce
-qu'ils arrivent dans le `node_modules` du consommateur de notre fait.
-
-| Paquet | Version | Licence déclarée |
-|---|---|---|
-| `@tiptap/markdown` | 3.32.0 | MIT |
-| `marked` | 17.0.6 | MIT |
-
-### Textes de notice
-
-#### `@tiptap/markdown` 3.32.0 — MIT
-
-> MIT License
->
-> Copyright (c) 2025, Tiptap GmbH
->
-> Permission is hereby granted, free of charge, to any person obtaining a copy
-> of this software and associated documentation files (the "Software"), to deal
-> in the Software without restriction, including without limitation the rights
-> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-> copies of the Software, and to permit persons to whom the Software is
-> furnished to do so, subject to the following conditions:
->
-> The above copyright notice and this permission notice shall be included in all
-> copies or substantial portions of the Software.
->
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-> SOFTWARE.
-
-#### `marked` 17.0.6 — MIT
-
-> # License information
->
-> ## Contribution License Agreement
->
-> If you contribute code to this project, you are implicitly allowing your code
-> to be distributed under the MIT license. You are also implicitly verifying that
-> all code is your original work. `</legalese>`
->
-> ## Marked
->
-> Copyright (c) 2018+, MarkedJS (https://github.com/markedjs/)
-> Copyright (c) 2011-2018, Christopher Jeffrey (https://github.com/chjj/)
->
-> Permission is hereby granted, free of charge, to any person obtaining a copy
-> of this software and associated documentation files (the "Software"), to deal
-> in the Software without restriction, including without limitation the rights
-> to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-> copies of the Software, and to permit persons to whom the Software is
-> furnished to do so, subject to the following conditions:
->
-> The above copyright notice and this permission notice shall be included in
-> all copies or substantial portions of the Software.
->
-> THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-> IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-> FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-> AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-> LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-> OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-> THE SOFTWARE.
->
-> ## Markdown
->
-> Copyright © 2004, John Gruber
-> http://daringfireball.net/
-> All rights reserved.
->
-> Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
->
-> * Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-> * Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-> * Neither the name “Markdown” nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
->
-> This software is provided by the copyright holders and contributors “as is” and any express or implied warranties, including, but not limited to, the implied warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the copyright owner or contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages (including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort (including negligence or otherwise) arising in any way out of the use of this software, even if advised of the possibility of such damage.
+Aucune. Ce paquet ne déclare aucune dépendance tierce : installer ce paquet
+n'installe aucun code tiers de notre fait.

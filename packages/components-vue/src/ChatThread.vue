@@ -13,12 +13,12 @@ export type ChatThreadProps = {
     role?: ChatMessageRole;
 
   /** @slot message-content */
-  content?: unknown;
+  content?: string | number;
     status?: ChatMessageStatus;
   }>;
 
   /** @slot empty */
-  emptyLabel?: unknown;
+  emptyLabel?: string | number;
   class?: string;
 };
 
