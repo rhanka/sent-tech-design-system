@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/GeoChart.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Generic layered 2D map (GeoJSON, choropleth, points, density, flows, hexbin, clusters), equirectangular or Mercator projection, accessible value list.",
     "fr": "Carte 2D générique à couches (GeoJSON, choroplèthe, points, densité, flux, hexbin, clusters), projection équirectangulaire ou Mercator, liste de valeurs accessible."
   },
-  "digest": "sha256:040989ca9d9675cd9364158f12cb1de7c00e1da3330b3446dee04dd130586ad0",
+  "digest": "sha256:38bfc68c6c8882066b22d8a5afef975e8f6766c4c38d136d59890b2f2a2d2569",
   "displayName": "GeoChart",
   "format": "component-entry/v1",
   "frameworks": [

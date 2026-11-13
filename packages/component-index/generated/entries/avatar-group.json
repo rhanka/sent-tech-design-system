@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AvatarGroup.vue",
-      "version": "0.41.0-next.0"
+      "version": "0.41.0-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Overlapping avatar stack with a “+N” overflow token.",
     "fr": "Pile d'avatars avec recouvrement et jeton de débordement « +N »."
   },
-  "digest": "sha256:e590297c54096610248d7042779ec81789c4f9702cf46a8c13b65168ec74e837",
+  "digest": "sha256:af0e80fcd17c77deedeb7251ae1c32a722873db0e7f4c6f8a0b84f6a38e3e836",
   "displayName": "AvatarGroup",
   "format": "component-entry/v1",
   "frameworks": [
