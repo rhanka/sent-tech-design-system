@@ -62,7 +62,7 @@ try {
       app.mount(document.querySelector('#app'));
       await nextTick();
       await new Promise(done => setTimeout(done, 0));
-      if (!document.querySelector('#app').querySelector('*')) throw new Error('Mount produced no element');
+      if (!document.body.querySelector('#app *') && !document.body.querySelector('[data-st-portal="teleported"]') && !document.querySelector('#app').textContent) throw new Error('Mount produced no content');
     } finally {
       app.unmount();
       await nextTick();
