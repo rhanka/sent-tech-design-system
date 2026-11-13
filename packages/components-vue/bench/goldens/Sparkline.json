@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Sparkline",
+  "sourceRevision": "9e79bf4c23a00b16114198fc6c3e15663ebb3e1a",
+  "source": "src/Sparkline.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__line\" d=\"M2.00,26.00 L31.00,14.00 L60.00,20.00 L89.00,2.00 L118.00,8.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "area-success",
+      "html": "<span aria-label=\"Trend\" class=\"st-sparkline st-sparkline--success\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__area\" d=\"M2.00,26.00 L40.67,14.00 L79.33,2.00 L118.00,14.00 L118.00,26.00 L2.00,26.00 Z\"></path><path class=\"st-sparkline__line\" d=\"M2.00,26.00 L40.67,14.00 L79.33,2.00 L118.00,14.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "custom",
+      "html": "<span class=\"st-sparkline st-sparkline--error consumer\" data-bench=\"spark\" role=\"img\" style=\"color:red;\"><svg focusable=\"false\" height=\"40\" preserveAspectRatio=\"none\" viewBox=\"0 0 200 40\" width=\"200\"><path class=\"st-sparkline__line\" d=\"M2.00,38.00 L100.00,38.00 L198.00,38.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"></path></svg></span>"
+    },
+    {
+      "id": "empty",
+      "html": "<span aria-label=\"Empty\" class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"></svg></span>"
+    },
+    {
+      "id": "single",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__line\" d=\"M2.00,26.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    }
+  ],
+  "sourceSha256": "cc161491c9fb8ff1d0faad2b5a04ca8c5ffc81e62006050c2abaac6815cc88c6",
+  "fixtureSha256": "30d67aefcb46a72ea0b02aa2364ae87bbca7219b9453b76f0205436c636d86c3",
+  "publicExports": [
+    {
+      "name": "Sparkline",
+      "typeOnly": false
+    },
+    {
+      "name": "SparklineProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SparklineTone",
+      "typeOnly": true
+    }
+  ]
+}
