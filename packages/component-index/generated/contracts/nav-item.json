@@ -1,8 +1,8 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:d0aed09271ef317c1bf7b243047d6a6ba431a704b09c0f52980ec5526ac5ffd1",
-  "entryDigest": "sha256:d5b8ee6d6eeeb3b435aca227398d8354cd1046d6145ca732fe53db188bf5b9c2",
+  "digest": "sha256:cb5a0c35cb5330cfc7d3b931b0d292392b4e3d489b1e85cd6669df1852f9a8a1",
+  "entryDigest": "sha256:5dbd8e42cbab1f450a3b6751b2b21b4ea7879c8afd6c07d460f2decbc9c1a472",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NavItemProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-react/dist/NavItem.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NavItemProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
