@@ -437,14 +437,14 @@ export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
 
 export { BackToTop } from "./BackToTop.js";
 export type { BackToTopProps } from "./BackToTop.js";
-export { DisplaySettings } from "./DisplaySettings.js";
+export { default as DisplaySettings } from "./DisplaySettings.vue";
 export type {
   DisplaySettingsProps,
   DisplaySettingsState,
   DisplayFontScale,
   DisplayContrast,
   DisplayLineSpacing,
-} from "./DisplaySettings.js";
+} from "./DisplaySettings.vue";
 export { MediaContent } from "./MediaContent.js";
 export type { MediaContentProps, MediaKind } from "./MediaContent.js";
 export { Notification } from "./Notification.js";
