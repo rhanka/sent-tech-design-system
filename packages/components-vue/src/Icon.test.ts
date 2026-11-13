@@ -1,9 +1,11 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { mount } from "@vue/test-utils";
-import { EyeOff, Rocket } from "lucide-vue-next";
+import { ICONS, ICON_NAMES, type IconGlyph } from './icon-data.js';
+const EyeOff = ICONS['eye-off'];
+const Rocket: IconGlyph = { name: 'rocket', nodes: [['path', { d: 'M4 20 20 4M4 16v4h4' }]] };
 import { describe, expect, it, vi } from "vitest";
-import { Icon, ICON_NAMES } from './Icon.vue';
+import Icon from './Icon.vue';
 
 // The icon token rules shipped in the `@layer st-icon` block of a stylesheet,
 // as [{ selector, declarations }]. Empty when the block is absent.
@@ -102,7 +104,7 @@ describe("Icon — canonical DS icon set", () => {
   });
 });
 
-describe("Icon — glyph prop (any lucide icon)", () => {
+describe("Icon — glyph prop (neutral Lucide data)", () => {
   it("renders an svg for a glyph passed directly", () => {
     const svg = mount(Icon, { props: { glyph: EyeOff } }).find("svg");
     expect(svg.exists()).toBe(true);

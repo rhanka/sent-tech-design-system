@@ -19,7 +19,7 @@ const emit = defineEmits<{ toggle: [open: boolean] }>();
 const uid = `st-collapsible-${useId()}`;
 const internalOpen = ref(props.open ?? false);
 const open = computed(() => props.open !== undefined ? props.open : internalOpen.value);
-function toggle() { if (props.disabled) return; const next = !open.value; if (props.open === undefined) internalOpen.value = next; props.onToggle?.(next); emit('toggle', next); }
+function toggle() { if (props.disabled) return; const next = !open.value; if (props.open === undefined) internalOpen.value = next; emit('toggle', next); }
 </script>
 
 <template>

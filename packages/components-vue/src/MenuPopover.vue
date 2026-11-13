@@ -4,7 +4,6 @@ let menuPopoverInstanceCounter = 0;
 
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
-defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { Menu } from "./Menu.js";
@@ -67,6 +66,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
   }
   return false;
 }
+
+defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 
 defineOptions({ name: "MenuPopover", inheritAttrs: false });
 const props = defineProps({

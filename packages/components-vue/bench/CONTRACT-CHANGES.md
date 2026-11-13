@@ -28,3 +28,10 @@ internals. Events still invoke each listener through `emit`; controls remain
 absent without listeners. Generated identities use `useId()`; the reference
 normalizer masks only the registered generated IDs and TileGroup radio names.
 Portal/Popper retain V0c behavior and move their public types into their SFCs.
+
+The native interaction witnesses also corrected duplicate notifications in
+NavItem, NavSection/Collapsible and Popper: a declared event already invokes
+its matching callback prop. These now emit once without calling that same
+callback a second time. Payloads and public callback props are retained.
+Popper installs Escape/focus handling when it is initially open as well as
+when it opens after mount. Neither change affects the frozen SSR markup.

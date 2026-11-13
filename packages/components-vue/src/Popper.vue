@@ -144,7 +144,7 @@ function reposition() {
   if (result.placement !== resolvedPlacement.value) {
     resolvedPlacement.value = result.placement;
     emit("placementChange", result.placement);
-    props.onPlacementChange?.(result.placement);
+
   }
 }
 
@@ -244,7 +244,10 @@ function stopFocusTrap() {
   preFocusEl = null;
 }
 
-onMounted(start);
+onMounted(() => {
+  start();
+  startA11y();
+});
 
 watch(
   () => [props.open, props.anchor] as const,

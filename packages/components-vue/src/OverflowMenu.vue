@@ -4,7 +4,6 @@ let overflowMenuInstanceCounter = 0;
 
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
-defineSlots<MenuLabelSlots>();
 import type { OverflowMenuPlacement } from "./OverflowMenu.js";
 import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import { Ellipsis } from "lucide-vue-next";
@@ -34,6 +33,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
   }
   return false;
 }
+
+defineSlots<MenuLabelSlots>();
 
 defineOptions({ name: "OverflowMenu", inheritAttrs: false });
 const props = defineProps({

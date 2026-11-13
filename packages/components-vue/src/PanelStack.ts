@@ -62,7 +62,7 @@ export type PanelStackProps = {
  * to touch.
  */
 export { PANEL_STACK_KEY, type PanelStackContext } from './panel-stack-context.js';
-import { PANEL_STACK_KEY } from './panel-stack-context.js';
+import { PANEL_STACK_KEY, type PanelStackContext } from './panel-stack-context.js';
 
 type Entry = { id: string; el: HTMLElement; headerEl: HTMLElement };
 
