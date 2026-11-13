@@ -23,6 +23,14 @@
  * the sorted/distinct obligations are exercisable.
  */
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { Ajv2020 } from "ajv/dist/2020.js";
+import {
+  DIAGRAM_VIEW_SCHEMA_V1, DIAGRAM_VIEW_SCHEMA_V2, DIAGRAM_VIEW_SCHEMA_V3,
+  DIAGRAM_VIEW_SCHEMA_V3_DIGEST, DIAGRAM_VIEW_SCHEMA_V3_PIN, resolveViewSchema,
+} from "../src/view-schema-pin.js";
+import { canonicalBytes, sha256Hex } from "../src/sha256.js";
+import { single, endpoint, change } from "./endpoint-provenance-fixtures.js";
 import {
   createView,
   entityRef,
@@ -37,6 +45,49 @@ import {
 import { baseDocument, ent, rel, scopedOptions } from "./m3-helpers.js";
 
 const options = () => scopedOptions([generic2Profile]);
+
+describe("diagram-view-schema@3 endpoint pairing and exact pin", () => {
+  const ajv = new Ajv2020({ strict: true });
+  const validators = [DIAGRAM_VIEW_SCHEMA_V1, DIAGRAM_VIEW_SCHEMA_V2, DIAGRAM_VIEW_SCHEMA_V3].map((schema) => ajv.compile(schema));
+  it("publishes the exact schema text and canonical digest", () => {
+    const schemaText = readFileSync(new URL("../schemas/diagram-view-schema-3.json", import.meta.url), "utf8");
+    const schema = JSON.parse(schemaText);
+    const digest = readFileSync(new URL("../schemas/diagram-view-schema-3.sha256", import.meta.url), "utf8").trim();
+    expect(schema).toEqual(DIAGRAM_VIEW_SCHEMA_V3);
+    expect(schemaText).toBe(canonicalBytes(schema));
+    expect(sha256Hex(schemaText)).toBe(digest);
+    expect(sha256Hex(canonicalBytes(schema))).toBe(digest);
+    expect(digest).toBe(DIAGRAM_VIEW_SCHEMA_V3_DIGEST);
+    expect(resolveViewSchema(DIAGRAM_VIEW_SCHEMA_V3_PIN)).toMatchObject({ ok: true, version: "3", schema });
+    expect(resolveViewSchema({ ...DIAGRAM_VIEW_SCHEMA_V3_PIN, contentDigest: "0".repeat(64) })).toEqual({ ok: false, refusal: { code: "schema-digest-mismatch" } });
+    expect(resolveViewSchema({ id: "diagram-view-schema", version: "3" })).toEqual({ ok: false, refusal: { code: "partial-reference-refused" } });
+  });
+  it.each([0, 1, 2, 3, 4, 5, 6, 7])("validates the three presence bits (%i)", (bits) => {
+    const f = single();
+    const e = endpoint(f);
+    change(f, {
+      semanticTarget: bits & 4 ? e.semanticTarget : undefined,
+      sourceOccurrence: bits & 2 ? occurrenceRef("original") : undefined,
+      chainProvenance: bits & 1 ? e.chainProvenance : undefined,
+    });
+    const value = JSON.parse(JSON.stringify(f.v));
+    expect(validators[2]!(value)).toBe([0, 5, 6].includes(bits));
+    if (bits & 1) {
+      expect(validators[0]!(value)).toBe(false);
+      expect(validators[1]!(value)).toBe(false);
+    }
+  });
+  it("keeps chains closed while leaving empty witnesses to semantic validation", () => {
+    const f = single();
+    const value = JSON.parse(JSON.stringify(f.v));
+    const chain = value.relationOccurrences["occurrence:edge"].endpoints[0].chainProvenance;
+    chain.hops = [];
+    chain.members = [];
+    expect(validators[2]!(value)).toBe(true);
+    chain.callback = "forbidden";
+    expect(validators[2]!(value)).toBe(false);
+  });
+});
 
 function conformanceDocument(): SemanticDocument {
   const base = baseDocument(["generic@2"]);
