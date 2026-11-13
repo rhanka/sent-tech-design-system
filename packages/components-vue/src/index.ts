@@ -600,8 +600,8 @@ export { FilterBar } from "./FilterBar.js";
 export type { FilterBarProps } from "./FilterBar.js";
 export { SelectionChip } from "./SelectionChip.js";
 export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.js";
-export { AppHeader } from "./AppHeader.js";
-export type { AppHeaderProps } from "./AppHeader.js";
+export { default as AppHeader } from "./AppHeader.vue";
+export type { AppHeaderProps } from "./AppHeader.vue";
 export { AppChrome } from "./AppChrome.js";
 export type {
   AppChromeProps,
