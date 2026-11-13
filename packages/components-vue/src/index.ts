@@ -669,12 +669,12 @@ export type {
   MasterDetailItem,
   MasterDetailField,
 } from "./MasterDetail.js";
-export { Dashboard } from "./Dashboard.js";
+export { default as Dashboard } from "./Dashboard.vue";
 export type {
   DashboardProps,
   DashboardNavItem,
   DashboardKpi,
-} from "./Dashboard.js";
+} from "./Dashboard.vue";
 export { Wizard } from "./Wizard.js";
 export type {
   WizardProps,
