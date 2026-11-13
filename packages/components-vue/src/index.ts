@@ -246,8 +246,8 @@ export type {
   ConfigItem,
   ConfigItemSourceLevel,
 } from "./ConfigItemCard.vue";
-export { FieldCard } from "./FieldCard.js";
-export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.js";
+export { default as FieldCard } from "./FieldCard.vue";
+export type { FieldCardProps, FieldCardVariant, FieldCardTone } from "./FieldCard.vue";
 export { ScoreCard } from "./ScoreCard.js";
 export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.js";
 export { default as ComboChart } from "./ComboChart.vue";
