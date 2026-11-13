@@ -12,7 +12,9 @@ export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 
 export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   key: string;
-  label: VNodeChild;
+
+  /** @slot column-label */
+  label?: VNodeChild;
   sortable?: boolean;
   align?: "start" | "center" | "end";
   width?: string;

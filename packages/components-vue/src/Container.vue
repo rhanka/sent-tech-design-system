@@ -18,6 +18,7 @@ const props = withDefaults(defineProps<ContainerProps>(), {
   as: 'div',
   class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

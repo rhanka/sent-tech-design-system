@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:286fea8d41ad5faf6674db016c7c9fd1cbd3a22f3063cef2f11aca1251a351cb",
-  "entryDigest": "sha256:b755c18b1df856f5bb4a98463ee7ee84d5f78798e940854dbef058f602820ef6",
+  "digest": "sha256:ca6cbdaa99c549755de9c30d83a83917517614ef33dcbae37d0d5fa2ca814a6a",
+  "entryDigest": "sha256:b8be6168b5df5f210d6a2211d0813162897740014a1abb2d22af3552cd813991",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

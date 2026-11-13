@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:a889c09a6d3c24e32a273a0fcdf9f0f2efe2dcacf763e2243f1648306074f751",
-  "entryDigest": "sha256:6a5ce25192202f1ac49c3fe111b413b2dfdfa37b805d2fbaa892dc5ffc5f4d03",
+  "digest": "sha256:596b8bea322301bbfa1a3d5a3bfa93c9ad39618c3f85947d809e8ddc906d77d1",
+  "entryDigest": "sha256:3f3f1cb831f8b1455d149a618ed5fc21d942616cd79df23df1cb1604925a2979",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -243,16 +243,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:3f64064f640b5843b9b09fdf3d31f5258da857c4abd304fa5ce1429748fd7e75",
+        "declarationDigest": "sha256:bcdf565febd821954fc664333c90281b8129cc4d4494f4f4d2469f34c9e2c26e",
         "declarationPath": "packages/components-vue/dist/Button.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonProps",

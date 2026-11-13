@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type SwitchProps = {
@@ -28,7 +28,7 @@ defineSlots<{
   'helper-text'?: () => unknown;
 }>();
 
-const attrs = useAttrs();
+
 
 function onChange(event: Event) {
   const checked = (event.target as HTMLInputElement).checked;

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
+import { scalarContent } from './slotContent.js';
 
 export type ChatComposerProps = {
   value?: string;
@@ -21,7 +22,7 @@ const emit = defineEmits<{ submit: [payload: { value: string }] }>();
 const draft = ref(props.value ?? '');
 
 const placeholder = computed(() => props.placeholder ?? 'Message');
-const submitText = computed(() => (props.submitLabel ?? 'Send') as string);
+const submitText = computed(() => scalarContent(props.submitLabel ?? 'Send'));
 
 function onSubmit(event: Event) {
   event.preventDefault();

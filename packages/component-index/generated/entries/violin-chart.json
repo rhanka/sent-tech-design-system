@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:db3e7eb52c507613ae1b51a41facd5d31345fd97b83b27051e12f41fc90e5776",
+      "digest": "sha256:cfb89b550dca260614fa57336d8055d51b22db4f5bd2691e1151d4094140e213",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ViolinChart.vue",
@@ -40,7 +40,7 @@
     "en": "Mirrored distribution density per category, with median and quartiles.",
     "fr": "Densité de distribution en miroir par catégorie, avec médiane et quartiles."
   },
-  "digest": "sha256:b755c18b1df856f5bb4a98463ee7ee84d5f78798e940854dbef058f602820ef6",
+  "digest": "sha256:b8be6168b5df5f210d6a2211d0813162897740014a1abb2d22af3552cd813991",
   "displayName": "ViolinChart",
   "format": "component-entry/v1",
   "frameworks": [

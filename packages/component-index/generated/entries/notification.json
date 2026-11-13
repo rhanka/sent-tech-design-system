@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4fe11fe0c4e28b94eb1f3a78726dc662b021b09b0c6e0fc332b7d0e038e2bab0",
+      "digest": "sha256:e03d1853748ff133545c4937c1b0bcaf47b8fde93a05602d9a5602ecd9a17a0c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Notification.vue",
@@ -40,7 +40,7 @@
     "en": "Inline/actionable notification with info/success/warning/error tones.",
     "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
   },
-  "digest": "sha256:848d97b7bb78c4522817029e3952deeb07875190ab5c0ad4dbdfdff476cf4326",
+  "digest": "sha256:422e220b236a81360a73a727c3688184233649bf91768375ff31398a3e9c3e3d",
   "displayName": "Notification",
   "format": "component-entry/v1",
   "frameworks": [

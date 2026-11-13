@@ -1,8 +1,8 @@
 {
   "componentId": "avatar-group",
   "contractSource": "derived",
-  "digest": "sha256:84e80983d1bab366cdfbdf6d46a70fae844b33f05a1ccde1356c2dc81e4ebc7f",
-  "entryDigest": "sha256:01e4fbb77c43047878e47aaff5cba5aa4e803d50056d0b3ce0e0f2d49802a541",
+  "digest": "sha256:0686a681d303aad57e5daeb44c0001b37ae82c70d95215902a39100ef9bca300",
+  "entryDigest": "sha256:e590297c54096610248d7042779ec81789c4f9702cf46a8c13b65168ec74e837",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,16 +196,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:854605b78b9a4e26ffaecd127e3a9cb7d39f1b1c57b1c323d5557fa9664f86f4",
+        "declarationDigest": "sha256:6ae1a982bf04f4a2d1a0b2245f7fdc635662181485fac04c70e2e1d67a940e59",
         "declarationPath": "packages/components-vue/dist/AvatarGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarGroupProps",

@@ -6,7 +6,11 @@ import { classNames } from './classNames.js';
 export type TabItem = {
   id?: string;
   value?: string;
-  label: unknown;
+
+  /** @slot tab-label */
+  label?: unknown;
+
+  /** @slot panel */
   content?: unknown;
   disabled?: boolean;
 };

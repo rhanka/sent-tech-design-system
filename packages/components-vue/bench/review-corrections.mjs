@@ -20,6 +20,9 @@ export function reviewCorrections(name, fixture, JSDOM) {
     for (const attr of [...root.attributes]) if (attr.name !== 'class' && (attr.name === 'style' ? panel?.style.cssText === root.style.cssText : panel?.getAttribute(attr.name) === attr.value)) root.removeAttribute(attr.name);
   }
   if (name === 'MultiSelect' && root.querySelector('[data-invalid="true"]')) root.querySelector('.st-multiSelect__trigger')?.setAttribute('aria-invalid','true');
+  // R2-m3 replaces the original static label ID with an instance identity.
+  // Preserve the archived capture and normalize only that reviewed ID change.
+  if (name === 'EventFeedPanel') root.querySelector('#st-eventFeedPanel-label')?.setAttribute('id', 'st-eventFeedPanel-0-label');
   const host = tree.ownerDocument.createElement('div'); host.append(tree);
   return {...fixture, html: host.innerHTML};
 }

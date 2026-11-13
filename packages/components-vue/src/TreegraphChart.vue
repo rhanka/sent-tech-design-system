@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TreegraphChartTone =
@@ -171,7 +171,7 @@ const props = withDefaults(defineProps<TreegraphChartProps>(), {
   width: 640, height: 360, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-treegraphChart', props.class),

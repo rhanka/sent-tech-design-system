@@ -98,6 +98,8 @@ if (!stable) {
         continue;
       }
       const name = basename(component, '.vue');
+      const typeNames = node.exportClause?.elements.filter(item => item.isTypeOnly).map(item => item.getText(index)) ?? [];
+      if (typeNames.length) entries.push(`export { ${typeNames.join(', ')} } from '${shared}';`);
       for (const item of node.exportClause?.elements ?? []) {
         if (item.isTypeOnly) continue;
         if ((item.propertyName ?? item.name).text === 'default' || (item.propertyName ?? item.name).text === name)

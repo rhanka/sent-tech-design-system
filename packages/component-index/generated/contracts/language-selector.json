@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:141fe73c5d4d34cc430d78334c9b0cce1db58da9f48021dd53758005e224f49a",
-  "entryDigest": "sha256:8362eb36c0c43e67406728cb7c1840f6321e99fc277161bed25cc22544daa2f0",
+  "digest": "sha256:dfa5e7728589ac922b355747b512c80df5b878a44fb0e587a8f6a77e653dcd46",
+  "entryDigest": "sha256:630f5d4f3564e4c1f845ff27fb04429eb20758b3d4ac55622dd6a5598538a1bf",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -265,7 +265,6 @@
               }
             },
             "required": [
-              "label",
               "value"
             ],
             "type": "object"
@@ -329,7 +328,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7a163bd28ff5520f4c4a448bbb2beced569ac1afe7ea50163e43986b169ed593",
+        "declarationDigest": "sha256:91fe7485393b29d15551e9cb10b5ada6440a2d579d6d0ce5004c5c158ac2362d",
         "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",

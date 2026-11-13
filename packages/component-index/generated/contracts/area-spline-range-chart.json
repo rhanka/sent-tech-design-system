@@ -1,8 +1,8 @@
 {
   "componentId": "area-spline-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:64ec8d9160c671be2b3df128cf5c2ed8d6790982a20e0279cee89a448b67df80",
-  "entryDigest": "sha256:13f4350630e782138cb97b8d6e1546eb4543991de5125c9afb8eabb5c84b91be",
+  "digest": "sha256:914393eb0aa143832e53a72cf4f0552f46a795b5f2efde5a98f2611c7ae072cc",
+  "entryDigest": "sha256:6142eb1d0f32bc1a54ba33cc3f531f2c4ad3a601f613ac03e6b0020a6fe0f7c2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
