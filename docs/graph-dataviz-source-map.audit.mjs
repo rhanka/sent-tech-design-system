@@ -255,7 +255,7 @@ const capabilities = [
 const inventory = {
   schemaVersion: 1, auditDate: '2026-09-15', scope: 'six-library-source-public-export-map',
   provenance: [
-    { repository: 'graphify', remote: 'https://github.com/rhanka/graphify', head: git(graphRoot, ['rev-parse', 'HEAD']), branch: git(graphRoot, ['branch', '--show-current']), inventoryHead: '8f19554cea3a4397fd66a90c7e9fd5ea54c81626', packageFirstCommit: '0ed0fc76d3af8fc9b9f5335351a7a040d5ef1b24', scopeStatus: git(graphRoot, ['status', '--short', '--', 'packages/graph']) },
+    { repository: 'graphify', remote: 'https://github.com/rhanka/graphify', head: git(graphRoot, ['rev-parse', 'HEAD']), branch: git(graphRoot, ['branch', '--show-current']), inventoryHead: '58feb61e292776bfd07e19d7874eb4343bedf6a9', packageFirstCommit: '0ed0fc76d3af8fc9b9f5335351a7a040d5ef1b24', scopeStatus: git(graphRoot, ['status', '--short', '--', 'packages/graph']) },
     { repository: 'dataviz', remote: 'https://github.com/rhanka/dataviz', head: git(datavizRoot, ['rev-parse', 'HEAD']), branch: git(datavizRoot, ['branch', '--show-current']), inventoryHead: '0869ae5b59bb308be7d43fbe0de58c5487e11f25', describe: git(datavizRoot, ['describe', '--tags', '--always']), scopeStatus: git(datavizRoot, ['status', '--short', '--', 'packages']) },
   ],
   proof: {
