@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "SelectionLegend",
+  "sourceRevision": "a3dfbad1bbde834ce448f4cbeed0a3a196dce17a",
+  "source": "src/lib/SelectionLegend.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": ""
+    },
+    {
+      "id": "selected",
+      "html": "<div aria-label=\"Sélections actives\" class=\"st-flex st-inline\" role=\"group\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">bars</span><span aria-label=\"(2)\" class=\"st-selectionChip__count\">(2)</span><button aria-label=\"Effacer bars\" class=\"st-selectionChip__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div>"
+    },
+    {
+      "id": "labels",
+      "html": "<div aria-label=\"Active selections\" class=\"st-flex st-inline\" role=\"group\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">Bars</span><span aria-label=\"(1)\" class=\"st-selectionChip__count\">(1)</span><button aria-label=\"Effacer Bars\" class=\"st-selectionChip__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span><span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">Facets</span><span aria-label=\"(1)\" class=\"st-selectionChip__count\">(1)</span><button aria-label=\"Effacer Facets\" class=\"st-selectionChip__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div aria-label=\"Sélections actives\" class=\"st-flex st-inline consumer\" data-bench=\"legend\" role=\"group\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);color:red;\"><span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">bars</span><span aria-label=\"(2)\" class=\"st-selectionChip__count\">(2)</span><button aria-label=\"Effacer bars\" class=\"st-selectionChip__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span></div>"
+    }
+  ],
+  "sourceSha256": "a6e50df5ea8328a3a69c2e255ffd7b8cb17acba92f01798cfa89143c66e7b1e4",
+  "fixtureSha256": "24f9552056fc3b173a3e8add3c5dfc0e2b8d1b2ecdd878ec32635b7b2a4993b7",
+  "publicExports": [
+    {
+      "name": "SelectionLegend",
+      "typeOnly": false
+    },
+    {
+      "name": "SelectionLegendProps",
+      "typeOnly": true
+    }
+  ]
+}

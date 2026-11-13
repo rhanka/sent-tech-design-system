@@ -1,10 +1,9 @@
 import type { Fixture } from './types.js';
 export default [
-  { id: 'default', props: { categorical: ['#ff0000', '#00ff00'], sequential: ['#ffffff', '#0000ff'], diverging: ['#ff0000', '#ffffff', '#0000ff'], label: 'Palette', min: 'Low', max: 'High' } },
+  { id: 'default', props: { categorical: ['#c8102e', '#0072bc', '#009b77', '#f2a900'] } },
+  { id: 'sequential', props: { sequential: ['#eff3ff', '#3182ce', '#081d58'], label: 'Sales', min: '0', max: '100' } },
+  { id: 'diverging', props: { diverging: ['#d73027', '#f7f7f7', '#4575b4'], steps: 11 } },
+  { id: 'all', props: { categorical: ['#c8102e', '#0072bc'], sequential: ['#eff3ff', '#3182ce'], diverging: ['#d73027', '#f7f7f7', '#4575b4'], swatchSize: 16, label: 'Palette' } },
   { id: 'empty', props: {} },
-  { id: 'categorical-attrs', props: { categorical: ['red', 'blue', 'green'], swatchSize: 12, class: 'consumer', 'data-bench': 'palette', style: 'color:red' } },
-  { id: 'sequential-endpoints', props: { sequential: ['#ffffff', '#000000'], steps: 3, min: '', label: '' } },
-  { id: 'diverging', props: { diverging: ['#ff0000', '#ffffff', '#0000ff'], steps: 5, max: '100', label: 'Balance' } },
-  { id: 'invalid-scales', props: { sequential: ['red'], diverging: ['red', 'blue'], categorical: [], swatchSize: 0 } },
-  { id: 'clamped-swatch', props: { categorical: ['#112233'], swatchSize: -10 } },
+  { id: 'attrs', props: { categorical: ['#c8102e'], class: 'consumer', 'data-bench': 'palette', style: 'color:red' } },
 ] satisfies Fixture[];

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "PointAndFigureChart",
+  "sourceRevision": "e1528074994fc2e39873bb7dc6306a37a1f5e55d",
+  "source": "src/lib/PointAndFigureChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-pointAndFigureChart\"><div class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "box-reversal",
+      "html": "<div class=\"st-pointAndFigureChart\"><div aria-label=\"P&amp;F\" class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-pointAndFigureChart consumer\" data-bench=\"pnf\" style=\"color:red;\"><div class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"462\" y1=\"204\" y2=\"204\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"204\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"204\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"462\" y1=\"204\" y2=\"204\"></line></svg></div></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-pointAndFigureChart\"><div class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-pointAndFigureChart\"><div class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-pointAndFigureChart\"><div class=\"st-pointAndFigureChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><line class=\"st-pointAndFigureChart__grid\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line><text class=\"st-pointAndFigureChart__tick\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"46\" y=\"284\">0</text><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"52\" y1=\"16\" y2=\"284\"></line><line class=\"st-pointAndFigureChart__axis\" x1=\"52\" x2=\"622\" y1=\"284\" y2=\"284\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "be930affebec0d2d22b3445366c4e82e430e039b8899e0912a73c44e8bc0f3cc",
+  "fixtureSha256": "71db7276a6967a459f88cb370421203229502f215d1bac92b758becbde7fb114",
+  "publicExports": [
+    {
+      "name": "PointAndFigureChart",
+      "typeOnly": false
+    },
+    {
+      "name": "PointAndFigureChartProps",
+      "typeOnly": true
+    }
+  ]
+}
