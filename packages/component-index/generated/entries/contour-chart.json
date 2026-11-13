@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ContourChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Topographic contour: 2D grid painted as colour bands with isolines at level boundaries (data category1…8 scale).",
     "fr": "Contour topographique : grille 2D peinte en bandes de couleur avec isolignes aux ruptures de niveau (échelle data category1…8)."
   },
-  "digest": "sha256:6c2220e11e40c67302a899dbf9365a39baa50e440989ca678bead533e000b83d",
+  "digest": "sha256:b25f7ba55c3128885dcbdb1fc2753434a0a1482082468d7c3f9f35ddf462b476",
   "displayName": "ContourChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:7d5567a11cc64af0f2b8c9926ac2baf8f11c9f9e885557bb60e6b4a0937db83f",
+      "digest": "sha256:ac12fdf8fe58bf8804d659ccf6a1388aca320514668402944f5583aab7afbd65",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OverflowMenu.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Secondary actions menu accessible through a compact trigger.",
     "fr": "Menu d’actions secondaires accessibles via un déclencheur compact."
   },
-  "digest": "sha256:95b76e6cfc7a1e473f5a63e4622e2e620ab1f4ff979665fe169d7263a6d46676",
+  "digest": "sha256:dc550735ec4e98ae6d574079365bc0ccbac1253ac6543f4619c8310fb974f948",
   "displayName": "OverflowMenu",
   "format": "component-entry/v1",
   "frameworks": [

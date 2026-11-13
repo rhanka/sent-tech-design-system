@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:becbe090d11a00d7c3322ab3dc7bab5728561df5f8da75b093af8ee1007ac20b",
-  "entryDigest": "sha256:a0d2f50c4a57b6ecc20184c6ba8a823cbce0de755c9fa15a89906032839b9419",
+  "digest": "sha256:e26b5fed698e127d320845785db47dfac0ce33adb33ffae5300502d0655207e2",
+  "entryDigest": "sha256:c98d52f8e45979b5a1b138b3a504aed7f17115c50b26342a03a55f11a0acdc59",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -261,6 +261,9 @@
           "payload": {
             "type": "boolean"
           }
+        },
+        {
+          "name": "select"
         }
       ],
       "limitations": [
@@ -307,11 +310,14 @@
         "declarationPath": "packages/components-vue/dist/SelectableRow.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableRowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"select\": payload not in declaration",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

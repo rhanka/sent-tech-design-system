@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NavActionStack.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone.",
     "fr": "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée."
   },
-  "digest": "sha256:dd44977c639138f5f714fc8d7c52d85143fceea87fab6f1dc824a3060fa48ddc",
+  "digest": "sha256:3572ec4544ebe2eac191bc5620531d03f393761eb2ffbaebfa15b6c091786245",
   "displayName": "NavActionStack",
   "format": "component-entry/v1",
   "frameworks": [
