@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TreeView.svelte",
-      "version": "0.41.1"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TreeView.vue",
-      "version": "0.41.1-next.1"
+      "version": "0.41.0-next.2"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tree view: expand/collapse, selection, keyboard navigation (arrows).",
     "fr": "Arborescence : expand/collapse, sélection, navigation clavier (flèches)."
   },
-  "digest": "sha256:84ce23b06089040ab1a5aa2fc0218f336d6d68efc8117351b4b2a832f18a0b3f",
+  "digest": "sha256:ea3f701381379105897ae474137174aea25c062ea3ae75b76e59fab6308c54d7",
   "displayName": "TreeView",
   "format": "component-entry/v1",
   "frameworks": [

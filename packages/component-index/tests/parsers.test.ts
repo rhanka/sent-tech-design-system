@@ -16,12 +16,11 @@ const repoRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..")
 const cataloguePath = join(repoRoot, "apps", "docs", "src", "lib", "components-catalog.ts");
 
 describe("catalogue parsing via the TypeScript compiler API", () => {
-  it("parses all 214 documented rows from the real catalogue file", () => {
-    // Reviewed population: 212 rows, plus labelled-icon-button from lot CA-L1.
-    // Re-pinned to 214 with diagram-scene-figure from PR #265.
+  it("parses all 217 documented rows from the real catalogue file", () => {
+    // V8 adds RichTextEditor, ComposerEditor and LockPresenceBadge.
     const rows = parseCatalogueFile(cataloguePath);
-    expect(rows).toHaveLength(214);
-    expect(new Set(rows.map((r) => r.slug)).size).toBe(214);
+    expect(rows).toHaveLength(217);
+    expect(new Set(rows.map((r) => r.slug)).size).toBe(217);
     expect(rows.every((r) => r.status === "documented")).toBe(true);
   });
 
