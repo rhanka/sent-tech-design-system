@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "Inline",
+  "sourceRevision": "c3371c3009c9f204263e7a9d7e00aefce60111ed",
+  "source": "src/Inline.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;\">Items</div>"
+    },
+    {
+      "id": "gap-aligned",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--st-spacing-4, 1rem);\"><span>A</span><span>B</span></div>"
+    },
+    {
+      "id": "nowrap",
+      "html": "<div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:nowrap;\">No wrap</div>"
+    },
+    {
+      "id": "as-section",
+      "html": "<section class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-2, 0.5rem);\"><strong>Hi</strong></section>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-flex st-inline consumer\" data-bench=\"inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;color:red;\" title=\"Row\"><em>X</em></div>"
+    }
+  ],
+  "sourceSha256": "22cc6a32c1931824eda5ecd48b878f63953378d4e6c4cb0e7a05f155c4408c1b",
+  "fixtureSha256": "033d82df2c1ec08253c9d076cc15830acd90e7602a54780083e9e837cd0be014",
+  "publicExports": [
+    {
+      "name": "Inline",
+      "typeOnly": false
+    },
+    {
+      "name": "InlineProps",
+      "typeOnly": true
+    }
+  ]
+}
