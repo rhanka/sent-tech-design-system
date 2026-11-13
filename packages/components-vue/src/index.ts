@@ -422,8 +422,8 @@ export type {
 } from "./ForceGraph.js";
 export { GraphLegend } from "./GraphLegend.js";
 export type { GraphLegendProps } from "./GraphLegend.js";
-export { ChatComposer } from "./ChatComposer.js";
-export type { ChatComposerProps } from "./ChatComposer.js";
+export { default as ChatComposer } from "./ChatComposer.vue";
+export type { ChatComposerProps } from "./ChatComposer.vue";
 export { ChatMessage } from "./ChatMessage.js";
 export type { ChatMessageProps, ChatMessageRole, ChatMessageStatus } from "./ChatMessage.js";
 export { ChatThread } from "./ChatThread.js";
