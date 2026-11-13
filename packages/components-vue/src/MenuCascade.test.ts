@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { mount } from "@vue/test-utils";
-import { defineComponent, h, nextTick, reactive, ref, version } from "vue";
+import { defineComponent, h, nextTick, reactive, ref, toRaw, version } from "vue";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Menu } from "./Menu.js";
 import type { MenuItem } from "./Menu.js";
@@ -166,6 +166,42 @@ function mountMenu(
 }
 
 describe("Menu cascade — flat compatibility (AC-01)", () => {
+  it("renders VNode and array labels and preserves the selected flat item", async () => {
+    const item = { value: "edit", label: [h("strong", "Edit"), " now"] };
+    const wrapper = mountMenu({
+      items: [{ kind: "group", label: h("em", "Actions"), items: [item] }],
+    });
+    expect(wrapper.find(".st-menu__group em").text()).toBe("Actions");
+    expect(wrapper.find(".st-menu__itemLabel strong").text()).toBe("Edit");
+    expect(wrapper.find(".st-menu__itemLabel").text()).toBe("Edit now");
+    await buttonByText(wrapper, "Edit now").trigger("click");
+    expect(wrapper.emitted("select")).toEqual([[item]]);
+    expect(toRaw(wrapper.emitted("select")![0][0])).toBe(item);
+  });
+
+  it("renders VNode and array labels in cascade parents, groups and leaves", async () => {
+    const leaf = { value: "leaf", label: h("i", "Leaf") };
+    const wrapper = mountMenu({ items: [{
+      value: "parent", label: [h("strong", "Parent"), " row"],
+      children: [{ kind: "group", label: [h("em", "Group"), " heading"] }, leaf],
+    }] });
+    expect(wrapper.find(".st-menu__itemLabel strong").text()).toBe("Parent");
+    await buttonByText(wrapper, "Parent row").trigger("click");
+    expect(wrapper.find(".st-menu__group em").text()).toBe("Group");
+    expect(wrapper.find(".st-menu__group").text()).toBe("Group heading");
+    expect(wrapper.find(".st-menu--submenu .st-menu__itemLabel i").text()).toBe("Leaf");
+    await buttonByText(wrapper, "Leaf").trigger("click");
+    expect(wrapper.emitted("select")).toEqual([[leaf, ["parent", "leaf"]]]);
+    expect(toRaw(wrapper.emitted("select")![0][0])).toBe(leaf);
+  });
+
+  it("records the cascade implementation in the reviewed origin/main reference", () => {
+    const audit = readFileSync(join(here, "../../../docs/audit/menu-cascade-vue-review2.md"), "utf8");
+    expect(audit).not.toContain("Those main refs do not contain the cascade implementation");
+    expect(audit).toContain("`origin/main` at `f0cafb9f` contains the cascade implementation");
+    expect(audit).toContain("865e40aece9bc0952a9e90b839eb43825ee26418");
+  });
+
   it("keeps identical classes and a single-argument select for flat menus", async () => {
     const onSelect = vi.fn();
     const wrapper = mountMenu({
@@ -494,25 +530,27 @@ describe("Menu cascade — switching, leaves, disabled (AC-09, AC-11, AC-12)", (
 
 describe("Menu cascade — level-local keyboard and roving (AC-13, AC-31, AC-32)", () => {
   it("AC-13: arrows and Home/End wrap inside the current level only", async () => {
-    const wrapper = mountMenu({ items: cascadeItems });
+    const wrapper = mountMenu({ items: [{
+      label: "Class A", value: "class-a", children: [
+        { label: "First", value: "first" },
+        { label: "Disabled", value: "disabled", disabled: true },
+        { label: "Middle", value: "middle" },
+        { label: "Last", value: "last" },
+      ],
+    }, { label: "Direct", value: "direct" }] });
     await buttonByText(wrapper, "Class A").trigger("click");
-    await nextTick();
-    const panel = document.body.querySelector('[data-menu-level="1"]') as HTMLElement;
-    const reason = Array.from(panel.querySelectorAll("[role='menuitem']")).find(
-      (el) => el.textContent?.trim() === "Reason 1",
-    ) as HTMLElement;
-    reason.focus();
-    reason.dispatchEvent(new KeyboardEvent("keydown", { key: "End", bubbles: true, cancelable: true }));
-    await nextTick();
-    // Single enabled item: stays (disabled Reason 2 is skipped).
-    expect(document.activeElement).toBe(reason);
-    reason.dispatchEvent(new KeyboardEvent("keydown", { key: "Home", bubbles: true, cancelable: true }));
-    await nextTick();
-    expect(document.activeElement).toBe(reason);
-    // Root level is untouched: exactly one roving target per open level.
-    for (const level of [0, 1]) {
-      const root = document.body.querySelector(`[data-menu-level="${level}"]`) as HTMLElement;
-      expect(root.querySelectorAll('[role="menuitem"][tabindex="0"]').length).toBe(1);
+    (buttonByText(wrapper, "Middle").element as HTMLElement).focus();
+    for (const [key, target] of [
+      ["End", "Last"], ["ArrowDown", "First"], ["ArrowDown", "Middle"],
+      ["Home", "First"], ["ArrowUp", "Last"], ["ArrowUp", "Middle"],
+    ]) {
+      document.activeElement!.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }));
+      await nextTick();
+      expect(document.activeElement).toBe(buttonByText(wrapper, target).element);
+      const panel = wrapper.find('[data-menu-level="1"]');
+      expect(panel.findAll('[role="menuitem"][tabindex="0"]').map(b => b.text())).toEqual([target]);
+      const root = wrapper.find('[data-menu-level="0"]');
+      expect(root.findAll('[role="menuitem"][tabindex="0"]').map(b => b.text())).toEqual(["Class A"]);
     }
   });
 
@@ -841,6 +879,33 @@ describe("Menu cascade — shadow, cap, containing block (AC-23, AC-27, AC-36)",
     const style = (document.body.querySelector('[data-menu-level="1"]') as HTMLElement).getAttribute("style") ?? "";
     expect(style).toContain("left: 8px");
     expect(style).toContain("min-width: 0");
+  });
+
+  it("caps a themed 320px panel in a 300px viewport across resize and releases the cap when it fits", async () => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, writable: true, value: 300 });
+    const wrapper = mountMenu({ items: cascadeItems });
+    await buttonByText(wrapper, "Class A").trigger("click");
+    const panel = wrapper.find('[data-menu-level="1"]').element as HTMLElement;
+    panel.style.setProperty("--st-component-menu-minWidth", "20rem");
+    vi.spyOn(panel, "getBoundingClientRect").mockImplementation(() => {
+      const width = panel.style.minWidth === "0" ? Math.min(320, window.innerWidth - 16) : 320;
+      return { top: 8, left: 8, right: 8 + width, bottom: 108, width, height: 100 } as DOMRect;
+    });
+    for (const width of [300, 280, 300]) {
+      window.innerWidth = width;
+      window.dispatchEvent(new Event("resize"));
+      await nextTick();
+      expect(panel.style.left).toBe("8px");
+      expect(panel.style.minWidth).toBe("0");
+      expect(panel.style.maxWidth).toBe("calc(100vw - 16px)");
+      expect(panel.getBoundingClientRect().right).toBeLessThanOrEqual(width - 8);
+    }
+    window.innerWidth = 600;
+    window.dispatchEvent(new Event("resize"));
+    await nextTick();
+    expect(panel.style.minWidth).toBe("");
+    expect(panel.style.maxWidth).toBe("");
+    expect(panel.getBoundingClientRect().width).toBe(320);
   });
 
   it("AC-36: converted position under a transformed host ancestor", async () => {
@@ -1281,7 +1346,11 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
     const first = (document.body.querySelector('[data-menu-level="1"]') as HTMLElement).getAttribute("style") ?? "";
     expect(first).toContain("left: 8px");
     expect(first).toContain("min-width: 0");
-    stubRect(document.body.querySelector('[data-menu-level="1"]') as Element, { width: 144, height: 100 });
+    const panel = document.body.querySelector('[data-menu-level="1"]') as HTMLElement;
+    vi.spyOn(panel, "getBoundingClientRect").mockImplementation(() => ({
+      width: panel.style.minWidth === "0" ? 144 : 192,
+      height: 100,
+    }) as DOMRect);
     window.dispatchEvent(new Event("resize"));
     await nextTick();
     const second = (document.body.querySelector('[data-menu-level="1"]') as HTMLElement).getAttribute("style") ?? "";
