@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Switch",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/Switch.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<label class=\"st-switch\"><input class=\"st-switch__input\" role=\"switch\" type=\"checkbox\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\">Enable notifications</span></span></label>"
+    },
+    {
+      "id": "checked-helper",
+      "html": "<label class=\"st-switch\"><input aria-checked=\"true\" checked=\"\" class=\"st-switch__input\" name=\"theme\" role=\"switch\" type=\"checkbox\" value=\"dark\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\">Dark mode</span><span class=\"st-switch__help\">Applies immediately</span></span></label>"
+    },
+    {
+      "id": "legacy-checked-disabled",
+      "html": "<label class=\"st-switch\"><input aria-checked=\"true\" checked=\"\" class=\"st-switch__input\" disabled=\"\" role=\"switch\" type=\"checkbox\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\">Legacy checked</span></span></label>"
+    },
+    {
+      "id": "model-overrides-checked",
+      "html": "<label class=\"st-switch\"><input aria-checked=\"false\" class=\"st-switch__input\" role=\"switch\" type=\"checkbox\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\">Not switched</span></span></label>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<label class=\"st-switch\"><input class=\"st-switch__input\" role=\"switch\" type=\"checkbox\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\"><strong>Rich</strong></span><span class=\"st-switch__help\"><em>Help</em></span></span></label>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<label aria-describedby=\"external-help\" class=\"st-switch consumer\" data-bench=\"switch\" style=\"color:red;\"><input aria-describedby=\"external-help\" class=\"st-switch__input\" data-bench=\"switch\" role=\"switch\" style=\"color: red\" type=\"checkbox\"><span class=\"st-switch__track\"><span class=\"st-switch__thumb\"></span></span><span class=\"st-switch__content\"><span class=\"st-switch__label\">Custom</span></span></label>"
+    }
+  ],
+  "sourceSha256": "54040a447652cb9c0258460921a9a91585d5c373f4b7431a4cabbbec6b648298",
+  "fixtureSha256": "4d0de59152f06a02860bedd98eace34a611e2b4d1a5500f9c97364be2b379b83",
+  "publicExports": [
+    {
+      "name": "Switch",
+      "typeOnly": false
+    },
+    {
+      "name": "SwitchProps",
+      "typeOnly": true
+    }
+  ]
+}
