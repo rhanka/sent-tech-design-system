@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "MenuPopover",
+  "sourceRevision": "a0a6379c12d7f1591404e8a68e5c0fb93581d90e",
+  "source": "src/MenuPopover.vue",
+  "sourceSha256": "eaf3c31b57ec9f931a4b093d92cd2ae75e2f7939f014e7d9465208f18863674a",
+  "publicExports": [
+    {
+      "name": "MenuPopover",
+      "typeOnly": false
+    },
+    {
+      "name": "MenuPopoverProps",
+      "typeOnly": true
+    }
+  ],
+  "fixtures": [
+    {
+      "id": "default",
+      "html": ""
+    },
+    {
+      "id": "open",
+      "html": "<div class=\"st-menuPopover st-menuPopover--bottom-start\" role=\"dialog\" style=\"top:0px;left:0px;\"><div class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"presentation\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Alpha</span></button></div></div>"
+    },
+    {
+      "id": "cascade",
+      "html": "<div class=\"st-menuPopover st-menuPopover--bottom-start\" role=\"dialog\" style=\"top:0px;left:0px;\"><div class=\"st-menu st-menu--hasCascade\"><div class=\"st-menu__scroll\" data-menu-level=\"0\" id=\"generated-1\" role=\"menu\" style=\"\" tabindex=\"-1\"><div class=\"st-menu__itemWrap\" role=\"presentation\"><button aria-controls=\"generated-1--sub-0-0\" aria-expanded=\"false\" aria-haspopup=\"menu\" class=\"st-menu__item st-menu__item--hasSubmenu\" data-item-index=\"0\" id=\"generated-1--parent-0-0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\">Parent</span><span aria-hidden=\"true\" class=\"st-menu__itemChevron st-menu__itemChevron--end\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-right-icon lucide-chevron-right\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m9 18 6-6-6-6\"></path></svg></span></button></div></div></div></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-menuPopover st-menuPopover--bottom-start\" role=\"dialog\" style=\"top:0px;left:0px;\"><div class=\"st-menu\" data-menu-level=\"0\" id=\"generated-1\" role=\"presentation\"><button class=\"st-menu__item\" data-item-index=\"0\" role=\"menuitem\" tabindex=\"0\" type=\"button\"><span class=\"st-menu__itemLabel\"><strong>Alpha</strong></span></button></div></div>"
+    }
+  ],
+  "fixtureSha256": "cffb65c59c48502dce4fd6c7334f6ac82dfd7fea8920f40a713968e9486397d9"
+}

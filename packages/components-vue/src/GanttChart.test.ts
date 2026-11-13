@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { GanttChart } from "./GanttChart.js";
+import GanttChart from "./GanttChart.vue";
 
 const plan = [
   { task: "Cadrage", start: 0, end: 3, category: "Étude" },

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SelectionChip.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:28125fcba1d32a9b58a633e62b25ecdf12750253c62b4b493ccaa63bd7a7e57a",
+      "digest": "sha256:9478d5fa0594c10f2240b90953cc99596c33cb8f8d1b097de8ceeb8c11202b5b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SelectionChip.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/SelectionChip.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact chip showing a selection with count and optional clear button.",
     "fr": "Chip compact affichant une sélection avec compteur et bouton d'effacement."
   },
-  "digest": "sha256:9455b8ea104f0b46d3e856e0c524a2f7cd57815e695bbdb5033b0529059255e3",
+  "digest": "sha256:5e1a42a919fe33ce829a420b11ef4c60d0745ae58f2851206d5a4c1e6059c509",
   "displayName": "SelectionChip",
   "format": "component-entry/v1",
   "frameworks": [

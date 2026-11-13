@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:13b965b22807f365db93a5739d1519ed5913f84091f9d763b9ab12a2d4240bed",
-  "entryDigest": "sha256:b1ed8fb154cc1c9ae5d4f0a48f3ab7842477fcc016000cb2b331058920ea6848",
+  "digest": "sha256:b39470989381bdad9cad956d41333f4578e7230bf1fd6144eb05e2e2c316d127",
+  "entryDigest": "sha256:c91198bfdfdd64aa768849bac34373798294d7e5ca837631621a9ff32aae93b7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/Alert.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AlertProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -192,8 +192,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -213,9 +212,6 @@
             ]
           }
         },
-        "required": [
-          "title"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -238,13 +234,26 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "actions"
+        },
+        {
+          "name": "default"
+        },
+        {
+          "name": "message"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:76468bc782c131138840423c5c9c2c5151b6dddec8677a9055bd24040e8071ce",
-        "declarationPath": "packages/components-vue/dist/Alert.d.ts",
+        "declarationDigest": "sha256:bb02630ba68d503b9c695adda6118174708325f5c5e25eeddd0058e5b5435af0",
+        "declarationPath": "packages/components-vue/dist/Alert.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Popover",
+  "sourceRevision": "83dc531c11c64de0ab13b36907c97e74b93f702a",
+  "source": "src/Popover.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-popover-host\"></span>"
+    },
+    {
+      "id": "open-title",
+      "html": "<span class=\"st-popover-host\" title=\"More\"><section aria-label=\"Details\" class=\"st-popover st-popover--bottom\" role=\"dialog\">Details</section></span>"
+    },
+    {
+      "id": "placement-top",
+      "html": "<span class=\"st-popover-host\"></span>"
+    },
+    {
+      "id": "content-slot",
+      "html": "<span class=\"st-popover-host\">Trigger</span>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<span class=\"st-popover-host consumer\" data-bench=\"popover\" style=\"color:red;\"></span>"
+    },
+    {
+      "id": "empty-content-precedence",
+      "html": "<span class=\"st-popover-host\"><section aria-label=\"\" class=\"st-popover st-popover--bottom\" role=\"dialog\"></section></span>"
+    }
+  ],
+  "sourceSha256": "9379fea4221f9fe6066539f6e2c3630bfb16be182ffd3f643c7c65c7adfe7ff9",
+  "fixtureSha256": "5141813acf3933178ffa1cca594893edeaa680bcf9a476edea815069572ac10e",
+  "publicExports": [
+    {
+      "name": "Popover",
+      "typeOnly": false
+    },
+    {
+      "name": "PopoverProps",
+      "typeOnly": true
+    },
+    {
+      "name": "PopoverPlacement",
+      "typeOnly": true
+    }
+  ]
+}

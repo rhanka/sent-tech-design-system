@@ -1,8 +1,8 @@
 {
   "componentId": "progress-indicator",
   "contractSource": "derived",
-  "digest": "sha256:5be3ee6ff05cd4eb09447200f286392e491b3f8b592ee59e4edfea11faeb7ba4",
-  "entryDigest": "sha256:d4fd8d361ad5eb9fa9b2da2ce9ac2ddce9b5ee0b55636c79a24a8ba11d5d7911",
+  "digest": "sha256:18657511dea71b02b2fe74559c3b7dc1a80e3805511a03ccb1dff4a3abf8155f",
+  "entryDigest": "sha256:d318f8dcf920df5ad273ea2f88f943091a9f028dc01d2b3b34916e64d5395f5b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ProgressIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -279,8 +279,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -307,9 +306,6 @@
                 "type": "string"
               }
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -357,13 +353,52 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-description",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ProgressIndicatorItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ProgressIndicatorItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:036f87bde564f85eebf3e0f8865256c692458dbaec99e8f37107ce8683270d53",
-        "declarationPath": "packages/components-vue/dist/ProgressIndicator.d.ts",
+        "declarationDigest": "sha256:0680fec0db062f95728162395f65550726d500ec70f65c2e0cdb73ea7f2b39f1",
+        "declarationPath": "packages/components-vue/dist/ProgressIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressIndicatorProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

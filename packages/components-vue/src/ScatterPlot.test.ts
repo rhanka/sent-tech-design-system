@@ -2,7 +2,7 @@ import { mount } from "@vue/test-utils";
 import type { VueWrapper } from "@vue/test-utils";
 import { describe, expect, it, vi } from "vitest";
 import { ScatterPlot } from "./index.js";
-import type { ScatterPlotDatum } from "./ScatterPlot.js";
+import type { ScatterPlotDatum } from "./ScatterPlot.vue";
 import type { ChartAnnotation } from "./chartAnnotations.js";
 
 // ScatterPlot "Highcharts-class" props (vue), strict tri-framework parity:

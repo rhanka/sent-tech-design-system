@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:fb1c78c1d59f196c7960a97a7d2b68cbd2dc915502ee34384339f01290f41807",
-  "entryDigest": "sha256:f695b50f5cc926442511c70eb2ddae74c6f23fb38e285e8863afce64bcc6e69e",
+  "digest": "sha256:3d113a52202caf972cfb16d17ae09b430088c402019a5efcca49926fab51d2a8",
+  "entryDigest": "sha256:8885f5502c02720c775b1ebb1e28e792f2273102a1b369e37c4a944d4923162d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableListProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -252,7 +252,23 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ]
+          }
         },
         {
           "name": "onChange",
@@ -275,8 +291,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -317,18 +332,21 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b735e9f29a9a764d44abb54e84ad256f193c360edf1d86328ca43881ecc8b577",
-        "declarationPath": "packages/components-vue/dist/SelectableList.d.ts",
+        "declarationDigest": "sha256:d13381ce0e4961589ed9f17068204b7ebd38d8bbcff3ec49c5a54ce336c4f6ed",
+        "declarationPath": "packages/components-vue/dist/SelectableList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectableListProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

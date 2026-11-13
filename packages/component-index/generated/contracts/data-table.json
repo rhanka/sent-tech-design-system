@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:27e7a3f1a7cbfaae7410eabdbf2ade6ada32ef5bfbde11eab366762b15de79b3",
-  "entryDigest": "sha256:530883b7503d878282ef5a2556def8db2c4b4b52bbdf341066d7af35178ae45f",
+  "digest": "sha256:c300cea180493e73be8f9419e06865fd19c4bb3eee6c09eadb4bf86708fe18ed",
+  "entryDigest": "sha256:036afcb23796b03c75960a22cbbd08081375d8990eccc8018fbfa75c73065a25",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -598,6 +598,7 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)",
         "generic type parameter \"R\" of \"DataTableProps\" instantiated with its default (DataTableRow)"
       ]
     },
@@ -858,7 +859,7 @@
         "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataTableProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -961,8 +962,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -1163,15 +1163,73 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
           "sourceType": "Record<string, Record<string, CellDecoration>>"
+        },
+        {
+          "name": "scope.value",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "cell",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              },
+              "row": {
+                "$ref": "#/$defs/DataTableRow"
+              },
+              "rowIndex": {
+                "type": "number"
+              },
+              "value": {}
+            },
+            "required": [
+              "column",
+              "columnIndex",
+              "row",
+              "rowIndex",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "column-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "columnIndex"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3f8f002d80da6eeab59d6d21d5604925441727bc6029febd8d2aeea11aa7ee80",
-        "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
+        "declarationDigest": "sha256:4b6227a6806be747ebd47b59164e92033cfbdbf86ebcc15348dcbfeab25de6e8",
+        "declarationPath": "packages/components-vue/dist/DataTable.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],

@@ -91,7 +91,7 @@ function scaffold(): MiniTree {
   writeFile(
     root,
     "packages/components-vue/dist/Widget.d.ts",
-    "export type WidgetProps = { title?: string };\n",
+    "export type WidgetProps = { title?: string };\nexport declare const Widget: new () => { $props: WidgetProps; $slots: {}; $emit: () => void };\n",
   );
   writeFile(
     root,

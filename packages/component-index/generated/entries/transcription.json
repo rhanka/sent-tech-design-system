@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Transcription.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:66f02d2574c027a3e53a979bfd611ee3dac582ac465a110bfb7c76232795854a",
+      "digest": "sha256:023a3d008024ff63993cf500ebf45940b3a2b77eadc841920856c26252305405",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Transcription.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Transcription.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Collapsible transcript panel with timestamps and speaker labels.",
     "fr": "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant."
   },
-  "digest": "sha256:23480098eeb5b4492c4792debd8637b4e2349e55dcdab4b6ffa11547be5879d6",
+  "digest": "sha256:d42b76c1485f32dcd720cc2230f408f4a6f68a98b6855a1457db3b9cf832a949",
   "displayName": "Transcription",
   "format": "component-entry/v1",
   "frameworks": [

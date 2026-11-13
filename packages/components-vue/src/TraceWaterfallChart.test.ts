@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { TraceWaterfallChart } from "./TraceWaterfallChart.js";
+import TraceWaterfallChart from "./TraceWaterfallChart.vue";
 
 const trace = {
   spans: [

@@ -14,11 +14,14 @@ describe("K1b declaration resolution (spec 6.1 step 2)", () => {
     expect(declarationPathForSource("packages/components-react/src/Button.tsx")).toBe(
       "packages/components-react/dist/Button.d.ts",
     );
-    expect(declarationPathForSource("packages/components-vue/src/Modal.ts")).toBe(
-      "packages/components-vue/dist/Modal.d.ts",
+    expect(declarationPathForSource("packages/components-vue/src/Modal.vue")).toBe(
+      "packages/components-vue/dist/Modal.vue.d.ts",
     );
     expect(declarationPathForSource("packages/components-vue/src/DiagramCard.vue")).toBe(
       "packages/components-vue/dist/DiagramCard.vue.d.ts",
+    );
+    expect(declarationPathForSource("packages/dataviz-vue/src/lib/Chart.vue")).toBe(
+      "packages/dataviz-vue/dist/lib/Chart.vue.d.ts",
     );
     expect(declarationPathForSource("packages/components-angular/src/Modal.ts")).toBe(
       "packages/components-angular/dist/Modal.d.ts",
@@ -40,6 +43,23 @@ describe("K1b declaration resolution (spec 6.1 step 2)", () => {
       const resolved = followExportChain(loaded.program, start, "Widget");
       expect(resolved?.endsWith("target.d.ts")).toBe(true);
       expect(followExportChain(loaded.program, start, "Missing")).toBeNull();
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  });
+
+  it("resolves renamed value exports and nested export-star chains through the checker", () => {
+    const scratch = mkdtempSync(join(tmpdir(), "k1b-export-alias-"));
+    try {
+      const start = join(scratch, "start.d.ts");
+      const middle = join(scratch, "middle.d.ts");
+      const target = join(scratch, "target.d.ts");
+      writeFileSync(start, 'export * from "./middle.js";');
+      writeFileSync(middle, 'export { Original as Renamed } from "./target.js";');
+      writeFileSync(target, 'export declare const Original: { label: string };');
+      const loaded = loadDeclarationProgram([start, middle, target]);
+      expect(followExportChain(loaded.program, start, "Renamed")).toBe(target);
+      expect(followExportChain(loaded.program, start, "Original")).toBeNull();
     } finally {
       rmSync(scratch, { recursive: true, force: true });
     }

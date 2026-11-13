@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PaginationNav.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:494f5dec2755f844ef2b3edbbf06be22f0aa35d14135f583019d96b1c915c3fa",
+      "digest": "sha256:ebb011a9753ff04f836d83ca3c127fc4ffb495c4dccd81f309a5162c9345b614",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/PaginationNav.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/PaginationNav.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:48dfa3f1b6a1e1d7e778e5f9805173dc97995b3e3d848e21765965b97dd361b6",
+  "digest": "sha256:f08476b6924631388ff8471ebbc9fa0b7573ca08f4dcadad8a092fc2f1d63790",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

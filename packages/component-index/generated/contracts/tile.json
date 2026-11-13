@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:cdf2184513702a17250d60903253e98613de5698af2ddcad1e6bca0436abc166",
-  "entryDigest": "sha256:808ab6762f8dbac8fa337937e87171d6377ed052e44fbe3279eb85d561d9f9d9",
+  "digest": "sha256:465fa8fcc05b1c979216fcdc63afbd5b83c5693280ccbdeb0e9b58969bdeafca",
+  "entryDigest": "sha256:fb8e035edfda1e291c03c33003a8201daf0b209c56557b5fe081e114eed0e45e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/Tile.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [
@@ -248,17 +248,18 @@
         {
           "name": "onSelect",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -297,30 +298,33 @@
           "sourceType": "unknown"
         },
         {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "title",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "description"
+        },
+        {
+          "name": "title"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:3f7c039ea59bad00791090d2b4ec0f3019fd8c55bc24b2ea351caed9f3a9bc56",
-        "declarationPath": "packages/components-vue/dist/Tile.d.ts",
+        "declarationDigest": "sha256:770522f79049ca6b3761c25aa54319f490663f57b0ff18b656c95d72ea9fbb82",
+        "declarationPath": "packages/components-vue/dist/Tile.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

@@ -867,7 +867,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
 
 describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", () => {
   const SOURCES = [
-    "../diagramCardModel.ts",
+    "../../../../diagram-canvas/src/presentation/diagramCardModel.ts",
     "../DiagramCard.svelte",
     "../DiagramCardHeader.svelte",
     "../DiagramZone.svelte",

@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:204395a41e36d904d0f5add693abdba3505e7a0465ce345c9680036b883c6105",
-  "entryDigest": "sha256:118509cae35f51cbbe20c2b207d7a6e3a1523a04c8a105274b47b22416f92270",
+  "digest": "sha256:4a56e27f9f52b42647c5cc8d9c1de9cdb8576c1ce10017771aee51dcc41206ec",
+  "entryDigest": "sha256:c8138a539c24a6408f6f21b8df8c4222926e9202a53a2a8bc6ae695d47b0ab77",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -722,7 +722,7 @@
         "declarationPath": "packages/components-svelte/dist/OverflowMenu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OverflowMenuProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [],
@@ -762,15 +762,22 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -811,8 +818,8 @@
               },
               "variant": {
                 "enum": [
-                  "default",
-                  "danger"
+                  "danger",
+                  "default"
                 ]
               }
             },
@@ -943,21 +950,97 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "select.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "group-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuGroupItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "depth": {
+                "type": "number"
+              },
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "depth",
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:d250788123278c1e6efcc6bb6b4b087395c71a693f39176f41911095bf75f891",
+        "declarationDigest": "sha256:9ffbff9ca15942b8386c58872bc7fe3b3cff6d5c2ca6c562d2030d6c891bb34e",
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""

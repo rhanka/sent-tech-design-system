@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { TimelineChart } from "./TimelineChart.js";
+import TimelineChart from "./TimelineChart.vue";
 
 const events = [
   { position: 2018, label: "Fondation" },

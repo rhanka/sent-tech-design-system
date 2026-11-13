@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:f68dc0e0ac135bf533ccfceb0a8116b1c9ac710dad7664c924f2d34246554fbc",
-  "entryDigest": "sha256:f26fe6eb00b51f15a40eabebfc784992e67e25ecfe1dbbd9b1f880bbd8b688ba",
+  "digest": "sha256:5da0a3c0783bbb95fe93785de5257b63b25207ece8ec60a5ef7befe868709dfe",
+  "entryDigest": "sha256:535ff6a5f76893945041d10fb8d4ff9a9faaa0ebc2f3f072687d677d74dd0fc0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HollowCandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:50af3e2aa222b85ffc796a236d42fbbd0b87427e519d9c4d8a4348e21645d5d2",
-        "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.d.ts",
+        "declarationDigest": "sha256:bfa3c33c030f0bb25b2f4e77e71e7c0456b88ef979623ec5d0719af2f47bcf68",
+        "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "complete",
       "unresolved": [],

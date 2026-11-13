@@ -21,10 +21,10 @@ import { channelMetrics } from "./channels.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2a.owner.3";
+export const LAYOUT_ENGINE_VERSION = "dc2c.owner.4";
 
 export interface LayoutFingerprintInput {
-  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId">;
+  readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;
   /** Measured sizes of a previous call on the same document and measurer, when a cache has them. */
   readonly measurements?: LayoutMeasurements;
   /** Resolved token numbers the host read (gaps, caps, target aspect, display scales, …), by token name. */
@@ -76,6 +76,8 @@ export function layoutFingerprintInputs(input: LayoutFingerprintInput): Readonly
   const tokens = input.tokens ?? {};
   return {
     engine: LAYOUT_ENGINE_VERSION,
+    flows: options.flows,
+    flowTokens: options.flowTokens,
     fold: [...(options.collapsed ?? [])].map(String).sort(byString),
     rowPack: resolveRowPack(options.rowPack),
     gaps,

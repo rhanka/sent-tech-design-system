@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "StreamgraphChart",
+  "sourceRevision": "ffd9330549db7684d5d9112e24b9e41422e79b14",
+  "source": "src/StreamgraphChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-streamgraphChart\"><div aria-label=\"Stream\" class=\"st-streamgraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-streamgraphChart__axis\" x1=\"16\" x2=\"464\" y1=\"208\" y2=\"208\"></line><text class=\"st-streamgraphChart__tickLabel\" text-anchor=\"middle\" x=\"16\" y=\"224\">P1</text><text class=\"st-streamgraphChart__tickLabel\" text-anchor=\"middle\" x=\"464\" y=\"224\">P2</text><path class=\"st-streamgraphChart__area st-streamgraphChart__area--category1\" d=\"M16.00,85.50 C96.64,86.38 383.36,89.52 464.00,90.40 L464.00,208.00 C383.36,203.59 96.64,187.91 16.00,183.50 Z\" data-series-index=\"0\"></path><path class=\"st-streamgraphChart__area st-streamgraphChart__area--category2\" d=\"M16.00,36.50 C96.64,32.09 383.36,16.41 464.00,12.00 L464.00,90.40 C383.36,89.52 96.64,86.38 16.00,85.50 Z\" data-series-index=\"1\"></path></svg></div><ul aria-label=\"Data values for Stream\" class=\"st-chartDataList\"><li>A: 22</li><li>B: 13</li><li>Total: 35</li></ul><ul class=\"st-streamgraphChart__legend\"><li class=\"st-streamgraphChart__legendItem\"><span aria-hidden=\"true\" class=\"st-streamgraphChart__legendSwatch st-streamgraphChart__legendSwatch--category1\"></span>A</li><li class=\"st-streamgraphChart__legendItem\"><span aria-hidden=\"true\" class=\"st-streamgraphChart__legendSwatch st-streamgraphChart__legendSwatch--category2\"></span>B</li></ul></div>"
+    },
+    {
+      "id": "linear-nolegend",
+      "html": "<div class=\"st-streamgraphChart consumer\" data-bench=\"stream\" style=\"color:red;\"><div aria-label=\"Stream\" class=\"st-streamgraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 400 300\" width=\"100%\"><line class=\"st-streamgraphChart__axis\" x1=\"16\" x2=\"384\" y1=\"268\" y2=\"268\"></line><text class=\"st-streamgraphChart__tickLabel\" text-anchor=\"middle\" x=\"200\" y=\"284\">X</text><path class=\"st-streamgraphChart__area st-streamgraphChart__area--category3\" d=\"M200.00,12.00 L200.00,268.00 Z\" data-series-index=\"0\"></path></svg></div><ul aria-label=\"Data values for Stream\" class=\"st-chartDataList\"><li>S: 3</li><li>Total: 3</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-streamgraphChart\"><div aria-label=\"Empty\" class=\"st-streamgraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-streamgraphChart__axis\" x1=\"16\" x2=\"464\" y1=\"208\" y2=\"208\"></line></svg></div></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-streamgraphChart\"><div aria-label=\"Single\" class=\"st-streamgraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-streamgraphChart__axis\" x1=\"16\" x2=\"464\" y1=\"208\" y2=\"208\"></line><text class=\"st-streamgraphChart__tickLabel\" text-anchor=\"middle\" x=\"240\" y=\"224\">Only</text><path class=\"st-streamgraphChart__area st-streamgraphChart__area--category1\" d=\"M240.00,12.00 L240.00,208.00 Z\" data-series-index=\"0\"></path></svg></div><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>One: 7</li><li>Total: 7</li></ul><ul class=\"st-streamgraphChart__legend\"><li class=\"st-streamgraphChart__legendItem\"><span aria-hidden=\"true\" class=\"st-streamgraphChart__legendSwatch st-streamgraphChart__legendSwatch--category1\"></span>One</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "3b8e418e5d5a622eb409e1e136972f6b8a15812b8bdf87760c488ca43393df32",
+  "fixtureSha256": "66f03fe332401b024b3a7d60987d6fea1e7f85c66f0ac9a974ff5f95723747d6",
+  "publicExports": [
+    {
+      "name": "StreamgraphChart",
+      "typeOnly": false
+    },
+    {
+      "name": "StreamgraphChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "StreamgraphChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "StreamgraphChartSeriesValue",
+      "typeOnly": true
+    },
+    {
+      "name": "StreamgraphChartTone",
+      "typeOnly": true
+    }
+  ]
+}

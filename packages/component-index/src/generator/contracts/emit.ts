@@ -541,7 +541,13 @@ function extractOne(
   identifier: string,
   baselineCell: BaselineCell | undefined,
 ): FrameworkBody {
-  const declRel = declarationPathForSource(sourceRepoPath);
+  // Compatibility wrappers still own the exported public Props types for
+  // several SFCs. Read those declarations while delivery metadata names
+  // the converted implementation, preserving the measured public contract.
+  const wrapperSource = sourceRepoPath.replace(/\.vue$/, ".ts");
+  const declarationSource = framework === "vue" && wrapperSource !== sourceRepoPath &&
+    existsSync(join(repoRoot, wrapperSource)) ? wrapperSource : sourceRepoPath;
+  const declRel = declarationPathForSource(declarationSource);
   if (declRel === null) {
     throw new Error(`emit: no declaration layout for source "${sourceRepoPath}" (missing source)`);
   }
@@ -553,7 +559,7 @@ function extractOne(
     throw new Error(`emit: declaration missing: ${declRel} (missing source: declaration build)`);
   }
   const resolvedAbs =
-    followExportChain(loaded.program, startAbs, `${identifier}Props`) ?? startAbs;
+    framework === "vue" ? startAbs : followExportChain(loaded.program, startAbs, `${identifier}Props`) ?? startAbs;
   const resolvedRel = relative(repoRoot, resolvedAbs).split("\\").join("/");
   const declarationDigest = `sha256:${createHash("sha256").update(readFileSync(resolvedAbs)).digest("hex")}`;
   const declFile = loaded.program.getSourceFile(resolvedAbs);

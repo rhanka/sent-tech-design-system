@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:70c4224b7bd6a366d171aa1800e6081556dbb5a46b9eb4833129127c6c0e115c",
-  "entryDigest": "sha256:0a3aea5ab01f99d733806f0533d590d948acf0860ad25e1c7cfb4f715c374a47",
+  "digest": "sha256:e49b93417ae2203b84d59abeb2e0df9a0e24a3b1fe80aeb2907d53ad3dbba7c4",
+  "entryDigest": "sha256:84ce23b06089040ab1a5aa2fc0218f336d6d68efc8117351b4b2a832f18a0b3f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -308,7 +308,7 @@
         "declarationPath": "packages/components-svelte/dist/TreeView.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreeViewProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -318,32 +318,48 @@
       "bindable": [
         "selectedId"
       ],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUpdate:selectedId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
       "events": [
         {
           "name": "onSelect",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
           "name": "onUpdate:selectedId",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "update:selectedId"
+          "name": "update:selectedId",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -365,8 +381,7 @@
               "label": {}
             },
             "required": [
-              "id",
-              "label"
+              "id"
             ],
             "type": "object"
           }
@@ -424,33 +439,43 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:selectedId.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "node-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "level": {
+                "type": "number"
+              },
+              "node": {
+                "$ref": "#/$defs/TreeNode"
+              }
+            },
+            "required": [
+              "index",
+              "level",
+              "node"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:95d986f3d7aee90287a5f86fb5233216fcd3f0c9c252b52a8eeff2ffeb62f02f",
-        "declarationPath": "packages/components-vue/dist/TreeView.d.ts",
+        "declarationDigest": "sha256:79cfcb2f4a8a15dbbb5e717549337e31cecd80399d4659b0d49f34d5fb3febf7",
+        "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:selectedId\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
         "event pair: emits \"update:selectedId\" and prop \"onUpdate:selectedId\" both listed verbatim",
         "two-way binding: prop \"selectedId\" paired with emit \"update:selectedId\""

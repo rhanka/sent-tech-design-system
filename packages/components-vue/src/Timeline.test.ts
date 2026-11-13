@@ -1,7 +1,7 @@
 import { mount } from "@vue/test-utils";
 import { describe, expect, it } from "vitest";
-import { Timeline } from "./Timeline.js";
-import type { TimelineItem } from "./Timeline.js";
+import Timeline from "./Timeline.vue";
+import type { TimelineItem } from "./Timeline.vue";
 
 const items: TimelineItem[] = [
   { title: "Dossier créé", meta: "12 mai 2026", description: "Ouverture", tone: "info" },

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tag.svelte",
-      "version": "0.40.1"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:e150ce2a6413970e191eaa0320cf57a2e83ecc61d020647ebe7640b8e87412ce",
+      "digest": "sha256:13a9ea3a7a18faffff67fd4712b0a1159832aa88d631fe1acf34576761f58631",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Tag.ts",
-      "version": "0.40.1"
+      "path": "packages/components-vue/src/Tag.vue",
+      "version": "0.41.1-next.1"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:761f9a9c0d24883d90bf77289f32cf0de36c552fde104c1ae8aed1fd206e5ec3",
+  "digest": "sha256:0eb501b9c9890c07e6bc54ff90a9fb05a82ffb6a57d9c39cfb53386855ea0e34",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

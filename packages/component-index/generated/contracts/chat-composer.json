@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:3c8aba4b549641d6161e4b59e1fa86e8dab8be3b5893e1471548a4901f7f6c43",
-  "entryDigest": "sha256:fc9d20dc55adff8b9ee5a04592d197bf91d5d0aa014e55f54f6f33ff4754c9a2",
+  "digest": "sha256:0bd23f7e85d8fc4f03a988f192ce8f23efa1e6e753ac0d2c140d0cc93ae4b35f",
+  "entryDigest": "sha256:55100e837fb6a0ae31aab954e246359d79318b51e881e7b2e516aa54b9956a08",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -249,7 +249,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatComposer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatComposerProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [
@@ -275,17 +275,36 @@
         {
           "name": "onSubmit",
           "payload": {
-            "items": {},
-            "type": "array"
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
           }
         },
         {
-          "name": "submit"
+          "name": "submit",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "value": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "value"
+            ],
+            "type": "object"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -305,30 +324,30 @@
       },
       "replaced": [
         {
-          "name": "onSubmit.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "submitLabel",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        },
+        {
+          "name": "submit-label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:624242afdecbc4af13f6ec641d972b67dd4810823de3757b6e6126ff53771765",
-        "declarationPath": "packages/components-vue/dist/ChatComposer.d.ts",
+        "declarationDigest": "sha256:6606d9804af04e5010fa3488c18ca10180e78cf9d542e2055496a0931c08730e",
+        "declarationPath": "packages/components-vue/dist/ChatComposer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"submit\": payload not in declaration",
         "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
       ]
     }

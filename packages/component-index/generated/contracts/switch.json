@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:3d7a8d14130520b1d7e586d962290aa9faa7e3c014e267da90439e9b9fe7a5c2",
-  "entryDigest": "sha256:67df3463e1b7bb4f1090f3b1c418e64bf946c472502055bc7836fe1ec0683991",
+  "digest": "sha256:a1643ab8e0795c2fabae710ba99055c69499de3827e90431c7ebd43d894f511d",
+  "entryDigest": "sha256:f58c954847491e7597e9f265efbd121ff162b30df9852a8823002264b3385c4a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -148,7 +148,7 @@
         "declarationPath": "packages/components-svelte/dist/Switch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SwitchProps",
-        "version": "0.40.1"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -161,29 +161,28 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {}
         },
         {
           "name": "onChange",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "payload": {}
         },
         {
           "name": "onUpdate:modelValue",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "boolean"
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -209,9 +208,6 @@
             "type": "string"
           }
         },
-        "required": [
-          "label"
-        ],
         "type": "object"
       },
       "replaced": [
@@ -226,33 +222,39 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:modelValue.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:b38d6e053a437d512d390f9f6bdcc459e828923e00a338d2e69989b8fe4cb271",
-        "declarationPath": "packages/components-vue/dist/Switch.d.ts",
+        "declarationDigest": "sha256:3aeae06b670d62dbb7ed0649756c9f3c5c9060d46eefcff737318da62266ce27",
+        "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",
-        "version": "0.40.1"
+        "version": "0.41.1-next.1"
       },
       "status": "partial",
-      "unresolved": [],
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "change.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        },
+        {
+          "kind": "other",
+          "name": "onChange.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "Event"
+        }
+      ],
       "warnings": [
-        "emit \"change\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"update:modelValue\" and prop \"onUpdate:modelValue\" both listed verbatim",
         "two-way binding: prop \"modelValue\" paired with emit \"update:modelValue\""
