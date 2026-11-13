@@ -1,7 +1,7 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:dba2aaac616f2f8bdf74da663d725234a346fe29659cb0d407783c4735648459",
+  "digest": "sha256:7df1d120b7d0b58cba256dbc37c8bc7137945cbf2e07cc6ecb24472228869719",
   "entryDigest": "sha256:5382852465a52fb55dc2d9a6d4ad7453f299eda998627f58f9be3933a8cfaf98",
   "format": "component-contract/v1",
   "frameworks": {
@@ -306,6 +306,7 @@
           "variant": {
             "enum": [
               "caption",
+              "body",
               "h2",
               "h3",
               "display",
@@ -313,7 +314,6 @@
               "h4",
               "h5",
               "h6",
-              "body",
               "body-sm",
               "overline"
             ]
