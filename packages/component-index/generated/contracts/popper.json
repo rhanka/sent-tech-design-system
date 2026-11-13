@@ -1,7 +1,7 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:4108711c2a52659e0607785e3876d9b4305a98144cbd8a9ff02993a149b68161",
+  "digest": "sha256:7f7ac3b95443d3545f65ef8e1d74e59cdbf1a1f748d4aa5924af63063e7e0edf",
   "entryDigest": "sha256:aa9ff9261d2f2c90376fd3a501c3becb52ac79288189a0fed464758adff64aef",
   "format": "component-contract/v1",
   "frameworks": {
@@ -416,12 +416,27 @@
           }
         },
         {
-          "name": "placementChange"
+          "name": "placementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -509,7 +524,16 @@
           "sourceType": "HTMLElement"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
         "declarationDigest": "sha256:ca5017c2e48486c7a71fb95551b911fcbc295613d57427851d04bce60dc26ac4",
         "declarationPath": "packages/components-vue/dist/Popper.d.ts",
@@ -520,7 +544,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"placementChange\": payload not in declaration",
         "event pair: emits \"placementChange\" and prop \"onPlacementChange\" both listed verbatim"
       ]
     }
