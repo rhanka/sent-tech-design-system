@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "SkeletonText",
+  "sourceRevision": "2fbb5e4f06c68aec2a2f34700c97c0b0bea833e0",
+  "source": "src/SkeletonText.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-busy=\"true\" aria-label=\"Chargement…\" class=\"st-skeleton\" role=\"status\"><span class=\"st-skeleton__line\" style=\"\"></span></div>"
+    },
+    {
+      "id": "lines-width",
+      "html": "<div aria-busy=\"true\" aria-label=\"Chargement…\" class=\"st-skeleton\" role=\"status\"><span class=\"st-skeleton__line\" style=\"width:200px\"></span><span class=\"st-skeleton__line\" style=\"\"></span><span class=\"st-skeleton__line\" style=\"\"></span></div>"
+    },
+    {
+      "id": "heading",
+      "html": "<div aria-busy=\"true\" aria-label=\"Chargement…\" class=\"st-skeleton\" role=\"status\"><span class=\"st-skeleton__line st-skeleton__line--heading\" style=\"\"></span><span class=\"st-skeleton__line st-skeleton__line--heading\" style=\"\"></span></div>"
+    },
+    {
+      "id": "paragraph",
+      "html": "<div aria-busy=\"true\" aria-label=\"Chargement…\" class=\"st-skeleton\" role=\"status\"><span class=\"st-skeleton__line\" style=\"\"></span><span class=\"st-skeleton__line\" style=\"\"></span><span class=\"st-skeleton__line\" style=\"width:60%\"></span></div>"
+    },
+    {
+      "id": "locale-en",
+      "html": "<div aria-busy=\"true\" aria-label=\"Loading\" class=\"st-skeleton\" role=\"status\"><span class=\"st-skeleton__line\" style=\"\"></span></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div aria-busy=\"true\" aria-label=\"Chargement…\" class=\"st-skeleton consumer\" data-bench=\"skeleton\" role=\"status\" style=\"color:red;\"><span class=\"st-skeleton__line\" style=\"\"></span><span class=\"st-skeleton__line\" style=\"\"></span></div>"
+    }
+  ],
+  "sourceSha256": "56e157663b557dfcf04b8a2c4bfdec6744d46c7b5a1d3bfbc9117f70df58c375",
+  "fixtureSha256": "f68d17968c21db2eb0d9382328c86cf5d19d6c97602c4a9dd1b334f4040658e2",
+  "publicExports": [
+    {
+      "name": "SkeletonText",
+      "typeOnly": false
+    },
+    {
+      "name": "SkeletonTextProps",
+      "typeOnly": true
+    }
+  ]
+}

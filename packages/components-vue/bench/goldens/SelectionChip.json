@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "SelectionChip",
+  "sourceRevision": "03896b397b03585f8fd37516700b22f09be064f6",
+  "source": "src/SelectionChip.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">Filter</span></span>"
+    },
+    {
+      "id": "count-success",
+      "html": "<span class=\"st-selectionChip st-selectionChip--success\"><span class=\"st-selectionChip__label\">Active</span><span aria-label=\"(3)\" class=\"st-selectionChip__count\">(3)</span></span>"
+    },
+    {
+      "id": "clearable-error",
+      "html": "<span class=\"st-selectionChip st-selectionChip--error\"><span class=\"st-selectionChip__label\">Removable</span><span aria-label=\"(12)\" class=\"st-selectionChip__count\">(12)</span><button aria-label=\"Effacer Removable\" class=\"st-selectionChip__clear\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "disabled-info",
+      "html": "<span aria-disabled=\"true\" class=\"st-selectionChip st-selectionChip--info st-selectionChip--disabled\"><span class=\"st-selectionChip__label\">Disabled</span><button aria-label=\"Effacer Disabled\" class=\"st-selectionChip__clear\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-x-icon lucide-x\" fill=\"none\" height=\"11\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" viewBox=\"0 0 24 24\" width=\"11\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M18 6 6 18\"></path><path d=\"m6 6 12 12\"></path></svg></button></span>"
+    },
+    {
+      "id": "custom",
+      "html": "<span class=\"st-selectionChip st-selectionChip--warning consumer\" data-bench=\"chip\" style=\"color:red;\"><span class=\"st-selectionChip__label\">Custom</span></span>"
+    },
+    {
+      "id": "zero-count",
+      "html": "<span class=\"st-selectionChip st-selectionChip--neutral\"><span class=\"st-selectionChip__label\">Zero</span><span aria-label=\"(0)\" class=\"st-selectionChip__count\">(0)</span></span>"
+    }
+  ],
+  "sourceSha256": "28125fcba1d32a9b58a633e62b25ecdf12750253c62b4b493ccaa63bd7a7e57a",
+  "fixtureSha256": "7d428943a102075f5f1efb2851f37821e9e659df420edef022efa9dfec256e2d",
+  "publicExports": [
+    {
+      "name": "SelectionChip",
+      "typeOnly": false
+    },
+    {
+      "name": "SelectionChipProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SelectionChipTone",
+      "typeOnly": true
+    }
+  ]
+}
