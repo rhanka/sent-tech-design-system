@@ -380,12 +380,12 @@ export type {
   OrganizationChartTone,
   OrganizationChartNode,
 } from "./OrganizationChart.js";
-export { TreegraphChart } from "./TreegraphChart.js";
+export { default as TreegraphChart } from "./TreegraphChart.vue";
 export type {
   TreegraphChartProps,
   TreegraphChartNode,
   TreegraphChartTone,
-} from "./TreegraphChart.js";
+} from "./TreegraphChart.vue";
 export { DashboardGrid } from "./DashboardGrid.js";
 export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.js";
 export { HeatmapChart } from "./HeatmapChart.js";
