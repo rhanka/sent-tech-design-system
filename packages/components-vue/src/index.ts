@@ -619,8 +619,8 @@ export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
 export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
 export { default as Overline } from './Overline.vue';
 export type { OverlineProps, OverlineAs } from './Overline.vue';
-export { StatusDot } from "./StatusDot.js";
-export type { StatusDotProps, StatusDotTone } from "./StatusDot.js";
+export { default as StatusDot } from './StatusDot.vue';
+export type { StatusDotProps, StatusDotTone } from './StatusDot.vue';
 export { NavActionStack } from "./NavActionStack.js";
 export type {
   NavActionStackProps,
