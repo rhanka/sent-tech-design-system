@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:cdbb957cc14520da939b525f986e95e9625a4ad43d54da0585dc3f2b8b8646ec",
-  "entryDigest": "sha256:bd00960034b3a73241feca48f5487aae753dc2f71d040f9bd2ef3c8565f5bdab",
+  "digest": "sha256:7f28b5275df17b10a902f0e9c9cfe185e8cc6a6f26e2d119d152d1a0963b1e66",
+  "entryDigest": "sha256:ac3823ad9043766b70eeade160449630e550fc5348c9d3e133404af05705b0d2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -280,6 +280,9 @@
       ],
       "events": [
         {
+          "name": "diagnostic"
+        },
+        {
           "name": "onDiagnostic",
           "payload": {
             "$ref": "#/$defs/ZoneDiagnostic"
@@ -318,6 +321,12 @@
             ],
             "type": "object"
           }
+        },
+        {
+          "name": "select"
+        },
+        {
+          "name": "toggle"
         }
       ],
       "limitations": [
@@ -458,11 +467,18 @@
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"diagnostic\": payload not in declaration",
+        "emit \"select\": payload not in declaration",
+        "emit \"toggle\": payload not in declaration",
+        "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

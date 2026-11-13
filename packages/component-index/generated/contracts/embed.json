@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:9ddb1414c6f94b8134848a07572d8a423d11f600bda500d6dc87e0aea6cb5b2b",
-  "entryDigest": "sha256:7f71e11a74e67a44e9a7aa2442a80f3672ef5c9d7eacb0b8672708ec353016ea",
+  "digest": "sha256:3838d093b6f12a45d35e965ccd4ba14f14d6eade6e0b4e6258f6f0987c50dbc4",
+  "entryDigest": "sha256:444c098af98fe8e709b4ae608dec85b84764efe90efd2f7bbcb9c848a5c7552b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -244,7 +244,7 @@
         "declarationPath": "packages/components-vue/dist/Embed.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

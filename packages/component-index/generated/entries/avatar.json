@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Avatar.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Identity badge: colored initials or photo, multiple sizes.",
     "fr": "Vignette d'identité : initiales colorées ou photo, plusieurs tailles."
   },
-  "digest": "sha256:d02a4b48040deafad480f2f68e5faece86c14f884b5fa19e57dc8ce943f65ca8",
+  "digest": "sha256:50a2776fddd77cc211728041fd1798ed1c55d64323305bcd98c76f9ae998833d",
   "displayName": "Avatar",
   "format": "component-entry/v1",
   "frameworks": [

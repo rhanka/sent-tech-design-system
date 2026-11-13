@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:5b9a88d8ba428d92fc63e44247112f08ca0dd8b0c422ebc52cbbb945f3297c70",
-  "entryDigest": "sha256:0ec5820c143314674d6d0191c70080cf01aa004b8e867e81c0404811ad46c96e",
+  "digest": "sha256:01417a68b812710fd3b9741f83c0d8780d39672f480c4edbc167b63a9b87c2c7",
+  "entryDigest": "sha256:0c5f0a2bf502122696cd960140bd6cf2b0016f78ecc2c181330b73f6f9b05dd5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -428,7 +428,7 @@
         "declarationPath": "packages/components-vue/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

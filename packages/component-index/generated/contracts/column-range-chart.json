@@ -1,8 +1,8 @@
 {
   "componentId": "column-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:86641dc07b1f85232520ce25bb49467a84eb5380e477cc0a3c160960ed167021",
-  "entryDigest": "sha256:092687ba84e24d538dbe08e966091c097c2dd2b8ca5532851a7f0b95732abfc7",
+  "digest": "sha256:de8fb2bdfccec6310c131672f9721145e692cf7fd6edb7658545af0319dd4ad2",
+  "entryDigest": "sha256:f5170df1733884a86a3852ec443e0664088749e234057b2f459331c0c327f848",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -405,7 +405,7 @@
         "declarationPath": "packages/components-vue/dist/ColumnRangeChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnRangeChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

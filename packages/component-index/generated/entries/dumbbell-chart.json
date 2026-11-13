@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DumbbellChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Per category, a line connecting a low to a high value with a coloured dot at each end (e.g. before/after, min/max).",
     "fr": "Pour chaque catégorie, une ligne reliant une valeur basse à une valeur haute, avec un cercle teinté à chaque extrémité (ex. avant/après, min/max)."
   },
-  "digest": "sha256:21b7ac6e17facf29ab44944accc063fb70b3b57d0819ea346108a162e098e9ca",
+  "digest": "sha256:6bb4073f1dc899eaaf35a23f1cbcde28a95c0e5f7c3dbd93d2a20e57305679aa",
   "displayName": "DumbbellChart",
   "format": "component-entry/v1",
   "frameworks": [

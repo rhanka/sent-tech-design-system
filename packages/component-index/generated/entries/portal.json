@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Portal.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Teleports its content elsewhere in the DOM (defaults to <body>); SSR-safe.",
     "fr": "Téléporte son contenu ailleurs dans le DOM (par défaut <body>) ; SSR-safe."
   },
-  "digest": "sha256:edca9ce2edf3a791bb7c98d7cde47bcaddcd9329c905bae93ea2612a1197a79e",
+  "digest": "sha256:786f706e8203b07decd69156edda4d09d3a0ecef08a9652c62a67ba82ffe90b1",
   "displayName": "Portal",
   "format": "component-entry/v1",
   "frameworks": [

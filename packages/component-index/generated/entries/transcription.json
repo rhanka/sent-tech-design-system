@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Transcription.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Collapsible transcript panel with timestamps and speaker labels.",
     "fr": "Bloc repliable de transcription audio/vidéo avec horodatage et intervenant."
   },
-  "digest": "sha256:010c866c696056de34f8884de0087bc1a5c7cdbf69fd4a9d795895870b8c4485",
+  "digest": "sha256:be2905f9cd829eb6ca72a79752b587f63caa6c54c364f32afd68f7009865d142",
   "displayName": "Transcription",
   "format": "component-entry/v1",
   "frameworks": [
