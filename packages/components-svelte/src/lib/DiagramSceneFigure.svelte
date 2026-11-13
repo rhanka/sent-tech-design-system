@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import { tick, untrack } from "svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import {
@@ -145,6 +146,8 @@
     label?: string;
     compact?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
+    iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
+    strictIcons?: boolean;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (
       collapsed: readonly SceneOccurrenceRef[],
@@ -194,7 +197,9 @@
     label,
     compact = false,
     labels,
-    resolveGlyph,
+    resolveGlyph = getDiagramGlyph,
+    iconBindings,
+    strictIcons = true,
     onFoldChange,
     onSelect,
     onLayout,
@@ -217,6 +222,8 @@
   const collapsedNow = $derived(collapsed ?? foldState);
   let browserMeasure = $state.raw<CardLineMeasure>();
   const effectiveMeasure = $derived(sceneCardMeasure(browserMeasure ?? measure));
+  let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
+  const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
   const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
 
   // O-4: the orientation record last emitted, fed back to the next layout
@@ -237,10 +244,13 @@
       registry,
       ...(bindings === undefined ? {} : { bindings }),
       presentation,
+      ...(iconBindings === undefined ? {} : { iconBindings }),
+      strictIcons,
+      resolveGlyph: resolveGlyph as typeof getDiagramGlyph,
       measureLines: lineMeasurer,
       collapsed: collapsedNow,
       ...(hints === undefined ? {} : { hints }),
-      ...(metrics === undefined ? {} : { metrics }),
+      metrics: effectiveMetrics,
       ...(rowPack === undefined ? {} : { rowPack }),
       ...(targetWidth === undefined ? {} : { targetWidth }),
       ...(previousOrientation === undefined ? {} : { previousOrientation }),
@@ -255,9 +265,13 @@
     layoutResult.status === "laid-out"
       ? resolveScene(layoutResult, {
           document: semanticDocument,
+          ...(view === undefined ? {} : { view }),
           presentation,
+      ...(iconBindings === undefined ? {} : { iconBindings }),
+      strictIcons,
+      resolveGlyph,
           measureLines: lineMeasurer,
-          ...(metrics === undefined ? {} : { metrics }),
+          metrics: effectiveMetrics,
         })
       : undefined,
   );
@@ -312,6 +326,12 @@
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
+    const values: Record<string, number> = {};
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth"]) {
+      const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
+      if (Number.isFinite(value)) values[key] = value;
+    }
+    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) tokenMetrics = values;
     maxDisplayScale = parseScale(tokenValue(TOKEN_MAX_DISPLAY_SCALE));
     minReadableScale = parseScale(tokenValue(TOKEN_MIN_READABLE_SCALE));
   }
@@ -738,9 +758,16 @@
                 title={edgeLabel.title}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
               >
-                {#each edgeLabel.lines as line, lineIndex (lineIndex)}
-                  <span>{line}</span>
-                {/each}
+                {#if edgeLabel.bundle !== undefined}
+                  <strong class="st-diagramSceneFigure-bundleHeader">{edgeLabel.bundle.header}</strong>
+                  {#each edgeLabel.bundle.groups as group, index (index)}
+                    <div class="st-diagramSceneFigure-bundleRelation" data-bundle-relation={index}>
+                      <span aria-hidden="true">•</span><div>{#each group.lines as line}<span>{line}</span>{/each}</div>
+                    </div>
+                  {/each}
+                {:else}
+                  {#each edgeLabel.lines as line, lineIndex (lineIndex)}<span>{line}</span>{/each}
+                {/if}
               </div>
             {/each}
           {/if}
@@ -838,14 +865,17 @@
   }
   .st-diagramSceneFigure-edge {
     fill: none;
-    stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
+    stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
     stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edgeLabel {
+    box-sizing: border-box;
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    border: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
     align-items: center;
-    color: var(--st-semantic-text-secondary);
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
     display: flex;
     flex-direction: column;
     font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
@@ -856,4 +886,7 @@
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
+  .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); border-top: var(--st-component-diagramScene-labelBorderWidth, 1px) solid var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
+  .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
 </style>

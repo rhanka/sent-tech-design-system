@@ -59,6 +59,15 @@ export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => T
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
+  readonly gapMin?: number;
+  readonly gapMinBlock?: number;
+  readonly gapBase?: number;
+  readonly gapBaseBlock?: number;
+  readonly trackSpacing?: number;
+  readonly trackSpacingBlock?: number;
+  readonly labelBand?: number;
+  readonly gapMax?: number;
+  readonly bundleLabelMaxWidth?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
@@ -112,8 +121,8 @@ export const DEFAULT_ROW_PACK: ResolvedRowPack = {
 };
 
 /** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
-export const DEFAULT_ROW_GAP = 24;
-export const DEFAULT_ROW_GAP_MAX = 32;
+export const DEFAULT_ROW_GAP = 96;
+export const DEFAULT_ROW_GAP_MAX = 240;
 
 /** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
 export type LevelOrientation = "rows" | "columns";
@@ -231,6 +240,8 @@ export interface LayoutFit {
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
 export type LayoutWarningCode =
+  | "channel-unresolved"
+  | "card-icon-missing"
   | "label-unplaced"
   | "label-budget-exhausted"
   | "route-obstructed"
@@ -290,9 +301,10 @@ export type LayoutResult =
        * host draws labels from these boxes and unions them into its fit
        * bounds (DEC-5, BF-7).
        */
+      readonly channels?: readonly import("./channels.js").LayoutChannel[];
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
       /** Lifted parallel relations share a route; semantic occurrences remain intact. */
-      readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string }>>;
+      readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;
     }
   | {
       readonly status: "refused";

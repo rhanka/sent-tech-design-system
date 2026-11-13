@@ -136,7 +136,7 @@ describe("DC-2a authored grouping (§3.3, §3.7)", () => {
     for (const direction of ["rows", "columns"] as const) {
       const { rect } = lay(2, { grouping: [group("g", direction, cards(0, 2))] });
       expect(rect("c1").y, direction).toBe(rect("c0").y);
-      expect(rect("c1").x - (rect("c0").x + 460), direction).toBe(24);
+      expect(rect("c1").x - (rect("c0").x + 460), direction).toBe(96);
     }
   });
 
@@ -171,7 +171,7 @@ describe("DC-2a authored grouping (§3.3, §3.7)", () => {
     expect(Object.keys(result.orientations ?? {}).sort()).toEqual([zone, `${zone}#rest`, "root"].sort());
     // Every gap between two parts is the base token gap.
     const [a, b] = parts as [Rect, Rect, Rect];
-    expect(Math.min(Math.abs(b.x - (a.x + a.width)), Math.abs(b.y - (a.y + a.height)))).toBe(24);
+    expect(Math.min(Math.abs(b.x - (a.x + a.width)), Math.abs(b.y - (a.y + a.height)))).toBe(72);
   });
 
   it("nested groups pack bottom-up: a subgroup is one box of its parent group", () => {
@@ -190,8 +190,8 @@ describe("DC-2a authored grouping (§3.3, §3.7)", () => {
     const first = { right: rect("c1").x + 460, bottom: rect("c0").y + 200 };
     // The two groups pack on one row or two; either way the gap after group a is 8.
     const gap = rect("c2").y === rect("c0").y ? rect("c2").x - first.right : rect("c2").y - first.bottom;
-    expect(gap).toBe(8);
-    const refused = lay(4, { grouping: [group("a", "rows", cards(0, 2), { gapAfter: 40 }), group("b", "rows", cards(2, 4))] }).result;
+    expect(gap).toBe(96);
+    const refused = lay(4, { grouping: [group("a", "rows", cards(0, 2), { gapAfter: 241 }), group("b", "rows", cards(2, 4))] }).result;
     expect(refused.status).toBe("refused");
     if (refused.status !== "refused") return;
     expect(refused.refusals.map((refusal) => [refusal.code, refusal.path])).toEqual([["layout-hint-invalid", "hints.grouping.a.gapAfter"]]);

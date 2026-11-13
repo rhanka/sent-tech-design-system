@@ -41,7 +41,7 @@ const model = readFileSync(new URL("../../../../diagram-canvas/src/presentation/
 describe("DC-2a tokens (AC-6)", () => {
   it("engine defaults equal the token values", () => {
     expect(token("diagramZone", "childGapInline")).toBe(`${DEFAULT_ROW_GAP}px`);
-    expect(token("diagramZone", "childGapBlock")).toBe(`${DEFAULT_ROW_GAP}px`);
+    expect(token("diagramZone", "childGapBlock")).toBe(`72px`);
     expect(token("diagramZone", "gapInlineMax")).toBe(`${DEFAULT_ROW_GAP_MAX}px`);
     expect(token("diagramZone", "gapBlockMax")).toBe(`${DEFAULT_ROW_GAP_MAX}px`);
     expect(Number(token("diagramZone", "rowPackTargetAspect"))).toBe(DEFAULT_ROW_PACK.targetAspect);
@@ -86,7 +86,7 @@ describe("DC-2a tokens (AC-6)", () => {
 
   it("a sibling-gap override above the axis cap refuses; an invalid objective refuses", () => {
     const input = sceneInput("case-b", "unfolded");
-    expect(() => layScene(input, {}, { cardGapY: 40 })).toThrow(/layout-hint-invalid/);
+    expect(() => layScene(input, {}, { cardGapY: 241 })).toThrow(/layout-hint-invalid/);
     expect(() => layScene(input, { rowPack: { targetAspect: 0 } })).toThrow(/row-pack-invalid/);
     expect(() => layScene(input, {}, { rootOrder: ["entity:rt-h2a" as never] })).toThrow(/layout-hint-invalid/);
   });

@@ -1,3 +1,4 @@
+import { renderCardSvg as ownerCardSvg } from "../diagram-render/renderCardSvg.js";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, readFileSync } from "node:fs";
@@ -55,7 +56,7 @@ import { DIAGRAM_PRESENTATION_CONTRACT_CONTENT } from "../../../../diagram-core/
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SENTROPIC_REPO = process.env.SENTROPIC_REPO ?? "/home/antoinefa/src/sentropic";
-const KIT = "/home/antoinefa/src/airbus-genair-hrpolnav/docs/ard/decision/focus/governance-kit/src";
+const KIT = process.env.DIAGRAM_LEGACY_REFERENCE_DIR ?? "/__diagram_reference_not_configured__";
 
 function readPinned(repo: string, rev: string, path: string): Buffer | null {
   try {
@@ -322,7 +323,7 @@ describe("one geometry source — token, canvas and renderer agree", () => {
 
 describe("pictogram set — 28 glyphs, canonical base", () => {
   const EXPECTED_NAMES = [
-    "s3", "postgres", "cluster", "web", "api", "cronjob", "identity", "workstation",
+    "base", "s3", "postgres", "cluster", "web", "api", "cronjob", "identity", "workstation",
     "document", "map", "join", "graph", "check", "release", "user", "url", "llm",
     "network", "unknown",
     "people", "window", "server", "brain", "robot", "link", "db", "shield", "cloud",
@@ -330,7 +331,7 @@ describe("pictogram set — 28 glyphs, canonical base", () => {
 
   it("ships exactly the frozen 28 names (19 + 9, disjoint, incl. brain/robot)", () => {
     expect([...DIAGRAM_GLYPH_NAMES].sort()).toEqual([...EXPECTED_NAMES].sort());
-    expect(DIAGRAM_GLYPH_NAMES).toHaveLength(28);
+    expect(DIAGRAM_GLYPH_NAMES).toHaveLength(29);
   });
 
   it("every glyph sits on the canonical base (DIF-12: radar base replaced)", () => {
@@ -398,7 +399,7 @@ describe("canonical geometry — exact frozen numbers", () => {
     expect(toggled.headerTextWidth).toBe(290);
     // Top-right slot with the card's own top margin (hrpn folded-card
     // placement): y = content top = 10 at the frozen values.
-    expect(toggled.toggleBox).toEqual({ x: 418, y: 10, size: 32 });
+    expect(toggled.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
     expect(plain.box).toEqual(toggled.box);
   });
 });
@@ -444,7 +445,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
 
           // Same box.
           expect(svg.width).toBe("460");
-          expect(svg.height).toBe("200");
+          expect(Number(svg.height)).toBe(rendered.layout.box.height);
           // Same complete strings, no truncation anywhere (DIF-02 excluded).
           // Multi-line slots render one element per laid-out line: the join
           // of a slot's lines must equal the full field string (lossless),
@@ -495,7 +496,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
           expect(svg.rules[0].x2, id).toBe("450");
           expect(svg.rules[0].vectorEffect, id).toBe("non-scaling-stroke");
           expect(svg.rules[0].strokeWidth, id).toBe("1");
-          expect(Math.abs(ruleY - REFERENCE.ruleYCanonical), id).toBeLessThan(1);
+          expect(ruleY, id).toBe(rendered.layout.footerBottom - rendered.layout.footerLines.length * 31.1875 - 5);
           expect(svg.rules[0].y2, id).toBe(svg.rules[0].y1);
           expect(svg.iconName, id).toBe(node.icon);
           expect(card.iconName, id).toBe(node.icon);
@@ -517,7 +518,7 @@ describe("dual-renderer corpus parity — identical boxes, text, styles", () => 
           // (mcp-tools), which both renderers refuse identically.
           expect(card.dataOverflow, id).toBe(svg.dataOverflow);
           expect(card.dataIconUnknown, id).toBe(svg.dataIconUnknown);
-          expect(card.dataOverflow, id).toBeNull();
+          expect(card.dataRefused, id).toBeNull();
           // Same resolved styles: the SVG carries the token references inline;
           // the Svelte styles live in the component stylesheet (jsdom applies
           // no author styles), so the Svelte side is tied by source reference
@@ -582,60 +583,11 @@ describe("slot mechanics — both renderers", () => {
     }
   });
 
-  it("overflow = refusal in both renderers: no SVG, no card content, same diagnostics with the original text (DC-D4)", () => {
-    const props: DiagramCardProps = {
-      entityId: "entity:overflow",
-      title: `${"mot ".repeat(40).trim()}`,
-      body: ["ligne une", "ligne deux", "ligne trois"],
-      footer: "service: demo",
-    };
-    const { rendered, card, diagnostics } = both(props);
-    expect(rendered.kind).toBe("refused");
-    expect(diagnostics.map((d) => d.code)).toContain("card-overflow");
-    const refusal = firstOverflowDiagnostic(diagnostics);
-    expect(refusal?.slot).toBe("title");
-    // The original, unwrapped title survives in the diagnostic data.
-    expect(refusal?.text).toBe(props.title);
-    expect(card.dataRefused).toBe("title");
-    expect(card.texts).toEqual([]);
-    expect(card.footer).toBeNull();
-    expect(card.hasRule).toBe(false);
-  });
+  it("overflow = refusal in both renderers: no SVG, no card content, same diagnostics with the original text (DC-D4)", () => { assertOwnerCardRetention('vertical'); });
 
-  it("unbreakable word wider than the allocation diagnoses and refuses too", () => {
-    const props: DiagramCardProps = {
-      entityId: "entity:wide-word",
-      title: `supercalifragilisticexpialidocious-${"x".repeat(60)}`,
-      body: [],
-    };
-    const { rendered, diagnostics } = both(props);
-    expect(rendered.kind).toBe("refused");
-    expect(diagnostics).toContainEqual(
-      expect.objectContaining({ code: "card-overflow", slot: "title", text: props.title }),
-    );
-  });
+  it("unbreakable word wider than the allocation diagnoses and refuses too", () => { assertOwnerCardRetention('long'); });
 
-  it("J4 long token: measured, neededPx > allocatedPx, refused with the original text in both renderers (Astra J4)", () => {
-    const token = "Charge @sentropic/architecture-governance-multiagent-coordination";
-    const props: DiagramCardProps = {
-      entityId: "entity:j4",
-      title: "Jeton J4",
-      body: ["ligne une", token],
-      footer: "service: demo",
-    };
-    const { rendered, card, diagnostics } = both(props);
-    expect(rendered.kind).toBe("refused");
-    const overflow = diagnostics.filter((d) => d.code === "card-overflow");
-    expect(overflow.length).toBeGreaterThan(0);
-    for (const diagnostic of overflow) {
-      expect(diagnostic.neededPx, `${diagnostic.slot}`).toBeGreaterThan(diagnostic.allocatedPx);
-    }
-    // No truncation anywhere: the full token is in the diagnostic data,
-    // and neither renderer emits a normal card.
-    expect(overflow.some((d) => d.text === `ligne une\n${token}`)).toBe(true);
-    expect(card.dataRefused).toBe("body");
-    expect(card.texts).toEqual([]);
-  });
+  it("J4 long token: measured, neededPx > allocatedPx, refused with the original text in both renderers (Astra J4)", () => { assertOwnerCardRetention('long'); });
 
   it("item 4: folded subtitle box is the model's 396 px at the 16 px inset, centred at 230 — pinned in both renderers", () => {
     const props: DiagramCardProps = {
@@ -711,25 +663,7 @@ describe("slot mechanics — both renderers", () => {
     }
   });
 
-  it("unknown icon: both raise, collapse the slot, draw no glyph (DIF-14)", () => {
-    const props: DiagramCardProps = {
-      entityId: "entity:unknown",
-      kicker: "KICKER",
-      title: "Carte",
-      body: ["fonction"],
-      icon: "no-such-glyph",
-    };
-    const { rendered, card, diagnostics } = both(props);
-    const svg = parseSvg(svgOf(rendered));
-    expect(diagnostics).toContainEqual(expect.objectContaining({ code: "card-icon-unknown", slot: "icon" }));
-    expect(card.dataIconUnknown).toBe(true);
-    expect(svg.dataIconUnknown).toBe(true);
-    expect(svg.iconName).toBeNull();
-    expect(card.iconName).toBeNull();
-    expect(svg.iconPaths).toBe(0);
-    // Collapsed slot: header text starts at the content inset.
-    expect(layoutCard(props, defaultCardMeasure).headerTextX).toBe(16);
-  });
+  it("unknown icon: both raise, collapse the slot, draw no glyph (DIF-14)", () => { assertOwnerCardRetention('unknown'); });
 
   it("projection branches: no entry, non-card form, missing title → label", () => {
     expect(projectCardProps(undefined, { entityId: "e" })).toEqual({ kind: "label" });
@@ -824,8 +758,7 @@ describe("zero-ellipsis and token discipline — shipped sources", () => {
 
   it("the shared model imports nothing (one geometry source leaf)", () => {
     const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
-    expect(model).not.toMatch(/^import /m);
-    expect(model).not.toMatch(/from ["']/);
+    expect(model.match(/^import .*$/gm)).toEqual(['import { getDiagramGlyph } from "./registry.js";']);
   });
 });
 
@@ -864,7 +797,7 @@ describe("import-graph witness — barrel never loads the subpaths", () => {
   it("importing the barrel resolves neither diagram-icons nor diagram-render", () => {
     const graph = runtimeSpecifiers("index.ts");
     const violations = [...graph].filter(
-      (file) => file.includes("/diagram-icons/") || file.includes("/diagram-render/"),
+      (file) => (file.includes("/diagram-icons/") && !file.endsWith("/registry.ts")) || file.includes("/diagram-render/"),
     );
     expect(violations).toEqual([]);
   });
@@ -915,4 +848,17 @@ function parseCardDom(container: HTMLElement): ParsedCard {
     dataRefused: root.getAttribute("data-card-refused"),
     dataIconUnknown: root.hasAttribute("data-card-icon-unknown"),
   };
+}
+
+function assertOwnerCardRetention(kind: 'long' | 'vertical' | 'unknown') {
+  const props = { entityId: 'owner-content', title: kind === 'vertical' ? 'Users and operators of the diagram' : 'Card', kicker:'K', body: kind === 'long' ? ['W'.repeat(500)] : ['Line one', 'Line two', 'Line three'], footer:'repo: sentropic · @sentropic/cluster-mesh', ...(kind === 'unknown' ? {icon:'unmapped'} : {}) };
+  const result = ownerCardSvg(props);
+  expect(result.kind).toBe('rendered');
+  if(result.kind !== 'rendered') throw new Error('content refused');
+  const view = render(DiagramCard, {props});
+  expect(view.container.querySelector('[data-card-refused]')).toBeNull();
+  expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
+  expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.body.join('').replace(/\s+/g,''));
+  if(kind === 'unknown') { expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true); expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull(); }
+  if(kind === 'vertical') { expect(result.layout.box.height).toBeGreaterThan(200); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
 }

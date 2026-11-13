@@ -1,0 +1,518 @@
+{
+  "contractId": "diagram-anatomy/v1",
+  "source": "MemoryContainerFigureR14 slot anatomy; owner A7 equal toggle inset, A10 neutral accent",
+  "appliesTo": [
+    "svelte",
+    "vue",
+    "react",
+    "angular",
+    "preact"
+  ],
+  "cardGeometry": {
+    "width": 460,
+    "height": 200,
+    "borderWidth": 2,
+    "accentWidth": 8,
+    "padding": 8,
+    "headerInset": 16,
+    "iconSize": 70,
+    "iconTextGap": 6,
+    "kicker": {
+      "size": 22,
+      "weight": 400,
+      "lineHeight": 1.3,
+      "letterSpacingEm": 0.04
+    },
+    "title": {
+      "size": 32,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "gap": 6,
+    "body": {
+      "size": 24,
+      "weight": 400,
+      "lineHeight": 1.3
+    },
+    "edgeLabel": {
+      "size": 18,
+      "weight": 400,
+      "lineHeight": 1.2222222222222223
+    },
+    "bodyInsetFromBar": 14,
+    "ruleHeight": 1,
+    "ruleMargin": 4,
+    "ruleInsetStart": 16,
+    "ruleInsetEnd": 10,
+    "footer": {
+      "size": 24,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "footerBottomInset": 9.25,
+    "toggleAllocation": 66,
+    "toggleBoxSize": 32,
+    "toggleInset": 8,
+    "foldedHeaderTextWidth": 290,
+    "allocatedLines": {
+      "kicker": 1,
+      "title": 2,
+      "body": 2,
+      "footer": 1
+    }
+  },
+  "zoneGeometry": {
+    "radius": 0,
+    "borderWidth": 1.5,
+    "headerInset": 16,
+    "iconSize": 70,
+    "iconTextGap": 6,
+    "kicker": {
+      "size": 22,
+      "weight": 400,
+      "lineHeight": 1.3,
+      "letterSpacingEm": 0.04
+    },
+    "title": {
+      "size": 32,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "subtitle": {
+      "size": 24,
+      "weight": 400,
+      "lineHeight": 1.3
+    },
+    "subtitleGap": 6,
+    "headerRuleGap": 4,
+    "contentInsetTop": 16,
+    "contentInsetBottom": 16,
+    "contentInsetInline": 16,
+    "ruleHeight": 1,
+    "ruleMargin": 4,
+    "ruleInsetStart": 16,
+    "ruleInsetEnd": 10,
+    "footer": {
+      "size": 24,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "footerBottomInset": 9.25,
+    "toggleAllocation": 66,
+    "toggleBoxSize": 32,
+    "toggleTopInset": 8,
+    "toggleInset": 8,
+    "headerTextInset": 178,
+    "collapsedWidth": 460,
+    "collapsedHeight": 200,
+    "collapsedInset": 16,
+    "collapsedSubtitleMarginInline": 16,
+    "allocatedLines": {
+      "kicker": 1,
+      "title": 2,
+      "subtitle": 2,
+      "footer": 1
+    }
+  },
+  "card": {
+    "icon": {
+      "name": "base",
+      "glyph": {
+        "base": "M8 53L32 44L56 53L32 62Z",
+        "face": "M10 12H54V48H10Z",
+        "line": "M18 22H46M18 32H40"
+      }
+    },
+    "box": {
+      "width": 460,
+      "height": 200
+    },
+    "contentTop": 10,
+    "contentRight": 450,
+    "iconBox": {
+      "x": 16,
+      "y": 10.09375,
+      "size": 70
+    },
+    "headerTextX": 92,
+    "headerTextWidth": 290,
+    "kicker": [
+      {
+        "text": "KICKER",
+        "x": 92,
+        "baseline": 32,
+        "size": 22,
+        "weight": 400,
+        "secondary": true,
+        "anchor": "start"
+      }
+    ],
+    "title": [
+      {
+        "text": "Title",
+        "x": 92,
+        "baseline": 70.59375,
+        "size": 32,
+        "weight": 700,
+        "secondary": false,
+        "anchor": "start"
+      }
+    ],
+    "headerBlockHeight": 70.1875,
+    "bodyX": 14,
+    "bodyWidth": 436,
+    "bodyArea": {
+      "top": 86.1875,
+      "bottom": 148.5625
+    },
+    "body": [
+      {
+        "text": "Body",
+        "x": 14,
+        "baseline": 108.1875,
+        "size": 24,
+        "weight": 400,
+        "secondary": false,
+        "anchor": "start"
+      },
+      {
+        "text": "Detail",
+        "x": 14,
+        "baseline": 139.375,
+        "size": 24,
+        "weight": 400,
+        "secondary": true,
+        "anchor": "start"
+      }
+    ],
+    "bodyBottom": 148.5625,
+    "ruleY": 152.5625,
+    "ruleX1": 16,
+    "ruleX2": 450,
+    "footerLines": [
+      {
+        "text": "Footer",
+        "x": 16,
+        "baseline": 179.5625,
+        "size": 24,
+        "weight": 700,
+        "secondary": false,
+        "anchor": "start"
+      }
+    ],
+    "footerBottom": 188.75,
+    "toggleBox": {
+      "x": 420,
+      "y": 8,
+      "size": 32
+    },
+    "diagnostics": []
+  },
+  "zones": [
+    {
+      "icon": {
+        "name": "cluster",
+        "glyph": {
+          "base": "M8 53L32 44L56 53L32 62Z",
+          "face": "M32 7L54 20V44L32 57L10 44V20Z",
+          "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+        }
+      },
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 460,
+        "height": 200
+      },
+      "collapsed": true,
+      "card": {
+        "icon": {
+          "name": "cluster",
+          "glyph": {
+            "base": "M8 53L32 44L56 53L32 62Z",
+            "face": "M32 7L54 20V44L32 57L10 44V20Z",
+            "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+          }
+        },
+        "box": {
+          "width": 460,
+          "height": 200
+        },
+        "contentTop": 10,
+        "contentRight": 450,
+        "iconBox": {
+          "x": 16,
+          "y": 10.09375,
+          "size": 70
+        },
+        "headerTextX": 92,
+        "headerTextWidth": 290,
+        "kicker": [
+          {
+            "text": "KICKER",
+            "x": 92,
+            "baseline": 32,
+            "size": 22,
+            "weight": 400,
+            "secondary": true,
+            "anchor": "start"
+          }
+        ],
+        "title": [
+          {
+            "text": "Zone",
+            "x": 92,
+            "baseline": 70.59375,
+            "size": 32,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "headerBlockHeight": 70.1875,
+        "bodyX": 32,
+        "bodyWidth": 396,
+        "bodyArea": {
+          "top": 86.1875,
+          "bottom": 148.5625
+        },
+        "body": [
+          {
+            "text": "Subtitle",
+            "x": 230,
+            "baseline": 123.78125,
+            "size": 24,
+            "weight": 400,
+            "secondary": false,
+            "anchor": "middle"
+          }
+        ],
+        "bodyBottom": 117.375,
+        "ruleY": 152.5625,
+        "ruleX1": 16,
+        "ruleX2": 450,
+        "footerLines": [
+          {
+            "text": "Footer",
+            "x": 16,
+            "baseline": 179.5625,
+            "size": 24,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "footerBottom": 188.75,
+        "toggleBox": {
+          "x": 420,
+          "y": 8,
+          "size": 32
+        },
+        "diagnostics": []
+      },
+      "diagnostics": []
+    },
+    {
+      "icon": {
+        "name": "cluster",
+        "glyph": {
+          "base": "M8 53L32 44L56 53L32 62Z",
+          "face": "M32 7L54 20V44L32 57L10 44V20Z",
+          "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+        }
+      },
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 207.625
+      },
+      "collapsed": false,
+      "header": {
+        "iconBox": {
+          "x": 16,
+          "y": 16.09375,
+          "size": 70
+        },
+        "headerTextX": 92,
+        "headerTextWidth": 422,
+        "kicker": [
+          {
+            "text": "KICKER",
+            "x": 92,
+            "baseline": 38,
+            "size": 22,
+            "weight": 400,
+            "secondary": true,
+            "anchor": "start"
+          }
+        ],
+        "title": [
+          {
+            "text": "Zone",
+            "x": 92,
+            "baseline": 76.59375,
+            "size": 32,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "headerBlockHeight": 70.1875,
+        "subtitle": [
+          {
+            "text": "Subtitle",
+            "x": 16,
+            "baseline": 114.1875,
+            "size": 24,
+            "weight": 400,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "subtitleWidth": 434,
+        "subtitleBottom": 122.1875,
+        "ruleY": 126.1875,
+        "contentTop": 142.1875,
+        "toggleBox": {
+          "x": 560,
+          "y": 8,
+          "size": 32
+        },
+        "footer": [
+          {
+            "text": "Footer",
+            "x": 16,
+            "baseline": 187.6875,
+            "size": 24,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "footerRuleY": 160.6875,
+        "footerBottom": 196.875
+      },
+      "diagnostics": []
+    }
+  ],
+  "tokens": {
+    "card": {
+      "width": "460px",
+      "height": "200px",
+      "radius": "0",
+      "borderWidth": "2px",
+      "accentWidth": "8px",
+      "padding": "8px",
+      "headerInset": "16px",
+      "iconSize": "70px",
+      "iconTextGap": "6px",
+      "kickerFontSize": "22px",
+      "kickerFontWeight": "400",
+      "kickerLineHeight": "1.3",
+      "kickerLetterSpacing": "0.04em",
+      "kickerTextTransform": "uppercase",
+      "titleFontSize": "32px",
+      "titleFontWeight": "700",
+      "titleLineHeight": "1.3",
+      "gap": "6px",
+      "bodyFontSize": "24px",
+      "bodyFontWeight": "400",
+      "bodyLineHeight": "1.3",
+      "bodyInsetFromBar": "14px",
+      "ruleHeight": "1px",
+      "ruleMargin": "4px",
+      "ruleInsetStart": "16px",
+      "ruleInsetEnd": "10px",
+      "footerFontSize": "24px",
+      "footerFontWeight": "700",
+      "footerLineHeight": "1.3",
+      "footerBottomInset": "9.25px",
+      "toggleAllocation": "66px",
+      "toggleBoxSize": "32px",
+      "foldedHeaderTextWidth": "290px",
+      "rootGapInline": "var(--st-component-diagramZone-childGapInline)",
+      "rootGapBlock": "var(--st-component-diagramZone-childGapBlock)",
+      "proposedDashArray": "4 5",
+      "fontFamily": "var(--st-font-sans)",
+      "border": "#94a3b8",
+      "accent": "#94a3b8",
+      "surface": "#ffffff",
+      "text": "#0f172a",
+      "secondaryText": "#475569",
+      "rule": "#e2e8f0"
+    },
+    "zone": {
+      "toggleInset": "8px",
+      "radius": "0",
+      "borderWidth": "1.5px",
+      "headerInset": "16px",
+      "iconSize": "70px",
+      "iconTextGap": "6px",
+      "kickerFontSize": "var(--st-component-diagramCard-kickerFontSize)",
+      "kickerFontWeight": "var(--st-component-diagramCard-kickerFontWeight)",
+      "kickerLineHeight": "var(--st-component-diagramCard-kickerLineHeight)",
+      "kickerLetterSpacing": "var(--st-component-diagramCard-kickerLetterSpacing)",
+      "kickerTextTransform": "var(--st-component-diagramCard-kickerTextTransform)",
+      "titleFontSize": "var(--st-component-diagramCard-titleFontSize)",
+      "titleFontWeight": "var(--st-component-diagramCard-titleFontWeight)",
+      "titleLineHeight": "var(--st-component-diagramCard-titleLineHeight)",
+      "subtitleFontSize": "24px",
+      "subtitleFontWeight": "400",
+      "subtitleLineHeight": "1.3",
+      "subtitleGap": "var(--st-component-diagramCard-gap)",
+      "headerRuleGap": "4px",
+      "contentInsetTop": "16px",
+      "contentInsetBottom": "16px",
+      "contentInsetInline": "16px",
+      "collapsedWidth": "460px",
+      "collapsedHeight": "200px",
+      "collapsedInset": "16px",
+      "collapsedSubtitleMarginInline": "16px",
+      "toggleAllocation": "var(--st-component-diagramCard-toggleAllocation)",
+      "toggleBoxSize": "var(--st-component-diagramCard-toggleBoxSize)",
+      "headerTextInset": "178px",
+      "toggleTopInset": "10px",
+      "footerBottomInset": "var(--st-component-diagramCard-footerBottomInset)",
+      "proposedDashArray": "4 5",
+      "childGapInline": "96px",
+      "childGapBlock": "72px",
+      "gapInlineMax": "240px",
+      "gapBlockMax": "240px",
+      "rowPackTargetAspect": "1.78",
+      "border": "#94a3b8",
+      "surface": "#ffffff",
+      "text": "#0f172a",
+      "secondaryText": "#475569",
+      "rule": "#e2e8f0"
+    },
+    "icon": {
+      "viewBox": "0 0 64 64",
+      "basePath": "M8 53L32 44L56 53L32 62Z",
+      "faceStrokeWidth": "1.5",
+      "lineStrokeWidth": "2.5",
+      "baseFill": "color-mix(in srgb, var(--st-semantic-feedback-info) 18%, var(--st-semantic-surface-raised))",
+      "faceFill": "color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised))",
+      "faceStroke": "var(--st-semantic-feedback-info)",
+      "lineStroke": "var(--st-semantic-surface-raised)",
+      "lineDarkStroke": "var(--st-semantic-feedback-info)"
+    }
+  },
+  "hostStyles": {
+    "packages/components-svelte/src/lib/DiagramCard.svelte": "a3726e27b2c36a0e841da0e3a6d8a2ec40641f7702564ec276387daf671b119c",
+    "packages/components-svelte/src/lib/DiagramZone.svelte": "987aa50454102894664b35b1d62d2b4281c9d4676b21dbdb0f5398b1a55b9ee1",
+    "packages/components-svelte/src/lib/DiagramCardHeader.svelte": "3813b146d9eead4aa3974c902ba23e995038333592a79ef76ba9191d86a0a140",
+    "packages/components-svelte/src/lib/DiagramZoneHeader.svelte": "a7b16b82699981e16191af4736d86d3f6a6ef341fad5e2f13306d2cebd687bd8",
+    "packages/components-vue/src/DiagramCard.vue": "8a9820d30d7ca7769149450838c7d0833a88d9d237b9565b75848e28725cafbe",
+    "packages/components-vue/src/DiagramZone.vue": "2f7abaa8dba9af5a852145d89420b3f3d21a5061f165dda67c41241817c4b6a7",
+    "packages/components-vue/src/DiagramCardHeader.vue": "fe921207f1d3eb20dfcd8b98b1b37516781dd7163dbd9c3e340b05826a196073",
+    "packages/components-vue/src/DiagramZoneHeader.vue": "81c5fe3eab9ec65707303ecc7fa7892ce0adddbbc317947e1e3a11cdd0d117f7"
+  },
+  "colors": {
+    "edge": "#64748b",
+    "labelSurface": "#ffffff",
+    "labelBorder": "#cbd5e1",
+    "labelText": "#172033"
+  },
+  "fontFamily": "Inter, system-ui, sans-serif"
+}

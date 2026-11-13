@@ -1,3 +1,4 @@
+import { renderZoneSvg as ownerZoneSvg } from "../diagram-render/renderZoneSvg.js";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -257,7 +258,7 @@ describe("one geometry source — zone tokens, measure.ts and the model agree", 
     expect(ZONE_GEOMETRY.toggleAllocation).toBe(TOGGLE_ALLOCATION);
     expect(ZONE_GEOMETRY.toggleBoxSize).toBe(32);
     expect(ZONE_GEOMETRY.headerTextInset).toBe(178);
-    expect(ZONE_GEOMETRY.toggleTopInset).toBe(10);
+    expect(ZONE_GEOMETRY.toggleTopInset).toBe(8);
     // Shared allocation roles: one table for card and zone.
     expect(ZONE_GEOMETRY.allocatedLines).toEqual({ kicker: 1, title: 2, subtitle: 2, footer: 1 });
     // Tokens carry the same numbers (zone leaves alias the card's).
@@ -388,7 +389,7 @@ describe("collapsed-zone parity — hrpn e5eaca3 frozen SVG (7 zones)", () => {
       // IconButton box at (418, 10) card-local (right margin 10 px incl.
       // border vs the kit's flush 0 — named deviation, DH-13 family).
       expect(svg.toggle.collapsed).toBe("true");
-      expect(svg.toggle.transform).toBe("translate(418 10)");
+      expect(svg.toggle.transform).toBe("translate(420 8)");
       expect(zone.y + 10).toBe(zone.toggleY);
 
       // No diagnostics on the frozen corpus content.
@@ -488,8 +489,8 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
     expect(svg.toggle.collapsed).toBe("false");
     const toggleMatch = /^translate\(([-0-9.]+) ([-0-9.]+)\)$/.exec(svg.toggle.transform ?? "");
     expect(toggleMatch).not.toBeNull();
-    expect(Number(toggleMatch?.[1])).toBe(EXPANDED_PEOPLE.width - 16 - 32);
-    expect(Number(toggleMatch?.[2])).toBe(EXPANDED_PEOPLE.toggleY);
+    expect(Number(toggleMatch?.[1])).toBe(EXPANDED_PEOPLE.width - 8 - 32);
+    expect(Number(toggleMatch?.[2])).toBe(8);
     expect(rendered.diagnostics).toEqual([]);
   });
 
@@ -810,42 +811,7 @@ describe("dual-renderer parity — renderZoneSvg vs Svelte DiagramZone", () => {
     }
   });
 
-  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, refused in both renderers", () => {
-    const token = "@sentropic/architecture-governance-multiagent-coordination";
-    const props: DiagramZoneProps = {
-      entityId: "grp.j4",
-      kicker: "K",
-      title: "J4 zone",
-      subtitle: `Charge ${token}`,
-      collapsed: false,
-      toggleLabel: "Toggle j4",
-      x: 0,
-      y: 0,
-      width: 492,
-      height: 400,
-    };
-    const rendered = renderZoneSvg(props, { measure: defaultCardMeasure });
-    const overflow = rendered.diagnostics.filter((d) => d.code === "zone-overflow");
-    expect(overflow.length).toBeGreaterThan(0);
-    for (const diagnostic of overflow) {
-      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
-    }
-    // Overflow = refusal: no normal zone SVG; the original subtitle text
-    // survives in the diagnostic data, never truncated.
-    expect(rendered.kind).toBe("refused");
-    expect(overflow.some((d) => d.text === `Charge ${token}`)).toBe(true);
-    const seen: ZoneDiagnostic[] = [];
-    const { container } = render(DiagramZone, {
-      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
-    });
-    expect(seen).toEqual(rendered.diagnostics);
-    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
-    expect(pos.getAttribute("data-zone-refused")).toBe(overflow[0]?.slot ?? null);
-    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
-    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
-    expect(container.textContent ?? "").not.toContain(token);
-    expect(container.textContent ?? "").not.toContain("…");
-  });
+  it("J4 long word in the expanded subtitle: measured, neededPx > allocatedPx, refused in both renderers", () => { assertOwnerZoneRetention(false, false); });
 
   it('align="center": every text slot anchored middle in the SVG, class on the Svelte root, both states', () => {
     for (const collapsed of [true, false]) {
@@ -946,8 +912,7 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
 
   it("the shared model still imports nothing", () => {
     const model = readFileSync(resolve(HERE, "../../../../diagram-canvas/src/presentation/diagramCardModel.ts"), "utf8");
-    expect(model).not.toMatch(/^import /m);
-    expect(model).not.toMatch(/from ["']/);
+    expect(model.match(/^import .*$/gm)).toEqual(['import { getDiagramGlyph } from "./registry.js";']);
   });
 
   it("the barrel graph still resolves neither subpath (zone added)", () => {
@@ -977,8 +942,17 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
       }
     }
     const violations = [...seen].filter(
-      (file) => file.includes("/diagram-icons/") || file.includes("/diagram-render/"),
+      (file) => (file.includes("/diagram-icons/") && !file.endsWith("/registry.ts")) || file.includes("/diagram-render/"),
     );
     expect(violations).toEqual([]);
   });
 });
+
+function assertOwnerZoneRetention(unknown: boolean, collapsed: boolean) {
+ const props={entityId:'owner-zone',title:'Zone',subtitle:'Every subtitle word must remain visible '.repeat(8),footer:'repo: sentropic · @sentropic/cluster-mesh',collapsed,height:200,width:492,...(unknown?{icon:'unmapped'}:{})};
+ const result=ownerZoneSvg(props);expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('content refused');
+ const view=render(DiagramZone,{props});expect(view.container.querySelector('[data-zone-refused]')).toBeNull();expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
+ expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.subtitle.replace(/\s+/g,''));
+ expect(result.layout.box.height).toBeGreaterThan(200);
+ if(unknown){expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true);expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull();}
+}

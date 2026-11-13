@@ -1,3 +1,4 @@
+import { getDiagramGlyph } from "./registry.js";
 /**
  * DiagramCard shared model — geometry, projection and line layout (DC-1).
  *
@@ -64,6 +65,7 @@ export const CARD_GEOMETRY = {
   toggleAllocation: 66,
   /** The toggle slot box itself: the 32 px DS IconButton (sm) square. */
   toggleBoxSize: 32,
+  toggleInset: 8,
   /**
    * Header text width of a folded card (toggle present, icon present):
    * the owner-pinned 290 px — the hrpn folded-card title width
@@ -204,7 +206,7 @@ export function projectCardProps(
     bodyLines.push(presentation.text.detail);
     detailCount = 1;
   }
-  const icon = presentation.icon;
+  const icon = presentation.icon ?? "base";
   return {
     kind: "card",
     props: {
@@ -264,26 +266,23 @@ export function createCardMeasure(
     let tooWide = false;
     for (const paragraph of text.split("\n")) {
       let line = "";
-      for (const word of paragraph.split(/\s+/).filter(Boolean)) {
-        if (breakWords && widthOf(word, role) > availableWidth) {
-          if (line !== "") lines.push(line);
-          line = "";
-          for (const char of word) {
-            if (line !== "" && widthOf(line + char, role) > availableWidth) {
-              lines.push(line);
-              line = "";
-            }
+      let spaced = false;
+      for (const token of paragraph.match(/\s+|[^\s·/_.-]+[·/_.-]?|[·/_.-]/gu) ?? []) {
+        if (/^\s+$/.test(token)) { spaced = true; continue; }
+        const join = spaced && line !== "" ? " " : "";
+        spaced = false;
+        const candidate = line + join + token;
+        if (line !== "" && widthOf(candidate, role) > availableWidth) { lines.push(line); line = ""; }
+        if (breakWords && widthOf(token, role) > availableWidth) {
+          for (const char of token) {
+            if (line !== "" && widthOf(line + char, role) > availableWidth) { lines.push(line); line = ""; }
             line += char;
             if (widthOf(char, role) > availableWidth) tooWide = true;
           }
-          continue;
+        } else {
+          line = line === "" ? token : candidate;
+          if (widthOf(token, role) > availableWidth) tooWide = true;
         }
-        const candidate = line === "" ? word : `${line} ${word}`;
-        if (line !== "" && widthOf(candidate, role) > availableWidth) {
-          lines.push(line);
-          line = word;
-        } else line = candidate;
-        if (widthOf(word, role) > availableWidth) tooWide = true;
       }
       if (line !== "") lines.push(line);
     }
@@ -687,7 +686,7 @@ export interface LaidOutLine {
 }
 
 export interface CardDiagnostic {
-  readonly code: "card-overflow" | "card-icon-unknown" | "card-grown";
+  readonly code: "card-overflow" | "card-icon-unknown" | "card-icon-missing" | "card-grown";
   readonly slot: string;
   readonly entityId: string;
   readonly neededPx: number;
@@ -700,16 +699,11 @@ export interface CardDiagnostic {
   readonly text?: string;
 }
 
-/**
- * Overflow = refusal (owner criterion, DC-1 review): the first overflow
- * diagnostic of a layout, or `undefined` when the content fits. Both
- * renderers (pure SVG and Svelte) refuse on exactly this predicate, so the
- * two contracts cannot diverge.
- */
+/** First content diagnostic, for reporting only; renderers retain every slot. */
 export function firstOverflowDiagnostic<D extends { readonly code: string }>(
   diagnostics: readonly D[],
 ): D | undefined {
-  return diagnostics.find((diagnostic) => diagnostic.code === "card-overflow" || diagnostic.code === "zone-overflow");
+  return diagnostics.find(diagnostic => diagnostic.code === "card-overflow" || diagnostic.code === "zone-overflow");
 }
 
 /**
@@ -743,7 +737,7 @@ export function headerSlotGeometry(opts: {
   const g = CARD_GEOMETRY;
   const kickerHeight = lineBoxHeight(g.kicker.size);
   const titleHeight = lineBoxHeight(g.title.size);
-  const contentHeight = (opts.kickerLines > 0 ? kickerHeight : 0) + opts.titleLines * titleHeight;
+  const contentHeight = opts.kickerLines * kickerHeight + opts.titleLines * titleHeight;
   const blockHeight = opts.hasIcon ? Math.max(g.iconSize, contentHeight) : contentHeight;
   return {
     kickerHeight,
@@ -756,6 +750,7 @@ export function headerSlotGeometry(opts: {
 }
 
 export interface CardLayout {
+  readonly icon: { readonly name: string; readonly glyph: DiagramGlyphPaths };
   readonly box: { readonly width: number; readonly height: number };
   readonly contentTop: number;
   readonly contentRight: number;
@@ -795,8 +790,12 @@ export interface CardLayout {
  * name with no glyph data raises `card-icon-unknown` and the slot collapses.
  */
 export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
+  const icon = props.icon ?? "base";
+  const missing = props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
+  props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
+    iconGlyph: props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
   let g = { ...CARD_GEOMETRY, height: props.height ?? CARD_GEOMETRY.height };
-  const diagnostics: CardDiagnostic[] = [];
+  const diagnostics: CardDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
   const align = props.align ?? "left";
   const bodyMode = props.bodyMode ?? "leaf";
   const contentTop = g.borderWidth + g.padding;
@@ -914,10 +913,12 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   const bodyLineX = bodyAnchor === "middle" ? bodyTextX + bodyWidth / 2 : bodyTextX;
   const wrappedBody: string[] = [];
   const bodyLineWidths: number[] = [];
+  let detailLines = 0;
   let bodyTooWide = false;
-  for (const line of props.body) {
+  for (const [bodyIndex, line] of props.body.entries()) {
     const measured = measure(line, "body", bodyWidth, g.allocatedLines.body);
     wrappedBody.push(...measured.lines);
+    if (bodyIndex >= props.body.length - (props.detailCount ?? 0)) detailLines += measured.lines.length;
     bodyLineWidths.push(...(measured.lineWidths ?? []));
     bodyTooWide = bodyTooWide || measured.tooWide;
   }
@@ -1001,7 +1002,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   const bodyBlockTop = subtitleMode
     ? bodyY + Math.max(0, (bodyAreaBottom - bodyY - wrappedBody.length * bodyHeight) / 2)
     : bodyY;
-  const detailStart = wrappedBody.length - (props.detailCount ?? 0);
+  const detailStart = wrappedBody.length - detailLines;
   const body: LaidOutLine[] = wrappedBody.map((text, index) => ({
     text,
     x: bodyLineX,
@@ -1025,7 +1026,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // Pass 3, item 10: title placement follows the MEASURED kicker-line
   // presence — an empty or whitespace-only kicker measures zero lines and
   // reserves no line, exactly like the shared header derivation above.
-  const titleTop = textTop + (kickerTexts.length > 0 ? kickerHeight : 0);
+  const titleTop = textTop + kickerTexts.length * kickerHeight;
   const title: LaidOutLine[] = titleTexts.map((text, index) => ({
     text,
     x: headerLineX,
@@ -1044,12 +1045,13 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     props.toggle === undefined
       ? undefined
       : {
-          x: contentRight - g.toggleBoxSize,
-          y: contentTop,
+          x: g.width - g.toggleInset - g.toggleBoxSize,
+          y: g.toggleInset,
           size: g.toggleBoxSize,
         };
 
   return {
+    icon: { name: props.icon!, glyph: props.iconGlyph! },
     box: { width: g.width, height: g.height },
     contentTop,
     contentRight,
@@ -1119,7 +1121,8 @@ export const ZONE_GEOMETRY = {
    * `y + 10` (flush under the frame's top edge), while the header band
    * starts at `y + 16`.
    */
-  toggleTopInset: 10,
+  toggleTopInset: CARD_GEOMETRY.toggleInset,
+  toggleInset: CARD_GEOMETRY.toggleInset,
   /**
    * Expanded header text inset from the frame's left edge: the kit wraps
    * kicker/title at `width − 178` (icon 16 + 70 + gap 6, toggle room, right
@@ -1182,6 +1185,7 @@ export interface DiagramZoneProps {
  * `layoutZone` and both renderers so the collapsed zone is the card.
  */
 export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProps {
+  props = { ...props, icon: props.icon ?? "cluster" };
   return {
     ...(props.autoSize === undefined ? {} : { autoSize: props.autoSize }),
     ...(props.height === undefined ? {} : { height: props.height }),
@@ -1208,7 +1212,7 @@ export interface ZoneDiagnostic {
    * card or nested zone keeps its own `card-overflow` / `card-icon-unknown`
    * code with its own `entityId` when `renderZoneSvg` aggregates them.
    */
-  readonly code: "zone-overflow" | "zone-icon-unknown" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown";
+  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown";
   readonly slot: string;
   readonly entityId: string;
   readonly neededPx: number;
@@ -1227,6 +1231,7 @@ export interface ZoneChildSpec {
 }
 
 export interface ZoneLayout {
+  readonly icon: { readonly name: string; readonly glyph: DiagramGlyphPaths };
   readonly box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
   readonly collapsed: boolean;
   /** Collapsed: the card layout of the folded card (same geometry source). */
@@ -1265,7 +1270,7 @@ export interface ZoneLayout {
  * A parent never assumes a 200 px child.
  */
 function childLayoutHeight(child: ZoneChildSpec, measure: CardLineMeasure): number {
-  if (child.kind === "card") return CARD_GEOMETRY.height;
+  if (child.kind === "card") return child.card === undefined ? CARD_GEOMETRY.height : layoutCard(child.card, measure).box.height;
   if (child.zone === undefined) return ZONE_GEOMETRY.collapsedHeight;
   return layoutZone(child.zone, measure, child.children ?? []).box.height;
 }
@@ -1284,16 +1289,20 @@ export function layoutZone(
   measure: CardLineMeasure,
   children: readonly ZoneChildSpec[] = [],
 ): ZoneLayout {
+  const icon = props.icon ?? "cluster";
+  const missing = props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
+  props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
+    iconGlyph: props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
   const g = ZONE_GEOMETRY;
   const x = props.x ?? 0;
   const y = props.y ?? 0;
-  const diagnostics: ZoneDiagnostic[] = [];
+  const diagnostics: ZoneDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
 
   if (props.collapsed) {
     const card = layoutCard(zoneCollapsedCardProps(props), measure);
     for (const diagnostic of card.diagnostics) {
       diagnostics.push({
-        code: diagnostic.code === "card-icon-unknown" ? "zone-icon-unknown" : diagnostic.code === "card-grown" ? "zone-grown" : "zone-overflow",
+        code: diagnostic.code === "card-icon-missing" ? "card-icon-missing" : diagnostic.code === "card-icon-unknown" ? "zone-icon-unknown" : diagnostic.code === "card-grown" ? "zone-grown" : "zone-overflow",
         slot: diagnostic.slot,
         entityId: diagnostic.entityId,
         neededPx: diagnostic.neededPx,
@@ -1302,6 +1311,7 @@ export function layoutZone(
       });
     }
     return {
+      icon: { name: props.icon!, glyph: props.iconGlyph! },
       box: { x, y, width: g.collapsedWidth, height: card.box.height },
       collapsed: true,
       card,
@@ -1420,7 +1430,7 @@ export function layoutZone(
   // Pass 3, item 10: title placement follows the MEASURED kicker-line
   // presence — an empty or whitespace-only kicker measures zero lines and
   // reserves no line, exactly like the shared header derivation above.
-  const titleTop = textTop + (kickerTexts.length > 0 ? kickerHeight : 0);
+  const titleTop = textTop + kickerTexts.length * kickerHeight;
   const title: LaidOutLine[] = titleTexts.map((text, index) => ({
     text,
     x: headerLineX,
@@ -1524,7 +1534,7 @@ export function layoutZone(
   const toggleBox =
     props.toggleLabel === undefined
       ? undefined
-      : { x: contentRight - g.toggleBoxSize, y: y + g.toggleTopInset, size: g.toggleBoxSize };
+      : { x: x + width - g.toggleInset - g.toggleBoxSize, y: y + g.toggleInset, size: g.toggleBoxSize };
 
   const footerBottom = y + height - g.borderWidth - g.footerBottomInset;
   let footer: LaidOutLine[] = [];
@@ -1545,6 +1555,7 @@ export function layoutZone(
   }
 
   return {
+    icon: { name: props.icon!, glyph: props.iconGlyph! },
     box: { x, y, width, height },
     collapsed: false,
     header: {
@@ -1616,7 +1627,7 @@ export function projectZoneProps(
   }
   const title = presentation.text.title ?? "";
   if (title === "") return { kind: "label" };
-  const icon = presentation.icon;
+  const icon = presentation.icon ?? "cluster";
   return {
     kind: "zone",
     props: {

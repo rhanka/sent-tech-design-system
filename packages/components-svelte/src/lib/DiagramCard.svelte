@@ -1,6 +1,6 @@
 <script lang="ts">
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
-  import { defaultCardMeasure, firstOverflowDiagnostic, layoutCard } from "./diagramCardModel.js";
+  import { defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
   import type {
     CardDiagnostic,
     CardLineMeasure,
@@ -97,7 +97,7 @@
   );
   // Overflow = refusal: the same predicate as the pure renderer
   // (`firstOverflowDiagnostic`), so both renderers refuse together.
-  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
+
 
   $effect(() => {
     if (onDiagnostic === undefined) return;
@@ -110,28 +110,12 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
-{#if refused !== undefined}
-  <!-- Overflow = refusal: no normal card is rendered for refused content.
-       The host sees the refusal state on the root (data-card-refused) and
-       gets the original slot text through onDiagnostic. -->
-  <div
-    class="st-diagramCard st-diagramCard--refused"
-    data-entity={entityId}
-    data-tone={tone}
-    data-proposed={proposed === true ? "true" : undefined}
-    data-card-refused={refused.slot}
-    data-card-overflow={refused.slot}
-    role="group"
-    aria-label={title}
-    onclick={() => onSelect?.({ entityId })}
-  ></div>
-{:else}
 <div
   class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}"
   data-entity={entityId}
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
-  style={autoSize ? `height:${layout.box.height}px` : undefined}
+  style={`height:${layout.box.height}px`}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
@@ -141,8 +125,8 @@
   <DiagramCardHeader
     kicker={layout.kicker}
     title={layout.title}
-    iconName={icon}
-    iconGlyph={iconGlyph}
+    iconName={layout.icon.name}
+    iconGlyph={layout.icon.glyph}
     headerTextWidth={layout.headerTextWidth}
     headerBlockHeight={layout.headerBlockHeight}
     toggle={toggle}
@@ -174,17 +158,17 @@
     {/if}
   </div>
 </div>
-{/if}
 
 <style>
   .st-diagramCard {
+    position: relative;
     width: var(--st-component-diagramCard-width, 460px);
     height: var(--st-component-diagramCard-height, 200px);
     box-sizing: border-box;
     border: var(--st-component-diagramCard-borderWidth, 2px) solid
       var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-left: var(--st-component-diagramCard-accentWidth, 8px) solid
-      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));
+      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
     border-radius: var(--st-component-diagramCard-radius, 0);
     background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));

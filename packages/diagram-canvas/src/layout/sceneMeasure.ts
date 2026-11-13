@@ -42,7 +42,7 @@ export function measureSceneBox(
   const title = at(presentation?.text.title ?? "", "title", textWidth);
   const subtitle = header === undefined || presentation?.text.subtitle === undefined ? undefined
     : at(presentation.text.subtitle, "subtitle", header.subtitleWidth);
-  const blockHeight = Math.max(presentation?.icon === undefined ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
+  const blockHeight = Math.max(projected.kind === "label" ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
   const height = header === undefined ? blockHeight : blockHeight + ZONE_GEOMETRY.headerRuleGap
     + (subtitle === undefined || subtitle.lines.length === 0 ? 0 : ZONE_GEOMETRY.subtitleGap + subtitle.height);
   const measuredHeader: HeaderMeasurement = {

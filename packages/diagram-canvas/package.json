@@ -8,7 +8,8 @@
   "files": [
     "dist",
     "!dist/**/*.map",
-    "!dist/.srchash"
+    "!dist/.srchash",
+    "contracts"
   ],
   "type": "module",
   "license": "MIT",
@@ -45,7 +46,8 @@
     "./diagram-render": {
       "types": "./dist/presentation/index.d.ts",
       "import": "./dist/presentation/index.js"
-    }
+    },
+    "./diagram-anatomy": "./contracts/diagram-anatomy.v1.json"
   },
   "types": "./dist/index.d.ts",
   "main": "./dist/index.js",

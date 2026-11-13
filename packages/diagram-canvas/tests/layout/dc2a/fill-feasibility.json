@@ -6,9 +6,9 @@
       "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
       "leafCount": 11,
       "leafArea": 1100320,
-      "minimumWidth": 3008,
-      "minimumHeight": 1429.75,
-      "optimisticMaximumFill": 0.25584743650318276,
+      "minimumWidth": 2812,
+      "minimumHeight": 2038.75,
+      "optimisticMaximumFill": 0.19192860936705528,
       "levels": [
         {
           "level": "pkg-ds-core",
@@ -63,7 +63,7 @@
         },
         {
           "level": "root",
-          "rows": true,
+          "rows": false,
           "shelves": [
             [
               "rt-claude",
@@ -77,7 +77,7 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.22180067259695696
+          "score": 0.4490792254591537
         },
         {
           "level": "sys-ds",
@@ -89,7 +89,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.13366887372994554
+          "score": 0.06383361659788715
         },
         {
           "level": "sys-engram",
@@ -101,7 +101,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.07107970940913487
+          "score": 0.0663655130811313
         },
         {
           "level": "sys-h2a",
@@ -109,42 +109,38 @@
           "shelves": [
             [
               "pkg-h2a",
-              "rt-h2a"
-            ],
-            [
+              "rt-h2a",
               "api-h2a"
             ]
           ],
           "candidates": 4,
-          "score": 0.45388816407229926
+          "score": 0.4257375966887413
         },
         {
           "level": "sys-track",
-          "rows": false,
+          "rows": true,
           "shelves": [
             [
               "pkg-track",
-              "rt-track"
-            ],
-            [
+              "rt-track",
               "st-events"
             ]
           ],
           "candidates": 4,
-          "score": 0.498168324794346
+          "score": 0.47874712138462133
         }
       ],
       "requiredFill": 0.618,
-      "threshold": 0.23584743650318277
+      "threshold": 0.17192860936705529
     },
     {
       "view": "vue-globale/intermediate",
       "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
       "leafCount": 18,
       "leafArea": 1773760,
-      "minimumWidth": 4040,
-      "minimumHeight": 1961.3125,
-      "optimisticMaximumFill": 0.2238549465985125,
+      "minimumWidth": 5107,
+      "minimumHeight": 2313.3125,
+      "optimisticMaximumFill": 0.15013940640387302,
       "levels": [
         {
           "level": "pkg-artifacts",
@@ -219,22 +215,20 @@
             ]
           ],
           "candidates": 12,
-          "score": 0.24965175309686732
+          "score": 0.338048659682989
         },
         {
           "level": "sys-ds",
-          "rows": false,
+          "rows": true,
           "shelves": [
             [
               "pkg-ds-core",
-              "pkg-ds-canvas"
-            ],
-            [
+              "pkg-ds-canvas",
               "pkg-ds-svelte"
             ]
           ],
           "candidates": 4,
-          "score": 0.33788569842778027
+          "score": 0.39476825242674723
         },
         {
           "level": "sys-engram",
@@ -250,7 +244,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.08712520874223434
+          "score": 0.2654181519804777
         },
         {
           "level": "sys-h2a",
@@ -266,7 +260,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.2446594369055802
+          "score": 0.13583600734878323
         },
         {
           "level": "sys-sentropic",
@@ -283,7 +277,7 @@
             ]
           ],
           "candidates": 8,
-          "score": 0.3589347135393247
+          "score": 0.268306632518884
         },
         {
           "level": "sys-track",
@@ -298,20 +292,20 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.09066393103985168
+          "score": 0.20546817659554015
         }
       ],
       "requiredFill": 0.662,
-      "threshold": 0.2038549465985125
+      "threshold": 0.13013940640387303
     },
     {
       "view": "vue-globale/after",
       "fixtureSha256": "f45a615502e3c3f67c4411ddcc76f99d8bf8ad5dce6425a7f4e677ef8b7c6754",
       "leafCount": 19,
       "leafArea": 1909460,
-      "minimumWidth": 4072,
-      "minimumHeight": 2258.75,
-      "optimisticMaximumFill": 0.20760348046181462,
+      "minimumWidth": 5132,
+      "minimumHeight": 2435.75,
+      "optimisticMaximumFill": 0.15275351274440574,
       "levels": [
         {
           "level": "pkg-artifacts",
@@ -370,7 +364,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.3510118526442678
+          "score": 0.3306533215307157
         },
         {
           "level": "pkg-mesh",
@@ -409,22 +403,20 @@
             ]
           ],
           "candidates": 12,
-          "score": 0.12433044354024222
+          "score": 0.2870987836211567
         },
         {
           "level": "sys-ds",
-          "rows": false,
+          "rows": true,
           "shelves": [
             [
               "pkg-ds-core",
-              "pkg-ds-canvas"
-            ],
-            [
+              "pkg-ds-canvas",
               "pkg-ds-svelte"
             ]
           ],
           "candidates": 4,
-          "score": 0.33788569842778027
+          "score": 0.39476825242674723
         },
         {
           "level": "sys-engram",
@@ -440,7 +432,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.19646305636875383
+          "score": 0.09605821924534581
         },
         {
           "level": "sys-h2a",
@@ -456,7 +448,7 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.05731983979399935
+          "score": 0.17305357915220415
         },
         {
           "level": "sys-sentropic",
@@ -473,35 +465,33 @@
             ]
           ],
           "candidates": 8,
-          "score": 0.3589347135393247
+          "score": 0.268306632518884
         },
         {
           "level": "sys-track",
-          "rows": false,
+          "rows": true,
           "shelves": [
             [
               "pkg-track",
-              "rt-track"
-            ],
-            [
+              "rt-track",
               "st-events"
             ]
           ],
           "candidates": 4,
-          "score": 0.498168324794346
+          "score": 0.47874712138462133
         }
       ],
       "requiredFill": 0.647,
-      "threshold": 0.18760348046181463
+      "threshold": 0.13275351274440575
     },
     {
       "view": "ajout-preprod/intermediate",
       "fixtureSha256": "4863a45f3637d9f3089daf849e56e25e4fe01a91a0540b2f7ee5811c9e06c3dc",
       "leafCount": 17,
       "leafArea": 1782960,
-      "minimumWidth": 3460,
-      "minimumHeight": 1871.75,
-      "optimisticMaximumFill": 0.2753072570490198,
+      "minimumWidth": 3892,
+      "minimumHeight": 2225.75,
+      "optimisticMaximumFill": 0.20582228076751385,
       "levels": [
         {
           "level": "pkg-deploy",
@@ -516,7 +506,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.3485257002495068
+          "score": 0.5013515898439984
         },
         {
           "level": "pkg-sync",
@@ -528,7 +518,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.3510118526442678
+          "score": 0.3306533215307157
         },
         {
           "level": "root",
@@ -543,7 +533,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.13889639888095295
+          "score": 0.1291325904074517
         },
         {
           "level": "sys-ci",
@@ -555,7 +545,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.028761725554587614
+          "score": 0.13247264663560934
         },
         {
           "level": "sys-preprod",
@@ -573,7 +563,7 @@
             ]
           ],
           "candidates": 11,
-          "score": 0.3076888694599747
+          "score": 0.2736653572836344
         },
         {
           "level": "sys-prod",
@@ -591,20 +581,20 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.2944813912267931
+          "score": 0.21471594658894674
         }
       ],
       "requiredFill": 0.769,
-      "threshold": 0.2553072570490198
+      "threshold": 0.18582228076751386
     },
     {
       "view": "ajout-preprod/after",
       "fixtureSha256": "4863a45f3637d9f3089daf849e56e25e4fe01a91a0540b2f7ee5811c9e06c3dc",
       "leafCount": 19,
       "leafArea": 1996400,
-      "minimumWidth": 3492,
-      "minimumHeight": 1871.75,
-      "optimisticMaximumFill": 0.3054396999090137,
+      "minimumWidth": 3924,
+      "minimumHeight": 2195.75,
+      "optimisticMaximumFill": 0.23170514162808492,
       "levels": [
         {
           "level": "pkg-api",
@@ -630,7 +620,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.3485257002495068
+          "score": 0.5013515898439984
         },
         {
           "level": "pkg-sync",
@@ -642,7 +632,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.3510118526442678
+          "score": 0.3306533215307157
         },
         {
           "level": "root",
@@ -657,7 +647,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.13362691259754741
+          "score": 0.0890297192535402
         },
         {
           "level": "sys-ci",
@@ -672,7 +662,7 @@
             ]
           ],
           "candidates": 5,
-          "score": 0.06019168027221356
+          "score": 0.16663177239115623
         },
         {
           "level": "sys-preprod",
@@ -691,7 +681,7 @@
             ]
           ],
           "candidates": 13,
-          "score": 0.27566318913566223
+          "score": 0.24404445373263706
         },
         {
           "level": "sys-prod",
@@ -709,20 +699,20 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.07064786328679465
+          "score": 0.03238221033067618
         }
       ],
       "requiredFill": 0.763,
-      "threshold": 0.2854396999090137
+      "threshold": 0.21170514162808493
     },
     {
       "view": "migration-cluster-mesh/intermediate",
       "fixtureSha256": "4a317a819804c7f11a5a7d21e3694ac5f28ca3d877980d1ccf3c00979befcad9",
       "leafCount": 17,
       "leafArea": 1753520,
-      "minimumWidth": 3492,
-      "minimumHeight": 1831.3125,
-      "optimisticMaximumFill": 0.27420415341449667,
+      "minimumWidth": 3924,
+      "minimumHeight": 2227.3125,
+      "optimisticMaximumFill": 0.20063217005473444,
       "levels": [
         {
           "level": "pkg-app-api",
@@ -737,7 +727,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.4259015686671761
+          "score": 0.5646563471127465
         },
         {
           "level": "pkg-immo-api",
@@ -771,7 +761,7 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.12823023835703823
+          "score": 0.0753275510010943
         },
         {
           "level": "sys-artifacts",
@@ -787,7 +777,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.0024004196871174263
+          "score": 0.18999918337419022
         },
         {
           "level": "sys-immo",
@@ -802,7 +792,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.13495122654333974
+          "score": 0.2309289149390587
         },
         {
           "level": "sys-mesh",
@@ -818,7 +808,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.15193818801315356
+          "score": 0.10483401562998443
         },
         {
           "level": "sys-sentropic-app",
@@ -835,20 +825,20 @@
             ]
           ],
           "candidates": 9,
-          "score": 0.056633720535695826
+          "score": 0.17031642635427774
         }
       ],
       "requiredFill": 0.726,
-      "threshold": 0.25420415341449665
+      "threshold": 0.18063217005473445
     },
     {
       "view": "migration-cluster-mesh/after",
       "fixtureSha256": "4a317a819804c7f11a5a7d21e3694ac5f28ca3d877980d1ccf3c00979befcad9",
       "leafCount": 17,
       "leafArea": 1782960,
-      "minimumWidth": 3008,
-      "minimumHeight": 1809.75,
-      "optimisticMaximumFill": 0.3275255486681186,
+      "minimumWidth": 3368,
+      "minimumHeight": 2225.75,
+      "optimisticMaximumFill": 0.23784451209832658,
       "levels": [
         {
           "level": "pkg-app-api",
@@ -860,7 +850,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.3510118526442678
+          "score": 0.2599283025356457
         },
         {
           "level": "pkg-artifacts",
@@ -901,7 +891,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.3510118526442678
+          "score": 0.3306533215307157
         },
         {
           "level": "root",
@@ -917,7 +907,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.10964267585202264
+          "score": 0.25982112863289125
         },
         {
           "level": "sys-artifacts",
@@ -933,7 +923,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.15193818801315356
+          "score": 0.15393362184581166
         },
         {
           "level": "sys-immo",
@@ -946,7 +936,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.46322904154152705
+          "score": 0.424073529742079
         },
         {
           "level": "sys-mesh",
@@ -963,7 +953,7 @@
             ]
           ],
           "candidates": 9,
-          "score": 0.03170338348135573
+          "score": 0.08439191654532247
         },
         {
           "level": "sys-sentropic-app",
@@ -979,20 +969,20 @@
             ]
           ],
           "candidates": 7,
-          "score": 0.05731983979399935
+          "score": 0.2204623345069131
         }
       ],
       "requiredFill": 0.696,
-      "threshold": 0.3075255486681186
+      "threshold": 0.2178445120983266
     },
     {
       "view": "case-skills-r9/unfolded",
       "fixtureSha256": "a0cb2dff39a9a9fe4b52c1dc85eed837316bbd02e9e0fc28ce2423e3bef73994",
       "leafCount": 14,
       "leafArea": 1288000,
-      "minimumWidth": 2460,
-      "minimumHeight": 1074.4375,
-      "optimisticMaximumFill": 0.48730357584536815,
+      "minimumWidth": 3304,
+      "minimumHeight": 983.4375,
+      "optimisticMaximumFill": 0.3963958141463756,
       "levels": [
         {
           "level": "method-runtime",
@@ -1008,7 +998,7 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.0024004196871174263
+          "score": 0.11338222971178197
         },
         {
           "level": "method-skills",
@@ -1017,24 +1007,22 @@
             [
               "harness-router",
               "method-using-harness",
-              "method-brainstorm"
+              "method-brainstorm",
+              "method-plan"
             ],
             [
-              "method-plan",
               "method-debug",
-              "method-test"
-            ],
-            [
+              "method-test",
               "method-review",
-              "method-security",
-              "method-adopt"
+              "method-security"
             ],
             [
+              "method-adopt",
               "method-track-report"
             ]
           ],
           "candidates": 18,
-          "score": 0.3712530324364542
+          "score": 0.35060963522692695
         },
         {
           "level": "root",
@@ -1046,20 +1034,20 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.2517507168207024
+          "score": 0.635221683078149
         }
       ],
       "requiredFill": 0.872,
-      "threshold": 0.46730357584536814
+      "threshold": 0.3763958141463756
     },
     {
       "view": "case-skills-r9/skills-unfolded",
       "fixtureSha256": "a0cb2dff39a9a9fe4b52c1dc85eed837316bbd02e9e0fc28ce2423e3bef73994",
       "leafCount": 11,
       "leafArea": 1012000,
-      "minimumWidth": 1944,
-      "minimumHeight": 1074.4375,
-      "optimisticMaximumFill": 0.4845103895640675,
+      "minimumWidth": 2716,
+      "minimumHeight": 983.4375,
+      "optimisticMaximumFill": 0.37888200792488624,
       "levels": [
         {
           "level": "method-skills",
@@ -1068,24 +1056,22 @@
             [
               "harness-router",
               "method-using-harness",
-              "method-brainstorm"
+              "method-brainstorm",
+              "method-plan"
             ],
             [
-              "method-plan",
               "method-debug",
-              "method-test"
-            ],
-            [
+              "method-test",
               "method-review",
-              "method-security",
-              "method-adopt"
+              "method-security"
             ],
             [
+              "method-adopt",
               "method-track-report"
             ]
           ],
           "candidates": 18,
-          "score": 0.3712530324364542
+          "score": 0.35060963522692695
         },
         {
           "level": "root",
@@ -1097,20 +1083,20 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.01633707291467829
+          "score": 0.439248037115867
         }
       ],
       "requiredFill": 0.893,
-      "threshold": 0.4645103895640675
+      "threshold": 0.3588820079248862
     },
     {
       "view": "case-integration-r9/unfolded",
       "fixtureSha256": "a21d90d595c284267e3df3b221b3bbfd7ee1c48d377d0e23d30a89b388f3137c",
       "leafCount": 11,
       "leafArea": 1012000,
-      "minimumWidth": 2460,
-      "minimumHeight": 1216.875,
-      "optimisticMaximumFill": 0.33806439759312845,
+      "minimumWidth": 2748,
+      "minimumHeight": 1434.875,
+      "optimisticMaximumFill": 0.2566549916542746,
       "levels": [
         {
           "level": "coordination-skills",
@@ -1122,7 +1108,7 @@
             ]
           ],
           "candidates": 2,
-          "score": 0.5291968988864422
+          "score": 0.491921469126838
         },
         {
           "level": "external-skills",
@@ -1150,7 +1136,7 @@
             ]
           ],
           "candidates": 8,
-          "score": 0.46907965632163207
+          "score": 0.41470041428578247
         },
         {
           "level": "registry-components",
@@ -1165,7 +1151,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.09913850731103813
+          "score": 0.20613546606571231
         },
         {
           "level": "root",
@@ -1181,20 +1167,20 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.20440891894930596
+          "score": 0.15005282660256775
         }
       ],
       "requiredFill": 0.779,
-      "threshold": 0.31806439759312843
+      "threshold": 0.2366549916542746
     },
     {
       "view": "case-trackfocus-r9/unfolded",
       "fixtureSha256": "304f3151b9789ab3d84645187b88e638fbf983d3737569c8950c4d5135c07f24",
       "leafCount": 11,
       "leafArea": 1012000,
-      "minimumWidth": 2492,
-      "minimumHeight": 1165.3125,
-      "optimisticMaximumFill": 0.3484897986240335,
+      "minimumWidth": 2780,
+      "minimumHeight": 1372.3125,
+      "optimisticMaximumFill": 0.2652666772170459,
       "levels": [
         {
           "level": "focus-components",
@@ -1212,7 +1198,7 @@
             ]
           ],
           "candidates": 10,
-          "score": 0.40512954797640716
+          "score": 0.35475302997560865
         },
         {
           "level": "focus-skill",
@@ -1249,7 +1235,7 @@
             ]
           ],
           "candidates": 4,
-          "score": 0.3216223755397335
+          "score": 0.26269188261090304
         },
         {
           "level": "track-skills",
@@ -1265,16 +1251,16 @@
             ]
           ],
           "candidates": 6,
-          "score": 0.0024004196871174263
+          "score": 0.11338222971178197
         }
       ],
       "requiredFill": 0.759,
-      "threshold": 0.3284897986240335
+      "threshold": 0.2452666772170459
     }
   ],
   "cappedFrame": {
     "view": "migration-cluster-mesh/folded",
-    "optimisticMaximumFrameFill": 0.13553659259259263,
+    "optimisticMaximumFrameFill": 0.24466611796982168,
     "requiredFrameFill": 0.147,
     "scope": "capped; no fill gate (Appendix E)"
   }

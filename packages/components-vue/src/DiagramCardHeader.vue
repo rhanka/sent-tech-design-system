@@ -1,5 +1,6 @@
 <script setup lang="ts">
 defineOptions({ name: 'DiagramCardHeader' });
+import { getDiagramGlyph } from './diagram-icons/registry.js';
 import DiagramControlGlyph from "./DiagramControlGlyph.vue";
 import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
 /**
@@ -34,7 +35,7 @@ interface DiagramCardHeaderProps {
      */
     toggleTopOffset?: number;
 }
-const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
+const { kicker, title, iconName = "base", iconGlyph = getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"), headerTextWidth, headerBlockHeight, toggle, toggleTopOffset, } = defineProps<DiagramCardHeaderProps>();
 </script>
 
 <template>
@@ -62,7 +63,7 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
     </template>
   </div>
   <template v-if="toggle !== undefined">
-    <div class="st-diagramCard-toggle" :style="toggleTopOffset === undefined ? undefined : `margin-top:${toggleTopOffset}px`">
+    <div class="st-diagramCard-toggle" :style="{ top: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : toggleTopOffset + 'px', right: toggleTopOffset === undefined ? 'calc(var(--st-component-diagramZone-toggleInset, 8px) - var(--st-component-diagramCard-borderWidth, 2px))' : toggleTopOffset + 'px' }">
       <button type="button" class="st-iconButton st-iconButton--sm st-iconButton--ghost" :aria-label="toggle.label" :aria-expanded="!toggle.collapsed" @click="toggle.onToggle">
         <template v-if="toggle.collapsed">
           <DiagramControlGlyph plus size="var(--st-component-button-anatomy-density-sm-fontSize)" aria-hidden="true"></DiagramControlGlyph>
@@ -120,11 +121,11 @@ const { kicker, title, iconName, iconGlyph, headerTextWidth, headerBlockHeight, 
     word-break: normal;
   }
   .st-diagramCard-toggle {
-    flex: 0 0 auto;
-    margin-left: auto;
-    /* Top right of the header row with the card's own top margin
-       (hrpn folded-card placement), not vertically centred. */
-    align-self: flex-start;
+    position: absolute;
+    top: var(--st-component-diagramZone-toggleInset, 8px);
+    right: var(--st-component-diagramZone-toggleInset, 8px);
+    width: var(--st-component-diagramCard-toggleBoxSize, 32px);
+    height: var(--st-component-diagramCard-toggleBoxSize, 32px);
   }
 
 </style>

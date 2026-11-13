@@ -5,7 +5,6 @@
   import {
     ZONE_GEOMETRY,
     defaultCardMeasure,
-    firstOverflowDiagnostic,
     layoutZone,
     zoneCollapsedCardProps,
     type CardLineMeasure,
@@ -118,7 +117,7 @@
   );
   // Overflow = refusal: the same predicate as the pure renderer
   // (`firstOverflowDiagnostic`), so both renderers refuse together.
-  const refused = $derived(firstOverflowDiagnostic(layout.diagnostics));
+
 
   const header = $derived(layout.header);
   // Expanded subtitle measure: the layout's own `subtitleWidth`
@@ -184,18 +183,10 @@
   style={`left:${x}px;top:${y}px`}
   data-entity={entityId}
   data-collapsed={collapsed ? "true" : "false"}
-  data-zone-refused={refused === undefined ? undefined : refused.slot}
   data-zone-overflow={overflowSlot}
   data-zone-icon-unknown={unknownIcon ? "" : undefined}
 >
-  {#if refused !== undefined}
-    <div
-      class="st-diagramZone st-diagramZone--refused"
-      style={`width:${layout.box.width}px;height:${layout.box.height}px`}
-      role="group"
-      aria-label={title}
-    ></div>
-  {:else if collapsed}
+  {#if collapsed}
     <DiagramCard
       {...cardProps}
       measure={measure}
@@ -223,8 +214,8 @@
             kicker={header.kicker}
             title={header.title}
             subtitle={header.subtitle}
-            iconName={icon}
-            iconGlyph={iconGlyph}
+            iconName={layout.icon.name}
+            iconGlyph={layout.icon.glyph}
             headerTextWidth={header.headerTextWidth}
             headerBlockHeight={header.headerBlockHeight}
             subtitleWidth={subtitleWidth}

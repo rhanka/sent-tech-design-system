@@ -1793,7 +1793,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       proposedDashArray: "4 5",
       fontFamily: "var(--st-font-sans)",
       border: semantic.border.strong,
-      accent: semantic.data.category1,
+      accent: semantic.border.strong,
       surface: semantic.surface.raised,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
@@ -1804,6 +1804,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // requirement holds by construction. Collapsed zones reuse the atomic
     // card box (DC-D13: 460 × 200, no second size).
     diagramZone: {
+      toggleInset: "8px",
       radius: "0",
       borderWidth: "1.5px",
       headerInset: "16px",
@@ -1840,10 +1841,10 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       // axes, their hard caps (a gutter widens only for a crossing edge
       // label, never past the cap) and the 16:9 target aspect of every
       // packed level. The layout engine receives these as numbers.
-      childGapInline: "24px",
-      childGapBlock: "24px",
-      gapInlineMax: "32px",
-      gapBlockMax: "32px",
+      childGapInline: "96px",
+      childGapBlock: "72px",
+      gapInlineMax: "240px",
+      gapBlockMax: "240px",
       rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
@@ -1859,6 +1860,22 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // cap, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
     // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
     diagramScene: {
+      gapMin: "96px",
+      gapMinBlock: "72px",
+      gapBase: "64px",
+      gapBaseBlock: "8px",
+      trackSpacing: "14px",
+      trackSpacingBlock: "7px",
+      labelBand: "30px",
+      gapMax: "240px",
+      bundleLabelMaxWidth: "320px",
+      labelPadding: "4px",
+      labelBorderWidth: "1px",
+      bundleMarkerGap: "6px",
+      edgeStroke: "#64748b",
+      labelSurface: "#ffffff",
+      labelBorder: "#cbd5e1",
+      labelText: "#172033",
       maxDisplayScale: "0.62",
       minReadableScale: "0.45",
       transitionDuration: "240ms",

@@ -1,0 +1,65 @@
+{
+  "id": "readme-frame-cm-storage",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "cm-storage"
+  },
+  "cards": [
+    {
+      "id": "cm-storage",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "4. Storage",
+      "purpose": "Neutral DB interface · SQLite / Postgres first",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 2806,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "store-models",
+      "parentId": "cm-storage",
+      "container": false,
+      "folded": false,
+      "kicker": "STORAGE",
+      "title": "Model serialization",
+      "purpose": "Transactional · analytical · live graph",
+      "detail": "Live graph in DB · annotations",
+      "footer": "service: Sentropic",
+      "icon": "db",
+      "old": {
+        "x": 2822,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "store-artifacts",
+      "parentId": "cm-storage",
+      "container": false,
+      "folded": false,
+      "kicker": "STORAGE",
+      "title": "Artifacts",
+      "purpose": "@sentropic/artifacts · SHA-256",
+      "detail": "Blobs/canvas/UI · DL-8/13/17 lifecycle",
+      "footer": "service: Sentropic",
+      "icon": "db",
+      "old": {
+        "x": 2822,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": []
+}

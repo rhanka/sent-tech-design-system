@@ -3,133 +3,141 @@
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0,
-      "rank": 13.818,
+      "rank": 14.452,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.577,
-      "meanFrameFill": 0.448
+      "meanDisplayScale": 0.565,
+      "meanFrameFill": 0.496
     },
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0.4,
-      "rank": 13.283,
+      "rank": 14.79,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.577,
-      "meanFrameFill": 0.442
+      "meanDisplayScale": 0.565,
+      "meanFrameFill": 0.488
     },
     {
       "tallBias": 1,
       "emptyPenaltyWeight": 0.8,
-      "rank": 13.202,
+      "rank": 14.644,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 0,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.577,
-      "meanFrameFill": 0.443
+      "meanDisplayScale": 0.565,
+      "meanFrameFill": 0.486
     },
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0,
-      "rank": 13.264,
+      "rank": 15.697,
       "gapViolations": 0,
       "singleColumnLevels": 0,
-      "aspectOver035": 0,
+      "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.574,
-      "meanFrameFill": 0.454
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.464
     },
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0.4,
-      "rank": 13.275,
+      "rank": 15.691,
       "gapViolations": 0,
       "singleColumnLevels": 0,
-      "aspectOver035": 0,
+      "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.574,
-      "meanFrameFill": 0.454
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.464
     },
     {
       "tallBias": 1.6,
       "emptyPenaltyWeight": 0.8,
-      "rank": 13.544,
+      "rank": 15.564,
       "gapViolations": 0,
       "singleColumnLevels": 0,
-      "aspectOver035": 0,
+      "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.573,
-      "meanFrameFill": 0.444
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.463
     },
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0,
-      "rank": 14.198,
+      "rank": 16.082,
       "gapViolations": 0,
       "singleColumnLevels": 0,
-      "aspectOver035": 2,
+      "aspectOver035": 3,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.571,
-      "meanFrameFill": 0.438
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.457
     },
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0.4,
-      "rank": 14.209,
+      "rank": 15.6,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.571,
-      "meanFrameFill": 0.437
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.468
     },
     {
       "tallBias": 2.2,
       "emptyPenaltyWeight": 0.8,
-      "rank": 14.222,
+      "rank": 15.78,
       "gapViolations": 0,
       "singleColumnLevels": 0,
       "aspectOver035": 2,
       "labelUnplaced": 0,
       "edgeContainerEscapes": 0,
-      "meanDisplayScale": 0.571,
-      "meanFrameFill": 0.437
+      "meanDisplayScale": 0.56,
+      "meanFrameFill": 0.455
     }
   ],
   "hysteresis": [
     {
       "band": 0,
       "levelsChangingOnToggle": [
+        "case-b unfolded↔mesh-engram-folded root",
+        "case-b mesh-engram-folded↔folded root",
         "case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"
       ],
       "fixedPoint": true
     },
     {
       "band": 0.04,
-      "levelsChangingOnToggle": [],
+      "levelsChangingOnToggle": [
+        "case-b unfolded↔mesh-engram-folded root"
+      ],
       "fixedPoint": true
     },
     {
       "band": 0.08,
-      "levelsChangingOnToggle": [],
+      "levelsChangingOnToggle": [
+        "case-b unfolded↔mesh-engram-folded root"
+      ],
       "fixedPoint": true
     },
     {
       "band": 0.12,
-      "levelsChangingOnToggle": [],
+      "levelsChangingOnToggle": [
+        "case-b unfolded↔mesh-engram-folded root"
+      ],
       "fixedPoint": true
     }
   ]
