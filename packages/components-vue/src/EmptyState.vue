@@ -21,7 +21,7 @@ defineSlots<{ default?: () => unknown; title?: () => unknown; message?: () => un
 <template>
   <section v-bind="{ ...($attrs), class: (classNames('st-empty-state st-emptyState', props.class)) }" >
     <div class="st-empty-state__content">
-      <h2 class="st-empty-state__title st-emptyState__title"><slot name="title">{{ scalarContent(props.title) }}</slot></h2>
+      <h2 v-if="$slots.title || props.title != null" class="st-empty-state__title st-emptyState__title"><slot name="title">{{ scalarContent(props.title) }}</slot></h2>
       <p v-if="$slots.message || props.message" class="st-empty-state__message st-emptyState__message"><slot name="message">{{ scalarContent(props.message) }}</slot></p>
       <slot />
       <div v-if="$slots.action || props.action" class="st-empty-state__action"><slot name="action">{{ scalarContent(props.action) }}</slot></div>
