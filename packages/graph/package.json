@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/graph",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Fast WebGL-oriented graph rendering primitives for known-position graphs.",
   "license": "MIT",
   "repository": {
