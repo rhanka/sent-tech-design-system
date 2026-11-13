@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "WordCloudChart",
+  "sourceRevision": "920814a6b8712043bdc52dccfc8c3b39c505e56c",
+  "source": "src/WordCloudChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Words\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"240\" y=\"160\">data</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"35.71428571428571\" text-anchor=\"middle\" x=\"245.86746797414608\" y=\"208.8810357791832\">vue</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category3\" data-chart-index=\"2\" dominant-baseline=\"central\" font-size=\"24.857142857142854\" text-anchor=\"middle\" x=\"229.50148522834277\" y=\"114.72811536826231\">chart</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category4\" data-chart-index=\"3\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"293.40099453217584\" y=\"116.69209163453587\">cloud</text></svg></div><ul aria-label=\"Data values for Words\" class=\"st-chartDataList\"><li>data: 10</li><li>vue: 7</li><li>chart: 5</li><li>cloud: 3</li></ul></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Single\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"240\" y=\"160\">only</text></svg></div><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>only: 1</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Empty\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "equal-weights",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Equal\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"240\" y=\"160\">aa</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"242.0495917529635\" y=\"198.56717676224298\">bb</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category3\" data-chart-index=\"2\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"232.03568095659318\" y=\"119.60965067160838\">cc</text></svg></div><ul aria-label=\"Data values for Equal\" class=\"st-chartDataList\"><li>aa: 4</li><li>bb: 4</li><li>cc: 4</li></ul></div>"
+    },
+    {
+      "id": "custom-size",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Sized\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 400\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"320\" y=\"200\">big</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"315.1121471022851\" y=\"162.11683832492378\">small</text></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>big: 9</li><li>small: 2</li></ul></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-wordCloudChart consumer\" data-bench=\"wordCloudChart\" style=\"color:red;\"><div aria-label=\"Custom\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"240\" y=\"160\">tag</text></svg></div><ul aria-label=\"Data values for Custom\" class=\"st-chartDataList\"><li>tag: 6</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "ded5f14232b0c15e8409f704d0971a63c377b5060efd3ddb986b4a46101d8d4a",
+  "fixtureSha256": "acc225cf94d3f092e9c0ec73c161848485d53a8f3ca84f40ea80202f4ca69e1e",
+  "publicExports": [
+    {
+      "name": "WordCloudChart",
+      "typeOnly": false
+    },
+    {
+      "name": "WordCloudChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "WordCloudChartWord",
+      "typeOnly": true
+    },
+    {
+      "name": "WordCloudChartTone",
+      "typeOnly": true
+    }
+  ]
+}
