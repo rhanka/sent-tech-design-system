@@ -1,8 +1,8 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:673f359689185e6975f20be34016cd72e8d7b3123943e85ae9f932b4ddf4e57a",
-  "entryDigest": "sha256:b70e94a0544184060919e79ad2ee0a9708bc5b76f9e8c27efec114026bfd7e2b",
+  "digest": "sha256:f8bcd5e9ad2e42c1f0b495b8d2446142d1aa098774e4b68665b56bc390d3721c",
+  "entryDigest": "sha256:8dc3083f02d2f8dc62fe17f9562fe4f0ee3141081fe7fcf9c99a3f169e675ef2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/ItemChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ItemChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

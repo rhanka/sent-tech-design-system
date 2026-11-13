@@ -1,8 +1,8 @@
 {
   "componentId": "packed-bubbles-chart",
   "contractSource": "derived",
-  "digest": "sha256:64af47536f9bada3654faa47ff6957103b3ec9027cb46116c9c4680754185eca",
-  "entryDigest": "sha256:5be6cece6a7e3fff5cf7e7f40f67dadfde11620ec37912b5271272385fb1061e",
+  "digest": "sha256:6392dc3652cd33c1c08b32cb09737d192c08b7ee35b3a63ed75f43d1a372a410",
+  "entryDigest": "sha256:7d53c7c3b3e91523fcc775beca0e964f86c626a80aafa0d6a01adca7838ba55c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/PackedBubblesChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PackedBubblesChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -15,4 +15,4 @@
   readouts, announcements or filters; plain links retain their scenario-filter
   appearance. Compatibility layout and label diagnosis refuse invalid flows.
 - Animated direction, owned state and detail controls follow in DC-2c.2.
-- No package version changes, tags or publication.
+- Planned package minors: tokens/themes 0.14.0, diagram-canvas 0.2.0 and Svelte 0.41.0.

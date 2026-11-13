@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Footer.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Application footer: brand, link columns, copyright and legal links.",
     "fr": "Pied de page applicatif : marque, colonnes de liens, copyright et liens légaux."
   },
-  "digest": "sha256:3e938a0c33fdae751e03711660ff6a5c4f841a5d10a883417f6f0cb09276e7d3",
+  "digest": "sha256:03d2ca173979d0b7218008b359194441f9c649d65a5b59ecf5a8eafa729efad8",
   "displayName": "Footer",
   "format": "component-entry/v1",
   "frameworks": [

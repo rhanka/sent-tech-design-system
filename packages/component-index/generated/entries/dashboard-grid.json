@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DashboardGrid.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Analytics tile canvas positioned by grid coordinates, with accessible edit mode.",
     "fr": "Canvas de tuiles analytiques positionnées par grille, avec mode édition accessible."
   },
-  "digest": "sha256:eac10bd9b53d33404532462544fa1ea4130836da29a4fcee4dc63da103ea0f09",
+  "digest": "sha256:5a29616fd86ed809f4a040f5f7fb02f794ba1b285e20f21134f69c4cf8b2d887",
   "displayName": "DashboardGrid",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "code-snippet",
   "contractSource": "derived",
-  "digest": "sha256:eff73c8c86f2437b845c87a7e747db4ca39ee1d897147b0910ce461348320980",
-  "entryDigest": "sha256:e9bbd39176f545433718427dbe0a08755fc842fdb9fb298302ab5ad2b2686fcb",
+  "digest": "sha256:2aa18d6d289a0dcf0f833e8b18e21617b78e082589d286fdab990e3effc6c553",
+  "entryDigest": "sha256:d3d9b6a59caa251f2bab2b105ecddf5fc5513972b458afb02d141a212d40efc4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -151,7 +151,7 @@
         "declarationPath": "packages/components-svelte/dist/CodeSnippet.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CodeSnippetProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

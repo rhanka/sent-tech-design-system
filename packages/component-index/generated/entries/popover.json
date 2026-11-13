@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Popover.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact contextual content anchored to a trigger.",
     "fr": "Contenu contextuel compact ancré à un déclencheur."
   },
-  "digest": "sha256:00e3d79c5e3304211636fd8bd5eb8b549ab241175c1839a922ac8f79d9e5bd12",
+  "digest": "sha256:3ecc2ac714bd8808cf9e6d35ad9ea4772f7db28407dadc2847514d2370ea4639",
   "displayName": "Popover",
   "format": "component-entry/v1",
   "frameworks": [

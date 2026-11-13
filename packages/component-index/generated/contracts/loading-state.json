@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:34f6489243563ed03757d4a8cf3a249cf8882103917fd212fbef8630da76b40b",
-  "entryDigest": "sha256:ea152c34cf14d71255a46e575972b1ddad9ff3933125c6c447762b76022cc4eb",
+  "digest": "sha256:e2bcfdb79bcdff93f85f4840c45cb7ab0da0cdbb1661da4de8c6a322a3411c4c",
+  "entryDigest": "sha256:83dc68a47d1eee3c0cd0597ee35b50d61ddc97653be1d383b418846df8665709",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -130,7 +130,7 @@
         "declarationPath": "packages/components-svelte/dist/LoadingState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LoadingStateProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

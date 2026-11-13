@@ -26,13 +26,14 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
 **Étendue mesurée.** 27 chaîne(s) de tracé distincte(s),
-30 occurrence(s), dans 4 fichier(s) source de ce paquet :
+32 occurrence(s), dans 5 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
 | `src/AppChrome.ts` | 4 |
 | `src/AppHeader.ts` | 4 |
 | `src/cellDecoration.ts` | 21 |
+| `src/DiagramControlGlyph.vue` | 2 |
 | `src/IdentityMenu.ts` | 1 |
 
 Glyphes amont concernés (une chaîne partagée par plusieurs glyphes les nomme tous) :

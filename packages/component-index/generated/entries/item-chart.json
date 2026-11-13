@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ItemChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length.",
     "fr": "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc."
   },
-  "digest": "sha256:b70e94a0544184060919e79ad2ee0a9708bc5b76f9e8c27efec114026bfd7e2b",
+  "digest": "sha256:8dc3083f02d2f8dc62fe17f9562fe4f0ee3141081fe7fcf9c99a3f169e675ef2",
   "displayName": "ItemChart",
   "format": "component-entry/v1",
   "frameworks": [

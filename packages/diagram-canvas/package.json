@@ -1,7 +1,7 @@
 {
   "name": "@sentropic/diagram-canvas",
-  "version": "0.1.0",
-  "description": "Headless scene and hit testing over a diagram view: one world -> view -> CSS pixel -> device pixel transform, deterministic paint order, filter evaluation with reported exclusions. No DOM, no renderer, no framework.",
+  "version": "0.2.0",
+  "description": "Headless diagram scenes, layout, hit testing and pure presentation models/SVG helpers. No DOM or framework.",
   "publishConfig": {
     "access": "public"
   },
@@ -22,17 +22,33 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./diagramCardModel": {
+      "types": "./dist/presentation/diagramCardModel.d.ts",
+      "import": "./dist/presentation/diagramCardModel.js"
+    },
     "./diagramSceneModel": {
       "types": "./dist/presentation/diagramSceneModel.d.ts",
       "import": "./dist/presentation/diagramSceneModel.js"
     },
+    "./diagram-icons": {
+      "types": "./dist/presentation/registry.d.ts",
+      "import": "./dist/presentation/registry.js"
+    },
+    "./renderCardSvg": {
+      "types": "./dist/presentation/renderCardSvg.d.ts",
+      "import": "./dist/presentation/renderCardSvg.js"
+    },
+    "./renderZoneSvg": {
+      "types": "./dist/presentation/renderZoneSvg.d.ts",
+      "import": "./dist/presentation/renderZoneSvg.js"
+    },
+    "./diagram-render": {
+      "types": "./dist/presentation/index.d.ts",
+      "import": "./dist/presentation/index.js"
+    },
     "./flowModel": {
       "types": "./dist/presentation/flowModel.d.ts",
       "import": "./dist/presentation/flowModel.js"
-    },
-    "./diagramCardModel": {
-      "types": "./dist/presentation/diagramCardModel.d.ts",
-      "import": "./dist/presentation/diagramCardModel.js"
     }
   },
   "types": "./dist/index.d.ts",
@@ -42,7 +58,7 @@
     "@sentropic/diagram-core": "0.1.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig.test-support.json && tsc -p tsconfig.host-support.json",
+    "build": "tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.check.json",
     "test": "vitest run"
   }

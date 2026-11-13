@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Row.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Row of a 12-column grid with configurable gutter.",
     "fr": "Ligne d'une grille 12 colonnes, gouttière paramétrable."
   },
-  "digest": "sha256:a19202f18e33ab3a4d44ca673e513eb144b2cf077e59db29c6237fafab5c1478",
+  "digest": "sha256:b8ca957c0dad4ac44452bb3840ce55109c7d99762d6dcab144154a219089ee88",
   "displayName": "Row",
   "format": "component-entry/v1",
   "frameworks": [
