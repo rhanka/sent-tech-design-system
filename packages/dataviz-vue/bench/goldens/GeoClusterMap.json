@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "GeoClusterMap",
+  "sourceRevision": "a50139c769216d397947df3be52dfc997adefd67",
+  "source": "src/lib/GeoClusterMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-geoClusterMap\"><div aria-label=\"Cluster map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--cluster\"><g class=\"st-geoMap__cluster st-geoMap__cluster--category1\"><circle class=\"st-geoMap__clusterDot\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category2\"><circle class=\"st-geoMap__clusterDot\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category3\"><circle class=\"st-geoMap__clusterDot\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category4\"><circle class=\"st-geoMap__clusterDot\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"27\"></circle></g></g></svg></div><ul aria-label=\"Data values for Cluster map\" class=\"st-chartDataList\"><li>Cluster map: 4</li><li>cluster:0: 1</li><li>cluster:1: 1</li><li>cluster:2: 1</li><li>cluster:3: 1</li></ul></div>"
+    },
+    {
+      "id": "id-value",
+      "html": "<div class=\"st-geoMap st-geoClusterMap\"><div aria-label=\"Cluster map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--cluster\"><g class=\"st-geoMap__cluster st-geoMap__cluster--category1\"><circle class=\"st-geoMap__clusterDot\" cx=\"304.4484304932735\" cy=\"152.61456953642377\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"304.4484304932735\" cy=\"152.61456953642377\" r=\"27\"></circle></g></g></svg></div><ul aria-label=\"Data values for Cluster map\" class=\"st-chartDataList\"><li>Cluster map: 1</li><li>cluster:0: 4</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-geoClusterMap\"><div aria-label=\"Cluster map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--cluster\"><g class=\"st-geoMap__cluster st-geoMap__cluster--category1\"><circle class=\"st-geoMap__clusterDot\" cx=\"327.22869955156955\" cy=\"70.62251655629137\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"327.22869955156955\" cy=\"70.62251655629137\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category2\"><circle class=\"st-geoMap__clusterDot\" cx=\"480.6995515695067\" cy=\"214.68609271523184\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"480.6995515695067\" cy=\"214.68609271523184\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category3\"><circle class=\"st-geoMap__clusterDot\" cx=\"514.1165919282512\" cy=\"329.3774834437086\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"514.1165919282512\" cy=\"329.3774834437086\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category4\"><circle class=\"st-geoMap__clusterDot\" cx=\"85.88340807174887\" cy=\"147.08344370860922\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"85.88340807174887\" cy=\"147.08344370860922\" r=\"27\"></circle></g></g></svg></div><ul aria-label=\"Data values for Cluster map\" class=\"st-chartDataList\"><li>Cluster map: 4</li><li>cluster:0: 1</li><li>cluster:1: 1</li><li>cluster:2: 1</li><li>cluster:3: 1</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-geoClusterMap consumer\" data-bench=\"clusters\"><div aria-label=\"Cluster map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--cluster\"><g class=\"st-geoMap__cluster st-geoMap__cluster--category1\"><circle class=\"st-geoMap__clusterDot\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category2\"><circle class=\"st-geoMap__clusterDot\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category3\"><circle class=\"st-geoMap__clusterDot\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"27\"></circle></g><g class=\"st-geoMap__cluster st-geoMap__cluster--category4\"><circle class=\"st-geoMap__clusterDot\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"24\"></circle><circle class=\"st-geoMap__clusterRing\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"27\"></circle></g></g></svg></div><ul aria-label=\"Data values for Cluster map\" class=\"st-chartDataList\"><li>Cluster map: 4</li><li>cluster:0: 1</li><li>cluster:1: 1</li><li>cluster:2: 1</li><li>cluster:3: 1</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "d2f098bdea9acf7501c3c13453fc68dabaa664d2bc6190abe5e0de3536b67fc5",
+  "fixtureSha256": "e4dfdbe72c25bcb77ddf1feefdf5c0d0baf021a0bacdb48d985367e9f4e91175",
+  "publicExports": [
+    {
+      "name": "GeoClusterMap",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoClusterMapProps",
+      "typeOnly": true
+    }
+  ]
+}
