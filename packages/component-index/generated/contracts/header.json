@@ -1,7 +1,7 @@
 {
   "componentId": "header",
   "contractSource": "derived",
-  "digest": "sha256:0b3178ba3ef0e04451c65889c71b1625ec4bf4d4d4c4c924854cf5ce00d6182b",
+  "digest": "sha256:f162bba8103ba7b3685f4958af1c7307d169e7e74d11aa94c4ddf19c986d6c32",
   "entryDigest": "sha256:bcc5de6a5db8315d861716e79ab2b3d5489d1ceffe2c4ebe83bcecdb5c56e8bd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -208,7 +208,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HeaderProps",

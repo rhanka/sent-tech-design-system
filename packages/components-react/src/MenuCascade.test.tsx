@@ -9,6 +9,162 @@ import type { MenuItem, MenuSubmenuSide } from "./index.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
+describe("second review regressions", () => {
+  it.each((["items", "children"] as const).flatMap((mode) =>
+    (["top-start", "top-end", "bottom-end"] as const).map((placement) => ({ mode, placement }))
+  ))("keeps transformed $placement cascade hosts unclipped in $mode mode", ({ mode, placement }) => {
+    const trigger = document.createElement("button");
+    stubRect(trigger, { top: 400, bottom: 430, left: 500, right: 600, width: 100 });
+    const style = document.createElement("style");
+    style.textContent = readFileSync(join(here, "styles.css"), "utf8");
+    document.head.appendChild(style);
+    try {
+      const view = render(<MenuPopover open trigger={trigger} placement={placement} items={mode === "items" ? cascadeItems : []}>
+        {mode === "children" ? <Menu items={cascadeItems} /> : null}
+      </MenuPopover>);
+      const host = screen.getByRole("dialog");
+      expect(getComputedStyle(host).transform).toContain("translate");
+      expect(getComputedStyle(host).overflow).toBe("visible");
+      expect(getComputedStyle(levelEl(view.container, 0)!).overflowY).toBe("auto");
+      expect(getComputedStyle(levelEl(view.container, 0)!).maxHeight).toBe("inherit");
+      expect(getComputedStyle(levelEl(view.container, 0)!.parentElement!).maxHeight).toBe("inherit");
+      fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+      expect(getComputedStyle(levelEl(view.container, 1)!).overflowY).toBe("auto");
+      view.rerender(<MenuPopover open trigger={trigger} placement={placement} items={mode === "items" ? [{ label: "Flat" }] : []}>
+        {mode === "children" ? <Menu items={[{ label: "Flat" }]} /> : null}
+      </MenuPopover>);
+      expect(getComputedStyle(host).overflow).toBe("auto");
+    } finally {
+      style.remove();
+    }
+  });
+
+  it("repositions an open branch with the current side on prop changes, resize and scroll", async () => {
+    const view = render(<Menu items={cascadeItems} submenuSide="right" />);
+    const parent = screen.getByRole("menuitem", { name: "Class A" });
+    fireEvent.click(parent);
+    const root = levelEl(view.container, 0)!;
+    const panel = levelEl(view.container, 1) as HTMLElement;
+    stubRect(root, { left: 400, right: 592 });
+    stubRect(parent, { top: 200 });
+    stubRect(panel, { width: 192, height: 100 });
+    resizeWindow();
+    expect(panel.style.left).toBe("592px");
+    view.rerender(<Menu items={cascadeItems} submenuSide="left" />);
+    expect(levelEl(view.container, 1)).toBe(panel);
+    expect(panel.style.left).toBe("208px");
+    expect(parent.querySelector(".st-menu__itemChevron--start")).toBeTruthy();
+    // Let the replacement frame run; an obsolete right-side frame must not win.
+    await advance(20);
+    expect(panel.style.left).toBe("208px");
+    stubRect(root, { left: 420, right: 612 });
+    resizeWindow();
+    expect(panel.style.left).toBe("228px");
+    stubRect(root, { left: 440, right: 632 });
+    fireEvent.scroll(window);
+    expect(panel.style.left).toBe("248px");
+    // Item replacement can also change panel dimensions without changing the path.
+    stubRect(panel, { width: 250, height: 100 });
+    view.rerender(<Menu items={[...cascadeItems]} submenuSide="left" />);
+    expect(panel.style.left).toBe("190px");
+  });
+
+  it("cancels obsolete positioning frames when branches switch, close or unmount", () => {
+    const view = render(<Menu items={cascadeItems} />);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    expect(vi.getTimerCount()).toBe(1);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class B" }));
+    expect(vi.getTimerCount()).toBe(1);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class B" }));
+    expect(vi.getTimerCount()).toBe(0);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    expect(vi.getTimerCount()).toBe(1);
+    view.unmount();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it.each((["popover-items", "popover-children", "overflow"] as const).flatMap((host) =>
+    (["click", "Enter", " "] as const).flatMap((activation) =>
+      (["root", "deep"] as const).map((leafLevel) => ({ host, activation, leafLevel })))
+  ))("notifies one close for a $leafLevel leaf in $host with $activation", ({ host, activation, leafLevel }) => {
+    const onOpenChange = vi.fn();
+    render(<><button>External trigger</button><button>Other control</button></>);
+    const externalTrigger = screen.getByRole("button", { name: "External trigger" });
+    function Host() {
+      const [open, setOpen] = React.useState(true);
+      const changeOpen = (next: boolean) => { onOpenChange(next); setOpen(next); };
+      return host === "overflow"
+        ? <OverflowMenu open={open} onOpenChange={changeOpen} label="Actions" items={cascadeItems} />
+        : <MenuPopover open={open} onOpenChange={changeOpen} trigger={externalTrigger}
+            items={host === "popover-items" ? cascadeItems : []}>
+            {host === "popover-children" ? <Menu items={cascadeItems} /> : null}
+          </MenuPopover>;
+    }
+    render(<Host />);
+    const trigger = host === "overflow" ? screen.getByRole("button", { name: "Actions" }) : externalTrigger;
+    if (leafLevel === "deep") fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    expect(onOpenChange).not.toHaveBeenCalled();
+    const leaf = screen.getByRole("menuitem", { name: leafLevel === "deep" ? "Reason 1" : "Direct" });
+    const other = screen.getByRole("button", { name: "Other control" });
+    if (activation === "click") {
+      other.focus();
+      fireEvent.click(leaf);
+    } else {
+      leaf.focus();
+      fireEvent.keyDown(leaf, { key: activation });
+    }
+    expect(onOpenChange.mock.calls).toEqual([[false]]);
+    expect(screen.queryByRole("menu")).toBeNull();
+    expect(document.activeElement).toBe(activation === "click" ? other : trigger);
+  });
+
+  it.each(["ArrowDown", "Enter", " "])("focuses the first enabled flat OverflowMenu item when opened with %s", (key) => {
+    render(<OverflowMenu label="Actions" items={[{ label: "Disabled", disabled: true }, { label: "Edit" }]} />);
+    const trigger = screen.getByRole("button", { name: "Actions" });
+    trigger.focus();
+    fireEvent.keyDown(trigger, { key });
+    expect(document.activeElement).toBe(screen.getByRole("menuitem", { name: "Edit" }));
+  });
+
+  it.each([false, true])("names the actual standalone menu through aria-labelledby, cascade=%s", (cascade) => {
+    render(<><span id="actions-heading">Named actions</span>
+      <Menu aria-label="Fallback" aria-labelledby="actions-heading" items={cascade ? cascadeItems : [{ label: "Flat" }]} />
+    </>);
+    expect(screen.getByRole("menu", { name: "Named actions" })).toBe(levelEl(document.body, 0));
+  });
+
+  it.each(["popover-items", "popover-children", "overflow"] as const)("names the cascade root in %s", (host) => {
+    render(<><span id="actions-heading">Named actions</span>
+      {host === "overflow" ? <OverflowMenu open label="Named actions" items={cascadeItems} />
+        : host === "popover-items" ? <MenuPopover open label="Named actions" items={cascadeItems} />
+        : <MenuPopover open label="Host actions"><Menu aria-labelledby="actions-heading" items={cascadeItems} /></MenuPopover>}
+    </>);
+    const root = screen.getByRole("menu", { name: "Named actions" });
+    expect(root).toBe(levelEl(document.body, 0));
+    fireEvent.click(screen.getByRole("menuitem", { name: "Class A" }));
+    expect(screen.getByRole("menu", { name: "Class A" })).toBe(levelEl(document.body, 1));
+  });
+
+  it("preserves deeper panels and their focus when re-entering an already-open ancestor", async () => {
+    render(<Menu items={[{ label: "Root", children: [{ label: "Middle", children: [{ label: "Leaf" }] }] }]} />);
+    const root = screen.getByRole("menuitem", { name: "Root" });
+    fireEvent.click(root);
+    fireEvent.click(screen.getByRole("menuitem", { name: "Middle" }));
+    const panel = levelEl(document.body, 2);
+    const leaf = screen.getByRole("menuitem", { name: "Leaf" });
+    leaf.focus();
+    await advance(20);
+    const wrapper = root.closest(".st-menu__itemWrap")!;
+    fireEvent.pointerOut(wrapper, mouseProps());
+    await advance(100);
+    fireEvent.pointerOver(wrapper, mouseProps());
+    await advance(300);
+    expect(levelEl(document.body, 2)).toBe(panel);
+    expect(document.activeElement).toBe(leaf);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+});
+
 describe("control review regressions", () => {
   it("positions a newly opened panel immediately under StrictMode", () => {
     render(<React.StrictMode><Menu items={cascadeItems} /></React.StrictMode>);
@@ -135,6 +291,8 @@ describe("control review regressions", () => {
     fireEvent.pointerOut(root.closest(".st-menu__itemWrap")!, mouseProps());
     expect(vi.getTimerCount()).toBe(1);
     view.rerender(<Menu items={[...cascadeItems]} />);
+    // Item geometry changes schedule a fresh positioning frame, not a hover close.
+    await advance(20);
     expect(vi.getTimerCount()).toBe(0);
     await advance(300);
     expect(levelEl(document.body, 1)).toBeTruthy();
@@ -1210,10 +1368,13 @@ describe("Menu cascade — OverflowMenu flat regression (AC-37)", () => {
       />
     );
     const trigger = screen.getByRole("button", { name: "Row actions" });
+    trigger.focus();
     fireEvent.click(trigger);
     const edit = screen.getByRole("menuitem", { name: "Edit" });
     const deleteItem = screen.getByRole("menuitem", { name: "Delete" });
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    expect(document.activeElement).toBe(trigger);
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
     expect(document.activeElement).toBe(edit);
     fireEvent.keyDown(edit, { key: "ArrowDown" });
     expect(document.activeElement).toBe(deleteItem);
@@ -1383,7 +1544,7 @@ describe("Menu cascade — review fixes (B2, M1–M6)", () => {
       <OverflowMenu label="Row actions" items={[{ label: "Edit", value: "edit" }]} />
     );
     const trigger = screen.getByRole("button", { name: "Row actions" });
-    fireEvent.click(trigger);
+    fireEvent.keyDown(trigger, { key: "ArrowDown" });
     const item = screen.getByRole("menuitem", { name: "Edit" });
     expect(document.activeElement).toBe(item);
     fireEvent.keyDown(item, { key: "Escape" });

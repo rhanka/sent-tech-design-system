@@ -1,7 +1,7 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:52170194dd1bd95322b13f1c0b15a8ce38575394ad22d40c78769476d35c0951",
+  "digest": "sha256:b3f68dfc68c25d9f1d023bb80c193340f5e7d63eb7aae63f69f6e9bdb0c1a39d",
   "entryDigest": "sha256:69b12ca570580dac6fb79d0860df1b230e27c7f4528618fd89afd35d3097ff81",
   "format": "component-contract/v1",
   "frameworks": {
@@ -648,7 +648,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ForceGraphProps",
