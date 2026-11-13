@@ -495,8 +495,8 @@ export type {
   TypographyTone,
   TypographyAlign,
 } from "./Typography.js";
-export { Collapsible } from "./Collapsible.js";
-export type { CollapsibleProps } from "./Collapsible.js";
+export { default as Collapsible } from "./Collapsible.vue";
+export type { CollapsibleProps } from "./Collapsible.vue";
 export { Stepper } from "./Stepper.js";
 export type { StepperProps, StepperStep, StepperOrientation } from "./Stepper.js";
 
