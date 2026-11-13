@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Link",
+  "sourceRevision": "e3a62c86631e2f85437aa7afeeb905a8107b04a5",
+  "source": "src/Link.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<a class=\"st-link st-link--inline\" href=\"/docs\">Docs</a>"
+    },
+    {
+      "id": "variants",
+      "html": "<a class=\"st-link st-link--standalone\" href=\"/a\">Standalone</a>"
+    },
+    {
+      "id": "muted-legacy",
+      "html": "<a class=\"st-link st-link--muted\" href=\"/b\">Muted</a>"
+    },
+    {
+      "id": "disabled",
+      "html": "<a aria-disabled=\"true\" class=\"st-link st-link--inline st-link--disabled\">Nope</a>"
+    },
+    {
+      "id": "external",
+      "html": "<a class=\"st-link st-link--inline\" href=\"https://example.test\" rel=\"noreferrer\" target=\"_blank\">Out</a>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<a class=\"st-link st-link--inline consumer\" data-bench=\"link\" href=\"/d\" style=\"color:red;\" title=\"Go\"><strong>Click</strong></a>"
+    }
+  ],
+  "sourceSha256": "2bb397e2690d0cad048df572bb45e64d714152b0d18cc6af72d038f9a9c03f97",
+  "fixtureSha256": "8a54ae59ca25bfeb5df4f903d9f19a22f170197aab199de92a74570e1f1ffd1c",
+  "publicExports": [
+    {
+      "name": "Link",
+      "typeOnly": false
+    },
+    {
+      "name": "LinkProps",
+      "typeOnly": true
+    }
+  ]
+}
