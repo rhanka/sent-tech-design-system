@@ -1,0 +1,55 @@
+name: Vue classic and Vapor
+
+on:
+  pull_request:
+    paths: ['packages/**', 'scripts/**', 'package*.json', '.github/workflows/vue-vapor.yml']
+  push:
+    branches: [main]
+    paths: ['packages/**', 'scripts/**', 'package*.json', '.github/workflows/vue-vapor.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  vue-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npx -y npm@10.9.9 ci
+      - name: Exact toolchain pins and K25
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          node scripts/vue-vapor-toolchain.mjs
+          node scripts/vue-vapor-lint.mjs
+          if git cat-file -e "$BASE_SHA:scripts/vue-vapor-legacy.json" 2>/dev/null; then
+            node scripts/vue-vapor-lint.mjs --base="$BASE_SHA"
+          fi
+      - name: Dual builds and SFC declarations
+        run: node scripts/ensure-theme-dists.mjs --workspaces=@sentropic/design-system-vue,@sentropic/dataviz-vue
+      - name: Stable 3.5 compiler leg
+        run: |
+          npm run build:classic-3.5 -w @sentropic/design-system-vue
+          npm run build:classic-3.5 -w @sentropic/dataviz-vue
+      - name: Type checks and compatibility witnesses (Vitest, jsdom)
+        run: |
+          npm run check:types -w @sentropic/design-system-vue
+          npm run check:types -w @sentropic/dataviz-vue
+          npx vitest run scripts/tests/vue-vapor.test.ts
+          npm run test -w @sentropic/design-system-vue
+          npm run test -w @sentropic/dataviz-vue
+      - name: Packed consumers (Vue 3.5 classic, pinned Vue Vapor)
+        run: node scripts/vue-vapor-packed.mjs
+      - name: Source conversion drumbeat
+        run: node scripts/vue-vapor-coverage.mjs --output=vue-vapor-coverage.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: vue-vapor-source-coverage
+          path: vue-vapor-coverage.json
