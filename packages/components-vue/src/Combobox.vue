@@ -65,12 +65,20 @@ const inputId = `${instanceId}-input`;
 const labelId = `${instanceId}-label`;
 const listId = `${instanceId}-list`;
 
+// Rich labels live in slots; the value remains usable as display/search text.
+function optionText(option: ComboboxOption): string {
+  return typeof option.label === 'string' || typeof option.label === 'number'
+    ? String(scalarContent(option.label)) : option.value;
+}
+
 const getInitialInput = () => {
   const found = props.options.find((opt) => opt.value === props.value);
-  return found ? String(scalarContent(found.label)) : (props.value ?? '');
+  return found ? optionText(found) : (props.value ?? '');
 };
 
 const inputValue = ref(getInitialInput());
+const localValue = ref<string | undefined>(props.value);
+const selectedValue = computed(() => props.value !== undefined ? props.value : localValue.value);
 const localOpen = ref(false);
 const activeIndex = ref(-1);
 
@@ -84,12 +92,13 @@ function setOpen(val: boolean) {
 const filtered = computed(() => {
   const query = inputValue.value.trim().toLowerCase();
   if (!query) return props.options;
-  return props.options.filter((opt) => String(scalarContent(opt.label)).toLowerCase().includes(query));
+  return props.options.filter((opt) => optionText(opt).toLowerCase().includes(query));
 });
 
 function selectOption(option: ComboboxOption) {
   if (option.disabled) return;
-  inputValue.value = String(scalarContent(option.label));
+  inputValue.value = optionText(option);
+  localValue.value = option.value;
   setOpen(false);
   activeIndex.value = -1;
   emit('select', option.value);
@@ -98,7 +107,7 @@ function selectOption(option: ComboboxOption) {
 }
 
 const selected = computed(() => props.options.find((opt) => opt.value === props.value));
-const displayValue = computed(() => (selected.value ? String(scalarContent(selected.value.label)) : inputValue.value));
+const displayValue = computed(() => (selected.value ? optionText(selected.value) : inputValue.value));
 const slots = useSlots();
 const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 const activeDescendant = computed(() =>
@@ -119,6 +128,7 @@ function onFocus() {
 function onInput(event: Event) {
   const val = (event.target as HTMLInputElement).value;
   inputValue.value = val;
+  localValue.value = undefined;
   setOpen(true);
   activeIndex.value = -1;
   if (props.allowCustomValue) {
@@ -147,6 +157,7 @@ function onKeydown(event: KeyboardEvent) {
 }
 function onClear() {
   inputValue.value = '';
+  localValue.value = undefined;
   activeIndex.value = -1;
   emit('change', '');
   emit('update:modelValue', '');
@@ -179,7 +190,7 @@ defineSlots<{
     </label>
     <div v-if="open" :id="listId" class="st-combobox__list" role="listbox" :aria-label="props.listLabel ?? (String(scalarContent(props.label)) || ($slots.label ? undefined : listLabel))" :aria-labelledby="!props.listLabel && $slots.label ? labelId : undefined">
       <template v-if="filtered.length">
-        <button v-for="(option, index) in filtered" :key="option.value" :id="`${listId}-${option.value}`" type="button" :class="classNames('st-combobox__option', index === activeIndex && 'st-combobox__option--active')" role="option" :aria-selected="displayValue === String(scalarContent(option.label)) ? 'true' : 'false'" :aria-disabled="option.disabled ? 'true' : undefined" :disabled="option.disabled" @mousedown="onOptionMousedown($event, option)"><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(option.label) }}</template></button>
+        <button v-for="(option, index) in filtered" :key="option.value" :id="`${listId}-${option.value}`" type="button" :class="classNames('st-combobox__option', index === activeIndex && 'st-combobox__option--active')" role="option" :aria-selected="selectedValue === option.value ? 'true' : 'false'" :aria-disabled="option.disabled ? 'true' : undefined" :disabled="option.disabled" @mousedown="onOptionMousedown($event, option)"><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(option.label) }}</template></button>
       </template>
       <div v-else class="st-combobox__empty" role="option" aria-disabled="true" aria-selected="false"><slot name="no-results-label">{{ noResults }}</slot></div>
     </div>

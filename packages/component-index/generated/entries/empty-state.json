@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:5f1ff395389991eaa52f0a0b100a8c42324d4e965a8ced40ca7b95bbf8afc441",
+      "digest": "sha256:68de33d7b1a13b3dab228c1599a2bb549cd004d60dd2c85125bc33b7f1af73b5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/EmptyState.vue",
@@ -40,7 +40,7 @@
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:cefdc60531ae90584c5b6c108b17c96ebb6f150373d70cf7590ed036d5610638",
+  "digest": "sha256:1db1b234947ed072725d742d1596d84fd380e27b24896bd769d573eb37d21b2f",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

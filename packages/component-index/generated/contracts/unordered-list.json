@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:147fa183ccb61ba1cf5d713f4d1fd3880d68277af4c2ea15d7a6b0eba6f231f3",
-  "entryDigest": "sha256:fcff4017f37eb1b829144d5aa8ddce38d8fec218ea7e1cdfe382c197bc8556b5",
+  "digest": "sha256:1ba47040f43b9f810d18b99fc175b1181bb413e4c51a9d7e68a99f13bee070ea",
+  "entryDigest": "sha256:a5cb6bfd70695a8198b9c87d1a5944bfb9c90dcaf5fce36187d3758a08c8fa8c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

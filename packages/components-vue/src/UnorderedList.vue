@@ -23,7 +23,7 @@ defineOptions({ name: 'UnorderedList', inheritAttrs: false });
 const props = withDefaults(defineProps<UnorderedListProps>(), { nested: false, class: undefined, path: () => [] });
 defineSlots<{ item?: (scope: { item: UnorderedListInput; index: number; path: number[] }) => unknown }>();
 
-function isItem(item: unknown): item is UnorderedListItem { return typeof item === 'object' && item !== null && 'content' in item; }
+function isItem(item: unknown): item is UnorderedListItem { return typeof item === 'object' && item !== null && ('content' in item || 'children' in item); }
 function children(item: unknown): UnorderedListInput[] { return isItem(item) && Array.isArray(item.children) ? item.children : []; }
 </script>
 
