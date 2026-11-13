@@ -12,6 +12,7 @@
  *      refused transaction can be explained in one pass.
  */
 
+import { validateErdKeys } from "./erd-validate.js";
 import {
   referencesOf,
   validateAttributeValue,
@@ -744,6 +745,10 @@ function validateConstraints(
   const entities = Object.values(document.entities).filter((entity) => entity.profile === profile.id);
 
   for (const constraint of profile.constraints) {
+    if (constraint.kind === "erd-keys") {
+      diagnostics.push(...validateErdKeys(document, profile, constraint.maxFields));
+      continue;
+    }
     if (constraint.kind === "acyclic-hierarchy") continue; // handled by validateHierarchies
     if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined && isAddedConstraint(constraint)) {
       diagnostics.push(
@@ -2003,7 +2008,7 @@ function projectedEndpointDiagnostic(
     const profile = options.registry.get(entity.profile);
     if (profile === undefined) return undefined;
     const resolution = resolver.resolve(profile, entity.type);
-    return resolution.ok ? resolution.resolved.container : undefined;
+    return resolution.ok ? resolution.resolved.container || entityTypeOf(profile, entity.type)?.foldable === true : undefined;
   };
   if (refKindOf(semantic) === "relation") {
     if (internal.get(sourceId) !== endpoint.occurrence) return projected("projection-not-folded");
@@ -2368,7 +2373,7 @@ export function validateView(
           entity === undefined || profile === undefined
             ? undefined
             : resolver.resolve(profile, entity.type);
-        if (resolution !== undefined && resolution.ok && !resolution.resolved.container) {
+        if (resolution !== undefined && resolution.ok && !resolution.resolved.container && entityTypeOf(profile!, entity!.type)?.foldable !== true) {
           diagnostics.push(
             diagnostic({
               code: "occurrence-endpoint-mismatch",
