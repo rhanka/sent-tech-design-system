@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:8012792d671d9b92fcdfb5c7e0fa32b077e431057ccafd31e0fe6356a80622b4",
-  "entryDigest": "sha256:ba83a7357e693221abc0a1ae903b49f6b8f7b5e9e75bb745326ecabe428b7fa3",
+  "digest": "sha256:fd6c475cae17a3033c03400755721b58ec2f9d2e21a70320683f1d1adadd7bd6",
+  "entryDigest": "sha256:bcf9198d858a926d2b34ba1b3608996a012fc4a6fdc91f9587086276afcf7c9a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -77,7 +77,7 @@
         "declarationPath": "packages/components-angular/dist/VariablePieChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VariablePieChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -165,7 +165,7 @@
         "declarationPath": "packages/components-react/dist/VariablePieChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VariablePieChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

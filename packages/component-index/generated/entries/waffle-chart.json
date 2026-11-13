@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/WaffleChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/WaffleChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "N×M cell grid: the share of colored cells encodes each category's proportion.",
     "fr": "Grille N×M de cellules : la proportion de cellules colorées encode la part de chaque catégorie."
   },
-  "digest": "sha256:fe35f4c4dd1fc2cf718976b73bf6cf0db6e61d1b39a2bf7cdd23e52ae6d11c1c",
+  "digest": "sha256:d35c5259ba830aef5c9c3cdfbaf655a5ef82f37878b7cf7e22f47b3d1a2d57bd",
   "displayName": "WaffleChart",
   "format": "component-entry/v1",
   "frameworks": [

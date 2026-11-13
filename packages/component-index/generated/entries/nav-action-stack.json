@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/NavActionStack.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NavActionStack.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Action stack with hierarchy encoded in the type (a single primary) and an isolated destructive danger zone.",
     "fr": "Pile d'actions avec hiérarchie encodée dans le type (une seule primaire) et zone sensible destructrice isolée."
   },
-  "digest": "sha256:92ffc7ccab1ac42ef0fcf76b3b89295896376ca73bf7e92f711cf29528a9b0ee",
+  "digest": "sha256:5b45a31c95f71f7848eab5e823de12491f214a4f69301c5a1160f2ef7da9f91e",
   "displayName": "NavActionStack",
   "format": "component-entry/v1",
   "frameworks": [

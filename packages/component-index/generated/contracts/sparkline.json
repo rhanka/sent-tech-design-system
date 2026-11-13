@@ -1,8 +1,8 @@
 {
   "componentId": "sparkline",
   "contractSource": "derived",
-  "digest": "sha256:1f68ce91ba0fe2e45cc3013bf31d5d483162b82a4bb2719ec5b9d5e5e45c15ed",
-  "entryDigest": "sha256:8470f9cfde95a935f01b4a80564754e82c108b5adbae4aec652865f8d024bc8f",
+  "digest": "sha256:f00d9c78dd7708a94c3d0cedba733177eb778b8db7906dc02b1b412a0fc77284",
+  "entryDigest": "sha256:bbaa6b1ba7c120d15e254123fed5a2c14a946373d1ba471647d2044fa068c2ee",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -57,7 +57,7 @@
         "declarationPath": "packages/components-angular/dist/Sparkline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SparklineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Sparkline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SparklineProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

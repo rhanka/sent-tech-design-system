@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ColumnPyramidChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColumnPyramidChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Pyramid columns: each category is a triangle, base on the X axis and apex at the value height.",
     "fr": "Colonnes pyramidales : chaque catégorie est un triangle, base sur l'axe X et sommet à la hauteur de la valeur."
   },
-  "digest": "sha256:782af9aa7f99ee4afcd81385213da9736d75af03aeca576ac88996bbe0ec1449",
+  "digest": "sha256:780e604e7e2f7391ff2a43de13071c99ff786d5558e778bb4c62291b463e2048",
   "displayName": "ColumnPyramidChart",
   "format": "component-entry/v1",
   "frameworks": [
