@@ -1,8 +1,8 @@
 {
   "componentId": "dropdown",
   "contractSource": "derived",
-  "digest": "sha256:3a0ec32300c942ea7d5d443410db00b56133bb09de8ebbf4bb1789499a977f6b",
-  "entryDigest": "sha256:04fd1168313793f7fe101877e6a3178a4b5bc3553e2ff3617f3f0757deda878c",
+  "digest": "sha256:5cd5a7aa25b048bdfc857379bdd264799acf546393849c4e354776635da73acd",
+  "entryDigest": "sha256:c6db1abc10f5e22079232596fa94100ddaa0e0c73792f11f8800e3b5f999b4a8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -409,7 +409,7 @@
         "declarationPath": "packages/components-vue/dist/Dropdown.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DropdownProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.1"
       },
       "status": "partial",
       "unresolved": [],

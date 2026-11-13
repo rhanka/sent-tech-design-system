@@ -1,8 +1,8 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:73d6f3b71283cc25ed836f9f360e521a5d83ec8b0b04f937671555cb5f254e3d",
-  "entryDigest": "sha256:4b5a71e6c8307dbb777e33ed8be2adfa8120d92043458031574b4d56109801a0",
+  "digest": "sha256:0458f9ec5e3152ea47188181175abe3fd5aa54b07a2776202cbdd0c18aa1e06e",
+  "entryDigest": "sha256:26250b00efeeb54eb8dcfde9ebd0b4c20bfc89332b85f30f160ed92bf7651924",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -377,7 +377,7 @@
         "declarationPath": "packages/components-vue/dist/Search.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SearchProps",
-        "version": "0.41.0-next.0"
+        "version": "0.41.0-next.1"
       },
       "status": "partial",
       "unresolved": [
