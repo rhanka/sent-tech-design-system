@@ -130,10 +130,15 @@ the task's `npm_config_cache`. No added dependency or package build is required.
   example into src, runs all gates, runs eight negative controls, and restores
   Badge.ts/index.ts byte-for-byte in `finally`. Writes `results/selftest.json`.
   Do not interrupt with SIGKILL or run concurrent conversion trials.
-- `node packages/components-vue/bench/generate-goldens.mjs`: explicit reference
-  maintenance only. Requires all ten original `.ts` implementations and no
-  corresponding `.vue`; renders all fixtures before writing any golden.
-  Review source changes before running it. It never runs from the checker.
+- `node packages/components-vue/bench/generate-goldens.mjs [Name ...]`: explicit
+  baseline capture only. Selected targets require their original `.ts` and no
+  corresponding `.vue`; existing goldens cannot be overwritten. With no names,
+  selects all ten targets. Renders every selected original before writing any
+  golden. It never runs from the checker.
+
+The package entry scripts share their implementation with dataviz-vue through
+`scripts/vue-conversion-bench`. The build pin hashes the package build wrapper
+concatenated with `scripts/vue-sfc-build.mjs`, guarding both against drift.
 
 ## Gate boundaries
 
