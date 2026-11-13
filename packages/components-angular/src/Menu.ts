@@ -98,12 +98,6 @@ function isDangerAction(item: MenuActionItem): boolean {
   return item.variant === "danger" || item.danger === true;
 }
 
-const CHEVRON_RIGHT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>`;
-const CHEVRON_LEFT_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>`;
-
-export const MENU_CHEVRON_RIGHT_SVG = CHEVRON_RIGHT_SVG;
-export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
-
 @Component({
   selector: "st-menu",
   standalone: true,
@@ -119,6 +113,8 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
           class="st-menu__scroll"
           [attr.role]="role || 'menu'"
           [attr.id]="rootMenuId"
+          [attr.aria-label]="rootLabel"
+          [attr.aria-labelledby]="rootLabelledby"
           tabindex="-1"
           data-menu-level="0"
           (keydown)="onLevelKeyDown($event, 0)"
@@ -171,14 +167,18 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                     (focus)="onItemFocus(0, outerIdx)"
                   >
                     @if (chevronSide(0, $index) === "left") {
-                      <span class="st-menu__itemChevron st-menu__itemChevron--start" aria-hidden="true" [innerHTML]="MENU_CHEVRON_LEFT_SVG"></span>
+                      <span class="st-menu__itemChevron st-menu__itemChevron--start" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                      </span>
                     }
                     @if (isStringIcon(asAction(item).icon)) {
                       <span class="st-menu__itemIcon" aria-hidden="true">{{ asAction(item).icon }}</span>
                     }
                     <span class="st-menu__itemLabel">{{ asAction(item).label }}</span>
                     @if (chevronSide(0, $index) === "right") {
-                      <span class="st-menu__itemChevron st-menu__itemChevron--end" aria-hidden="true" [innerHTML]="MENU_CHEVRON_RIGHT_SVG"></span>
+                      <span class="st-menu__itemChevron st-menu__itemChevron--end" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+                      </span>
                     }
                   </button>
                 </div>
@@ -266,14 +266,18 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
                     (focus)="onItemFocus(1, outerIdx)"
                   >
                     @if (chevronSide(1, $index) === "left") {
-                      <span class="st-menu__itemChevron st-menu__itemChevron--start" aria-hidden="true" [innerHTML]="MENU_CHEVRON_LEFT_SVG"></span>
+                      <span class="st-menu__itemChevron st-menu__itemChevron--start" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+                      </span>
                     }
                     @if (isStringIcon(asAction(item).icon)) {
                       <span class="st-menu__itemIcon" aria-hidden="true">{{ asAction(item).icon }}</span>
                     }
                     <span class="st-menu__itemLabel">{{ asAction(item).label }}</span>
                     @if (chevronSide(1, $index) === "right") {
-                      <span class="st-menu__itemChevron st-menu__itemChevron--end" aria-hidden="true" [innerHTML]="MENU_CHEVRON_RIGHT_SVG"></span>
+                      <span class="st-menu__itemChevron st-menu__itemChevron--end" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6" /></svg>
+                      </span>
                     }
                   </button>
                 </div>
@@ -423,12 +427,10 @@ export const MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
 export class Menu implements AfterViewInit, OnChanges, OnDestroy {
   static readonly stComponentName = "Menu";
   readonly componentName = "Menu";
-  readonly MENU_CHEVRON_RIGHT_SVG = CHEVRON_RIGHT_SVG;
-  readonly MENU_CHEVRON_LEFT_SVG = CHEVRON_LEFT_SVG;
-
   private readonly changeDetector = injectMenuDependency(ChangeDetectorRef);
   private readonly injector = injectMenuDependency(Injector);
   private readonly menuHost = injectMenuDependency(MENU_HOST);
+  private readonly elementRef = injectMenuDependency(ElementRef<HTMLElement>);
   private readonly rovingChild: (number | undefined)[] = [];
 
   private afterRender(callback: () => void): void {
@@ -479,6 +481,17 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
 
   get rootMenuId(): string {
     return this.menuHost?.rootMenuId ?? this.id ?? this.fallbackRootId;
+  }
+
+  // Forward native naming attributes to the actual menu level. The host's
+  // existing label supplies items-mode and projected menus without new inputs.
+  get rootLabelledby(): string | null {
+    return this.elementRef?.nativeElement.getAttribute("aria-labelledby") || null;
+  }
+
+  get rootLabel(): string | null {
+    if (this.rootLabelledby) return null;
+    return this.elementRef?.nativeElement.getAttribute("aria-label") || this.menuHost?.label?.() || "Menu";
   }
 
   get hostClass(): string {
@@ -1178,14 +1191,14 @@ export class Menu implements AfterViewInit, OnChanges, OnDestroy {
     return resolvePreferredSide(this.submenuSide);
   }
 
-  /** Opening side for keyboard handling: inside a sub-menu the whole level
-   * shares its containing level's resolved side, so a flipped panel keeps
-   * one opening arrow for parents and leaves alike (§3.4, AC-06/AC-19). */
+  /** A parent's opening arrow follows its own child panel, like its chevron.
+   * Leaves use the containing panel's side so their opposite arrow returns
+   * towards the parent even when the two panels flipped independently. */
   openingSideFor(depth: number, index: number, item: MenuActionItem): ResolvedSubMenuSide {
+    if (this.hasSubMenu(item) && depth < 2) return this.resolvedSideFor(depth, index);
     if (depth >= 1 && this.levelSides[depth - 1] !== undefined) {
       return this.levelSides[depth - 1];
     }
-    if (this.hasSubMenu(item)) return this.resolvedSideFor(depth, index);
     return this.openingArrow() === "ArrowRight" ? "right" : "left";
   }
 

@@ -3,6 +3,7 @@ import { inject, InjectionToken } from "@angular/core";
 /** Private composition channel; deliberately absent from the package barrel. */
 export interface MenuHost {
   readonly rootMenuId: string;
+  label?(): string | undefined;
   select(keyboard: boolean, cascade: boolean): void;
 }
 export const MENU_HOST_CONTEXT = Symbol("st-menu-host-context");

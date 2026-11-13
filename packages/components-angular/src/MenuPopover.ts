@@ -231,6 +231,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   readonly rootMenuId = `st-menupopover-${++MenuPopover.nextInstanceId}`;
   readonly [MENU_HOST_CONTEXT]: MenuHost = {
     rootMenuId: this.rootMenuId,
+    label: () => this.label,
     select: (keyboard, cascade) => {
       if (!cascade) return;
       this.close();
@@ -381,6 +382,11 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
     // trigger while open, remove on close. Runs in Node tests too (trigger
     // fakes without setAttribute are guarded).
     this.syncTriggerAriaControls();
+    if (!this.open && changes["open"]) {
+      // Projected components survive the conditional insertion point.
+      this.projectedMenu?.closeAll();
+      this.hideTopLayer();
+    }
     if (typeof window === "undefined") return;
     if (!this.open) return;
     if (changes["open"] || changes["trigger"] || changes["placement"] || changes["align"]) {
@@ -475,6 +481,7 @@ export class MenuPopover implements AfterViewInit, OnChanges, OnDestroy {
   }
 
   close(): void {
+    this.projectedMenu?.closeAll();
     if (!this.open) return;
     this.hideTopLayer();
     this.open = false;
