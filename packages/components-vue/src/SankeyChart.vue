@@ -219,7 +219,7 @@ function isDim(i: number): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-sankeyChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-sankeyChart', props.class)) }" >
     <div
       class="st-sankeyChart__visual"
       role="img"

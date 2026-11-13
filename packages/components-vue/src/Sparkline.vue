@@ -72,8 +72,8 @@ const areaPath = computed(() => {
 
 <template>
   <span
-    v-bind="$attrs"
-    :class="classNames('st-sparkline', `st-sparkline--${tone}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-sparkline', `st-sparkline--${tone}`, props.class)) }"
+
     role="img"
     :aria-label="label"
   >

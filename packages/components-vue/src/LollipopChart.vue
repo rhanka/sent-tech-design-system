@@ -172,7 +172,7 @@ function handleVisualPointerMove(event: PointerEvent) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-lollipopChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-lollipopChart', props.class)) }" >
     <div class="st-lollipopChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="tick in geometry.valueAxisTicks" :key="`g${tick.value}`">

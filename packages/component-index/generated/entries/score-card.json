@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ScoreCard.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ScoreCard.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:6be736b9d6d65c05f37326906f07f141a2c88373fd457e839e1dc4df78b72c99",
+      "digest": "sha256:898875adeb754ad4fc75a6ab26f56137d819e3e3c107b843946e266b4c6657f8",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ScoreCard.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScoreCard.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:f9550d736271819f82ca1ceee09c86e77d95518e440cd2b0f75855480093de97",
+  "digest": "sha256:96bfb8ab110038ab725d3cf9027575262521bdd446c8a93f7e0c5003c0ffd8ef",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [

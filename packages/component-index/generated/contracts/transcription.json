@@ -1,8 +1,8 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:239d429b051cb89d47363681d06421b148f6c9e5b02586777bbc2c5844b34cbf",
-  "entryDigest": "sha256:6b649801d0fa20660da123e55a0d83121a7da00bfbda933d082cf72ef42de026",
+  "digest": "sha256:64f3031d12ec4a92422356ec4e82192f3adf9068fe8cf0f788a739babfd3d913",
+  "entryDigest": "sha256:88004aa785ee7ee7fa0353740e8729af6675bafd952bdad3fe1d5569c959d917",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -93,7 +93,7 @@
         "declarationPath": "packages/components-angular/dist/Transcription.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TranscriptionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -169,7 +169,7 @@
         "declarationPath": "packages/components-react/dist/Transcription.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TranscriptionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/Transcription.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TranscriptionProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

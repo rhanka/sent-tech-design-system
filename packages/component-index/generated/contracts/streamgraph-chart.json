@@ -1,8 +1,8 @@
 {
   "componentId": "streamgraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:6620970e31b2d55f892664f0d2d7574bb89ca9dd8607e02a14b3293eeaeb731b",
-  "entryDigest": "sha256:ded8efe0e2f7a1fdacaa62870ddeb21ed2ae075fcaacb39e7cef74e765a1caaf",
+  "digest": "sha256:562a1ba8f0cff96c98663fe54cde38b53f8bdd3a68ac53993a85cbafa12ad15f",
+  "entryDigest": "sha256:c35a2448f7dfc20c2243ea5bca506e2d2a2c3cd4594a54f831b79b6f51be4f6b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/StreamgraphChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StreamgraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -207,7 +207,7 @@
         "declarationPath": "packages/components-react/dist/StreamgraphChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StreamgraphChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,7 +310,7 @@
         "declarationPath": "packages/components-svelte/dist/StreamgraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StreamgraphChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

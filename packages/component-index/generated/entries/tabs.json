@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tabs.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tabs.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d5367f597080857e2d48f354b1b5d1234ca692bb7b884f5862b1e85490dd102f",
+      "digest": "sha256:c5e3ce20f0d2d81fec5e6a0a743dd3c601c937a8f715ba467e9313c0223e6dbd",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tabs.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tabs.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:a7d919cfe9974d7c86bde2084ac285a90f25b55cf46f32bb68102aca6c036408",
+  "digest": "sha256:dddaff519ac56e1aa9abb8181a431cf90867221e460f8a8a23314d3082368297",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Header.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Header.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2c1f310e6994f769c87c4ba3fd042cd19e621cf57842c17eb849a664d03a8a93",
+      "digest": "sha256:c6b83a622e49a6c4f056693d87eaedb1c0a55fcb711d861e66cad5800d548c2c",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Header.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Header.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:94ae2336815a390a0c10abab632cf81a7d1920ef926a4608c1e8e317a4968dd4",
+  "digest": "sha256:07404787fda29cdfa19b5e7ee3b8f5c211b55a4ec5a67676639535b64fe4e975",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

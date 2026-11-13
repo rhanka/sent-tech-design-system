@@ -10,7 +10,7 @@ export type ToastTone = "info" | "success" | "warning" | "error";
 export type ToastItem = {
   id: string;
   tone?: ToastTone;
-  title: unknown;
+  title?: unknown;
   message?: unknown;
   actions?: unknown;
 };
@@ -41,7 +41,11 @@ const emit = defineEmits<{ close: []; dismiss: [id: string] }>();
 
     const resolvedCloseLabel = computed(() => props.closeLabel ?? (isFr.value ? "Fermer" : "Close"));
 
-    const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((title: unknown) => isFr.value ? `Fermer ${String(title)}` : `Dismiss ${String(title)}`));
+    const resolvedDismissLabel = computed(() => props.dismissLabel ?? ((title: unknown) => {
+      const text = scalarContent(title);
+      const action = isFr.value ? 'Fermer' : 'Dismiss';
+      return text === '' ? action : `${action} ${text}`;
+    }));
 
     const hasClose = () => typeof props.onClose === 'function';
     const hasDismiss = () => typeof props.onDismiss === 'function';
@@ -73,14 +77,14 @@ const emit = defineEmits<{ close: []; dismiss: [id: string] }>();
 </script>
 
 <template>
-  <div v-if="props.items?.length" v-bind="$attrs" :class="classNames('st-toastQueue', props.class)">
+  <div v-if="props.items?.length" v-bind="{ ...($attrs), class: (classNames('st-toastQueue', props.class)) }" >
     <section v-for="(item, index) in props.items" :key="item.id" :class="classNames('st-toast', `st-toast--${item.tone ?? 'info'}`)" :role="roleFor(item.tone ?? 'info')">
       <div class="st-toast__content"><h2 class="st-toast__title"><slot v-if="$slots['title']" name="title" :item="item" :index="index" /><template v-else>{{ scalarContent(item.title) }}</template></h2><p v-if="item.message || $slots.message" class="st-toast__message"><slot v-if="$slots['message']" name="message" :item="item" :index="index" /><template v-else>{{ scalarContent(item.message) }}</template></p></div>
       <div v-if="item.actions || $slots.actions" class="st-toast__actions"><slot v-if="$slots['actions']" name="actions" :item="item" :index="index" /><template v-else>{{ scalarContent(item.actions) }}</template></div>
       <button v-if="hasDismiss()" type="button" :aria-label="resolvedDismissLabel(item.title)" @click="emit('dismiss', item.id)">{{ resolvedCloseLabel }}</button>
     </section>
   </div>
-  <section v-else v-bind="$attrs" :class="classNames('st-toast', `st-toast--${props.tone}`, props.class)" :role="roleFor(props.tone)">
+  <section v-else v-bind="{ ...($attrs), class: (classNames('st-toast', `st-toast--${props.tone}`, props.class)) }"  :role="roleFor(props.tone)">
     <div class="st-toast__content"><h2 class="st-toast__title"><slot v-if="$slots['title']" name="title" /><template v-else>{{ scalarContent(props.title) }}</template></h2><p v-if="props.message || $slots.message" class="st-toast__message"><slot v-if="$slots['message']" name="message" /><template v-else>{{ scalarContent(props.message) }}</template></p><slot v-else /></div>
     <div v-if="$slots.actions" class="st-toast__actions"><slot name="actions" /></div>
     <button v-if="hasClose()" type="button" @click="emit('close')">{{ resolvedCloseLabel }}</button>

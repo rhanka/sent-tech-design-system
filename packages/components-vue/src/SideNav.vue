@@ -1,8 +1,11 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type SideNavItem = {
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
   href: string;
   active?: boolean;
   children?: SideNavItem[];
@@ -18,12 +21,15 @@ defineOptions({ name: 'SideNav', inheritAttrs: false });
 const props = withDefaults(defineProps<SideNavProps>(), {
   label: 'Navigation', class: undefined,
 });
+defineSlots<{
+  'item-label'?: (scope: { item: SideNavItem }) => unknown;
+}>();
 </script>
 
 <template>
   <nav
-    v-bind="$attrs"
-    :class="classNames('st-sidenav st-sideNav', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-sidenav st-sideNav', props.class)) }"
+
     :aria-label="props.label"
   >
     <a
@@ -34,6 +40,6 @@ const props = withDefaults(defineProps<SideNavProps>(), {
         'st-sidenav__link st-sideNav__link',
         item.active && 'st-sidenav__link--active st-sideNav__link--active',
       )"
-    >{{ item.label }}</a>
+    ><slot v-if="$slots['item-label']" name="item-label" :item="item" /><template v-else>{{ scalarContent(item.label) }}</template></a>
   </nav>
 </template>

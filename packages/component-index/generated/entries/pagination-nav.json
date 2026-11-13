@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PaginationNav.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PaginationNav.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:a9a81576973db32d4a562d68f9ac80152b58fe2c687c7068eaa89be41eee35d7",
+      "digest": "sha256:ebb011a9753ff04f836d83ca3c127fc4ffb495c4dccd81f309a5162c9345b614",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PaginationNav.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PaginationNav.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Extended pagination with numbered pages and ellipses.",
     "fr": "Pagination étendue avec page numérotée et ellipses."
   },
-  "digest": "sha256:998909b3f119aee4f73ef042ff1dca936c2e5f5d887a869fc8437277aa760bb8",
+  "digest": "sha256:ce5ac91dfb297872d808093c5cdc425fc5537b972128e08c2fe0f58efa72648f",
   "displayName": "PaginationNav",
   "format": "component-entry/v1",
   "frameworks": [

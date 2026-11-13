@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:33a8b45d907dcfd5a2449580b78c7cead6ba9dfeaa0ef21559181ee35b45cbac",
-  "entryDigest": "sha256:a99194c9a00914f9e4b27cc443be76cc037a6f90f4e33e8f0a0a056b9aaf5f1f",
+  "digest": "sha256:90d7078deb4679d7e6e3cac597e3e1c2c0752fe2b0ad9754ea6023c1cc730d2b",
+  "entryDigest": "sha256:343d2c267b6aab941db6b882fb78222b62c55eff7a7aec7d2c3874624187a9a7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/SideNav.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SideNavProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -137,11 +137,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SideNavProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-svelte/dist/SideNav.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SideNavProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -220,8 +220,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -243,8 +242,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -277,9 +275,25 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/SideNavItem"
+              }
+            },
+            "required": [
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c0c21e268c70feb4953b2ff8065e037745ab27f82a25430e3a7533fb4d0e769d",
+        "declarationDigest": "sha256:47341836e0dd30d283f5cf9f4d580b50f86a6e50eba2145e61e42168694cf643",
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",

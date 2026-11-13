@@ -75,7 +75,7 @@ function go(target: number) {
 </script>
 
 <template>
-  <nav v-bind="$attrs" :class="classNames('st-paginationNav', props.class)" :aria-label="props.label">
+  <nav v-bind="{ ...($attrs), class: (classNames('st-paginationNav', props.class)) }"  :aria-label="props.label">
     <ul class="st-paginationNav__list">
       <li>
         <a v-if="props.previousHref" :href="props.previousHref" class="st-paginationNav__nav" :aria-label="props.previousLabel">

@@ -30,7 +30,7 @@
     }
   ],
   "sourceSha256": "68476fc0a45f3202308ed9d8d00510c53dd9cf923b104bd88cae9894fbc36464",
-  "fixtureSha256": "00b3d7e6ed8db9e6c010485a965fe0b7645f1fbc2b07ca4682aa2bc4d8828f42",
+  "fixtureSha256": "d101a239f7a80d694ba8b8a664abb3e56988053943234fd70af4fcfa23833f0e",
   "publicExports": [
     {
       "name": "Header",

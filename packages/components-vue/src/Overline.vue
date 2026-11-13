@@ -20,5 +20,5 @@ defineSlots<{ default?: () => unknown }>();
 </script>
 
 <template>
-  <component :is="props.as ?? 'span'" v-bind="$attrs" :class="classNames('st-overline', props.class)"><slot /></component>
+  <component :is="props.as ?? 'span'" v-bind="{ ...($attrs), class: (classNames('st-overline', props.class)) }" ><slot /></component>
 </template>

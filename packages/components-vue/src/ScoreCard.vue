@@ -35,8 +35,8 @@ const ariaLabel = computed(
 
 <template>
   <article
-    v-bind="$attrs"
-    :class="classNames('st-scoreCard', `st-scoreCard--${props.size ?? 'md'}`, `st-scoreCard--${props.type ?? 'value'}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-scoreCard', `st-scoreCard--${props.size ?? 'md'}`, `st-scoreCard--${props.type ?? 'value'}`, props.class)) }"
+
     role="group"
     :aria-label="ariaLabel"
   >

@@ -271,7 +271,7 @@ function ohlcAriaLabel(d: CandlestickChartDatum): string {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-candlestickChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-candlestickChart', props.class)) }" >
     <div
       class="st-candlestickChart__visual"
       role="img"

@@ -79,14 +79,14 @@ const showRelative = computed(() => (props.status === 'saved' || props.status ==
 
 function triggerRetry() {
   emit('retry');
-  props.onRetry?.();
+
 }
 </script>
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-autosave', `st-autosave--${props.status}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-autosave', `st-autosave--${props.status}`, props.class)) }"
+
     :role="role"
     aria-live="polite"
   >

@@ -53,3 +53,10 @@ it('should mount the installed badge, labelled icon button and WebFrame', async 
     expect(root.querySelector(selector)).not.toBeNull();
   }
 });
+
+it('should expose every Classic runtime export from the installed Vapor barrel', async () => {
+  if (!vapor) return;
+  const classic = await import('@sentropic/design-system-vue');
+  expect(Object.keys(ds).sort()).toEqual(Object.keys(classic).sort());
+  for (const name of ['Menu', 'MenuPopover', 'OverflowMenu', 'DumbbellChart', 'ErrorBarChart', 'DependencyWheelChart', 'ArcDiagramChart', 'CellDecorationIcon']) expect(ds[name]).toBeDefined();
+});

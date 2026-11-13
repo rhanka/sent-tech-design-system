@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:500eebdff3b55f5bd91a7f7cb6378b6d8457fbac59ae8d7cceaa48ae07a1fe25",
-  "entryDigest": "sha256:7939353712969024c0a14c0cb953f34f598c3a770188a9f981b7ee4381855d91",
+  "digest": "sha256:d322526843f4fea78127e33c1ad56a0cd4ff625aa0fbe7aa98cafd555b64f24a",
+  "entryDigest": "sha256:a033429ca1b0a7d3a6b03a1ab3890ab1ff035e82cf06e396787c1f93efc46e5b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -66,7 +66,7 @@
         "declarationPath": "packages/components-angular/dist/Breadcrumb.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BreadcrumbProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -125,11 +125,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BreadcrumbProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-svelte/dist/Breadcrumb.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BreadcrumbProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -207,8 +207,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -223,9 +222,6 @@
               },
               "label": {}
             },
-            "required": [
-              "label"
-            ],
             "type": "object"
           }
         },
@@ -257,9 +253,29 @@
           "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/BreadcrumbItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:a80fa7aca335e551d89ef8fd28fe4ce9ff8f5971c3225ec040b7f904085b14a8",
+        "declarationDigest": "sha256:3a6c5473a914869d9d4aa2645c179194c17a54b74e1ec53dfdcd2a7e2b8abf14",
         "declarationPath": "packages/components-vue/dist/Breadcrumb.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BreadcrumbProps",

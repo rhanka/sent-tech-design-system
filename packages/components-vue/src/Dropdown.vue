@@ -7,7 +7,9 @@ import Icon from './Icon.vue';
 
 export type DropdownOption = {
   value: string;
-  label: unknown;
+
+  /** @slot option-label */
+  label?: unknown;
   disabled?: boolean;
 };
 
@@ -120,7 +122,7 @@ const resolvedPlaceholder = computed(() => props.placeholder ?? (isFr.value ? 'S
 </script>
 
 <template>
-  <div v-bind="$attrs" ref="hostRef" :class="classNames('st-dropdown', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-dropdown', props.class)) }" ref="hostRef" >
     <button ref="buttonRef" type="button" class="st-dropdown__button" aria-haspopup="listbox" :aria-expanded="isOpen()" @click="setOpen(!isOpen())"><span class="st-dropdown__label">{{ resolvedLabel }}</span>{{ ': ' }}<span class="st-dropdown__value"><template v-if="selected()"><slot v-if="$slots['option-label']" name="option-label" :option="selected()!" :index="props.options.indexOf(selected()!)" /><template v-else>{{ scalarContent(selected()!.label) }}</template></template><template v-else>{{ resolvedPlaceholder }}</template></span><Icon name="chevron-down" bare :size="18" :stroke-width="2.25" :class="classNames('st-dropdown__icon', isOpen() && 'st-dropdown__icon--open')" aria-hidden="true" /></button>
     <Teleport v-if="isOpen()" to="body"><div ref="listRef" class="st-dropdown__list" role="listbox" :aria-label="resolvedLabel" :style="{ top: `${listPos.top}px`, left: `${listPos.left}px`, minWidth: `${listPos.width}px` }">
       <button v-for="(option, index) in props.options" :key="option.value" type="button" role="option" class="st-dropdown__option" :disabled="option.disabled" :aria-disabled="option.disabled ? 'true' : undefined" :aria-selected="option.value === (props.value ?? localValue)" @click="selectOption(option)"><slot v-if="$slots['option-label']" name="option-label" :option="option" :index="index" /><template v-else>{{ scalarContent(option.label) }}</template></button>

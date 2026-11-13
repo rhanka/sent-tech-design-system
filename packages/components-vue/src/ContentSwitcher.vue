@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -7,7 +8,9 @@ export type ContentSwitcherSize = 'sm' | 'md' | 'lg';
 export type ContentSwitcherItem = {
   id?: string;
   value?: string;
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
   disabled?: boolean;
 };
 
@@ -55,10 +58,13 @@ function onClick(item: ContentSwitcherItem, index: number) {
   emit('change', id);
   props.onchange?.(id);
 }
+defineSlots<{
+  'item-label'?: (scope: { item: ContentSwitcherItem }) => unknown;
+}>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-contentSwitcher', `st-contentSwitcher--${props.size}`, props.class)" role="group">
-    <button v-for="(item, index) in props.items" :key="itemId(item, index)" type="button" :class="classNames('st-contentSwitcher__option st-contentSwitcher__button', itemId(item, index) === current && 'st-contentSwitcher__option--selected')" :disabled="item.disabled" :aria-pressed="itemId(item, index) === current" @click="onClick(item, index)">{{ item.label }}</button>
+  <div v-bind="{ ...($attrs), class: (classNames('st-contentSwitcher', `st-contentSwitcher--${props.size}`, props.class)) }"  role="group">
+    <button v-for="(item, index) in props.items" :key="itemId(item, index)" type="button" :class="classNames('st-contentSwitcher__option st-contentSwitcher__button', itemId(item, index) === current && 'st-contentSwitcher__option--selected')" :disabled="item.disabled" :aria-pressed="itemId(item, index) === current" @click="onClick(item, index)"><slot v-if="$slots['item-label']" name="item-label" :item="item" /><template v-else>{{ scalarContent(item.label) }}</template></button>
   </div>
 </template>

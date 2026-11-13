@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:b7a30f7d4870daf3e610b2c250e26b1b449087b1fb1ab474f23d242ed9e6ecfd",
-  "entryDigest": "sha256:628e7d0fe3028b744fa977c0750d6f4459a16ed2cc5588b5ff680c5775d4363a",
+  "digest": "sha256:308058a545539479f8eb9de9b7567f60d89c0510dda16ece78a9cf966007b0a6",
+  "entryDigest": "sha256:ad9bc95d7b9edb72dc16e4d3cf4b0094fc01eceb6f896257b515369da442ef16",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-angular/dist/TimeRangePicker.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimeRangePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -367,7 +367,7 @@
         "declarationPath": "packages/components-react/dist/TimeRangePicker.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimeRangePickerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -542,7 +542,7 @@
         "declarationPath": "packages/components-svelte/dist/TimeRangePicker.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeRangePickerProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -747,11 +747,14 @@
       "replaced": [],
       "slots": [
         {
+          "name": "custom-extra"
+        },
+        {
           "name": "customExtra"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:6d7d0538ec13e6de3c061969d3b8a9eac4070730bc071f227eaea815440cf02e",
+        "declarationDigest": "sha256:8d6fce383d7394591c347e7cd809bdd98db9794dd47ef7b99b7cfbf99c0707ca",
         "declarationPath": "packages/components-vue/dist/TimeRangePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeRangePickerProps",

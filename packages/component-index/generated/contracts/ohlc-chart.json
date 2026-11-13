@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:46dda366fa1969b530d7c8f61d4cdc9539996beb942a29dc27a3eb50adcf9171",
-  "entryDigest": "sha256:f7bf97100b633fdb1ef55071cf32a1e86fa49502f0f15ad7c814cfd55c38591e",
+  "digest": "sha256:d794e236f193ea607d72b9cf1207ee1cbb24b607aa9eac302b5573074fadf14f",
+  "entryDigest": "sha256:e38366c8ee07e58461052715f277b6060c272c317c7abd3e23f45268172c492d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -307,7 +307,7 @@
         "declarationPath": "packages/components-angular/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OHLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -636,7 +636,7 @@
         "declarationPath": "packages/components-react/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OHLCChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/OHLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OHLCChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SideNav.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SideNav.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:96cc6e00f1afbf4a2f95d68499b17e0f0e609935c246b017dcdad63196462921",
+      "digest": "sha256:c63666a07f3e7f5044810498aeacbbb79d190ee3962f33debf86a8a6fb5f44a3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SideNav.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SideNav.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical side navigation.",
     "fr": "Navigation latérale verticale."
   },
-  "digest": "sha256:a99194c9a00914f9e4b27cc443be76cc037a6f90f4e33e8f0a0a056b9aaf5f1f",
+  "digest": "sha256:343d2c267b6aab941db6b882fb78222b62c55eff7a7aec7d2c3874624187a9a7",
   "displayName": "SideNav",
   "format": "component-entry/v1",
   "frameworks": [

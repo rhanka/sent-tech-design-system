@@ -7,8 +7,9 @@ import { loadDeclarationProgram } from '../../src/generator/contracts/loader.js'
 import { extractVue } from '../../src/generator/contracts/vue.js';
 import { createConvertState, convertObjectMembers } from '../../src/generator/contracts/convert.js';
 
-const require = createRequire(import.meta.url);
 const root = resolve(import.meta.dirname, '../../../..');
+// Use the Vue workspace's pinned compiler, including when npm nests it there.
+const require = createRequire(join(root, 'packages/components-vue/package.json'));
 let scratch: string;
 beforeAll(() => {
   mkdirSync(join(root, 'tmp'), { recursive: true });

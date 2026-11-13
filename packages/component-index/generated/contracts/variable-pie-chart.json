@@ -1,8 +1,8 @@
 {
   "componentId": "variable-pie-chart",
   "contractSource": "derived",
-  "digest": "sha256:309c1b8171aababa9369ff96ee7c1c5cc21ee13e247b7b354bc103bf864c641c",
-  "entryDigest": "sha256:d9cea489f1cc61609159ebca184fd7f04d46bfa41048653b00bf8ffb6ff952ba",
+  "digest": "sha256:3adf6262619551b551ef9ddeb1d9dd0157d3406adbaf32f77808dbf249234d83",
+  "entryDigest": "sha256:084607853dcca4533094973b84428ad42f14f04b94e98bbbfdabbad59f2ca0ed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -77,7 +77,7 @@
         "declarationPath": "packages/components-angular/dist/VariablePieChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VariablePieChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -165,7 +165,7 @@
         "declarationPath": "packages/components-react/dist/VariablePieChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VariablePieChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -247,7 +247,7 @@
         "declarationPath": "packages/components-svelte/dist/VariablePieChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VariablePieChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

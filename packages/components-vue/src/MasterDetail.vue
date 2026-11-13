@@ -31,7 +31,7 @@ defineSlots<{ default?: () => unknown }>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-md', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-md', props.class)) }" >
     <div class="st-md__split">
       <aside class="st-md__list">
         <div class="st-md__list-header">

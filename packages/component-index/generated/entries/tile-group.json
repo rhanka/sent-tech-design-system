@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TileGroup.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TileGroup.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:0efc9251b04c23722429e98d9489ae9acf14be8a1ad0759f7d4d90e77530acce",
+      "digest": "sha256:9e79dba45d764c541b9b98ce025b7ac58d82f15409b9b9029999fe5b4556a3b7",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TileGroup.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TileGroup.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Selectable tile group (radio), with legend.",
     "fr": "Groupe de tuiles sélectionnables (radio), avec légende."
   },
-  "digest": "sha256:4a1445850e1ae80fe01b26a2bd90d2ee8fd4b034d4c489611a3f8452821da082",
+  "digest": "sha256:6ea9219bc0aa7101ac28be7b51b505e60bbb8766510f82eb4c05c368a608dcb5",
   "displayName": "TileGroup",
   "format": "component-entry/v1",
   "frameworks": [

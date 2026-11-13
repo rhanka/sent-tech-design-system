@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toggle.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toggle.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:64eafdcf51b9a736500aa5668ae53533764a2f5783a651cea787fb46017478c5",
+      "digest": "sha256:d1489157e39dd52561dc249a494c3570929e007143770642ef00ea44df0c47c3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggle.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toggle.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Compact toggle (Switch variant).",
     "fr": "Toggle compact (variante du Switch)."
   },
-  "digest": "sha256:074fe495bff1b9b428bf1dc3895031aae84864dc933d7203af2de121eb33d0d4",
+  "digest": "sha256:107e01ad782e632cab17720e18044e495b29d5e79b7d13f5693fd1b552021a12",
   "displayName": "Toggle",
   "format": "component-entry/v1",
   "frameworks": [

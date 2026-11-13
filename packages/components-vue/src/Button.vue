@@ -16,8 +16,9 @@ defineOptions({ name: 'Button', inheritAttrs: false });
 const props = withDefaults(defineProps<ButtonProps>(), {
   variant: 'primary', size: 'md', type: 'button', disabled: false, class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <button v-bind="$attrs" :type="props.type" :disabled="props.disabled" :class="classNames('st-button', `st-button--${props.variant}`, `st-button--${props.size}`, props.class)"><slot /></button>
+  <button v-bind="{ ...($attrs), class: (classNames('st-button', `st-button--${props.variant}`, `st-button--${props.size}`, props.class)) }" :type="props.type" :disabled="props.disabled" ><slot /></button>
 </template>

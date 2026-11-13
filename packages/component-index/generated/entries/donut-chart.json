@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DonutChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/DonutChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:bdf579bd72eda6ad4f62f663cf74901eec26d3bd90efcb8423cca3365b123ea9",
+      "digest": "sha256:18bdce6ebab706fe809603a9545c68803b6c91d69e104f9badc50d29ea88c033",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DonutChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/DonutChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Donut chart (parts of a whole), tooltip and center total.",
     "fr": "Graphique en anneau (parts d'un total), tooltip et total au centre."
   },
-  "digest": "sha256:649b9baf74931ba92dffa6edc3f12437e3fda5be7c766db8321a1751ec3c9940",
+  "digest": "sha256:fcb5f2b600859fcd96ae3e095d2994adcadd5f13dd92969e422d6a28892512a4",
   "displayName": "DonutChart",
   "format": "component-entry/v1",
   "frameworks": [

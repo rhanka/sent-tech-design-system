@@ -1,8 +1,8 @@
 {
   "componentId": "hidden",
   "contractSource": "derived",
-  "digest": "sha256:8999eb1d44a4523b95d2cc8943cbd851151a296d029832bf3ad486196463f0cb",
-  "entryDigest": "sha256:c70cd7adf0fb3199a7301107e0fed1d8374df110f09bf7748bbc355abb17654b",
+  "digest": "sha256:c1968f95448e0853dec3df357bc6835f8100f75662a5ff01ca37dcb82268eb33",
+  "entryDigest": "sha256:0eceba12a9a69b5ba3cceac2ab46c358ac5dcf306e9193cfcba362b81255e5e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -51,7 +51,7 @@
         "declarationPath": "packages/components-angular/dist/Hidden.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HiddenProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -107,7 +107,7 @@
         "declarationPath": "packages/components-react/dist/Hidden.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HiddenProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -167,7 +167,7 @@
         "declarationPath": "packages/components-svelte/dist/Hidden.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HiddenProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -213,16 +213,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:72104a1b5ef00c00955c2bedba84ddc68f5fba54ecedb294f478dde05efee183",
+        "declarationDigest": "sha256:f40e31da35b94b1b0d21e6a2c4e04c9a7c6812fcae7323d04273c85561e059f7",
         "declarationPath": "packages/components-vue/dist/Hidden.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HiddenProps",

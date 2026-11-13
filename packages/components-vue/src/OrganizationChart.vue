@@ -184,7 +184,7 @@ const dataValueItems = computed(() => layout.value.boxes.map((b) => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-organizationChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-organizationChart', props.class)) }" >
     <div class="st-organizationChart__visual" role="img" :aria-label="props.label">
       <svg
         :viewBox="`0 0 ${width} ${height}`"

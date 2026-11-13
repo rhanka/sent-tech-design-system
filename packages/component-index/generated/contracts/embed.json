@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:288a72a2eb20ed2b2a106e5388aeb77ff273c43839ec2f6def4f3b4eaa80cb9b",
-  "entryDigest": "sha256:702149daa873aa3a7a72b9c11e8a2bed9194ecde71afb5ee1907a88b60bc08b0",
+  "digest": "sha256:31ae0cc520c353fe26916c4bce3915aee43602f8f9d3b70a80eaa915ef41e28c",
+  "entryDigest": "sha256:a2fb890e5d35446c77940f6838ba3d816b632a3316fb8c0070068059458eeb9e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/Embed.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -116,7 +116,7 @@
         "declarationPath": "packages/components-react/dist/Embed.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Embed.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmbedProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

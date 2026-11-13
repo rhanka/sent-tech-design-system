@@ -594,7 +594,7 @@ const geometry = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-geoMap', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-geoMap', props.class)) }" >
     <div class="st-geoMap__visual" role="img" :aria-label="props.label">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <rect class="st-geoMap__frame" x="0.5" y="0.5" :width="geometry.width - 1" :height="geometry.height - 1" rx="4" />

@@ -1,7 +1,3 @@
-<script lang="ts">
-let menuInstanceCounter = 0;
-</script>
-
 <script setup lang="ts">
 import type {
   MenuActionItem,
@@ -10,7 +6,7 @@ import type {
   MenuItem,
   MenuSubmenuSide,
 } from "./Menu.js";
-import {
+import { useId,
   computed,
   useAttrs,
   inject,
@@ -105,7 +101,7 @@ const attrs = useAttrs();
 
 const hostContext = inject(MENU_HOST_KEY, undefined);
 const isNested = hostContext !== undefined;
-const instanceId = ++menuInstanceCounter;
+const instanceId = useId();
 const fallbackRootId = `st-menu-${instanceId}`;
 const rootId = computed(
   () =>
@@ -942,10 +938,10 @@ const panelDepths = computed(() => [
 <template>
   <div
     v-if="!hasCascade"
-    v-bind="attrs"
+    v-bind="{ ...(attrs), class: (['st-menu', { 'st-menu--dense': props.dense }, props.class]) }"
     :id="rootId"
     ref="hostRef"
-    :class="['st-menu', { 'st-menu--dense': props.dense }, props.class]"
+
     :role="props.role ?? 'menu'"
     data-menu-level="0"
   >
@@ -989,19 +985,14 @@ const panelDepths = computed(() => [
         @focus="roving[0] = row.index"
       >
         <span
-          v-if="row.action!.icon"
+          v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
           class="st-menu__itemIcon"
           aria-hidden="true"
         >
-          <template v-if="typeof row.action!.icon === 'string'">{{
+          <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
             row.action!.icon
           }}</template>
-          <component
-            :is="row.action!.icon"
-            v-else
-            :size="16"
-            :stroke-width="2"
-          />
+
         </span>
         <span class="st-menu__itemLabel">
           <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="0" /><MenuLabel v-else :label="row.action!.label" />
@@ -1011,20 +1002,20 @@ const panelDepths = computed(() => [
   </div>
   <div
     v-else
-    v-bind="
+    v-bind="{ ...(
       Object.fromEntries(
         Object.entries(attrs).filter(
           ([key]) => !['id', 'aria-label', 'aria-labelledby'].includes(key),
         ),
       )
-    "
-    ref="hostRef"
-    :class="[
+    ), class: ([
       'st-menu',
       { 'st-menu--dense': props.dense },
       'st-menu--hasCascade',
       props.class,
-    ]"
+    ]) }"
+    ref="hostRef"
+
     @pointermove="onHostPointerMove"
   >
     <div
@@ -1122,19 +1113,14 @@ const panelDepths = computed(() => [
               />
             </span>
             <span
-              v-if="row.action!.icon"
+              v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
               class="st-menu__itemIcon"
               aria-hidden="true"
             >
-              <template v-if="typeof row.action!.icon === 'string'">{{
+              <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
                 row.action!.icon
               }}</template>
-              <component
-                :is="row.action!.icon"
-                v-else
-                :size="16"
-                :stroke-width="2"
-              />
+
             </span>
             <span class="st-menu__itemLabel">
               <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />
@@ -1171,19 +1157,14 @@ const panelDepths = computed(() => [
           @focus="roving[depth] = row.index"
         >
           <span
-            v-if="row.action!.icon"
+            v-if="(typeof row.action!.icon === 'string' && row.action!.icon) || $slots['item-icon']"
             class="st-menu__itemIcon"
             aria-hidden="true"
           >
-            <template v-if="typeof row.action!.icon === 'string'">{{
+            <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
               row.action!.icon
             }}</template>
-            <component
-              :is="row.action!.icon"
-              v-else
-              :size="16"
-              :stroke-width="2"
-            />
+
           </span>
           <span class="st-menu__itemLabel">
             <slot v-if="$slots['item-label']" name="item-label" :item="row.action!" :index="row.index" :depth="depth" /><MenuLabel v-else :label="row.action!.label" />

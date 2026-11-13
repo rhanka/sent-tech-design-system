@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Flex.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Flex.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d26da53e2fcf2710f26a7d119155da8389597a7bb686d024b677ceeea01ab6cf",
+      "digest": "sha256:0faf24af8442cd7c16418c2dce321afddc21936b83c281fbc8be834c18da36b0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Flex.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Flex.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Flex box: direction, gap, alignment, and justification.",
     "fr": "Boîte flex : direction, gap, alignement et justification."
   },
-  "digest": "sha256:4ce91173fcd22b49959fd0120c8a6d7e8309133f5d1471a5a4451e7856c44699",
+  "digest": "sha256:4cc42c408b5ee3e160b6f369535ffbf632c27077a97aafc204e5703f6a671717",
   "displayName": "Flex",
   "format": "component-entry/v1",
   "frameworks": [

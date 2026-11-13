@@ -23,10 +23,14 @@
     {
       "id": "zero",
       "html": "<div class=\"st-progressBar\"><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0%\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:0%;\"></div></div></div>"
+    },
+    {
+      "id": "rich-label",
+      "html": "<div class=\"st-progressBar\"><div class=\"st-progressBar__header\"><span class=\"st-progressBar__label\"><strong>Progress</strong></span></div><div aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"0%\" class=\"st-progressBar__track st-progressBar__track--md st-progressBar__track--neutral\" role=\"progressbar\"><div class=\"st-progressBar__fill\" style=\"--st-progressBar-pct:0%;\"></div></div></div>"
     }
   ],
   "sourceSha256": "98c4184b693f3c9170bab79320301509458050223244e6cc9b7817eb21c2fe30",
-  "fixtureSha256": "3ed1b29719e80b2fb2283fbace06af98189ff78936f90408fc79054e13e65fbe",
+  "fixtureSha256": "50e56cb22c39bac104d97d335aa18b518f17bef69c76de1975b90cae3c8a9bc0",
   "publicExports": [
     {
       "name": "ProgressBar",

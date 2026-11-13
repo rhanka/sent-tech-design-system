@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed, onUnmounted, ref, watch } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ToggletipPlacement = 'top' | 'bottom' | 'start' | 'end';
 
 export type ToggletipProps = {
-  label: unknown;
+  label?: unknown;
   content?: unknown;
   open?: boolean;
   placement?: ToggletipPlacement;
@@ -55,10 +56,10 @@ onUnmounted(() => document.removeEventListener('keydown', onKeyDown));
 </script>
 
 <template>
-  <span v-bind="$attrs" :class="classNames('st-toggletip', `st-toggletip--${props.placement}`, props.class)">
-    <button type="button" class="st-toggletip__trigger" :aria-expanded="open" @click="toggle"><template v-if="$slots.label"><slot name="label" /></template><template v-else>{{ props.label }}</template></button>
+  <span v-bind="{ ...($attrs), class: (classNames('st-toggletip', `st-toggletip--${props.placement}`, props.class)) }" >
+    <button type="button" class="st-toggletip__trigger" :aria-expanded="open" @click="toggle"><template v-if="$slots.label"><slot name="label" /></template><template v-else>{{ scalarContent(props.label) }}</template></button>
     <span v-if="open" class="st-toggletip__bubble" role="status">
-      <span class="st-toggletip__content"><template v-if="$slots.content"><slot name="content" /></template><template v-else-if="props.content != null">{{ props.content }}</template><template v-else><slot /></template></span>
+      <span class="st-toggletip__content"><template v-if="$slots.content"><slot name="content" /></template><template v-else-if="props.content != null">{{ scalarContent(props.content) }}</template><template v-else><slot /></template></span>
     </span>
   </span>
 </template>

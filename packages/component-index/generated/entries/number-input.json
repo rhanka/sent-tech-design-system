@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/NumberInput.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/NumberInput.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:b34ab7f7cfda983b2c9f1b547bf8e6b8f85154813f2c404ef9a14d72c5c3b4e8",
+      "digest": "sha256:4b74f6567242372def60003fd349ea0010c3dc642a48674922a2144af9f1a7e5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NumberInput.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/NumberInput.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Numeric field with increment/decrement.",
     "fr": "Champ numérique avec incrément/décrément."
   },
-  "digest": "sha256:f49953a3f593a39d6c02eb98c613557e8e4dad8fbb8ef31a5569e8c217b0bc2d",
+  "digest": "sha256:3b7c47c70fa0062ec7b59510f0515b0b14dddd55e6efb8bf3bd785e9f13a569c",
   "displayName": "NumberInput",
   "format": "component-entry/v1",
   "frameworks": [

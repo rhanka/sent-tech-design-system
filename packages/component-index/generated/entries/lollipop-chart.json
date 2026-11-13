@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/LollipopChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/LollipopChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:134c56604ffae5399eef4f4ba43fc022086f939ca463c835d6d4259b7c1b5209",
+      "digest": "sha256:d05afb8a9bf90fba7d9db9c546f9c37038de0e68ec53e6f803ffab1ba20cf521",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LollipopChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/LollipopChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Lollipop chart: thin stems and dots to compare values across categories.",
     "fr": "Diagramme en sucette : tige fine et pastille pour comparer des valeurs par catégorie."
   },
-  "digest": "sha256:0682b88ec70ff22a353dae6c00a2b23d92ba02ee7daeffcd4b9a566a2cceaef0",
+  "digest": "sha256:ca1a68db911ed61df0cd417e6e515942987301644c7861befc6fab5c1a55bb34",
   "displayName": "LollipopChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Textarea.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Textarea.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:4ffedf174094b85e0f06adf33574105c209194b2948bec91dfb8cae0ee4e2673",
+      "digest": "sha256:ab02af047c57f1e1c3435e2d4682923e0641f51023ee9714c7ae6ad8d1ea7869",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Textarea.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Textarea.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-line text field.",
     "fr": "Champ texte multi-ligne."
   },
-  "digest": "sha256:8a2fb0bfeea3d02305d1ab0348437a1c94d30a71b58253a33a37613580417f8a",
+  "digest": "sha256:9f8f5a84e11892d29f7cba3c1500e80b02ec5d18cd9174b2ccd1b77566f04561",
   "displayName": "Textarea",
   "format": "component-entry/v1",
   "frameworks": [

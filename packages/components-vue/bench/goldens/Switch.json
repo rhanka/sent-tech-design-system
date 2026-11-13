@@ -30,7 +30,7 @@
     }
   ],
   "sourceSha256": "54040a447652cb9c0258460921a9a91585d5c373f4b7431a4cabbbec6b648298",
-  "fixtureSha256": "4d0de59152f06a02860bedd98eace34a611e2b4d1a5500f9c97364be2b379b83",
+  "fixtureSha256": "95c3de28fddecab39e72dd6736591512c7f7a778ee684a26c040df1980608ed1",
   "publicExports": [
     {
       "name": "Switch",

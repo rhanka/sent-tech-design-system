@@ -1,8 +1,8 @@
 {
   "componentId": "radar-chart",
   "contractSource": "derived",
-  "digest": "sha256:e6b39b782d5b86a5b49d151e3a864cbdfeb3a77772c85818cc99434a4e8d7693",
-  "entryDigest": "sha256:ea6b127efa0fe817633e6b620c9801994485d97fe8a5ff161996ac37ce50a44d",
+  "digest": "sha256:0bba8463a4579804e84f9a42a9fccd5df77a0276dcf166cc928d40a4d1bdfada",
+  "entryDigest": "sha256:f7bb57e1f031d237c7150c02315ac767e55a8cad28e75fb0d245a75ae44fef5d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/RadarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RadarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -195,7 +195,7 @@
         "declarationPath": "packages/components-react/dist/RadarChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RadarChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -292,7 +292,7 @@
         "declarationPath": "packages/components-svelte/dist/RadarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RadarChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

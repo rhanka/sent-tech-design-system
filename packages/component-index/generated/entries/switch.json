@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Switch.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Switch.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:1c017883f33ca57f63c89ff188099d66c42c959fef5886ca3ccabccac80d3cfc",
+      "digest": "sha256:d3d8aca3efb992bc8755ed35a28e3d827a765c5b455176dd4b8464e57f15fbb0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Switch.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Switch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "On/off switch.",
     "fr": "Bascule on/off."
   },
-  "digest": "sha256:4ba6e364c442c9757f345691b9ede73310bb5f94ae169c01aabb835a5ed7d485",
+  "digest": "sha256:dbf74a12bc0ced1ee3b5611cb6d5f1c6b309155923f943769da85d198ac68dab",
   "displayName": "Switch",
   "format": "component-entry/v1",
   "frameworks": [

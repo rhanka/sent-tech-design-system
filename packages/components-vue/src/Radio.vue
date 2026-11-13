@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type RadioProps = {
@@ -14,7 +14,7 @@ export type RadioProps = {
   class?: string;
 };
 
-defineOptions({ name: 'Radio' });
+defineOptions({ name: 'Radio', inheritAttrs: false });
 const props = withDefaults(defineProps<RadioProps>(), {
   helperText: undefined, invalid: false, modelValue: undefined, checked: undefined,
   disabled: false, name: undefined, value: undefined, class: undefined,
@@ -24,7 +24,7 @@ const emit = defineEmits<{
   change: [event: Event];
 }>();
 
-const attrs = useAttrs();
+
 const isChecked = computed(() =>
   props.checked ?? (props.modelValue !== undefined && props.modelValue === props.value),
 );
@@ -35,7 +35,7 @@ function onChange(event: Event) {
   emit('change', event);
 }
 const controlProps = computed(() => ({
-  ...attrs,
+
   class: 'st-choice__input',
   type: 'radio',
   name: props.name,
@@ -49,7 +49,7 @@ const controlProps = computed(() => ({
 
 <template>
   <label :class="classNames('st-choice', 'st-choice--radio', props.class)">
-    <input v-bind="controlProps" />
+    <input v-bind="{ ...$attrs, ...controlProps }" />
     <span class="st-choice__content">
       <span class="st-choice__label">{{ props.label }}</span>
       <span v-if="props.helperText" class="st-choice__help">{{ props.helperText }}</span>

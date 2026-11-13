@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Link.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Link.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:77313cfb546ff9e4e22e096819feb0ca2e1fbe047749664ed298019bbada2ca8",
+      "digest": "sha256:55798eec3c9ed54e44c8d5ac4a230968d5d811f9754b3a9d5fc8f1bb4d58b8bf",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Link.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Link.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Styled link consistent with the DS, disabled/external support.",
     "fr": "Lien stylé cohérent avec le DS, support disabled/external."
   },
-  "digest": "sha256:90c021f950109262035f9e03a25eff4d48b7bab3340a2940bb501a9b99783d19",
+  "digest": "sha256:3b82ec98fdea8e74a660d7d9f4dd66a2528e65790ad8f9979d7d5f1017f551e7",
   "displayName": "Link",
   "format": "component-entry/v1",
   "frameworks": [

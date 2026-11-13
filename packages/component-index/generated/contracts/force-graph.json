@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:1968f75efa14e31ce30e01d69f0386d5bfdbd1dbbf66756b5ff93fe7b4b43712",
-  "entryDigest": "sha256:fd379ca2ab1d205e5e07a9d2388ec61b482a60e2696ef7bb68fc25c85f653265",
+  "digest": "sha256:2e14f4a38b0f728078e6bdfedccd01594a0191473cc829d2faf30ff5d21b747e",
+  "entryDigest": "sha256:2514ba415e0d233865c91314ea13d779555532c47706d24357df224c57452111",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-angular/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ForceGraphProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -648,11 +648,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ForceGraphProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -787,10 +787,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -853,10 +853,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -1221,10 +1221,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1287,10 +1287,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]

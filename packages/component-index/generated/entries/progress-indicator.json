@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ProgressIndicator.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ProgressIndicator.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:75b4c3ecd0e65dccc3b8598fb5889dd678b7545fbced2b29ecb171e4f352c289",
+      "digest": "sha256:00e4bf2f7cb8f64efb81be3dad40fa978a850de7af5dabe6cda82e09b051a7bd",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ProgressIndicator.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ProgressIndicator.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Step sequence with complete/current/upcoming status.",
     "fr": "Suite d’étapes avec statut complete/current/upcoming."
   },
-  "digest": "sha256:ab88bf09960a1106efa2325af312d576b3626700083349077a7a5e7c0c0d7a29",
+  "digest": "sha256:e53ecebb4142a93ed54a08ddaf18fdecf0236c507e7fe6d8c8af38ccaa11a328",
   "displayName": "ProgressIndicator",
   "format": "component-entry/v1",
   "frameworks": [

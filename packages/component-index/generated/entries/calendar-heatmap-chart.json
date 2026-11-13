@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CalendarHeatmapChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CalendarHeatmapChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:b7bf2bc71ad5dd80e56ee6b3c9949a7d70402b22768953e4b5692d5dc8bb18ae",
+      "digest": "sha256:166abc09b7741b3a3ae17ab7c3a2ff3a71f0452daeabef820efe6d894fa7fe9e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CalendarHeatmapChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CalendarHeatmapChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "GitHub-style calendar grid for visualizing daily activity.",
     "fr": "Grille calendrier GitHub-style pour visualiser l'activité quotidienne."
   },
-  "digest": "sha256:3748713e29598b8e3fb5665463b19836a31352358d5f6924763836dbfc08686a",
+  "digest": "sha256:61d89572b2a228e13ff66ca50a3269dcb7e63211f8119b631006ba9ac3e269ce",
   "displayName": "CalendarHeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

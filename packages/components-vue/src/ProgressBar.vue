@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -42,12 +43,15 @@ const displayValue = computed(() =>
 );
 const showValueSpan = computed(() => props.showValue && !props.indeterminate);
 const showHeader = computed(() => Boolean(props.label) || showValueSpan.value);
+defineSlots<{
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-progressBar', props.class)">
-    <div v-if="showHeader" class="st-progressBar__header">
-      <span v-if="props.label" class="st-progressBar__label">{{ props.label }}</span>
+  <div v-bind="{ ...($attrs), class: (classNames('st-progressBar', props.class)) }" >
+    <div v-if="showHeader || $slots.label" class="st-progressBar__header">
+      <span v-if="$slots['label'] || props.label" class="st-progressBar__label"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
       <span v-if="showValueSpan" class="st-progressBar__value" aria-hidden="true">{{ displayValue }}</span>
     </div>
     <div

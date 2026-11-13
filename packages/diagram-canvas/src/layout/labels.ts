@@ -159,6 +159,7 @@ export function relationRoute(view: ViewDocument, occurrence: OccurrenceRef): re
 
 /** One label of the row-pack path: its route, its measured size, and the box it must stay inside. */
 export interface PackedLabelEntry extends LabelEntry {
+  readonly segmentOrder?: "longest-first" | "route-order";
   /**
    * DC-2a BF-3: the content box of the expanded container both ends share.
    * The label box stays inside it; absent for an edge between two containers.
@@ -199,7 +200,7 @@ export function placePackedLabel(
   marginY: number = inset,
 ): LabelPlacement | undefined {
   const { width, height } = entry.size;
-  for (const segment of edgeLabelCandidates(entry.route)) {
+  for (const segment of entry.segmentOrder === "route-order" ? entry.route.slice(1).map((_, i) => i) : edgeLabelCandidates(entry.route)) {
     const a = entry.route[segment]!;
     const b = entry.route[segment + 1]!;
     const horizontal = a.y === b.y;

@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:07f4ef0821dc052d5764a69d8b1dc64e8794ae6032a7f09446b23d80edc3f50e",
-  "entryDigest": "sha256:2fcd86755ebf7ef2e386f6f1f6acbf029f5def09c9d054f4677bb42a89f3a97e",
+  "digest": "sha256:3df78ac979de14905421eeb6ab50473d9a174f3185359e9e29d816e1783cc5a4",
+  "entryDigest": "sha256:6a03eafef921b531f7c9c72fa2603c4ab19b2b78599fc9c90ffe23a8ff6e26e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -52,7 +52,7 @@
         "declarationPath": "packages/components-angular/dist/Form.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -107,11 +107,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/Form.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FormProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [
@@ -233,16 +233,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:d03eb3470f4b816faaf8c38584f044178924f60714e18100d181605f5860d93f",
+        "declarationDigest": "sha256:66b79fe1f6e6ce00bf494683b0063bbf6e4d0f96e96e2a0303f58b0a42828638",
         "declarationPath": "packages/components-vue/dist/Form.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormProps",

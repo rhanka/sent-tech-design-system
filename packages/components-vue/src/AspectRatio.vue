@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type AspectRatioProps = {
@@ -7,21 +7,20 @@ export type AspectRatioProps = {
   class?: string;
 };
 
-defineOptions({ name: 'AspectRatio' });
+defineOptions({ name: 'AspectRatio', inheritAttrs: false });
 const props = withDefaults(defineProps<AspectRatioProps>(), {
   ratio: '16 / 9',
   class: undefined,
 });
-const attrs = useAttrs();
 const aspectRatioStyle = computed(() => {
   const aspectRatio = typeof props.ratio === 'number' ? String(props.ratio) : props.ratio;
-  return { aspectRatio, ...(attrs.style as object | undefined) };
+  return { aspectRatio };
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <div
+  <div v-bind="{ ...$attrs, style: [aspectRatioStyle, $attrs.style] }"
     :class="classNames('st-aspectRatio', props.class)"
-    :style="aspectRatioStyle"
   ><slot /></div>
 </template>

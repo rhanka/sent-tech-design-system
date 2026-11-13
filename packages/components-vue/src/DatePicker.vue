@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { useSlots, useId, computed, onUnmounted, ref, watch } from 'vue';
 import { classNames } from './classNames.js';
-import { nextDatepickerId } from './datepickerId.js';
 
 export type DatePickerSize = 'sm' | 'md' | 'lg';
 
@@ -86,7 +86,7 @@ const emit = defineEmits<{
   change: [value: DatePickerValue];
 }>();
 
-const autoId = ref(nextDatepickerId());
+const autoId = ref(`st-datepicker-${useId()}`);
 const hostRef = ref<HTMLElement | null>(null);
 const open = ref(false);
 
@@ -278,20 +278,26 @@ const formattedValue = computed((): string => {
   return '';
 });
 
-const isInvalid = computed(() => props.invalid || Boolean(props.errorText));
+const slots = useSlots();
+const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 const monthLabel = computed(() => monthFormatter.value.format(new Date(viewYear.value, viewMonth.value, 1)));
+defineSlots<{
+  'error-text'?: () => unknown;
+  'helper-text'?: () => unknown;
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
-  <div ref="hostRef" v-bind="$attrs" :class="classNames('st-field', props.class)">
+  <div ref="hostRef" v-bind="{ ...($attrs), class: (classNames('st-field', props.class)) }" >
     <label class="st-field__control" :for="inputId">
-      <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
+      <span v-if="$slots['label'] || props.label" class="st-field__label"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
       <span :class="classNames('st-datepicker', `st-datepicker--${props.size}`)">
-        <input :id="inputId" type="text" readonly class="st-datepicker__control" :value="formattedValue" :placeholder="resolvedPlaceholder" :disabled="props.disabled" :aria-invalid="isInvalid ? 'true' : undefined" @click="toggleOpen" />
+        <input :id="inputId" type="text" readonly class="st-datepicker__control" :value="formattedValue" :placeholder="resolvedPlaceholder" :disabled="props.disabled" :aria-invalid="isInvalid() ? 'true' : undefined" @click="toggleOpen" />
         <button type="button" class="st-datepicker__trigger" :aria-label="resolvedOpenLabel" aria-haspopup="dialog" :aria-expanded="open ? 'true' : 'false'" :disabled="props.disabled" @click="toggleOpen"><span aria-hidden="true">📅</span></button>
       </span>
     </label>
-    <div v-if="open" class="st-datepicker__panel" role="dialog" :tabindex="-1" :aria-label="String(props.label ?? resolvedOpenLabel)" @keydown="onPanelKeyDown">
+    <div v-if="open" class="st-datepicker__panel" role="dialog" :tabindex="-1" :aria-label="String(scalarContent(props.label)) || resolvedOpenLabel" @keydown="onPanelKeyDown">
       <div class="st-datepicker__nav">
         <button type="button" class="st-datepicker__navBtn" :aria-label="resolvedPrevLabel" @click="previousMonth"><span aria-hidden="true">‹</span></button>
         <span class="st-datepicker__monthLabel" aria-live="polite">{{ monthLabel }}</span>
@@ -309,7 +315,7 @@ const monthLabel = computed(() => monthFormatter.value.format(new Date(viewYear.
         <button type="button" class="st-datepicker__todayBtn" :disabled="isOutOfBounds(new Date())" @click="() => pickDate(new Date())">{{ resolvedTodayLabel }}</button>
       </div>
     </div>
-    <span v-if="props.errorText" class="st-field__error">{{ props.errorText }}</span>
-    <span v-else-if="props.helperText" class="st-field__help">{{ props.helperText }}</span>
+    <span v-if="$slots['error-text'] || props.errorText" class="st-field__error"><slot v-if="$slots['error-text']" name="error-text" /><template v-else>{{ scalarContent(props.errorText) }}</template></span>
+    <span v-else-if="$slots['helper-text'] || props.helperText" class="st-field__help"><slot v-if="$slots['helper-text']" name="helper-text" /><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </div>
 </template>

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toast.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Toast.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:789c797ca5edcbfbb9708f1f0544bbe52b62b93aac9b1418b3a838f2437e4bc5",
+      "digest": "sha256:f374932437a0773d6e8119268b483a1778813525f4ee7787c878ad257a233e8e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toast.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Toast.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Ephemeral success/error notification.",
     "fr": "Notification éphémère success/error."
   },
-  "digest": "sha256:49ef3c3cfe6fc46a1077b004624b0b89edb3a1ca848f91644839e87a0d684b6c",
+  "digest": "sha256:2b3b682e6897536fb13b4c69eb8203875fa71188680ebdc5488eb0a662a0ebf7",
   "displayName": "Toast",
   "format": "component-entry/v1",
   "frameworks": [

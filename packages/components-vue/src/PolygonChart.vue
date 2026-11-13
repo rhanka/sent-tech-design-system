@@ -90,7 +90,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? points.value[hover
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-polygonChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-polygonChart', props.class)) }" >
     <div
       class="st-polygonChart__visual"
       role="img"

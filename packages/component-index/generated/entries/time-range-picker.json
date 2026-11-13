@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TimeRangePicker.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TimeRangePicker.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:60ab3f6b8af132316af58ec4df594178ceab46432e0ec0c2574b491bf17ac6e1",
+      "digest": "sha256:fc04fd5a0cbfa66488308bef2754728e224396213746010136967e64e3705497",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TimeRangePicker.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TimeRangePicker.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Time-range selector: relative presets or an absolute range.",
     "fr": "Sélecteur de plage temporelle : presets relatifs ou plage absolue."
   },
-  "digest": "sha256:628e7d0fe3028b744fa977c0750d6f4459a16ed2cc5588b5ff680c5775d4363a",
+  "digest": "sha256:ad9bc95d7b9edb72dc16e4d3cf4b0094fc01eceb6f896257b515369da442ef16",
   "displayName": "TimeRangePicker",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed, ref, useId } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TabItem = {
   id?: string;
   value?: string;
-  label: unknown;
+
+  /** @slot tab-label */
+  label?: unknown;
+
+  /** @slot panel */
   content?: unknown;
   disabled?: boolean;
 };
@@ -82,7 +87,7 @@ function keydown(event: KeyboardEvent, index: number) {
 </script>
 
 <template>
-  <section v-bind="$attrs" :class="classNames('st-tabs', props.class)">
+  <section v-bind="{ ...($attrs), class: (classNames('st-tabs', props.class)) }" >
     <div class="st-tabs__list" role="tablist" :aria-label="props.label">
       <button v-for="(item, index) in props.items" :key="ids[index]" :ref="el => setTabRef(el, index)"
         :id="`${uid}-tab-${ids[index]}`" type="button" role="tab"
@@ -91,12 +96,12 @@ function keydown(event: KeyboardEvent, index: number) {
         :tabindex="ids[index] === current ? 0 : -1" :disabled="item.disabled"
         @click="activateIndex(index)" @keydown="keydown($event, index)">
         <template v-if="$slots['tab-label']"><slot name="tab-label" :item="item" :index="index" /></template>
-        <template v-else>{{ item.label }}</template>
+        <template v-else>{{ scalarContent(item.label) }}</template>
       </button>
     </div>
     <div :id="`${uid}-panel-${ids[activeIndex]}`" class="st-tabs__panel" role="tabpanel" :aria-labelledby="`${uid}-tab-${ids[activeIndex]}`">
       <template v-if="$slots.panel"><slot name="panel" :item="active" /></template>
-      <template v-else>{{ active?.content }}</template>
+      <template v-else>{{ scalarContent(active?.content) }}</template>
     </div>
   </section>
 </template>

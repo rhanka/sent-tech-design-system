@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MediaContent.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MediaContent.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:38d0601fd187d9b4b026f9ee0783fa5406a1fc81442ddb812d1f0d7ed70d07a7",
+      "digest": "sha256:6d553280e77a8da9d641a1db091bc8b93060150ee2ab6ecd6156632325e171b6",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MediaContent.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MediaContent.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:b6cd8e9e53ead868aaf679462741d85b35da1601f6f05e1b54491b5abf347e76",
+  "digest": "sha256:90befdf8dc964c6dd4fc600407d64684fc42efe1749c53545ceff1519f3a7501",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [

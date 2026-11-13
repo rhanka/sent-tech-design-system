@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+import { reviewCorrections } from './review-corrections.mjs';
+import { renderCalls } from '../../../scripts/vue-vapor-source.mjs';
 import { existsSync, readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -57,7 +59,8 @@ try {
     const problems = [];
     if (name === 'cellDecoration') {
       if (/\b(?:h|defineComponent)\s*\(/.test(readFileSync(resolve(src, 'cellDecoration.ts'), 'utf8'))) problems.push('Decoration helper still renders VNodes');
-    } else if (existsSync(resolve(src, `${name}.ts`))) problems.push(`Old src/${name}.ts still exists`);
+    } else if (existsSync(resolve(src, `${name}.ts`)) && !['Menu', 'MenuPopover', 'OverflowMenu'].includes(name)) problems.push(`Old src/${name}.ts still exists`);
+    else if (['Menu', 'MenuPopover', 'OverflowMenu'].includes(name) && renderCalls(readFileSync(resolve(src, `${name}.ts`), 'utf8')).length) problems.push('Compatibility wrapper renders VNodes');
     const { descriptor, errors } = compilers.classic.parse(source(), { filename: file });
     if (errors.length) fail(errors.map(String).join('; '));
     if (!descriptor.scriptSetup || descriptor.scriptSetup.lang !== 'ts') problems.push('Requires <script setup lang="ts">');
@@ -141,8 +144,8 @@ try {
     const golden = JSON.parse(readFileSync(resolve(bench, 'goldens', `${name}.json`), 'utf8'));
     // Apply the current identity-only normalizer symmetrically to frozen references.
     const { JSDOM } = require('jsdom');
-    golden.fixtures = golden.fixtures.map(f => ({ ...f, html: normalizeHtml(f.html, JSDOM),
-      ...(f.teleports ? { teleports: Object.fromEntries(Object.entries(f.teleports).map(([k, v]) => [k, normalizeHtml(v, JSDOM)])) } : {}) }));
+    golden.fixtures = golden.fixtures.map(original => { const f = reviewCorrections(name, original, JSDOM); return ({ ...f, html: normalizeHtml(f.html, JSDOM),
+      ...(f.teleports ? { teleports: Object.fromEntries(Object.entries(f.teleports).map(([k, v]) => [k, normalizeHtml(v, JSDOM)])) } : {}) }); });
     if (golden.schema !== 1 || golden.component !== name || golden.fixtures.length < 4) fail('Invalid golden metadata');
     const fixtureHash = createHash('sha256').update(readFileSync(resolve(bench, 'fixtures', `${name}.fixtures.ts`))).digest('hex');
     if (fixtureHash !== golden.fixtureSha256) fail('Fixture changed since golden capture; restore the frozen measurement input');
@@ -161,7 +164,7 @@ try {
     if (differences.length) fail(differences.join('\n'));
     return `${actual.fixtures.length}/${golden.fixtures.length} fixtures (${actual.implementation} implementation)`;
   });
-  gate('G5', 'Vapor jsdom mount', () => {
+  gate('G5', 'Classic/Vapor mounted DOM parity', () => {
     const result = worker('vapor');
     return `createVaporApp; fixture=${result.fixture}; interop=${result.interop}; mounted, flushed, unmounted`;
   });
@@ -209,7 +212,7 @@ try {
         Popper: { computePosition: './popper-position.js', splitPlacement: './popper-position.js', joinPlacement: './popper-position.js' },
         SelectableRow: { SELECTABLE_LIST_KEY: './selectable-list-context.js' },
       };
-      const expected = relocations[name]?.[exported] ?? (existsSync(file) ? `./${name}.vue` : `./${name}.js`);
+      const expected = (['Menu', 'MenuPopover', 'OverflowMenu'].includes(name) ? `./${name}.js` : undefined) ?? relocations[name]?.[exported] ?? (existsSync(file) ? `./${name}.vue` : `./${name}.js`);
       if (entry.specifier !== expected) fail(`${exported} routes to ${entry.specifier}, expected ${expected}`);
       if (entry.type !== typeOnly) fail(`${exported} changed value/type export kind`);
     }

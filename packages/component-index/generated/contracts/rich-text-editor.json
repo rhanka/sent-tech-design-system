@@ -1,8 +1,8 @@
 {
   "componentId": "rich-text-editor",
   "contractSource": "derived",
-  "digest": "sha256:3e940cf12afa896714d1139c7ab0ae43879cb04b3d9bbd104234770473c7b859",
-  "entryDigest": "sha256:23a024f0f82e90c202e21bb09214414ded13bdf871cf9afdea3c5fa0f46e0903",
+  "digest": "sha256:69ef531a33262e59c76e3855e9c1bb48557e0c31654d6311e2beda3e5d409674",
+  "entryDigest": "sha256:3ee8a2621ba370f7ca956f65848a9c2cfdfa8cadaf12a191fc511f2c0cc668b4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/RichTextEditor.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RichTextEditorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/RichTextEditor.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RichTextEditorProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -1708,7 +1708,7 @@
         "declarationPath": "packages/components-svelte/dist/rich-text-editor/RichTextEditor.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RichTextEditorProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -3132,8 +3132,8 @@
                   },
                   "origin": {
                     "enum": [
-                      "external",
-                      "internal"
+                      "internal",
+                      "external"
                     ]
                   }
                 },

@@ -4,10 +4,11 @@
 export type EventEmitter<T> = {
   emit(value?: T): void;
 };
-export interface ɵɵComponentDeclaration<I, O, N> {
+export interface ɵɵComponentDeclaration<I, O, QueryFields, NgContentSelectors> {
   __inputs?: I;
   __outputs?: O;
-  __ngContent?: N;
+  __ngContent?: NgContentSelectors;
+  __queries?: QueryFields;
 }
 export type PaneProps = {
   open?: boolean;
@@ -26,6 +27,7 @@ export declare class Pane {
   static ɵcmp: ɵɵComponentDeclaration<
     { open: { alias: "open"; required: false }; title: { alias: "title"; required: false }; customInput: { alias: "custom"; required: false } },
     { closed: "closed"; changed: "changed" },
+    ["projectedMenu"],
     ["*", "[slot='footer']"]
   >;
 }
@@ -34,6 +36,7 @@ export declare class Broken {
   static ɵcmp: ɵɵComponentDeclaration<
     { label: { alias: "label"; required: false } },
     { done: "done" },
+    never,
     ["*"]
   >;
 }
@@ -41,3 +44,7 @@ export type BrokenProps = {
   label?: string;
   extra?: string;
 };
+
+export declare class QueriedWithoutProjection {
+  static ɵcmp: ɵɵComponentDeclaration<{}, {}, ["projectedMenu"], never>;
+}

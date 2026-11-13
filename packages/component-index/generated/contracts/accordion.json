@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:634c3b4a12fdcf67b9eeff7b42efbf151e85b081b5bb4dad52d5de923b0e3e91",
-  "entryDigest": "sha256:4a7adbcc46aace17b4f3eca81a2bd49440170e7a59b941ebe190320bab8012c4",
+  "digest": "sha256:df082da77377bedf21f72cfc851dddbb80ad3f9a560fb9e3007576a177844aec",
+  "entryDigest": "sha256:affbabc78392bb26920f77686a005d99255d8dfd2d69a2e7419a73d58b93d6df",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/Accordion.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AccordionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -219,11 +219,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AccordionProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/Accordion.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AccordionProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -364,8 +364,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -445,9 +444,29 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "item-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/AccordionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:1f8ee5816d120a9e611cb348bb1a19057882a5fbd5246fa1e7f010340a2921e4",
+        "declarationDigest": "sha256:1181bd8cc3556129717d691ab501ae435c3529b432e02153918b69d6d34d9483",
         "declarationPath": "packages/components-vue/dist/Accordion.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",

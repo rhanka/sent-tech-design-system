@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/OrganizationChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/OrganizationChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e64ba376af67dbce42e1f1ed5d0286bf4cc3c392cafd6f39c7645122dd2bccc2",
+      "digest": "sha256:8a5e74bd1b8731e358c97001058a0e4d89d458928b30b34d1e043a6a75f45984",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/OrganizationChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/OrganizationChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Hierarchical org chart: one box per node laid out by level, children centred under the parent, with orthogonal connectors.",
     "fr": "Organigramme hiérarchique : une boîte par nœud disposée par niveau, enfants centrés sous le parent, connecteurs orthogonaux."
   },
-  "digest": "sha256:a95ff2ffc91f4e2796e68502b661aeb73efa6e93b61fcd7842037700b6e8c1f1",
+  "digest": "sha256:2dda2753ba5c3d2b43c279c2949ce297bfa1dd673af8514da26c755622a8c4f3",
   "displayName": "OrganizationChart",
   "format": "component-entry/v1",
   "frameworks": [

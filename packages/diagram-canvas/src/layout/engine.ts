@@ -58,6 +58,7 @@ import {
   localIdOf,
   occurrenceRef,
   validateDocument,
+  validateFlows,
   viewRef,
   type Diagnostic,
   type EntityOccurrence,
@@ -984,7 +985,7 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
   // fixed-footprint measurement path. Without it the pinned compatibility
   // path below runs untouched, byte-identical (§4.8).
   if (options.presentation !== undefined) return layoutMeasured(document, options);
-  const diagnostics = validateDocument(document, { registry: options.registry });
+  const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",
@@ -1037,7 +1038,7 @@ export function layoutDocument(document: SemanticDocument, options: LayoutOption
       pans: width * zoom > target,
       phone,
     },
-    warnings: drawing.warnings,
+    warnings: [...drawing.warnings, ...Object.values(document.relations).filter((r) => r.type === "flow-step").map((r) => ({ code: "flow-layout-unsupported" as const, refs: [r.id], message: "numbered marks require measured layout; laid out as link" }))],
   };
 }
 
@@ -1079,7 +1080,7 @@ export function diagnoseLabels(
     };
   }
   if (options.presentation !== undefined) return diagnoseMeasuredLabels(document, options);
-  const diagnostics = validateDocument(document, { registry: options.registry });
+  const diagnostics = [...validateDocument(document, { registry: options.registry }), ...validateFlows(document)];
   if (hasErrors(diagnostics)) {
     return {
       status: "refused",

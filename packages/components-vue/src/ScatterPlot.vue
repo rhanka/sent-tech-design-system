@@ -250,7 +250,7 @@ function tickX(t: number): number {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-scatterPlot', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-scatterPlot', props.class)) }" >
     <div
       class="st-scatterPlot__visual"
       role="img"

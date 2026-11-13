@@ -1,8 +1,8 @@
 {
   "componentId": "table-of-contents",
   "contractSource": "derived",
-  "digest": "sha256:ecb04bdb5d1c479ca1633bddad326f48007c8268211c34f1f77ed7d056e37580",
-  "entryDigest": "sha256:958f564f827954e5a9a6f289d3cfd50865123153f18d1120be176cc39d8c046e",
+  "digest": "sha256:5339dff9cd23bed428d23bb6824eeccfbf5f31fb39b10c34b1aba41d12d9c709",
+  "entryDigest": "sha256:a37ca4352239a938cae2c004f46eaa3bfcc1a2d07444a88c79dd1f1d8e6e5e3f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/TableOfContents.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TableOfContentsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -133,7 +133,7 @@
         "declarationPath": "packages/components-react/dist/TableOfContents.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TableOfContentsProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -205,7 +205,7 @@
         "declarationPath": "packages/components-svelte/dist/TableOfContents.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableOfContentsProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

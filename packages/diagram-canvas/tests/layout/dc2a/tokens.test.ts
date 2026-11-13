@@ -36,7 +36,7 @@ const token = (group: "diagramCard" | "diagramZone" | "diagramScene", leaf: stri
   if (match === null) throw new Error(`token leaf ${group}.${leaf} not found in packages/tokens/src/component.ts`);
   return match[1]!;
 };
-const model = readFileSync(new URL("../../../../components-svelte/src/lib/diagramCardModel.ts", import.meta.url), "utf8");
+const model = readFileSync(new URL("../../../src/presentation/diagramCardModel.ts", import.meta.url), "utf8");
 
 describe("DC-2a tokens (AC-6)", () => {
   it("engine defaults equal the token values", () => {
@@ -59,7 +59,7 @@ describe("DC-2a tokens (AC-6)", () => {
     // a 20 px test label against a 31.2 px shipped one would place labels in
     // gutters the product cannot use.
     const shipped = /export const EDGE_LABEL_GEOMETRY = \{ size: (\d+), weight: \d+, lineHeight: (\d+) \} as const;/.exec(model);
-    expect(shipped, "EDGE_LABEL_GEOMETRY in components-svelte/src/lib/diagramCardModel.ts").not.toBeNull();
+    expect(shipped, "EDGE_LABEL_GEOMETRY in diagram-canvas/src/presentation/diagramCardModel.ts").not.toBeNull();
     expect(Number(shipped![1])).toBe(DEFAULT_EDGE_LABEL_FONT_SIZE);
     expect(Number(shipped![2])).toBe(DEFAULT_EDGE_LABEL_LINE_HEIGHT);
     expect(PINNED_LINE_HEIGHT["edge-label"]).toBe(DEFAULT_EDGE_LABEL_LINE_HEIGHT);

@@ -1,8 +1,8 @@
 {
   "componentId": "chat-thread",
   "contractSource": "derived",
-  "digest": "sha256:e9bbafc30fa20856af227b40e2795be2083deec2faaf617f55281c832cfa99a2",
-  "entryDigest": "sha256:dc6a29751272ec6901fcb73400d76dc36b96dc79a5c9de66550b1e0485db7984",
+  "digest": "sha256:6064a2181d0a3a693b7f3e6dab037a29bb858ed598760872cef66a38f79e1f36",
+  "entryDigest": "sha256:26461d9f2da9e8260d9435612bfa6ab9a566321bdb25aaa06f47069cbc972ebb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/ChatThread.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChatThreadProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -171,11 +171,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatThreadProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatThread.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatThreadProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -324,7 +324,6 @@
                 }
               },
               "required": [
-                "content",
                 "id"
               ],
               "type": "object"
@@ -342,6 +341,12 @@
           "sourceType": "unknown"
         },
         {
+          "name": "message.content",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
+        },
+        {
           "name": "messages[].content",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -354,10 +359,55 @@
         },
         {
           "name": "empty"
+        },
+        {
+          "name": "message-content",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "message": {
+                "additionalProperties": false,
+                "properties": {
+                  "content": {},
+                  "id": {
+                    "type": "string"
+                  },
+                  "role": {
+                    "enum": [
+                      "user",
+                      "assistant",
+                      "system",
+                      "tool"
+                    ]
+                  },
+                  "status": {
+                    "enum": [
+                      "error",
+                      "idle",
+                      "pending",
+                      "processing",
+                      "completed",
+                      "failed",
+                      "streaming",
+                      "sent"
+                    ]
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              }
+            },
+            "required": [
+              "message"
+            ],
+            "type": "object"
+          }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:581d310489afd50ec0cd9868036450dca0114c2cc140c7833791f898222f1a31",
+        "declarationDigest": "sha256:30e6203e3e0d2568dd171a92596e898b2a69e87bcf5cc3e5d682771b3c27fb58",
         "declarationPath": "packages/components-vue/dist/ChatThread.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatThreadProps",

@@ -1,8 +1,8 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:9718560684dadab6a28c9131076119d323808921a1e26596cc097862078a3f26",
-  "entryDigest": "sha256:5938fcd5fb6646bbed2869baa8ac75f27e43d63086a5d332e9cd4dc191a035ab",
+  "digest": "sha256:f4877bde46eb4ad0c5145eebf117adfe25d337623431d35290bd96531fb6a3cd",
+  "entryDigest": "sha256:a087ea840f5ae378ff0e16e260e65f508b4950c550718a6d6973340aaa237b22",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -88,7 +88,7 @@
         "declarationPath": "packages/components-angular/dist/Table.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -178,11 +178,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TableProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/Table.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TableProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -306,8 +306,7 @@
               "label": {}
             },
             "required": [
-              "key",
-              "label"
+              "key"
             ],
             "type": "object"
           },
@@ -383,7 +382,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:50f1797851fc23223dab58780eb4dafa7d2e8ad1ceb2a42a24700913b152b4b6",
+        "declarationDigest": "sha256:c7b629defb6497bc41aeebe0298ac1a91f8b67ce989469a3ac035dcc9e655fe5",
         "declarationPath": "packages/components-vue/dist/Table.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TableProps",

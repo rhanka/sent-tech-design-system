@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:37d963ffc1a67c236f2ef0320af10d349b8a136e63506074007b5645be5364f8",
-  "entryDigest": "sha256:b6cd8e9e53ead868aaf679462741d85b35da1601f6f05e1b54491b5abf347e76",
+  "digest": "sha256:815c7d34cef606584c1a8f759f0b4ffd7ee3d3dc7368ec30bc286ebbe29b3b60",
+  "entryDigest": "sha256:90befdf8dc964c6dd4fc600407d64684fc42efe1749c53545ceff1519f3a7501",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -68,7 +68,7 @@
         "declarationPath": "packages/components-angular/dist/MediaContent.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MediaContentProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -144,7 +144,7 @@
         "declarationPath": "packages/components-react/dist/MediaContent.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MediaContentProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -220,7 +220,7 @@
         "declarationPath": "packages/components-svelte/dist/MediaContent.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MediaContentProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -281,16 +281,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:a1c69f8e557c07df4ea7cba4045685342c234640791427ea66f905a3066d3536",
+        "declarationDigest": "sha256:7d1dc2ab89a1a850a78730fd24b8194c2fb700e63beb50e3a4eca9a211bf5a8a",
         "declarationPath": "packages/components-vue/dist/MediaContent.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MediaContentProps",

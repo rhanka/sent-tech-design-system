@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { useSlots, useId, computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type MultiSelectOption = {
   value: string;
-  label: unknown;
+  label?: unknown;
   disabled?: boolean;
 };
 
@@ -46,6 +47,7 @@ const emit = defineEmits<{
   'update:modelValue': [values: string[]];
 }>();
 
+const labelId = `st-multiSelect-${useId()}-label`;
 const localOpen = ref(false);
 const localSelected = ref<string[]>(props.value ?? props.values ?? props.selected ?? []);
 const query = ref('');
@@ -56,7 +58,7 @@ const controlled = computed(() => props.value !== undefined || props.values !== 
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase();
   if (!q) return props.options;
-  return props.options.filter((opt) => String(opt.label).toLowerCase().includes(q));
+  return props.options.filter((opt) => String(scalarContent(opt.label)).toLowerCase().includes(q));
 });
 const isFr = computed(() => (props.locale ?? 'fr-FR').toLowerCase().startsWith('fr'));
 const resolvedPlaceholder = computed(() => props.placeholder ?? (isFr.value ? 'Sélectionner des éléments' : 'Select items'));
@@ -69,10 +71,11 @@ const selectedOptions = computed(() =>
     .map((value) => props.options.find((opt) => opt.value === value))
     .filter((opt): opt is MultiSelectOption => Boolean(opt)),
 );
-const isInvalid = computed(() => props.invalid || Boolean(props.errorText));
+const slots = useSlots();
+const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 const caretIconClass = computed(() => {
   const custom = `st-multiSelect__caretIcon${isOpen.value ? ' st-multiSelect__caretIcon--open' : ''}`;
-  return `lucide ${custom} lucide-chevron-down-icon lucide-chevron-down ${custom}`;
+  return `lucide ${custom} lucide-chevron-down-icon lucide-chevron-down`;
 });
 
 function setOpen(val: boolean) {
@@ -104,24 +107,31 @@ function onKeydown(event: KeyboardEvent) {
 function onSearchInput(event: Event) {
   query.value = (event.currentTarget as HTMLInputElement).value;
 }
+defineSlots<{
+  'option-label'?: (scope: { option: MultiSelectOption }) => unknown;
+  'error-text'?: () => unknown;
+  'helper-text'?: () => unknown;
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-field', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-field', props.class)) }"
+
     role="group"
-    :aria-label="props.label ? String(props.label) : undefined"
+    :aria-label="String(scalarContent(props.label)) || undefined"
+    :aria-labelledby="$slots.label ? labelId : undefined"
     @keydown="onKeydown"
   >
-    <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
+    <span v-if="$slots['label'] || props.label" class="st-field__label" :id="$slots.label ? labelId : undefined"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
     <span v-if="selectedOptions.length > 0" class="st-multiSelect__tags">
       <span v-for="option in selectedOptions" :key="option.value" class="st-multiSelect__tag">
-        <span class="st-multiSelect__tagLabel">{{ String(option.label) }}</span>
+        <span class="st-multiSelect__tagLabel"><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(option.label) }}</template></span>
         <button
           type="button"
           class="st-multiSelect__tagRemove"
-          :aria-label="`${resolvedRemoveLabel} ${String(option.label)}`"
+          :aria-label="`${resolvedRemoveLabel} ${String(scalarContent(option.label))}`"
           :disabled="props.disabled"
           @click="removeOption(option.value)"
         >
@@ -129,10 +139,12 @@ function onSearchInput(event: Event) {
         </button>
       </span>
     </span>
-    <span :class="classNames('st-multiSelect', `st-multiSelect--${props.size}`)" :data-invalid="isInvalid ? 'true' : undefined">
+    <span :class="classNames('st-multiSelect', `st-multiSelect--${props.size}`)" :data-invalid="isInvalid() ? 'true' : undefined">
       <button
         type="button"
         class="st-multiSelect__trigger"
+        :aria-labelledby="$slots.label ? labelId : undefined"
+        :aria-invalid="isInvalid() ? 'true' : undefined"
         aria-haspopup="listbox"
         :aria-expanded="isOpen"
         :disabled="props.disabled"
@@ -158,7 +170,8 @@ function onSearchInput(event: Event) {
       <div
         class="st-multiSelect__list"
         role="listbox"
-        :aria-label="props.listLabel ?? (props.label ? String(props.label) : 'Options')"
+        :aria-label="props.listLabel ?? (String(scalarContent(props.label)) || ($slots.label ? undefined : 'Options'))"
+        :aria-labelledby="!props.listLabel && $slots.label ? labelId : undefined"
         aria-multiselectable="true"
       >
         <div v-if="filtered.length === 0" class="st-multiSelect__empty">{{ resolvedNoResultsLabel }}</div>
@@ -175,11 +188,11 @@ function onSearchInput(event: Event) {
           @click="toggleOption(option)"
         >
           <span class="st-multiSelect__check" aria-hidden="true">{{ selected.includes(option.value) ? '✓' : '' }}</span>
-          <span>{{ String(option.label) }}</span>
+          <span><slot v-if="$slots['option-label']" name="option-label" :option="option" /><template v-else>{{ scalarContent(option.label) }}</template></span>
         </button>
       </div>
     </div>
-    <span v-if="props.errorText" class="st-field__error">{{ props.errorText }}</span>
-    <span v-else-if="props.helperText" class="st-field__help">{{ props.helperText }}</span>
+    <span v-if="$slots['error-text'] || props.errorText" class="st-field__error"><slot v-if="$slots['error-text']" name="error-text" /><template v-else>{{ scalarContent(props.errorText) }}</template></span>
+    <span v-else-if="$slots['helper-text'] || props.helperText" class="st-field__help"><slot v-if="$slots['helper-text']" name="helper-text" /><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </div>
 </template>

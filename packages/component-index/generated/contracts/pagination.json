@@ -1,8 +1,8 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:2cf59aaddf1a85f3cc9082c1d38ebbf51b20dc4205b0b131ed9981a46daad26e",
-  "entryDigest": "sha256:928108b28a9a0b096f8f288d2d6e38a1dbb8f5065ba174b8e27342430f37f1ab",
+  "digest": "sha256:6f092a7b60e431d1b8d540dd26bcc1b9a7fb449da3366fa9e16a1cc42612afae",
+  "entryDigest": "sha256:9e59d4fd3d5d36c001424f3179ef6152586625bad1000f8537136b85ded77ffc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Pagination.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PaginationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -117,11 +117,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PaginationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-svelte/dist/Pagination.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

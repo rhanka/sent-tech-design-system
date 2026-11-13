@@ -1,8 +1,8 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:e6edaa0e25d4fbba2e0d4c7a1bccbb832b73456ed2515958f5923f56106ff91a",
-  "entryDigest": "sha256:5b79f4311c4a8a4430212836b324754d92385529ca07be1887d2bb5ead691126",
+  "digest": "sha256:17fff3d0d58a9cea5059a1e58767bad8c66843615b19a792cf4353d4168f77d0",
+  "entryDigest": "sha256:5ea314154df81b91abcac3168c960f46df8e50b2d1bc1c5f42b9a36863bc33ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/Portal.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PortalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -104,7 +104,7 @@
         "declarationPath": "packages/components-react/dist/Portal.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PortalProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -158,7 +158,7 @@
         "declarationPath": "packages/components-svelte/dist/Portal.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PortalProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

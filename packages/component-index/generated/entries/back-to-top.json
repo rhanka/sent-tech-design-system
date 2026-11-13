@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BackToTop.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BackToTop.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d902fa6faa0b252eb8af7bd45018f5b4e37480e8af5063ac5074cbe8eda57050",
+      "digest": "sha256:6774d673b2f819a90eb2750b082f963352a657dc7b5fa5a33a023cfb468fc0f1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BackToTop.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BackToTop.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Quick-access button to return to the top after scrolling.",
     "fr": "Bouton d’accès rapide qui remonte vers le haut de la page au défilement."
   },
-  "digest": "sha256:7cee6eb357469ea7722795f0cb7aa8f9c14bce43f1a2ab66e53edf5546063de6",
+  "digest": "sha256:06c2f90727c4ad0eb1f9b33c132eb0f5ee37cac99e743d80b96325223f5063f5",
   "displayName": "BackToTop",
   "format": "component-entry/v1",
   "frameworks": [

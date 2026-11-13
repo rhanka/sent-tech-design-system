@@ -33,13 +33,13 @@ function handleClear(e: MouseEvent) {
 
 <template>
   <span
-    v-bind="$attrs"
-    :class="classNames(
+    v-bind="{ ...($attrs), class: (classNames(
       'st-selectionChip',
       `st-selectionChip--${props.tone}`,
       props.disabled ? 'st-selectionChip--disabled' : undefined,
       props.class,
-    )"
+    )) }"
+
     :aria-disabled="props.disabled ? 'true' : undefined"
   >
     <span class="st-selectionChip__label">{{ props.label }}</span>

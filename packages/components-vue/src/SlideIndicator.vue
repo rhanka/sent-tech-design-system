@@ -44,7 +44,7 @@ function select(index: number) {
   if (index < 0 || index >= props.count || index === current.value) return;
   emit('update:modelValue', index);
   emit('change', index);
-  props.onChange?.(index);
+
 }
 
 function onKeyDown(event: KeyboardEvent, index: number) {
@@ -76,13 +76,13 @@ function onKeyDown(event: KeyboardEvent, index: number) {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames(
+    v-bind="{ ...($attrs), class: (classNames(
       'st-slideIndicator',
       `st-slideIndicator--${props.size}`,
       `st-slideIndicator--${props.variant}`,
       props.class,
-    )"
+    )) }"
+
     role="group"
     :aria-label="props.label"
   >

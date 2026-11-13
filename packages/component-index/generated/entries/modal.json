@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Modal.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Modal.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:f0a084f2223591ee3b3074bef014ad9490c2e076fbb2d0921320303362d8c79d",
+      "digest": "sha256:0c7c92a976b2ae533b15e727821196cc102bdfc1d8f9914155e85489d592aeb7",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Modal.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Modal.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:e5980f731fac8139cc7a9c9ac4f26a8b4102a98a4589ed066785de89588c3e47",
+  "digest": "sha256:7e1d6a3f1188fa3cef0890ab1f93fdf596a285cf49c20f50b0c353c6739fc923",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

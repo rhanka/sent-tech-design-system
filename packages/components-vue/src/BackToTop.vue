@@ -60,9 +60,9 @@ function goTop() {
 
 <template>
   <button
-    v-bind="$attrs"
+    v-bind="{ ...($attrs), class: (classNames('st-backToTop', props.class)) }"
     type="button"
-    :class="classNames('st-backToTop', props.class)"
+
     :aria-label="props.label"
     :aria-hidden="hidden ? 'true' : undefined"
     :aria-live="hidden ? 'polite' : undefined"

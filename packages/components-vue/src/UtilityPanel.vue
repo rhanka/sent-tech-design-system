@@ -27,8 +27,8 @@ defineSlots<{
 
 <template>
   <aside
-    v-bind="$attrs"
-    :class="classNames('st-utilityPanel', `st-utilityPanel--${props.mode}`, `st-utilityPanel--${props.side}`, props.collapsed && 'st-utilityPanel--collapsed', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-utilityPanel', `st-utilityPanel--${props.mode}`, `st-utilityPanel--${props.side}`, props.collapsed && 'st-utilityPanel--collapsed', props.class)) }"
+
     :aria-label="props.label ?? props.title ?? 'Utility panel'"
     :data-mode="props.mode"
     :data-side="props.side"

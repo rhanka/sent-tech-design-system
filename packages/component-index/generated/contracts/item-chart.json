@@ -1,8 +1,8 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:675d6ea657c2d3a123e898605870868e87600724905471b8212b6420bb2b1ebd",
-  "entryDigest": "sha256:3b21229f7f68b0734e1b8babbdc596eb3d1fbf694dc62fd003fb20469bbe008a",
+  "digest": "sha256:bcc92c7398b19fcc4c0b46b84f47b9331d1ecf1c60c5ecf29d63de94664987b0",
+  "entryDigest": "sha256:07e32f084b6e289ba5c35e61deceba21262363ec0d270fd70c24b4a71922f650",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/ItemChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ItemChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/ItemChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ItemChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/ItemChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ItemChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

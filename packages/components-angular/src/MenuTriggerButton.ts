@@ -14,6 +14,7 @@ export type MenuTriggerButtonProps = {
   variant?: MenuTriggerButtonVariant;
   disabled?: boolean;
   class?: string;
+  ariaControls?: string;
 };
 
 @Component({
@@ -26,6 +27,7 @@ export type MenuTriggerButtonProps = {
       [class]="hostClass"
       aria-haspopup="menu"
       [attr.aria-expanded]="isOpen"
+      [attr.aria-controls]="ariaControls ?? null"
       [disabled]="disabled ?? false"
     >
       <ng-content>
@@ -57,6 +59,8 @@ export class MenuTriggerButton {
   @NgInput() variant: MenuTriggerButtonVariant = "ghost";
   @NgInput() disabled = false;
   @NgInput("class") classInput?: string;
+  /** Root-menu id set by the host while open (§2.2, D10, AC-33). */
+  @NgInput() ariaControls?: string;
 
   get isOpen(): boolean {
     return this.open ?? this.expanded ?? false;

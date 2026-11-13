@@ -53,7 +53,7 @@ const barStyle = computed<Record<string, string>>(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-colorScaleBar', `st-colorScaleBar--${orientation}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-colorScaleBar', `st-colorScaleBar--${orientation}`, props.class)) }" >
     <span v-if="props.label" class="st-colorScaleBar__label">{{ props.label }}</span>
     <div class="st-colorScaleBar__track">
       <span v-if="hasEndLabels" class="st-colorScaleBar__end st-colorScaleBar__end--max">{{ props.max ?? '' }}</span>

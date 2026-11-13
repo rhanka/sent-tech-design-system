@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:dba519b11b32176f1a6bc8433742b6a5f97c88104e05d04941e5dcd013f6eb99",
-  "entryDigest": "sha256:233a14c6106b33b6164d8639d36479f1386174cfa87f99dd477de43d86187638",
+  "digest": "sha256:1ba47040f43b9f810d18b99fc175b1181bb413e4c51a9d7e68a99f13bee070ea",
+  "entryDigest": "sha256:a5cb6bfd70695a8198b9c87d1a5944bfb9c90dcaf5fce36187d3758a08c8fa8c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/UnorderedList.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -117,11 +117,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "UnorderedListProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-svelte/dist/UnorderedList.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "UnorderedListProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -231,7 +231,6 @@
             "type": "boolean"
           },
           "path": {
-            "description": "Internal recursive slot address.",
             "items": {
               "type": "number"
             },
@@ -284,7 +283,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7ccd4266c3136612770d6205e4f5c38de499702de05c9aa7c56aafc4b3f611b1",
+        "declarationDigest": "sha256:db5557d315da6b874edf01e369ff8e322ee14af6a04a388caa125a4424521523",
         "declarationPath": "packages/components-vue/dist/UnorderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UnorderedListProps",

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ParallelCoordinatesChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ParallelCoordinatesChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:0cc3600824a96a98559822ec242eba9a527a76e9aa7c5497793e7ba38f18141c",
+      "digest": "sha256:1d287f91d95d2dcd1f8e24a5cbf23a0b17a70eacd761fb76906c16d82ce33967",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ParallelCoordinatesChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ParallelCoordinatesChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Parallel coordinates for comparing multi-dimensional records.",
     "fr": "Axes parallèles pour comparer des enregistrements multidimensionnels."
   },
-  "digest": "sha256:5e8724e105fb4e9c5230f3aba7309b772de0f3fe4b269ba30769b64576879e2f",
+  "digest": "sha256:eafd3701901e07adc44dfcb585c4d6cfabb42cd9c14ba5269014a7f2b11a2aab",
   "displayName": "ParallelCoordinatesChart",
   "format": "component-entry/v1",
   "frameworks": [

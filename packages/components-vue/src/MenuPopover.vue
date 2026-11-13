@@ -1,11 +1,7 @@
-<script lang="ts">
-let menuPopoverInstanceCounter = 0;
-</script>
-
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
 import type { MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
-import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
+import { useId, useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import Menu from "./Menu.vue";
 import type { MenuActionItem, MenuItem } from "./Menu.js";
 import { MENU_HOST_KEY, type SubMenuSide } from "./menu-cascade.js";
@@ -69,6 +65,8 @@ function treeHasCascade(list: MenuItem[]): boolean {
 
 defineSlots<MenuLabelSlots & { default?: () => unknown }>();
 
+/** @attrsStyle owned-last */
+// Positioning follows caller styles, matching the original explicit SFC merge.
 defineOptions({ name: "MenuPopover", inheritAttrs: false });
 const props = defineProps({
   items: { type: Array as () => MenuItem[], default: () => [] },
@@ -94,7 +92,7 @@ const props = defineProps({
 const emit = defineEmits(["update:open", "select"]);
 const attrs = useAttrs();
 
-const rootMenuId = `st-menupopover-${++menuPopoverInstanceCounter}`;
+const rootMenuId = `st-menupopover-${useId()}`;
 const localOpen = ref(props.open ?? false);
 const panelRef = ref<HTMLElement | null>(null);
 // Reported by the inner Menu via setHasCascade (and reset when items lose
@@ -391,11 +389,7 @@ onUnmounted(teardown);
 <template>
   <div
     v-if="isOpen()"
-    v-bind="attrs"
-    ref="panelRef"
-    role="dialog"
-    :aria-label="props.label"
-    :class="[
+    v-bind="{ ...(attrs), class: ([
       'st-menuPopover',
       'st-menuPopover--' + effectivePlacement(props.placement, flipped),
       {
@@ -404,12 +398,16 @@ onUnmounted(teardown);
         'st-menuPopover--alignCenter': alignCenter,
       },
       props.class,
-    ]"
-    :style="{
+    ]), style: [attrs.style, {
       top: top + 'px',
       left: left + 'px',
       maxHeight: maxHeight ? maxHeight + 'px' : undefined,
-    }"
+    }] }"
+    ref="panelRef"
+    role="dialog"
+    :aria-label="props.label"
+
+
   >
     <Menu
       v-if="props.items?.length"
@@ -419,6 +417,7 @@ onUnmounted(teardown);
       :submenu-side="props.submenuSide"
       @select="handleMenuSelect"
     >
+<template v-if="$slots['item-icon']" #item-icon="scope"><slot name="item-icon" v-bind="scope" /></template>
       <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
       <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
     </Menu>

@@ -66,5 +66,5 @@ const classes = computed(() => classNames(
 </script>
 
 <template>
-  <component :is="tag" v-bind="$attrs" :class="classes"><slot /></component>
+  <component :is="tag" v-bind="{ ...($attrs), class: (classes) }" ><slot /></component>
 </template>

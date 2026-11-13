@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:d3f03e4e0abe3e6861fdb00b39964a64c39c6cab4467e881136b3e808b7b017b",
-  "entryDigest": "sha256:0af1b2bc1c494a63bd85a40966651c3e3dc5555d5b4a79efa1bb2009a99cc0b5",
+  "digest": "sha256:ccfb095625a35f088c75ff9385b7dfebb8d4f7d8c387b9d3195124f7bdaa1122",
+  "entryDigest": "sha256:48b700024dbc910ed05618dc81769ff6f08904f5238d6b81eabbd3676a52cb91",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -125,7 +125,7 @@
         "declarationPath": "packages/components-angular/dist/FileUploader.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -273,11 +273,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -418,7 +418,7 @@
         "declarationPath": "packages/components-svelte/dist/FileUploader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FileUploaderProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [

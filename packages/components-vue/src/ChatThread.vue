@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { computed, nextTick, onMounted, onUnmounted, ref, useAttrs, watch } from 'vue';
 import { classNames } from './classNames.js';
 import ChatMessage from './ChatMessage.vue';
@@ -10,9 +11,13 @@ export type ChatThreadProps = {
   messages?: Array<{
     id: string;
     role?: ChatMessageRole;
-    content: unknown;
+
+  /** @slot message-content */
+  content?: unknown;
     status?: ChatMessageStatus;
   }>;
+
+  /** @slot empty */
   emptyLabel?: unknown;
   class?: string;
 };
@@ -26,6 +31,7 @@ const props = withDefaults(defineProps<ChatThreadProps>(), {
   class: undefined,
 });
 defineSlots<{
+  'message-content'?: (scope: { message: NonNullable<ChatThreadProps['messages']>[number] }) => unknown;
   default?: () => unknown;
   empty?: () => unknown;
 }>();
@@ -66,9 +72,9 @@ const ariaLabel = computed(() => props.label ?? (attrs['aria-label'] as string |
 
 <template>
   <section
-    v-bind="$attrs"
+    v-bind="{ ...($attrs), class: (classNames('st-chatThread', props.class)) }"
     ref="sectionEl"
-    :class="classNames('st-chatThread', props.class)"
+
     role="log"
     :aria-label="ariaLabel"
     aria-live="polite"
@@ -82,7 +88,7 @@ const ariaLabel = computed(() => props.label ?? (attrs['aria-label'] as string |
           :role="message.role"
           :status="message.status"
           :content="message.content"
-        />
+        ><template v-if="$slots['message-content']" #default><slot name="message-content" :message="message" /></template></ChatMessage>
       </template>
       <template v-else-if="$slots.default"><slot /></template>
     </div>
@@ -91,7 +97,7 @@ const ariaLabel = computed(() => props.label ?? (attrs['aria-label'] as string |
       class="st-chatThread__empty"
     >
       <template v-if="$slots.empty"><slot name="empty" /></template>
-      <template v-else>{{ props.emptyLabel }}</template>
+      <template v-else>{{ scalarContent(props.emptyLabel) }}</template>
     </div>
   </section>
 </template>

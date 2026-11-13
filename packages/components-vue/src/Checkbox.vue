@@ -16,7 +16,7 @@ export type CheckboxProps = {
   class?: string;
 };
 
-defineOptions({ name: 'Checkbox' });
+defineOptions({ name: 'Checkbox', inheritAttrs: false });
 const props = withDefaults(defineProps<CheckboxProps>(), {
   helperText: undefined, description: undefined, invalid: false, modelValue: undefined,
   checked: undefined, disabled: false, name: undefined, value: undefined, class: undefined,
@@ -45,7 +45,7 @@ function onChange(event: Event) {
   emit('change', event);
 }
 const controlProps = computed(() => ({
-  ...attrs,
+
   class: 'st-choice__input',
   type: 'checkbox',
   name: props.name,
@@ -62,7 +62,7 @@ const controlProps = computed(() => ({
   <label
     :class="classNames('st-choice', 'st-choice--checkbox', props.description ? 'st-choice--described' : undefined, props.class)"
   >
-    <input v-bind="controlProps" />
+    <input v-bind="{ ...$attrs, ...controlProps }" />
     <span class="st-choice__content">
       <span class="st-choice__label">{{ props.label }}</span>
       <span v-if="props.description" class="st-choice__description" :id="descriptionId">{{ props.description }}</span>

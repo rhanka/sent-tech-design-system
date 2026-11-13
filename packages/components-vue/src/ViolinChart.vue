@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 
 export type ViolinChartTone =
@@ -61,14 +61,14 @@ function quantile(sorted: number[], q: number): number {
   return next !== undefined ? sorted[base] + rest * (next - sorted[base]) : sorted[base];
 }
 
-defineOptions({ name: 'ViolinChart' });
+defineOptions({ name: 'ViolinChart', inheritAttrs: false });
 const props = withDefaults(defineProps<ViolinChartProps>(), {
   bins: 20, quartiles: true, width: 480, height: 280, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-violinChart', props.class),
 }));
 
@@ -186,7 +186,7 @@ function violinClass(violin: { tone: string }, index: number) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-violinChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <line class="st-violinChart__axis" :x1="MARGIN.left" :x2="MARGIN.left" :y1="MARGIN.top" :y2="height - MARGIN.bottom" />

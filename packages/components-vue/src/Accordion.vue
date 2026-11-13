@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
+import { scalarContent } from './slotContent.js';
 
 export type AccordionItem = {
   id?: string;
   title: string;
-  content: string | (() => unknown);
+  /** @slot item-content */
+  content?: string | (() => unknown);
   disabled?: boolean;
 };
 
@@ -38,6 +40,7 @@ const props = withDefaults(defineProps<AccordionProps>(), {
   class: undefined,
 });
 const emit = defineEmits<{ change: [value: string[]] }>();
+defineSlots<{ 'item-content'?: (scope: { item: AccordionItem; index: number }) => unknown }>();
 
 const localOpen = ref<string[]>(props.defaultOpenIds ?? props.open ?? []);
 const open = computed(() => props.openIds ?? localOpen.value);
@@ -59,15 +62,15 @@ function toggle(id: string) {
   emit('change', next);
 }
 
-function contentText(item: AccordionItem): string {
-  return typeof item.content === 'function' ? String(item.content()) : item.content;
+function contentText(item: AccordionItem): string | number {
+  return scalarContent(typeof item.content === 'function' ? item.content() : item.content);
 }
 </script>
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-accordion', `st-accordion--${props.size}`, `st-accordion--align-${props.align}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-accordion', `st-accordion--${props.size}`, `st-accordion--align-${props.align}`, props.class)) }"
+
   >
     <div
       v-for="(item, index) in props.items"
@@ -100,7 +103,7 @@ function contentText(item: AccordionItem): string {
         :id="`st-accordion-panel-${idFrom(item, index, 'accordion')}`"
         role="region"
         :aria-labelledby="`st-accordion-trigger-${idFrom(item, index, 'accordion')}`"
-      >{{ contentText(item) }}</div>
+      ><slot name="item-content" :item="item" :index="index">{{ contentText(item) }}</slot></div>
     </div>
   </div>
 </template>

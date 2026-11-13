@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
@@ -14,7 +14,7 @@ export type RowProps = {
   as?: string;
   class?: string;
 };
-defineOptions({ name: 'Row' });
+defineOptions({ name: 'Row', inheritAttrs: false });
 const props = withDefaults(defineProps<RowProps>(), {
   gutter: 4,
   align: undefined,
@@ -24,7 +24,6 @@ const props = withDefaults(defineProps<RowProps>(), {
   class: undefined,
 });
 defineSlots<{ default?: () => unknown }>();
-const attrs = useAttrs();
 const bindings = computed(() => {
   const gap = spacingToken(props.gutter) ?? '0';
   const style = {
@@ -33,13 +32,12 @@ const bindings = computed(() => {
     justifyContent: justifyValue(props.justify),
     gap,
     '--st-row-gutter': gap,
-    ...(attrs.style as CSSProperties | undefined),
   } as CSSProperties;
 
-  return { ...attrs, class: classNames('st-row', props.class), style };
+  return {  class: classNames('st-row', props.class), style };
 });
 </script>
 
 <template>
-  <component :is="props.as" v-bind="bindings"><slot /></component>
+  <component :is="props.as" v-bind="{ ...$attrs, ...bindings, style: [bindings.style, $attrs.style] }"><slot /></component>
 </template>

@@ -16,8 +16,9 @@ defineOptions({ name: 'Hidden', inheritAttrs: false });
 const props = withDefaults(defineProps<HiddenProps>(), {
   below: undefined, above: undefined, as: 'div', class: undefined,
 });
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <component :is="props.as" v-bind="$attrs" :class="classNames('st-hidden', props.below && `st-hidden--below-${props.below}`, props.above && `st-hidden--above-${props.above}`, props.class)"><slot /></component>
+  <component :is="props.as" v-bind="{ ...($attrs), class: (classNames('st-hidden', props.below && `st-hidden--below-${props.below}`, props.above && `st-hidden--above-${props.above}`, props.class)) }" ><slot /></component>
 </template>

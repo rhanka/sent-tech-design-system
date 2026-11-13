@@ -23,7 +23,7 @@ defineSlots<{ default?: () => unknown }>();
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-dashboard', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-dashboard', props.class)) }" >
     <div class="st-dashboard__layout">
       <aside class="st-dashboard__aside">
         <div v-if="props.appTitle" class="st-dashboard__app-title">{{ props.appTitle }}</div>

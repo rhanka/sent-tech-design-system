@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TableOfContents.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TableOfContents.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:387fad0726d5c42cda4c6e851566f6c1147746323adc0a620305fb81ae3b4b3e",
+      "digest": "sha256:6398ae08a2606100fccf63aa413edfaba35cfa970337770ad5feab7b1b6aa5a4",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/TableOfContents.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TableOfContents.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Page route menu with anchor links by level.",
     "fr": "Menu d’itinéraire de page avec liens ancres par niveau."
   },
-  "digest": "sha256:958f564f827954e5a9a6f289d3cfd50865123153f18d1120be176cc39d8c046e",
+  "digest": "sha256:a37ca4352239a938cae2c004f46eaa3bfcc1a2d07444a88c79dd1f1d8e6e5e3f",
   "displayName": "TableOfContents",
   "format": "component-entry/v1",
   "frameworks": [

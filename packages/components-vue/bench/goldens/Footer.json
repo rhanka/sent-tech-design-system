@@ -27,10 +27,14 @@
     {
       "id": "custom-attrs",
       "html": "<footer aria-label=\"Footer\" class=\"st-footer consumer\" data-bench=\"footer\" style=\"color:red;\"><div class=\"st-footer__top\"><div class=\"st-footer__brand\">Acme</div><div class=\"st-footer__columns\"></div></div></footer>"
+    },
+    {
+      "id": "rich-links",
+      "html": "<footer class=\"st-footer\"><div class=\"st-footer__top\"><div class=\"st-footer__columns\"><nav><h2><strong>Title</strong></h2><a href=\"/\"><em>Link</em></a></nav></div></div><div class=\"st-footer__bottom\"><nav aria-label=\"Legal links\" class=\"st-footer__legal\"><a href=\"/legal\"><em>Legal</em></a></nav></div></footer>"
     }
   ],
   "sourceSha256": "4e8d833a7eb998a8157d6210e0d0b0e89ed645b5a68c5b50749a99580e78f0e1",
-  "fixtureSha256": "a2ca08fff62259720908a9bcc2a9bb4a069d575319d182ed4e1de3e2df113787",
+  "fixtureSha256": "f2098dca480485db5bdf5d06edc37ce1af4f5a4316a03276519b2f75a7133e53",
   "publicExports": [
     {
       "name": "Footer",

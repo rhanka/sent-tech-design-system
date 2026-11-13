@@ -23,10 +23,14 @@
     {
       "id": "custom",
       "html": "<section aria-label=\"Thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread consumer\" data-bench=\"thread\" role=\"log\" style=\"color:red;\"><div class=\"st-chatThread__list\"><article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\">Hi</div></div></div></article></div></section>"
+    },
+    {
+      "id": "rich-messages",
+      "html": "<section aria-label=\"Chat thread\" aria-live=\"polite\" aria-relevant=\"additions text\" class=\"st-chatThread\" role=\"log\"><div class=\"st-chatThread__list\"><article class=\"st-chatMessage st-chatMessage--assistant st-chatMessage--completed\" data-align=\"start\" data-role=\"assistant\" data-status=\"completed\"><div class=\"st-chatMessage__body\"><div class=\"st-chatMessage__bubble\"><div class=\"st-chatMessage__content\"><strong>Hello</strong></div></div></div></article></div></section>"
     }
   ],
   "sourceSha256": "80e47b51d6fb8da047260a11107f2f55a60175d635049e087bcfc84d10c56109",
-  "fixtureSha256": "dfe316631d84fc98a4c67674b0866b272c979384b030a6db19104368fde9e2ee",
+  "fixtureSha256": "7d020c9597f945fd2b5fa274d3229586678f0454e98572195532ef60bfcc7524",
   "publicExports": [
     {
       "name": "ChatThread",
@@ -36,5 +40,11 @@
       "name": "ChatThreadProps",
       "typeOnly": true
     }
-  ]
+  ],
+  "referenceDependencies": {
+    "ChatMessage": {
+      "sourceRevision": "99f8cf43943f37acbfaba40b12d4539f364073fc",
+      "sourceSha256": "cc27f5ec767245982e68b07698bf62ebfa651011ff555e780039edca002bedb5"
+    }
+  }
 }

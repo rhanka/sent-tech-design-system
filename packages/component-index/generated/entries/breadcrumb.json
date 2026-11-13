@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Breadcrumb.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Breadcrumb.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:fe05d00c115311f3a2445f75f098cadb02898cce76b463f299328b353fe0d72b",
+      "digest": "sha256:523f1b00ab3a1d4b2b7be86cf18d29279e887d34cbdbac26e090e9c630c4d910",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Breadcrumb.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Breadcrumb.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Semantic breadcrumb trail.",
     "fr": "Fil d’Ariane sémantique."
   },
-  "digest": "sha256:7939353712969024c0a14c0cb953f34f598c3a770188a9f981b7ee4381855d91",
+  "digest": "sha256:a033429ca1b0a7d3a6b03a1ab3890ab1ff035e82cf06e396787c1f93efc46e5b",
   "displayName": "Breadcrumb",
   "format": "component-entry/v1",
   "frameworks": [

@@ -198,7 +198,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? bars.value[hovered
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-columnRangeChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-columnRangeChart', props.class)) }" >
     <div class="st-columnRangeChart__visual" role="img" :aria-label="label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-if="orientation === 'vertical'">

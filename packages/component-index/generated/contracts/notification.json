@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:cc858f42562f817829b0f77a84097e187a6fa4d8bfda407b746d7d2fcfffa798",
-  "entryDigest": "sha256:7c76e07efcc2590bc373f1168137dae981a499bc5b6b4519e7fa2c188fa87d38",
+  "digest": "sha256:bc642f96e3cda8800d2c0322ced72e18934c302f420c02bed9726025eb2f5443",
+  "entryDigest": "sha256:422e220b236a81360a73a727c3688184233649bf91768375ff31398a3e9c3e3d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Notification.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "NotificationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -139,7 +139,7 @@
         "declarationPath": "packages/components-react/dist/Notification.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NotificationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -211,7 +211,7 @@
         "declarationPath": "packages/components-svelte/dist/Notification.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NotificationProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -269,24 +269,14 @@
       "replaced": [],
       "slots": [
         {
-          "name": "actions",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "actions"
         },
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7a2c57494a4a17732b43442b8eb46edce072a5699396cc8b19b5340557c3e6b6",
+        "declarationDigest": "sha256:7af4a15c03d321858f748f87e2b5a97f1b84fd5ac2cea2b0b98774af0129a2e6",
         "declarationPath": "packages/components-vue/dist/Notification.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NotificationProps",

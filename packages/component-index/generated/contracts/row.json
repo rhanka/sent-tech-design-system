@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:6fe0faacd000188b24f4f6ec11037f86f8691aa5ec7407da72e84d1a4c234e4d",
-  "entryDigest": "sha256:c29ebe38e42f82120aca449f76daed48612b7a7d066a6ae6a87f2865869228e0",
+  "digest": "sha256:2db080c8547a9e0234af915cf621489af629790a4401fc0f472c496eeb2b4f74",
+  "entryDigest": "sha256:fc4521579c6f1aeae78f2ed8abce4644783a4aab7dea2de56985838b0a912e47",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Row.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Row.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RowProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/Row.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RowProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

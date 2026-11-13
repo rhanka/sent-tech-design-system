@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export interface TableOfContentsItem {
@@ -17,14 +17,14 @@ export type TableOfContentsProps = {
 
 const normalizeItemId = (value: string) => value.replace(/^#/, '');
 
-defineOptions({ name: 'TableOfContents' });
+defineOptions({ name: 'TableOfContents', inheritAttrs: false });
 const props = withDefaults(defineProps<TableOfContentsProps>(), {
   title: undefined, activeId: '', class: undefined,
 });
 
-const attrs = useAttrs();
+
 const navProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-tableOfContents', props.class),
   'aria-label': props.title ?? 'Table des matières',
 }));
@@ -37,7 +37,7 @@ const normalizedItems = computed(() => props.items.map(item => ({
 </script>
 
 <template>
-  <nav v-bind="navProps">
+  <nav v-bind="{ ...$attrs, ...navProps }">
     <p v-if="props.title" class="st-tableOfContents__title">{{ props.title }}</p>
     <ol class="st-tableOfContents__list">
       <li v-for="item in normalizedItems" :key="item.id" class="st-tableOfContents__item" :style="{ '--st-tableOfContents-level': String(item.level - 1) }">

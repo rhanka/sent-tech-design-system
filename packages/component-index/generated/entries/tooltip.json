@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tooltip.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tooltip.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:846a10719ff465584e39997437ce0ebf60843f6d2ba33ca515b1f0f07a96f61e",
+      "digest": "sha256:7984cdcd6f75138fb22b9e142f42e24eb5e843e6908c6f3103007bb42afd4f87",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tooltip.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tooltip.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Contextual hint on hover/focus.",
     "fr": "Info contextuelle au survol/focus."
   },
-  "digest": "sha256:3c7f820a573c511a16591a459425252ab210eb973a620b0d3d8099ea6270b42d",
+  "digest": "sha256:d45ae82c995631391e8218e1125659365f2974eacac198648401ed1de7a04c6c",
   "displayName": "Tooltip",
   "format": "component-entry/v1",
   "frameworks": [

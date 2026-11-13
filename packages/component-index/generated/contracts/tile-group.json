@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:1dba9cedb0d1408cf4064a20edd7f7cb0aad76dbefef224938be5e3d881f13b8",
-  "entryDigest": "sha256:4a1445850e1ae80fe01b26a2bd90d2ee8fd4b034d4c489611a3f8452821da082",
+  "digest": "sha256:0625cb1979b515f95949ff70ed9a5d3662c7c18ef37537bb226edb7e50d31e90",
+  "entryDigest": "sha256:6ea9219bc0aa7101ac28be7b51b505e60bbb8766510f82eb4c05c368a608dcb5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -101,7 +101,7 @@
         "declarationPath": "packages/components-angular/dist/TileGroup.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -199,11 +199,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileGroupProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -296,7 +296,7 @@
         "declarationPath": "packages/components-svelte/dist/TileGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TileGroupProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -339,9 +339,7 @@
               "disabled": {
                 "type": "boolean"
               },
-              "label": {
-                "description": "Libellé du tile (canonique Svelte)."
-              },
+              "label": {},
               "title": {},
               "value": {
                 "type": "string"
@@ -453,7 +451,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:5f425694883a2f1509b6d97ff96b8167c9208fcf3ccfeded6c135c780e7a5eb5",
+        "declarationDigest": "sha256:1299e31e0191e2fb4bab3d49da61d3449d445f3d1426272c52e095782d187640",
         "declarationPath": "packages/components-vue/dist/TileGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",

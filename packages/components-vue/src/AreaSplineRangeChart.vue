@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useId, useAttrs } from 'vue';
+import { computed, useId } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
 import {
@@ -45,7 +45,7 @@ function continuePath(prefix: string, pts: { x: number; y: number }[]): string {
   const full = buildSmoothPath(pts);
   return `${prefix} L${full.slice(1)}`;
 }
-defineOptions({ name: 'AreaSplineRangeChart' });
+defineOptions({ name: 'AreaSplineRangeChart', inheritAttrs: false });
 const props = withDefaults(defineProps<AreaSplineRangeChartProps>(), {
   data: () => [],
   width: 480,
@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<AreaSplineRangeChartProps>(), {
   tone: 'category1',
   class: undefined,
 });
-const attrs = useAttrs();
+
 const hoveredIndex = ref<number | null>(null);
 const gradientId = 'st-areasplinerangechart-gradient-' + useId();
 function handleLeave() {
@@ -221,14 +221,14 @@ const geometry = computed(() => {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="
+    v-bind="{ ...($attrs), class: (
       classNames(
         'st-areaSplineRangeChart',
         'st-areaSplineRangeChart--' + geometry.tone,
         props.class,
       )
-    "
+    ) }"
+
   >
     <div
       class="st-areaSplineRangeChart__visual"

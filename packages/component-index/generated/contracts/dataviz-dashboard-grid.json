@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:95ac13e9f70a4b7cb756a80e54bcab2e841c8012f92d8d8321356c2498a65186",
-  "entryDigest": "sha256:926d998d58c135b4e8cb2983865e62b798dd8f842e5bdffbcbe782a4030244f8",
+  "digest": "sha256:8f6c0020334a5800c6481ea4eec619f39b91be2f66f0f0c0fc7094461492b44e",
+  "entryDigest": "sha256:77329bad6ddb51af6418fd4950c6ac447aca90c10c1ad47d547823c09f0d1c41",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

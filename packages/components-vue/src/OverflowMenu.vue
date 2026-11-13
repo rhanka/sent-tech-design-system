@@ -1,11 +1,7 @@
-<script lang="ts">
-let overflowMenuInstanceCounter = 0;
-</script>
-
 <script setup lang="ts">
 import type { MenuLabelSlots } from './menu-label-slots.js';
 import type { OverflowMenuPlacement } from "./OverflowMenu.js";
-import { useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
+import { useId, useAttrs, nextTick, onUnmounted, provide, ref, watch } from "vue";
 import Icon from "./Icon.vue";
 import type { IconGlyph } from "./icon-data.js";
 import Menu from "./Menu.vue";
@@ -63,7 +59,7 @@ const props = defineProps({
 const emit = defineEmits(["update:open", "select"]);
 const attrs = useAttrs();
 
-const rootMenuId = `st-overflowmenu-${++overflowMenuInstanceCounter}`;
+const rootMenuId = `st-overflowmenu-${useId()}`;
 const localOpen = ref(false);
 const hostRef = ref<HTMLElement | null>(null);
 const triggerRef = ref<HTMLElement | null>(null);
@@ -175,13 +171,13 @@ onUnmounted(() => {
 </script>
 <template>
   <div
-    v-bind="attrs"
-    ref="hostRef"
-    :class="[
+    v-bind="{ ...(attrs), class: ([
       'st-overflowMenu',
       { 'st-overflowMenu--dense': props.dense },
       props.class,
-    ]"
+    ]) }"
+    ref="hostRef"
+
   >
     <button
       ref="triggerRef"
@@ -210,6 +206,7 @@ onUnmounted(() => {
         :submenu-side="props.submenuSide"
         @select="handleMenuSelect"
       >
+<template v-if="$slots['item-icon']" #item-icon="scope"><slot name="item-icon" v-bind="scope" /></template>
       <template v-if="$slots['item-label']" #item-label="scope"><slot name="item-label" v-bind="scope" /></template>
       <template v-if="$slots['group-label']" #group-label="scope"><slot name="group-label" v-bind="scope" /></template>
     </Menu>

@@ -138,7 +138,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? entries.value[hove
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-paretoChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-paretoChart', props.class)) }" >
     <div
       class="st-paretoChart__visual"
       role="img"

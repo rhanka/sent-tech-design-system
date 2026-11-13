@@ -61,7 +61,7 @@ function onInput(event: Event) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-field', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-field', props.class)) }" >
     <div class="st-slider__header">
       <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
       <output v-if="props.showValue" class="st-slider__value" aria-live="polite">{{ formatted }}</output>

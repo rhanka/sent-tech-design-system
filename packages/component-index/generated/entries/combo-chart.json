@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ComboChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ComboChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d746654b8f7d78bfeaad1467beb1b202aba5b89cde012d95fdd7c914148bd049",
+      "digest": "sha256:18d0344c3cc4f91fc4c962c9ed04de12438c34968d0a13282f04c3ad365a526f",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ComboChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ComboChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Combo chart with bars and lines, dual Y axis, and legend.",
     "fr": "Graphique combiné barres + courbes, double axe Y, légende."
   },
-  "digest": "sha256:8b67e5ddbb27f7b7f14da7cf1023a5e5c340f93e8572429023f65cd306fc68e6",
+  "digest": "sha256:aa0bc5cbcbd906962e528ba4c2447675b21d8706440810de81cf71b980289f79",
   "displayName": "ComboChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PointAndFigureChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PointAndFigureChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:fb55baf9043a11cb3b7fedeb5d87ed4eedb055edbc4b676c9064dd23f57807bb",
+      "digest": "sha256:9651034374de9a37cd5f738e37e6059fc760bce4ccd3e49652781fba0edbf7ac",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PointAndFigureChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PointAndFigureChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Point & Figure: columns of X (up) and O (down) following the price movement (boxSize + reversal).",
     "fr": "Point & Figure : colonnes de X (hausse) et de O (baisse) selon le mouvement de prix (boxSize + reversal)."
   },
-  "digest": "sha256:ac03dae16dd4e9a3591fcd792646176dfcdaaa350affafafc933f1c79d7aa1a5",
+  "digest": "sha256:047b4e3a53d7e4761635469e4b38f35f75aabfb7d5ef61f2328a969dae67b5fd",
   "displayName": "PointAndFigureChart",
   "format": "component-entry/v1",
   "frameworks": [

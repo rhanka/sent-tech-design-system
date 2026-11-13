@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:55897b82843e12cea46182e9e6b30ce0701dc7faf10968f5bed9a32bb3945279",
-  "entryDigest": "sha256:9988a80eea353837354f44849b6d5a6cf27d3dd6389b0b20decea9ae630a7f39",
+  "digest": "sha256:8421315acedf4b65353eb40077aa6c79f865d6065d086cf868a9453e7d1eb4e7",
+  "entryDigest": "sha256:22d19adf0ed5af31af3f13c6da0336c456c2e89350e22e245d68b91f38f317c9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-angular/dist/KpiCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "KpiCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-react/dist/KpiCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "KpiCardProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -422,7 +422,7 @@
         "declarationPath": "packages/components-svelte/dist/KpiCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "KpiCardProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

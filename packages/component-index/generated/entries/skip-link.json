@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkipLink.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SkipLink.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:6b0a64a3d26501ee338e206a9d1c2e8ab0f66fc894e99140efaf021c503228d8",
+      "digest": "sha256:bed036a3a2828baf98d27edc40ae80686dee6f14dbace805a86652253f954f4a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/SkipLink.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkipLink.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Skip link (a11y): off-screen until keyboard focus.",
     "fr": "Lien d'évitement (a11y) : hors écran jusqu'au focus clavier."
   },
-  "digest": "sha256:5e4a29bc97e71b4410278091c9076698fd01cff706594c97370c6d56231f379a",
+  "digest": "sha256:35fdae83882080436e526b9bbff35dc5721faed4e87f657b9c8d4772d585a1d6",
   "displayName": "SkipLink",
   "format": "component-entry/v1",
   "frameworks": [

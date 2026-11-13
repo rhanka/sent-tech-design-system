@@ -144,7 +144,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? plots.value[hovere
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-boxPlotChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-boxPlotChart', props.class)) }" >
     <div
       class="st-boxPlotChart__visual"
       role="img"

@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:18f5374d8d1079c5a34e60c1dfa422dc1588b067f86ab38afb979557de3dc15a",
-  "entryDigest": "sha256:51d98d1072fbb53f12b02f3fd97f2937421fee6e4b7210412d69a44081464e9d",
+  "digest": "sha256:3028bf3c53fcf1e0b18668e2784e886aeced8b18e5d3b8a6ca575359ecfc0fec",
+  "entryDigest": "sha256:010d4606c1e1fba2e1cc6423c5d51184139174a655d18a5f44e8c6e98a6aef33",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/Icon.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -3956,11 +3956,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -4044,7 +4044,7 @@
         "declarationPath": "packages/components-svelte/dist/Icon.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "IconProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

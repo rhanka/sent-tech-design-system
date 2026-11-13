@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FlamegraphChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FlamegraphChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:c7f87b2a94cabdb366f63ecec83266dd0496fd8d70081ea1b300814af8ccf891",
+      "digest": "sha256:3c0d2606220534ebd380a65507755424fc0860127e0a71b0de5d9a1c55fda4e3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FlamegraphChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FlamegraphChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Stacked icicle call stack: width ∝ value, recursive hierarchy laid out level by level.",
     "fr": "Pile d'appels « icicle » empilée : largeur ∝ valeur, hiérarchie récursive posée niveau par niveau."
   },
-  "digest": "sha256:8404e8328bb4c9d794cc34fc6e97b376c2bbd605e5bd0a72e9e34d7359f4a8bb",
+  "digest": "sha256:3c24ca98941a0c6a6d2e4d497c44208bae38a9b98d413bdf2857c54314af2879",
   "displayName": "FlamegraphChart",
   "format": "component-entry/v1",
   "frameworks": [

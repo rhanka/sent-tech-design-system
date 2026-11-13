@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/BellCurveChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/BellCurveChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2a342ea8536b68494825f3abeb789b591943d29b6c0962dab447e8db7975e35a",
+      "digest": "sha256:a264ee743516aa0515ae73a1e6727dd6ab254adb7031825885f065737a7e57bb",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BellCurveChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/BellCurveChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ.",
     "fr": "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ."
   },
-  "digest": "sha256:fe38f5a942200c33a4bf125d0dbcc19bee08d86a4c9d964198c99d970d796c50",
+  "digest": "sha256:488e2b616ee5f698fc3232a77ede3bc0478417e6dfe6e8f0ca85aa63d531e581",
   "displayName": "BellCurveChart",
   "format": "component-entry/v1",
   "frameworks": [

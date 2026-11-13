@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/PolygonChart.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/PolygonChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:042552a3113da3866ee9e127433aea208f1941761424d72e969e1cbc14c53e7d",
+      "digest": "sha256:82703da049699884371bd70658489a146b7b7dfc7991a52992a8c4d9ded6255e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/PolygonChart.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/PolygonChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Closed filled polygon connecting x/y points in order (zones/clusters), outline + vertices, numeric axes.",
     "fr": "Polygone fermé rempli reliant des points x/y dans l'ordre fourni (zones/clusters), contour + sommets, axes numériques."
   },
-  "digest": "sha256:8412e2754cff2fa39a99966490dbe9eb56276255e2d87fc9f699185756a16475",
+  "digest": "sha256:ab8a53cceb03accf7f7ddd3b968acab3d9c6ff63350b26c83694fdbc75e0abb0",
   "displayName": "PolygonChart",
   "format": "component-entry/v1",
   "frameworks": [

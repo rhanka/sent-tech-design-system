@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:48efdefe4aed191f2e158f29c51deba49ada5ef79b0e27bd424ba38cc0a53c44",
-  "entryDigest": "sha256:7cee6eb357469ea7722795f0cb7aa8f9c14bce43f1a2ab66e53edf5546063de6",
+  "digest": "sha256:d89f228ac4b7497b4e4671bff7dd6fc8551d673c80e692f506362d8a12b5463d",
+  "entryDigest": "sha256:06c2f90727c4ad0eb1f9b33c132eb0f5ee37cac99e743d80b96325223f5063f5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -46,7 +46,7 @@
         "declarationPath": "packages/components-angular/dist/BackToTop.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BackToTopProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -99,7 +99,7 @@
         "declarationPath": "packages/components-react/dist/BackToTop.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BackToTopProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-svelte/dist/BackToTop.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BackToTopProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

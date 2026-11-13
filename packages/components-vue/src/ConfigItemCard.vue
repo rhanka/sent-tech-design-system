@@ -61,10 +61,11 @@ function onResetClicked() {
 function onDeleteClicked() {
   props.onDelete?.(item.value.id);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>
-  <article v-bind="$attrs" :class="classNames('st-configItemCard', props.class)" :data-testid="`config-item-card-${item.key ?? item.id}`">
+  <article v-bind="{ ...($attrs), class: (classNames('st-configItemCard', props.class)) }"  :data-testid="`config-item-card-${item.key ?? item.id}`">
     <div class="st-configItemCard__header">
       <span class="st-configItemCard__name">{{ item.name }}</span>
       <span v-if="isSystem" class="st-configItemCard__badge st-configItemCard__badge--system"><svg class="st-configItemCard__badgeIcon" width="12" height="12" viewBox="0 0 14 14" aria-hidden="true" focusable="false"><path d="M4 6V4.5a3 3 0 0 1 6 0V6M3.5 6h7A1.5 1.5 0 0 1 12 7.5v3A1.5 1.5 0 0 1 10.5 12h-7A1.5 1.5 0 0 1 2 10.5v-3A1.5 1.5 0 0 1 3.5 6Z" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>Système</span>

@@ -23,10 +23,14 @@
     {
       "id": "empty",
       "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol></ol></nav>"
+    },
+    {
+      "id": "rich-labels",
+      "html": "<nav aria-label=\"Breadcrumb\" class=\"st-breadcrumb\"><ol><li><a href=\"/\"><strong>Home</strong></a><span class=\"st-breadcrumb__separator\">/</span></li><li><span aria-current=\"page\"><strong>Here</strong></span></li></ol></nav>"
     }
   ],
   "sourceSha256": "911e3dc615a0694dd9762f85ecb7e066728db05557384f3f5ff6e1b500d57728",
-  "fixtureSha256": "17852f339aaae510f09feb83fa38b31182c7293ad00d9150da92fedade4b5e63",
+  "fixtureSha256": "2bd9b3ae370a1939d56663d091473f75993796ddbed70e65e05982b29d6addb3",
   "publicExports": [
     {
       "name": "Breadcrumb",

@@ -1,8 +1,8 @@
 {
   "componentId": "heikin-ashi-chart",
   "contractSource": "derived",
-  "digest": "sha256:09f954eade33db6ba6aa4c58287d38a0d0c273bf4e55c8f644bb073d1858ed5a",
-  "entryDigest": "sha256:2210bd7d05983f5bfce15cb963f727edca9176f8d1bba03b266e24dfcfc81a2d",
+  "digest": "sha256:e01c250004e006f4008b6822c304869cbbae93840ca823f541154c97870c74a9",
+  "entryDigest": "sha256:9bac8f95d11d0305439f2c4b30199c26f3259eb5da72fd846de11f8ab03db63b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/HeikinAshiChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/HeikinAshiChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HeikinAshiChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HeikinAshiChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],

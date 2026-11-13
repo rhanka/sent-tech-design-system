@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CodeSnippet.svelte",
-      "version": "0.40.0"
+      "version": "0.41.0"
     },
     {
       "channel": "source",
@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CodeSnippet.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:c0cefc7ebd3acff0d34837b9ea39d51249712c212a5faca9526ed5b51fe72611",
+      "digest": "sha256:35db2780271894d424a4ab16d038c9b3fb5010f3a877b2fe07ef49d500d207fe",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CodeSnippet.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CodeSnippet.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:5f8824f1a187d9e0fbdc345149839888eb773178288e664a763f2e50463e40dc",
+  "digest": "sha256:3856bf4e9addb14d7f46707cfed37bdf0b87accce06dda3bd9c3815ea2f18ef6",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

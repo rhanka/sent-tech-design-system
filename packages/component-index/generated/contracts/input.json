@@ -1,8 +1,8 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:a577981a4825c11c595320fa13d6ce5c4ebec68e123cb16565e640478f0dc558",
-  "entryDigest": "sha256:fc7aee623796d9af87babec6883b0da306de165055fdb3bc0087aebac0316bb0",
+  "digest": "sha256:4cae3cbe27be2193504d13a12a694ed93e52267182e3aeac93cce1d5cc2ea743",
+  "entryDigest": "sha256:4d4d53e79df2fa6616c70f30ced944b79592a37e09fea4d4bfee4a0b93304e98",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/Input.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "InputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/Input.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "InputProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -243,7 +243,7 @@
         "declarationPath": "packages/components-svelte/dist/Input.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "InputProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -301,8 +301,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -348,9 +347,19 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:7dc9c819a9ee7b6c497e5d101393f29000ca77458cd6f53ec80d62555a6a56f7",
+        "declarationDigest": "sha256:f299a190ad873263b5f822d8e87f02874a98e05702cc9794f0865905b53ffa6c",
         "declarationPath": "packages/components-vue/dist/Input.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InputProps",

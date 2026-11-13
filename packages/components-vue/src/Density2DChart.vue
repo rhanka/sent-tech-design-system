@@ -232,7 +232,7 @@ const isCellDim = (cell: Bin): boolean => hoveredKey.value !== null && hoveredKe
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-density2DChart', `st-density2DChart--${resolvedScale}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-density2DChart', `st-density2DChart--${resolvedScale}`, props.class)) }" >
     <div class="st-density2DChart__visual" role="img" :aria-label="label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${resolvedWidth} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <text v-for="tick in yAxisTicks" :key="`y${tick.value}`" class="st-density2DChart__tickLabel" :x="MARGIN.left - 8" :y="tick.y" text-anchor="end" dominant-baseline="middle">{{ formatTick(tick.value) }}</text>

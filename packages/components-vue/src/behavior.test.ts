@@ -1947,7 +1947,8 @@ describe("Vue behavioral parity — batch 4", () => {
     it("renders an item icon in st-menu__itemIcon (Svelte parity)", () => {
       const Icon = { render: () => h("svg", { class: "demo-menu-icon" }) };
       const wrapper = mount(Menu, {
-        props: { items: [{ value: "a", label: "A", icon: Icon }] },
+        props: { items: [{ value: "a", label: "A" }] },
+        slots: { "item-icon": () => h(Icon) },
       });
       const iconSlot = wrapper.find(".st-menu__itemIcon");
       expect(iconSlot.exists()).toBe(true);

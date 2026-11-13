@@ -1,8 +1,8 @@
 {
   "componentId": "parallel-coordinates-chart",
   "contractSource": "derived",
-  "digest": "sha256:e324eb69e8d82e38ee3f75ad935a95107d576c76728f9448d274fc40aa59be69",
-  "entryDigest": "sha256:5e8724e105fb4e9c5230f3aba7309b772de0f3fe4b269ba30769b64576879e2f",
+  "digest": "sha256:8b0f1bba6d43ef2c659a1188c454d889dcb405d734d58f4eedfd9027b8fe4488",
+  "entryDigest": "sha256:eafd3701901e07adc44dfcb585c4d6cfabb42cd9c14ba5269014a7f2b11a2aab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -97,7 +97,7 @@
         "declarationPath": "packages/components-angular/dist/ParallelCoordinatesChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-react/dist/ParallelCoordinatesChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -309,7 +309,7 @@
         "declarationPath": "packages/components-svelte/dist/ParallelCoordinatesChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ParallelCoordinatesChartProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],

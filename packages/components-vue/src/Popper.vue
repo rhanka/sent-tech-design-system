@@ -76,7 +76,7 @@ export type Rect = {
   width: number;
   height: number;
 };
-defineOptions({ name: 'Popper' });
+defineOptions({ name: 'Popper', inheritAttrs: false });
 const props = withDefaults(defineProps<Omit<PopperProps, 'anchor'> & { anchor?: HTMLElement | null }>(), { anchor: null, open: false, placement: 'bottom', offset: 8, flip: true, shift: true, arrow: false, strategy: 'absolute', portal: true, class: undefined, onPlacementChange: undefined, trapFocus: false, closeOnEscape: true, onClose: undefined });
 defineSlots<{ default?: () => unknown }>();
 const emit = defineEmits<{ placementChange: [placement: PopperPlacement] }>();
@@ -302,9 +302,10 @@ const side = computed(() => splitPlacement(resolvedPlacement.value).side);
 <template>
 
   <Teleport v-if="props.open && props.anchor" to="body" :disabled="!props.portal">
-    <div ref="panel" :class="classNames('st-popper', props.class)" :data-popper-placement="resolvedPlacement"
-      :style="`position: ${props.strategy}; top: ${top}px; left: ${left}px;`"
-      :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined">
+    <div ref="panel"  :data-popper-placement="resolvedPlacement"
+
+      :tabindex="props.trapFocus ? -1 : undefined" @keydown="props.trapFocus ? handlePanelKeydown($event) : undefined"
+      v-bind="{ ...(props.portal ? {} : $attrs), class: (classNames('st-popper', props.class)), style: [`position: ${props.strategy}; top: ${top}px; left: ${left}px;`, props.portal ? undefined : $attrs.style] }">
       <slot />
       <span v-if="props.arrow" class="st-popper__arrow" :data-popper-side="side" aria-hidden="true" />
     </div>
