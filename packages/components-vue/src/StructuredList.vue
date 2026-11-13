@@ -4,8 +4,14 @@ import { classNames } from './classNames.js';
 
 export type StructuredListItem = {
   term?: unknown;
+
+  /** @slot term */
   label?: unknown;
+
+  /** @slot definition */
   description?: unknown;
+
+  /** @slot definition */
   value?: unknown;
 };
 

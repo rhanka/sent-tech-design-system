@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { computed, useAttrs } from 'vue';
+import { computed } from 'vue';
 import { classNames } from './classNames.js';
 export type TableColumn = {
   key: string;
-  label: unknown;
+  label?: unknown;
   align?: 'left' | 'center' | 'right' | 'start' | 'end';
 };
 export type TableRow = Record<string, unknown>;
@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<TableProps>(), {
   caption: () => 'Table',
   class: undefined,
 });
-const attrs = useAttrs();
+
 const tableBindings = computed(() => ({
 
   class: classNames('st-table', props.class),

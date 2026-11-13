@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { scalarContent } from './slotContent.js';
-import { useSlots, computed, useAttrs, useId } from 'vue';
+import { useSlots, computed, useId } from 'vue';
 import { classNames } from './classNames.js';
 
 export type InputSize = 'sm' | 'md' | 'lg';
@@ -33,7 +33,7 @@ const emit = defineEmits<{
   blur: [event: FocusEvent];
 }>();
 
-const attrs = useAttrs();
+
 const uid = `st-input-${useId()}`;
 const inputId = computed(() => props.id ?? uid);
 const slots = useSlots();

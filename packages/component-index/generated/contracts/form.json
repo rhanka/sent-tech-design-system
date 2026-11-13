@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:ae941ec462259b63409626327abf09379b1b853c5dfa21776f06e7796e05cc07",
-  "entryDigest": "sha256:28ba6d45cc45a34e2d7be7164491c7cd97ee3036ab2feafb5f4e133ee20959f5",
+  "digest": "sha256:3df78ac979de14905421eeb6ab50473d9a174f3185359e9e29d816e1783cc5a4",
+  "entryDigest": "sha256:6a03eafef921b531f7c9c72fa2603c4ab19b2b78599fc9c90ffe23a8ff6e26e9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -233,16 +233,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:d03eb3470f4b816faaf8c38584f044178924f60714e18100d181605f5860d93f",
+        "declarationDigest": "sha256:66b79fe1f6e6ce00bf494683b0063bbf6e4d0f96e96e2a0303f58b0a42828638",
         "declarationPath": "packages/components-vue/dist/Form.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FormProps",

@@ -4,7 +4,9 @@ import { scalarContent } from './slotContent.js';
 
 
 // Forme item alignée sur le canon Svelte : `content` (+ `label` en alias compat).
-export type OrderedListItem = { content?: unknown; children?: OrderedListInput[] };
+export type OrderedListItem = {
+  /** @slot item */
+  content?: unknown; children?: OrderedListInput[] };
 
 export type OrderedListInput = unknown;
 

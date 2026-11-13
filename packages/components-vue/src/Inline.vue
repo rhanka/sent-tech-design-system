@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAttrs } from 'vue';
+
 import { classNames } from './classNames.js';
 import Flex from './Flex.vue';
 import type { FlexAlign, FlexJustify } from './Flex.vue';
@@ -21,7 +21,8 @@ const props = withDefaults(defineProps<InlineProps>(), {
   as: 'div',
   class: undefined,
 });
-const attrs = useAttrs();
+
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c7f7a7ef15dd2c6af2b57b018daa7b3cfc1134da3e80864527ff56d22925c1c6",
+      "digest": "sha256:94405690f3d5332ca4a71a9dcc97ffea56214ffd017174840c551231be7bcf79",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LanguageSelector.vue",
@@ -40,7 +40,7 @@
     "en": "Compact language switcher (i18n): current locale + menu.",
     "fr": "Sélecteur de langue compact (i18n) : langue courante + menu."
   },
-  "digest": "sha256:8362eb36c0c43e67406728cb7c1840f6321e99fc277161bed25cc22544daa2f0",
+  "digest": "sha256:630f5d4f3564e4c1f845ff27fb04429eb20758b3d4ac55622dd6a5598538a1bf",
   "displayName": "LanguageSelector",
   "format": "component-entry/v1",
   "frameworks": [

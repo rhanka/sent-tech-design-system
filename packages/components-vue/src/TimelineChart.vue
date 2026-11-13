@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { computed, ref } from 'vue';
 import { classNames } from './classNames.js';
 import { formatTick, niceTicks, scaleLinear } from './chartScale.js';
 
@@ -51,7 +51,7 @@ const props = withDefaults(defineProps<TimelineChartProps>(), {
   width: 640, height: 240, class: undefined,
 });
 
-const attrs = useAttrs();
+
 const rootProps = computed(() => ({
 
   class: classNames('st-timelineChart', props.class),

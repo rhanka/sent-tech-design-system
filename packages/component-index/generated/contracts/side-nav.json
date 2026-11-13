@@ -1,8 +1,8 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:9522fcf772fd8a7a54beb82c07e353f0044cc023449eba4c63bb6d8f60fb227c",
-  "entryDigest": "sha256:01c25cd1e0b51adc8b09b2673e4b9a22a528c16fa9f277835a68d5e59c089694",
+  "digest": "sha256:90d7078deb4679d7e6e3cac597e3e1c2c0752fe2b0ad9754ea6023c1cc730d2b",
+  "entryDigest": "sha256:343d2c267b6aab941db6b882fb78222b62c55eff7a7aec7d2c3874624187a9a7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -242,8 +242,7 @@
               "label": {}
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
@@ -294,7 +293,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:45012fb8ae9d370ca8ffd5b3d0b0bde3ffefa25f0431acde3b037e5daa6d7130",
+        "declarationDigest": "sha256:47341836e0dd30d283f5cf9f4d580b50f86a6e50eba2145e61e42168694cf643",
         "declarationPath": "packages/components-vue/dist/SideNav.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SideNavProps",

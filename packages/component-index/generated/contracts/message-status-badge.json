@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:24885e9c2753fff892afb1dcefc6bcd95d8bc187edc3cdf95f86682d5d254eee",
-  "entryDigest": "sha256:b7f0f91cea403c0b6fe4d73c24d8cbede77dbeb253be3f1dfe3d774162c301e2",
+  "digest": "sha256:6b11accc0439d9b06ce7f35d7b16292789980b2fe9b56c86c046b49c78877848",
+  "entryDigest": "sha256:151245e3ce0942a14092cc8ac4bf4367149c41c824b2a02bacbf042cb25a24ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -198,8 +198,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -241,11 +240,44 @@
           "reason": "library type not expanded",
           "replacement": "{}",
           "sourceType": "Partial<Record<ChatMessageStatus, unknown>>"
+        },
+        {
+          "name": "scope.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {},
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed",
+                  "streaming",
+                  "sent"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "status"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:63be4c0ebc74b6a9dbd0f544ba878f428a525d68c5c782c167397c80cd8633f9",
+        "declarationDigest": "sha256:a4da60fcf36459f5d317833ea7c042916559fe95d26f6973d0b691dac39d7e01",
         "declarationPath": "packages/components-vue/dist/MessageStatusBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",

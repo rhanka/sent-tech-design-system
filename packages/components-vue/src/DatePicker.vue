@@ -297,7 +297,7 @@ defineSlots<{
         <button type="button" class="st-datepicker__trigger" :aria-label="resolvedOpenLabel" aria-haspopup="dialog" :aria-expanded="open ? 'true' : 'false'" :disabled="props.disabled" @click="toggleOpen"><span aria-hidden="true">📅</span></button>
       </span>
     </label>
-    <div v-if="open" class="st-datepicker__panel" role="dialog" :tabindex="-1" :aria-label="props.label ? String(props.label) : resolvedOpenLabel" @keydown="onPanelKeyDown">
+    <div v-if="open" class="st-datepicker__panel" role="dialog" :tabindex="-1" :aria-label="String(scalarContent(props.label)) || resolvedOpenLabel" @keydown="onPanelKeyDown">
       <div class="st-datepicker__nav">
         <button type="button" class="st-datepicker__navBtn" :aria-label="resolvedPrevLabel" @click="previousMonth"><span aria-hidden="true">‹</span></button>
         <span class="st-datepicker__monthLabel" aria-live="polite">{{ monthLabel }}</span>

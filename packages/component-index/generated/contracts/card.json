@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:75f1b3b8f6536ce67ec7d12a8421d74ca98d2913ce378898789bb919f63527d9",
-  "entryDigest": "sha256:e7ec130b6777ee774a66a666823d739af04d3b623f7c13e1b57acaf7f026be1f",
+  "digest": "sha256:ee466f2255f7f33e1f8dd4bcc370411f7dc395afd8c9428169fea4de15d9d7bf",
+  "entryDigest": "sha256:00ff1cf12a91329f49dfd00b6ef60863382c40006656873505709828d53189ec",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -138,16 +138,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:eea6ba324925aeabad0c6d663f8ca7d0517840e12579443cc829dc7a40369ec4",
+        "declarationDigest": "sha256:7ec2db47573fa43888a480d4a933a9e57b9021940b671ce9cbee4ca33cdd4848",
         "declarationPath": "packages/components-vue/dist/Card.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CardProps",

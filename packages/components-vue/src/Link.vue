@@ -54,6 +54,7 @@ function onClick(event: MouseEvent) {
   }
   (attrs.onClick as ((event: MouseEvent) => void) | undefined)?.(event);
 }
+defineSlots<{ "default"?: () => unknown }>();
 </script>
 
 <template>

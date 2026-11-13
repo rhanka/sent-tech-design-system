@@ -15,7 +15,11 @@ export interface ProgressIndicatorItem {
   id?: string;
   /** Svelte-canonical alias for the React/Vue `id`. */
   value?: string;
-  label: unknown;
+
+  /** @slot item-label */
+  label?: unknown;
+
+  /** @slot item-description */
   description?: unknown;
   status?: ProgressIndicatorStatus;
 }

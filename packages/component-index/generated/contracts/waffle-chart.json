@@ -1,8 +1,8 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:b41d9943329c5f0e26c714abc63fe203730ee36ecafd92ac8590f64bf60bcb30",
-  "entryDigest": "sha256:dc961673daab5f0040da2c4d495ddf8780ed1fc2451b77bffee6223317fba911",
+  "digest": "sha256:2e7e8a481a6a36a81dfeac390cbcb26141f0443652a518e31a5f60ef17442f6b",
+  "entryDigest": "sha256:b5acfdee72c7a9b49a272d618132334e42019521a4b293b6957f2047448c1cb6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

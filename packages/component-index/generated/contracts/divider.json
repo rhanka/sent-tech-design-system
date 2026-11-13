@@ -1,8 +1,8 @@
 {
   "componentId": "divider",
   "contractSource": "derived",
-  "digest": "sha256:52ab7c9db9b9c7df7eb6e5667c32f338b2a312cccd6c577f4df4c814f4f50d5a",
-  "entryDigest": "sha256:7a8018ab561ff94ebdd12e9af40d76f76b54d4db990f3d9a4927e9983a52627d",
+  "digest": "sha256:c7a7f50d797bd0d9e763b258d34e4cb0bcaf31c4c241695024d01f0260dd5bb8",
+  "entryDigest": "sha256:9493d4d2c3a1e2c751ecbe10bfbc8b133f878f764576ab9180a07ee0935eaec9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

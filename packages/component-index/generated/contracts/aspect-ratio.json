@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:caf6c1fdaa764dc20f332580e3cbb34f6c54ba933cdcd4cd59491030162ca380",
-  "entryDigest": "sha256:03a79069366a9dc06da65abd75617f5d76288914eac20bf959ab2cc63fa701f7",
+  "digest": "sha256:e805a7b25c673f8465b1f1a5601fbcaeb38b4be3c7e95506b1b1c17c1a16a21f",
+  "entryDigest": "sha256:557c8d4e4bd680304e1299909ad5881efefbbe650140867dfccfe8f584e8ec28",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -159,16 +159,11 @@
       "replaced": [],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:08e3862a0f2be7eb2f82eef607efe1abc2cb90106c740014de9a57a2f8a18a59",
+        "declarationDigest": "sha256:6e9060c7a21a6ac7dae3981424b5c3c4d931d17d49aaec027741a56a4b9cb3d4",
         "declarationPath": "packages/components-vue/dist/AspectRatio.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AspectRatioProps",

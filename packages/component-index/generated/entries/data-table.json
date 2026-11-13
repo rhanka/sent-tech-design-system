@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:791298eefd11f87c22eebac85d74dea5fbbad7f60d624ba7fe7515ab5eaa7ce2",
+      "digest": "sha256:0f5746c78272470eaf6192eba75eb400c346adc65f9af1b25662ae1adce094ac",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/DataTable.vue",
@@ -40,7 +40,7 @@
     "en": "Advanced table: sorting, multi-row selection.",
     "fr": "Table avancée: tri, sélection multi-lignes."
   },
-  "digest": "sha256:e13a668e679741270d6c9a3256828930b43cfaa293fd12a3e86a94b56fcd8a98",
+  "digest": "sha256:0213a68d6e3a27b44a915f3cc8e8360438a64fb8d79cda7b8fe63ca640f0e683",
   "displayName": "DataTable",
   "format": "component-entry/v1",
   "frameworks": [
