@@ -517,7 +517,8 @@ export { Autosave } from "./Autosave.js";
 export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
 export { default as Portal } from './Portal.vue';
 export type { PortalProps } from './Portal.vue';
-export { Popper, computePosition, splitPlacement, joinPlacement } from "./Popper.js";
+export { default as Popper } from './Popper.vue';
+export { computePosition, splitPlacement, joinPlacement } from './popper-position.js';
 export type {
   PopperProps,
   PopperPlacement,
@@ -525,7 +526,7 @@ export type {
   PopperSide,
   PopperAlign,
   Rect,
-} from "./Popper.js";
+} from './Popper.vue';
 export { SelectableRow, SELECTABLE_LIST_KEY } from "./SelectableRow.js";
 export type {
   SelectableRowProps,
