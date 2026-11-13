@@ -62,6 +62,13 @@ export const DOSSIER_CSS = [
   ".st-dossier__diagram{margin:var(--st-spacing-3) 0 0;border:var(--st-borderWidth-thin) var(--st-borderStyle-solid) var(--st-semantic-border-subtle);border-radius:var(--st-radius-md);padding:var(--st-spacing-3);}",
   ".st-dossier__diagramAlt{margin:0 0 var(--st-spacing-1);color:var(--st-semantic-text-secondary);}",
   ".st-dossier__diagramSource{margin:0;color:var(--st-semantic-text-primary);}",
+  ".st-dossier__diagramReference,.st-dossier__diagramState{overflow-wrap:anywhere;color:var(--st-semantic-text-secondary);}",
+  ".st-dossier__diagram svg{display:block;width:100%;fill:var(--st-semantic-action-primary);}",
+  ".st-dossier__diagram svg text{fill:var(--st-semantic-text-primary);}",
+  ".st-dossier__diagram svg line{stroke:var(--st-semantic-text-primary);stroke-width:1px;}",
+  ".st-dossier__diagramData,[data-st-inputs]{padding-left:var(--st-spacing-4);overflow-wrap:anywhere;}",
+  ".st-dossier__completionCriterion{color:var(--st-semantic-text-secondary);}",
+  "@media print{.st-dossier__diagram{break-inside:avoid;}.st-dossier__diagramState{display:none;}.st-dossier__diagram svg{max-width:100%;}}",
   ".st-dossier__unknownSection{color:var(--st-semantic-text-secondary);}",
 ].join("\n");
 

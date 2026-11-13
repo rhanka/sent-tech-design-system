@@ -16,7 +16,7 @@
  */
 
 import { prepareBpmnEnvelope } from '../bpmn.js';
-import { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
+import type { HostConfig } from '../bpmn-types.js';
 export { bpmnWatermark, type HostConfig } from '../bpmn-types.js';
 import type { Diagnostic } from "../../validate/index.js";
 import { engineLoadFailed } from "../../validate/diagnostics.js";

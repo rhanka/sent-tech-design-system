@@ -15,7 +15,7 @@
           "kind": "prose",
           "targetRef": "decision-reco",
           "questionId": "q1",
-          "markdown": "The choice turns on upkeep and consistency. See the [shared notes](https://example.com/notes) for background."
+          "markdown": "In short: The choice turns on upkeep and consistency. See the [shared notes](https://example.com/notes) for background."
         },
         {
           "id": "q1",
@@ -23,7 +23,7 @@
           "targetRef": "decision-reco",
           "question": "Which rendering contract do we adopt for the shared pieces?",
           "state": "open",
-          "context": "Every screen keeps its own rendering path today, and small differences grow with each release. A shared contract lets every team ship from plain data while the design system owns layout and tone.",
+          "context": "In short: Every screen keeps its own rendering path today, and small differences grow with each release. A shared contract lets every team ship from plain data while the design system owns layout and tone.",
           "readingTimeMinutes": 2,
           "recommendedAnswer": "Adopt the shared contract because it keeps every screen consistent with the least upkeep.",
           "recommendedOptionId": "opt-r1"

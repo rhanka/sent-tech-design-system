@@ -40,6 +40,7 @@ mapping to the underlying component, and component callbacks translated to
 | --- | --- | --- |
 | `envelope` | JS property, or the first child `<script type="application/json">` (re-read through a MutationObserver when the island is replaced) | The render envelope. No attribute ever carries data (§6.2). A malformed island reaches the validator as raw text and is refused with a diagnostic — the panel shows it. |
 | `hostConfig` | JS property, or the page-level `<script type="application/json" id="st-host-config">` island | Host configuration (§6.5): `{ theme?, colorScheme?, locale?, assetBase?, bpmn?: { watermark?: { hidden?, license? } } }`. The theme id is never taken from the envelope. |
+| `diagramResolver` | JS property on `<st-decision-dossier>`, or `hostConfig.diagramResolver` in the JS object channel | Resolves reference diagrams. Functions are excluded from the envelope and the JSON host-config island. The element property takes precedence. |
 | `state` | getter | `"idle" \| "rendering" \| "rendered" \| "refused"` |
 | `diagnostics` | getter | The validator's diagnostics of the last ingest (`{ code, path, message, severity, … }[]`). |
 | `ready` | getter | A `Promise<void>` that settles (never rejects) the first time the element reaches `rendered` or `refused`. |
@@ -117,8 +118,70 @@ cannot work around them:
 Content parity with the owner `renderHtml` is witnessed on the
 presentation-valid fixtures (`tests/focus-renderer-l6.test.ts`); inputs the
 owner presentation gate refuses (long bodies, legacy documents) still render
-their sections, ids and outcome from the input. Diagrams render as the
-fenced fallback until a diagram renderer exists.
+their sections, ids and outcome from the input. Inline diagrams keep their
+preformatted source fallback.
+
+### Diagram references (elements 0.3.0 delivery lot)
+
+Reference-mode producers use envelope `contract: "1.1"`. A diagram section
+contains `sourceRef`, `renderComponent` and a required non-blank `alt`, with
+no `source`, `syntax` or `scene`. Prose and question sections can also carry
+`inputs: [{ ref, kind, label? }]` and `completionCriterion`; these display as
+text. See [acceptance and integration status](docs/diagram-reference-acceptance.md).
+
+This checkout installs Focus 0.6.0 from the owner build archive pinned in
+the root lockfile; [archive provenance](vendor/README.md) records its source
+and digests. Focus 0.6.0 must be published on npm before Elements 0.3.0 is
+published, so consumers can resolve the exact dependency in its manifest.
+
+```js
+// Adapt a host export without a DS dependency on its storage client.
+const exportsByRef = new Map([
+  ["engram:roadmap", {
+    component: "GanttChart",
+    props: { label: "Roadmap", data: [{ task: "Prototype", start: 0, end: 4 }] },
+  }],
+]);
+const dossier = document.querySelector("st-decision-dossier");
+dossier.diagramResolver = (sourceRef, context) => {
+  // context: diagramId, targetRef, documentRef, renderComponent, alt.
+  return exportsByRef.get(sourceRef) ?? null;
+};
+// Equivalent JS-only seam:
+// dossier.hostConfig = { diagramResolver: dossier.diagramResolver };
+```
+
+The host receives each opaque reference verbatim, once per diagram per
+render pass. It may return `{ component, props }`, an envelope root
+`{ component, id, ...props }`, or a promise of either. The DS performs no
+fetch, scheme dispatch, caching, retries or resolver timeouts. `ready`
+settles while diagrams are still pending; observe `data-diagram-state` on
+the figure for per-diagram progress. Replacing the resolver retries only
+pending figures. Selection and folding add no resolver calls. Re-ingest or
+destroy discards earlier async results and aborts a pending BPMN mount.
+
+The private allow-list contains `GanttChart` and `BpmnCanvas`. Gantt accepts
+`data`, `label`, optional finite `width`, `height`, `marker`, and up to 500
+tasks `{ task, start, end, category? }`; task names must be non-blank and
+times finite. `class` and unknown props refuse. BPMN accepts `document`
+with `$type: "bpmn:Definitions"` and delegates F1 validation/serialization
+and mounting to the dynamically loaded BPMN engine. `DiagramCanvas` and
+`RoadmapChart` are reserved; other ids are unsupported. These ids never
+call the resolver. The catalogue still has three entries.
+
+Returns are JSON-round-tripped before mounting, with a 1,048,576-byte
+inclusive UTF-8 budget for normalized `props`. Functions, cycles, DOM
+nodes, invalid props and mismatched components produce a named placeholder
+and one `diagram-*` host warning at the section pointer. Missing or failed
+resolution also degrades to a placeholder; the dossier remains rendered.
+These warnings do not extend the closed envelope diagnostic codes.
+
+Every state retains the `alt` figcaption and visible reference/component.
+Placeholders and BPMN containers have a named `img` role. Gantt provides an
+SVG title plus one text row per task. A polite live region announces
+changes without moving focus. Payload strings enter as text nodes; print
+keeps the resolved SVG or the reference placeholder. Local acceptance uses
+jsdom and stubbed BPMN engines; live canvas pixels are outside this gate.
 
 ### `st-bpmn-canvas` (`BpmnCanvas`)
 
@@ -160,7 +223,7 @@ pinned — never a range, never `latest` (the version segment is bumped with
 each release):
 
 ```
-https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/
+https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/
 ```
 
 Load the entry with its integrity hash (the sha384 from
@@ -168,7 +231,7 @@ Load the entry with its integrity hash (the sha384 from
 
 ```html
 <script type="module"
-  src="https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.2.0/dist/browser/elements.js"
+  src="https://cdn.jsdelivr.net/npm/@sentropic/design-system-elements@0.3.0/dist/browser/elements.js"
   integrity="sha384-<hash from dist/browser/sri.json>"
   crossorigin="anonymous"></script>
 ```

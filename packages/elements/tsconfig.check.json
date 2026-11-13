@@ -14,5 +14,5 @@
     "rootDir": "."
   },
   "include": ["src", "tests"],
-  "exclude": ["dist", "node_modules", "src/element/dom", "tests/element-runtime.test.ts", "tests/element-sanitizer.test.ts", "tests/focus-renderer-l6.test.ts", "tests/dossier-track.test.ts"]
+  "exclude": ["dist", "node_modules", "src/element/dom", "tests/element-runtime.test.ts", "tests/element-sanitizer.test.ts", "tests/focus-renderer-l6.test.ts", "tests/dossier-track.test.ts", "tests/diagram-reference.test.ts", "tests/diagram-bpmn.test.ts"]
 }

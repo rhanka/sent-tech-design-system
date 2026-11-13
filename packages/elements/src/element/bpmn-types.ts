@@ -1,5 +1,9 @@
+import type { DiagramResolver } from '../types/diagram.js';
+
 /** The hostConfig shape the elements read (§6.5). */
 export interface HostConfig {
+  /** JS object channel only; never part of the JSON envelope or island. */
+  readonly diagramResolver?: DiagramResolver;
   readonly theme?: unknown;
   readonly colorScheme?: unknown;
   readonly locale?: unknown;

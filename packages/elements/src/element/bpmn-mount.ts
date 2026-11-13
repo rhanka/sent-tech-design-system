@@ -25,6 +25,7 @@ export async function renderBpmn(
   noteDiagnostic: (diagnostic: Diagnostic) => void,
   signal?: AbortSignal,
 ): Promise<() => void> {
+  if (signal?.aborted) return () => {};
   const controller = new AbortController();
   const handle = createBpmnCanvas(node, {
     xml: payload.xml,

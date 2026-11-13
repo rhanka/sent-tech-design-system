@@ -11,10 +11,15 @@
 
 import { dispatchIntent } from "./intents.js";
 import type { ElementPayload, ElementRuntime } from "./element-runtime.svelte.js";
+import type { DiagramResolver } from "../../types/diagram.js";
+import type { DossierRenderHandle } from "./engines/focus-renderer.js";
 
 /** The render actions' shared parameter: the wrapper's runtime. */
 export interface RenderActionOptions {
   readonly runtime: ElementRuntime;
+  /** Explicit reactive payload dependency for wrappers whose runtime is a plain holder. */
+  readonly payload?: ElementPayload | null;
+  readonly diagramResolver?: DiagramResolver | undefined;
 }
 
 /** The mount/update/destroy action the bpmn wrapper template uses. */
@@ -55,20 +60,34 @@ export function renderBpmnAction(node: HTMLElement, options: RenderActionOptions
 export function renderDossierAction(node: HTMLElement, options: RenderActionOptions) {
   let current: RenderActionOptions = options;
   let ticket = 0;
-  let stop: (() => void) | undefined;
+  let stop: DossierRenderHandle | undefined;
+  let renderedDocument: unknown;
+  let resolver = options.diagramResolver;
 
   async function apply(): Promise<void> {
+    const payload = current.payload === undefined ? current.runtime.payload : current.payload;
+    if (payload?.kind === "dossier" && stop !== undefined && renderedDocument === payload.document) {
+      if (resolver !== current.diagramResolver) {
+        resolver = current.diagramResolver;
+        stop.setDiagramResolver(resolver);
+      }
+      return;
+    }
     const mine = ++ticket;
-    const payload = current.runtime.payload;
+    stop?.();
+    stop = undefined;
     if (payload === null || payload.kind !== "dossier") return;
     const engine = await import("./engines/focus-renderer.js");
     if (mine !== ticket) return;
-    stop?.();
+    renderedDocument = payload.document;
+    resolver = current.diagramResolver;
     // The §4.6 intent: one card click, dispatched from inside the shadow
     // root as a composed event — the page hears it through the boundary.
     stop = engine.renderDossier(node, payload.document, (optionId) => {
       dispatchIntent(node, "choose-option", optionId);
-    });
+    }, { diagramResolver: resolver, onDiagramDiagnostic: (diagnostic) => {
+      if (mine === ticket) current.runtime.noteEngineDiagnostic(diagnostic);
+    } });
     if (mine !== ticket) {
       stop?.();
       stop = undefined;

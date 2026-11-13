@@ -79,8 +79,109 @@
         },
         "diagramNode": {
           "additionalProperties": false,
+          "allOf": [
+            {
+              "oneOf": [
+                {
+                  "required": [
+                    "source"
+                  ]
+                },
+                {
+                  "required": [
+                    "sourceRef"
+                  ]
+                }
+              ]
+            },
+            {
+              "not": {
+                "allOf": [
+                  {
+                    "required": [
+                      "source"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "syntax"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "not": {
+                "allOf": [
+                  {
+                    "required": [
+                      "source"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "renderComponent"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "not": {
+                "allOf": [
+                  {
+                    "required": [
+                      "sourceRef"
+                    ]
+                  },
+                  {
+                    "not": {
+                      "required": [
+                        "renderComponent"
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "not": {
+                "allOf": [
+                  {
+                    "required": [
+                      "sourceRef"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "syntax"
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "not": {
+                "allOf": [
+                  {
+                    "required": [
+                      "sourceRef"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "scene"
+                    ]
+                  }
+                ]
+              }
+            }
+          ],
           "properties": {
             "alt": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
               "type": "string"
             },
             "id": {
@@ -89,11 +190,20 @@
             "kind": {
               "const": "diagram"
             },
+            "renderComponent": {
+              "pattern": "^[A-Za-z][A-Za-z0-9-]*$",
+              "type": "string"
+            },
             "scene": {
               "description": "diagram-core SemanticDocument, profile generic@1, without views, geometry or layout hints. Opaque JSON until the design-system publishes its authoritative schema; no Focus-specific scene model.",
               "type": "object"
             },
             "source": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            },
+            "sourceRef": {
+              "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:\\S+$",
               "type": "string"
             },
             "syntax": {
@@ -110,8 +220,6 @@
             "alt",
             "id",
             "kind",
-            "source",
-            "syntax",
             "targetRef"
           ],
           "type": "object"
@@ -270,8 +378,18 @@
         "proseNode": {
           "additionalProperties": false,
           "properties": {
+            "completionCriterion": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            },
             "id": {
               "type": "string"
+            },
+            "inputs": {
+              "items": {
+                "$ref": "#/$defs/DecisionDossierDocument/$defs/sectionInput"
+              },
+              "type": "array"
             },
             "kind": {
               "const": "prose"
@@ -319,11 +437,21 @@
             "answer": {
               "type": "string"
             },
+            "completionCriterion": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            },
             "context": {
               "type": "string"
             },
             "id": {
               "type": "string"
+            },
+            "inputs": {
+              "items": {
+                "$ref": "#/$defs/DecisionDossierDocument/$defs/sectionInput"
+              },
+              "type": "array"
             },
             "kind": {
               "const": "question"
@@ -412,6 +540,28 @@
               "$ref": "#/$defs/DecisionDossierDocument/$defs/diagramNode"
             }
           ]
+        },
+        "sectionInput": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            },
+            "label": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            },
+            "ref": {
+              "pattern": "^[\\s\\S]*\\S[\\s\\S]*$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "ref"
+          ],
+          "type": "object"
         }
       },
       "$schema": "https://json-schema.org/draft/2020-12/schema",
@@ -511,7 +661,7 @@
       "type": "object",
       "unevaluatedProperties": false,
       "x-sentropic": {
-        "contract": "1.0",
+        "contract": "1.1",
         "element": "st-decision-dossier",
         "engine": "lazy:focus",
         "events": [
@@ -590,10 +740,10 @@
         },
         "schema": "https://design-system.sent-tech.ca/catalogs/elements/v1/components/DecisionDossier.json",
         "semantic": {
-          "runtimePackage": "@sentropic/focus@0.5.0",
-          "schemaId": "urn:sentropic:focus:DecisionDossierDocument:1.0.0",
+          "runtimePackage": "@sentropic/focus@0.6.0",
+          "schemaId": "urn:sentropic:focus:DecisionDossierDocument:1.1.0",
           "schemaSubpath": "schemas/decision-dossier-document.v1.schema.json",
-          "sha256": "725bc07e7c6b6ad51a1f720cc9fb02649d8f31bc54e71c61c350fd20058c8852",
+          "sha256": "f4b5247f025e99081c20fd9a8b0ed98b32a061c4a98597010be0264e5e564c6c",
           "source": "focus"
         }
       }
