@@ -60,11 +60,11 @@ export type {
   IconButtonSize,
   IconButtonVariant,
 } from "./IconButton.vue";
-export { InlineLoading } from "./InlineLoading.js";
+export { default as InlineLoading } from "./InlineLoading.vue";
 export type {
   InlineLoadingProps,
   InlineLoadingStatus,
-} from "./InlineLoading.js";
+} from "./InlineLoading.vue";
 export { default as Input } from "./Input.vue";
 export type { InputProps, InputSize } from "./Input.vue";
 export { LanguageSelector } from "./LanguageSelector.js";
