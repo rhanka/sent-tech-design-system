@@ -629,13 +629,13 @@ export type {
   NavActionDangerZone,
   NavActionStackOrientation,
 } from './NavActionStack.vue';
-export { NavItem } from "./NavItem.js";
+export { default as NavItem } from './NavItem.vue';
 export type {
   NavItemProps,
   NavItemDepth,
   NavItemStatus,
   NavItemSwatch,
-} from "./NavItem.js";
+} from './NavItem.vue';
 export { default as NavSection } from './NavSection.vue';
 export type {
   NavSectionProps,
