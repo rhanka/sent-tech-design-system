@@ -1,8 +1,8 @@
 {
   "componentId": "wind-barb-chart",
   "contractSource": "derived",
-  "digest": "sha256:bea632d4b0ee23cc7ea1f0fab0dff9453c956db0f051c8db3c693feedf0cfcb2",
-  "entryDigest": "sha256:c96e3555fdc5286e105b7426320d897a6b00e757206df17bd428e5357d19a50e",
+  "digest": "sha256:6b66cdfe9a3c33a192a4f6af59d65cc50d183a1a3aa8ab61814ff52880309cf9",
+  "entryDigest": "sha256:6ad35e594acad463bcff158f933065d1b7f6b456389c21e216e047d01851335a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -224,7 +224,7 @@
         "declarationPath": "packages/components-svelte/dist/WindBarbChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WindBarbChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:b65155efedaf31b941ca53194ed80119aa98af3ec2582f6d12a06f790a6d1e8c",
-  "entryDigest": "sha256:a7baaa54067062489e647a974445410e9247e46e180795b9c925618125290504",
+  "digest": "sha256:aa70e0da367614f9329ab54e6f36a21c57c38ee8039c3e84ee7414eecc939d50",
+  "entryDigest": "sha256:dda8fe2e0f59cc30e32d2fbc2bfd4bb8f64900a0bf802b597dd68624614ce15e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -257,7 +257,7 @@
         "declarationPath": "packages/components-svelte/dist/WaffleChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WaffleChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

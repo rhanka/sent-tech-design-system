@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColorSwatch.svelte",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Swatch of an arbitrary color (hex/rgb/oklch/token) with an optional label: a palette or legend building block.",
     "fr": "Pastille d'une couleur arbitraire (hex/rgb/oklch/token) avec libellé optionnel : brique d'une palette ou d'une légende."
   },
-  "digest": "sha256:e3558fad9621f68d152f6f951c36ebe619d31db40d9b3dcbbf00353595b19b17",
+  "digest": "sha256:9384287b3df73e348657c1cd8bd2d5090644cea320e4649d6d7ea9ba49ec1a53",
   "displayName": "ColorSwatch",
   "format": "component-entry/v1",
   "frameworks": [

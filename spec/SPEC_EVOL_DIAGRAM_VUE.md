@@ -47,10 +47,12 @@ adapter owns dirty-frame scheduling; Vue owns no continuous render loop.
 2. Keep the existing per-module TypeScript package layout. Use the already
    installed `vue-tsc` for template checking/declarations and the official
    SFC compiler for JavaScript. Copy SFC styles into the existing `styles.css`.
-3. Use Vue's runtime-matched compiler for classic output. Pin the official
-   `@vue/compiler-sfc` 3.6 RC for Vapor compilation and the opt-in `/vapor`
-   entry. The RC compiler is development tooling; it is absent from runtime
-   imports. `/vapor` requires a Vue 3.6 runtime with Vapor support. Existing
+3. Owner decision (2026-11-12): pin development `vue` and `@vue/compiler-sfc`
+   to exactly `3.6.0-rc.15`. A root npm override keeps tooling and Lucide on
+   the same Vue instance. Vapor (`/vapor`) is the primary diagram mode;
+   classic output remains available for consumers on the `^3.5 || ^3.6` peer
+   range. `/vapor` requires the Vue 3.6 browser/bundler runtime with Vapor
+   support; Vue's Node CJS entry omits Vapor. Existing
    components outside this port retain their current implementation.
 4. Keep graph buffers in `markRaw`/`shallowRef`, with an explicit version
    trigger for in-place buffer updates. Watch only small selection, hover,
@@ -71,9 +73,10 @@ an actual Vapor compiler. Those findings are addressed above.
 
 ## Public use
 
-Classic diagram components are exported from `@sentropic/design-system-vue`; the
-ported diagram components also have an opt-in `@sentropic/design-system-vue/vapor`
-entry. Load `@sentropic/design-system-vue/styles.css` and a DS theme in either
+Use `@sentropic/design-system-vue/vapor` for diagram components on Vue 3.6.
+The compatibility entry `@sentropic/design-system-vue` exports classic diagram
+components and supports Vue 3.5 consumers. All ported components use Composition
+API template SFCs. Load `@sentropic/design-system-vue/styles.css` and a DS theme in either
 mode. Icons stay at `/diagram-icons` or `/vapor/diagram-icons`, and pure SVG
 renderers at `/diagram-render`. The optional BPMN binding is exported from
 `/bpmn` or `/vapor/bpmn`, keeping its optional engine types out of the main entry.
@@ -117,23 +120,61 @@ in JSON extraction, not an incomplete Vue component.
 
 ## Verification results
 
-- Vue: 1,728 tests across 106 files; includes 134 DOM/ARIA/compiler cases,
-  three SSR witnesses and eight graph/BPMN lifecycle cases. All pass.
-- All 11 new SFCs compile with the runtime-matched classic compiler and the
-  official 3.6 RC Vapor compiler; both output entries build.
-- Vue `check` and `build`: pass.
-- Svelte focused diagram/scene/ForceGraph/SVG regression: 180 tests pass;
-  both Svelte checks report zero errors (26 accessibility warnings in the
-  broader package; parity check has zero warnings).
-- Diagram canvas: 356 pass, one dense-layout performance benchmark skipped.
-  The no-DOM guard and TypeScript checks pass.
-- Elements: 15 runtime/F1 tests and both checks pass.
-- Component-index resolver/extractor regression: 13 tests pass.
-- No browser raster, actual GPU pixels or Vapor runtime execution is claimed.
+Review correction verification (2026-11-12):
 
-- Component-index generation and `index:check`: pass.
-- `notices:generate`: pass; the default Vue runtime closure stays unchanged.
-- `git diff --check`: pass. Package-lock workspace manifests are synchronized.
+| Findings | Correction | Regression witness |
+| --- | --- | --- |
+| Carbon B1, M1 | Vapor declarations reuse complete SFC definitions, preserving expose/slots; named fold-array boundary prevents a direct diagram-core reference; typed ForceGraph compatibility alias prevents a direct runtime-core reference; companion types exported in both modes; build/check validate final emitted declarations | `scripts/check-published-types.mjs`, `tests/types/consumer.ts`: all seven entrypoints, required label, exposed methods and slot parity; also checked with Vue 3.5.35 consumer types |
+| Carbon B2; Argon Fix 1 | Emit-only graph callbacks | `diagram-parity.test.ts`: callback props and template listeners invoked once, keyboard/focus/edge events; `vapor-runtime.test.ts` executes published output |
+| Carbon B3; Argon Fix 2 | Frozen default selection; engine treats absent and empty selections equally | `useGraphEngine.test.ts`: viewport updates with omitted selection and active hover never rebuild style buffers; direct engine empty-array replacements |
+| Carbon B4 | Payload availability controls the body; rendered/ready wait for engine readiness; watch installed after host-config initialization | `BpmnCanvas.test.ts`: pending/success/rejection, zero initial aborts with host config, child JSON island mutations, replacement/unmount cleanup; published Vapor readiness |
+| Carbon M2 | Layout is the sole collapsed-zone diagnostic source | `diagram-parity.test.ts`: one unmapped-icon diagnostic, equal to pure SVG; published Vapor callback count |
+| Carbon M3; Argon Fix 4 | Pinch prevents default; cached viewport removes wheel listener after refs clear | `diagram-parity.test.ts`: cancelable two-touch movement and teardown listener spy |
+| Carbon M4; Argon Fix 3 | Native non-passive wheel handler, live media-query changes, required accessible label, pointer activation on dot shapes | `ForceGraph.interactions.test.ts`: wheel/pan/reset, preference changes, listener teardown, merge rAF/idempotency/masking; consumer label assertion; node-label clicks emit no intent |
+| Carbon M5 | Add runtime, declaration and SSR coverage; use diagram-core package imports in fixtures | Full Vue suite plus `diagram-ssr.test.ts` WebGL/BPMN shells and three published Vapor runtime cases |
+| Carbon N1–N3; Argon cleanups | Restore Svelte CSS token fallbacks and parse token expressions in the guard; remove unused imports; anchor Vapor script-tag rewrite; project each scene node once per reactive pass | Corpus DOM/ARIA parity, compiler/token guards in both modes, published Vapor runtime |
+
+The new regression assertions first reproduced duplicate callbacks/diagnostics,
+premature readiness, missing declarations/types, missing non-passive wheel
+configuration and pinch cancellation, initial host-config abort, and empty
+selection style copies on the prior implementation. They pass after correction.
+
+- Vue: 1,743 tests across 108 files, including published Vapor execution in
+  jsdom with Vue's browser ESM runtime; all 11 SFCs compile in both modes.
+- Vue `check` (which builds and validates final declarations) and build pass.
+- Svelte focused diagram/scene/ForceGraph/SVG regression: 374 tests pass.
+  Both checks pass: zero errors, 26 accessibility warnings in the broader
+  package, zero warnings in parity; build passes.
+- Diagram canvas: 356 pass, one dense-layout performance benchmark skipped;
+  build/check pass. Graph build passes.
+- Component-index resolver/extractor regression: 13 tests pass; generation
+  and `index:check` pass with 428 fresh artifacts.
+- `npm pack --dry-run`: all seven declaration entrypoints included.
+- `notices:generate` and `git diff --check` pass. Lockfile updated by npm install.
+- No local browser or actual GPU pixel verification was run.
+
+### Second review corrections (2026-11-12)
+
+| Finding | Fix | Regression proof |
+| --- | --- | --- |
+| R2-B1 | Emit a declaration beside every Vapor SFC and route all three Vapor barrels through those declarations. The `VaporSfc` adapter uses Vue's `VaporComponentOptions` and `VaporComponentInstance`, retains props, slots, events and exposed members, and drops VDOM instance internals. Remove the runtime mount helper's `as never` cast. | The extended `tests/types/consumer.ts` first failed with TS2322/TS2345 for the VDOM declarations. It now compiles with `skipLibCheck: false` against both built output and the installed tarball: all eight public components accept the app, SSR and component APIs; direct and default-module async loaders compile; exposed methods, required props, events and slots remain typed. |
+| R2-B2 | Add diagram-canvas and graph to the Vue smoke closure; the existing walk includes diagram-core transitively. | The Vue smoke shard first failed fetching unpublished diagram-canvas from npm (E404). It now installs local tarballs and passes deep verification. The shard also requires all six subpath JS/declaration pairs and the Vapor adapter, and resolves the public subpaths (R2-N2). |
+| R2-M1 | Change the peer range to `^3.5 || ^3.6.0-0`, retaining exact runtime/compiler pins at `3.6.0-rc.15`. Update the lockfile through npm. | A new strict packed-consumer install first failed with ERESOLVE on the old peer range. The same install now passes without `--legacy-peer-deps` or `--force`, followed by the consumer type check. |
+
+The strict consumer includes the optional Elements peer for its BPMN checks.
+Its TypeScript runner rejects any source file resolved outside the consumer
+directory, including workspace symlinks, so ancestor dependencies cannot mask
+missing packed declarations or dependencies. Smoke-pack respects an explicitly
+configured npm cache.
+
+Second-pass results: Vue 1,743 tests / 108 files; targeted Svelte diagram,
+scene, SSR and ForceGraph 153 tests / 5 files; diagram-canvas 356 passing
+tests and one skipped benchmark. Vue and Svelte builds/checks pass (Svelte:
+zero errors, 26 warnings in the main check, zero warnings in parity).
+`node scripts/smoke-pack.mjs --workspaces=@sentropic/design-system-vue`,
+`npm pack --dry-run -w @sentropic/design-system-vue`, component-index
+generation/check (428 fresh artifacts), and `notices:generate` pass.
+No root test campaign or local browser was run.
 
 ## Changed files
 
