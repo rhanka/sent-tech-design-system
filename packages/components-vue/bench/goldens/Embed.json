@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Embed",
+  "sourceRevision": "ebf7a23971457de6d93ccee722b67bf753d7684c",
+  "source": "src/Embed.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-embed\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:16/9;\"><iframe class=\"st-embed__frame\" loading=\"lazy\" sandbox=\"\" src=\"/video.html\" title=\"Video\"></iframe></div></div>"
+    },
+    {
+      "id": "sandboxed",
+      "html": "<div class=\"st-embed consumer\" data-bench=\"embed\" style=\"color:red;\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:4/3;\"><iframe allow=\"fullscreen; picture-in-picture\" class=\"st-embed__frame\" loading=\"eager\" sandbox=\"allow-scripts\" src=\"/app.html\" title=\"App\"></iframe></div></div>"
+    },
+    {
+      "id": "empty-sandbox",
+      "html": "<div class=\"st-embed\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:16/9;\"><iframe class=\"st-embed__frame\" loading=\"lazy\" sandbox=\"\" src=\"/doc.html\" title=\"Doc\"></iframe></div></div>"
+    },
+    {
+      "id": "portrait",
+      "html": "<div class=\"st-embed\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:3/4;\"><iframe class=\"st-embed__frame\" loading=\"lazy\" sandbox=\"\" src=\"/photo.html\" title=\"Photo\"></iframe></div></div>"
+    },
+    {
+      "id": "square",
+      "html": "<div class=\"st-embed\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:1/1;\"><iframe class=\"st-embed__frame\" loading=\"lazy\" sandbox=\"\" src=\"/map.html\" title=\"Map\"></iframe></div></div>"
+    },
+    {
+      "id": "eager-minimal",
+      "html": "<div class=\"st-embed\"><div class=\"st-aspectRatio\" style=\"aspect-ratio:16/9;\"><iframe class=\"st-embed__frame\" loading=\"eager\" sandbox=\"\" src=\"/x.html\" title=\"X\"></iframe></div></div>"
+    }
+  ],
+  "sourceSha256": "2d0ec6d3f1be6fa1ea126ef0a4101f3a80a1f3bd77f6c968be55fc585ac66672",
+  "fixtureSha256": "48c29130d1fd84ccd24af38ce03e549104a8c88c378fbc082e41d0e480fee1d9",
+  "publicExports": [
+    {
+      "name": "Embed",
+      "typeOnly": false
+    },
+    {
+      "name": "EmbedProps",
+      "typeOnly": true
+    }
+  ]
+}

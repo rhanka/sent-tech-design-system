@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ContextPanel",
+  "sourceRevision": "a80589fdcec0f19841a2798a66c15fe3868cf4ef",
+  "source": "src/ContextPanel.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<aside aria-label=\"Details\" class=\"st-contextPanel\"><header class=\"st-contextPanel__header\"><div class=\"st-contextPanel__heading\"><h2 class=\"st-contextPanel__title\">Details</h2><p class=\"st-contextPanel__subtitle\">Overview</p></div></header><div class=\"st-contextPanel__body\">Panel body</div></aside>"
+    },
+    {
+      "id": "title-only",
+      "html": "<aside aria-label=\"Only title\" class=\"st-contextPanel\"><header class=\"st-contextPanel__header\"><div class=\"st-contextPanel__heading\"><h2 class=\"st-contextPanel__title\">Only title</h2></div></header><div class=\"st-contextPanel__body\">Body text</div></aside>"
+    },
+    {
+      "id": "subtitle-only",
+      "html": "<aside aria-label=\"Context panel\" class=\"st-contextPanel\"><header class=\"st-contextPanel__header\"><div class=\"st-contextPanel__heading\"><p class=\"st-contextPanel__subtitle\">Only subtitle</p></div></header><div class=\"st-contextPanel__body\">Body text</div></aside>"
+    },
+    {
+      "id": "with-actions-footer",
+      "html": "<aside aria-label=\"Panel region\" class=\"st-contextPanel consumer\" data-bench=\"panel\" style=\"color:red;\"><header class=\"st-contextPanel__header\"><div class=\"st-contextPanel__heading\"><h2 class=\"st-contextPanel__title\">Panel</h2></div><div class=\"st-contextPanel__actions\"><strong>Act</strong></div></header><div class=\"st-contextPanel__body\">Body</div><footer class=\"st-contextPanel__footer\">Footer note</footer></aside>"
+    },
+    {
+      "id": "bare",
+      "html": "<aside aria-label=\"Context panel\" class=\"st-contextPanel\"><div class=\"st-contextPanel__body\">Just body</div></aside>"
+    },
+    {
+      "id": "empty",
+      "html": "<aside aria-label=\"Context panel\" class=\"st-contextPanel\"><div class=\"st-contextPanel__body\"></div></aside>"
+    }
+  ],
+  "sourceSha256": "a6ca4f4d1682f778538ae3deace560ae1b79eb86efa1ff55218ef2878fee1f77",
+  "fixtureSha256": "3d2f24d5d31f50e6eea7e684f8e6d577d0cda24681859dd8526b61b49fc074df",
+  "publicExports": [
+    {
+      "name": "ContextPanel",
+      "typeOnly": false
+    },
+    {
+      "name": "ContextPanelProps",
+      "typeOnly": true
+    }
+  ]
+}
