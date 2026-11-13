@@ -1,0 +1,46 @@
+{
+  "category": "feedback",
+  "componentId": "lock-presence-badge",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:eeeeb66e717efd03d558f96de48bb0f6e575f584ba740efcf6473fedc5810f1a",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/presence-badge/LockPresenceBadge.svelte",
+      "version": "0.41.0"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:25e6fc931022e55cab8c5ce56d83b141b17c566acf05a9a9ef395e3ea5d9d6c9",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/presence-badge/LockPresenceBadge.vue",
+      "version": "0.41.0-next.2"
+    }
+  ],
+  "description": {
+    "en": "Collaborator presence and lock state with capability-controlled unlock actions.",
+    "fr": "Présence des collaborateurs et état du verrou, avec actions de déverrouillage autorisées."
+  },
+  "digest": "sha256:00aa8eb92116e414de537a44ac09111400ac68b3a8200872ec6c3e2520027dd4",
+  "displayName": "LockPresenceBadge",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "vue"
+  ],
+  "groupSlug": "presence-badge",
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

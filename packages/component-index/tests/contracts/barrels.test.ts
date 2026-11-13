@@ -1,12 +1,51 @@
 import { describe, expect, it } from "vitest";
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import { parseBarrelFile, parseBarrelText, resolveModuleFile } from "../../src/generator/barrels.js";
+import { parseBarrelFile, parseBarrelText, parseComponentBarrels, resolveModuleFile } from "../../src/generator/barrels.js";
+import { barrelNamesForSource } from "../../src/generator/contracts/resolve.js";
 import { loadBaseline } from "../../src/generator/emit.js";
 
 const PACKAGE_DIR = join(import.meta.dirname, "..", "..");
+
+describe("public component subpath inventories", () => {
+  it.each(["svelte", "vue"])("inventories %s public subpaths without root runtime re-exports", (framework) => {
+    const scratch = mkdtempSync(join(tmpdir(), "k1b-public-subpaths-"));
+    try {
+      const pkg = join(scratch, "packages", `components-${framework}`);
+      const source = join(pkg, "src", ...(framework === "svelte" ? ["lib"] : []));
+      const extension = framework === "svelte" ? "svelte" : "vue";
+      mkdirSync(join(source, "rich-text-editor"), { recursive: true });
+      writeFileSync(join(pkg, "package.json"), JSON.stringify({ exports: { "./rich-text-editor": { types: "./dist/rich-text-editor/index.d.ts" } } }));
+      writeFileSync(join(source, "index.ts"), "export {};\n");
+      writeFileSync(join(source, "rich-text-editor", `RichTextEditor.${extension}`), "<div></div>");
+      writeFileSync(join(source, "rich-text-editor", "index.ts"), framework === "svelte"
+        ? 'import RichTextEditor from "./RichTextEditor.svelte";\nexport { RichTextEditor };\nexport type { RichTextEditorProps } from "./RichTextEditor.svelte";\n'
+        : 'export { default, default as RichTextEditor } from "./RichTextEditor.vue";\nexport type { RichTextEditorProps } from "./RichTextEditor.vue";\n');
+      const parsed = parseComponentBarrels(pkg);
+      expect([...parsed.values.keys()]).toEqual(["RichTextEditor"]);
+      expect(parsed.values.get("RichTextEditor")).toBe(`./rich-text-editor/RichTextEditor.${extension}`);
+      expect(parsed.types.has("RichTextEditorProps")).toBe(true);
+      expect(barrelNamesForSource(pkg, `packages/components-${framework}/src/${framework === "svelte" ? "lib/" : ""}rich-text-editor/RichTextEditor.${extension}`, "rich-text-editor")).toBe("RichTextEditor");
+      expect(readFileSync(join(source, "index.ts"), "utf8")).toBe("export {};\n");
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  });
+
+  it("fails when a declared public component subpath has no source barrel", () => {
+    const scratch = mkdtempSync(join(tmpdir(), "k1b-missing-subpath-"));
+    try {
+      mkdirSync(join(scratch, "src"));
+      writeFileSync(join(scratch, "src", "index.ts"), "export {};\n");
+      writeFileSync(join(scratch, "package.json"), JSON.stringify({ exports: { "./presence-badge": {} } }));
+      expect(() => parseComponentBarrels(scratch)).toThrow(/presence-badge.*no source barrel/);
+    } finally {
+      rmSync(scratch, { recursive: true, force: true });
+    }
+  });
+});
 
 it("resolves template SFCs directly and keeps JS shims unambiguous", () => {
   const source = join(PACKAGE_DIR, "..", "components-vue", "src");

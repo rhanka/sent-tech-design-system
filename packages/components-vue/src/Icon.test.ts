@@ -57,6 +57,12 @@ describe("Icon — canonical DS icon set", () => {
     expect(svg.attributes("stroke-width")).toBe("2.25");
   });
 
+  it("renders the canonical comment name as a message-square glyph", () => {
+    const svg = mount(Icon, { props: { name: "comment" } }).find("svg");
+    expect(svg.classes()).toContain("lucide-message-square");
+    expect(svg.find("path").attributes("d")).toBe("M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z");
+  });
+
   it("is decorative (aria-hidden) with no title", () => {
     const wrapper = mount(Icon, { props: { name: "close" } });
     expect(wrapper.find("svg").attributes("aria-hidden")).toBe("true");

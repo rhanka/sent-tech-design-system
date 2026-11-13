@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:d354406b3e9fe5c1cf7cf7b953c7bcc7cf6df578fce05a136d8dd45a2b4f033c",
-  "entryDigest": "sha256:f136b5158a49269c9732217d218828195a428dad8c46f18ab155a99f5f4cfcbf",
+  "digest": "sha256:7d969eef44f47b896a2daa1fdd1b206b03acb4e6266da7cda8a43c8010b17a3d",
+  "entryDigest": "sha256:41ba5974df8abc27f679731dba6ab71bacd81be1ad716f4c778f183f717d5915",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4199,7 +4199,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.1"
+        "version": "0.41.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -8974,7 +8974,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.1-next.1"
+        "version": "0.41.0-next.2"
       },
       "status": "partial",
       "unresolved": [],
