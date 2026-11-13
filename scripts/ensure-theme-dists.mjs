@@ -80,6 +80,19 @@ function storedHash(pkgDir) {
   }
 }
 
+// A matching source hash cannot make an incomplete restored dist reusable.
+// Check concrete public entry points, including nested export conditions.
+function hasPublishedEntries(workspace) {
+  const targets = [];
+  const collect = (value) => {
+    if (typeof value === "string") targets.push(value);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  for (const field of ["main", "module", "types", "svelte", "exports"]) collect(workspace.manifest[field]);
+  return targets.filter((target) => /^(?:\.\/)?dist\//.test(target) && !target.includes("*"))
+    .every((target) => existsSync(join(workspace.dir, target)));
+}
+
 function run(cmd, args, cwd) {
   const r = spawnSync(cmd, args, { cwd, stdio: "inherit", shell: false });
   if (r.status !== 0) process.exit(r.status ?? 1);
@@ -141,7 +154,7 @@ for (const w of targets) {
   const hash = sourceHash(w.dir);
   const distDir = join(w.dir, "dist");
   const marker = join(distDir, ".srchash");
-  if (!noHash && existsSync(distDir) && storedHash(w.dir) === hash) {
+  if (!noHash && existsSync(distDir) && storedHash(w.dir) === hash && hasPublishedEntries(w)) {
     skipped += 1;
     continue;
   }
