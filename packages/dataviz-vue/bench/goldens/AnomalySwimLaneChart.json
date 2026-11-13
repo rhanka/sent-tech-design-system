@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "AnomalySwimLaneChart",
+  "sourceRevision": "dcdf5813e8c353de10b8dab9beecf34af866429c",
+  "source": "src/lib/AnomalySwimLaneChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-anomalySwimLaneChart st-anomalySwimLaneChart--sequential\"><div aria-label=\"Anomalies\" class=\"st-anomalySwimLaneChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"132\" y1=\"28\" y2=\"256\"></line><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"502\" y1=\"256\" y2=\"256\"></line></svg></div></div>"
+    },
+    {
+      "id": "with-max",
+      "html": "<div class=\"st-anomalySwimLaneChart st-anomalySwimLaneChart--sequential\"><div aria-label=\"Anomalies\" class=\"st-anomalySwimLaneChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"132\" y1=\"28\" y2=\"256\"></line><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"502\" y1=\"256\" y2=\"256\"></line></svg></div></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-anomalySwimLaneChart st-anomalySwimLaneChart--sequential\"><div aria-label=\"Anomalies\" class=\"st-anomalySwimLaneChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 260\" width=\"100%\"><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"132\" y1=\"28\" y2=\"216\"></line><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"462\" y1=\"216\" y2=\"216\"></line></svg></div></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-anomalySwimLaneChart st-anomalySwimLaneChart--sequential consumer\" data-bench=\"swim\"><div aria-label=\"Anomalies\" class=\"st-anomalySwimLaneChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"132\" y1=\"28\" y2=\"256\"></line><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"502\" y1=\"256\" y2=\"256\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-anomalySwimLaneChart st-anomalySwimLaneChart--sequential\"><div aria-label=\"Anomalies\" class=\"st-anomalySwimLaneChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 300\" width=\"100%\"><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"132\" y1=\"28\" y2=\"256\"></line><line class=\"st-anomalySwimLaneChart__axis\" x1=\"132\" x2=\"502\" y1=\"256\" y2=\"256\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "f82d778a81ddc4ef5df570699a630545e772ae8dade1d6f6ddf8ebac4ac3772b",
+  "fixtureSha256": "cb156a025f8ac0eba21b2bf4ec24d39ad225b61ee5cdf35b95cbcd3a600af81f",
+  "publicExports": [
+    {
+      "name": "AnomalySwimLaneChart",
+      "typeOnly": false
+    },
+    {
+      "name": "AnomalySwimLaneChartProps",
+      "typeOnly": true
+    }
+  ]
+}
