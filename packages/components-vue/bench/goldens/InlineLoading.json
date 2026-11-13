@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "InlineLoading",
+  "sourceRevision": "6600a761af54fb30a13668d59ac143592d5a31be",
+  "source": "src/InlineLoading.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Chargement\" aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--active\" role=\"status\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"><span class=\"st-inlineLoading__spinner\"><svg aria-hidden=\"true\" class=\"lucide lucide-loader-circle-icon lucide-loader-circle\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M21 12a9 9 0 1 1-6.219-8.56\"></path></svg></span></span></div>"
+    },
+    {
+      "id": "explicit-label",
+      "html": "<div aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--active\" role=\"status\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"><span class=\"st-inlineLoading__spinner\"><svg aria-hidden=\"true\" class=\"lucide lucide-loader-circle-icon lucide-loader-circle\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M21 12a9 9 0 1 1-6.219-8.56\"></path></svg></span></span><span class=\"st-inlineLoading__label\">Please wait</span></div>"
+    },
+    {
+      "id": "success",
+      "html": "<div aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--success\" role=\"status\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-circle-check-icon lucide-circle-check\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m9 12 2 2 4-4\"></path></svg></span><span class=\"st-inlineLoading__label\">Done</span></div>"
+    },
+    {
+      "id": "error",
+      "html": "<div aria-label=\"Erreur\" aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--error\" role=\"alert\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-circle-alert-icon lucide-circle-alert\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><line x1=\"12\" x2=\"12\" y1=\"8\" y2=\"12\"></line><line x1=\"12\" x2=\"12.01\" y1=\"16\" y2=\"16\"></line></svg></span></div>"
+    },
+    {
+      "id": "inactive-en",
+      "html": "<div aria-label=\"Inactive\" aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--inactive\" role=\"status\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"></span></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div aria-label=\"Custom\" aria-live=\"polite\" class=\"st-inlineLoading st-inlineLoading--success consumer\" data-bench=\"inline-loading\" role=\"status\" style=\"color:red;\"><span aria-hidden=\"true\" class=\"st-inlineLoading__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-circle-check-icon lucide-circle-check\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\"></circle><path d=\"m9 12 2 2 4-4\"></path></svg></span><span class=\"st-inlineLoading__label\">OK</span></div>"
+    }
+  ],
+  "sourceSha256": "696938fc80e59089945c66b41bcb520f3e805c303bd23f8adfe6e9f1308d2ab0",
+  "fixtureSha256": "8ccf7226567efe64f1627a607d5f14957083d8ee1e8813494650bda0f7697afa",
+  "publicExports": [
+    {
+      "name": "InlineLoading",
+      "typeOnly": false
+    },
+    {
+      "name": "InlineLoadingProps",
+      "typeOnly": true
+    },
+    {
+      "name": "InlineLoadingStatus",
+      "typeOnly": true
+    }
+  ]
+}
