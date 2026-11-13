@@ -550,8 +550,8 @@ export { DependencyWheelChart } from "./DependencyWheelChart.js";
 export type { DependencyWheelChartProps, DependencyWheelChartLink, DependencyWheelChartTone } from "./DependencyWheelChart.js";
 export { ArcDiagramChart } from "./ArcDiagramChart.js";
 export type { ArcDiagramChartProps, ArcDiagramChartLink, ArcDiagramChartTone } from "./ArcDiagramChart.js";
-export { PackedBubblesChart } from "./PackedBubblesChart.js";
-export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.js";
+export { default as PackedBubblesChart } from "./PackedBubblesChart.vue";
+export type { PackedBubblesChartProps, PackedBubblesChartDatum, PackedBubblesChartTone } from "./PackedBubblesChart.vue";
 export { MarimekkoChart } from "./MarimekkoChart.js";
 export type {
   MarimekkoChartProps,
