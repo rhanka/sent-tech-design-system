@@ -278,13 +278,13 @@ export type {
   StateTimelineSegment,
   StateTimelineSeries,
 } from "./StateTimelineChart.vue";
-export { StatusHistoryChart } from "./StatusHistoryChart.js";
+export { default as StatusHistoryChart } from "./StatusHistoryChart.vue";
 export type {
   StatusHistoryChartProps,
   StatusHistoryTone,
   StatusHistoryBucket,
   StatusHistorySeries,
-} from "./StatusHistoryChart.js";
+} from "./StatusHistoryChart.vue";
 export { EventFeedPanel } from "./EventFeedPanel.js";
 export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
 export { VectorFieldChart } from "./VectorFieldChart.js";
