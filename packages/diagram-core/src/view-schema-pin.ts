@@ -6,7 +6,7 @@
  * `{ id: "diagram-view-schema", version: "1" | "2" | "3", contentDigest }`,
  * deeply frozen. The digests are measured through the DS canonical bytes
  * (`sha256Hex(canonicalBytes(schema))`), the same procedure as Engram
- * `govern` (graphify@310a9270 `src/ontology-guardian/diagram-schemas.ts`).
+ * `govern` (engram@46f93dbe `src/ontology-guardian/diagram-schemas.ts`).
  *
  * Resolution is by exact pin only: @3, @2 and @1 all resolve
  * (no "latest", no fallback, no reverse migration). Refusals are typed
