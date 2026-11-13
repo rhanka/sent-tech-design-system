@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "WindBarbChart",
+  "sourceRevision": "2c56f48ddb114a95c8bb807c4d8c58adbf6479bd",
+  "source": "src/WindBarbChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-windBarbChart\"><div aria-label=\"Wind\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"143.6\" y=\"140\">2</text><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"263.2\" y=\"140\">4</text><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"382.8\" y=\"140\">6</text><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"502.4\" y=\"140\">8</text><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"622\" y=\"140\">10</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category2\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"0\" x1=\"24\" x2=\"56\" y1=\"70\" y2=\"70\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"50.879999999999995\" x2=\"50.879999999999995\" y1=\"70\" y2=\"83.44\"></line></g><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category8\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"1\" x1=\"203.4\" x2=\"203.4\" y1=\"70\" y2=\"102\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--flag1\" x1=\"203.4\" x2=\"189.96\" y1=\"96.88\" y2=\"96.88\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--flag2\" x1=\"203.4\" x2=\"189.96\" y1=\"91.75999999999999\" y2=\"96.88\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--half\" x1=\"203.4\" x2=\"196.008\" y1=\"86.64\" y2=\"86.64\"></line></g><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category1\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"2\" x1=\"382.8\" x2=\"350.8\" y1=\"70\" y2=\"70\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--half\" x1=\"355.92\" x2=\"355.92\" y1=\"70\" y2=\"62.608\"></line></g><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category5\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"3\" x1=\"562.2\" x2=\"562.2\" y1=\"70\" y2=\"38\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"562.2\" x2=\"575.6400000000001\" y1=\"43.120000000000005\" y2=\"43.120000000000005\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"562.2\" x2=\"575.6400000000001\" y1=\"48.24\" y2=\"48.24\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"562.2\" x2=\"575.6400000000001\" y1=\"53.36\" y2=\"53.36\"></line></g></svg></div><ul aria-label=\"Data values for Wind\" class=\"st-chartDataList\"><li>0 · 12 kt @ 90°</li><li>3 · 57 kt @ 180°</li><li>6 · 5 kt @ 270°</li><li>9 · 30 kt @ 0°</li></ul></div>"
+    },
+    {
+      "id": "single",
+      "html": "<div class=\"st-windBarbChart\"><div aria-label=\"Single\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">2</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category8\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"0\" x1=\"24\" x2=\"46.62741699796952\" y1=\"70\" y2=\"47.37258300203048\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"43.007030278294394\" x2=\"52.51054541744159\" y1=\"50.992969721705606\" y2=\"60.4964848608528\"></line></g></svg></div><ul aria-label=\"Data values for Single\" class=\"st-chartDataList\"><li>2 · 10 kt @ 45°</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-windBarbChart\"><div aria-label=\"Empty\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    },
+    {
+      "id": "custom-size",
+      "html": "<div class=\"st-windBarbChart\"><div aria-label=\"Sized\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 700 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"682\" y1=\"124\" y2=\"124\"></line><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category8\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"0\" x1=\"24\" x2=\"65.56921938165306\" y1=\"70\" y2=\"94\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"58.91814428058857\" x2=\"48.83814428058857\" y1=\"90.16\" y2=\"107.61907214029428\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"52.26706917952408\" x2=\"42.18706917952408\" y1=\"86.32\" y2=\"103.77907214029428\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--half\" x1=\"45.61599407845959\" x2=\"40.071994078459596\" y1=\"82.48\" y2=\"92.08248967716186\"></line></g></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>0 · 25 kt @ 120°</li></ul></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-windBarbChart consumer\" data-bench=\"windBarbChart\" style=\"color:red;\"><div aria-label=\"Custom\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">1</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line><g class=\"st-windBarbChart__barb st-windBarbChart__barb--category8\"><line class=\"st-windBarbChart__shaft\" data-chart-key=\"0\" x1=\"24\" x2=\"13.055355413578601\" y1=\"70\" y2=\"100.07016386514907\"></line><line class=\"st-windBarbChart__feather st-windBarbChart__feather--full\" x1=\"14.806498547406026\" x2=\"2.1770297240434164\" y1=\"95.25893764672522\" y2=\"90.66218692042823\"></line></g></svg></div><ul aria-label=\"Data values for Custom\" class=\"st-chartDataList\"><li>1 · 8 kt @ 200°</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "5fa0e674e4592d26dd66771fa14a389560cbc255dcf4663a6ac82874fdad5652",
+  "fixtureSha256": "a8897cd7cdd4116e2706d0aa66813ed29d4326b03f9e0541ca30b8674e80511c",
+  "publicExports": [
+    {
+      "name": "WindBarbChart",
+      "typeOnly": false
+    },
+    {
+      "name": "WindBarbChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "WindBarbChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "WindBarbChartTone",
+      "typeOnly": true
+    }
+  ]
+}
