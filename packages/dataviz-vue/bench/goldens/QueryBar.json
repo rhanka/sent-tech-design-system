@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "QueryBar",
+  "sourceRevision": "d1d4edfc146a0d010efbfff15a65027c51fa546e",
+  "source": "src/lib/QueryBar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-search st-search--md st-queryBar\"><label class=\"st-field__label\" for=\"st-search-1\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-1\" placeholder=\"Search\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "fields",
+      "html": "<div class=\"st-search st-search--md st-queryBar\"><label class=\"st-field__label\" for=\"st-search-2\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-2\" placeholder=\"Search\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "matching",
+      "html": "<div class=\"st-search st-search--md st-queryBar\"><label class=\"st-field__label\" for=\"st-search-3\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-3\" placeholder=\"Search\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "labels",
+      "html": "<div class=\"st-search st-search--sm st-queryBar\"><label class=\"st-field__label\" for=\"st-search-4\">Filter regions</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-4\" placeholder=\"Search…\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-search st-search--md st-queryBar consumer\" data-bench=\"query\" style=\"color:red;\"><label class=\"st-field__label\" for=\"st-search-5\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" data-bench=\"query\" id=\"st-search-5\" placeholder=\"Search\" style=\"color:red;\" type=\"search\" value=\"\"></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-search st-search--md st-queryBar\"><label class=\"st-field__label\" for=\"st-search-6\">Search</label><span aria-hidden=\"true\" class=\"st-search__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-search-icon lucide-search\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m21 21-4.34-4.34\"></path><circle cx=\"11\" cy=\"11\" r=\"8\"></circle></svg></span><input class=\"st-search__control st-search__input\" id=\"st-search-6\" placeholder=\"Search\" type=\"search\" value=\"\"></div>"
+    }
+  ],
+  "sourceSha256": "aab7de6be58c0313cffbae24812312de5ac7c91f267f8bd98ac8233771f7c6f7",
+  "fixtureSha256": "1d048f05675dca8cd165f195f361556a217e0701597b40325a2be1a6037c5699",
+  "publicExports": [
+    {
+      "name": "QueryBar",
+      "typeOnly": false
+    },
+    {
+      "name": "QueryBarProps",
+      "typeOnly": true
+    }
+  ]
+}

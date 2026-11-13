@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "OrganizationChart",
+  "sourceRevision": "5de6ca979d191fbc21119203bb22a974db50453d",
+  "source": "src/lib/OrganizationChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-organizationChart\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category1\" height=\"36\" rx=\"6\" width=\"140\" x=\"16\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"86\" y=\"160\">A</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category2\" height=\"36\" rx=\"6\" width=\"140\" x=\"172\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"242\" y=\"160\">B</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category3\" height=\"36\" rx=\"6\" width=\"140\" x=\"328\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"398\" y=\"160\">C</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category4\" height=\"36\" rx=\"6\" width=\"140\" x=\"484\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"554\" y=\"160\">D</text></g></svg></div><ul aria-label=\"Data values for Organization\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li><li>C (C)</li><li>D (D)</li></ul></div>"
+    },
+    {
+      "id": "swap-fields",
+      "html": "<div class=\"st-organizationChart\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category1\" height=\"36\" rx=\"6\" width=\"296\" x=\"16\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"164\" y=\"160\">North</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category3\" height=\"36\" rx=\"6\" width=\"296\" x=\"328\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"476\" y=\"160\">South</text></g></svg></div><ul aria-label=\"Data values for Organization\" class=\"st-chartDataList\"><li>North (North)</li><li>South (South)</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-organizationChart consumer\" data-bench=\"org\" style=\"color:red;\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category1\" height=\"36\" rx=\"6\" width=\"100\" x=\"16\" y=\"102\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"66\" y=\"120\">A</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category2\" height=\"36\" rx=\"6\" width=\"100\" x=\"132\" y=\"102\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"182\" y=\"120\">B</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category3\" height=\"36\" rx=\"6\" width=\"100\" x=\"248\" y=\"102\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"298\" y=\"120\">C</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category4\" height=\"36\" rx=\"6\" width=\"100\" x=\"364\" y=\"102\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"414\" y=\"120\">D</text></g></svg></div><ul aria-label=\"Data values for Organization\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li><li>C (C)</li><li>D (D)</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-organizationChart\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category1\" height=\"36\" rx=\"6\" width=\"296\" x=\"16\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"164\" y=\"160\">A</text></g><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category2\" height=\"36\" rx=\"6\" width=\"296\" x=\"328\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"476\" y=\"160\">B</text></g></svg></div><ul aria-label=\"Data values for Organization\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-organizationChart\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-organizationChart__node\"><rect class=\"st-organizationChart__box st-organizationChart__box--category1\" height=\"36\" rx=\"6\" width=\"608\" x=\"16\" y=\"142\"></rect><text class=\"st-organizationChart__label\" dominant-baseline=\"central\" style=\"font-size: 12px\" text-anchor=\"middle\" x=\"320\" y=\"160\">A</text></g></svg></div><ul aria-label=\"Data values for Organization\" class=\"st-chartDataList\"><li>A ()</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-organizationChart\"><div aria-label=\"Organization\" class=\"st-organizationChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "291eecc68b4b91338bf08a7e662c99538f2b89a9d1031453b85e7c730d11de33",
+  "fixtureSha256": "fd90292a9d919a59e8823a4e8f380d1a23cca493828cbbccb83c9b69d3e2f659",
+  "publicExports": [
+    {
+      "name": "OrganizationChart",
+      "typeOnly": false
+    },
+    {
+      "name": "OrganizationChartProps",
+      "typeOnly": true
+    }
+  ]
+}

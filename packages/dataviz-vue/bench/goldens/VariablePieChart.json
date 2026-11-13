@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "VariablePieChart",
+  "sourceRevision": "f3e0100913aebaa5f73960a49e0444ee7248db32",
+  "source": "src/lib/VariablePieChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-variablePieChart\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category1\" d=\"M 180 180 L 180 119.1 A 60.9 60.9 0 0 1 239.97479215844345 169.42482598008394 Z\" data-chart-index=\"0\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category2\" d=\"M 180 180 L 295.66567059128386 159.60502153301903 A 117.44999999999999 117.44999999999999 0 0 1 139.82973416640024 290.3668983113049 Z\" data-chart-index=\"1\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category4\" d=\"M 180 180 L 120.48849506133368 343.50651601674804 A 174 174 0 0 1 179.99999999999997 6 Z\" data-chart-index=\"2\"></path><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"226.8071509497641\" y=\"235.78259030348084\">North</text><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"73.758939605043\" y=\"161.2668345932916\">South</text></svg></div><ul aria-label=\"Data values for Variable pie\" class=\"st-chartDataList\"><li>North: 10</li><li>North: 15</li><li>South: 20</li></ul></div>"
+    },
+    {
+      "id": "city",
+      "html": "<div class=\"st-variablePieChart\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category1\" d=\"M 180 180 L 180 119.1 A 60.9 60.9 0 0 1 239.97479215844345 169.42482598008394 Z\" data-chart-index=\"0\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category2\" d=\"M 180 180 L 295.66567059128386 159.60502153301903 A 117.44999999999999 117.44999999999999 0 0 1 139.82973416640024 290.3668983113049 Z\" data-chart-index=\"1\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category4\" d=\"M 180 180 L 120.48849506133368 343.50651601674804 A 174 174 0 0 1 179.99999999999997 6 Z\" data-chart-index=\"2\"></path><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"226.8071509497641\" y=\"235.78259030348084\">B</text><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"73.758939605043\" y=\"161.2668345932916\">D</text></svg></div><ul aria-label=\"Data values for Variable pie\" class=\"st-chartDataList\"><li>A: 10</li><li>B: 15</li><li>D: 20</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-variablePieChart consumer\" data-bench=\"varpie\" style=\"color:red;\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category1\" d=\"M 240 120 L 240 80.1 A 39.9 39.9 0 0 1 279.2938293451871 113.07143771108947 Z\" data-chart-index=\"0\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category2\" d=\"M 240 120 L 315.78095659428936 106.63777272852971 A 76.94999999999999 76.94999999999999 0 0 1 213.68154997108982 192.30934716947564 Z\" data-chart-index=\"1\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category4\" d=\"M 240 120 L 201.00970366087378 227.12495876959355 A 114 114 0 0 1 239.99999999999997 6 Z\" data-chart-index=\"2\"></path><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"270.6667540705351\" y=\"156.54721433676332\">North</text><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"170.39378801709714\" y=\"107.72654680250139\">South</text></svg></div><ul aria-label=\"Data values for Variable pie\" class=\"st-chartDataList\"><li>North: 10</li><li>North: 15</li><li>South: 20</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-variablePieChart\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category1\" d=\"M 180 180 L 180 119.1 A 60.9 60.9 0 0 1 215.79612186461162 229.2691349574343 Z\" data-chart-index=\"0\"></path><path class=\"st-variablePieChart__sector st-variablePieChart__sector--category2\" d=\"M 180 180 L 282.27463389889033 320.76895702124085 A 174 174 0 1 1 179.99999999999997 6 Z\" data-chart-index=\"1\"></path><text class=\"st-variablePieChart__label\" dominant-baseline=\"middle\" fill=\"oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"77.40002302207884\" y=\"213.33675335316934\">North</text></svg></div><ul aria-label=\"Data values for Variable pie\" class=\"st-chartDataList\"><li>North: 10</li><li>North: 15</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-variablePieChart\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-variablePieChart\"><div aria-label=\"Variable pie\" class=\"st-variablePieChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 360\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "c1056e886e7f9e4e6c67d8ddabad04aca40e7b410db621a5ec89e11c6023a517",
+  "fixtureSha256": "70d36076a2348f1324016e406cd7f4bd5fbc166fc499c9b2ac2931d34dfb3a56",
+  "publicExports": [
+    {
+      "name": "VariablePieChart",
+      "typeOnly": false
+    },
+    {
+      "name": "VariablePieChartProps",
+      "typeOnly": true
+    }
+  ]
+}

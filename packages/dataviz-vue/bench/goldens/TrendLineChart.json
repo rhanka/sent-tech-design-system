@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TrendLineChart",
+  "sourceRevision": "75018d8d4ebb21065c48c8dbcaf216e2570a79dc",
+  "source": "src/lib/TrendLineChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "city-hover",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart consumer\" data-bench=\"trend\" style=\"color:red;\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"464\" y1=\"208\" y2=\"208\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"208\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"208\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"464\" y1=\"208\" y2=\"208\"></line></svg></div></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    },
+    {
+      "id": "measure-x",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">-10</text><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"144\" y2=\"144\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"144\">0</text><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"100\" y2=\"100\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"100\">10</text><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"56\" y2=\"56\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"56\">20</text><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"12\" y2=\"12\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"12\">30</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" text-anchor=\"middle\" x=\"44\" y=\"204\">-5</text><text class=\"st-lineChart__tickLabel\" text-anchor=\"middle\" x=\"344\" y=\"204\">20</text><line class=\"st-lineChart__trend\" x1=\"44\" x2=\"344\" y1=\"166\" y2=\"56\"></line><path class=\"st-lineChart__line\" d=\"M44.00,166.00 L344.00,56.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\"></path><circle class=\"st-lineChart__dot\" cx=\"44\" cy=\"166\" data-chart-index=\"0\" r=\"4\"></circle><circle class=\"st-lineChart__dot\" cx=\"344\" cy=\"56\" data-chart-index=\"1\" r=\"4\"></circle></svg></div><ul aria-label=\"Data values for Trend line\" class=\"st-chartDataList\"><li>-5: -5</li><li>20: 20</li><li>Tendance: pente 1.00</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-lineChart st-lineChart--category1 st-trendLineChart\"><div aria-label=\"Trend line\" class=\"st-lineChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 360 220\" width=\"100%\"><line class=\"st-lineChart__grid\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line><text class=\"st-lineChart__tickLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38\" y=\"188\">0</text><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"44\" y1=\"12\" y2=\"188\"></line><line class=\"st-lineChart__axis\" x1=\"44\" x2=\"344\" y1=\"188\" y2=\"188\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "5672acaf4aa056e8d674520f13d8dc0d8b32688ca9c9d544777aa74b6c2006ed",
+  "fixtureSha256": "837445c5a7ca877ce9cb700d62d3ec2d059125a2c47a92217a7b884fc68b146c",
+  "publicExports": [
+    {
+      "name": "TrendLineChart",
+      "typeOnly": false
+    },
+    {
+      "name": "TrendLineChartProps",
+      "typeOnly": true
+    }
+  ]
+}

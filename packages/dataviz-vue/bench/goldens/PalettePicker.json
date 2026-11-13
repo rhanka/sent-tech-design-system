@@ -1,40 +1,36 @@
 {
   "schema": 1,
   "component": "PalettePicker",
-  "sourceRevision": "d89b2686f00b72051d8384b659f4e1145db2874d",
+  "sourceRevision": "69f95bc708772e5191c887d815fb95cb79b441e3",
   "source": "src/lib/PalettePicker.ts",
   "fixtures": [
     {
       "id": "default",
-      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#ff0000\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#ff0000;width:24px;height:24px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#00ff00\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#00ff00;width:24px;height:24px;\"></span></span></div><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Palette — séquentiel</span><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\">High</span><div aria-label=\"Palette — séquentiel\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #ffffff, #dbe9ff, #b8d2ff, #96bbff, #74a3ff, #5289ff, #306dff, #0c4aff, #0000ff);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\">Low</span></div></div><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Palette — divergent</span><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\">High</span><div aria-label=\"Palette — divergent\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #ff0000, #ff6b59, #ffa191, #ffd1c8, #ffffff, #b8d2ff, #74a3ff, #306dff, #0000ff);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\">Low</span></div></div></div>"
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#c8102e\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#c8102e;width:24px;height:24px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#0072bc\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#0072bc;width:24px;height:24px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#009b77\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#009b77;width:24px;height:24px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#f2a900\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#f2a900;width:24px;height:24px;\"></span></span></div></div>"
+    },
+    {
+      "id": "sequential",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Sales — séquentiel</span><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\">100</span><div aria-label=\"Sales — séquentiel\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #eff3ff, #c1d7f4, #94bbe8, #659fdc, #3182ce, #2567af, #1a4e91, #103574, #081d58);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\">0</span></div></div></div>"
+    },
+    {
+      "id": "diverging",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Échelle divergente</span><div class=\"st-colorScaleBar__track\"><div aria-label=\"Échelle divergente\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #d73027, #e36254, #ec8a7d, #f3afa5, #f7d3ce, #f7f7f7, #d2ddeb, #aec2de, #8ba8d0, #688fc2, #4575b4);\"></div></div></div></div>"
+    },
+    {
+      "id": "all",
+      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#c8102e\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#c8102e;width:16px;height:16px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#0072bc\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#0072bc;width:16px;height:16px;\"></span></span></div><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Palette — séquentiel</span><div class=\"st-colorScaleBar__track\"><div aria-label=\"Palette — séquentiel\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #eff3ff, #d8e5fa, #c1d7f4, #aac9ee, #94bbe8, #7dade2, #659fdc, #4d90d5, #3182ce);\"></div></div></div><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Palette — divergent</span><div class=\"st-colorScaleBar__track\"><div aria-label=\"Palette — divergent\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #d73027, #e66d5f, #f09d91, #f6cac3, #f7f7f7, #c9d6e7, #9cb5d7, #7195c6, #4575b4);\"></div></div></div></div>"
     },
     {
       "id": "empty",
       "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"></div>"
     },
     {
-      "id": "categorical-attrs",
-      "html": "<div class=\"st-flex st-stack consumer\" data-bench=\"palette\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);color:red;\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"red\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:red;width:12px;height:12px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"blue\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:blue;width:12px;height:12px;\"></span></span><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"green\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:green;width:12px;height:12px;\"></span></span></div></div>"
-    },
-    {
-      "id": "sequential-endpoints",
-      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Échelle séquentielle</span><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\"></span><div aria-label=\"Échelle séquentielle\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #ffffff, #636363, #000000);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\"></span></div></div></div>"
-    },
-    {
-      "id": "diverging",
-      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-colorScaleBar st-colorScaleBar--horizontal\"><span class=\"st-colorScaleBar__label\">Balance — divergent</span><div class=\"st-colorScaleBar__track\"><span class=\"st-colorScaleBar__end st-colorScaleBar__end--max\">100</span><div aria-label=\"Balance — divergent\" class=\"st-colorScaleBar__bar\" role=\"img\" style=\"background:linear-gradient(to right, #ff0000, #ffa191, #ffffff, #74a3ff, #0000ff);\"></div><span class=\"st-colorScaleBar__end st-colorScaleBar__end--min\"></span></div></div></div>"
-    },
-    {
-      "id": "invalid-scales",
-      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"></div>"
-    },
-    {
-      "id": "clamped-swatch",
-      "html": "<div class=\"st-flex st-stack\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#112233\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#112233;width:1px;height:1px;\"></span></span></div></div>"
+      "id": "attrs",
+      "html": "<div class=\"st-flex st-stack consumer\" data-bench=\"palette\" style=\"display:flex;flex-direction:column;flex-wrap:nowrap;gap:var(--st-spacing-3, 0.75rem);color:red;\"><div class=\"st-flex st-inline\" style=\"display:flex;flex-direction:row;flex-wrap:wrap;gap:var(--st-spacing-1, 0.25rem);\"><span class=\"st-colorSwatch st-colorSwatch--circle\"><span aria-label=\"#c8102e\" class=\"st-colorSwatch__chip\" role=\"img\" style=\"background:#c8102e;width:24px;height:24px;\"></span></span></div></div>"
     }
   ],
   "sourceSha256": "159f145269d006bc0836cb78440121567b1778969fb121033c7a9b4fab673818",
-  "fixtureSha256": "73bf8a8acb0a8781d3bb17f4defdfd91fb97eea50e794dfdd2b7f6d87fb7e3f4",
+  "fixtureSha256": "ddc6ea9080f2e9eaf0d45a80ae9857638beeb78d3c807a896562d22be39be5ce",
   "publicExports": [
     {
       "name": "PalettePicker",

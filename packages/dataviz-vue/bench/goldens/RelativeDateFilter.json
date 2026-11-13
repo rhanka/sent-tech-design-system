@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "component": "RelativeDateFilter",
+  "sourceRevision": "c1c530ab448848c0a22a7d7a7e98473a4aee02f6",
+  "source": "src/lib/RelativeDateFilter.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Période</span><select class=\"st-select st-select--md\" id=\"generated-1\" value=\"all\"><option value=\"all\">Tout</option><option value=\"7d\">7 derniers jours</option><option value=\"30d\">30 derniers jours</option><option value=\"90d\">90 derniers jours</option><option value=\"365d\">12 derniers mois</option></select></label></div>"
+    },
+    {
+      "id": "custom-presets",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Période</span><select class=\"st-select st-select--md\" id=\"generated-1\" value=\"all\"><option value=\"all\">All</option><option value=\"7d\">Week</option></select></label></div>"
+    },
+    {
+      "id": "label",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Date range</span><select class=\"st-select st-select--md\" id=\"generated-1\" value=\"all\"><option value=\"all\">Tout</option><option value=\"7d\">7 derniers jours</option><option value=\"30d\">30 derniers jours</option><option value=\"90d\">90 derniers jours</option><option value=\"365d\">12 derniers mois</option></select></label></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-field consumer\" data-bench=\"rel-date\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Période</span><select class=\"st-select st-select--md\" data-bench=\"rel-date\" id=\"generated-1\" value=\"all\"><option value=\"all\">Tout</option><option value=\"7d\">7 derniers jours</option><option value=\"30d\">30 derniers jours</option><option value=\"90d\">90 derniers jours</option><option value=\"365d\">12 derniers mois</option></select></label></div>"
+    },
+    {
+      "id": "empty-presets",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Période</span><select class=\"st-select st-select--md\" id=\"generated-1\" value=\"all\"></select></label></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"generated-1\"><span class=\"st-field__label\">Période</span><select class=\"st-select st-select--md\" id=\"generated-1\" value=\"all\"><option value=\"all\">Tout</option><option value=\"7d\">7 derniers jours</option><option value=\"30d\">30 derniers jours</option><option value=\"90d\">90 derniers jours</option><option value=\"365d\">12 derniers mois</option></select></label></div>"
+    }
+  ],
+  "sourceSha256": "02540a5779538a39afb1b40a66cc6bb7c70a601ad5ccca5dbe322d8dad9bf7db",
+  "fixtureSha256": "d6b30bb032c25d1280ce39e02e235389fa6e40a2ae7a631b1044b544101b2b58",
+  "publicExports": [
+    {
+      "name": "RelativeDateFilter",
+      "typeOnly": false
+    },
+    {
+      "name": "relativeRangeToSpec",
+      "typeOnly": false
+    },
+    {
+      "name": "DEFAULT_RELATIVE_PRESETS",
+      "typeOnly": false
+    },
+    {
+      "name": "RelativeDateFilterProps",
+      "typeOnly": true
+    },
+    {
+      "name": "RelativeDatePreset",
+      "typeOnly": true
+    }
+  ]
+}
