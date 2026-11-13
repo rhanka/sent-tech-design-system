@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "MarimekkoChart",
+  "sourceRevision": "3650ab470fe946cd043a293287cf30b18f4a88e5",
+  "source": "src/MarimekkoChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Split\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"A-x\" height=\"153.6\" width=\"227\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"122\" y=\"88.8\">60%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category2\" data-chart-key=\"A-y\" height=\"102.4\" width=\"227\" x=\"8\" y=\"165.6\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"122\" y=\"216.8\">40%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"B-x\" height=\"51.2\" width=\"227\" x=\"236\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"350\" y=\"37.6\">20%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category2\" data-chart-key=\"B-z\" height=\"204.8\" width=\"227\" x=\"236\" y=\"63.2\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"350\" y=\"165.60000000000002\">80%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"122\" y=\"284\">A</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"350\" y=\"284\">B</text></svg></div><ul aria-label=\"Data values for Split\" class=\"st-chartDataList\"><li>A, x: 60% (colonne 50%)</li><li>A, y: 40% (colonne 50%)</li><li>B, x: 20% (colonne 50%)</li><li>B, z: 80% (colonne 50%)</li></ul></div>"
+    },
+    {
+      "id": "tones",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Tones\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category4\" data-chart-key=\"A-x\" height=\"128\" width=\"455\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"236\" y=\"76\">50%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category6\" data-chart-key=\"A-y\" height=\"128\" width=\"455\" x=\"8\" y=\"140\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"236\" y=\"204\">50%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"236\" y=\"284\">A</text></svg></div><ul aria-label=\"Data values for Tones\" class=\"st-chartDataList\"><li>A, x: 50% (colonne 100%)</li><li>A, y: 50% (colonne 100%)</li></ul></div>"
+    },
+    {
+      "id": "invalid",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Clean\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"Good-x\" height=\"256\" width=\"227\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"122\" y=\"140\">100%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"Zero-y\" height=\"256\" width=\"227\" x=\"236\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"350\" y=\"140\">100%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"122\" y=\"284\">Good</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"350\" y=\"284\">Zero</text></svg></div><ul aria-label=\"Data values for Clean\" class=\"st-chartDataList\"><li>Good, x: 100% (colonne 50%)</li><li>Zero, y: 100% (colonne 50%)</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"None\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line></svg></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-marimekkoChart consumer\" data-bench=\"marimekko\" style=\"color:red;\"><div aria-label=\"Sized\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"624\" y1=\"328\" y2=\"328\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"A-x\" height=\"316\" width=\"615\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"316\" y=\"170\">100%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"316\" y=\"344\">A</text></svg></div><ul aria-label=\"Data values for Sized\" class=\"st-chartDataList\"><li>A, x: 100% (colonne 100%)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "b83fa090e776cc3d4a68e067d8241eb44a19371ae5855f89f8c3564afb238d27",
+  "fixtureSha256": "39f98f77072512934c93488a825368d19427111a320a88f384fc77eeb6e3cec2",
+  "publicExports": [
+    {
+      "name": "MarimekkoChart",
+      "typeOnly": false
+    },
+    {
+      "name": "MarimekkoChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "MarimekkoChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "MarimekkoChartSegment",
+      "typeOnly": true
+    },
+    {
+      "name": "MarimekkoChartTone",
+      "typeOnly": true
+    }
+  ]
+}

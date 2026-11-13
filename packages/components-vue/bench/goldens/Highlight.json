@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "Highlight",
+  "sourceRevision": "c220159fd56a2596e4c56fbf35aaad8168b95447",
+  "source": "src/Highlight.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<aside class=\"st-highlight st-highlight--neutral\"><div class=\"st-highlight__body\">Body</div></aside>"
+    },
+    {
+      "id": "with-title",
+      "html": "<aside class=\"st-highlight st-highlight--warning\"><h3 class=\"st-highlight__title\">Heads up</h3><div class=\"st-highlight__body\">Read this</div></aside>"
+    },
+    {
+      "id": "tones",
+      "html": "<aside class=\"st-highlight st-highlight--success\"><h3 class=\"st-highlight__title\">Done</h3><div class=\"st-highlight__body\">All good</div></aside>"
+    },
+    {
+      "id": "rich-title",
+      "html": "<aside class=\"st-highlight st-highlight--neutral\"><h3 class=\"st-highlight__title\"><strong>Note</strong></h3><div class=\"st-highlight__body\">Body</div></aside>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<aside class=\"st-highlight st-highlight--error consumer\" data-bench=\"highlight\" style=\"color:red;\"><h3 class=\"st-highlight__title\">Fail</h3><div class=\"st-highlight__body\">X</div></aside>"
+    }
+  ],
+  "sourceSha256": "4fb4385c659d08fad5ff1ed3bf3822442c94f24af63584bcc25f4eaf4df21fbb",
+  "fixtureSha256": "167851b409821ba67bb9aa1a34b72b23be2888f8c22eeec945848a12a9dc2852",
+  "publicExports": [
+    {
+      "name": "Highlight",
+      "typeOnly": false
+    },
+    {
+      "name": "HighlightProps",
+      "typeOnly": true
+    },
+    {
+      "name": "HighlightTone",
+      "typeOnly": true
+    }
+  ]
+}
