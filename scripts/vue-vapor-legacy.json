@@ -108,7 +108,6 @@
   "packages/components-vue/src/Modal.ts",
   "packages/components-vue/src/MultiSelect.ts",
   "packages/components-vue/src/NavDrawer.ts",
-  "packages/components-vue/src/NavItem.ts",
   "packages/components-vue/src/NavRail.ts",
   "packages/components-vue/src/NavShell.ts",
   "packages/components-vue/src/Notification.ts",
