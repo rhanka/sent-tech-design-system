@@ -186,7 +186,6 @@
   "packages/components-vue/src/Textarea.ts",
   "packages/components-vue/src/ThemeProvider.ts",
   "packages/components-vue/src/Tile.ts",
-  "packages/components-vue/src/TileGroup.ts",
   "packages/components-vue/src/TileMapChart.ts",
   "packages/components-vue/src/TimePicker.ts",
   "packages/components-vue/src/TimeRangePicker.ts",
