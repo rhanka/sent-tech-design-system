@@ -1599,15 +1599,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ac5b8b5990f8536e146d8c9279627ccf7d09f08d04eaf46166d530646d5fa53d",
+      "digest": "sha256:e408cce3af716682e05dfef9c8da864dec4d6c28f4443a55f297ed6e0120f5e0",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-scene-figure.json",
       "producerId": "sentropic-ds",
@@ -4263,7 +4264,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:2f102f1bf08224cc3cf40799a1e0b3631cbb90935660929be4ecf44651e8a635",
+      "digest": "sha256:3b99bf0eaa48c2ef306820f3dc4d8b625e18f52d02f6bf28e814bf2c58c6cd12",
       "frameworks": [
         "svelte",
         "react",
@@ -5787,6 +5788,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:4f95f006fe20b9362c8548780786bab8509bb504ec4424953883434c7cf96296",
-  "sourceCommit": "75d5282d774ecb722e8d6c07fa83e03635e0b047"
+  "registryRevision": "sha256:36e18216b17e785a4497f456365c8b2475bb92e2c13311fae9f94085a4ba4da0",
+  "sourceCommit": "16ce63cfab787a3386076eaedd2cf4e58e4f43c4"
 }

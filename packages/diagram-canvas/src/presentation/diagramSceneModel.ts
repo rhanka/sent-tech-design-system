@@ -532,3 +532,5 @@ export function sameRects(left: ReadonlyMap<string, Rect>, right: ReadonlyMap<st
   }
   return true;
 }
+
+export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "./diagramSceneTypes.js";

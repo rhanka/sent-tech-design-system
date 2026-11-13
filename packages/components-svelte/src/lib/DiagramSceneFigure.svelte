@@ -309,6 +309,7 @@
   const flowEffective = $derived(scene === undefined ? null : effectiveTarget(scene, flowState));
   const flowSteps = $derived(scene === undefined ? [] : stepsOf(scene));
   let flowAnnouncement = $state("");
+  let pendingNavigation = $state<string>();
   let badgeCursor = $state<string>();
   let nodeCursor = $state<string>();
   const selectedVisible = $derived(scene === undefined ? null : visibleOf(scene, flowState.selection));
@@ -335,12 +336,21 @@
     if (change.emit.includes("scenario")) onScenarioChange?.(change.state.scenario ?? null);
     const displayed = effectiveTarget(scene, next);
     if (JSON.stringify(displayed) !== JSON.stringify(before)) onHighlightChange?.(displayed);
-    if (["next", "previous", "first", "last"].includes(action.type)) flowAnnouncement = announce(scene, change.state, strings);
+    if (["next", "previous", "first", "last"].includes(action.type) && change.emit.includes("step")) {
+      if (activeStep === undefined) flowAnnouncement = announce(scene, next, strings);
+      else pendingNavigation = change.state.selection?.kind === "step" ? change.state.selection.relation : undefined;
+    } else if (change.emit.includes("step")) pendingNavigation = undefined;
     if (change.emit.includes("step") && activeStep === undefined) {
       badgeCursor = undefined; nodeCursor = undefined;
 
     }
   }
+  $effect(() => {
+    if (scene !== undefined && pendingNavigation !== undefined && flowState.selection?.kind === "step" && flowState.selection.relation === pendingNavigation) {
+      flowAnnouncement = announce(scene, flowState, strings);
+      pendingNavigation = undefined;
+    }
+  });
   function scrollFlowSelection(): void {
     if (scene === undefined || viewportEl === undefined) return;
     const target = visibleOf(scene, flowState.selection);
@@ -456,6 +466,13 @@
 
   let frameEl = $state<HTMLElement>();
   let viewportEl = $state<HTMLElement>();
+  $effect(() => {
+    const filter = flowState.scenario;
+    if (scenario !== undefined) {
+      const select = frameEl?.parentElement?.querySelector<HTMLSelectElement>(".st-diagramSceneFigure-flowNavigator select");
+      if (select !== undefined && select !== null) select.value = filter === undefined ? "all" : `scenario:${filter}`;
+    }
+  });
   let viewWidth = $state<number>();
   let windowHeight = $state<number>();
   let maxDisplayScale = $state<number>();
@@ -849,7 +866,7 @@
       <output aria-label={strings.step}>{scene === undefined ? "" : announce(scene, flowState, strings)}</output>
       <Button size="sm" variant="secondary" onclick={() => dispatchFlow({ type: "next" })}>{strings.next}</Button>
       {#if scene !== undefined && scene.flows.scenarios.length >= 2}
-        <Select label={strings.scenario} value={flowState.scenario === undefined ? "all" : `scenario:${flowState.scenario}`} onchange={(event) => { const value = event.currentTarget.value; dispatchFlow(value === "all" ? { type: "scenario" } : { type: "scenario", id: value.slice("scenario:".length) }); }}>
+        <Select label={strings.scenario} value={flowState.scenario === undefined ? "all" : `scenario:${flowState.scenario}`} onchange={(event) => { const value = event.currentTarget.value; dispatchFlow(value === "all" ? { type: "scenario" } : { type: "scenario", id: value.slice("scenario:".length) }); if (scenario !== undefined) { const select = event.currentTarget; void tick().then(() => { select.value = flowState.scenario === undefined ? "all" : `scenario:${flowState.scenario}`; }); } }}>
           <option value="all">{strings.allScenarios}</option>
           {#each scene.flows.scenarios as entry (entry.id)}<option value={`scenario:${entry.id}`}>{entry.label || strings.scenario}</option>{/each}
         </Select>

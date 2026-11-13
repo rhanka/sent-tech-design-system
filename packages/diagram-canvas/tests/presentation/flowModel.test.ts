@@ -5,16 +5,28 @@ import { resolveScene } from "../../src/presentation/diagramSceneModel.js";
 import { INITIAL_FLOW_STATE,visibleOf,effectiveTarget,highlightOf,reduce,describeTarget,announce,flowHitSize,flowMarksSvg,type FlowState,type FlowAction } from "../../src/presentation/flowModel.js";
 function fixture(count=3,config:Parameters<typeof flowFixture>[1]={}){const f=flowFixture(count,config),result=layoutMeasured(f.document,f.options);if(result.status!=="laid-out")throw Error(JSON.stringify(result));return {f,result,scene:resolveScene(result,{document:f.document,presentation:f.presentation,measureLines:f.options.measureLines!})};}
 describe("DC-2c A11 shared flow model",()=>{
+ it("dims only other-scenario flow edges and untouched boxes under a scenario-only filter",()=>{
+  const {scene}=fixture(3,{scenarios:true});
+  const {flow:_flow,bundle:_bundle,...plain}=scene.edges[0]!;
+  const mixed={...scene,edges:[...scene.edges,{...plain,occurrence:"occurrence:plain" as never,directed:false}],nodes:[...scene.nodes,{...scene.nodes[0]!,occurrence:"occurrence:untouched" as never,entity:"entity:untouched" as never}]};
+  const sets=highlightOf(mixed,{...INITIAL_FLOW_STATE,scenario:"entity:s1"});
+  expect(sets.primary).toEqual(new Set());expect(sets.related).toEqual(new Set());
+  expect(sets.dimmed).toEqual(new Set(["occurrence:r.y","occurrence:untouched"]));
+ });
  it("uses hover > focus > selection and retains selected member identity on its own bundle",()=>{
   const {scene}=fixture(5,{scenarios:true});const bundle=scene.edges[0]!.bundle!,visible={kind:"bundle" as const,id:bundle.id};
   let state:FlowState={...INITIAL_FLOW_STATE,focus:visible};expect(effectiveTarget(scene,state)).toEqual({visible});
+  const bundleSets={primary:new Set(["occurrence:r.z","flow:occurrence:e.a|occurrence:e.b|solid","occurrence:e.a","occurrence:e.b"]),related:new Set(),dimmed:new Set()};
+  expect(highlightOf(scene,state)).toEqual(bundleSets);
   state=reduce(scene,state,{type:"activate",target:visible}).state;expect(effectiveTarget(scene,state)).toEqual({visible,step:"relation:z"});
+  expect(highlightOf(scene,state)).toEqual(bundleSets);
   const walked=reduce(scene,state,{type:"activate",target:visible});expect(walked.emit).toEqual(["step","highlight"]);expect(walked.state.selection).toEqual({kind:"step",relation:"relation:x"});
   const other={kind:"box" as const,occurrence:"occurrence:e.a"};expect(effectiveTarget(scene,{...state,hover:other})).toEqual({visible:other});
  });
  it("retains identity for two internal steps on one box, including same-box hover and focus",()=>{
   const {scene}=fixture(2,{self:true,scenarios:true});let state:FlowState={...INITIAL_FLOW_STATE,selection:{kind:"step",relation:"relation:z"}};
   expect(visibleOf(scene,state.selection)).toEqual({kind:"box",occurrence:"occurrence:e.a"});
+  expect(highlightOf(scene,state)).toEqual({primary:new Set(["occurrence:e.a"]),related:new Set(),dimmed:new Set(["occurrence:e.b"])});
   const before=effectiveTarget(scene,state);state=reduce(scene,state,{type:"next"}).state;
   expect(effectiveTarget(scene,state)).not.toEqual(before);expect(effectiveTarget(scene,state)?.step).toBe("relation:y");
   expect(effectiveTarget(scene,{...state,hover:{kind:"box",occurrence:"occurrence:e.a"}})?.step).toBe("relation:y");
@@ -40,10 +52,10 @@ describe("DC-2c A11 shared flow model",()=>{
  it("computes edge, internal, node and filter-only sets without mutating descriptions",()=>{
   const {scene}=fixture(3,{scenarios:true});const state:FlowState={...INITIAL_FLOW_STATE,selection:{kind:"step",relation:"relation:z"}};
   const sets=highlightOf(scene,state);expect(sets.primary).toEqual(new Set(["occurrence:r.z","occurrence:e.a","occurrence:e.b"]));
-  expect(sets.related).toContain("occurrence:r.x");expect(sets.dimmed).toContain("occurrence:r.y");
-  expect(highlightOf(scene,INITIAL_FLOW_STATE).dimmed.size).toBe(0);
-  expect(highlightOf(scene,{...INITIAL_FLOW_STATE,scenario:"entity:s1"}).dimmed).toContain("occurrence:r.y");
-  const node=highlightOf(scene,{...INITIAL_FLOW_STATE,selection:{kind:"node",entity:"entity:a"}});expect(node.primary).toContain("occurrence:r.z");expect(node.related).toContain("occurrence:e.b");
+  expect(sets.related).toEqual(new Set(["occurrence:r.x"]));expect(sets.dimmed).toEqual(new Set(["occurrence:r.y"]));
+  expect(highlightOf(scene,INITIAL_FLOW_STATE)).toEqual({primary:new Set(),related:new Set(),dimmed:new Set()});
+  expect(highlightOf(scene,{...INITIAL_FLOW_STATE,scenario:"entity:s1"})).toEqual({primary:new Set(),related:new Set(),dimmed:new Set(["occurrence:r.y"])});
+  const node=highlightOf(scene,{...INITIAL_FLOW_STATE,selection:{kind:"node",entity:"entity:a"}});expect(node).toEqual({primary:new Set(["occurrence:e.a","occurrence:r.x","occurrence:r.y","occurrence:r.z"]),related:new Set(["occurrence:e.b"]),dimmed:new Set()});
   const visible=visibleOf(scene,state.selection)!;const text=describeTarget(scene,visible);for(const action of [{type:"scenario",id:"entity:s2"},{type:"next"},{type:"escape"}] as FlowAction[]){reduce(scene,state,action);expect(describeTarget(scene,visible)).toBe(text);}
  });
  it("renders static marks and preserves the token minimum target size at each zoom",()=>{

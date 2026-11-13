@@ -22,6 +22,13 @@ describe("DC-2c A5 docking and routing permutations",()=>{
   const result=dockEdges({graph,rects,direction:"left-to-right",metrics:DEFAULT_LAYOUT_METRICS,labelSizes:new Map(),fixed:true,sideOverrides,flowBadgeSize:28});
   const source=[...result.docks].sort(([,x],[,y])=>x.source.order-y.source.order).map(([id])=>id);
   expect(source).toEqual(position>0?["relation:a","relation:m","relation:z"]:["relation:z","relation:m","relation:a"]);
+  expect([...result.docks].sort(([,x],[,y])=>x.target.order-y.target.order).map(([id])=>id)).toEqual(position>0?["relation:z","relation:m","relation:a"]:["relation:a","relation:m","relation:z"]);
+  const requests=graph.edges.map((edge)=>{const pair=result.docks.get(edge.id)!;return{id:edge.id,pairKey:"pair",passable:new Set<never>(),start:pair.source.point,startExit:pair.source.exit,end:pair.target.point,endExit:pair.target.exit,...(edge.flowRank===undefined?{}:{flowRank:edge.flowRank,flowRun:"pair"})};});
+  // As in the measured path, each nested U-channel has an outside lane.
+  const route=(sequence:typeof requests)=>routeEdges({rects,requests:sequence,clearance:8,lanes:{xs:[],ys:[216,224]}});
+  const routed=route(requests);expect([...routed.routes.keys()]).toEqual(["relation:z","relation:m","relation:a"]);expect(routed.obstructed).toEqual([]);
+  const routes=[...routed.routes.values()];for(let i=0;i<routes.length;i++)for(let j=i+1;j<routes.length;j++)expect(routesConflict(routes[i]!,routes[j]!)).toBe(false);
+  expect(route([...requests].reverse())).toEqual(routed);
  });
 });
 

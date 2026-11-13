@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:b58bc7ce8568a3af8d1850584c19832f76dbca7130fb119874f5c610635d65a2",
+  "contractsRevision": "sha256:e515783486ecf4626f57d9e6252d3f9e2981f7b5a69f64f11eedadd4f3aab888",
   "counts": {
     "byFramework": {
       "angular": {
@@ -19,8 +19,8 @@
       },
       "vue": {
         "complete": 99,
-        "none": 6,
-        "partial": 108
+        "none": 5,
+        "partial": 109
       }
     },
     "contracts": 213
@@ -762,7 +762,7 @@
         "vue": "none"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:557832939aa2ad6caa96ccbf36bbdf430e247cdaf139a49c0120df03090e4080",
+      "contractDigest": "sha256:0c53fe087be9b3a8843296890eed65947ddadc424b23ee14604edffc1c731877",
       "entryDigest": "sha256:5272330b2cd9e33bb36b27700a5b5d24a15661c896b6c3705b536a5a08c37160",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
@@ -772,11 +772,11 @@
         "angular": "none",
         "react": "none",
         "svelte": "partial",
-        "vue": "none"
+        "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:5a7bd67f9897b07292ba1f131f2029ab25a27218f9dbd746a001e59634667839",
-      "entryDigest": "sha256:ac5b8b5990f8536e146d8c9279627ccf7d09f08d04eaf46166d530646d5fa53d",
+      "contractDigest": "sha256:202066fd0146e057dbd773c34ace0f452bf2a8c258d913c9ad66233956e85526",
+      "entryDigest": "sha256:e408cce3af716682e05dfef9c8da864dec4d6c28f4443a55f297ed6e0120f5e0",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
     },
@@ -788,7 +788,7 @@
         "vue": "none"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:db7f16c027f87b6c8ff0dbfbd64ab8591baa635a786c30874e7e30e6ab02fcb5",
+      "contractDigest": "sha256:8457b8906cf3102a4d150cc1f82df32be0f0f9297b74152a0c3090bfac1f3adf",
       "entryDigest": "sha256:77cd5dfa7689c0e14bfc3fff94394cb3a1ae8e979d803b3ae15b8932209c2ff8",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
@@ -1048,7 +1048,7 @@
         "vue": "partial"
       },
       "componentId": "force-graph",
-      "contractDigest": "sha256:9a46b2527159dc2562b63fd65f7e55fdd0b1490bcecad969970caa74c2c720d0",
+      "contractDigest": "sha256:ba508eb0e932fc67b53557f32ec0f3800a026b44464d57c821e6fa436595a51a",
       "entryDigest": "sha256:c60b7739168c22a69cd9a2a9351b6238527321a018a71343b65a935ce454cad7",
       "path": "contracts/force-graph.json",
       "producerId": "sentropic-ds"
@@ -1126,7 +1126,7 @@
         "vue": "partial"
       },
       "componentId": "geo-chart",
-      "contractDigest": "sha256:01b21c4538920593139c363e6c04d0b8e8ec37c51bb54510f6530eebeddca274",
+      "contractDigest": "sha256:de80014664a0eb0fe3b80b12ba255645b98bfd925d695be7b5883bbcfb970015",
       "entryDigest": "sha256:fc9adeacdceb784a43e100bd763da7d77509ce57a0e39ff0c8bbd20f631b950b",
       "path": "contracts/geo-chart.json",
       "producerId": "sentropic-ds"
@@ -1347,7 +1347,7 @@
         "vue": "none"
       },
       "componentId": "labelled-icon-button",
-      "contractDigest": "sha256:556290102ec96a77422d1806b8e5ad460645233bde5600b7a09d5e274c93b1e2",
+      "contractDigest": "sha256:4e35cd7e561e3e5a47333d5f48c256e0e6f83420757273d29ed8bf9a8ca0766d",
       "entryDigest": "sha256:20fb3258608d53c58195c19b5f05d190c25d3963256f0cbfcf7a688a0f8d1d11",
       "path": "contracts/labelled-icon-button.json",
       "producerId": "sentropic-ds"
@@ -1399,7 +1399,7 @@
         "vue": "complete"
       },
       "componentId": "link",
-      "contractDigest": "sha256:8c939e5a51c93efc05c59284334672f0edba82cd8cd110a5c5e5e0bbfb495910",
+      "contractDigest": "sha256:8cdf413400cdcff0fe1d623c8a64dc5a761c125a5c475e2cc47815f1fdaa26e2",
       "entryDigest": "sha256:417dfd08afd974bc6c79453167c6e44096196137f1808a694e092395628fac3a",
       "path": "contracts/link.json",
       "producerId": "sentropic-ds"
@@ -2062,8 +2062,8 @@
         "vue": "partial"
       },
       "componentId": "select",
-      "contractDigest": "sha256:a16869e2cebeac12ad82f5a039489e70363b2041dde5a3f1776a4dacb2c232e3",
-      "entryDigest": "sha256:2f102f1bf08224cc3cf40799a1e0b3631cbb90935660929be4ecf44651e8a635",
+      "contractDigest": "sha256:50ae908be824c62a0e761f44333e0b106345bc4c5b62fd948fc79e15f59d3c84",
+      "entryDigest": "sha256:3b99bf0eaa48c2ef306820f3dc4d8b625e18f52d02f6bf28e814bf2c58c6cd12",
       "path": "contracts/select.json",
       "producerId": "sentropic-ds"
     },
@@ -2491,7 +2491,7 @@
         "vue": "none"
       },
       "componentId": "time-series-line-chart",
-      "contractDigest": "sha256:177bda40472439cd784a235cf3edae8505ffd9628a3beb35d24a9f3876f92e71",
+      "contractDigest": "sha256:e11fa82b61885bd6ab3a87372a6067c99a9c5e4887a6f7454032edb2e50889d5",
       "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
       "path": "contracts/time-series-line-chart.json",
       "producerId": "sentropic-ds"
@@ -2647,7 +2647,7 @@
         "vue": "complete"
       },
       "componentId": "typography",
-      "contractDigest": "sha256:f30147cdde57a7a3e2502416437def3b099da502e641de60f0693f875fb38b9b",
+      "contractDigest": "sha256:a42fdb1dfd05eb2e4ee6c11cdbb4117556ded72e8d36ef3a0f02d719e0cc5a82",
       "entryDigest": "sha256:40c2269e574d22d1d6bdd7b2ff08feb8f2689957f61d4d68979e7367c0d60c83",
       "path": "contracts/typography.json",
       "producerId": "sentropic-ds"
@@ -2673,7 +2673,7 @@
         "vue": "none"
       },
       "componentId": "url-sync",
-      "contractDigest": "sha256:07c802ae6b6192b533b7f4f5890561da59b69b872fdd54e348925f65d24f934c",
+      "contractDigest": "sha256:3bf617eb1cf103218f3b19d72d693fcbb209f0f342fafc3727d82b71d89cab12",
       "entryDigest": "sha256:cfd787e1351979307afe285f6ab7998ab9f32a2a6b0434e909e5ac432954fdb8",
       "path": "contracts/url-sync.json",
       "producerId": "sentropic-ds"
@@ -2824,5 +2824,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "75d5282d774ecb722e8d6c07fa83e03635e0b047"
+  "sourceCommit": "16ce63cfab787a3386076eaedd2cf4e58e4f43c4"
 }

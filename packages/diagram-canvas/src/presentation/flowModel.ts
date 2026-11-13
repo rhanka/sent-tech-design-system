@@ -84,7 +84,8 @@ export function highlightOf(scene:SceneModel,state:FlowState):{primary:ReadonlyS
   if(effective===null&&state.scenario===undefined)return {primary,related,dimmed};
   if(effective===null){
     const kept=new Set<string>();for(const step of stepsOf(scene).filter((s)=>s.scenario===state.scenario)) {addStep(step,kept,true);for(const id of scene.flowEnds[step.relation]??[])ancestors(id,kept);}
-    for(const id of universe)if(!kept.has(id))dimmed.add(id);return {primary,related,dimmed};
+    const filterable=[...scene.nodes.map((n)=>n.occurrence as string),...scene.edges.flatMap((e)=>e.bundle!==undefined?[e.occurrence,e.bundle.id]:e.flow!==undefined?[e.occurrence]:[])];
+    for(const id of filterable)if(!kept.has(id))dimmed.add(id);return {primary,related,dimmed};
   }
   const step=effective.step===undefined?undefined:scene.flows.byRelation[effective.step];
   const scenarios=new Set<string>();

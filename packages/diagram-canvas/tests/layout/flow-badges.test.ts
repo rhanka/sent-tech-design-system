@@ -11,10 +11,13 @@ describe("DC-2c A8 marks and clipping",()=>{
  });
  it("keeps the full badge inside within and limit at container and frame borders",()=>{
   const within={x:0,y:0,width:120,height:120},limit={x:0,y:0,width:100,height:100};
-  for(const route of [[{x:0,y:0},{x:120,y:0}],[{x:0,y:50},{x:120,y:50}],[{x:100,y:0},{x:100,y:120}]]){
+  for(const route of [[{x:0,y:4},{x:120,y:4}],[{x:0,y:50},{x:120,y:50}],[{x:96,y:0},{x:96,y:120}]]){
    const result=placePackedLabel({id:"badge",route,size:{width:40,height:28},within,limit,segmentOrder:"route-order"},[],[],4);
-   if(result!==undefined){expect(contains(within,result.box)).toBe(true);expect(contains(limit,result.box)).toBe(true);}
+   expect(result,"a feasible border route must receive a badge").toBeDefined();
+   expect(contains(within,result!.box)).toBe(true);expect(contains(limit,result!.box)).toBe(true);
   }
+  for(const route of [[{x:0,y:0},{x:120,y:0}],[{x:100,y:0},{x:100,y:120}]])expect(placePackedLabel({id:"border",route,size:{width:40,height:28},within,limit,segmentOrder:"route-order"},[],[],4)).toBeUndefined();
+  expect(placePackedLabel({id:"impossible",route:[{x:0,y:0},{x:120,y:0}],size:{width:140,height:28},within,limit,segmentOrder:"route-order"},[],[],4)).toBeUndefined();
  });
  for(const countTemplate of ["{n} steps","Flows: {n}"])it("measures count template "+countTemplate+" and avoids nodes, arrows and labels",()=>{
   const f=flowFixture(5,{labels:true}),result=layoutMeasured(f.document,{...f.options,flows:{fanOutMax:4,countTemplate}});if(result.status!=="laid-out")throw Error("refused");

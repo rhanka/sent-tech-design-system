@@ -34,7 +34,8 @@
   },
   "dependencies": {
     "@sentropic/design-system-themes": "0.12.0",
-    "lucide-vue-next": "^0.562.0"
+    "lucide-vue-next": "^0.562.0",
+    "@sentropic/diagram-canvas": "0.1.0"
   },
   "peerDependencies": {
     "vue": "^3"
