@@ -42,6 +42,53 @@ import {
   type ViewDocument,
 } from "../src/index.js";
 import { readFixture, stateOf } from "./fixtures.js";
+import { single as chainFixture, draw as chainDraw, endpoint as chainEndpoint, options as chainOptions } from "./endpoint-provenance-fixtures.js";
+import { canonicalise, reprojectRetained } from "../src/index.js";
+
+describe("AC-49 chain carriage through command repair and inverses", () => {
+  function mixedFixture() {
+    const f = chainFixture();
+    chainDraw(f, "repo"); chainDraw(f, "nested"); chainDraw(f, "client");
+    f.v.entityOccurrences[occurrenceRef("nested")] = { ...f.v.entityOccurrences[occurrenceRef("nested")]!, group: "fold" };
+    f.v.groups.fold = { id: "fold", occurrence: occurrenceRef("repo") };
+    // Both arms in one relation force stripProvenance to visit the chain endpoint.
+    const edge = f.v.relationOccurrences[occurrenceRef("edge")]!;
+    f.v.relationOccurrences[edge.id] = { ...edge, endpoints: [...edge.endpoints, {
+      role: "source", occurrence: occurrenceRef("repo"), semanticTarget: entityRef("client"), sourceOccurrence: occurrenceRef("client"),
+    }] };
+    f.v.entityOccurrences[occurrenceRef("client")] = { ...f.v.entityOccurrences[occurrenceRef("client")]!, group: "fold" };
+    f.v.groups.fold = { id: "fold", occurrence: occurrenceRef("repo"), collapsed: true };
+    return f;
+  }
+  it("restores mixed fold/chain content bytes via replace-view and inverse", () => {
+    const f = mixedFixture(); const state = { document: f.d, views: { [f.v.viewId]: f.v } };
+    const before = serialiseContent(state);
+    const replacement = { ...f.v, presentation: { camera: { x: 42, y: 1, zoom: 2 } },
+      relationOccurrences: { [occurrenceRef("edge")]: { ...f.v.relationOccurrences[occurrenceRef("edge")]!, endpoints: [chainEndpoint(f)] } } };
+    const result = applyCommand(state, { kind: "replace-view", view: f.v.viewId, source: replacement, collapsed: [] },
+      { commandId: "replace-chain", baseRevision: 0, author: "test" }, chainOptions(f));
+    if (result.status !== "applied") throw new Error(formatDiagnostics(result.diagnostics));
+    expect(serialiseContent(result.state)).not.toBe(before);
+    const undone = applyInverse(result.state, result.inverse, { commandId: "undo-chain" }, chainOptions(f));
+    if (undone.status !== "applied") throw new Error(formatDiagnostics(undone.diagnostics));
+    expect(serialiseContent(undone.state)).toBe(before);
+    expect(undone.state.document.revision).toBe(state.document.revision);
+  });
+  it("retains chain bytes through direct reprojection and unrelated removal", () => {
+    const f = chainFixture(); chainDraw(f, "nested");
+    const before = canonicalise(chainEndpoint(f));
+    const repaired = reprojectRetained(f.v, f.d);
+    expect(canonicalise(repaired.relationOccurrences[occurrenceRef("edge")]!.endpoints[0])).toBe(before);
+    const state = { document: f.d, views: { [f.v.viewId]: f.v } };
+    const result = applyCommand(state, { kind: "remove-occurrence", view: f.v.viewId, occurrence: occurrenceRef("nested") },
+      { commandId: "remove-unrelated", baseRevision: 0, author: "test" }, chainOptions(f));
+    if (result.status !== "applied") throw new Error(formatDiagnostics(result.diagnostics));
+    expect(canonicalise(result.state.views[f.v.viewId]!.relationOccurrences[occurrenceRef("edge")]!.endpoints[0])).toBe(before);
+    const undone = applyInverse(result.state, result.inverse, { commandId: "undo-remove" }, chainOptions(f));
+    if (undone.status !== "applied") throw new Error(formatDiagnostics(undone.diagnostics));
+    expect(serialiseContent(undone.state)).toBe(serialiseContent(state));
+  });
+});
 
 const registry = defaultProfileRegistry;
 const base: DiagramState = stateOf(readFixture("valid/generic-state.json"));
