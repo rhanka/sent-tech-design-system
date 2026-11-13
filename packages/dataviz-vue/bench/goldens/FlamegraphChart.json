@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "FlamegraphChart",
+  "sourceRevision": "1cfe31815e70473f9e070de0c9dab62bfa39f2b3",
+  "source": "src/lib/FlamegraphChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-flamegraphChart\"><div aria-label=\"Flames\" class=\"st-flamegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category1\" data-chart-key=\"0\" height=\"26\" rx=\"2\" width=\"608\" x=\"16\" y=\"16\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"29\">root</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.0\" height=\"26\" rx=\"2\" width=\"135.11111111111111\" x=\"16\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"57\">A</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.1\" height=\"26\" rx=\"2\" width=\"202.66666666666666\" x=\"151.11111111111111\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"155.11111111111111\" y=\"57\">B</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.2\" height=\"26\" rx=\"2\" width=\"270.22222222222223\" x=\"353.77777777777777\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"357.77777777777777\" y=\"57\">D</text></g></svg></div><ul aria-label=\"Data values for Flames\" class=\"st-chartDataList\"><li>root: 40</li><li>·A: 10</li><li>·B: 15</li><li>·D: 20</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-flamegraphChart\"><div aria-label=\"Flames\" class=\"st-flamegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 360\" width=\"100%\"><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category1\" data-chart-key=\"0\" height=\"26\" rx=\"2\" width=\"528\" x=\"16\" y=\"16\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"29\">root</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.0\" height=\"26\" rx=\"2\" width=\"117.33333333333333\" x=\"16\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"57\">A</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.1\" height=\"26\" rx=\"2\" width=\"176\" x=\"133.33333333333331\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"137.33333333333331\" y=\"57\">B</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.2\" height=\"26\" rx=\"2\" width=\"234.66666666666666\" x=\"309.3333333333333\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"313.3333333333333\" y=\"57\">D</text></g></svg></div><ul aria-label=\"Data values for Flames\" class=\"st-chartDataList\"><li>root: 40</li><li>·A: 10</li><li>·B: 15</li><li>·D: 20</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-flamegraphChart consumer\" data-bench=\"flames\"><div aria-label=\"Flames\" class=\"st-flamegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category1\" data-chart-key=\"0\" height=\"26\" rx=\"2\" width=\"608\" x=\"16\" y=\"16\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"29\">root</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.0\" height=\"26\" rx=\"2\" width=\"135.11111111111111\" x=\"16\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"57\">A</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.1\" height=\"26\" rx=\"2\" width=\"202.66666666666666\" x=\"151.11111111111111\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"155.11111111111111\" y=\"57\">B</text></g><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category2\" data-chart-key=\"0.2\" height=\"26\" rx=\"2\" width=\"270.22222222222223\" x=\"353.77777777777777\" y=\"44\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"357.77777777777777\" y=\"57\">D</text></g></svg></div><ul aria-label=\"Data values for Flames\" class=\"st-chartDataList\"><li>root: 40</li><li>·A: 10</li><li>·B: 15</li><li>·D: 20</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-flamegraphChart\"><div aria-label=\"Flames\" class=\"st-flamegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><g class=\"st-flamegraphChart__node\"><rect class=\"st-flamegraphChart__frame st-flamegraphChart__frame--category1\" data-chart-key=\"0\" height=\"26\" rx=\"2\" width=\"608\" x=\"16\" y=\"16\"></rect><text class=\"st-flamegraphChart__label\" dominant-baseline=\"central\" x=\"20\" y=\"29\">root</text></g></svg></div><ul aria-label=\"Data values for Flames\" class=\"st-chartDataList\"><li>root: 0</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "2b05e0512d0398c8b4a36794d5df395d0bb9712e9a8ecc09e188af78a30eb383",
+  "fixtureSha256": "6642bbd2dc8af8b2439c6f0be61f7773cacc45cf1d1e03e16cb311dd136ba4f2",
+  "publicExports": [
+    {
+      "name": "FlamegraphChart",
+      "typeOnly": false
+    },
+    {
+      "name": "FlamegraphChartProps",
+      "typeOnly": true
+    }
+  ]
+}
