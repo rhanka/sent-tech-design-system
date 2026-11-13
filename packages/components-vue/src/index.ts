@@ -485,8 +485,8 @@ export type {
 } from "./ButtonGroup.js";
 export { CheckboxGroup } from "./CheckboxGroup.js";
 export type { CheckboxGroupProps, CheckboxGroupOption } from "./CheckboxGroup.js";
-export { RadioGroup } from "./RadioGroup.js";
-export type { RadioGroupProps, RadioGroupOption } from "./RadioGroup.js";
+export { default as RadioGroup } from "./RadioGroup.vue";
+export type { RadioGroupProps, RadioGroupOption } from "./RadioGroup.vue";
 export { Typography } from "./Typography.js";
 export type {
   TypographyProps,
