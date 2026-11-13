@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-list",
   "contractSource": "derived",
-  "digest": "sha256:ad945c0900c4c14e7814ea4c787f6a4a126c1d70ce6c237aaf2e8202e02050de",
-  "entryDigest": "sha256:e8f1c3af5a830a1a417588ecc9be5dde95963255eef21669122d3f5f10e29b95",
+  "digest": "sha256:72f358f5d672a62bb50d7b6e03299ea3cd37a19775538d36461c80e11bd63dbe",
+  "entryDigest": "sha256:18abc2d2e201798c5c141a134b5e5a038d5d233628003c1fddfe9a6b5e28f95c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

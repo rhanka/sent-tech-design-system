@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:bc1586101dc4b3a0cc69be0bb0e5f3d12cdbf622f3f1a770264821a887a1377e",
-  "entryDigest": "sha256:9014f68538850fd06db0188679b6e5651318c6a59ca1e76a9b5c2f06b1d3e7f5",
+  "digest": "sha256:18cab1e120cb2bce1eb31d5d7a78ae246bb609f62ce55f478734064ed6996535",
+  "entryDigest": "sha256:6439af325cbd1e88d30cf9b10de45b24c814f6e3e5e3b233b4451e3cb7706fc5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -401,12 +401,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.option",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -427,7 +421,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "option": {}
+              "option": {
+                "$ref": "#/$defs/SelectOption"
+              }
             },
             "required": [
               "option"
@@ -437,7 +433,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:c66fe8b1fea21507cdd60485813354c38eaf96a1cbc671237e563c1627803084",
+        "declarationDigest": "sha256:e0321c1390e04d8e2f9b690ac90352290d88edd32853879b8423443dfb874dc3",
         "declarationPath": "packages/components-vue/dist/Select.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectProps",

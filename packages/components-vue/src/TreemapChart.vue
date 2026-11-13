@@ -154,7 +154,7 @@ function inset(r: Rect, pad: number): Rect {
 const LABEL_MIN_W = 44;
 const LABEL_MIN_H = 22;
 const VALUE_MIN_H = 38;
-defineOptions({ name: 'TreemapChart' });
+defineOptions({ name: 'TreemapChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TreemapChartProps>(), {
   tiling: 'squarified',
   showLabels: true,
@@ -275,7 +275,7 @@ const geometry = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-treemapChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-treemapChart', props.class)) }" >
     <div
       class="st-treemapChart__visual"
       role="img"

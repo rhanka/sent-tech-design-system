@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:9f27c1027dacc2db0bcfdeec1b8b8f8b7c783f0a00f02a57ad2141885756c922",
-  "entryDigest": "sha256:31d4be9f8d89314227799c8259982abd4877f42084dae9393eed132ebb5830a4",
+  "digest": "sha256:a00e4de9febc12fe6c69b24f9aa2dc9b25ff9c3268edfcfc227bbdb293ab01da",
+  "entryDigest": "sha256:cf26ed656ade5483bf0dc0f74c398a1e3a09101db72605c6df4a50fab22bdbff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -49,7 +49,7 @@ export type FileUploaderProps = {
   onRemoveItem?: (index: number) => void;
   class?: string;
 };
-defineOptions({ name: 'FileUploader' });
+defineOptions({ name: 'FileUploader', inheritAttrs: false });
 const props = withDefaults(defineProps<FileUploaderProps>(), {
   id: undefined,
   label: undefined,
@@ -97,8 +97,8 @@ const effectiveTriggerLabel = computed(
 
 <template>
   <div
-    v-bind="attrs"
-    :class="classNames('st-field', 'st-fileUploader-field', props.class)"
+    v-bind="{ ...(attrs), class: (classNames('st-field', 'st-fileUploader-field', props.class)) }"
+
   >
     <template v-if="props.label"
       ><label :class="'st-field__label'" :for="inputId">{{

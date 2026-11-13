@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<KanbanBoardProps>(), {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-kb', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-kb', props.class)) }" >
     <div class="st-kb__board">
       <div v-for="(col, ci) in props.columns ?? []" :key="ci" class="st-kb__column">
         <div class="st-kb__column-head">

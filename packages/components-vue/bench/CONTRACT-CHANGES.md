@@ -3,8 +3,7 @@
 The original `.ts` fixtures and goldens were frozen before conversion. Every
 `legacyProps` rich-content fixture renders the old VNode/component callback and
 an equivalent template slot, with the same tags, text and order. G4 compares
-that equivalent markup against the original golden; it does not accept changed
-markup or regenerate the reference. Scalar content props remain supported.
+that equivalent markup against the original golden. The review corrections below explicitly remove duplicated fallthrough attributes and restore control IDs; review-corrections.mjs applies those bounded changes without replacing the archived HTML. Scalar content props remain supported.
 VNode objects and component/render callbacks that return VNodes require slots;
 passing them through interpolation or dynamic components would require VDOM
 interop. Notification and data-formatting callbacks keep their existing roles.
@@ -55,7 +54,7 @@ the list markup. No helper calls h or creates VNodes.
 | Tabs | Rich item labels and panels use `tab-label` (`{ item, index }`) and `panel` (`{ item }`). |
 | ChatMessage | Rich avatar, content, footer and actions use `avatar`, existing `default`, `footer` and `actions` slots. |
 | Footer | Rich brand and copyright use `brand` and `copyright` slots. |
-| FormGroup | Rich legend and helper text use `legend` and `helperText` slots; existing default content remains. |
+| FormGroup | Rich legend and helper text use `legend` and `helper-text` slots (with the deprecated `helperText` alias); existing default content remains. |
 | Highlight | Rich title uses `title`; existing default content remains. |
 | Switch / Textarea | Rich labels and help use `label` and `helper-text`; Textarea also exposes `error-text`. |
 | Tile | Rich title and description use `title` and `description`; existing default content remains. |
@@ -82,3 +81,70 @@ Eight derived Vue contract cells move from partial to complete without losses:
 AppHeader, Drawer, LanguageToggle, Modal, Notification, Pagination,
 PaginationNav and Popover. The contract baseline records those measured
 changes; source-conversion progress remains a separate metric.
+
+## Review fixes for PR 280
+
+Every migrated top-level content prop is optional. Existing strings, numbers,
+empty strings and defaults retain their fallback path; VNode/component markup
+uses slots. New slots take precedence over their scalar fallbacks. Header brand
+now follows that rule, and slot-only Header titles and Icon SVG children render
+without a companion prop. Popover keeps its earlier non-null content-prop
+precedence, including content="". Alert actions and Toggle helper-text are public
+slots. FormGroup and Toggle retain helperText as a deprecated helper-text alias.
+
+| Component | Additional content slots | Scope / behavior |
+| --- | --- | --- |
+| Input, Textarea, PasswordInput, NumberInput, Select, Combobox, MultiSelect, DatePicker | label, helper-text, error-text | Scalar fallbacks stay supported; error slots drive invalid state and react to removal. |
+| Select, Combobox, MultiSelect | option-label | { option }; scalar option data still drives selected input text. |
+| Tooltip | content | content prop is optional for slot-only callers. |
+| Quote | author, source | Slot-only attribution exposes its footer. |
+| StructuredList | term, definition | { item, index }; term/label and description/value remain scalar aliases. |
+| ProgressBar | label | Slot-only labels expose the header. |
+| ProgressIndicator | item-label, item-description | { item, index }; slot-only descriptions expose their wrapper. |
+| StreamingMessage | text, placeholder, event-label | { event } for event-label; text slots use active-text styling. |
+| Footer | column-title, link-label | { column, index } and { link }; link-label also covers legal links. |
+| ChatThread | message-content | { message }, forwarded into ChatMessage for populated messages. |
+| ChatMessage | timestamp | Exposes the timestamp/footer without a scalar prop. |
+| ChatComposer | submit-label | Replaces rich submitLabel content. |
+| MessageActions | action-content | { action, index }; scalar labels or item IDs retain accessible naming. |
+| ContentSwitcher, SideNav | item-label | { item }. |
+| NavRail | item-label, item-icon, item-badge | { item }; wrappers account for slot presence. |
+| LanguageSelector | current-label, option-label | { option }; current option can be undefined. |
+| Menu, MenuPopover, OverflowMenu | item-icon | { item, index }; string icon characters remain supported. Component-valued icons move to this slot; hosts forward it. |
+
+The menu cascade chevrons and overflow trigger use native SVG. All Classic
+runtime exports are present in ./vapor, including all four reviewed charts and
+the three menus. CellDecorationIcon and CellDecorationIconProps are now public.
+Icon bare preserves composition markup; OrderedList/UnorderedList path is
+explicitly internal recursion state. NavDrawer forwards scoped slot payloads.
+DatePicker uses its open-label fallback when label is empty. SVG class tokens
+are emitted once by Icon, Combobox and MultiSelect.
+
+Canonical slot spellings also include extra-selectors (AppChrome), top-chrome,
+primary-rail, navigation-panel, context-panel, utility-panel, bottom-panel
+(AppShell), and custom-extra (TimeRangePicker). Their existing camelCase names
+remain deprecated aliases. Panel-resize callback keys retain their existing names.
+
+All explicit attrs paths disable automatic inheritance. Form attrs and native
+listeners go once to the control; Modal/Drawer attrs go once to the panel;
+Popper forwards attrs only to its inline panel. Live render-time merges preserve
+attributes added, changed or removed after an initially empty mount. Explicit
+native IDs keep label relationships. All generated identities use setup useId,
+including the menu family and TimeRangePicker. The extracted counter helpers
+have been removed. Eight additional callback/emit duplicates are corrected in
+Autosave, CheckboxGroup, DashboardGrid, RadioGroup, Rating, SlideIndicator,
+Stepper and Tag; listener prop types, event payloads and ordering are retained.
+
+G4 retains every archived capture. The bounded review-corrections adapter removes
+wrapper fallthrough from form controls, Table and Modal/Drawer compositions,
+restores caller IDs on Select/Textarea/PasswordInput/NumberInput, and reflects
+MultiSelect invalid state on its trigger. A new inline Popper reference explicitly
+records the corrected id/role/accessible name; its archived V0c implementation
+warned and omitted them. New paired rich fixtures were captured from archived
+sources with source hashes; ChatThread records its recovered ChatMessage renderer.
+
+G5 independently mounts every Classic/Vapor fixture, compares the entire body
+and teleport destinations, reflects live control state, and asserts cleanup for
+every component. Normalization ignores only runtime markers, registered IDs,
+class redundancy/empty classes and CSS serialization differences. Element order,
+text, ARIA, attribute values and ID-reference relationships remain checked.

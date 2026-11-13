@@ -1,8 +1,8 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:f87bdddb14920b5c230d8a1d0cfbfd1db77387e8a6cb376cbc4d0cc1aa2361a3",
-  "entryDigest": "sha256:6bb4f8fed47337a173aaea4aa54e4b86325b18eaa36bb6f2ef725d2e4edf1fde",
+  "digest": "sha256:3fe086555f7af4c46ff02ec99d5b7619e2f06411d6a9b1044461360aa767c31c",
+  "entryDigest": "sha256:be6c5bd208ff6eb201e04e3ec39295c7aa0c5024143ebce185f198842952b97b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

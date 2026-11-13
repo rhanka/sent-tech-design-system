@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:148762372d2d4c4234e7a70b50335c4779c5d87b065a3c9e8e4b0e282a906ffa",
+      "digest": "sha256:8457b1ac94babe762207c389c9972b163e9fbb38fdd2341ca0106a23c4f80ab1",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Stepper.vue",
@@ -40,7 +40,7 @@
     "en": "Step indicator for a flow, horizontal or vertical.",
     "fr": "Indicateur d'étapes d'un parcours, horizontal ou vertical."
   },
-  "digest": "sha256:7d42f5687a14bbad1642fc034fe48b70485b05f02358cfe6044245891a8dc734",
+  "digest": "sha256:36f26498eb058ead2fafd457c6306dce9e69f857887a55738e1a7ee25a616bb5",
   "displayName": "Stepper",
   "format": "component-entry/v1",
   "frameworks": [

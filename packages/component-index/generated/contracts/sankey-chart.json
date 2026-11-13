@@ -1,8 +1,8 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:a0cbeb77c39faba94d4d6cab5acdf7e0e2c9d8325a67b4c85165a79cd8e16b2d",
-  "entryDigest": "sha256:b860b311e226eedbd5718a7c91be1d3c512efa8f72c933d60c1cbc5bc104e406",
+  "digest": "sha256:c3645ad80865eaf578c50e4de825856dc6123367485299ba6502b43a9d1c5f1e",
+  "entryDigest": "sha256:d4661d18700788d6f3d037bd050f9d3e5094fafda9c3ab5f42a65653a7ea0207",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

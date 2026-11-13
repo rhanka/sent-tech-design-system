@@ -1,8 +1,8 @@
 {
   "componentId": "skeleton-text",
   "contractSource": "derived",
-  "digest": "sha256:2093096c070dd07454370c2f6614001bda505c37563f6868353f34ea79f87822",
-  "entryDigest": "sha256:3c10029ad448aee493ca708aca8b7a6a5fae71441d59cf2c8c82c63d20ef96ad",
+  "digest": "sha256:4502b52aba8a11a2ab83ddbf825257572e7c3eba4fb0c060280f8bf82e7338e6",
+  "entryDigest": "sha256:07d1598e18e73ef4900dcab16d2f72b361cbef74bacb9fa47a87b3d7ef92aea2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

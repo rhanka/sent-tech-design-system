@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1042c19121c96ceab65923131d907971c04fb0897146d330aade52571bade5d4",
+      "digest": "sha256:625eda37f032f7c8e99967db6142588eedfc3c79b742d3729688ba0a0917c79b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ContentSwitcher.vue",
@@ -40,7 +40,7 @@
     "en": "Segmented switcher between multiple views.",
     "fr": "Bascule segmentée entre plusieurs vues."
   },
-  "digest": "sha256:1cd84c40915c43afc7e837447886db0f0fd9935da068595da9109e4c7f0b5b33",
+  "digest": "sha256:79c22fe98bcc5c9069d5d5f4ef857d584a66e812217fe708dfd56aba303868dd",
   "displayName": "ContentSwitcher",
   "format": "component-entry/v1",
   "frameworks": [

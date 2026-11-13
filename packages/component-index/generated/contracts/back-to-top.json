@@ -1,8 +1,8 @@
 {
   "componentId": "back-to-top",
   "contractSource": "derived",
-  "digest": "sha256:6ddd8ec1613564f640ca0d7d0ac8fa8083f12ab11977dc76b0bb459fb3a87268",
-  "entryDigest": "sha256:c66e9e40fded8eb3dba22e8b79805558075dd18c50e340f21caaeb6ca2c74806",
+  "digest": "sha256:1e6e12a22648ba0d8c3c65258e76a29ab72e65d2a1c9fab6209effdee5c080f0",
+  "entryDigest": "sha256:fa3e52eceaaff4958053c8b294a92ce52ce54b93fa40a504ba747fa6d4407c27",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

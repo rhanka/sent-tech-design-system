@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:79f4da036df260f7f82697629709eeb18dc47de39ef1718010324b217f4d2dc8",
-  "entryDigest": "sha256:774a871d5694f2b61b5bcb7b6196df9201eed0e851ddac34dccf9da341f51b9e",
+  "digest": "sha256:077396e6dfbc7061ed83fada9952b4072ae8587bcf614c42d5af9ab1d62ffe7e",
+  "entryDigest": "sha256:65abec0f3c67324727087dd736ddda858ab125c2c15a0b602b3d21106040111b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

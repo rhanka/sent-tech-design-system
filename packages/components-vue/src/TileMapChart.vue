@@ -42,14 +42,14 @@ function formatNumber(value: number): string {
   return value.toFixed(2).replace(/\.?0+$/, '');
 }
 
-defineOptions({ name: 'TileMapChart' });
+defineOptions({ name: 'TileMapChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TileMapChartProps>(), {
   width: 480, height: 360, class: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-tileMapChart', props.class),
 }));
 
@@ -120,7 +120,7 @@ function tileClass(tile: { tone: string }, index: number) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-tileMapChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <g v-for="tile in tiles" :key="`${tile.tile.label}-${tile.index}`">

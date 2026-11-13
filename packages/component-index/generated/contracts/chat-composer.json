@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:5dc0e70a223eb4548e0273715efb2e7de48823bd6d59099d464d07b24f220584",
-  "entryDigest": "sha256:6edb62562b19d68fa14ef2af7bd8581964e90d2f20ce45e4b320cb5a7b8a3e3a",
+  "digest": "sha256:46d3f2c247cbbb26d01306440cffa447273898c2835fae425291efcc78620544",
+  "entryDigest": "sha256:0e96da201baf82797f0013a7d9137e80ac98ac1934b2a92ee0d7fd4704e7749d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -332,16 +332,14 @@
       ],
       "slots": [
         {
-          "name": "default",
-          "params": {
-            "additionalProperties": false,
-            "properties": {},
-            "type": "object"
-          }
+          "name": "default"
+        },
+        {
+          "name": "submit-label"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:876006be08cd975fc13eba0ae242d2e5733e7852edbe8d2603e01df6f09a82c2",
+        "declarationDigest": "sha256:6606d9804af04e5010fa3488c18ca10180e78cf9d542e2055496a0931c08730e",
         "declarationPath": "packages/components-vue/dist/ChatComposer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",

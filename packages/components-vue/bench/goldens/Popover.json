@@ -23,10 +23,14 @@
     {
       "id": "custom-attrs",
       "html": "<span class=\"st-popover-host consumer\" data-bench=\"popover\" style=\"color:red;\"></span>"
+    },
+    {
+      "id": "empty-content-precedence",
+      "html": "<span class=\"st-popover-host\"><section aria-label=\"\" class=\"st-popover st-popover--bottom\" role=\"dialog\"></section></span>"
     }
   ],
   "sourceSha256": "9379fea4221f9fe6066539f6e2c3630bfb16be182ffd3f643c7c65c7adfe7ff9",
-  "fixtureSha256": "00bab0d194017e165034e82ece07ff118e7d41d3da82927b1f28ab54424aa9cb",
+  "fixtureSha256": "5141813acf3933178ffa1cca594893edeaa680bcf9a476edea815069572ac10e",
   "publicExports": [
     {
       "name": "Popover",

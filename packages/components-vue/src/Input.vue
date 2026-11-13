@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, useAttrs, useId } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { useSlots, computed, useAttrs, useId } from 'vue';
 import { classNames } from './classNames.js';
 
 export type InputSize = 'sm' | 'md' | 'lg';
@@ -18,7 +19,7 @@ export type InputProps = {
   readonly?: boolean;
 };
 
-defineOptions({ name: 'Input' });
+defineOptions({ name: 'Input', inheritAttrs: false });
 const props = withDefaults(defineProps<InputProps>(), {
   label: undefined, helperText: undefined, errorText: undefined, invalid: false,
   size: 'md', id: undefined, class: undefined, modelValue: undefined,
@@ -35,7 +36,8 @@ const emit = defineEmits<{
 const attrs = useAttrs();
 const uid = `st-input-${useId()}`;
 const inputId = computed(() => props.id ?? uid);
-const isInvalid = computed(() => props.invalid || Boolean(props.errorText));
+const slots = useSlots();
+const isInvalid = () => (props.invalid || Boolean(props.errorText)) || Boolean(slots['error-text']);
 
 function onInput(event: Event) {
   emit('update:modelValue', (event.target as HTMLInputElement).value);
@@ -50,11 +52,11 @@ function onFocus(event: FocusEvent) {
 function onBlur(event: FocusEvent) {
   emit('blur', event);
 }
-const controlProps = computed(() => ({
-  ...attrs,
+const controlProps = () => ({
+
   id: inputId.value,
   class: classNames('st-control', `st-control--${props.size}`),
-  'aria-invalid': isInvalid.value ? ('true' as const) : undefined,
+  'aria-invalid': isInvalid() ? ('true' as const) : undefined,
   value: props.modelValue,
   placeholder: props.placeholder,
   disabled: props.disabled,
@@ -63,16 +65,21 @@ const controlProps = computed(() => ({
   onChange: onChange as (event: Event) => void,
   onFocus: onFocus as (event: FocusEvent) => void,
   onBlur: onBlur as (event: FocusEvent) => void,
-}));
+});
+defineSlots<{
+  'error-text'?: () => unknown;
+  'helper-text'?: () => unknown;
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
   <div :class="classNames('st-field', props.class)">
     <label class="st-field__control" :for="inputId">
-      <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
-      <input v-bind="controlProps" />
+      <span v-if="$slots['label'] || props.label" class="st-field__label"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
+      <input v-bind="{ ...$attrs, ...controlProps() }" />
     </label>
-    <span v-if="props.errorText" class="st-field__error">{{ props.errorText }}</span>
-    <span v-else-if="props.helperText" class="st-field__help">{{ props.helperText }}</span>
+    <span v-if="$slots['error-text'] || props.errorText" class="st-field__error"><slot v-if="$slots['error-text']" name="error-text" /><template v-else>{{ scalarContent(props.errorText) }}</template></span>
+    <span v-else-if="$slots['helper-text'] || props.helperText" class="st-field__help"><slot v-if="$slots['helper-text']" name="helper-text" /><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </div>
 </template>

@@ -60,3 +60,19 @@ type ZoneEmit = Assert<Equal<InstanceType<typeof VaporZone>['$emit'], InstanceTy
 scene.setZoom('large');
 // @ts-expect-error Required component props must remain required.
 const missingLabel: InstanceType<typeof VaporForceGraph>['$props'] = { nodes: [], edges: [] };
+
+// Rich-content migrations support slot-only callers in both published modes.
+import { Alert, Switch, Toggle, Toggletip, FormGroup, Tooltip } from '@sentropic/design-system-vue';
+import { Alert as VaporAlert, Switch as VaporSwitch, Toggle as VaporToggle, Toggletip as VaporToggletip, FormGroup as VaporFormGroup, Tooltip as VaporTooltip } from '@sentropic/design-system-vue/vapor';
+({} satisfies InstanceType<typeof Alert>['$props']);
+({} satisfies InstanceType<typeof Switch>['$props']);
+({} satisfies InstanceType<typeof Toggle>['$props']);
+({} satisfies InstanceType<typeof Toggletip>['$props']);
+({} satisfies InstanceType<typeof FormGroup>['$props']);
+({} satisfies InstanceType<typeof Tooltip>['$props']);
+({} satisfies InstanceType<typeof VaporAlert>['$props']);
+({} satisfies InstanceType<typeof VaporSwitch>['$props']);
+({} satisfies InstanceType<typeof VaporToggle>['$props']);
+({} satisfies InstanceType<typeof VaporToggletip>['$props']);
+({} satisfies InstanceType<typeof VaporFormGroup>['$props']);
+({} satisfies InstanceType<typeof VaporTooltip>['$props']);

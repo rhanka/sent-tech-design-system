@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:4c270b8e7886d5b61fe1cea5b8a43c7096cae69cf7007e613f9c26ed69e27752",
-  "entryDigest": "sha256:31241a8be5abe1c3dcc211d1126cf2e3e5b63e2bc99f71223ceb435b5700868c",
+  "digest": "sha256:7c27a9bbcb5a954e7f37c1fc66df4520284898e80177b24639b23d79dc2a7e2a",
+  "entryDigest": "sha256:6985447006b9dfa162cf65a71194a784710428ed1a03fe3bfcf9b7909acdc479",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

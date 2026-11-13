@@ -32,8 +32,8 @@ function lineWidth(index: number): string | undefined {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="classNames('st-skeleton', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-skeleton', props.class)) }"
+
     role="status"
     :aria-label="resolvedLoadingLabel"
     aria-busy="true"

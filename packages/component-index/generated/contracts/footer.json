@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:abe46ca3e47c2615f2019effa12a425d47c7e0d57188634988ba42d4a12349ad",
-  "entryDigest": "sha256:c18e8d2c649a4f73fb474b352bad1feaca34ada03e758dfaeb2944cad6313b27",
+  "digest": "sha256:14584c2780d9765180fdfcf33a4bf9c484ede7dd864cdbc54f70c74ebd057d4e",
+  "entryDigest": "sha256:6b666dc66967ec30ffa2bbc11fafb670e8f20880e52c6eee5c7aff16615a28bc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -427,18 +427,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.column",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "scope.link",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -450,7 +438,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "column": {},
+              "column": {
+                "$ref": "#/$defs/FooterColumn"
+              },
               "index": {
                 "type": "number"
               }
@@ -470,7 +460,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "link": {}
+              "link": {
+                "$ref": "#/$defs/FooterLink"
+              }
             },
             "required": [
               "link"
@@ -480,7 +472,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:105f8594f1160b0849420ca8e72010f68ce118de9830b9f05be86ea21fe589af",
+        "declarationDigest": "sha256:e72c41386901029fa97e4ce2bcdde8f187cd8385048d640e9e537f2e201729e1",
         "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",

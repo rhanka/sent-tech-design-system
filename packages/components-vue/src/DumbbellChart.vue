@@ -138,7 +138,7 @@ const hoveredRow = computed(() => (hoveredIndex.value !== null ? rows.value[hove
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-dumbbellChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-dumbbellChart', props.class)) }" >
     <div class="st-dumbbellChart__visual" role="img" :aria-label="label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="g in gridLines" :key="g.value">

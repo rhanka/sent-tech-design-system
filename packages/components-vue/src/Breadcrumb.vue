@@ -26,8 +26,8 @@ function labelText(item: BreadcrumbItem): string {
 
 <template>
   <nav
-    v-bind="$attrs"
-    :class="classNames('st-breadcrumb', props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-breadcrumb', props.class)) }"
+
     :aria-label="props.label"
   >
     <ol>

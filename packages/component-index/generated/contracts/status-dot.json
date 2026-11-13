@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:1b6bcf46ddbf30c6ee70fdb9e69e087ad994478f82f8774b5ed2645a440e9d01",
-  "entryDigest": "sha256:6d63d8083bcaeab099b565a71397eb2c0d620c7a69d62a519061bed85ec99f34",
+  "digest": "sha256:196d4d519067c5dbf1f908493517e79b03f9599a352f42133fab4dc0c24b7c3e",
+  "entryDigest": "sha256:6734745742ec07af4801f35629d6023e5a4f2f0c9be2687c5c93d2a42235ad66",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

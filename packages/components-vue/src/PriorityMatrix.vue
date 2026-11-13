@@ -183,7 +183,7 @@ const tickYs = computed(() => TICKS.map((t) => ({ t, y: scaleY(t) })));
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-priorityMatrix', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-priorityMatrix', props.class)) }" >
     <div class="st-priorityMatrix__visual" role="img" :aria-label="props.label">
       <svg
         :viewBox="`0 0 ${width} ${height}`"

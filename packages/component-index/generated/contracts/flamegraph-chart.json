@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:9aabc99de5376f378539d0f69d4b983f1a2ece864c273608aa5f2bd031c3bbc8",
-  "entryDigest": "sha256:518dd96ce551ef49ea3d7f621ebe5149f6135e0718ee56c1d52562edd4bb4235",
+  "digest": "sha256:4749b328ad88e49769115b7ad7c4acdb35fa175cd0425178e2d1f09188bc76aa",
+  "entryDigest": "sha256:f9d25a7a1bcd92392bac8491100855f7a27af375c8735d50660b2e9190036bfd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

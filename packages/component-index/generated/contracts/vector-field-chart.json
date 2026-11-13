@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:7ecc5a657ed6cd31a479e8909200927f93b933a53ebf019f9f751aed3fb8217f",
-  "entryDigest": "sha256:6b5545cb6c847dcb448fa200563077161551cb241b35649723aabf8dddf07d2f",
+  "digest": "sha256:7d49bde053f476115bc5ddf83946ed2ec8dfad1f8c1d0020edeb70d2911988f9",
+  "entryDigest": "sha256:cf9a01377b06f8af07cf12decbee00d158004dc36a5780081343d4c910556b0a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

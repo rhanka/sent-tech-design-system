@@ -13,6 +13,7 @@ export type UnorderedListProps = {
   items: UnorderedListInput[];
   nested?: boolean;
   /** Internal recursive slot address. */
+  /** @internal Recursive item path. */
   path?: number[];
   class?: string;
 };
@@ -25,7 +26,7 @@ function children(item: unknown): UnorderedListInput[] { return isItem(item) && 
 </script>
 
 <template>
-  <ul v-bind="$attrs" :class="classNames('st-unorderedList', props.nested && 'st-unorderedList--nested', props.class)">
+  <ul v-bind="{ ...($attrs), class: (classNames('st-unorderedList', props.nested && 'st-unorderedList--nested', props.class)) }" >
     <li v-for="(item, index) in props.items" :key="index" class="st-unorderedList__item"><slot v-if="$slots['item']" name="item" :item="item" :index="index" :path="[...props.path, index]" /><template v-else>{{ scalarContent(isItem(item) ? item.content : item) }}</template><UnorderedList v-if="children(item).length" :items="children(item)" nested :path="[...props.path, index]"><template v-if="$slots.item" #item="scope"><slot name="item" v-bind="scope" /></template></UnorderedList></li>
   </ul>
 </template>

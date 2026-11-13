@@ -10,7 +10,7 @@ export type ModalProps = {
   closeLabel?: string;
 };
 
-defineOptions({ name: 'Modal' });
+defineOptions({ name: 'Modal', inheritAttrs: false });
 const props = withDefaults(defineProps<ModalProps>(), {
   open: false, title: undefined, description: undefined, class: undefined, closeLabel: 'Close',
 });
@@ -18,7 +18,7 @@ const emit = defineEmits<{ close: [] }>();
 
 const attrs = useAttrs();
 const sectionProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-modal', props.class),
   role: 'dialog',
   'aria-modal': 'true' as const,
@@ -54,7 +54,7 @@ onUnmounted(() => {
 
 <template>
   <div v-if="props.open" class="st-modal__backdrop">
-    <section v-bind="sectionProps">
+    <section v-bind="{ ...$attrs, ...sectionProps }">
       <div class="st-modal__header">
         <h2 v-if="props.title" class="st-modal__title">{{ props.title }}</h2>
         <button type="button" class="st-modal__close" :aria-label="props.closeLabel" @click="emit('close')">

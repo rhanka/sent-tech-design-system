@@ -173,7 +173,7 @@ function tickY(tick: number): number {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-heikinAshiChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-heikinAshiChart', props.class)) }" >
     <div class="st-heikinAshiChart__visual" role="img" :aria-label="props.label" @pointermove="handlePointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="tick in geometry.ticks" :key="`g${tick}`">

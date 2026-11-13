@@ -43,10 +43,10 @@ const resolvedRel = computed(
 // Retire onClick du spread : Vue fusionne sinon le handler attrs avec le
 // nôtre (tableau de listeners), ce qui rappellerait l'utilisateur même en
 // disabled. On le rappelle nous-mêmes, et seulement quand non-disabled.
-const restAttrs = computed(() => {
+const restAttrs = () => {
   const { onClick, ...rest } = attrs as Record<string, unknown>;
   return rest;
-});
+};
 function onClick(event: MouseEvent) {
   if (props.disabled) {
     event.preventDefault();
@@ -57,5 +57,5 @@ function onClick(event: MouseEvent) {
 </script>
 
 <template>
-  <a v-bind="restAttrs" :href="props.disabled ? undefined : props.href" :target="resolvedTarget" :rel="resolvedRel" :class="classNames('st-link', `st-link--${effective}`, props.disabled && 'st-link--disabled', props.class)" :aria-disabled="props.disabled || undefined" @click="onClick"><slot /></a>
+  <a v-bind="restAttrs()" :href="props.disabled ? undefined : props.href" :target="resolvedTarget" :rel="resolvedRel" :class="classNames('st-link', `st-link--${effective}`, props.disabled && 'st-link--disabled', props.class)" :aria-disabled="props.disabled || undefined" @click="onClick"><slot /></a>
 </template>

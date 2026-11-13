@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:9cb83592cba43adbdeb9b347a419328ef22af72a9c7f15cd1fdbb725681be605",
+      "digest": "sha256:94d344f80ffcbe372838f6bc35c20b21efc686f519c56084c82d3d08933596ea",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Select.vue",
@@ -40,7 +40,7 @@
     "en": "Styled native select, sm/md/lg sizes.",
     "fr": "Sélecteur natif stylé, tailles sm/md/lg."
   },
-  "digest": "sha256:9014f68538850fd06db0188679b6e5651318c6a59ca1e76a9b5c2f06b1d3e7f5",
+  "digest": "sha256:6439af325cbd1e88d30cf9b10de45b24c814f6e3e5e3b233b4451e3cb7706fc5",
   "displayName": "Select",
   "format": "component-entry/v1",
   "frameworks": [

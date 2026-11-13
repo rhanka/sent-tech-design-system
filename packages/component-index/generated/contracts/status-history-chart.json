@@ -1,8 +1,8 @@
 {
   "componentId": "status-history-chart",
   "contractSource": "derived",
-  "digest": "sha256:e45c8fee959f5c0b2abf5131e0e9c72b87ee9a0d46a6fac037825ae9a53db67f",
-  "entryDigest": "sha256:1c8eb8844f9b7d55bb131a03db6570b3db1e195a277077ab70d2ac470a76b2f6",
+  "digest": "sha256:5e2d3bba01bbeab5aff2b9552d17eb842d2cf69827d58158a90404ef3b8f4677",
+  "entryDigest": "sha256:9fae49cad4ebda2b578796f9b73811ad397f682e844b2e8904381b3417bcf0fa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "sunburst-chart",
   "contractSource": "derived",
-  "digest": "sha256:ddabdc6076168ed9f75b3e56b4f7a31a68f6761288e51d03af0a5b936044bcb7",
-  "entryDigest": "sha256:0036f6911bd81f4c55e9f24d25720386d7f47341f3b2c3870b7b545f506d2e34",
+  "digest": "sha256:d9e0e7e5d5eac49fd5b1e60c9660e24fc476513fafdd3caf95ff0b5da381954b",
+  "entryDigest": "sha256:0428a46db856ddbafe4c5604185e5abcc833b8fc2e3c2ad6383839cae529e138",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

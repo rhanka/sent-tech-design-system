@@ -18,5 +18,5 @@ const props = withDefaults(defineProps<BadgeProps>(), {
 </script>
 
 <template>
-  <span v-bind="$attrs" :class="classNames('st-badge', `st-badge--${props.tone}`, `st-badge--${props.shape}`, `st-badge--${props.size}`, props.class)"><slot /></span>
+  <span v-bind="{ ...($attrs), class: (classNames('st-badge', `st-badge--${props.tone}`, `st-badge--${props.shape}`, `st-badge--${props.size}`, props.class)) }" ><slot /></span>
 </template>

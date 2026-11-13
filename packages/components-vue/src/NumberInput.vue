@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, useAttrs } from 'vue';
+import { scalarContent } from './slotContent.js';
+import { useSlots, useId, computed, ref, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
-import { nextNumberInputId } from './numberInputId.js';
 
 export type NumberInputSize = 'sm' | 'md' | 'lg';
 
@@ -23,7 +23,7 @@ export type NumberInputProps = {
   class?: string;
 };
 
-defineOptions({ name: 'NumberInput' });
+defineOptions({ name: 'NumberInput', inheritAttrs: false });
 const props = withDefaults(defineProps<NumberInputProps>(), {
   label: undefined, helperText: undefined, errorText: undefined, size: 'md', modelValue: undefined,
   value: undefined, disabled: false, readonly: false, min: undefined, max: undefined, step: undefined,
@@ -36,7 +36,8 @@ const emit = defineEmits<{
 }>();
 
 const attrs = useAttrs();
-const inputId = ref(nextNumberInputId());
+const autoId = `st-numberInput-${useId()}`;
+const inputId = computed(() => (attrs.id as string | undefined) ?? autoId);
 const controlled = computed(() => props.modelValue !== undefined);
 const numValue = computed<number | null>(() => {
   const bound = props.modelValue ?? props.value;
@@ -53,7 +54,8 @@ const shownValue = computed<number | null>(() => (controlled.value ? numValue.va
 const numMin = computed(() => (props.min !== undefined && props.min !== '' ? Number(props.min) : undefined));
 const numMax = computed(() => (props.max !== undefined && props.max !== '' ? Number(props.max) : undefined));
 const numStep = computed(() => (props.step !== undefined && props.step !== '' ? Number(props.step) : 1));
-const isInvalid = computed(() => Boolean(props.errorText));
+const slots = useSlots();
+const isInvalid = () => (Boolean(props.errorText)) || Boolean(slots['error-text']);
 const isAtMin = computed(() => shownValue.value !== null && numMin.value !== undefined && shownValue.value <= numMin.value);
 const isAtMax = computed(() => shownValue.value !== null && numMax.value !== undefined && shownValue.value >= numMax.value);
 
@@ -80,12 +82,12 @@ function onInput(event: Event) {
 function onChange(event: Event) {
   emit('change', event);
 }
-const controlProps = computed(() => ({
-  ...attrs,
+const controlProps = () => ({
+
   id: inputId.value,
   class: 'st-numberInput__control',
   type: 'number',
-  'aria-invalid': isInvalid.value ? ('true' as const) : undefined,
+  'aria-invalid': isInvalid() ? ('true' as const) : undefined,
   value: shownValue.value ?? '',
   disabled: props.disabled,
   readonly: props.readonly,
@@ -94,15 +96,20 @@ const controlProps = computed(() => ({
   step: props.step,
   onInput: onInput as (event: Event) => void,
   onChange: onChange as (event: Event) => void,
-}));
+});
+defineSlots<{
+  'error-text'?: () => unknown;
+  'helper-text'?: () => unknown;
+  'label'?: () => unknown;
+}>();
 </script>
 
 <template>
   <div :class="classNames('st-field', props.class)">
     <label class="st-field__control" :for="inputId">
-      <span v-if="props.label" class="st-field__label">{{ props.label }}</span>
+      <span v-if="$slots['label'] || props.label" class="st-field__label"><slot v-if="$slots['label']" name="label" /><template v-else>{{ scalarContent(props.label) }}</template></span>
       <span :class="classNames('st-numberInput', `st-numberInput--${props.size}`)">
-        <input v-bind="controlProps" />
+        <input v-bind="{ ...$attrs, ...controlProps() }" />
         <span class="st-numberInput__buttons">
           <button
             type="button"
@@ -121,7 +128,7 @@ const controlProps = computed(() => ({
         </span>
       </span>
     </label>
-    <span v-if="props.errorText" class="st-field__error">{{ props.errorText }}</span>
-    <span v-else-if="props.helperText" class="st-field__help">{{ props.helperText }}</span>
+    <span v-if="$slots['error-text'] || props.errorText" class="st-field__error"><slot v-if="$slots['error-text']" name="error-text" /><template v-else>{{ scalarContent(props.errorText) }}</template></span>
+    <span v-else-if="$slots['helper-text'] || props.helperText" class="st-field__help"><slot v-if="$slots['helper-text']" name="helper-text" /><template v-else>{{ scalarContent(props.helperText) }}</template></span>
   </div>
 </template>

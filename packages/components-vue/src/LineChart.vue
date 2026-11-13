@@ -475,7 +475,7 @@ function handleDatapointKeyDown(event: KeyboardEvent, index: number) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-lineChart', `st-lineChart--${geometry.tone}`, props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-lineChart', `st-lineChart--${geometry.tone}`, props.class)) }" >
     <div class="st-lineChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <template v-for="g in geometry.gridLines" :key="`g${g.value}`">

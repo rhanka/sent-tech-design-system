@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ae82c8ab95fbdab6a113567021f2499e0b991281a43d5204ae005bbe0105062f",
+      "digest": "sha256:b73fe8f4f19000a8dd656bf4d6ffec8163a6b9632b7be61c4ddd3678cabe2d27",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/InlineLoading.vue",
@@ -40,7 +40,7 @@
     "en": "Inline loading indicator paired with a label.",
     "fr": "Indicateur de chargement inline accompagné d’un libellé."
   },
-  "digest": "sha256:9de7dea0aa990ae0faa04ad0e9fb18bd9f857f9090bd74659dc45975984b64f8",
+  "digest": "sha256:70a9a78034d6767932bd582153f822d21371b79d16b2488f7e51e54e0e1ac804",
   "displayName": "InlineLoading",
   "format": "component-entry/v1",
   "frameworks": [

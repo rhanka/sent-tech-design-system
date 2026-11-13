@@ -24,9 +24,9 @@ const isOpen = computed(() => props.open ?? props.expanded ?? false);
 
 <template>
   <button
-    v-bind="$attrs"
+    v-bind="{ ...($attrs), class: (classNames(`st-iconButton st-iconButton--${props.size} st-iconButton--${props.variant}`, props.class)) }"
     type="button"
-    :class="classNames(`st-iconButton st-iconButton--${props.size} st-iconButton--${props.variant}`, props.class)"
+
     aria-haspopup="menu"
     :aria-expanded="isOpen"
     :disabled="props.disabled"

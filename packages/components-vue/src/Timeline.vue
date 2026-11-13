@@ -24,7 +24,7 @@ export type TimelineProps = {
  * Ant Design / MUI Timeline). Sémantique <ol>/<li>, pastilles aria-hidden, style
  * token-only. Distinct de TimelineChart (dataviz à échelle temporelle).
  */
-defineOptions({ name: 'Timeline' });
+defineOptions({ name: 'Timeline', inheritAttrs: false });
 const props = withDefaults(defineProps<TimelineProps>(), {
   orientation: 'vertical', class: undefined,
 });
@@ -33,13 +33,13 @@ const attrs = useAttrs();
 const orientation = computed(() => props.orientation ?? 'vertical');
 const items = computed(() => Array.isArray(props.items) ? props.items : []);
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-timeline', `st-timeline--${orientation.value}`, props.class),
 }));
 </script>
 
 <template>
-  <ol v-bind="rootProps">
+  <ol v-bind="{ ...$attrs, ...rootProps }">
     <li v-for="(item, i) in items" :key="i" :class="classNames('st-timeline__item', `st-timeline__item--${item.tone ?? 'neutral'}`)">
       <span class="st-timeline__rail" aria-hidden="true"><span class="st-timeline__dot" /><span class="st-timeline__line" /></span>
       <div class="st-timeline__content">

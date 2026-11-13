@@ -34,7 +34,7 @@ const props = withDefaults(defineProps<EmbedProps>(), {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-embed', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-embed', props.class)) }" >
     <div class="st-aspectRatio" :style="{ aspectRatio: props.aspectRatio }">
       <iframe class="st-embed__frame" :src="props.src" :title="props.title" :sandbox="props.sandbox" :allow="props.allow" :loading="props.loading"></iframe>
     </div>

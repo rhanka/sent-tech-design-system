@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:9152e17a3b98db9301da59583d5ba135a1a9fa3234389f98e826ab6cdb9fefd1",
+      "digest": "sha256:d7d019128140e5621abd08fb3210172f57cfd0156de096e1170f5848ed7bc647",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BulletChart.vue",
@@ -40,7 +40,7 @@
     "en": "Bullet graph: measure vs target with qualitative range bands.",
     "fr": "Bullet graph : mesure vs cible avec bandes qualitatives."
   },
-  "digest": "sha256:2f48b324d57660a93200e2f2c6ba328eb79c601989652b6fc90583ae21f39d14",
+  "digest": "sha256:24e99e4b3741b100331dcc5606ef343e526cd662d603afb06f6099b3522230ff",
   "displayName": "BulletChart",
   "format": "component-entry/v1",
   "frameworks": [

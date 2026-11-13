@@ -1,8 +1,8 @@
 {
   "componentId": "candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:269f2dbf733c2092c5e6eade9639471f09bb9490a79eae13cd5f1380854cbc62",
-  "entryDigest": "sha256:01e5d4bb0b91e28d68432d95e763be8686c37e410a6614145d2335ad759f5aea",
+  "digest": "sha256:d35ba1904bb3e91b1db5868c91b5e29c92c7e594d02446369b05dac6159452f3",
+  "entryDigest": "sha256:2100935e3914011d0ac94c1444017f9adbfa8b34384707868987f3256302c137",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

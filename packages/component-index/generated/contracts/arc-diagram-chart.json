@@ -1,8 +1,8 @@
 {
   "componentId": "arc-diagram-chart",
   "contractSource": "derived",
-  "digest": "sha256:d0d2b54cb9c2e669e20e41195d523077af95c73adc98c7316a26362e94c92d85",
-  "entryDigest": "sha256:21e0058dac75b74feaf6d4456a4b5891d770297f05467904be707356ca7f6139",
+  "digest": "sha256:2238899c8122bdc387b5bda6a68e48d876ad8627c147aa3de226cb93b4b2cdd1",
+  "entryDigest": "sha256:db8d2c159d19e9064fbc45a2c19214a809d95091a099c2eb505c9fc82041a265",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:cda8db6a81c372fc3a4242dee16bcdaed6597b6b1273832bc401cb34df06351c",
-  "entryDigest": "sha256:23e8cedc11e4ca15052c911831745bb5a1b0073104e411c592a3e7cd94f63c74",
+  "digest": "sha256:736f53ed3ec9b6f355e90554b222ee071a386c32b07098c4c7f403504b08e060",
+  "entryDigest": "sha256:bba916ae4d950a731c04a8bf26a3fee6f14e1f792e72b9133b9b4dcfa0599c36",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -290,18 +290,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -313,7 +301,9 @@
               "index": {
                 "type": "number"
               },
-              "item": {}
+              "item": {
+                "$ref": "#/$defs/StructuredListItem"
+              }
             },
             "required": [
               "index",
@@ -330,7 +320,9 @@
               "index": {
                 "type": "number"
               },
-              "item": {}
+              "item": {
+                "$ref": "#/$defs/StructuredListItem"
+              }
             },
             "required": [
               "index",
@@ -341,7 +333,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:55ec9a9dd5f5e54c54b8f05e6ca169efdea79739ee51f5be56372dfa514f60d8",
+        "declarationDigest": "sha256:c87c5749de6dfac1247377ef7547db632d26c7ed3d7cc81a3a96dc64708a16a9",
         "declarationPath": "packages/components-vue/dist/StructuredList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StructuredListProps",

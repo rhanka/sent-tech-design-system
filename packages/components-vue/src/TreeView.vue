@@ -80,7 +80,7 @@ function flattenVisible(nodes: TreeNode[], expanded: Set<string>): TreeFlatNode[
 
       const tabbableId = computed(() => focusedId.value ?? visible.value[0]?.node.id);
 
-      
+
 
 
       const toggle = (id: string) => {
@@ -155,7 +155,7 @@ const attrs = useAttrs();
 </script>
 
 <template>
-  <div v-bind="$attrs" ref="rootRef" :class="classNames('st-treeView', props.class)" role="tree" :aria-label="(attrs['aria-label'] as string | undefined) ?? props.label">
+  <div v-bind="{ ...($attrs), class: (classNames('st-treeView', props.class)) }" ref="rootRef"  role="tree" :aria-label="(attrs['aria-label'] as string | undefined) ?? props.label">
     <div v-for="(flat, index) in visible" :key="flat.node.id" role="treeitem" :aria-level="flat.level" :aria-expanded="flat.hasChildren ? (flat.expanded ? 'true' : 'false') : undefined" :aria-selected="flat.node.id === (props.selectedId ?? props.selected) ? 'true' : 'false'" :aria-disabled="flat.node.disabled ? 'true' : undefined" :class="classNames('st-treeView__row', flat.node.id === (props.selectedId ?? props.selected) && 'st-treeView__row--selected', flat.node.disabled && 'st-treeView__row--disabled')" :data-tree-id="flat.node.id" :style="`padding-inline-start: calc(${flat.level - 1} * var(--st-spacing-4, 1rem) + 0.25rem)`" :tabindex="interactive() ? (flat.node.id === tabbableId ? 0 : -1) : undefined" @click="interactive() ? activate(flat) : undefined" @keydown="interactive() ? onKey($event, flat) : undefined" @focus="interactive() ? (focusedId = flat.node.id) : undefined">
       <span :class="classNames('st-treeView__caret', !flat.hasChildren && 'st-treeView__caret--leaf', flat.expanded && 'st-treeView__caret--open')" aria-hidden="true" /><span class="st-treeView__label"><slot v-if="$slots['node-label']" name="node-label" :node="flat.node" :index="index" :level="flat.level" /><template v-else>{{ scalarContent(flat.node.label) }}</template></span>
     </div>

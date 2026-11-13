@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:eeacbc76060fa936be38ef33a760e3236929966b5bf71d67d647b8e528beddeb",
-  "entryDigest": "sha256:dbdd016bddf8f39e5acf59e2813bb752a65e49e343a914d5324694c9a8a45e0d",
+  "digest": "sha256:9cee7d451cb79e89642d9e8d4b0119397498d96c06d289312de8100cb1c45063",
+  "entryDigest": "sha256:55a157f2558e19202ff225440dff24a6e50f9731d4e888e361c7a5e6d4a7190f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

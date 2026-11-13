@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:cee3ce87abf0f7fa759e39177975631c7bbe8d6a33613d7333b2abd442da7788",
+      "digest": "sha256:b9975a13044429d28acba534da5af277676b77a4ee17bed9d19880d910a03f12",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ConfigItemCard.vue",
@@ -40,7 +40,7 @@
     "en": "Configuration item card: name, key, description, provenance badge and provenance-aware actions.",
     "fr": "Carte d'item de configuration : nom, clé, description, badge de provenance et actions selon la provenance."
   },
-  "digest": "sha256:5e5ed61247c299de2a50fc072afaef07ed987491103324a39bfd855f4b4ee6e4",
+  "digest": "sha256:7f3742f78af313229d5110eb386d6cb571d2f9692aede1b665ca995194dd54cf",
   "displayName": "ConfigItemCard",
   "format": "component-entry/v1",
   "frameworks": [

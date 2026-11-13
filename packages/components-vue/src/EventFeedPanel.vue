@@ -65,7 +65,7 @@ const scrollStyle = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-eventFeedPanel', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-eventFeedPanel', props.class)) }" >
     <p v-if="props.label" class="st-eventFeedPanel__label" id="st-eventFeedPanel-label">{{ props.label }}</p>
     <ul class="st-eventFeedPanel__list" role="feed" :aria-label="props.label" aria-busy="false" :style="scrollStyle">
       <li v-for="item in items" :key="item.index" :class="classNames('st-eventFeedPanel__item', `st-eventFeedPanel__item--${item.tone}`)" role="article" :aria-label="`${item.datum.type} — ${item.datum.message}`">

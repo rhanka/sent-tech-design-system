@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c04626d8e040e8968ed2f6af986f19b0cc9b1bc65258b6121b2b39cca55ede00",
+      "digest": "sha256:f0307b0b8581595bef8b02dc75453a6cbe36b22c93a985d745cb705391b54699",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AreaChart.vue",
@@ -40,7 +40,7 @@
     "en": "Area chart to visualize temporal or numeric data.",
     "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
   },
-  "digest": "sha256:a3dd7623602fa50d5e4e47ee075bb835459258feadb8a8c22d7584e28c844075",
+  "digest": "sha256:37aaf34717a41c1bc36d438038b8c331c1cd2130af5dc0b1e315eb843cbd9745",
   "displayName": "AreaChart",
   "format": "component-entry/v1",
   "frameworks": [

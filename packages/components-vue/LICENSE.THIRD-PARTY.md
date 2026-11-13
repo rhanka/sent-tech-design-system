@@ -26,7 +26,7 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 **Ce qui est copié.** Des chaînes de tracé SVG (attribut `d`) identiques octet pour octet aux données d'icônes lucide, écrites directement dans nos fichiers source et compilées dans le `dist/` publié.
 
 **Étendue mesurée.** 44 chaîne(s) de tracé distincte(s),
-87 occurrence(s), dans 27 fichier(s) source de ce paquet :
+89 occurrence(s), dans 28 fichier(s) source de ce paquet :
 
 | Fichier source | Occurrences |
 |---|---|
@@ -45,6 +45,7 @@ sources à l'amont installé : il ne peut pas se désynchroniser en silence.
 | `src/IdentityMenu.vue` | 1 |
 | `src/InlineLoading.vue` | 2 |
 | `src/LanguageToggle.vue` | 1 |
+| `src/Menu.vue` | 2 |
 | `src/MenuTriggerButton.vue` | 1 |
 | `src/Modal.vue` | 2 |
 | `src/MultiSelect.vue` | 3 |

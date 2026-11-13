@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:b9957ccd929148d1cb489847d93b15b79f9fbb4a20457e90c0e339e4afcd801e",
-  "entryDigest": "sha256:f9ac2159b3a6be2eb2d9f8848f82bafa58ffa692f382750807c81691d0b61efd",
+  "digest": "sha256:fe5930c6fb2a03865a48e9f5d91fc7ff57f89c72cbcfb3401affc49bad5ddda4",
+  "entryDigest": "sha256:953fa0303049d9fad7ea006b71c312160c3391ca076d17e7c9cbcf891a117c0a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

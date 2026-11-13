@@ -1,8 +1,8 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:8886eefb29945289867b63dba29174f21aadce60eb3052d7a3d61dc64ef2d690",
-  "entryDigest": "sha256:94b9b9c43f0f94fb25514945995bc80612f5100614c96966c07ca16c2655e937",
+  "digest": "sha256:8151e490de7d903d6e678f1c2c8445f282c597bf3b1ed2f75567a55573768703",
+  "entryDigest": "sha256:fc1cd0b992ab141c41fdd6d8dca4a83306a20fa5e3723f19099ab60afefc6dc4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

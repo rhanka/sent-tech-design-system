@@ -1,8 +1,8 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:d3487e490df39a5ac32141aec994f4e173799a35550a81d59b9c58c5f23e3d72",
-  "entryDigest": "sha256:f8598dd195e5380f098b55946c971327e5a51f1ce6e0516a2cc5753d25d68962",
+  "digest": "sha256:34075b6dd694b5fe48275db8b0adf12652727ce2150d739bb0c006457cc1d37e",
+  "entryDigest": "sha256:0fcca26f3fa2bab6e1efc9ef22bbabc17560f335bbbb7f132b40741beeed64e8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

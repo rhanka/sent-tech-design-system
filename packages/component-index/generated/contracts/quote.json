@@ -1,8 +1,8 @@
 {
   "componentId": "quote",
   "contractSource": "derived",
-  "digest": "sha256:a74c93baea930d5b92bc66eed1dbbc818bd798a6bd7abd6c7ecf1b12692ac8b1",
-  "entryDigest": "sha256:b4ecb6990b64100bba1d59ac5995afb8ffcb4939c69e1095141a5dea6b66748c",
+  "digest": "sha256:413b92d5b2c881eb6dcc14a68c4280c9053d0cae7c3db3520df5e08dabd1f199",
+  "entryDigest": "sha256:edcbf521a090af93f00a6febfcdac6396ebb49b01d819ba02cb805da368396b1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

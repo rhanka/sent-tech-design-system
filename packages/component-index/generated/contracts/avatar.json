@@ -1,8 +1,8 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:00f5d20f69692afff16d594189a38e62aa3bb44c409842f0e941667433fd26f3",
-  "entryDigest": "sha256:bce6205bec0667e20c565fb2e6de0cadc619dcef04adc7606fa91ead27ca087a",
+  "digest": "sha256:28346189dc8a9716ac5a78763a002ddb889604001ae31953302ee86ed3475d3a",
+  "entryDigest": "sha256:117247e94c63835e793bbcf8040481367b60212bf00d5a8fd0350df8ff573a73",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

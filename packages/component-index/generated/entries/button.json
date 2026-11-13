@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:4698ab5fc59cd2188c4fd46ced6954fe0b861e32d287af49481cb7a8816cc737",
+      "digest": "sha256:3277791ab32f1d6098f7323b697646466f3ac052ce8b423c2eaaef0432056ee5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Button.vue",
@@ -40,7 +40,7 @@
     "en": "Primary, secondary, ghost, or destructive action.",
     "fr": "Action primaire, secondaire, fantôme ou destructive."
   },
-  "digest": "sha256:f615e2b7019c2a422a4a6ae8e26c75f9a0ffc92f15190def6e5a02ff7d4bbe4f",
+  "digest": "sha256:6bff5487a999a7a51ce3c9c7fa2095d418fdcfebfecbd3252f9ea450bac74108",
   "displayName": "Button",
   "format": "component-entry/v1",
   "frameworks": [

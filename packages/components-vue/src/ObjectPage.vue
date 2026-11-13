@@ -31,7 +31,7 @@ const props = withDefaults(defineProps<ObjectPageProps>(), {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-op', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-op', props.class)) }" >
     <header class="st-op__header">
       <nav v-if="(props.breadcrumb ?? []).length > 0" class="st-breadcrumb">
         <template v-for="(item, i) in props.breadcrumb" :key="i">

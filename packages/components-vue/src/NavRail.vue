@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export interface NavRailItem {
@@ -30,10 +31,14 @@ function isActive(item: NavRailItem) {
 function onItemClick(item: NavRailItem) {
   if (!item.disabled) emit('itemSelect', item.id);
 }
+defineSlots<{'item-icon'?: (scope: {item: NavRailItem}) => unknown; 'item-badge'?: (scope: {item: NavRailItem}) => unknown;
+default?: () => unknown; footer?: () => unknown;
+  'item-label'?: (scope: { item: NavRailItem }) => unknown;
+}>();
 </script>
 
 <template>
-  <nav v-bind="$attrs" :class="classNames('st-navRail', props.class)" :aria-label="props.label">
+  <nav v-bind="{ ...($attrs), class: (classNames('st-navRail', props.class)) }"  :aria-label="props.label">
     <div class="st-navRail__items">
       <template v-for="item in props.items" :key="item.id">
         <a
@@ -43,9 +48,9 @@ function onItemClick(item: NavRailItem) {
           :aria-current="isActive(item) ? 'page' : undefined"
           @click="onItemClick(item)"
         >
-          <span v-if="item.icon" class="st-navRail__icon">{{ String(item.icon) }}</span>
-          <span class="st-navRail__label">{{ item.label }}</span>
-          <span v-if="item.badge != null" class="st-navRail__badge">{{ String(item.badge) }}</span>
+          <span v-if="$slots['item-icon'] || item.icon" class="st-navRail__icon"><slot name="item-icon" :item="item">{{ scalarContent(item.icon) }}</slot></span>
+          <span class="st-navRail__label"><slot v-if="$slots['item-label']" name="item-label" :item="item" /><template v-else>{{ scalarContent(item.label) }}</template></span>
+          <span v-if="$slots['item-badge'] || item.badge != null" class="st-navRail__badge"><slot name="item-badge" :item="item">{{ scalarContent(item.badge) }}</slot></span>
         </a>
         <button
           v-else
@@ -55,9 +60,9 @@ function onItemClick(item: NavRailItem) {
           :disabled="item.disabled"
           @click="onItemClick(item)"
         >
-          <span v-if="item.icon" class="st-navRail__icon">{{ String(item.icon) }}</span>
-          <span class="st-navRail__label">{{ item.label }}</span>
-          <span v-if="item.badge != null" class="st-navRail__badge">{{ String(item.badge) }}</span>
+          <span v-if="$slots['item-icon'] || item.icon" class="st-navRail__icon"><slot name="item-icon" :item="item">{{ scalarContent(item.icon) }}</slot></span>
+          <span class="st-navRail__label"><slot v-if="$slots['item-label']" name="item-label" :item="item" /><template v-else>{{ scalarContent(item.label) }}</template></span>
+          <span v-if="$slots['item-badge'] || item.badge != null" class="st-navRail__badge"><slot name="item-badge" :item="item">{{ scalarContent(item.badge) }}</slot></span>
         </button>
       </template>
       <slot />

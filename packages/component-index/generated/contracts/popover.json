@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:8dd418124cdc94a26140a463528ee79722023f585357ad2ede092eb3465c02ef",
-  "entryDigest": "sha256:308035be096aba955b0a31821b39360d74315cd9d7bc47548b1d654c8679bb1a",
+  "digest": "sha256:4cd06a35e5a0c1f3b8da058a8ad523e3dc6100fb2fd81c80a11c3b2d97dbd017",
+  "entryDigest": "sha256:115ff77544868dffc8fbcd32f2ec69569bfcda0a0c3ec11b0ba2ee3af1e23ec7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

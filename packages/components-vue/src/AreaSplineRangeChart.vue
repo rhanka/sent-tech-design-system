@@ -45,7 +45,7 @@ function continuePath(prefix: string, pts: { x: number; y: number }[]): string {
   const full = buildSmoothPath(pts);
   return `${prefix} L${full.slice(1)}`;
 }
-defineOptions({ name: 'AreaSplineRangeChart' });
+defineOptions({ name: 'AreaSplineRangeChart', inheritAttrs: false });
 const props = withDefaults(defineProps<AreaSplineRangeChartProps>(), {
   data: () => [],
   width: 480,
@@ -221,14 +221,14 @@ const geometry = computed(() => {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="
+    v-bind="{ ...($attrs), class: (
       classNames(
         'st-areaSplineRangeChart',
         'st-areaSplineRangeChart--' + geometry.tone,
         props.class,
       )
-    "
+    ) }"
+
   >
     <div
       class="st-areaSplineRangeChart__visual"

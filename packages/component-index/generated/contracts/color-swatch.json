@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:0049daea80d39c8d30e63bd37010737c5189e0118e46a9fd70ea0811cc514191",
-  "entryDigest": "sha256:5a1247914902bec2a59389c7febec89307c299dc59357589bed922f88e60820e",
+  "digest": "sha256:47b95a9f2c8ab75aace19756e8e2f5bef9a56b634cc2e2e8f88ff88800559b80",
+  "entryDigest": "sha256:e020f2a35b9acb7261d74a79a3b2d25d39b816ce1861ae1ef05de9f0c0591b5a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

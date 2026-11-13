@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:828295ca73b7dbbd9390d65935ccb6d855f530bd78dff48a8f40ede0fe456bfe",
+      "digest": "sha256:00c10f8c88c9241273a2c26cb5a95bfae19503cb93f89bb8b766b8182dfbbc73",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/VectorFieldChart.vue",
@@ -40,7 +40,7 @@
     "en": "Vector field: grid of arrows whose length encodes magnitude and orientation encodes direction.",
     "fr": "Champ de vecteurs : grille de flèches dont la longueur encode la magnitude et l'orientation la direction."
   },
-  "digest": "sha256:6b5545cb6c847dcb448fa200563077161551cb241b35649723aabf8dddf07d2f",
+  "digest": "sha256:cf9a01377b06f8af07cf12decbee00d158004dc36a5780081343d4c910556b0a",
   "displayName": "VectorFieldChart",
   "format": "component-entry/v1",
   "frameworks": [

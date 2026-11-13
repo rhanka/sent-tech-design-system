@@ -23,10 +23,14 @@
     {
       "id": "partial",
       "html": "<dl class=\"st-structuredList\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\">Only</dt><dd class=\"st-structuredList__definition\"></dd></div><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\"></dt><dd class=\"st-structuredList__definition\">No term</dd></div></dl>"
+    },
+    {
+      "id": "rich-terms",
+      "html": "<dl class=\"st-structuredList\"><div class=\"st-structuredList__row\"><dt class=\"st-structuredList__term\"><strong>Name</strong></dt><dd class=\"st-structuredList__definition\"><em>Ada</em></dd></div></dl>"
     }
   ],
   "sourceSha256": "480b4cc6b80059417a4f9a21d9015c336719078617ecadc4f9dcacb70544517e",
-  "fixtureSha256": "a879ccfd6326d59b6e88b669ef17ae2da74ec661387549294a81aa87045d7754",
+  "fixtureSha256": "ed1eb280448fbf65c75c224cecab51eb55530e24625fc8604d25417e641b3e18",
   "publicExports": [
     {
       "name": "StructuredList",

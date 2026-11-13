@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:f221eda8ec49454eb2744b14976e4794237c9569b4bbc770de6f1bc84de0d9fd",
-  "entryDigest": "sha256:95fd9caaee8ccff4980b360e052b1e5412580d9afc7e3b790531fc6547e4a299",
+  "digest": "sha256:8416eb1fd6471b51c9f16e1edaf12d83da2903dd1bee40214dbd3ee060dbf8e6",
+  "entryDigest": "sha256:c83bfbd8421081fef43830106896fc00c556af98fef5172ced47733ac638d03c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

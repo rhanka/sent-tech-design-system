@@ -33,15 +33,15 @@ const emit = defineEmits<{ change: [value: string] }>();
 
 function select(optionValue: string) {
   if (optionValue === props.value) return;
-  props.onChange?.(optionValue);
+
   emit('change', optionValue);
 }
 </script>
 
 <template>
   <fieldset
-    v-bind="$attrs"
-    :class="classNames('st-radioGroup', `st-radioGroup--${props.orientation}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-radioGroup', `st-radioGroup--${props.orientation}`, props.class)) }"
+
     :disabled="props.disabled"
   >
     <legend class="st-radioGroup__legend">{{ props.legend }}</legend>

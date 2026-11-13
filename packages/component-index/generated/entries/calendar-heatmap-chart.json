@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b7bf2bc71ad5dd80e56ee6b3c9949a7d70402b22768953e4b5692d5dc8bb18ae",
+      "digest": "sha256:166abc09b7741b3a3ae17ab7c3a2ff3a71f0452daeabef820efe6d894fa7fe9e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CalendarHeatmapChart.vue",
@@ -40,7 +40,7 @@
     "en": "GitHub-style calendar grid for visualizing daily activity.",
     "fr": "Grille calendrier GitHub-style pour visualiser l'activité quotidienne."
   },
-  "digest": "sha256:efaa560f5c185cf629f9aff0407835b25715df286b5e207323df883e8e8d6fc9",
+  "digest": "sha256:5c002d99bce10e88d167fcd9ab222a5f7eff478350710a5dd4374c610895eea4",
   "displayName": "CalendarHeatmapChart",
   "format": "component-entry/v1",
   "frameworks": [

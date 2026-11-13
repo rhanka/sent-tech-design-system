@@ -1,8 +1,8 @@
 {
   "componentId": "radio",
   "contractSource": "derived",
-  "digest": "sha256:ac457b41f4022223155787b74a6da44a2d866af14d68531402672d8505ffc108",
-  "entryDigest": "sha256:1520f2e81a375da41b945e6bff8fbf62d4580fa670c9a7e01d4ad5e0a6c9be22",
+  "digest": "sha256:d4ac58eaf3f34f619a38a3958e769b00c453a915ad5d57122bec4d3bea52a614",
+  "entryDigest": "sha256:362edcafcd426f1cfaaaa385ed0aaa2ef330a7fe35ec9fd7922b70a01d9ce296",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

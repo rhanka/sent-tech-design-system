@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs, type CSSProperties } from 'vue';
+import { normalizeStyle, computed, useAttrs, type CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
 
@@ -27,7 +27,7 @@ const forwardedAttrs = () => { const { style, ...rest } = attrs; return rest; };
 const isVertical = computed(() => props.orientation === 'vertical');
 const hasLabel = computed(() => !isVertical.value && props.label != null && props.label !== '');
 const margin = computed(() => spacingToken(props.spacing));
-const style = computed(() => ({ marginBlock: isVertical.value ? undefined : margin.value, marginInline: isVertical.value ? margin.value : undefined, ...(attrs.style as CSSProperties | undefined) }));
+const style = computed(() => ({ marginBlock: isVertical.value ? undefined : margin.value, marginInline: isVertical.value ? margin.value : undefined, ...(normalizeStyle([attrs.style]) as CSSProperties) }));
 </script>
 
 <template>

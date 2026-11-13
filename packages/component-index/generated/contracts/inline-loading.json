@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:f6deca53f4b6c475655d6ec70e69d19707891abf29251590802d2fbe73a4faf7",
-  "entryDigest": "sha256:9de7dea0aa990ae0faa04ad0e9fb18bd9f857f9090bd74659dc45975984b64f8",
+  "digest": "sha256:0663520439573bfa6e20c86e85b33e3ab22d7a6a6edc0bf54b98f71910dad4d6",
+  "entryDigest": "sha256:70a9a78034d6767932bd582153f822d21371b79d16b2488f7e51e54e0e1ac804",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

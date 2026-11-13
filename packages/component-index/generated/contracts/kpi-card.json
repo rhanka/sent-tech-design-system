@@ -1,8 +1,8 @@
 {
   "componentId": "kpi-card",
   "contractSource": "derived",
-  "digest": "sha256:8bed0594b23804dbe3e689771b832518f95029e9c046f89121a8a567490bef0f",
-  "entryDigest": "sha256:1d2a9eeb32befd8c165f6245dfeb32725d8aaea595284b77657724b89e39db77",
+  "digest": "sha256:855a8637aca43cd2f976f2a6ceafc539a5c82eed1963e2358e577778b660dd76",
+  "entryDigest": "sha256:182fee3b2af54fa51329242e78d439e4ad45e4d538a1e242a406dcab81d21435",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

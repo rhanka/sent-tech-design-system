@@ -186,7 +186,7 @@ const hoveredMark = computed(() =>
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-pointAndFigureChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-pointAndFigureChart', props.class)) }" >
     <div
       class="st-pointAndFigureChart__visual"
       role="img"

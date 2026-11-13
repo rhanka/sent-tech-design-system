@@ -51,7 +51,7 @@ function pdf(x: number, mean: number, sd: number): number {
 function roundStat(v: number): number {
   return Math.round(v * 100) / 100;
 }
-defineOptions({ name: 'BellCurveChart' });
+defineOptions({ name: 'BellCurveChart', inheritAttrs: false });
 const props = withDefaults(defineProps<BellCurveChartProps>(), {
   data: () => [],
   width: 480,
@@ -215,14 +215,14 @@ const geometry = computed(() => {
 
 <template>
   <div
-    v-bind="$attrs"
-    :class="
+    v-bind="{ ...($attrs), class: (
       classNames(
         'st-bellCurveChart',
         'st-bellCurveChart--' + geometry.tone,
         props.class,
       )
-    "
+    ) }"
+
   >
     <div
       class="st-bellCurveChart__visual"

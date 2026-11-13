@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:3b97f5f2a7a3454f0ac098134ddadf9a9dc5a629a9d7459ccc0e0fb166e5eda2",
-  "entryDigest": "sha256:2414de7e57a13ad5f62db3af587dd68993b130789d6390c86312c7a936c78e61",
+  "digest": "sha256:5eef4d87a56aff785f6a8cb00ce7a2269758ee69eb9db50d4ff8d92d18b865f2",
+  "entryDigest": "sha256:7bfed322882ae3a716997434685e4bb0d425caa11daebd3d09ff06a324471a24",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

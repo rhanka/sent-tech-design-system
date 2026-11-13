@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:1ebb3debed96a7110144ed1c5bee4940aebb1b5b9f7731b08e06b283b5147f9c",
+      "digest": "sha256:cdd6a5c3ff8fcacdb06806eb425d60cd15689b0c8f7bdf3b1104c345b65e2e2d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Stack.vue",
@@ -40,7 +40,7 @@
     "en": "Vertical stack with uniform gap (Flex column shorthand).",
     "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
   },
-  "digest": "sha256:12f21a0be86363c832109786b92e97f5a651fe7482702ecf116da8a8a1a01f47",
+  "digest": "sha256:4c10cad9e734a1de039d293cbab3cc48f2943f369d669b9051fe7553caadbe5b",
   "displayName": "Stack",
   "format": "component-entry/v1",
   "frameworks": [

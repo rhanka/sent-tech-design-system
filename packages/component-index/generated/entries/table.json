@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:867d5b6540fb2f1051f522ba6866a965580bd3c7c466c4f952d37f8d4cfb162b",
+      "digest": "sha256:3a3c19c423a036b12b570cd7c03f7c2b74d071bcd3063e0cae0ebb03ab689f32",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Table.vue",
@@ -40,7 +40,7 @@
     "en": "Styled HTML table with columns/rows.",
     "fr": "Table HTML stylée colonnes/rows."
   },
-  "digest": "sha256:d9bfe59f6e00843e86ed689e3cc697def9914198ad1540614e00e12527316489",
+  "digest": "sha256:76df4656100075b44746512b58911b65af814182137e3e8d25898504ad54dcdb",
   "displayName": "Table",
   "format": "component-entry/v1",
   "frameworks": [

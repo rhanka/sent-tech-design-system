@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:36916c3234f6c7d7d9d6cb7dfebecb33024bcb620e72d1222874767e3d59b557",
-  "entryDigest": "sha256:c34907bbf0495428c1a58c758f51fe04a33fdc1d7843ceff2b52a49ad8287d29",
+  "digest": "sha256:bea89b8012b6c7b71ab6ea8d5d325cd3be6d7db89bc6bbf9cfc46360142d678f",
+  "entryDigest": "sha256:eceba177dfaa48b01cc12d1c359deda330b22317c0fe9dd7e2dd0b96da6eaadd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

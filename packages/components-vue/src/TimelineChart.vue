@@ -46,14 +46,14 @@ function truncate(text: string): string {
   return text.length > LABEL_MAX ? `${text.slice(0, LABEL_MAX - 1)}…` : text;
 }
 
-defineOptions({ name: 'TimelineChart' });
+defineOptions({ name: 'TimelineChart', inheritAttrs: false });
 const props = withDefaults(defineProps<TimelineChartProps>(), {
   width: 640, height: 240, class: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-timelineChart', props.class),
 }));
 
@@ -130,7 +130,7 @@ const hovered = computed(() => hoveredIndex.value !== null ? markers.value[hover
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-timelineChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <line class="st-timelineChart__axis" :x1="MARGIN.left" :x2="width - MARGIN.right" :y1="axisY" :y2="axisY" />

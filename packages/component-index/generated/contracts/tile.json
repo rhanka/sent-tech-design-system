@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:3430e6040a3389260f14b5aa2e9a3e246de0f6f8175be0252354d8e69baf4cf0",
-  "entryDigest": "sha256:c6e52a294b395fdd6b507dbdf99e795fe6b595e390b11ac439445fbb4fce23bb",
+  "digest": "sha256:10c4bd22f069f517a3d6f095e005bd0115361dc7ba68811944a5b32913c52b1b",
+  "entryDigest": "sha256:db305bd74eeac4fa6d215b030fcde21e4831ea718ca13664701573a89fe9ccc6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

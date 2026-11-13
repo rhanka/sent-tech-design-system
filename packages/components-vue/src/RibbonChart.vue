@@ -220,7 +220,7 @@ function isSegDim(seg: Segment): boolean {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-ribbonChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-ribbonChart', props.class)) }" >
     <div
       class="st-ribbonChart__visual"
       role="img"

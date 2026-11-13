@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type EmptyStateProps = {
@@ -18,12 +19,12 @@ defineSlots<{ default?: () => unknown }>();
 </script>
 
 <template>
-  <section v-bind="$attrs" :class="classNames('st-empty-state st-emptyState', props.class)">
+  <section v-bind="{ ...($attrs), class: (classNames('st-empty-state st-emptyState', props.class)) }" >
     <div class="st-empty-state__content">
-      <h2 class="st-empty-state__title st-emptyState__title">{{ props.title }}</h2>
-      <p v-if="props.message" class="st-empty-state__message st-emptyState__message">{{ props.message }}</p>
+      <h2 class="st-empty-state__title st-emptyState__title">{{ scalarContent(props.title) }}</h2>
+      <p v-if="props.message" class="st-empty-state__message st-emptyState__message">{{ scalarContent(props.message) }}</p>
       <slot />
-      <div v-if="props.action" class="st-empty-state__action">{{ props.action }}</div>
+      <div v-if="props.action" class="st-empty-state__action">{{ scalarContent(props.action) }}</div>
     </div>
   </section>
 </template>

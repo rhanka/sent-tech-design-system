@@ -1,8 +1,8 @@
 {
   "componentId": "streamgraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:8364e9529c522c76b60a12eab4730d7e651ddef512a85ecb0fcc6b386dabcfb7",
-  "entryDigest": "sha256:84b83317f6a4c26126cb75b519e42b6dbd9122754ceae96d64b06feb6bc27bd0",
+  "digest": "sha256:25c5b2736367caac689513107abdbf752a36dd4ba5cd32d500940490b5938573",
+  "entryDigest": "sha256:81a271c9278cde9eb7d875e4cee7f4716fddc6dd1d532159435a48a260d6cf56",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

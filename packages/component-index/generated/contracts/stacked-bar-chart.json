@@ -1,8 +1,8 @@
 {
   "componentId": "stacked-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:2e8fa639b4ffd44a550643d1ede528348f65aa8fd086515c48d3f8e9d7d4a057",
-  "entryDigest": "sha256:b0bced475ff4520178c5b26a42039d6b2bc090889cde332093211ea43e4656c5",
+  "digest": "sha256:2bdc043134f06366f2ea499b4c93fefacc74faf92ccb9e470b6a326b76989b76",
+  "entryDigest": "sha256:c0ed28b309643751864685264e8f89c231259bd162a916a87252296da4add0c0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

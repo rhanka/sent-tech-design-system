@@ -1,8 +1,8 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:a86416724e1db8c29ac2236803554b7efcb97835c31cd34074c8bb4fd0d4c737",
-  "entryDigest": "sha256:ea43c4a0ab53d01dfc3c2e2b00b109170183ee67649211d1169eaa9db02ee53d",
+  "digest": "sha256:3ca44f46645a3eed2f7905145ba3f1f6dd5792faad0ae8db086727caa2399c14",
+  "entryDigest": "sha256:2b31c23b19494be1f0433a47edbd6bc776729f546bd64b2b2236094535c7a8c6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

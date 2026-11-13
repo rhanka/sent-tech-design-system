@@ -34,14 +34,14 @@ export type WaffleChartProps = {
 
 const GAP = 2;
 
-defineOptions({ name: 'WaffleChart' });
+defineOptions({ name: 'WaffleChart', inheritAttrs: false });
 const props = withDefaults(defineProps<WaffleChartProps>(), {
   totalCells: 100, columns: 10, label: undefined, size: 240, class: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-waffleChart', props.class),
 }));
 
@@ -122,7 +122,7 @@ const dataValueItems = computed(() => allocation.value.map(
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-waffleChart__visual" role="img" :aria-label="props.label">
       <svg :viewBox="`0 0 ${size} ${svgHeight}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <rect v-for="cell in cells" :key="cell.index" :class="cell.tone ? `st-waffleChart__cell st-waffleChart__cell--${cell.tone}` : 'st-waffleChart__cell st-waffleChart__cell--track'" :x="cell.x" :y="cell.y" :width="cell.size" :height="cell.size" rx="2" />

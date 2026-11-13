@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, useAttrs } from 'vue';
+import { normalizeStyle, computed, useAttrs } from 'vue';
 import type { CSSProperties } from 'vue';
 import { classNames } from './classNames.js';
 import { spacingToken } from './spacing.js';
@@ -25,7 +25,7 @@ export type FlexProps = {
 };
 
 import { alignValue, justifyValue } from './flex-layout.js';
-defineOptions({ name: 'Flex' });
+defineOptions({ name: 'Flex', inheritAttrs: false });
 const props = withDefaults(defineProps<FlexProps>(), {
   direction: 'row',
   gap: undefined,
@@ -46,13 +46,13 @@ const bindings = computed(() => {
     alignItems: alignValue(props.align),
     justifyContent: justifyValue(props.justify),
     gap: spacingToken(props.gap),
-    ...(attrs.style as CSSProperties | undefined),
+    ...(normalizeStyle([attrs.style]) as CSSProperties),
   };
 
-  return { ...attrs, class: classNames('st-flex', props.class), style };
+  return {  class: classNames('st-flex', props.class), style };
 });
 </script>
 
 <template>
-  <component :is="props.as" v-bind="bindings"><slot /></component>
+  <component :is="props.as" v-bind="{ ...$attrs, ...bindings }"><slot /></component>
 </template>

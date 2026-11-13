@@ -1,8 +1,8 @@
 {
   "componentId": "breadcrumb",
   "contractSource": "derived",
-  "digest": "sha256:b30498041a5338622a07d9d7c8fd0303d94aaf8810ecf675112bde9d47b9a1f7",
-  "entryDigest": "sha256:3358ab354fd9946d2e2f2897b3603a563758fc1538c3c88134707333b94353ba",
+  "digest": "sha256:6063526c3150d8fe162770a9fc689624691c484a33851bbe3e5b4f84bf536fef",
+  "entryDigest": "sha256:16c7a8000b329b04ee2bb5e9c17c1ef2535fa64d96c121e4c618b01d14a42e04",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -1,8 +1,8 @@
 {
   "componentId": "aspect-ratio",
   "contractSource": "derived",
-  "digest": "sha256:8d2093b063c7fa118c8f0702a39eb3590486d7431be280121c35719d5e41e067",
-  "entryDigest": "sha256:d1faae2883a0b635ab54e202329c6de4731c2544f8e95a49dd5499e663e0b39a",
+  "digest": "sha256:dfdf92e81663ac3e7b255afb7bf408b18cab39359cedf6dd104a7a77b41ab510",
+  "entryDigest": "sha256:42085d416ed94c652af4d58e2955c56fae61a13a5d413f5e040f321f7cb0f866",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

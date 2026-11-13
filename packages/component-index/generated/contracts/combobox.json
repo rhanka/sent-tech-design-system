@@ -1,8 +1,8 @@
 {
   "componentId": "combobox",
   "contractSource": "derived",
-  "digest": "sha256:91b5ab9aa0d7442eee3742ee417f5f7825e244f5f1c29856891e5a2cbb8ff291",
-  "entryDigest": "sha256:251c5ef98963f8c66c6297b2a8bd6e744157f8bc7830b51b3d8a376f4f807880",
+  "digest": "sha256:2538a3ef69e3a291e093ebd34d009c82e2e012e5600e543166c696a8447f74e0",
+  "entryDigest": "sha256:b1e040fac375bde217d7d59eca17fa41f9cc317c4c6e1f75e11cd7811af52acc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -546,12 +546,6 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
-        },
-        {
-          "name": "scope.option",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
         }
       ],
       "slots": [
@@ -569,7 +563,9 @@
           "params": {
             "additionalProperties": false,
             "properties": {
-              "option": {}
+              "option": {
+                "$ref": "#/$defs/ComboboxOption"
+              }
             },
             "required": [
               "option"
@@ -579,7 +575,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:00f2081e24200b4adfa31b8e93e700019598ee245a10d0aba6079324b2055e47",
+        "declarationDigest": "sha256:98a10630457febc7847b9b55196724fa3532a90bd5fb5823cc81070a83fb0b8f",
         "declarationPath": "packages/components-vue/dist/Combobox.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboboxProps",

@@ -174,7 +174,7 @@ function handleVisualPointerMove(event: PointerEvent) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-itemChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-itemChart', props.class)) }" >
     <div class="st-itemChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <circle v-for="(seat, i) in geometry.seats" :key="`seat-${i}`" :class="classNames('st-itemChart__seat', `st-itemChart__seat--${seat.tone}`, hoveredIndex !== null && hoveredIndex !== seat.groupIndex ? 'st-itemChart__seat--dim' : undefined)" :cx="seat.x" :cy="seat.y" :r="seat.r" :data-chart-index="seat.groupIndex" />

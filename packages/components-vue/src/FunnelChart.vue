@@ -194,7 +194,7 @@ function handleVisualPointerMove(event: PointerEvent) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-funnelChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-funnelChart', props.class)) }" >
     <div class="st-funnelChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${props.width ?? 480} ${props.height ?? 280}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <polygon v-for="(seg, i) in segments" :key="`p${seg.datum.label}`" :class="classNames('st-funnelChart__segment', `st-funnelChart__segment--${seg.tone}`, hoveredIndex !== null && hoveredIndex !== i && 'st-funnelChart__segment--dim')" :points="seg.points" :data-chart-index="i" />

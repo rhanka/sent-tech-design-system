@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {
+import { useId,
   computed,
   ref,
   watch,
@@ -26,7 +26,6 @@ import {
   formatPresetLabel as defaultFormatPresetLabel,
 } from './timeRange.js';
 import type { TimeRange, TimeRangeMode, TimeRangePreset } from './timeRange.js';
-import { nextTimeRangePickerId } from './timeRangePickerId.js';
 
 // Re-exported so consumers can `import type { TimeRange } from
 // "@sentropic/design-system-vue"`, matching the Svelte convention (the value
@@ -127,10 +126,12 @@ const emit = defineEmits<{
   openChange: [open: boolean];
 }>();
 defineSlots<{
+  'custom-extra'?: () => unknown;
+  /** @deprecated Use custom-extra. */
   customExtra?: () => unknown;
 }>();
 
-const autoId = ref(nextTimeRangePickerId());
+const autoId = ref(`st-timerangepicker-${useId()}`);
 const fieldLabelId = `${autoId.value}-label`;
 const triggerTextId = `${autoId.value}-text`;
 
@@ -497,7 +498,7 @@ const popoverClass = computed(() => classNames(
               :month="rightMonth"
             />
           </div>
-          <div v-if="$slots.customExtra" class="st-timeRangePicker__customExtra"><slot name="customExtra" /></div>
+          <div v-if="($slots['custom-extra'] || $slots.customExtra)" class="st-timeRangePicker__customExtra"><slot name="custom-extra"><slot name="customExtra" /></slot></div>
           <div class="st-timeRangePicker__bounds">
             <div class="st-timeRangePicker__bound" @blur-capture="commitTypedFrom">
               <Input

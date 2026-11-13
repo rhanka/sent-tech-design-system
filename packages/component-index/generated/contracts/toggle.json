@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:c690aea19003830223dcf5eeb54d7b8cc9f6a22f9c5f6750092b222cb0640f0b",
-  "entryDigest": "sha256:d69020c18da86c368f9f6e9c246da46fcb2c6dfa14beeb82c0f6d1f7d8230afd",
+  "digest": "sha256:986bc283869e17435c2ac3f7ad8cee56102bb8cf76e224c1e84c2496dc42e73d",
+  "entryDigest": "sha256:de1ce4e9e6e24644549e537cc9154463f78c50dd446a0a045821d2f6acd4a724",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

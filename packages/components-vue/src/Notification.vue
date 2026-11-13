@@ -25,7 +25,7 @@ const role = computed(() => (props.tone === 'error' ? 'alert' : 'status'));
 </script>
 
 <template>
-  <section v-bind="$attrs" :class="classNames('st-notification', `st-notification--${props.tone}`, props.class)" :role="role">
+  <section v-bind="{ ...($attrs), class: (classNames('st-notification', `st-notification--${props.tone}`, props.class)) }"  :role="role">
     <div class="st-notification__content">
       <h2 class="st-notification__title">{{ props.title }}</h2>
       <p v-if="props.message" class="st-notification__message">{{ props.message }}</p>

@@ -1,8 +1,8 @@
 {
   "componentId": "packed-bubbles-chart",
   "contractSource": "derived",
-  "digest": "sha256:59046fc0f121e2dbf5705d86007c9d24a78b74d33f2320958fd72607e56d683a",
-  "entryDigest": "sha256:7ef9a058576e301797e0d28c0f9bebd00d0342ce362a9ae19175cc82ddd6cca2",
+  "digest": "sha256:f786f2e2649ad1740bfd9a16ea36eabc3629156bddb9b411d1a6c7eec3032c06",
+  "entryDigest": "sha256:6f25bf0c2511555f756154f58be5d5da769717234a8ee3ae319a9894402d427f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

@@ -30,7 +30,7 @@
     }
   ],
   "sourceSha256": "e857f3525fe1bae2e236d5e9dc2a85a51f9f73ef4cf2621b39b542b8a9cd0d1c",
-  "fixtureSha256": "10f31d914c3fb68a4b673ada168aa0344512af4ed8f70df732ef5c49af450d80",
+  "fixtureSha256": "d90a02ab6c0c5b6164e9670af8ac6a19231ad5612f6eecd4e38f3971066a40e7",
   "publicExports": [
     {
       "name": "Alert",

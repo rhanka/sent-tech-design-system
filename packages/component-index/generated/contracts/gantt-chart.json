@@ -1,8 +1,8 @@
 {
   "componentId": "gantt-chart",
   "contractSource": "derived",
-  "digest": "sha256:e890b21a869e22dc08eea2ef64a565a7af8cf0a65a228b927f884b239eac0b9b",
-  "entryDigest": "sha256:8cd0a61b2f69ae3f6e9add2eb47ff575e8eedcacddf1f177330aba9f28065b98",
+  "digest": "sha256:f55e846523117f3694622f132571930169b1406840aa49ee823f63d29e398824",
+  "entryDigest": "sha256:da878b2b928546cf157b414be462b928e3a962817abfdf5059ff80b4717f2126",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

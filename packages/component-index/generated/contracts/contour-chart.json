@@ -1,8 +1,8 @@
 {
   "componentId": "contour-chart",
   "contractSource": "derived",
-  "digest": "sha256:f02b38e01ec560c2339abe75b178870e08e73959ea5349bed4ae7f8487fee920",
-  "entryDigest": "sha256:dbb126c6dcd2795a7b7b0008ae7512172942700821801c2be728e4919d35faeb",
+  "digest": "sha256:9a930ee4b683940dd754616b7e637840f9ab9ef7d1df6a7d65763a2564a70332",
+  "entryDigest": "sha256:f7d2067f7f37dcc6bcbb4de9976def987dc6a905416ed0b32eec1a193473bf56",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

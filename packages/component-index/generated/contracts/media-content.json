@@ -1,8 +1,8 @@
 {
   "componentId": "media-content",
   "contractSource": "derived",
-  "digest": "sha256:f4e987f2ac4f85eda88a10ae5c7ff2b111feb031a593b80c12c3e6447af90b31",
-  "entryDigest": "sha256:846a8c7e625024734ee5d2105be8227323d938d9df1905d7ff30f768d7644814",
+  "digest": "sha256:6fa402d6d8a26075f3cabeee7a9c980fedaad09f94e2217338bd1f5153d63a6e",
+  "entryDigest": "sha256:e92d0fe14498525d3a3637a44c072fdfee7601987ed2771b4741e385c0908bf1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

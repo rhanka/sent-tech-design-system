@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:aa8c8df405a34d4c29895484e51eef822427903615453a447201d0e1c4fde661",
+      "digest": "sha256:684f47a1cb43cc242059f08172fda4ad6ff2da36a357aa0bd4aa65184b64a9b9",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FileUploader.vue",
@@ -40,7 +40,7 @@
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:afb27ab4cdfa25cab6ce6209925b4c926e0ad3aa82cee501227940ea34f00e48",
+  "digest": "sha256:1f2c90e96f499a77844f6475c40709fc41aedb81de98eaed1f1cd3bebd9fed77",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

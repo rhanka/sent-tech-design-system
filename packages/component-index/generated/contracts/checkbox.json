@@ -1,8 +1,8 @@
 {
   "componentId": "checkbox",
   "contractSource": "derived",
-  "digest": "sha256:1dad9ba1c082d81eb464cb6626eca093f4897be5dff070db095fe4f81f95ea8e",
-  "entryDigest": "sha256:cc2cea961f92f5f70172ced46c3626ae0409723527486378a0e2ee52b85f4999",
+  "digest": "sha256:8e72ad70face776978aeb2d46cd8e7a1d06ce818e972b6f366ea9e119bebe3ef",
+  "entryDigest": "sha256:922bd48318b82efc693db4a0d22cab8332c8617fe3cec4db4414af680702835e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

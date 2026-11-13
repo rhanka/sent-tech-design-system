@@ -21,3 +21,10 @@ it('should expose the installed dataviz adapter without claiming unconverted cha
   if (vapor) expect(dataviz).not.toHaveProperty('DashboardGrid');
   else expect(dataviz.DashboardGrid).toBeDefined();
 });
+
+it('should expose every Classic runtime export from the installed Vapor barrel', async () => {
+  if (!vapor) return;
+  const classic = await import('@sentropic/design-system-vue');
+  expect(Object.keys(ds).sort()).toEqual(Object.keys(classic).sort());
+  for (const name of ['Menu', 'MenuPopover', 'OverflowMenu', 'DumbbellChart', 'ErrorBarChart', 'DependencyWheelChart', 'ArcDiagramChart', 'CellDecorationIcon']) expect(ds[name]).toBeDefined();
+});

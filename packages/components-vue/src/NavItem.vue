@@ -55,7 +55,7 @@ export type NavItemProps = {
   onSelect?: (selected: boolean) => void;
   class?: string;
 };
-defineOptions({ name: 'NavItem' });
+defineOptions({ name: 'NavItem', inheritAttrs: false });
 const props = withDefaults(defineProps<NavItemProps>(), { value: undefined, caption: undefined, depth: 0, swatch: undefined, count: undefined, status: "neutral", selected: false, disabled: false, href: undefined, divider: false, onSelect: undefined, class: undefined });
 defineSlots<{ leading?: () => unknown; trailing?: () => unknown }>();
 const emit = defineEmits<{ select: [selected: boolean] }>();

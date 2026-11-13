@@ -42,7 +42,7 @@ const onOpenClicked = () => props.onOpenComments?.();
 </script>
 
 <template>
-  <section v-bind="$attrs" :class="classNames('st-fieldCard', `st-fieldCard--${variant}`, variant === 'accent' && props.tone && `st-fieldCard--${props.tone}`, props.class)">
+  <section v-bind="{ ...($attrs), class: (classNames('st-fieldCard', `st-fieldCard--${variant}`, variant === 'accent' && props.tone && `st-fieldCard--${props.tone}`, props.class)) }" >
     <header class="st-fieldCard__header">
       <h3 class="st-fieldCard__label">{{ props.label }}</h3>
       <template v-if="showBadge">

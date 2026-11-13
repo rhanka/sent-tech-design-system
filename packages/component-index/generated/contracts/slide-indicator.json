@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:88c14a88fbb07a731bc1d9b638165983c1a4f55cc0ab4b35753bdeb9ce820a5c",
-  "entryDigest": "sha256:5f29b1a25b54e8a5d9006b49592e587657ebdd95ccb4912df28a935a07ee241d",
+  "digest": "sha256:69df185cfa8d8e0408c517230d5d746fb2ee2608ae63c2b3cd105dae18e68efc",
+  "entryDigest": "sha256:e44c1420110cedd30553cca562a8db0f2a77eb3a3c59ca25370f317756cfb222",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

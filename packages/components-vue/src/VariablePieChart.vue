@@ -65,14 +65,14 @@ function sectorPath(cx: number, cy: number, radius: number, start: number, end: 
   return `M ${cx} ${cy} L ${outerStart.x} ${outerStart.y} A ${radius} ${radius} 0 ${large} 1 ${outerEnd.x} ${outerEnd.y} Z`;
 }
 
-defineOptions({ name: 'VariablePieChart' });
+defineOptions({ name: 'VariablePieChart', inheritAttrs: false });
 const props = withDefaults(defineProps<VariablePieChartProps>(), {
   width: 360, height: 360, class: undefined,
 });
 
 const attrs = useAttrs();
 const rootProps = computed(() => ({
-  ...attrs,
+
   class: classNames('st-variablePieChart', props.class),
 }));
 
@@ -161,7 +161,7 @@ function sectorClass(sector: { tone: string }, index: number) {
 </script>
 
 <template>
-  <div v-bind="rootProps">
+  <div v-bind="{ ...$attrs, ...rootProps }">
     <div class="st-variablePieChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${width} ${height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <path v-for="(sector, i) in sectors" :key="`s${sector.datum.label}`" :class="sectorClass(sector, i)" :d="sector.path" :data-chart-index="i" />

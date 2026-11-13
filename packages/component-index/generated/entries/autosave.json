@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b396370418675e0fa27792a8a847640055fee472ab0d8b3ff5b98cc09c52b545",
+      "digest": "sha256:048b9dacbed98bee37971c1056fd03308d132a46cfe37c06c618641c561e6407",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Autosave.vue",
@@ -40,7 +40,7 @@
     "en": "Autosave indicator: saving, saved, or failed states.",
     "fr": "Indicateur d'enregistrement automatique : en cours, enregistré, échec."
   },
-  "digest": "sha256:2f51bafda94b6ac6648fc7b35a133b899f76eea64609920ad072f85f6324bfcb",
+  "digest": "sha256:b1c569a34b08a6d8e84c6228c2821ca2d4d09d7bd14163fdb32c628fd3abaa25",
   "displayName": "Autosave",
   "format": "component-entry/v1",
   "frameworks": [

@@ -42,7 +42,7 @@ function toggle(optionValue: string, checked: boolean) {
   const next = checked
     ? [...props.value, optionValue]
     : props.value.filter((v) => v !== optionValue);
-  props.onChange?.(next);
+
   emit('change', next);
 }
 
@@ -53,8 +53,8 @@ function onCheckboxChange(event: Event, option: CheckboxGroupOption) {
 
 <template>
   <fieldset
-    v-bind="$attrs"
-    :class="classNames('st-checkboxGroup', `st-checkboxGroup--${props.orientation}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-checkboxGroup', `st-checkboxGroup--${props.orientation}`, props.class)) }"
+
     :disabled="props.disabled"
   >
     <legend class="st-checkboxGroup__legend">{{ props.legend }}</legend>

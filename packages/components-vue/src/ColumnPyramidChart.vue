@@ -125,7 +125,7 @@ const hovered = computed(() => (hoveredIndex.value !== null ? columns.value[hove
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-columnPyramidChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-columnPyramidChart', props.class)) }" >
     <div
       class="st-columnPyramidChart__visual"
       role="img"

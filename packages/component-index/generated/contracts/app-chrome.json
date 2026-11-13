@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:305f1455ad8a7fd554e4c750dadf8d2dcad212f814c4fe1571fff36cd1bcb356",
-  "entryDigest": "sha256:83ba458a1dcfc4faaed9acf56e98c2f88cb4c4f6436401dffd818d7cbc119335",
+  "digest": "sha256:7879f4d6f20919950a8cace8db0859d3ee0fa4496157ddbf110495c66aa4983d",
+  "entryDigest": "sha256:1a5459edc3c03bdbd8396aaa1e0ac8a0197b3e8fd8ab38b6dcbb9148e19f4b89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

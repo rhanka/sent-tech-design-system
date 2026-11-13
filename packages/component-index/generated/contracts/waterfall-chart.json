@@ -1,8 +1,8 @@
 {
   "componentId": "waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:1c8837c31a52fa14f4500ecee7af6859801e2cb7593701996f81d548481b44c8",
-  "entryDigest": "sha256:9973c7eb18c684785bbfe50d1c7a7527eeb8a9b77c518fada82667259de8de60",
+  "digest": "sha256:ba5afe8f80f94826a589fc0930005ece06bc275c6e247875979a38015916eedd",
+  "entryDigest": "sha256:1011e1143d5d4259e573e05b58e3384a6b3166544601ceaad52ee71b541290ed",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

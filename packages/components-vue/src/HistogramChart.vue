@@ -138,7 +138,7 @@ function handleVisualPointerMove(event: PointerEvent) {
 </script>
 
 <template>
-  <div v-bind="$attrs" :class="classNames('st-histogramChart', props.class)">
+  <div v-bind="{ ...($attrs), class: (classNames('st-histogramChart', props.class)) }" >
     <div class="st-histogramChart__visual" role="img" :aria-label="props.label" @pointermove="handleVisualPointerMove" @pointerleave="handleLeave">
       <svg :viewBox="`0 0 ${geometry.width} ${geometry.height}`" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true">
         <line class="st-histogramChart__axis" :x1="MARGIN.left" :x2="MARGIN.left" :y1="MARGIN.top" :y2="geometry.height - MARGIN.bottom" />

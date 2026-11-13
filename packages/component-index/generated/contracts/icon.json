@@ -1,8 +1,8 @@
 {
   "componentId": "icon",
   "contractSource": "derived",
-  "digest": "sha256:f603693d8d38418069851d498fda2ac38ba5191fd0962316f6550d56fc479718",
-  "entryDigest": "sha256:2ca9fb2441d620b8d89c6209ae779e450984f25c487d4b23e54f10aac4307190",
+  "digest": "sha256:e1e73ced95065baee3d978109bf646deacae57d55332e7bda186807ed7f539dd",
+  "entryDigest": "sha256:f960806b54012c304d9a3678aeb2e29cce0429f1f306741ecf6e643d209a5690",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

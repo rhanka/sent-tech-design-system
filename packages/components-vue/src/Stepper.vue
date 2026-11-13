@@ -36,15 +36,15 @@ function stateOf(index: number): 'complete' | 'current' | 'upcoming' {
 
 function handleClick(index: number) {
   if (!props.clickable) return;
-  props.onStepClick?.(index);
+
   emit('stepClick', index);
 }
 </script>
 
 <template>
   <ol
-    v-bind="$attrs"
-    :class="classNames('st-stepper', `st-stepper--${props.orientation}`, props.class)"
+    v-bind="{ ...($attrs), class: (classNames('st-stepper', `st-stepper--${props.orientation}`, props.class)) }"
+
     :aria-label="props.label"
   >
     <li

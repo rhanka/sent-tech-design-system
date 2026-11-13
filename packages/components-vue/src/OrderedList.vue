@@ -13,6 +13,7 @@ export type OrderedListProps = {
   items: OrderedListInput[];
   nested?: boolean;
   /** Internal recursive slot address. */
+  /** @internal Recursive item path. */
   path?: number[];
   class?: string;
 };
@@ -25,7 +26,7 @@ function children(item: unknown): OrderedListInput[] { return isItem(item) && Ar
 </script>
 
 <template>
-  <ol v-bind="$attrs" :class="classNames('st-orderedList', props.nested && 'st-orderedList--nested', props.class)">
+  <ol v-bind="{ ...($attrs), class: (classNames('st-orderedList', props.nested && 'st-orderedList--nested', props.class)) }" >
     <li v-for="(item, index) in props.items" :key="index" class="st-orderedList__item"><slot v-if="$slots['item']" name="item" :item="item" :index="index" :path="[...props.path, index]" /><template v-else>{{ scalarContent(isItem(item) ? item.content : item) }}</template><OrderedList v-if="children(item).length" :items="children(item)" nested :path="[...props.path, index]"><template v-if="$slots.item" #item="scope"><slot name="item" v-bind="scope" /></template></OrderedList></li>
   </ol>
 </template>

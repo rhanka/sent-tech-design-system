@@ -1,8 +1,8 @@
 {
   "componentId": "dependency-wheel-chart",
   "contractSource": "derived",
-  "digest": "sha256:c77d208e7ffbaf1074270ece0ddeacf14a6d90036b54095a014341d6ab35c215",
-  "entryDigest": "sha256:2bfdd106c6926f065f20413b7c15e0b592403c72f0d77ea58c9943153b6ef93d",
+  "digest": "sha256:7be3af2966300b893c06d6b29398f012e709a2401a135b023d7f005556291fc5",
+  "entryDigest": "sha256:ab0ae7376fce25c7726355ed1ec1b18b3f59a79534bcbbd8503cd23c326bc391",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
