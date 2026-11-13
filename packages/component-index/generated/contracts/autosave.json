@@ -1,7 +1,7 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:33fe4d33713ee8031d331942b16f5ff83c4431e9194ad19410efbf75c57300f5",
+  "digest": "sha256:1a1682d980be561103a2dc6a71ca54f9e24d4fb5cbf4efe517465446b6ceac0a",
   "entryDigest": "sha256:0bd4f71be50157043addf1d62fa58feb1fdf88d516fc6372edfb7b9f6eca1172",
   "format": "component-contract/v1",
   "frameworks": {
@@ -187,7 +187,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AutosaveProps",

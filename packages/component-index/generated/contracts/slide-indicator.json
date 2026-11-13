@@ -1,7 +1,7 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:2a4b7d59e0abe900eed30176596778d713b3edad6997232fe6db1bcd7f2889d6",
+  "digest": "sha256:c30fd228282278dd2a3b95ca982f98efe617ad0ac77bdbf77756885a39717e81",
   "entryDigest": "sha256:0d3f8bd8388c8283230b49da6ca97c90fc8348b92da1be87fcb0507959fa4e11",
   "format": "component-contract/v1",
   "frameworks": {
@@ -131,7 +131,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SlideIndicatorProps",

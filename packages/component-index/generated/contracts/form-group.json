@@ -1,7 +1,7 @@
 {
   "componentId": "form-group",
   "contractSource": "derived",
-  "digest": "sha256:7045002c9663d164dbfabd3130d00798bcf1d0e2d0b9cd501cca80212c7a4d60",
+  "digest": "sha256:b9b297a8158fa3b3c1ba07adac93a66343f3885be4d9d96d040ec485616718a9",
   "entryDigest": "sha256:a66c05c4b65c1e77e8cee64c9a2b3e7f827f461ec716aae6cb1cc5789276236a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -88,7 +88,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormGroupProps",

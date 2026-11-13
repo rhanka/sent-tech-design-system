@@ -1,7 +1,7 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:f10041f93036e25fec2be701af99f8fcb7da10f09954aa7820c1474530ff93c2",
+  "digest": "sha256:3dc2fcff6b490665230db566102a413b61f625d1ff7bfd5999486fd5a8bf73aa",
   "entryDigest": "sha256:10e0d8894b6eb490402df9ed0d2477f91f448a68743e7fd178554adc6dffb309",
   "format": "component-contract/v1",
   "frameworks": {
@@ -191,7 +191,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StreamingMessageProps",

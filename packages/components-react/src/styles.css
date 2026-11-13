@@ -4160,6 +4160,7 @@
 
   .st-menuPopover--hasCascade {
     box-shadow: var(--st-component-popover-shadow, var(--st-component-menu-shadow, 0 8px 24px rgb(15 23 42 / 0.14)));
+    overflow: visible;
   }
 
   /* Le panneau (.st-menuPopover) porte déjà la surface (bordure, ombre, rayon).
@@ -4176,6 +4177,13 @@
     min-width: 0;
     max-height: none;
     overflow: visible;
+  }
+
+  /* The transformed host must let fixed submenus escape. Pass its height
+     limit through the root surface to the list that owns root scrolling. */
+  .st-menuPopover--hasCascade > .st-menu,
+  .st-menuPopover--hasCascade .st-menu__scroll {
+    max-height: inherit;
   }
 
   /* Shared `styles.css`: `.st-menuPopover .st-menu--submenu` restores the

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import * as svelteReference from "../../components-svelte/src/lib/menu-cascade.js";
 import {
   computeSubMenuPosition,
   isCappedSubMenuWidth,
@@ -11,6 +12,36 @@ const MENU = { left: 100, right: 292 };
 const VIEWPORT = { width: 1024, height: 768 };
 
 describe("menu-cascade solver", () => {
+  it("matches the Svelte solver across side, viewport, panel-size and anchor boundaries", () => {
+    for (const preferredSide of ["auto", "left", "right"] as const) {
+      for (const viewport of [VIEWPORT, { width: 160, height: 120 }]) {
+        for (const panelSize of [{ width: 0, height: 0 }, { width: 192, height: 100 }, { width: 300, height: 800 }]) {
+          for (const parentMenuRect of [MENU, { left: 400, right: 592 }, { left: 700, right: 892 }, { left: 100, right: 824 }]) {
+            for (const top of [2, 200, 700]) {
+              const input = { preferredSide, viewport, panelSize, parentMenuRect, parentItemRect: { top } };
+              expect(computeSubMenuPosition(input)).toEqual(svelteReference.computeSubMenuPosition(input));
+              expect(isCappedSubMenuWidth(panelSize.width, viewport.width)).toBe(
+                svelteReference.isCappedSubMenuWidth(panelSize.width, viewport.width)
+              );
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it("matches Svelte containing-block conversion and inclusive safe-triangle edges", () => {
+    for (const block of [null, { top: 40, left: 60 }, { top: -100, left: 200 }]) {
+      expect(toContainingBlockPosition({ top: 100, left: 200 }, block)).toEqual(
+        svelteReference.toContainingBlockPosition({ top: 100, left: 200 }, block)
+      );
+    }
+    const a = { x: 0, y: 0 }, b = { x: 10, y: 0 }, c = { x: 0, y: 10 };
+    for (const point of [a, b, c, { x: 1, y: 1 }, { x: 5, y: 0 }, { x: 10, y: 10 }]) {
+      expect(pointInSafeTriangle(point, a, b, c)).toBe(svelteReference.pointInSafeTriangle(point, a, b, c));
+    }
+  });
+
   it("AC-16: prefers right with room and aligns top on the parent line", () => {
     const pos = computeSubMenuPosition({
       parentMenuRect: MENU,

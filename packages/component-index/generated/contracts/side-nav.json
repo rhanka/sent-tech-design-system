@@ -1,7 +1,7 @@
 {
   "componentId": "side-nav",
   "contractSource": "derived",
-  "digest": "sha256:fa42e75c078c5d0471fb8ce36caf1aca8a1632b300819ea28964557fce1b8763",
+  "digest": "sha256:43523f1497470dacc411d1eb0614ec2a6443d3f26f0fd882b34aa83c23ede2db",
   "entryDigest": "sha256:414c2fb5c4a5910d90f9d4ac440722e45d444a35c500a5f84c548bd85a997d18",
   "format": "component-contract/v1",
   "frameworks": {
@@ -137,7 +137,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SideNavProps",

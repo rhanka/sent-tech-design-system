@@ -1,7 +1,7 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:c6534c3b5c31ced7535e8176705d99381a87e53dab5620d4ab5f85d250ae41ce",
+  "digest": "sha256:461e4cb1a626b6cd7061a4f0924412a05747e49a84705d20d078ca229aee7624",
   "entryDigest": "sha256:d5d74827781aeb5bf42fe18d753bcfc5ff014ab73f88b52380db580ecbb9f6eb",
   "format": "component-contract/v1",
   "frameworks": {
@@ -171,7 +171,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ContentSwitcherProps",

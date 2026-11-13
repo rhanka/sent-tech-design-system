@@ -1,7 +1,7 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:206203c5d4691b3d0450a1d0ee8095078d0e7f441fb71685ab73e3f3b36c8185",
+  "digest": "sha256:78902ed674be57b3ea5cee4b74a55de9518ce261837ed7fbf410a0fa8baea8c9",
   "entryDigest": "sha256:b932b7f34194e346cf477d05ea79358d78c41f47d6c8146a0d5f33032dd1abd3",
   "format": "component-contract/v1",
   "frameworks": {
@@ -156,7 +156,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:5c33541402a04dbe89310a590715c78275490f4833c6ef9d03227ba981df68ec",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimePickerProps",
