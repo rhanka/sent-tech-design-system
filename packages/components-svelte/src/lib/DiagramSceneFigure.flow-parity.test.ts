@@ -5,8 +5,8 @@ import { mount } from "@vue/test-utils";
 import { nextTick } from "vue";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import { DiagramSceneFigure as VueFigure } from "../../../components-vue/dist/DiagramSceneFigure.js";
-import { flowHostCases } from "../../../diagram-canvas/dist-test-support/flowHostCases.js";
-import { runFlowHostCase, flowDomOf, propsFor } from "../../../diagram-canvas/dist-host-support/host-support/flowHostContract.js";
+import { flowHostCases } from "../../../diagram-canvas/test-support/flowHostCases.js";
+import { runFlowHostCase, flowDomOf, propsFor } from "../../../diagram-canvas/tests/host-support/flowHostContract.js";
 
 const mounted:{unmount:()=>void;container:HTMLElement}[]=[];
 beforeEach(()=>{
