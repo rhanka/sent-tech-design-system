@@ -430,8 +430,8 @@ export { ChatThread } from "./ChatThread.js";
 export type { ChatThreadProps } from "./ChatThread.js";
 export { StreamingMessage } from "./StreamingMessage.js";
 export type { StreamingMessageProps, StreamingMessageEvent, StreamingMessageMode } from "./StreamingMessage.js";
-export { MessageActions } from "./MessageActions.js";
-export type { MessageActionsProps, MessageAction, MessageActionVariant } from "./MessageActions.js";
+export { default as MessageActions } from "./MessageActions.vue";
+export type { MessageActionsProps, MessageAction, MessageActionVariant } from "./MessageActions.vue";
 export { MessageStatusBadge } from "./MessageStatusBadge.js";
 export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
 
