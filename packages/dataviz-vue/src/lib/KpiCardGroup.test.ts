@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { KpiCardGroup } from './KpiCardGroup.js';
+import KpiCardGroup from './KpiCardGroup.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'month', label: 'Mois', type: 'discrete' }],

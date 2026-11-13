@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { ParetoChart } from './ParetoChart.js';
+import ParetoChart from './ParetoChart.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'country', label: 'Pays', type: 'discrete' }],

@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
 import AreaChart from './AreaChart.vue';
 import ComboChart from './ComboChart.vue';
-import { LollipopChart } from './LollipopChart.js';
+import LollipopChart from './LollipopChart.vue';
 import { StackedBarChart } from './StackedBarChart.js';
 import { StepLineChart } from './StepLineChart.js';
 
