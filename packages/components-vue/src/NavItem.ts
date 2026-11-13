@@ -3,7 +3,7 @@ import { classNames } from "./classNames.js";
 import { SelectableRow } from "./SelectableRow.js";
 import { ColorSwatch } from "./ColorSwatch.js";
 import { StatusDot } from "./StatusDot.js";
-import { Badge } from "./Badge.js";
+import Badge from "./Badge.vue";
 import type { StatusDotTone } from "./StatusDot.js";
 import type { ColorSwatchShape } from "./ColorSwatch.js";
 

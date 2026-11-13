@@ -1,6 +1,6 @@
 import { defineComponent, h, ref, watch, type VNode } from "vue";
 import { classNames } from "./classNames.js";
-import { Badge } from "./Badge.js";
+import Badge from "./Badge.vue";
 import { Collapsible } from "./Collapsible.js";
 import { Overline } from "./Overline.js";
 
