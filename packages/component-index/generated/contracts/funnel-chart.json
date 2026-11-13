@@ -1,8 +1,8 @@
 {
   "componentId": "funnel-chart",
   "contractSource": "derived",
-  "digest": "sha256:a1364d34c807f9c5f1c843f4f8f235f1b952f91377fb92300b1e716b2ce2c036",
-  "entryDigest": "sha256:49f840b246409ddc99db69a8018334354fb7743deb2b0acbf5a83fec6fab5f34",
+  "digest": "sha256:59e22b1bd6b10d1d428a17483e69133c19687116afb9935cbbf5efd3d017b974",
+  "entryDigest": "sha256:06b1f71e8e2e039ad61278d1f3e7116eedb980192e45d02f72abb391a74a3b91",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-svelte/dist/FunnelChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FunnelChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

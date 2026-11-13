@@ -1,8 +1,8 @@
 {
   "componentId": "rose-chart",
   "contractSource": "derived",
-  "digest": "sha256:4d82ae7341411f7c95caa85f468c131361c71ec4e607842923fcaa64fe6c8d77",
-  "entryDigest": "sha256:57f443dd42e3322b568e2fb15d50c2d4b2472eabf4e7c8b6ab507eecc1ca1b8e",
+  "digest": "sha256:89da0299f1f909be5e706461a36c7f5ab4a286acb0d34f5635b3944d4f9737aa",
+  "entryDigest": "sha256:1156c0a5ee2c0ad4042fe797d25084ae2826d237e4f4e39dbbd12c8103d046d3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/RoseChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RoseChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

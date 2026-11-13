@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DataTable.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Advanced table: sorting, multi-row selection.",
     "fr": "Table avancée: tri, sélection multi-lignes."
   },
-  "digest": "sha256:9d445c5e46bf94f9222d9e9fb5acc80d89cec89a712270f6502d73c7ea80e0cd",
+  "digest": "sha256:e0161f04c4453fa8f5c33b849276fbedaeee6132434212677c0aec2572b0b66b",
   "displayName": "DataTable",
   "format": "component-entry/v1",
   "frameworks": [

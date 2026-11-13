@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ViolinChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Mirrored distribution density per category, with median and quartiles.",
     "fr": "Densité de distribution en miroir par catégorie, avec médiane et quartiles."
   },
-  "digest": "sha256:b1b71beba02614fe3b639cbd546310455c42d16538ffef78c3b1e3029500cca5",
+  "digest": "sha256:e3daa5f8f30af7ef29f80d1b7f0537f205821f6f7c015e99bb4d77e8e05ac38e",
   "displayName": "ViolinChart",
   "format": "component-entry/v1",
   "frameworks": [

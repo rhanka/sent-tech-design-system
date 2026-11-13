@@ -15,7 +15,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:8efb70c3cd88358dc94f89c062d76e346ea2d3152967c5052987a0bee51c3681",
+      "digest": "sha256:63f494d35b0cc739d234d50b496fabe668a5a5e686d4859b3ce60ec833d510c9",
       "frameworks": [
         "svelte",
         "react",
@@ -42,7 +42,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5d6b7f42f7bb379f38c158ab7d36351780704333763510dadb10ba5615182668",
+      "digest": "sha256:31e6d6d325852a129cec175f6c72945e9092bfb56f7e77f888d0a61e38b139b1",
       "frameworks": [
         "svelte",
         "react",
@@ -69,7 +69,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e480633c383d22888823a67fccbeeee61b248da8dba49e71e430a069c38502db",
+      "digest": "sha256:92fd75a72b714d312f775a767665dd31771dcb8d8ed72ccbf94971b169a85016",
       "frameworks": [
         "svelte",
         "react",
@@ -96,7 +96,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:abfde6e1a0a46fe2269c62811bdf1292623da28bb1a931878325b64cb5d98a1f",
+      "digest": "sha256:20ca8f7bc040fc2f1f8582f88802c1c34d32ffd351a09b973f1d8c359e015df5",
       "frameworks": [
         "svelte",
         "react",
@@ -123,7 +123,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:073bdf6874eb8687c9db3b7c1ba12d13061eea5b2392a94f20182cfa58f6a751",
+      "digest": "sha256:c9a47453a59d83486c8257c1ed7e6ef2f354246fe88792b3e90338db9db03e7b",
       "frameworks": [
         "svelte",
         "react",
@@ -150,7 +150,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c071d0b7c520139e46cdd7239fbcab68da0c2ab83d17d6b022f32fc1f897271e",
+      "digest": "sha256:6c65c9a34d334620b5803d67136b934eae1f3829baee25be9362cc376a291dfe",
       "frameworks": [
         "svelte",
         "react",
@@ -177,7 +177,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4b70986f073d1bd9025df7e7354981cdf7a15068aaed950082b9767d05d6c79f",
+      "digest": "sha256:aca26f284557a311d416efc811f85231f208892623762b419c37537eb9f1de23",
       "frameworks": [
         "svelte",
         "react",
@@ -204,7 +204,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:36eb710fa4cae61c1b3ef337bebd7381a84afd22188cea80b595007ed02b3ed5",
+      "digest": "sha256:f955bad0d764f6f152cd9c4196b17cddfc299cbfad1a7c0b5ead85945c3fdf6f",
       "frameworks": [
         "svelte",
         "react",
@@ -231,7 +231,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9c86e8fd0dceef6868e433435c0e21e59e0ad8238bdc11c6b5a2f9482afc0b7f",
+      "digest": "sha256:840bd2335dfe75a5148e9f3551dece8975ae7c375676f79bcaab8e2ce98bc5fc",
       "frameworks": [
         "svelte",
         "react",
@@ -258,7 +258,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c563af0aa7a017f817c79b5a05643f9833242e4933fbb5d3ddc77bbfe8c9d86a",
+      "digest": "sha256:6dd914389c6b1092b2b79c03f7f101622da1cd0a30188aa12053663ad49c6cc8",
       "frameworks": [
         "svelte",
         "react",
@@ -285,7 +285,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c8f20a68fb278f0f26622439b59fdc4e1cdacbdb4aef537e7ddde30d34d63859",
+      "digest": "sha256:a767c78a025a8516edcae254620364f52aaab062b3cf73188b7cfd0edc4af36a",
       "frameworks": [
         "svelte",
         "react",
@@ -312,7 +312,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:dd50a7e4413c7951c53b4656e7cdc4348404a8b876b8e1e8a3400570ae5b6c0c",
+      "digest": "sha256:4ee59177e1d844c12534013a69d0d3b127ab28d251a72c5baf638c681e30686e",
       "frameworks": [
         "svelte",
         "react",
@@ -339,7 +339,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7768cbe514494ed68c58947743049f09905a045248344479449e71cccf210ae5",
+      "digest": "sha256:20a5c1b3de2de2aea612ccc4cbc4a906fba8806b8cebfda5cacfd1011b5b5283",
       "frameworks": [
         "svelte",
         "react",
@@ -366,7 +366,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:db6f77d902f331fc50c02a41bfcf148f42fed60430867c4b15e344fa4027cbd6",
+      "digest": "sha256:73468716c1cab09807f0ed9bd5e790aacb20a6697834dc3ba354556f778c4e22",
       "frameworks": [
         "svelte",
         "react",
@@ -393,7 +393,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b8ba5060592bdecbf3510c514dee92bbc17080e66e83284e466afca032c26fa3",
+      "digest": "sha256:d4395f6c4cdceb71d8b902df1381dd4228d919b3b5e10b16b3e7026973c18ce3",
       "frameworks": [
         "svelte",
         "react",
@@ -421,7 +421,7 @@
         "source",
         "element"
       ],
-      "digest": "sha256:2b328ea8a148f90e4d2c37cb4ce523f1646cb18ab727132e6f25881c92c6fa78",
+      "digest": "sha256:d45be10a05dc70a58f52799b988a53725caaa9d791d4bf488094c85beedbed14",
       "frameworks": [
         "svelte",
         "react",
@@ -448,7 +448,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b069668d696dd3075122f803c2de46d6cbad5596d811f0fae37ad67a402cef3f",
+      "digest": "sha256:491688877888cf5c235fe247e421b44a80acde87fe3f60853fa3e25220bcb186",
       "frameworks": [
         "svelte",
         "react",
@@ -475,7 +475,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:03e363dec51a520369b8854607a1e76c1ef7a1ccb3bf670914745cc38826ede3",
+      "digest": "sha256:cc0a8804e3dedb4c61bade20c00275b3af5e6cfec60d79ba89897298f746fae3",
       "frameworks": [
         "svelte",
         "react",
@@ -502,7 +502,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a6123eb1be29b31e35d1289a56954e608a2dd396a307d3e7021b8ba9dad2b12c",
+      "digest": "sha256:c2cf6a67ff2a31639c64c696e03ab8e263c1bb56ef392a7dc346fac0e75d8bd9",
       "frameworks": [
         "svelte",
         "react",
@@ -529,7 +529,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:6ed77dec530cd000d27421b8ce97dd2b8485ce8da4c5ce5cc96279867b52b643",
+      "digest": "sha256:c1e3c3ce9899e019600e88391c1d7539e75445a4e5d55fb5f356f8800532db99",
       "frameworks": [
         "svelte",
         "react",
@@ -556,7 +556,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e9870dbb7fa715ab53f28fc632fa827865c7e8cb644f0f7666eac6d06595960b",
+      "digest": "sha256:90c416232b118422f1b313da138c6d82715eebfdf077342352074888be5b3cd8",
       "frameworks": [
         "svelte",
         "react",
@@ -583,7 +583,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:963e8f57a63b295a1dd8e77191633177d2877629bfaba0f30b06d5320bdec33e",
+      "digest": "sha256:c150b00cf19e180a3b308f13029877fa580217246ad8284b5589d27bfd37276a",
       "frameworks": [
         "svelte",
         "react",
@@ -610,7 +610,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:461f3855d917692485a21d5a4c81a0b3ccfb9791dddd47c69101b46571e7c7d9",
+      "digest": "sha256:7d1ee7cfb33e887629f9f8b45efc2d86f4c70ed9d48af2a58f4cdbdb96b2fedf",
       "frameworks": [
         "svelte",
         "react",
@@ -637,7 +637,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e4e9c65550e01da49fb16ed5ddf1a4389f33c3354ee2e738ca1ca46fc56b3e0a",
+      "digest": "sha256:b4f5d8796b2927b0dd5176b001885b06714c6d650b4e8aa168d7bd2d892c3316",
       "frameworks": [
         "svelte",
         "react",
@@ -664,7 +664,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f9e9935e8b9c4b1e33cc5f4bde5c0489f87ff041c6067521eac7c62b44509533",
+      "digest": "sha256:94cd72d2dca2c90e09241bcb718df4bc57cf2eb89cd042ae199eec741ccbea39",
       "frameworks": [
         "svelte",
         "react",
@@ -691,7 +691,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:da87f5644b92021879b7f509773f1007b86f6dee500136fc98af8f89bf29376e",
+      "digest": "sha256:982927aaaa62655f871ecacff78883cd42ef8d3eb46e79fb5fe947de91f9ce6b",
       "frameworks": [
         "svelte",
         "react",
@@ -718,7 +718,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:45bc874d0d9adcfc406d1aaf74fc3fd7fa9a95628f539552ad6a2606fca7ca14",
+      "digest": "sha256:47e9e78dddb14616f1b6e00f68fd9e00244b896365da0bd8c1b5e42fe7207511",
       "frameworks": [
         "svelte",
         "react",
@@ -745,7 +745,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c6e9ee491ff1de5e3a6cb220438a6ca36290243bb916281a17295af8b7f3c54e",
+      "digest": "sha256:f8e70b9c4c4bd4313b737e4067481c0133fbda2821ad0397fe726e29d78bf750",
       "frameworks": [
         "svelte",
         "react",
@@ -772,7 +772,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:49c7e11e288e3d152d2a48591dc685dd283c1adc8294550f9660f3a432e6d835",
+      "digest": "sha256:f059280331200ec48a8665822790ee173f4ab939fa1d94ee8788cd59dab51ca0",
       "frameworks": [
         "svelte",
         "react",
@@ -799,7 +799,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4e0df125ff3ed028c12ad65987820b3c99b153fb9bbd9330494fe3778cd49708",
+      "digest": "sha256:4cc9de0bfcf22e07437ecd8e6298f4701b9da87463a0114321f3e415d2832eae",
       "frameworks": [
         "svelte",
         "react",
@@ -826,7 +826,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1cb317662ec412c0db76e02e785ce5f5b1d96e89b293969dd878b092557dfaec",
+      "digest": "sha256:02cd94da97e0b07f993a7a1db7275e1be24dd27ae205a88cbf0b3e00b13f5556",
       "frameworks": [
         "svelte",
         "react",
@@ -853,7 +853,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1020a814e39c5b77b6b0e32669591d75a724d6275e69ad14e53b1470c6b77be0",
+      "digest": "sha256:bfa7ef1638a22396f9a54e8649d62ae3d5978178d0e1326c659396d5006df282",
       "frameworks": [
         "svelte",
         "react",
@@ -880,7 +880,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1cf3edde0487220342f553723f287acd6d9b780acbb170a6813fda43b52910d6",
+      "digest": "sha256:a74a7ee3974d582c5ee24b742e94f912494052533970a9ebc7aa844cb2d3f09b",
       "frameworks": [
         "svelte",
         "react",
@@ -907,7 +907,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:98f728eb6d385c44b293029b5b1cb490b4181a5e824f13b5f03dcddbdfa8ec41",
+      "digest": "sha256:c327f1e9aa41715c1335ff12e37faf4132afd144d85edc1dba4046b5d60dcae6",
       "frameworks": [
         "svelte",
         "react",
@@ -934,7 +934,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5dc428b3571a006c97b1425b15fbf37b2913347004ad85422a1db18910185ac9",
+      "digest": "sha256:962d38095eccbb624f4b811d840b818be037f5e34accdefd68dca05686807260",
       "frameworks": [
         "svelte",
         "react",
@@ -961,7 +961,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7b1ccbdb7369ac46d3e29a4e61badc9211e046be09414802ab92958d89c875ca",
+      "digest": "sha256:701fc12e48ab828663887b654c76a69a2b915da44cd30dd8c54315d43052c8f8",
       "frameworks": [
         "svelte",
         "react",
@@ -988,7 +988,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5911b97414933c01e60908e03871321d5d8281735a11b46f6f040776c4312d9b",
+      "digest": "sha256:3f632dc034e13a729dfe22c5bf5bebe07b8d9f03c9c464bf654a1ecf44b3bcc7",
       "frameworks": [
         "svelte",
         "react",
@@ -1015,7 +1015,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:df03b96c45c2693913e9065ac1471f781669623212677b4fb965b6e1faa25dee",
+      "digest": "sha256:4a413e92bad2a452a2be8be2d5e7dc1ae3d598fa59bfa9b19527227a27b9761e",
       "frameworks": [
         "svelte",
         "react",
@@ -1042,7 +1042,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ac182bae279ea531928eea97eb8f1bd5ee7ecba00a2cb9dfe5c76e58266cd5b9",
+      "digest": "sha256:06c0d9570f7a02b177eca886c7bc061a739de889911ad6865826f9624a039adf",
       "frameworks": [
         "svelte",
         "react",
@@ -1069,7 +1069,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e6e078df4b81aa70da53c4bd7a0d41a22e964819ba7686534036fe1e7a6a9524",
+      "digest": "sha256:4b61b1cf7c08160b6dbf22ac94dc45f3f686409b57d00782545301df80cd7e2a",
       "frameworks": [
         "svelte",
         "react",
@@ -1096,7 +1096,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:920909ae0e3ee30c29d0967c81f710c7008c1fec1001f7f3c11a1eb709c10eed",
+      "digest": "sha256:359c95640032613b683eb6a7dc62144e064d3ee85fd7f09e447ce74335c6498f",
       "frameworks": [
         "svelte",
         "react",
@@ -1123,7 +1123,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5aca14c97bbe45d53a9d95fba41a1ee7ea4f524f2a0890329f1b72ac01a16ac7",
+      "digest": "sha256:85544ef0dce8d1051daaddd5c345f77d45046b38dcdf89faff82e1274dee555a",
       "frameworks": [
         "svelte",
         "react",
@@ -1150,7 +1150,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f161f7168f852544cbc337140f85b68e475f80eb87ef992c1bdd1e289205dd2c",
+      "digest": "sha256:5a5e65f7cb35498443e6f891485167568fed87db95c2c37db693eb77ecb51fe0",
       "frameworks": [
         "svelte",
         "react",
@@ -1177,7 +1177,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:794a7688a9782f1959fbf783305a9bb1e23601fa1ef9b188118206a55ae33a5e",
+      "digest": "sha256:e4917bbc8840e1f886232df00b736df19239d8a4ae9e3be740f2d7c2c94db759",
       "frameworks": [
         "svelte",
         "react",
@@ -1204,7 +1204,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0be7edba466acedfbc87709158b34ecc7e252b8741e5ab2e9b0479a385b5c31a",
+      "digest": "sha256:16a536ad6916ddd041420793ddb5fd67f5adb4217a05c5c050586e76079f82e9",
       "frameworks": [
         "svelte",
         "react",
@@ -1231,7 +1231,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:8d55112fac0d7ceabce796a90fe68c813c0a9bbcf0c558ce8720a4360b89dff3",
+      "digest": "sha256:dbdcf327440fdb0c1e77f7ae822a7514ca13b61e39a136c605812be881a184d8",
       "frameworks": [
         "svelte",
         "react",
@@ -1258,7 +1258,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:95f5da20962507984fad4a48c0bc1b728260e7308806bd4c332c570ca759652e",
+      "digest": "sha256:9956638deb899c9a4c55540b4bfdc2ef307139ab4536a18ecd56ba1328f4a2ce",
       "frameworks": [
         "svelte",
         "react",
@@ -1285,7 +1285,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d74e7d0f4084fb9387116e80a2f94320edcf9a2e3bb900187c4cd7787d56c7c8",
+      "digest": "sha256:796e27aef02129fe2fedb2de898745ee4470e3bfc5d46b2e253c10ac84879beb",
       "frameworks": [
         "svelte",
         "react",
@@ -1312,7 +1312,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:37b988269a4f2f25c8ff5ad86df45d38952c587823c42486b28f767b2170eec9",
+      "digest": "sha256:6df6453e47cc54f0a22e778002d5167c740fcdde3d79e5e387666f4778aba65b",
       "frameworks": [
         "svelte",
         "react",
@@ -1339,7 +1339,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9d445c5e46bf94f9222d9e9fb5acc80d89cec89a712270f6502d73c7ea80e0cd",
+      "digest": "sha256:e0161f04c4453fa8f5c33b849276fbedaeee6132434212677c0aec2572b0b66b",
       "frameworks": [
         "svelte",
         "react",
@@ -1366,7 +1366,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a6f682e226f32a10523fb3612b536f058ab95f37b5692a2d1c7d9fb3d4a525f5",
+      "digest": "sha256:1cbbf1ee940b18a3a0bb93cf53556a64d42eff9a56e00ac7577a8648f673dbfa",
       "frameworks": [
         "svelte",
         "react",
@@ -1393,7 +1393,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:001ead3fcce3832db5a677d1ab41c6c41cb6bcc63466600711c4930bdcc9958d",
+      "digest": "sha256:f6311c8f4e98187b08cd1bdeb690290caf126ae5db68ad7244d88d999bdc9796",
       "frameworks": [
         "svelte",
         "react",
@@ -1420,7 +1420,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b3dd98b30571b4b3e8857bd416f71544ab05a63e193e273ec95b36a7488c788d",
+      "digest": "sha256:75a1ebb09f2c9096d5b2516ce7c3b8353819e36ee388a6de50d41a7fe478afa0",
       "frameworks": [
         "svelte",
         "react",
@@ -1447,7 +1447,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e802e842d21dd8e07c288bbac78a24d7ae7198a5996ff28ae4cea1c7f7e76fe3",
+      "digest": "sha256:8ee5149c7b7822b19ee89dc4bc63448b8071550c24944845336f95276e955ecb",
       "frameworks": [
         "svelte",
         "react",
@@ -1474,7 +1474,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:94871308ba16cbeaddd61b726fb71b4df234eb202b1b7202229018fc208d0fde",
+      "digest": "sha256:6e42c42d5b68789640fd3ec3b627ec8a685e42fa450b60153e1ddb71d1057732",
       "frameworks": [
         "svelte",
         "react",
@@ -1501,7 +1501,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b02a33e9bf47b3dae80fc332c5c470439b620db9a81cc5d71657c5bc49e97e66",
+      "digest": "sha256:0f1b9a63aea44b6c9db7bd485064a613718ad92257fa78f164ab94e769186ef7",
       "frameworks": [
         "svelte",
         "react",
@@ -1528,7 +1528,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3f471ba092c876866f235b6d60b4ce9128176c406f409615a0a1aba6cb9ac1c9",
+      "digest": "sha256:d89345c72da61644d49c3dab171c8a2430ded3e98687baa5fb841359dc3945e7",
       "frameworks": [
         "svelte",
         "react",
@@ -1554,7 +1554,7 @@
       "deliveryChannels": [
         "tokens"
       ],
-      "digest": "sha256:3d0766e5674af3d238f38f2651965b079da8056f31cf6c50f544b691085917c8",
+      "digest": "sha256:1b9bbad49ff07ed3288c9046b8ccceacaa0e44dafe260729f33d7fc4b157164d",
       "frameworks": [],
       "parity": {
         "angular": "no-counterpart",
@@ -1575,15 +1575,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5272330b2cd9e33bb36b27700a5b5d24a15661c896b6c3705b536a5a08c37160",
+      "digest": "sha256:1cf0df01a6277b2eae8153cad5ad91266b450a9fa6f5f790ebd2aed126ff4ac0",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-card.json",
       "producerId": "sentropic-ds",
@@ -1599,15 +1600,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:72cc3379076562916a1c71a373dbff3eb192a6d5f49afc1bdc876a4749e7835e",
+      "digest": "sha256:592bcd46508517a634a7149f627e2f8521177d66e3ef13b275cd0b265844ada0",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-scene-figure.json",
       "producerId": "sentropic-ds",
@@ -1623,15 +1625,16 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:77cd5dfa7689c0e14bfc3fff94394cb3a1ae8e979d803b3ae15b8932209c2ff8",
+      "digest": "sha256:346cfb1669fee50ccf46ccee3a5550ad1cd743cc81c1589c84f592109741666a",
       "frameworks": [
-        "svelte"
+        "svelte",
+        "vue"
       ],
       "parity": {
         "angular": "missing",
         "react": "missing",
         "svelte": "source-of-truth",
-        "vue": "missing"
+        "vue": "match"
       },
       "path": "entries/diagram-zone.json",
       "producerId": "sentropic-ds",
@@ -1647,7 +1650,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d1a82774a695e9ce6411afff488ba74ed04c7c8dc2434eea746a0239abf700a5",
+      "digest": "sha256:6be9f9e721dab4cd7b0954e37886f0b541a1a2bbb36d247d817a7a0de616206d",
       "frameworks": [
         "svelte",
         "react",
@@ -1674,7 +1677,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d3268b8e1b8c07f4cf1351f48650e47eb428bbf05f8bc62c4824c84198dc3dee",
+      "digest": "sha256:2c0c81a2fdac9ce3da116149acc6214ff254654a8bbc2a1e02a200603a055fe7",
       "frameworks": [
         "svelte",
         "react",
@@ -1701,7 +1704,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:76190a81b8d4f17deb5f10887aee3d605b626b4564c9dfd33f2cfa8fac8aed5f",
+      "digest": "sha256:3be254e3c12ca2b1c0e954ae05a3fb27bd9a14708c56b691cfe77fd508b3de43",
       "frameworks": [
         "svelte",
         "react",
@@ -1728,7 +1731,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:43ed4c9ad2361a748c4f8e8529037ccc8ba65da28a6745c4aef9593edd96d788",
+      "digest": "sha256:7de82596eef7cf6c157de6d84420e04e319d33b8e505fb7dd4948d54aba45189",
       "frameworks": [
         "svelte",
         "react",
@@ -1755,7 +1758,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:6bef4207a429356781ec2624995da780335da9bb704652f230d131ec66e2b27a",
+      "digest": "sha256:34b1db3c9d3fff48e0dedbd0a9f60a76213095b37d4ce30f227d10267d9ced2e",
       "frameworks": [
         "svelte",
         "react",
@@ -1782,7 +1785,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:8018a977d3d38feaab3974d9e8040c028332c99a5736d7f4ae0dc4f9689e744b",
+      "digest": "sha256:f11011ebdcaacc455500d02a940b80ba96090d0535c913b21ba252e98db4f575",
       "frameworks": [
         "svelte",
         "react",
@@ -1809,7 +1812,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1ef9ed0f94e9bf44105b0b7de30910991e598c052c3f08ca24e38dbcb125c701",
+      "digest": "sha256:cc246b2dad85bb2a74f66ea3424c7a88b09ae2b692972fdd3e4a551c6072ba14",
       "frameworks": [
         "svelte",
         "react",
@@ -1836,7 +1839,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c63f686df52685f331593ccf7e630fe58053d9c13e4c9542504f1336cf9a7cc6",
+      "digest": "sha256:b7c482ab9ef1977f37f837df1b778a6afc0dd0a53926a0306c536d8cc6eb8bfd",
       "frameworks": [
         "svelte",
         "react",
@@ -1863,7 +1866,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:6a9fe9c0dbe08bf696eb8c8c0db5510dee2fa97a9041b37e81ccf1c31c2a94f1",
+      "digest": "sha256:0462e29669cffe5facd7cd683937d23d8275880ccec5b37865c592f2945fdfb8",
       "frameworks": [
         "svelte",
         "react",
@@ -1890,7 +1893,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9f3e8b68fb6b1d5278c15272a04cd8aec8b563793cb9cfff5d6dea6e03855762",
+      "digest": "sha256:866d8aec27196b83d0e96ec51d83a468d98c73ffd1fa77b4bfd3e67c37142f41",
       "frameworks": [
         "svelte",
         "react",
@@ -1917,7 +1920,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:deef0d8060a5e1b508381c7983c8687c5d2f46c0eda1d2805ae30965dc7275fb",
+      "digest": "sha256:4e1de0c6919e0254dcb3e2c0b25b828a511ede9faf72307a4ce4e3d71a4ff53d",
       "frameworks": [
         "svelte",
         "react",
@@ -1944,7 +1947,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:bb1f02ceca1e6df7eb1becf27ad012991f89cec485b27022f53e255dc85a0bd6",
+      "digest": "sha256:934dc6e7fbb16e9617c273aeb463b529b89e2b72a2d43842116437f7cd90fd4d",
       "frameworks": [
         "svelte",
         "react",
@@ -1971,7 +1974,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:bf7bd20b384f04a712f37af91b47cb171f28cfb53ad2ab1944e83044505b3a9e",
+      "digest": "sha256:8f4bdb350337dd722c64f7909f436ea24327a6480deacd9c2b83a6c8a8934c47",
       "frameworks": [
         "svelte",
         "react",
@@ -1998,7 +2001,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c76d102cac90c7d6a9cac2bb663bad3b7e3d19893dd9a57dbfa59b7e103d8ada",
+      "digest": "sha256:a8dc760d1779196a07a858aa41f2ff7f7e6e500b4dd7f08951d419e9f9a0f025",
       "frameworks": [
         "svelte",
         "react",
@@ -2025,7 +2028,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:affffe1c8c3f96ba9a7352a53a4fe059a9786ee6f134946d5564690d4dd83801",
+      "digest": "sha256:b2b4006d541ef9d726407d1c0f8e2b30e1ecb2229d605072fc5eca45d36f4fc7",
       "frameworks": [
         "svelte",
         "react",
@@ -2052,7 +2055,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:dab99ed9ab49080df7f6a981413f046d15ff968af32c4db38279d570f3c28114",
+      "digest": "sha256:695f0d114f517c29f717c9a559f26e6eb4e37c01fe46cab604fd11cab7381e22",
       "frameworks": [
         "svelte",
         "react",
@@ -2079,7 +2082,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:50752ed06f5720569a2148d4dc53da23b74572042beab61d3caa43b31bc0b4fd",
+      "digest": "sha256:ae08d8ea618df59a65ab39449522a0437c289739f480dd306775bb80bf088db6",
       "frameworks": [
         "svelte",
         "react",
@@ -2106,7 +2109,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0bce0079f777d7867e1aba3822268d9362a908b036552bfcdaf970cf5919248e",
+      "digest": "sha256:1b2db3cb9e0a74fbb15a9ab9e5c5ffd26c6b64c7c9b0d93d0084450ca3ad1205",
       "frameworks": [
         "svelte",
         "react",
@@ -2133,7 +2136,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:70d2bc120522fb2bf51c95e9ac9e8d07fb6e9bda434f9870d570cc2c1dd9843c",
+      "digest": "sha256:f4480e86b1f68397189d626948f5bad655b77a565db639bfe156a2e7e953ca07",
       "frameworks": [
         "svelte",
         "react",
@@ -2160,7 +2163,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b3ffbd99bd934d685e512940a8356566081541927c4b35296332146b6db40fe0",
+      "digest": "sha256:42b3cb00107e74b5801617a63eb5087206122846b7b8bbb4c6f2d75faa2ea9b0",
       "frameworks": [
         "svelte",
         "react",
@@ -2187,7 +2190,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:03dfa049c4c741454d267e7fa31a065222cef4278279772ae19913d8adafebec",
+      "digest": "sha256:cbe25de2dcc8f94437723cfa7f8f05df87892658382d9e08283e7525cc08bc29",
       "frameworks": [
         "svelte",
         "react",
@@ -2214,7 +2217,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:81835b32c58ff04576cd5d7fd8cba2def85cc93a836860e2b9ab29e1a9ea0fad",
+      "digest": "sha256:662d08ea082c0ebf5f3c943c693f45a85befe14cc3af7091f65bf32d29eebbbc",
       "frameworks": [
         "svelte",
         "react",
@@ -2241,7 +2244,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:49f840b246409ddc99db69a8018334354fb7743deb2b0acbf5a83fec6fab5f34",
+      "digest": "sha256:06b1f71e8e2e039ad61278d1f3e7116eedb980192e45d02f72abb391a74a3b91",
       "frameworks": [
         "svelte",
         "react",
@@ -2268,7 +2271,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:58c08d6799126a1bf739b952bfb8045612d6b7820aa34992c2c1fd83d29634ab",
+      "digest": "sha256:93ba41f9b96d8938f937bc3569a7128dcda3cf0386bfe9e85270337123cbfb0e",
       "frameworks": [
         "svelte",
         "react",
@@ -2295,7 +2298,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:293980261342ec798e91f945b22f307ced4f767f034246b3095187b7bd7970b4",
+      "digest": "sha256:9065db681bf0e5ec247a3d991ea37d38ad4e59156e3b533ed1e1b689fce98428",
       "frameworks": [
         "svelte",
         "react",
@@ -2322,7 +2325,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4f793ad9f479521871f9888987c4ae148f54dfa6c6107c14b8e04f6ce17c0352",
+      "digest": "sha256:2ed628683ded429e902f54214553ccac40f1b8209f27d8d6b67196e11bcb3bd8",
       "frameworks": [
         "svelte",
         "react",
@@ -2349,7 +2352,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a0f006b491b33d1905306c74e450927f0d47581cc8d246e271e0c6f97985e6f6",
+      "digest": "sha256:40449b458f88ac7ff483b3e216565e0e6ca512ff9b5aa167ff5d3dfeac88f54f",
       "frameworks": [
         "svelte",
         "react",
@@ -2376,7 +2379,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:aedbd3311a694556f884d6d100b550390e5ed71f20728a575b9830d2a053a5c1",
+      "digest": "sha256:37697db0bcb87eb5e5448981bc2058114ad36156c90b12aea0721c4d6a41bcbd",
       "frameworks": [
         "svelte",
         "react",
@@ -2403,7 +2406,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:021ee204765b5fd393573a36f472fa69e17475dfb49dbfebf85fc1b2311dfb60",
+      "digest": "sha256:83bbf1cbd61e402ea174a2388b0f28b0d86a10e7fc2a4be4297cd3f9a6ae7a1a",
       "frameworks": [
         "svelte",
         "react",
@@ -2430,7 +2433,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b1a763da45d19e20811cecc5cc8b073e162c26b3366e5449ac7141ae4f9c5f2d",
+      "digest": "sha256:e1529f46538fd19aa8119b1ae2134a31adc18a38e9f3ec3a2617f25a0c46c0f0",
       "frameworks": [
         "svelte",
         "react",
@@ -2457,7 +2460,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1cb9c01ffa1e6c27368f6e287de78433329d692c125811422ce38ce387d30f8f",
+      "digest": "sha256:704ee4526331775057e35d5bc2d2b537c4dfd8ef062c1ef76ea5170a0ab07823",
       "frameworks": [
         "svelte",
         "react",
@@ -2484,7 +2487,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a2ac26afc462116d7b49de17b1e0aac39167871b3a017013205922bb2eb6656a",
+      "digest": "sha256:58afe4192d330d1e428f785f27a83f2c7de53b42c72d9356c70ad25710814cc4",
       "frameworks": [
         "svelte",
         "react",
@@ -2511,7 +2514,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c9a58a76fcbbe53e8f731c1ea554609530a791957eaea8e3aead2e16bd01d478",
+      "digest": "sha256:6977d33353861ae47f01e3486e48b8939e663c17c97ff59cf1f3106501aea53a",
       "frameworks": [
         "svelte",
         "react",
@@ -2538,7 +2541,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ac6912ed2256cc0181ce1ce501db521e04015b33f98c3357f68425a7f8553443",
+      "digest": "sha256:5aab01fe7a6109c1765e9b52b948624c0278fb813d66deb4f95251e34e10e47c",
       "frameworks": [
         "svelte",
         "react",
@@ -2565,7 +2568,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:8166e7759b91413f58fed1e6b4b607dcce156286bc316b7050fd3a6f7d5f3dd3",
+      "digest": "sha256:91ef4d2b85c3b006011d4140ac25ca4dc2cbf12395ee876a41be94b7f54e19d8",
       "frameworks": [
         "svelte",
         "react",
@@ -2592,7 +2595,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:763d6d5015c17c18c59f0a270f118379e77c8b4d262026244c7ee06bbb197cb3",
+      "digest": "sha256:1e07123b503d8885e06462062c2c3e8beb037b4c6a760b091d1e86a6c556578e",
       "frameworks": [
         "svelte",
         "react",
@@ -2619,7 +2622,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:511c341a4b9dfe8f988fcd752dec604cd4ab19f0efd0eeba4af13027d5146d08",
+      "digest": "sha256:538fe1f1808b7102a34156031cad2c5da3e97816ce241ecca9df3668b9fe3bbb",
       "frameworks": [
         "svelte",
         "react",
@@ -2646,7 +2649,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:80b2c806e76d856181113dbdd30c27a735347c503ac527c943b1f205c1f0f783",
+      "digest": "sha256:82d6ca2ee421a721d48ec6d7eae3984bc0992a3e61b1f943657f42b306f77fc5",
       "frameworks": [
         "svelte",
         "react",
@@ -2673,7 +2676,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:2a81d41c81a2a03ed4af096b85e3c38a317e47f3f79ce12988a59a42dfab0ce2",
+      "digest": "sha256:16d0641ec2e6335493fc4fd55e807746428167cea5da9eb601c9f95b4f71361e",
       "frameworks": [
         "svelte",
         "react",
@@ -2700,7 +2703,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:12119b00b068546b5fc43f37565a51d458625fb3499efaf47e7ae2d8ff7ea99d",
+      "digest": "sha256:3a907002f638ec488d02ae3d0a33c9236ed9c421d3a05a19ea86127727039ef4",
       "frameworks": [
         "svelte",
         "react",
@@ -2727,7 +2730,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b21e9983af179af4fec91a6005a9ec95f22efb0485708ba71438848a3a62ac24",
+      "digest": "sha256:a1eb580838bd7896b754f6d114ec2d6ac291697b92db2273b146f0c933a370fd",
       "frameworks": [
         "svelte",
         "react",
@@ -2754,7 +2757,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:886688f609934e6e56d55da74d2a762607b080c704e275497ea8d45303576329",
+      "digest": "sha256:0a61087ddc876d2915dccc1325116373b503c7c197302bab5e00b01a895c9589",
       "frameworks": [
         "svelte",
         "react",
@@ -2781,7 +2784,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:20fb3258608d53c58195c19b5f05d190c25d3963256f0cbfcf7a688a0f8d1d11",
+      "digest": "sha256:668c7b38dff43b8920baaddc13325227805563ba639f277c71a072397e5e5692",
       "frameworks": [
         "svelte"
       ],
@@ -2805,7 +2808,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c62270eb47d2ddc5a8d9e9f089816a9329d43e5ecc49d9c024413c8375bb3f7b",
+      "digest": "sha256:54fe6bfce515107809d25978173fdf090e62a3a3ea7d41f7d571b04d9eef6096",
       "frameworks": [
         "svelte",
         "react",
@@ -2832,7 +2835,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:dd57e1956e23149ba915d63c4285bcf14246d016d5f9d9b11086df1d6b2df3f5",
+      "digest": "sha256:beb83ace7c5c2df32ba3d02dc882c67fe3bb8295dac8f90c131bbe49d1bae846",
       "frameworks": [
         "svelte",
         "react",
@@ -2859,7 +2862,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c7731a735fb676bdadac483fe4eec83f6925ceeeaf6d4efc7c38cf911d7ff663",
+      "digest": "sha256:a5b1c7c55e08de29d2ba261b4b7c5a0a89d7fea77fcd3e1bf69e9a0e7397adf0",
       "frameworks": [
         "svelte",
         "react",
@@ -2886,7 +2889,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:fd6dca6331263de39b5f9184398efbc1cf458770e4cb333c01425309c78a33df",
+      "digest": "sha256:d8d3a4a479c813bed40eb7a5aae6484cec5afb8b6b964571c8bf8b78dc1fc358",
       "frameworks": [
         "svelte",
         "react",
@@ -2913,7 +2916,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3f467c114f20e65e50961243b6729e60a223fe5d2ccdda5db8ebf3c4c9b92d73",
+      "digest": "sha256:0c38598e80a213dc0c35a3196eba9ffc8a016f1f72c0e9a100ed2436dedee887",
       "frameworks": [
         "svelte",
         "react",
@@ -2940,7 +2943,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:30a4fc961d00bca5e496e11f273b8dd1e8ca30c933134174f77f9caef9ebb346",
+      "digest": "sha256:5373c0fcd6d35ffc02ae3394d9726162f1c714b3e67bcb3a0ef3ada3f6bb9a8b",
       "frameworks": [
         "svelte",
         "react",
@@ -2967,7 +2970,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4df711e613236d23b2088a5119748c5756833d44defc1ea2b3ff79920eef0b7a",
+      "digest": "sha256:aadbfdc4c953d293e8f6dd28a6f891e050d6e8fbb02762887df841cf14df6655",
       "frameworks": [
         "svelte",
         "react",
@@ -2994,7 +2997,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9b19d64ae0c96620d6b925decf36286e7945da5ca504cf36399eeeddcb7298d6",
+      "digest": "sha256:24f814e4ee8b521b37d3c49b0419b31d62ed8f90ac244a202b55a54d26914078",
       "frameworks": [
         "svelte",
         "react",
@@ -3021,7 +3024,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e697c656387e1647eb527cb411ca45f5433c6a587f453a8b41704f80e2d2e9f8",
+      "digest": "sha256:c40766a576e4f4e8f39b1e1de8d644bae5863c8cf3036ce187d22e892b7e63bc",
       "frameworks": [
         "svelte",
         "react",
@@ -3048,7 +3051,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0dd1c9d158152e45f171c982be6577308cb181b27f103dfea984a966e09b65dd",
+      "digest": "sha256:cbfb3c30b2e3d79b26d2a68758d7849bd32b490ee881bb4412fc6964f330dcbb",
       "frameworks": [
         "svelte",
         "react",
@@ -3075,7 +3078,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:30c5ab2a5159606bdae5c7428e951024e4f76663998e1cb44a6a452dfe00d465",
+      "digest": "sha256:14a817066ca1c35032a52a86ab6a36c684890eb84573193f7d658d33e79922aa",
       "frameworks": [
         "svelte",
         "react",
@@ -3102,7 +3105,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d64e64326db0783262175870df57eb3556ca3a05665286b9b54c7603d8bf2fbd",
+      "digest": "sha256:6d8d763586f7626ed422977d18a6d73fc570e5d231ca2b3dfe8c64d6a125944c",
       "frameworks": [
         "svelte",
         "react",
@@ -3129,7 +3132,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5e382ef9cfc37b482032410e4b17840e71335351721a93180c371ac1591f66ec",
+      "digest": "sha256:8d2af0ec4fe3c9cc93afd206193f8afdb808e4b105b5f293c1da1910557ccd3e",
       "frameworks": [
         "svelte",
         "react",
@@ -3156,7 +3159,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:406017a8251ea6b8596d9e81bba0cd68beee5dcc788bd0c83782fd94ded38e5c",
+      "digest": "sha256:f493bbdb255b8cef8db3198f8fb578aa8344de7c70a5510490721c4bc1c66c90",
       "frameworks": [
         "svelte",
         "react",
@@ -3183,7 +3186,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:6f50ea5e09bac3b7a6262a6b9bc884aa4053a9777d2fc288e5632a34fc5f0439",
+      "digest": "sha256:2374a8fbdb49dda8dfe58d9dce17f40c1e146b0904810861afd815ce292e9171",
       "frameworks": [
         "svelte",
         "react",
@@ -3210,7 +3213,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7a3edaf1ac9325866ae364dd0889d7c46da7435da274667283c7348660511eb4",
+      "digest": "sha256:7b5e4ae0101fbb839dcaa5db134266ae758ac8924d6e360ac911944ab28e030f",
       "frameworks": [
         "svelte",
         "react",
@@ -3237,7 +3240,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3fe26d6020d7a0e00331d2eb95963a9564d03881aac2ef1999399cc3ed18d8dd",
+      "digest": "sha256:aed61e794b8d2bf181448763ec0e80bcfaecfebf4f1ead13506f62b142f6604d",
       "frameworks": [
         "svelte",
         "react",
@@ -3264,7 +3267,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:220942c673a1050eea3e9567cb5c818478b1f30288af3412adb99d5f17513677",
+      "digest": "sha256:ccef7b1997a80109b11feb0752cf49aa9e3405fb125ba2a0a8ee65dbfc5d17d8",
       "frameworks": [
         "svelte",
         "react",
@@ -3291,7 +3294,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a9bff0149b5a81472dd6ac3ebf0182242e9651ad47b4821ad011c08042881673",
+      "digest": "sha256:6adca23cb25b7d730629affe9fa7926d9cad65d6693248175e4b26a2af453084",
       "frameworks": [
         "svelte",
         "react",
@@ -3318,7 +3321,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1d9b373bf50ff03c8031ca3cc727beae62191e06080ff85fd8b318155d60c35c",
+      "digest": "sha256:be7357aa3b7e115373534e6bb0eb935f32e04f3748e4e94b60a44259fa8001c2",
       "frameworks": [
         "svelte",
         "react",
@@ -3345,7 +3348,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ffb3efaa91d811be1ccb3d95be5fb0d4ef987500d229b6fcfecc3e632dff9bc0",
+      "digest": "sha256:7378687a3c12010368ad648a20860a44924131e06d79523bab5c5342919d421a",
       "frameworks": [
         "svelte",
         "react",
@@ -3372,7 +3375,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c04232ddafa8f51925947afa1983f58a4da3a8364f9d8344cc8ed0c3e8fb335b",
+      "digest": "sha256:b112e97ca6c2fcfa19075c6823e5c3fbac5baa34ae0ac92f6eb2e5e4a20441ec",
       "frameworks": [
         "svelte",
         "react",
@@ -3399,7 +3402,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1dbb700efccd390831b4eb410c45ca9a58056abe3cafab44664349e0adfa35df",
+      "digest": "sha256:7711d8c7a36ef5122321da4160e66dbbecf950a59f26d21a8d4e3b22dbe68f15",
       "frameworks": [
         "svelte",
         "react",
@@ -3426,7 +3429,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:87345247f27219bcde59897ceb184f244260d668dff6004a725fcb9bd8c575dc",
+      "digest": "sha256:607e4b390aab8ca664b43c164d9ce95eb2b263be574c265eed973ac02d2c310f",
       "frameworks": [
         "svelte",
         "react",
@@ -3453,7 +3456,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:aa9e9227f2237a8a179fee7598c9ef32d4b1a65ae7721f407f7eeed4b402be7d",
+      "digest": "sha256:0306e5fa5e8ca4042d2674a46241b349404fbda86223641fdafd856824f24056",
       "frameworks": [
         "svelte",
         "react",
@@ -3480,7 +3483,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ff3661425794ec29828d9f0e27dc5cf11a6b142f1ab479bdcc24b2275d4402d2",
+      "digest": "sha256:0a3632914c834b686caa3c37927dc34854c9832a2025a58c782c3c4e63a582c0",
       "frameworks": [
         "svelte",
         "react",
@@ -3507,7 +3510,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d5aaca72f148c55e5b13ad18a53d41922726b5d5db1a1d36b1193dbbd35be496",
+      "digest": "sha256:71e92302556417f68b6bd1f81225c667600110e574e77dac5f05f062a3bd0343",
       "frameworks": [
         "svelte",
         "react",
@@ -3534,7 +3537,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b95b62c52ea2be26b98b25b7e363a5ac280684564c69acf7c6c7921c7428c968",
+      "digest": "sha256:7831ef0b9f2db86dde17f97c6fc55264eb478bd4dd6410de04776b2509eed925",
       "frameworks": [
         "svelte",
         "react",
@@ -3561,7 +3564,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4adba24c2075d539b56af60c5465aedf87e54f1e7cfe2eb2dece98ab762d904d",
+      "digest": "sha256:ed2dbd5a316972b5e3a2695ac9f3a3734f846ca84319818addcb59931eb9c62f",
       "frameworks": [
         "svelte",
         "react",
@@ -3588,7 +3591,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3e555a428951d36bbed21ae084bf819ee65ec5778e435b2ef0e38fc8627c92b7",
+      "digest": "sha256:d14df329626a364c582b8043f5820fec32ab4149d0e665d942ee7269c35dcdf4",
       "frameworks": [
         "svelte",
         "react",
@@ -3615,7 +3618,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:34249561f170cffebbe230e2de047684e6f1a26911b35bdb2970cff26bb60bf5",
+      "digest": "sha256:6dda2e2abd3a92c21538f6c00e96f4401440de96152df84b573390d14d21ae64",
       "frameworks": [
         "svelte",
         "react",
@@ -3642,7 +3645,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ce0d05b3b1dcc74ffc4dbb497a80aa1e7261af27f1af8723923266081b6e3159",
+      "digest": "sha256:3cd80c6877b8c06f9e1fe361295d2392d17986fea1f3619e30cb7311c731822a",
       "frameworks": [
         "svelte",
         "react",
@@ -3669,7 +3672,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:2f6dadfec536b2dd40a797b5110f7ba0b6f73d05b1b2cceb4c404c8d9c372b2c",
+      "digest": "sha256:c6ab5b54b33012a3f31f08a2ae0f1f6a9634ba5ad5ef8a23d681fc34b00b9290",
       "frameworks": [
         "svelte",
         "react",
@@ -3696,7 +3699,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7247da9e3b89d66a37b905f303a344844915f02a04c6bcc29b29e1c0a3cd7055",
+      "digest": "sha256:02def31904591b1142f5f0b92494a4aafcb60309095391cf1f9949fd459f043a",
       "frameworks": [
         "svelte",
         "react",
@@ -3723,7 +3726,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e0c3809187272234dfa4f0e7dcbd915e565ccfa4218ed626c7a4f7eb5ddc054f",
+      "digest": "sha256:71564c9eff36468b82f1a80bc844082624e18c921ff15279eba8455e03165246",
       "frameworks": [
         "svelte",
         "react",
@@ -3750,7 +3753,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:88cffcba635e98dcaf07222ab1108725a7565303b1340842f3892056c90692d7",
+      "digest": "sha256:b5ba73a58710bc349af6ace813cea1190d81875390ce3f0ee9652cedb1ed67cd",
       "frameworks": [
         "svelte",
         "react",
@@ -3777,7 +3780,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7bb3bea5cb0e1c248b46fa386cc1a36d46dc2cc78e8d5dfbc18534c5820b3c0a",
+      "digest": "sha256:2326022ada328a72ae325dc82bdfdb46d11574151c4f4ab20fea63759db4903d",
       "frameworks": [
         "svelte",
         "react",
@@ -3804,7 +3807,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:31f720d459ff765bc4bfb2c6db5ab265a80c9c290993c0b611b88ffe6ccbff6f",
+      "digest": "sha256:daca10517fb028cc28e7018ca57b5e19d28031cea26494e52ce55d88757a2b10",
       "frameworks": [
         "svelte",
         "react",
@@ -3831,7 +3834,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3510ef8d3e1d5ff7fe34d0dd41acffac5ded962baf39c4f7d3499e873608eaeb",
+      "digest": "sha256:bd55e1e6c0a6924d1716a1a0d601c4d5fe1b77b179136715d2de69c65a841685",
       "frameworks": [
         "svelte",
         "react",
@@ -3858,7 +3861,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d85eea20a9fe15489409b571e784defc48cc52d5e0342d291e7a5c0c4f00cb9b",
+      "digest": "sha256:83ff2456a6a9119d80149f82075f473e6965559d9561ea5f1fab439ebb7387a8",
       "frameworks": [
         "svelte",
         "react",
@@ -3885,7 +3888,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1c9454d287ba1f7b7fe46ec298ef18d1e35ec0c555bea1969dc302641dad3032",
+      "digest": "sha256:57b773c05ce8fd667cf6db7d3b9c5f496f0eea4f9d648380a89945888c1c9fd9",
       "frameworks": [
         "svelte",
         "react",
@@ -3912,7 +3915,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ec8b24b2d5174c5894417119f064a62e274a4baad6127e7cd9b04e99f208ddca",
+      "digest": "sha256:46d147e1e31580514422a1bb5f277ce3fee3739d31ec4b17cb1a71b9cb4d6fb0",
       "frameworks": [
         "svelte",
         "react",
@@ -3939,7 +3942,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b6f34f42148abca61e9847797985287076e1d883495d4932ffd37458f6f149ac",
+      "digest": "sha256:3e36465ea3aa92201360de47fa00861bea6470fb36fdfa66f03308f49e85841c",
       "frameworks": [
         "svelte",
         "react",
@@ -3966,7 +3969,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f6063b4de706794811f2d71a1818bd8078b08f2cd54dc062a97d0a6a37eb5e30",
+      "digest": "sha256:543704e64fa21b59c654b8f0073480da845ad1800f25ca108598af8c2e1c0f29",
       "frameworks": [
         "svelte",
         "react",
@@ -3993,7 +3996,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4b4f05e9aaa32d7948dab2a6e2931729ae102cc1eaff5b9c0b6876aeb4a8bab2",
+      "digest": "sha256:9f333531efb736e86a73a36c1189ab350d84422dc337a24f2a1c6f3a6a83c927",
       "frameworks": [
         "svelte",
         "react",
@@ -4020,7 +4023,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:43c705ae77021586d5e5a3d209ec666b1c784413209c345ddca852288e2b3074",
+      "digest": "sha256:07b42511c27f51b49ca2557515982548d6e950c7ef74f270f7a6a19dc6c70823",
       "frameworks": [
         "svelte",
         "react",
@@ -4047,7 +4050,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5733cdff4e142e22239f9ea9d2a28afe3d84eee1fda8c2e026468941af242c68",
+      "digest": "sha256:9845a86d9b79bfdbf47b9b00bb93e66b00d24e74c0b2aa02fbf1391199b12f6f",
       "frameworks": [
         "svelte",
         "react",
@@ -4074,7 +4077,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:379e592c6d08bb8533926dc3303258b42430400cd101432a7d34cc773ffcb631",
+      "digest": "sha256:934bbd81de18dbef0944d155c956fe93a4a08aa90f8db6d0666121642ec743d8",
       "frameworks": [
         "svelte",
         "react",
@@ -4101,7 +4104,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:57f443dd42e3322b568e2fb15d50c2d4b2472eabf4e7c8b6ab507eecc1ca1b8e",
+      "digest": "sha256:1156c0a5ee2c0ad4042fe797d25084ae2826d237e4f4e39dbbd12c8103d046d3",
       "frameworks": [
         "svelte",
         "react",
@@ -4128,7 +4131,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:604c068981a8cb3232389fef3aa319ce5236ed8d34e74de56b2baa50e45aa6e1",
+      "digest": "sha256:1a48269cae8364a88bf207ec957a652ec03ec501b9e784f0357b4245ec93badf",
       "frameworks": [
         "svelte",
         "react",
@@ -4155,7 +4158,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b16b6cda1190d9cce2d7c6323916c0e47d3b4c56e4e8cf7e6acf6fe97471c1b3",
+      "digest": "sha256:9912bf2e2bf9936372941faf945060311a69ebd1a2bc119b5893cc0a4f7be20f",
       "frameworks": [
         "svelte",
         "react",
@@ -4182,7 +4185,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3e978a1d513bcff44d4d0174bf114cc078691170dbc44fa842e37cef00cce8be",
+      "digest": "sha256:24db556e312eccd946587674d757a39103475e45ecb06bbe2f7461a56772ade0",
       "frameworks": [
         "svelte",
         "react",
@@ -4209,7 +4212,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a8bdfd4cba72017a017a64256e13cee85f0d09530f11196daf52de378838a6b7",
+      "digest": "sha256:379a3efeca60bc7268926a8a4471789b39d51b2d7680a5937051044ff64b18bb",
       "frameworks": [
         "svelte",
         "react",
@@ -4236,7 +4239,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a6df182f69a1d059d2aefe5d7c6fe8238ae00172dd96ba1df9ad9731218512c4",
+      "digest": "sha256:32a2aa7ee7eb3eea12d58a8835a4d51ef89c618cce602554be54e9c20d4a2152",
       "frameworks": [
         "svelte",
         "react",
@@ -4263,7 +4266,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0132e1e4d8d82bccd8fdb8bb032fea39a6e5a514fe25e6c0551ad44113dd2dac",
+      "digest": "sha256:072883c811c984a0e4a5bd52d2240cc17cd2c5c2e4f6407fdbc1c74040463945",
       "frameworks": [
         "svelte",
         "react",
@@ -4290,7 +4293,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:bd43a7a5b30932cfcc11f525d5ca712cc84956df5fa9e6b8d95a0ebd56d01d1b",
+      "digest": "sha256:5c5035b8f1a5943bbc2380899ae9f1da9f3bbcd946807037ff61a49694df42c1",
       "frameworks": [
         "svelte",
         "react",
@@ -4317,7 +4320,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:706c84d1c6665e7d16912229cf1e602a60a13d19e8390828cda54ccdae169225",
+      "digest": "sha256:c3604447daf8bd6e5cb972b01ad8067dcc9fdf2e88f764c32761f0f169be06ed",
       "frameworks": [
         "svelte",
         "react",
@@ -4344,7 +4347,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f4ece50964b46f36d50dea1a362af7cb81cb6cbcc07ad99a7cacb368da7ea74b",
+      "digest": "sha256:7354425eb7a9cb7444543615615cf9d54c8a634c045ad8a008bbf47c134729e9",
       "frameworks": [
         "svelte",
         "react",
@@ -4371,7 +4374,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4b9e84b4cfb7fbb811bfe76483400d3164d2fc8f883eee0d5942403a019fc438",
+      "digest": "sha256:b46eaf96fe06211daa9256759e5d409772f96274a313c746ab74cfb0f78f3953",
       "frameworks": [
         "svelte",
         "react",
@@ -4398,7 +4401,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:d672d194798cd6af21d6b2ad27e342cea66767f1d96d96b6ee16b473f1766aba",
+      "digest": "sha256:4841a09a78d6ba29d319b62666933e8e95ce7c807f137d54be652d7e37180463",
       "frameworks": [
         "svelte",
         "react",
@@ -4425,7 +4428,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:95d0e7e7c6ae7663b4d359abfeade8d31ecd5b0992d88b4b8b06afc31e2bd6ed",
+      "digest": "sha256:6495cfdd8f94748753a6a76b50d256a1ef8c4116a0465fc98095fb9edff1456e",
       "frameworks": [
         "svelte",
         "react",
@@ -4452,7 +4455,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0ff57d7ec15389493ea35199c100fea8e2cd77e36d50301cb31aa1e73e9d6698",
+      "digest": "sha256:394b81e2e565b84f1794a6079d4a6c4e6c656cc7cf2ab4427b5911a596701545",
       "frameworks": [
         "svelte",
         "react",
@@ -4479,7 +4482,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:0ba89319ec3b54e8db9126f0d0202eeca89f4503df75307666246b5f7181bb3c",
+      "digest": "sha256:fe98eebfdf813514e8b967f596bd69b653aba2913eaa8f71e4871747e388c8ae",
       "frameworks": [
         "svelte",
         "react",
@@ -4506,7 +4509,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:99c383a45d94980120776445cf8a75ed069731ff9fc24d497b358e4ac58607b8",
+      "digest": "sha256:7a23935f5e3307ae42a649c4b68df3b3edd38172fe7fba78763f1289803040e4",
       "frameworks": [
         "svelte",
         "react",
@@ -4533,7 +4536,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e7feea86cd343991c2126a6e26c6bc8b49cc09d458d1f5d3fd8d3f87b55e0459",
+      "digest": "sha256:6933ac754ddf383a76402646385e790a81cdf61e12a3451db05cd0f1b7f7f6c6",
       "frameworks": [
         "svelte",
         "react",
@@ -4560,7 +4563,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c495b0731ae1aff22fd335870d2f08161e7d117571b4ca3f4b8444d2734032a5",
+      "digest": "sha256:9e923eae437269172a1b79e3f7f0cf7242c5072f8e5356780fa735914be661f4",
       "frameworks": [
         "svelte",
         "react",
@@ -4587,7 +4590,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ff628977765c6c2878d5dec9ca5af0ca70fdd2396c793aba0232eb3580ab1ecb",
+      "digest": "sha256:b8809368463539a687a3ce501ddab205c0d51340938d66e0268ee7c17db1ecb0",
       "frameworks": [
         "svelte",
         "react",
@@ -4614,7 +4617,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f1d901448f74af2d7234556552ab8626bc41c202af8a218760c8477b4a826398",
+      "digest": "sha256:20d90f80227e9d5c2abe262db3c537766514119d57f7af5d154dba85b953f0cd",
       "frameworks": [
         "svelte",
         "react",
@@ -4641,7 +4644,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:358316cebf0d78705f0444f62acd5a3ad69db2f87f48da17c91a68cdf911ca64",
+      "digest": "sha256:086487e145b2a5cc9ce943e1d866e5367749303b91abe36b202532904d2901c4",
       "frameworks": [
         "svelte",
         "react",
@@ -4668,7 +4671,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9b1c5769d80c776926e3c89df0ed9c9656e9ef7153504f9a0da91e4643887afe",
+      "digest": "sha256:f88cba3c0c70321920abdec507659a1f882c0d7acefa4b8859e05904e4c4a544",
       "frameworks": [
         "svelte",
         "react",
@@ -4695,7 +4698,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:aef8d5aa3e0787a414da030b5c0097e5ffb90eba1ed28266b45b9cf366166b28",
+      "digest": "sha256:f20d3b82aa12c1e06f58556479dbd0a8a4da1afadeeef51aa4e5e926692bb72a",
       "frameworks": [
         "svelte",
         "react",
@@ -4722,7 +4725,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:58eb41e5da170559819fc24ff59da59be62474accea0ffc9fec6d7e6a70d09f8",
+      "digest": "sha256:cc240f42e1d1c5fc9e3cd9776943f4f6fc6117c2e6cb1f71557a6607f0f9e05a",
       "frameworks": [
         "svelte",
         "react",
@@ -4749,7 +4752,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9d9b0a3ad73fecd042879fb69913ea8ebb06bcab343c33141e4b0a59db79df93",
+      "digest": "sha256:029ef24803adeca074631df694bedc2c27890dbcbd727ccc3845acf3ae606acd",
       "frameworks": [
         "svelte",
         "react",
@@ -4776,7 +4779,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:6ff6ff3a23c92d7ea28f9e31967ad396b0ab4bae491b23fa50dc6bea1b5911b7",
+      "digest": "sha256:28fc4f9126a94c5e79a43dcfbcebe29375d9d6bc2e2419cdf5a82a5742b48a16",
       "frameworks": [
         "svelte",
         "react",
@@ -4803,7 +4806,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:c5233e4a8f938f47c183defdcf6b743bc4cf44eacc7da0838e365d568a87ad0a",
+      "digest": "sha256:61ea8cf6a3bc88544319c761c06ad3344a73db61c374898e287e682abd1eb4a7",
       "frameworks": [
         "svelte",
         "react",
@@ -4830,7 +4833,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b9323c8404b7a23ee68207c2648eb1d99aea32b7a49f3154b60664989ed2ca1a",
+      "digest": "sha256:97123944d78ab2a7463e788dd07162cb35cd9d7c0fa3c78820382b5095e2e50d",
       "frameworks": [
         "svelte",
         "react",
@@ -4857,7 +4860,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:8beb8e775498bc54c7fb6a8e442977dbeca06fd20d9095be5d3abda49171debc",
+      "digest": "sha256:defb91c532e5ba2593c13bf0444d9b58eca9017bedd2f9c8723b72452244abfc",
       "frameworks": [
         "svelte",
         "react",
@@ -4884,7 +4887,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:552bd95583a351d2f5e3e84e7507333f1dfb2515737ed3f034f935a81577c11c",
+      "digest": "sha256:8f420e6e6c5ef57304c494aace87bd654a4260fd709f4ee60b3e8d883cf99884",
       "frameworks": [
         "svelte",
         "react",
@@ -4911,7 +4914,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:7dc5d51216340f0df5c64238a7d67ced452ae99a08af584b420bbad6a3a51876",
+      "digest": "sha256:0979c057ff965ef4405d2e76a0d9e65148cf9f5225a18de521473c78feb83431",
       "frameworks": [
         "svelte",
         "react",
@@ -4938,7 +4941,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f90548c7f0093c506927e4a3ad022c04af86bdbe070841acdfff85b2ae7a7ad5",
+      "digest": "sha256:42393f69c48771b5a35e76396f702980c8c65e3f082f01ec3b545d858240db4d",
       "frameworks": [
         "svelte",
         "react",
@@ -4965,7 +4968,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3f8980ecb2dd304be9bed4c8f19042e3c9199d9878bdd2646579ca5e73f01596",
+      "digest": "sha256:26e6f6cb81169769da33d571530c522175f8b35d5d5cde4da9146e70bf3f33ec",
       "frameworks": [
         "svelte",
         "react",
@@ -4992,7 +4995,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3bbcd8bf8e15f5f7c910ae5f8dd0a1bd77461ebe245f7ceecaa3e74e032b547b",
+      "digest": "sha256:74eebb8ae4f5e3946c4763bfe1357dfc32384ad835c21e6d258e5635b6884c16",
       "frameworks": [
         "svelte",
         "react",
@@ -5019,7 +5022,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:e657ccc085abf4360cbc716564b52f27c452365d97aae633b2308bc06305c84e",
+      "digest": "sha256:9f493f430b4154a147d0e7efeff4fc9c25e0a9b8e4303ece52576eb816dd9191",
       "frameworks": [
         "svelte",
         "react",
@@ -5046,7 +5049,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:330c371b0813d509f1d4ea5e6891529d0b59f0002cbc04c5ae5e6543787cf282",
+      "digest": "sha256:547c8ed149b57eee51d0b7cfbde8ccd3d53eef9f6aa35f3196f56e83505e5683",
       "frameworks": [
         "svelte",
         "react",
@@ -5073,7 +5076,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5159159a5ec17794a60d3713ae9eb8f94f808d83512ddf9fc81a9594077cd617",
+      "digest": "sha256:02f9696b81a02ee95efe4d88c9bc0bdc9fe7c68420753e444b08a6a59a58ab96",
       "frameworks": [
         "svelte",
         "react",
@@ -5100,7 +5103,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:ff3628f6eb2ef115b525ccbd38a40641a3f8a74033326393478ff5bed9708765",
+      "digest": "sha256:95912c15eaa192a1de536a4240b57e832e7a4035c3f1e391617adb08a1342ff6",
       "frameworks": [
         "svelte",
         "react",
@@ -5127,7 +5130,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b584d90133c9a3772970cd9613bb47286cfcf8c375eba9764493bacf0f974ce9",
+      "digest": "sha256:2f18ac1d096ac2bb7656101a193b571682e9c985c15703d8f1d449b2bf12752e",
       "frameworks": [
         "svelte",
         "react",
@@ -5176,7 +5179,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:97ce48a797cbb2e2eba43b6a2c48f8674e9d9e80a7266b81c6c69ee3b1ceeeb3",
+      "digest": "sha256:bd4213376b4b7bedef2fc71ad5601e1b52de7420fa9bfad13e1440319024e25e",
       "frameworks": [
         "svelte",
         "react",
@@ -5203,7 +5206,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b4a0ea9c98ccbfd75999440e8ec2b609419861961491c86d7f6103cc4e7dd9cb",
+      "digest": "sha256:a3258fdafbe94f58a14b62a11c40c1ca440671ed9dc5bdd900bb450ee4e83f22",
       "frameworks": [
         "svelte",
         "react",
@@ -5230,7 +5233,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:20336bb53218320a17354998a8b4c08b48c3e75caf6c7d46e087940eb3c79e48",
+      "digest": "sha256:35c3f7bc31340e14e70b42a50e36f8760e023d62df7c310e4f8a8f524ba3b30c",
       "frameworks": [
         "svelte",
         "react",
@@ -5257,7 +5260,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:24b11b1208b59a2cd69a9f8b95464c7d294abf1b460892492f483eca90e3d76f",
+      "digest": "sha256:ca443a23648bc83e04e579c07e303a37a00d8c5f0966c5e3b6fcde5d9d5a4477",
       "frameworks": [
         "svelte",
         "react",
@@ -5284,7 +5287,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f53b3c752a56c18b61b753ab7f6b2cac85e8ee0153c5c173d0c03446669f0ca3",
+      "digest": "sha256:53bc0db382b9cc3b2f67fb3be668ead3effa7bdca3a929c8f4130185fccdfd48",
       "frameworks": [
         "svelte",
         "react",
@@ -5311,7 +5314,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:1292cf759239327e0b33131b2e6226f600a7cbe67794c986f4384d8f88e83b21",
+      "digest": "sha256:accaf75e6c244c4190fde23d4c0cac696fd9c1fbfefc7a2f89516544069eac98",
       "frameworks": [
         "svelte",
         "react",
@@ -5338,7 +5341,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:4d7e791440053586e828491e4503bc6e8e539d8d0db256587c5cfa5e5bb953f7",
+      "digest": "sha256:051770e6b69d0fc90a1d68047cf362e7b9da4193f10587f48e1c058ed668a79e",
       "frameworks": [
         "svelte",
         "react",
@@ -5365,7 +5368,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:a69ea250ea08e968168c72901ddb5f36e24fcb4ac28ec1e6f6eab45ec5865d92",
+      "digest": "sha256:187d633d33fa31bfd0b7bd804485fdb01e0d4182ade16adb61caecbfe0f85e98",
       "frameworks": [
         "svelte",
         "react",
@@ -5392,7 +5395,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:5941314c70c8d54eb371e69804e9af7019aeef81b8fb8c063bd7de422274ee18",
+      "digest": "sha256:8392a2bd6e9ec388568e10ec7bda5f2b4b66ae985b7033fafd042dc4a3557a92",
       "frameworks": [
         "svelte",
         "react",
@@ -5419,7 +5422,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:f36ca94d6fe61195f069e2173ac8569b09ef8bc79a41bb12f5556f22c9d02d18",
+      "digest": "sha256:c2e7bf10f4bbd6114778f36448e3358c61ebbc97deffa91d6877a0f989562ed6",
       "frameworks": [
         "svelte",
         "react",
@@ -5446,7 +5449,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:031182c5b3daa5a10a387a1537aa225fa39a1560fb15626bf9b698b32e9973c0",
+      "digest": "sha256:5af182db387598bab1c4db5b557b0399ee42b7f5458d158135b2316c959bd3d6",
       "frameworks": [
         "svelte",
         "react",
@@ -5473,7 +5476,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9a348d17aacf49838bdc715e105a42ee2cf1a6fdbad19f20054ef077fd44698b",
+      "digest": "sha256:ddfe2b094414942522aca56e9506db73619969991da7d6fa07b4fde694d7a553",
       "frameworks": [
         "svelte",
         "react",
@@ -5500,7 +5503,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:69b57de33077e7080daf2743c11e5afae9143c6a6fc3be79f5a1b837b100a817",
+      "digest": "sha256:202cf1822980e5605f728ac438a16b31a798b90f6401c2c45603d068150f406d",
       "frameworks": [
         "svelte",
         "react",
@@ -5549,7 +5552,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:3425750d584afa24b5104acc3e53a9415d5465d8094322dad0b28f13c84e380e",
+      "digest": "sha256:b3bd6f37d512a049db3714c85caf814addea0cf5750b7151450e5a4909e3ee07",
       "frameworks": [
         "svelte",
         "react",
@@ -5576,7 +5579,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:2b450cf7f3b2b280f00edeca6bc4db49dbbd926e37ebd7626f8135685654d7e6",
+      "digest": "sha256:f254a391caacaaf231a64cf8ff5f45c73cee61cab6ee496c3bbd21c0da3fdb15",
       "frameworks": [
         "svelte",
         "react",
@@ -5603,7 +5606,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:fef05c8ef7296d5f44faaf60de0bd85476985b1f448e05665056740be491306d",
+      "digest": "sha256:6d8ef6da48ae7f1006e1da5bc39c6b7c5a150011f10c67908b6efad3a490dcf9",
       "frameworks": [
         "svelte",
         "react",
@@ -5630,7 +5633,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:b1b71beba02614fe3b639cbd546310455c42d16538ffef78c3b1e3029500cca5",
+      "digest": "sha256:e3daa5f8f30af7ef29f80d1b7f0537f205821f6f7c015e99bb4d77e8e05ac38e",
       "frameworks": [
         "svelte",
         "react",
@@ -5657,7 +5660,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:9af23fa75301bc531729d04a68d19cee214fe7b67b1b2e202baf8370a6c11444",
+      "digest": "sha256:46001c89b3398f91751ea37604ff3b926721a70f9f1edd9e10f2a87ff509baf3",
       "frameworks": [
         "svelte",
         "react",
@@ -5684,7 +5687,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:aaabaa9ab01bfab547ae4deb575eee036c1421a86f102c3c046f0c986c5b71d8",
+      "digest": "sha256:e2167268ea3fda31e126da51e4905c90b8e12ff45eb117d4d9a0882a563e5a43",
       "frameworks": [
         "svelte",
         "react",
@@ -5733,7 +5736,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:26794d42117b0fc08eceeba3229e7c9ca715e5ae360b599214b52f317dc1f327",
+      "digest": "sha256:a72cd6c7b887bc70519bf1c31fb2a06f7a9c340cd693a9e2edc879d6803fab9e",
       "frameworks": [
         "svelte",
         "react",
@@ -5760,7 +5763,7 @@
       "deliveryChannels": [
         "source"
       ],
-      "digest": "sha256:14cd3979a3e601c70e8ef2509328ef9b9596c98af0c4c56cb7de0595c9507d0f",
+      "digest": "sha256:a8457b889cc75ed506b4c63654336fc9eaf3b4826e4f91dce518bc3f67cd2d1b",
       "frameworks": [
         "svelte",
         "react",
@@ -5787,6 +5790,6 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "registryRevision": "sha256:a9c344bcffc5a63bb2d6a7fdec3c43b050bd8d8daa083b2921823489222ada0f",
-  "sourceCommit": "fb8ce4ead8b54840c7ae6d1ed360c245d444ea4c"
+  "registryRevision": "sha256:d3fe0f27b18f4efe208b5fe172347b560a69880b65916330fe79b6adfc67e3c3",
+  "sourceCommit": "82ace60a6a27e175b0dfa87a0030755b0c7df683"
 }

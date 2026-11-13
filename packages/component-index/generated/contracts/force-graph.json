@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:f01cf70dee003c9d16f820da90cbe938b36947629d17eeb8b4950ef758a3b96f",
-  "entryDigest": "sha256:b3ffbd99bd934d685e512940a8356566081541927c4b35296332146b6db40fe0",
+  "digest": "sha256:0c54a2a96297e31522e5685b2f6db05bbd6c9a66739be76cd0b2a3e3cef57fc7",
+  "entryDigest": "sha256:42b3cb00107e74b5801617a63eb5087206122846b7b8bbb4c6f2d75faa2ea9b0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -1300,6 +1300,9 @@
             },
             "type": "array"
           },
+          "legendLabel": {
+            "type": "string"
+          },
           "mergePair": {
             "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
@@ -1356,6 +1359,7 @@
         },
         "required": [
           "edges",
+          "label",
           "nodes"
         ],
         "type": "object"
@@ -1363,7 +1367,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4fe13417fdc41bb12f5ed7239d805563f3bee45d82e59910150b125fc7302de4",
+        "declarationDigest": "sha256:c1c5b40381c0d164f90bb683ea5a0eda38acdf12baaa6f30409fa146c1cfd1b3",
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",

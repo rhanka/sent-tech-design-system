@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:1ea3e9cc28f4ea92654c20bb93149a0dd9853329d0a46828bca7962eb56a5d87",
-  "entryDigest": "sha256:a2ac26afc462116d7b49de17b1e0aac39167871b3a017013205922bb2eb6656a",
+  "digest": "sha256:3d4890f4b13f2953afb391d8055362c2f5482f78d76b09f6ac3cb5ee4453149f",
+  "entryDigest": "sha256:58afe4192d330d1e428f785f27a83f2c7de53b42c72d9356c70ad25710814cc4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-svelte/dist/Highlight.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HighlightProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
