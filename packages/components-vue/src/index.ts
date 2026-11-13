@@ -594,8 +594,8 @@ export type {
   BumpChartSeries,
   BumpChartTone,
 } from "./BumpChart.js";
-export { FilterPill } from "./FilterPill.js";
-export type { FilterPillProps, FilterPillTone } from "./FilterPill.js";
+export { default as FilterPill } from "./FilterPill.vue";
+export type { FilterPillProps, FilterPillTone } from "./FilterPill.vue";
 export { default as FilterBar } from "./FilterBar.vue";
 export type { FilterBarProps } from "./FilterBar.vue";
 export { SelectionChip } from "./SelectionChip.js";
