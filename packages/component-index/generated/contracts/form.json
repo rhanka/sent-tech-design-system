@@ -1,8 +1,8 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:1f96e3cf14b644823de35d46a14e2fc98bc9b0c579b6d1e90e9743969e983201",
-  "entryDigest": "sha256:8fabaf9901589b2b73d41dd706b0a9606ae3ce66c532619608e900b474e1b0fd",
+  "digest": "sha256:60c45fad71c3905414d8c8d790f6cfb3da5f0fbc638c3c5b7bc111a1911de756",
+  "entryDigest": "sha256:910e5920d3ba13194164dd3d395418eab52839b024dba042ff09fa698211cb74",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -52,7 +52,7 @@
         "declarationPath": "packages/components-angular/dist/Form.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -107,11 +107,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
