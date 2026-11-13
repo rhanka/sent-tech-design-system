@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MessageActions.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MessageActions.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Message action row with icon buttons and optional overflow.",
     "fr": "Rangée d’actions d’un message avec boutons icône et overflow optionnel."
   },
-  "digest": "sha256:8f6dc32484469c2662b4cf08a5035121e5738cf788995452d3751de666d5e506",
+  "digest": "sha256:450fa4fcefafd7b65d22383095c8e7f6a40f075a78882b8a949deb4e41985ab5",
   "displayName": "MessageActions",
   "format": "component-entry/v1",
   "frameworks": [

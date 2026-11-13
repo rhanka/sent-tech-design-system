@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FileUploader.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:27fb2136b50d3ae0ab9dda773871964b29094a57a6016b35b1cdfbc110b9c064",
+      "digest": "sha256:aa8c8df405a34d4c29895484e51eef822427903615453a447201d0e1c4fde661",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FileUploader.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FileUploader.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:0af1b2bc1c494a63bd85a40966651c3e3dc5555d5b4a79efa1bb2009a99cc0b5",
+  "digest": "sha256:afb27ab4cdfa25cab6ce6209925b4c926e0ad3aa82cee501227940ea34f00e48",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

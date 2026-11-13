@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:18408d1d41b1e1f218018442b66cf0461c1b440cda9c7595a0d219c0acda29e1",
-  "entryDigest": "sha256:bc0a7157cc38ff1a49515e6599358751b721bbe25e83e1420bddc28e9fe4c2ca",
+  "digest": "sha256:6b6973a95deb5246570a9a7e406d89656cd12da855d212eeb9cece491538d62c",
+  "entryDigest": "sha256:0434f0d350b091e0c60e57e856a25f48ed4dbc53a2904a608f04f5a7139bb462",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -166,7 +166,7 @@
         "declarationPath": "packages/components-angular/dist/Menu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -312,7 +312,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -733,6 +733,25 @@
           }
         },
         {
+          "name": "item-icon",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              }
+            },
+            "required": [
+              "index",
+              "item"
+            ],
+            "type": "object"
+          }
+        },
+        {
           "name": "item-label",
           "params": {
             "additionalProperties": false,
@@ -757,7 +776,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:532bda1817eb511714b0a65f25b391d6b239f85752bbe099bcedfbd3f6414f97",
+        "declarationDigest": "sha256:a557ff4318fbd7c4da2e3397f4a643dfc6bad59c528cba65db0d79cf82579e5c",
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",

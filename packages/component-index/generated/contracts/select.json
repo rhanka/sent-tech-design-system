@@ -1,8 +1,8 @@
 {
   "componentId": "select",
   "contractSource": "derived",
-  "digest": "sha256:e4a5175d986dd1524f1e51a5c9d3c9379a31a1463c6703a5360c7f7c5950576d",
-  "entryDigest": "sha256:123e82b41a39e47ef6fc5ba6020590d89c3184ac27c3f62abcc9c4ec7bcc8fe0",
+  "digest": "sha256:bc1586101dc4b3a0cc69be0bb0e5f3d12cdbf622f3f1a770264821a887a1377e",
+  "entryDigest": "sha256:9014f68538850fd06db0188679b6e5651318c6a59ca1e76a9b5c2f06b1d3e7f5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,7 +117,7 @@
         "declarationPath": "packages/components-angular/dist/Select.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -207,7 +207,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SelectProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -401,15 +401,43 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "unknown"
+        },
+        {
+          "name": "scope.option",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [
         {
           "name": "default"
+        },
+        {
+          "name": "error-text"
+        },
+        {
+          "name": "helper-text"
+        },
+        {
+          "name": "label"
+        },
+        {
+          "name": "option-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "option": {}
+            },
+            "required": [
+              "option"
+            ],
+            "type": "object"
+          }
         }
       ],
       "source": {
-        "declarationDigest": "sha256:230236afba013ca3b28c6de624633f8eb6437cfdfd807820632cb48e2114deb6",
+        "declarationDigest": "sha256:c66fe8b1fea21507cdd60485813354c38eaf96a1cbc671237e563c1627803084",
         "declarationPath": "packages/components-vue/dist/Select.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SelectProps",

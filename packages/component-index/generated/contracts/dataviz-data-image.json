@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-data-image",
   "contractSource": "derived",
-  "digest": "sha256:ea578a1a8e6977da760fc2df419b22fac1514d761005e47dabaff3ede83d95dc",
-  "entryDigest": "sha256:d954698883633776a385896cda9ea99208e9232dae9dde59f66efcb29f8b9f2f",
+  "digest": "sha256:392c73cc0e6d804edbf5146990fb89378b2f120c560a76a4c49885a46e6be4b6",
+  "entryDigest": "sha256:77107de9081efd6d81a239775647271a987e423d9d4e4850465710332e1b36d8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -83,7 +83,7 @@
         "declarationPath": "packages/components-angular/dist/DataImage.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DataImageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -174,7 +174,7 @@
         "declarationPath": "packages/components-react/dist/DataImage.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DataImageProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

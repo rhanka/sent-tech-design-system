@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Search.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2cd92e8fe00a5e669a62642245dba4a9500bc4ea88a8d474e791653ae01999a3",
+      "digest": "sha256:02739a3a6574ef7f8712cc7510ea9d79bff617848d1ddb9f1210b2ce04435939",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Search.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Search.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Search field with icon and clear button.",
     "fr": "Champ de recherche avec icône et bouton clear."
   },
-  "digest": "sha256:eebc4e9d5921487ab29621a95c8fd2da0497686dbc25855a19cc2fa91828e342",
+  "digest": "sha256:70eb53fb59f45f38953599ad9a55ead83dc0e0359f9d00929958cf114e1ed353",
   "displayName": "Search",
   "format": "component-entry/v1",
   "frameworks": [

@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Notification.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Notification.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline/actionable notification with info/success/warning/error tones.",
     "fr": "Notification inline/actionable avec tonalités info/success/warning/error."
   },
-  "digest": "sha256:7c76e07efcc2590bc373f1168137dae981a499bc5b6b4519e7fa2c188fa87d38",
+  "digest": "sha256:7c40872cc5e962114689275d8ca7f94ba969dcdedf8ca75676cdc79f86295631",
   "displayName": "Notification",
   "format": "component-entry/v1",
   "frameworks": [

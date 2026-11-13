@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Header.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:2c1f310e6994f769c87c4ba3fd042cd19e621cf57842c17eb849a664d03a8a93",
+      "digest": "sha256:02240837b2aae1929a68271d7d008dba7b82a261999e9e239eb0e68052dfa953",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Header.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Header.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:94ae2336815a390a0c10abab632cf81a7d1920ef926a4608c1e8e317a4968dd4",
+  "digest": "sha256:c4ac9202d64f743dd8b5238de57e97ce0c000dded46c2d6f36accd1fe5f14f97",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

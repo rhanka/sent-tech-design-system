@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CodeSnippet.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:c0cefc7ebd3acff0d34837b9ea39d51249712c212a5faca9526ed5b51fe72611",
+      "digest": "sha256:b788b589de1323fc0036f9390d942443fa9a4690974a73480f7defd5093eda94",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/CodeSnippet.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CodeSnippet.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Inline or block code snippet, with copy.",
     "fr": "Extrait de code inline ou bloc, avec copie."
   },
-  "digest": "sha256:5f8824f1a187d9e0fbdc345149839888eb773178288e664a763f2e50463e40dc",
+  "digest": "sha256:e74a30268c1ce074dd5573a925b68cdd51bc1890b9918d74d611982462866679",
   "displayName": "CodeSnippet",
   "format": "component-entry/v1",
   "frameworks": [

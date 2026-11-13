@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Radio.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d24f326a256efe90b9c729e408bbbc490f2b3fafb865ed75974bde0d7f406801",
+      "digest": "sha256:bd72226d0c5df84aca96f7c9fa04a7542120f5b27522ded3c83a23d20b986c3d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Radio.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Radio.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Radio button grouped via `name`.",
     "fr": "Bouton radio groupé via `name`."
   },
-  "digest": "sha256:da2e563bcb228246f7a0daf88104c9a9613da728d8e7524d98202361be2e0dbc",
+  "digest": "sha256:1520f2e81a375da41b945e6bff8fbf62d4580fa670c9a7e01d4ad5e0a6c9be22",
   "displayName": "Radio",
   "format": "component-entry/v1",
   "frameworks": [

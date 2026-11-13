@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ItemChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ItemChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Parliament / hemicycle chart: seats in concentric rows, contiguous blocks per group, size read from arc length.",
     "fr": "Graphe « parlement » / hémicycle : sièges en rangées concentriques, blocs contigus par groupe, taille lue à la longueur de l'arc."
   },
-  "digest": "sha256:3b21229f7f68b0734e1b8babbdc596eb3d1fbf694dc62fd003fb20469bbe008a",
+  "digest": "sha256:5db92ba08d3f1983d67ab28abd2e75ba8ecf738f339b1856a30d37159bc8a5f0",
   "displayName": "ItemChart",
   "format": "component-entry/v1",
   "frameworks": [

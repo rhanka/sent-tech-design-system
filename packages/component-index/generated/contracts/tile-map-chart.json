@@ -1,8 +1,8 @@
 {
   "componentId": "tile-map-chart",
   "contractSource": "derived",
-  "digest": "sha256:5d2a0c7c3e75032fb77c5080dedaeb7faedeba4fee0cb28bf86d6e86642ac4ac",
-  "entryDigest": "sha256:b40791c158c41839d5b9d20fdd202c921ccd50ecec409bf10c93e434c6e8e8d6",
+  "digest": "sha256:65c612f2cf42ea19dd43f5c90827d14c3c230b843e54cb94c0dc6f2d4222d07a",
+  "entryDigest": "sha256:a8a27f74d0cca8fe48fb274ab7ebb0ed914b21609769b2c8de9b8b998725a913",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/TileMapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TileMapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-react/dist/TileMapChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TileMapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

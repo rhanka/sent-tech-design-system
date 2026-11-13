@@ -17,11 +17,11 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Combobox.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:cca19f4d910fccc303d3372c9d6392e2fa983a0be94bb8756832c2884a3a0b34",
+      "digest": "sha256:bab50742bac4932b7930b8782fe89a181643dabcba2c6579f3c8700954844cad",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Combobox.vue",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Combobox.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Autocomplete text field with selection from a list.",
     "fr": "Champ texte autocomplété avec sélection dans une liste."
   },
-  "digest": "sha256:3c7090cba2df24a6df48108be6db75cd248c1c8c41aaec2c568c6466c28521dd",
+  "digest": "sha256:251c5ef98963f8c66c6297b2a8bd6e744157f8bc7830b51b3d8a376f4f807880",
   "displayName": "Combobox",
   "format": "component-entry/v1",
   "frameworks": [

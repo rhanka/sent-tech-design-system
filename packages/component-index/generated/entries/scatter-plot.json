@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ScatterPlot.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ScatterPlot.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Scatter plot (two numeric axes), tooltip and accessible value list.",
     "fr": "Nuage de points (deux axes numériques), tooltip et liste de valeurs accessible."
   },
-  "digest": "sha256:215332f97356b2a882f3f08c9c381b34bf7dce2a2c14d894d40cc9cc9e2f2136",
+  "digest": "sha256:596c8199e794f0da0f4e59d1821a315b5915166f8922a393c37b2491644c59a3",
   "displayName": "ScatterPlot",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:eae5029505176581974363ff30141591c6089e42a6cd9768443c95e1aa3c6f27",
-  "entryDigest": "sha256:67a456138e490b3c04555862c7f61fc5f3435ed6ecd57e459f1b51d74961995e",
+  "digest": "sha256:8dd418124cdc94a26140a463528ee79722023f585357ad2ede092eb3465c02ef",
+  "entryDigest": "sha256:308035be096aba955b0a31821b39360d74315cd9d7bc47548b1d654c8679bb1a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -65,7 +65,7 @@
         "declarationPath": "packages/components-angular/dist/Popover.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PopoverProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

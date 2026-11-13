@@ -1,7 +1,7 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:708c7bc067b4ece51e10569bf773708a14e934a5fc90c47941f774719ce1e3cb",
+  "digest": "sha256:eb753028f35f7cff565ca741619305a67b1a9592ef435bc93e9a611c4035c311",
   "entryDigest": "sha256:668c7b38dff43b8920baaddc13325227805563ba639f277c71a072397e5e5692",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c8874e185f44c813221453ebd449085ab5d9067f2c9cc10900119d661e5c877c",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/LabelledIconButton.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b8b96c574482182c47ce6d3004f9d80b53150681c98e1c222db20f9e20a8a37e",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/LabelledIconButton.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],

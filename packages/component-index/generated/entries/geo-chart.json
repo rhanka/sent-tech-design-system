@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/GeoChart.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/GeoChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Generic layered 2D map (GeoJSON, choropleth, points, density, flows, hexbin, clusters), equirectangular or Mercator projection, accessible value list.",
     "fr": "Carte 2D générique à couches (GeoJSON, choroplèthe, points, densité, flux, hexbin, clusters), projection équirectangulaire ou Mercator, liste de valeurs accessible."
   },
-  "digest": "sha256:2a0e67c7a9775c7ac181199daaf6c8a7e030d0c99aaff390789bb52f9b24e334",
+  "digest": "sha256:25ab7b47b4a9141e077c729e6fd2095a7cfa9f1625b399f0d566b78a0c119298",
   "displayName": "GeoChart",
   "format": "component-entry/v1",
   "frameworks": [
