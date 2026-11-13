@@ -72,8 +72,9 @@ The hosts execute the same unpublished `diagram-canvas/test-support/flowHostCase
 table and assertion runner. The Svelte suite compares the complete normalized
 scene and flow navigator DOM against Vue after every case, including controlled
 proposals, acceptance, hover/focus, focus repair, fold changes and zoom.
-Canvas builds emit ignored `dist-test-support` and `dist-host-support`; neither
-is inside published `dist` or exposed by package exports. Both hosts also run
+Both hosts import the fixtures and assertion runner directly from source; no
+support build is needed in CI shards. These modules are unpublished and are
+not exposed by package exports. Both hosts also run
 SSR arrows/badges, 200-change work budgets and retained-selection idle checks.
 Card text measurement and frozen geometry are shared through
 `@sentropic/diagram-canvas/diagramCardModel`, with Svelte's old module retaining

@@ -7,7 +7,7 @@ import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/in
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
 
-import { flowFixture, flowMeasure } from '../../diagram-canvas/dist-test-support/flowFixture.js';
+import { flowFixture, flowMeasure } from '../../diagram-canvas/test-support/flowFixture.js';
 
 const engine = vi.hoisted(() => ({ create: vi.fn(), destroy: vi.fn() }));
 vi.mock('@sentropic/bpmn-canvas', () => ({ createBpmnCanvas: (...args: unknown[]) => engine.create(...args) }));
