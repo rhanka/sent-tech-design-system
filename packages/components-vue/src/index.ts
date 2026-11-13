@@ -506,12 +506,12 @@ export { TimePicker } from "./TimePicker.js";
 export type { TimePickerProps, TimePickerFormat, TimePickerSize } from "./TimePicker.js";
 export { Calendar } from "./Calendar.js";
 export type { CalendarProps, CalendarValue } from "./Calendar.js";
-export { SlideIndicator } from "./SlideIndicator.js";
+export { default as SlideIndicator } from "./SlideIndicator.vue";
 export type {
   SlideIndicatorProps,
   SlideIndicatorVariant,
   SlideIndicatorSize,
-} from "./SlideIndicator.js";
+} from "./SlideIndicator.vue";
 export { Autosave } from "./Autosave.js";
 export type { AutosaveProps, AutosaveStatus, AutosaveLabels } from "./Autosave.js";
 export { Portal } from "./Portal.js";
