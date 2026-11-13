@@ -230,8 +230,8 @@ export { TopNFilter } from './lib/TopNFilter.js';
 export type { TopNFilterProps } from './lib/TopNFilter.js';
 export { ValueSlicer } from './lib/ValueSlicer.js';
 export type { ValueSlicerProps } from './lib/ValueSlicer.js';
-export { ExportMenu, rowsToCsv } from './lib/ExportMenu.js';
-export type { ExportMenuProps } from './lib/ExportMenu.js';
+export { default as ExportMenu, rowsToCsv } from './lib/ExportMenu.vue';
+export type { ExportMenuProps } from './lib/ExportMenu.vue';
 export { DateRangeFilter, dateRangeToSpec } from './lib/DateRangeFilter.js';
 export type { DateRangeFilterProps } from './lib/DateRangeFilter.js';
 export {
