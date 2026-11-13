@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "FilterBar",
+  "sourceRevision": "da5ff6ca183950a8177819520fd6f7970bda7e2e",
+  "source": "src/FilterBar.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Filtres actifs\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\">Pill A</div></div>"
+    },
+    {
+      "id": "with-clear",
+      "html": "<div aria-label=\"Filters\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\">Pill A, Pill B</div><button class=\"st-filterBar__clearAll\" type=\"button\">Tout effacer</button></div>"
+    },
+    {
+      "id": "custom-clear-label",
+      "html": "<div aria-label=\"Filters\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\">Pill</div><button class=\"st-filterBar__clearAll\" type=\"button\">Clear all</button></div>"
+    },
+    {
+      "id": "custom-class",
+      "html": "<div aria-label=\"Styled\" class=\"st-filterBar consumer\" data-bench=\"filter\" role=\"group\" style=\"color:red;\"><div class=\"st-filterBar__pills\">Pill</div><button class=\"st-filterBar__clearAll\" type=\"button\">Tout effacer</button></div>"
+    },
+    {
+      "id": "no-slots",
+      "html": "<div aria-label=\"Empty bar\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"></div></div>"
+    },
+    {
+      "id": "no-slots-clear",
+      "html": "<div aria-label=\"Empty bar\" class=\"st-filterBar\" role=\"group\"><div class=\"st-filterBar__pills\"></div><button class=\"st-filterBar__clearAll\" type=\"button\">Tout effacer</button></div>"
+    }
+  ],
+  "sourceSha256": "510d14a5ca3e46ea7b23b409a9c26cd6e2a8d8f4b2a680775e14e0587accf539",
+  "fixtureSha256": "65e8ca57ff8c9feaf526efe9c9b68226ec1e70aadc1a1aca1fc14bf9296e4df2",
+  "publicExports": [
+    {
+      "name": "FilterBar",
+      "typeOnly": false
+    },
+    {
+      "name": "FilterBarProps",
+      "typeOnly": true
+    }
+  ]
+}
