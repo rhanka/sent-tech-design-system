@@ -1,8 +1,8 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:e00e1f18a525b4ff7592ff0e1f82c2a82aa45aae011ee38d69407fffbbad40cc",
-  "entryDigest": "sha256:cbecd549968f0c11975524dc46b8a8827789f563ae26ff86cb49a0caf0a85990",
+  "digest": "sha256:6d71a689cc7450dfa79244c164202e48c387ef5a3fd346caf25e5306eb516078",
+  "entryDigest": "sha256:e82d341e297f625c2a37dc27b62dfba8f06accbe900d4e3c28397b041e85b10b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/SelectableRow.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SelectableRowProps",
-        "version": "0.40.0"
+        "version": "0.41.0"
       },
       "status": "complete",
       "unresolved": [],
