@@ -32,7 +32,6 @@
   "packages/dataviz-vue/src/lib/DrillBarChart.ts",
   "packages/dataviz-vue/src/lib/ErrorBarsChart.ts",
   "packages/dataviz-vue/src/lib/FieldPane.ts",
-  "packages/dataviz-vue/src/lib/FlamegraphChart.ts",
   "packages/dataviz-vue/src/lib/ForceGraph.ts",
   "packages/dataviz-vue/src/lib/ForecastLineChart.ts",
   "packages/dataviz-vue/src/lib/FormatPanel.ts",
