@@ -26,13 +26,14 @@ for(const host of hosts)describe(`${host.name} owner addendum`,()=>{
   if(folded&&name==='architecture')expect(view.element.querySelectorAll('[data-bundle-relation]').length).toBeGreaterThan(1);
   view.dispose();
  });
- for(const name of ownerFixtureNames().filter(n=>n.startsWith('readme')))it(`should render every visible ${name} card without refusal and keep footers (A11)`,async()=>{
+ for(const name of ownerFixtureNames())it(`should render every visible ${name} card without refusal and keep footers (A11)`,async()=>{
   const input=ownerInput(name),fixture=ownerFixture(name),view=await host.mount({...input,measureLines:undefined});
   expect(view.element.querySelectorAll('[data-card-refused],[data-zone-refused]')).toHaveLength(0);
   for(const node of view.element.querySelectorAll<HTMLElement>('[data-scene-occurrence]')){
    expect(node.querySelector('[data-diagram-icon]')).not.toBeNull();
+   const card=node.querySelector<HTMLElement>('.st-diagramCard');if(card){expect(parseFloat(card.style.height)).toBe(200);expect(parseFloat(node.style.width)).toBe(460);}
    const source=fixture.cards.find(c=>'occurrence:e.'+c.id===node.dataset.sceneOccurrence)!;
-   if(source.footer){const footer=[...node.querySelectorAll('.st-diagramCard-footerLine,.st-diagramZone-footerLine')].map(el=>el.textContent).join('');expect(footer.replace(/\s+/g,'')).toBe(source.footer.replace(/\s+/g,''));}
+   if(source.footer){const group=node.querySelector('[role=group]')!;expect(group.getAttribute('title')).toContain(source.footer); const id=group.getAttribute('aria-describedby')!;expect([...node.querySelectorAll('[id]')].find(el=>el.id===id)?.textContent).toContain(source.footer);}
   }
   view.dispose();
  });

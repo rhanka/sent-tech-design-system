@@ -375,5 +375,5 @@ function assertOwnerCardRetention(kind: 'long' | 'vertical' | 'unknown') {
   expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
   expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.body.join('').replace(/\s+/g,''));
   if(kind === 'unknown') { expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true); expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull(); }
-  if(kind === 'vertical') { expect(result.layout.box.height).toBeGreaterThan(200); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
+  if(kind === 'vertical') { expect(result.layout.box).toEqual({width:460,height:200}); expect(result.layout.bodyBottom).toBeLessThanOrEqual(result.layout.bodyArea.bottom); }
 }

@@ -870,7 +870,9 @@ describe("REV2 item 5 — toggle-bearing collapsed header wraps at the reduced w
       folded: true,
     });
     expect(JSON.stringify(reduced.lines)).not.toBe(JSON.stringify(full.lines));
-    expect(header.title.lines).toEqual(reduced.lines);
+    expect(header.title.lines[0]).toBe(reduced.lines[0]);
+    expect(header.title.lines).toHaveLength(2);
+    expect(header.title.lines.at(-1)).toMatch(/…$/u);
   });
 });
 

@@ -49,7 +49,7 @@ for (const host of hosts) describe(`${host.name} diagram defect regressions`, ()
     });
   }
 
-  it('should wait for fonts, grow once with computed canvas metrics and invalidate the cache', async () => {
+  it('should wait for fonts, truncate once with computed canvas metrics and invalidate the cache', async () => {
     let ready!: () => void;
     Object.defineProperty(document, 'fonts', { configurable: true, value: { ready: new Promise<void>(resolve => { ready = resolve; }) } });
     const context = { font: '', measureText: vi.fn((text: string) => ({ width: text.length * 16.5 })) };
@@ -68,9 +68,9 @@ for (const host of hosts) describe(`${host.name} diagram defect regressions`, ()
     expect(cache.stats().misses).toBe(2);
     const after = results.at(-1)!;
     if (before.status !== 'laid-out' || after.status !== 'laid-out') throw new Error('layout refused');
-    expect(after.fit.height).toBeGreaterThan(before.fit.height);
+    expect(after.measurements).not.toEqual(before.measurements);
     const visible = [...view.element.querySelectorAll<HTMLElement>('[data-scene-occurrence]')].map(node => node.dataset['sceneOccurrence']!);
-    expect(visible.some(id => after.view.entityOccurrences[id]!.geometry.height > before.view.entityOccurrences[id]!.geometry.height)).toBe(true);
+    for(const id of visible)expect(after.view.entityOccurrences[id]!.geometry.height).toBe(200);
     expect(view.element.querySelectorAll('[data-card-refused], [data-zone-refused]')).toHaveLength(0);
     window.dispatchEvent(new Event('resize')); await view.flush();
     expect(results).toHaveLength(2);
@@ -101,14 +101,15 @@ for (const host of hosts) describe(`${host.name} diagram defect regressions`, ()
       defaultFolds: input.collapsed, resolveGlyph: getDiagramGlyph,
       onLayout: (value: LayoutResult) => results.push(value) });
     await Promise.resolve(); await view.flush(); await view.flush();
-    expect(results).toHaveLength(1);
+    expect(results).toHaveLength(2); // one initial correction for the loaded face
     view.element.querySelector<HTMLElement>(`[data-scene-occurrence="${parent}"] button[aria-expanded]`)!
       .dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await view.flush(); await Promise.resolve(); await view.flush(); await view.flush();
     expect(results).toHaveLength(3); // unfold, then one correction for the newly visible text
     const before = results[1]!, after = results[2]!;
     if (before.status !== 'laid-out' || after.status !== 'laid-out') throw new Error('layout refused');
-    expect(after.view.entityOccurrences[child.id]!.geometry.height).toBeGreaterThan(before.view.entityOccurrences[child.id]!.geometry.height);
+    expect(after.view.entityOccurrences[child.id]!.geometry.height).toBe(200);
+    expect(after.warnings.some(w=>w.code==='card-overflow'&&w.severity==='info')).toBe(true);
     view.dispose();
   });
 });

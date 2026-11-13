@@ -157,16 +157,16 @@ exports[`should compare memory/false grouping, reading order and channel geometr
     "newColumns": [
       [
         "svc-live",
-        "api-memory",
-        "st-record",
+        "st-mandates",
+        "st-blacklist",
       ],
       [
-        "st-mandates",
+        "api-memory",
         "rt-dreaming",
       ],
       [
+        "st-record",
         "cmp-guard",
-        "st-blacklist",
       ],
     ],
     "oldColumns": [
@@ -297,13 +297,11 @@ exports[`should compare vue-globale/false grouping, reading order and channel ge
     "newColumns": [
       [
         "pkg-h2a",
-        "svc-h2a-mcp",
-      ],
-      [
-        "api-h2a",
-      ],
-      [
         "rt-h2a",
+      ],
+      [
+        "svc-h2a-mcp",
+        "api-h2a",
       ],
     ],
     "oldColumns": [
@@ -383,16 +381,14 @@ exports[`should compare vue-globale/false grouping, reading order and channel ge
     "newColumns": [
       [
         "pkg-mesh",
-        "svc-artifacts",
-      ],
-      [
-        "api-mcp-registry",
-      ],
-      [
         "pkg-artifacts",
       ],
       [
         "svc-memory-access",
+        "svc-artifacts",
+      ],
+      [
+        "api-mcp-registry",
       ],
     ],
     "oldColumns": [

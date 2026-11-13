@@ -1,10 +1,13 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
+  const descriptionId = $props.id();
   import type { Snippet } from "svelte";
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZoneHeader from "./DiagramZoneHeader.svelte";
   import {
     ZONE_GEOMETRY,
     defaultCardMeasure,
+    zoneFullText,
     layoutZone,
     zoneCollapsedCardProps,
     type CardLineMeasure,
@@ -202,9 +205,12 @@
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"
+      title={zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })}
       aria-label={title}
+      aria-describedby={descriptionId}
       onclick={() => onSelect?.({ entityId })}
     >
+      <span id={descriptionId} hidden>{zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })}</span>
       {#if header !== undefined}
         <!-- Every part below is absolutely positioned from the shared
              layout's inline offsets (review pass 4): the CSS border is
@@ -246,7 +252,7 @@
           {/if}
           <div class="st-diagramZone-footer" style={footerStyle}>
             {#each header.footer as line, footerIndex (footerIndex)}
-              <span class="st-diagramZone-footerLine">{line.text}</span>
+              <span class="st-diagramZone-footerLine" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
             {/each}
           </div>
         {/if}

@@ -160,9 +160,9 @@ describe("DC-2a §7.5 tuning grid on the 31 views", () => {
         cell.meanDisplayScale >= defaults.meanDisplayScale &&
         cell.meanFrameFill >= defaults.meanFrameFill,
     );
-    // Card/footer growth changes this observational ranking. The hard
+    // Fixed card sizes change this observational ranking. The hard
     // collision, containment, gap and readability gates above still hold.
-    expect(winners.map((cell) => `${String(cell.tallBias)} / ${String(cell.emptyPenaltyWeight)}`)).toEqual(["1 / 0","1 / 0.4","1 / 0.8","1.6 / 0","2.2 / 0.4"]);
+    expect(winners.map((cell) => `${String(cell.tallBias)} / ${String(cell.emptyPenaltyWeight)}`)).toEqual(["1 / 0","1 / 0.4","1 / 0.8"]);
   });
 
   it("hysteresis: every band of the grid gives the same toggles on the scenes; the default band is retained", () => {
@@ -172,9 +172,9 @@ describe("DC-2a §7.5 tuning grid on the 31 views", () => {
     for (const row of computed.hysteresis) {
       expect(row.fixedPoint, String(row.band)).toBe(true);
     }
-    expect(computed.hysteresis.find((row) => row.band === 0)!.levelsChangingOnToggle).toEqual(["case-b unfolded↔mesh-engram-folded root","case-b mesh-engram-folded↔folded root","case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"]);
+    expect(computed.hysteresis.find((row) => row.band === 0)!.levelsChangingOnToggle).toEqual(["case-trackfocus-r9 unfolded↔inner-folded occurrence:e.s2-h2a"]);
     for (const band of [0.04, 0.08, 0.12]) {
-      expect(computed.hysteresis.find((row) => row.band === band)!.levelsChangingOnToggle, String(band)).toEqual(["case-b unfolded↔mesh-engram-folded root"]);
+      expect(computed.hysteresis.find((row) => row.band === band)!.levelsChangingOnToggle, String(band)).toEqual([]);
     }
     expect(DEFAULT_ROW_PACK.orientationHysteresis).toBe(0.08);
   });

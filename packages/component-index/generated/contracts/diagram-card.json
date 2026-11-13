@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:99e51e66b122de5f9e3ca550abcd844dbf055b2ea41536238403252681c33526",
-  "entryDigest": "sha256:46d83fbf5cf8bf2a144e4a9e459c17914885895aa1f55537b14200efb37d2587",
+  "digest": "sha256:b211309fa0375101a1d047829de0ac217b389ff6d7144fb1ccd9b8eaf94c6f51",
+  "entryDigest": "sha256:cdd6a376c7ce6f3298adeb4c8f5f0a86417abe32387d4935065aad5dc1410183",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -112,8 +112,17 @@
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
@@ -157,8 +166,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -180,7 +198,7 @@
             ]
           },
           "autoSize": {
-            "description": "Scene cards grow to keep every measured line above the footer.",
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
             "type": "boolean"
           },
           "body": {
@@ -242,7 +260,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a2acced11c08d4e56c1ae2710c1dc572a29c7dab711fce31decc8cf176030d14",
+        "declarationDigest": "sha256:0e119fd0505517e8e681584a1f604511ab6372880dca599408e1fc9bbd85bea6",
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
@@ -332,8 +350,17 @@
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
@@ -377,8 +404,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -400,7 +436,7 @@
             ]
           },
           "autoSize": {
-            "description": "Scene cards grow to keep every measured line above the footer.",
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
             "type": "boolean"
           },
           "body": {
@@ -462,7 +498,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ce7d7f75e6604baf1be191b3ab9f9e1803f71956911606c4b503b5e524b69d1a",
+        "declarationDigest": "sha256:189f373607f242a29590ad05c794266c88d1e0d35229cb7372006e81a11f73e2",
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",

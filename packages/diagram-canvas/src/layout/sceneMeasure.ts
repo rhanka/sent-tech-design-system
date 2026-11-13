@@ -38,10 +38,15 @@ export function measureSceneBox(
   const card = "collapsed" in layout ? layout.card : layout;
   const header = "collapsed" in layout ? layout.header : undefined;
   const textWidth = card?.headerTextWidth ?? header!.headerTextWidth;
-  const kicker = presentation?.text.kicker === undefined ? undefined : at(presentation.text.kicker, "kicker", textWidth);
-  const title = at(presentation?.text.title ?? "", "title", textWidth);
-  const subtitle = header === undefined || presentation?.text.subtitle === undefined ? undefined
+  const rawKicker = presentation?.text.kicker === undefined ? undefined : at(presentation.text.kicker, "kicker", textWidth);
+  const rawTitle = at(presentation?.text.title ?? "", "title", textWidth);
+  const rawSubtitle = header === undefined || presentation?.text.subtitle === undefined ? undefined
     : at(presentation.text.subtitle, "subtitle", header.subtitleWidth);
+  const bounded = (raw: LineLayout | undefined, lines: readonly { text: string }[] | undefined, size: number): LineLayout | undefined =>
+    raw === undefined ? undefined : { ...raw, lines: lines?.map(line => line.text) ?? [], height: (lines?.length ?? 0) * lineBoxHeight(size), overflow: false };
+  const kicker = bounded(rawKicker, card?.kicker ?? header?.kicker, CARD_GEOMETRY.kicker.size);
+  const title = bounded(rawTitle, card?.title ?? header?.title, CARD_GEOMETRY.title.size)!;
+  const subtitle = bounded(rawSubtitle, header?.subtitle, CARD_GEOMETRY.body.size);
   const blockHeight = Math.max(projected.kind === "label" || presentation?.icon === "none" ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
   const height = header === undefined ? blockHeight : blockHeight + ZONE_GEOMETRY.headerRuleGap
     + (subtitle === undefined || subtitle.lines.length === 0 ? 0 : ZONE_GEOMETRY.subtitleGap + subtitle.height);
@@ -56,6 +61,6 @@ export function measureSceneBox(
       + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset;
   return { width: layout.box.width, height: layout.box.height, header: measuredHeader,
     bodyWidth: card?.bodyWidth ?? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline),
-    footerWidth: card === undefined ? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline) : collapsed ? 434 : card.bodyWidth,
+    footerWidth: card === undefined ? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline) : CARD_GEOMETRY.width - CARD_GEOMETRY.borderWidth - CARD_GEOMETRY.padding - CARD_GEOMETRY.headerInset,
     footerReserve, diagnostics: layout.diagnostics };
 }

@@ -39,7 +39,7 @@ it('should reserve the thickness of placed chips and converge without shrinking 
     const intersecting = scene.labels.filter(label => channel.strips.some(strip => strip.x < label.box.x + label.box.width && label.box.x < strip.x + strip.width && strip.y < label.box.y + label.box.height && label.box.y < strip.y + strip.height));
     for (const label of intersecting) {
       const required = (channel.axis === 'horizontal' ? label.box.width : label.box.height) + 8;
-      if (required <= spacing.gapMax) expect(channel.gap).toBeGreaterThanOrEqual(required);
+      if (required <= spacing.gapMax) expect(channel.gap + 1e-9).toBeGreaterThanOrEqual(required);
       if (required > (channel.axis === 'horizontal' ? spacing.gapMin : spacing.gapMinBlock)) widened++;
     }
     expect(channel.gap).toBeCloseTo(channel.expected, 0);

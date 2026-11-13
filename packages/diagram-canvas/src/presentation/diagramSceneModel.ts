@@ -41,6 +41,8 @@ import {
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
 import { getDiagramGlyph } from "./registry.js";
+import { ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { measureSceneBox } from "../layout/sceneMeasure.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 
 /** The semantic document the layout engine reads. */
@@ -297,7 +299,7 @@ export function resolveScene(
     (result.measurements?.headers ?? []).map((header) => [header.occurrence as string, header.height] as const),
   );
   const blockers: Rect[] = [];
-  for (const node of nodes) {
+  for (const node of result.labelBoxes === undefined || input.document.profileRefs.includes("erd@1") ? nodes : []) {
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
       continue;
@@ -310,6 +312,9 @@ export function resolveScene(
       width: node.rect.width,
       height: CONTENT_INSET + height,
     });
+    const reserve = measureSceneBox(node.presentation, node.occurrence, node.rect.width, false, input.measureLines, input.metrics?.containerPadding).footerReserve;
+    if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth,
+      width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth });
   }
 
   const edges: SceneEdgeModel[] = [];
@@ -371,6 +376,16 @@ export function resolveScene(
     ...(bounds === undefined ? {} : { bounds }),
     orientations: result.orientations ?? {},
   };
+}
+
+/** Full presentation text retained alongside the textual relations (A14). */
+export function sceneTextRows(scene: SceneModel, document: SceneDocument): readonly string[] {
+  const rows = scene.nodes.map(node => Object.values(node.presentation?.text ?? {}).filter(Boolean).join(" · "));
+  for (const relation of Object.values(document.relations)) {
+    const names = relation.endpoints.map(end => { const value = document.entities[end.target]?.attributes["name"]; return value?.kind === "text" ? String(value.value) : end.target; });
+    rows.push(names.join(" → ") + " · " + (edgeLabelOf(document, relation.id) ?? relation.type));
+  }
+  return rows;
 }
 
 /* ───────────────────────────── camera ───────────────────────────── */

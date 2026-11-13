@@ -1,9 +1,10 @@
 <script setup lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramZone' });
-import { computed, onMounted, watch } from "vue";
+import { computed, onMounted, watch, useId } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { ZONE_GEOMETRY, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { ZONE_GEOMETRY, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -144,6 +145,7 @@ onMounted(() => {
             onDiagnostic(diagnostic);
     }, { immediate: true });
 });
+const descriptionId = useId();
 </script>
 
 <template>
@@ -152,8 +154,9 @@ onMounted(() => {
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :aria-label="title" @click="() => onSelect?.({ entityId })">
-      <template v-if="header !== undefined">
+    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+      <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
+    <template v-if="header !== undefined">
 
         <div class="st-diagramZone-header" :style="headerStyle">
           <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
@@ -175,7 +178,7 @@ onMounted(() => {
           </template>
           <div class="st-diagramZone-footer" :style="footerStyle">
             <template v-for="(line, footerIndex) in header.footer" :key="footerIndex">
-              <span class="st-diagramZone-footerLine">{{ line.text }}</span>
+              <span class="st-diagramZone-footerLine" :style="`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`">{{ line.text }}</span>
             </template>
           </div>
         </template>

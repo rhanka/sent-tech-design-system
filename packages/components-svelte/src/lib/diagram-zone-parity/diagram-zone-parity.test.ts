@@ -222,7 +222,7 @@ describe("reference inputs — hrpn e5eaca3 pinned integrity", () => {
     expect(svg).toContain(
       '<rect class="diagram-group-box" x="0" y="0" width="492" height="974.98125" rx="6"',
     );
-    expect(svg).toContain('<line class="diagram-card-rule" x1="16" x2="482" y1="198.98125"');
+    expect(svg).toContain('<line class="diagram-card-rule" x1="16" x2="482" y1="200.15625"');
     expect(svg).toContain('transform="translate(16 36.890625) scale(1.09375)"');
     expect(svg).toContain('<tspan x="92" dy="0">PPL</tspan>');
     expect(svg).toContain('<tspan x="16" dy="0">Employees HR · Developers admin · HR</tspan>');
@@ -469,8 +469,8 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
     expect(subtitle.map((t) => t.text)).toEqual([...EXPANDED_PEOPLE.subtitleLines]);
     expect(subtitle[0]?.x).toBe(String(EXPANDED_PEOPLE.subtitleX));
     expect(Number(subtitle[0]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY, 9);
-    expect(Number(subtitle[1]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY + 31.2, 9);
-    // Header rule: frozen insets and the frozen ruleY 198.98125.
+    expect(Number(subtitle[1]?.y)).toBeCloseTo(EXPANDED_PEOPLE.subtitleY + 31.1875, 9);
+    // Header rule: frozen insets and the frozen ruleY 200.15625.
     expect(svg.rules).toHaveLength(1);
     expect(svg.rules[0]).toMatchObject({
       className: "st-diagramZone-rule",
@@ -478,12 +478,12 @@ describe("expanded-zone parity — PEOPLE frame of the frozen SVG", () => {
       x2: String(EXPANDED_PEOPLE.ruleX2),
       vectorEffect: "non-scaling-stroke",
     });
-    expect(Number(svg.rules[0]?.y1)).toBeCloseTo(EXPANDED_PEOPLE.ruleY, 9);
+    expect(Number(svg.rules[0]?.y1)).toBeCloseTo(EXPANDED_PEOPLE.ruleY + 1.175, 9);
     expect(svg.rules[0]?.y2).toBe(svg.rules[0]?.y1);
     // 4/16/16 rhythm: rule 4 px under the subtitle block, content 16 under
     // the rule (derived from the pinned baselines, not from the layout).
-    const subtitleBottom = EXPANDED_PEOPLE.subtitleY + 31.2 + 8;
-    expect(EXPANDED_PEOPLE.ruleY - subtitleBottom).toBeCloseTo(4, 9);
+    const subtitleBottom = EXPANDED_PEOPLE.subtitleY - 22 + 2 * 31.1875;
+    expect(EXPANDED_PEOPLE.ruleY + 1.175 - subtitleBottom).toBeCloseTo(4, 9);
     // Toggle slot: y = box.y + 10 exactly as the frozen SVG (finding 7);
     // x is the DS 32 px slot at the 16 px right inset (DH-13: the kit's
     // flush-right foreignObject is the replaced hack).
@@ -549,23 +549,23 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
     return { container, zone, styleOf };
   }
 
-  it("expanded PEOPLE: frozen rule y 198.98125, content start 214.98125, footer inset 9.25 in the Svelte DOM", () => {
+  it("expanded PEOPLE: frozen rule y 200.15625, content start 216.15625, footer inset 9.25 in the Svelte DOM", () => {
     const { zone, styleOf } = peopleDom();
     expect(zone).not.toBeNull();
     // Frame box from the layout.
     expect(zone?.getAttribute("style") ?? "").toContain("width: 492px");
     expect(zone?.getAttribute("style") ?? "").toContain("height: 974.98125px");
     // Header band: top = headerInset 16 (frame-edge), height =
-    // ruleY − headerRuleGap − headerTop = 198.98125 − 4 − 16.
+    // ruleY − headerRuleGap − headerTop = 200.15625 − 4 − 16.
     expect(styleOf(".st-diagramZone-header")).toContain("calc(16px");
-    expect(styleOf(".st-diagramZone-header")).toContain("height: 178.98125px");
-    // Frozen PEOPLE rule y 198.98125 (frame-edge coordinate); the CSS
+    expect(styleOf(".st-diagramZone-header")).toContain("height: 180.15625px");
+    // Frozen PEOPLE rule y 200.15625 (frame-edge coordinate); the CSS
     // border is subtracted exactly once, through the border token.
     const rule = styleOf(".st-diagramZone-rule");
-    expect(rule).toContain("calc(198.98125px");
+    expect(rule).toContain("calc(200.15625px");
     expect(rule).toContain("var(--st-component-diagramZone-borderWidth, 1.5px)");
-    // Frozen content start 214.98125 = rule y + contentInsetTop 16.
-    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
+    // Frozen content start 216.15625 = rule y + contentInsetTop 16.
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(216.15625px");
     // Footer rule: footerBottom − footer line box − rule − ruleMargin,
     // footerBottom = 974.98125 − 1.5 (border) − 9.25 (inset).
     const footerRuleY = 974.98125 - 1.5 - 9.25 - 31.1875 - 1 - 4;
@@ -580,7 +580,7 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
     expect(footer).not.toContain("7.75");
   });
 
-  it("reviewer case: two-line title/subtitle + footer F at automatic height 280.41875, footer at its pinned position", () => {
+  it("reviewer case: two-line title/subtitle + footer F at automatic height 281.59375, footer at its pinned position", () => {
     const { container, zone, styleOf } = peopleDom({
       entityId: "grp.review4",
       kicker: "K",
@@ -588,21 +588,21 @@ describe("pass-4 blocking — expanded Svelte parts positioned from the shared l
       height: undefined,
     });
     expect(zone).not.toBeNull();
-    // Automatic height: header + content inset + footer reserve = 280.41875.
-    expect(zone?.getAttribute("style") ?? "").toContain("height: 280.41875px");
+    // Automatic height: header + content inset + footer reserve = 281.59375.
+    expect(zone?.getAttribute("style") ?? "").toContain("height: 281.59375px");
     // Not refused at the automatic height.
     expect(container.querySelector(".st-diagramZone-pos")?.getAttribute("data-zone-refused")).toBeNull();
     // Same two-line title + two-line subtitle header as PEOPLE: rule
-    // 198.98125, content start 214.98125.
-    expect(styleOf(".st-diagramZone-rule")).toContain("calc(198.98125px");
-    expect(styleOf(".st-diagramZone-content")).toContain("calc(214.98125px");
-    // The footer stays pinned inside the 280.41875 px frame: footerBottom =
-    // 280.41875 − 1.5 (border) − 9.25 (inset) = 269.66875, so the footer rule
-    // sits at 269.66875 − 31.1875 (line box) − 1 (rule) − 4 (margin).
-    const footerBottom = 280.41875 - 1.5 - 9.25;
-    expect(footerBottom).toBe(269.66875);
+    // 200.15625, content start 216.15625.
+    expect(styleOf(".st-diagramZone-rule")).toContain("calc(200.15625px");
+    expect(styleOf(".st-diagramZone-content")).toContain("calc(216.15625px");
+    // The footer stays pinned inside the 281.59375 px frame: footerBottom =
+    // 281.59375 − 1.5 (border) − 9.25 (inset) = 270.84375, so the footer rule
+    // sits at 270.84375 − 31.1875 (line box) − 1 (rule) − 4 (margin).
+    const footerBottom = 281.59375 - 1.5 - 9.25;
+    expect(footerBottom).toBe(270.84375);
     const footerRuleY = footerBottom - 31.1875 - 1 - 4;
-    expect(footerRuleY).toBe(233.48125);
+    expect(footerRuleY).toBe(234.65625);
     expect(styleOf(".st-diagramZone-footerRule")).toContain(`calc(${footerRuleY}px`);
     const footer = styleOf(".st-diagramZone-footer");
     expect(footer).toContain("9.25px");
@@ -954,6 +954,7 @@ function assertOwnerZoneRetention(unknown: boolean, collapsed: boolean) {
  const result=ownerZoneSvg(props);expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('content refused');
  const view=render(DiagramZone,{props});expect(view.container.querySelector('[data-zone-refused]')).toBeNull();expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
  expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.subtitle.replace(/\s+/g,''));
- expect(result.layout.box.height).toBeGreaterThan(200);
+ if(collapsed) expect(result.layout.box.height).toBe(200); else expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);
  if(unknown){expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true);expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull();}
 }

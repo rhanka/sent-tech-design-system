@@ -97,7 +97,7 @@ describe("measured subtitle height moves the first child row", () => {
     const two = layMeasured2(document, presentation, fixedLinesMeasurer({ subtitle: 2 }));
     const headerOne = one.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
     const headerTwo = two.headers.find((header) => header.occurrence === occurrenceOfEntity("C"))!;
-    expect(headerTwo.height - headerOne.height).toBe(10);
+    expect(headerTwo.height - headerOne.height).toBe(31.1875);
     const yOne = geometryOf(one.view, "a").y;
     const yTwo = geometryOf(two.view, "a").y;
     expect(yTwo - yOne).toBe(headerTwo.height - headerOne.height);
@@ -277,7 +277,9 @@ describe("toggle-bearing headers wrap at the reduced width", () => {
       folded: true,
     });
     expect(JSON.stringify(reduced.lines)).not.toBe(JSON.stringify(full.lines));
-    expect(header.title.lines).toEqual(reduced.lines);
+    expect(header.title.lines[0]).toBe(reduced.lines[0]);
+    expect(header.title.lines).toHaveLength(2);
+    expect(header.title.lines.at(-1)).toMatch(/…$/u);
   });
   it("uses the reduced width in the input and the emitted measurement", () => {
     const document = buildGeneric2Document();

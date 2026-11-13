@@ -325,7 +325,7 @@
         "x": 0,
         "y": 0,
         "width": 600,
-        "height": 207.625
+        "height": 208.8125
       },
       "collapsed": false,
       "header": {
@@ -371,9 +371,9 @@
           }
         ],
         "subtitleWidth": 434,
-        "subtitleBottom": 122.1875,
-        "ruleY": 126.1875,
-        "contentTop": 142.1875,
+        "subtitleBottom": 123.375,
+        "ruleY": 127.375,
+        "contentTop": 143.375,
         "toggleBox": {
           "x": 560,
           "y": 8,
@@ -383,15 +383,15 @@
           {
             "text": "Footer",
             "x": 16,
-            "baseline": 187.6875,
+            "baseline": 188.875,
             "size": 24,
             "weight": 700,
             "secondary": false,
             "anchor": "start"
           }
         ],
-        "footerRuleY": 160.6875,
-        "footerBottom": 196.875
+        "footerRuleY": 161.875,
+        "footerBottom": 198.0625
       },
       "diagnostics": []
     }
@@ -622,13 +622,25 @@
     "svelte/card": {
       "tag": "div",
       "attributes": {
+        "aria-describedby": "description",
         "aria-label": "Title",
         "class": "st-diagramCard",
         "data-entity": "contract",
         "role": "group",
-        "style": "height: 200px;"
+        "style": "height: 200px;",
+        "title": "KICKER\nTitle\nBody\nDetail\nFooter"
       },
       "children": [
+        {
+          "tag": "span",
+          "attributes": {
+            "hidden": "",
+            "id": "description"
+          },
+          "children": [
+            "KICKER\nTitle\nBody\nDetail\nFooter"
+          ]
+        },
         {
           "tag": "div",
           "attributes": {
@@ -691,7 +703,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-kicker"
+                    "class": "st-diagramCard-kicker",
+                    "style": "line-height: 28.59375px; height: 28.59375px;"
                   },
                   "children": [
                     "KICKER"
@@ -700,7 +713,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-title"
+                    "class": "st-diagramCard-title",
+                    "style": "line-height: 41.59375px; height: 41.59375px;"
                   },
                   "children": [
                     "Title"
@@ -787,7 +801,8 @@
             {
               "tag": "span",
               "attributes": {
-                "class": "st-diagramCard-line"
+                "class": "st-diagramCard-line",
+                "style": "line-height: 31.1875px; height: 31.1875px;"
               },
               "children": [
                 "Body"
@@ -796,7 +811,8 @@
             {
               "tag": "span",
               "attributes": {
-                "class": "st-diagramCard-detail"
+                "class": "st-diagramCard-detail",
+                "style": "line-height: 31.1875px; height: 31.1875px;"
               },
               "children": [
                 "Detail"
@@ -827,7 +843,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-footerLine"
+                    "class": "st-diagramCard-footerLine",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Footer"
@@ -851,13 +868,25 @@
         {
           "tag": "div",
           "attributes": {
+            "aria-describedby": "description",
             "aria-label": "Zone",
             "class": "st-diagramCard st-diagramCard--subtitle",
             "data-entity": "contract-zone",
             "role": "group",
-            "style": "height: 200px;"
+            "style": "height: 200px;",
+            "title": "KICKER\nZone\nSubtitle\nFooter"
           },
           "children": [
+            {
+              "tag": "span",
+              "attributes": {
+                "hidden": "",
+                "id": "description"
+              },
+              "children": [
+                "KICKER\nZone\nSubtitle\nFooter"
+              ]
+            },
             {
               "tag": "div",
               "attributes": {
@@ -920,7 +949,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-kicker"
+                        "class": "st-diagramCard-kicker",
+                        "style": "line-height: 28.59375px; height: 28.59375px;"
                       },
                       "children": [
                         "KICKER"
@@ -929,7 +959,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-title"
+                        "class": "st-diagramCard-title",
+                        "style": "line-height: 41.59375px; height: 41.59375px;"
                       },
                       "children": [
                         "Zone"
@@ -1016,7 +1047,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-line"
+                    "class": "st-diagramCard-line",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Subtitle"
@@ -1047,7 +1079,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-footerLine"
+                        "class": "st-diagramCard-footerLine",
+                        "style": "line-height: 31.1875px; height: 31.1875px;"
                       },
                       "children": [
                         "Footer"
@@ -1073,17 +1106,29 @@
         {
           "tag": "div",
           "attributes": {
+            "aria-describedby": "description",
             "aria-label": "Zone",
             "class": "st-diagramZone st-diagramZone--expanded",
             "role": "group",
-            "style": "width: 600px; height: 207.625px;"
+            "style": "width: 600px; height: 208.8125px;",
+            "title": "KICKER\nZone\nSubtitle\nFooter"
           },
           "children": [
+            {
+              "tag": "span",
+              "attributes": {
+                "hidden": "",
+                "id": "description"
+              },
+              "children": [
+                "KICKER\nZone\nSubtitle\nFooter"
+              ]
+            },
             {
               "tag": "div",
               "attributes": {
                 "class": "st-diagramZone-header",
-                "style": "top: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); height: 106.1875px;"
+                "style": "top: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); height: 107.375px;"
               },
               "children": [
                 {
@@ -1154,7 +1199,8 @@
                             {
                               "tag": "span",
                               "attributes": {
-                                "class": "st-diagramCard-kicker"
+                                "class": "st-diagramCard-kicker",
+                                "style": "line-height: 28.59375px; height: 28.59375px;"
                               },
                               "children": [
                                 "KICKER"
@@ -1163,7 +1209,8 @@
                             {
                               "tag": "span",
                               "attributes": {
-                                "class": "st-diagramCard-title"
+                                "class": "st-diagramCard-title",
+                                "style": "line-height: 41.59375px; height: 41.59375px;"
                               },
                               "children": [
                                 "Zone"
@@ -1235,7 +1282,8 @@
                         {
                           "tag": "span",
                           "attributes": {
-                            "class": "st-diagramZone-subtitle"
+                            "class": "st-diagramZone-subtitle",
+                            "style": "line-height: 31.1875px; height: 31.1875px;"
                           },
                           "children": [
                             "Subtitle"
@@ -1252,7 +1300,7 @@
               "attributes": {
                 "aria-hidden": "true",
                 "class": "st-diagramZone-rule",
-                "style": "top: calc(126.1875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(127.375px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1260,7 +1308,7 @@
               "tag": "div",
               "attributes": {
                 "class": "st-diagramZone-content",
-                "style": "top: calc(142.1875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); bottom: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(143.375px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); bottom: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1269,7 +1317,7 @@
               "attributes": {
                 "aria-hidden": "true",
                 "class": "st-diagramZone-footerRule",
-                "style": "top: calc(160.6875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(161.875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1283,7 +1331,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramZone-footerLine"
+                    "class": "st-diagramZone-footerLine",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Footer"
@@ -1298,13 +1347,25 @@
     "vue/card": {
       "tag": "div",
       "attributes": {
+        "aria-describedby": "description",
         "aria-label": "Title",
         "class": "st-diagramCard",
         "data-entity": "contract",
         "role": "group",
-        "style": "height: 200px;"
+        "style": "height: 200px;",
+        "title": "KICKER\nTitle\nBody\nDetail\nFooter"
       },
       "children": [
+        {
+          "tag": "span",
+          "attributes": {
+            "hidden": "",
+            "id": "description"
+          },
+          "children": [
+            "KICKER\nTitle\nBody\nDetail\nFooter"
+          ]
+        },
         {
           "tag": "div",
           "attributes": {
@@ -1367,7 +1428,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-kicker"
+                    "class": "st-diagramCard-kicker",
+                    "style": "line-height: 28.59375px; height: 28.59375px;"
                   },
                   "children": [
                     "KICKER"
@@ -1376,7 +1438,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-title"
+                    "class": "st-diagramCard-title",
+                    "style": "line-height: 41.59375px; height: 41.59375px;"
                   },
                   "children": [
                     "Title"
@@ -1463,7 +1526,8 @@
             {
               "tag": "span",
               "attributes": {
-                "class": "st-diagramCard-line"
+                "class": "st-diagramCard-line",
+                "style": "line-height: 31.1875px; height: 31.1875px;"
               },
               "children": [
                 "Body"
@@ -1472,7 +1536,8 @@
             {
               "tag": "span",
               "attributes": {
-                "class": "st-diagramCard-detail"
+                "class": "st-diagramCard-detail",
+                "style": "line-height: 31.1875px; height: 31.1875px;"
               },
               "children": [
                 "Detail"
@@ -1503,7 +1568,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-footerLine"
+                    "class": "st-diagramCard-footerLine",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Footer"
@@ -1527,13 +1593,25 @@
         {
           "tag": "div",
           "attributes": {
+            "aria-describedby": "description",
             "aria-label": "Zone",
             "class": "st-diagramCard st-diagramCard--subtitle",
             "data-entity": "contract-zone",
             "role": "group",
-            "style": "height: 200px;"
+            "style": "height: 200px;",
+            "title": "KICKER\nZone\nSubtitle\nFooter"
           },
           "children": [
+            {
+              "tag": "span",
+              "attributes": {
+                "hidden": "",
+                "id": "description"
+              },
+              "children": [
+                "KICKER\nZone\nSubtitle\nFooter"
+              ]
+            },
             {
               "tag": "div",
               "attributes": {
@@ -1596,7 +1674,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-kicker"
+                        "class": "st-diagramCard-kicker",
+                        "style": "line-height: 28.59375px; height: 28.59375px;"
                       },
                       "children": [
                         "KICKER"
@@ -1605,7 +1684,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-title"
+                        "class": "st-diagramCard-title",
+                        "style": "line-height: 41.59375px; height: 41.59375px;"
                       },
                       "children": [
                         "Zone"
@@ -1692,7 +1772,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramCard-line"
+                    "class": "st-diagramCard-line",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Subtitle"
@@ -1723,7 +1804,8 @@
                     {
                       "tag": "span",
                       "attributes": {
-                        "class": "st-diagramCard-footerLine"
+                        "class": "st-diagramCard-footerLine",
+                        "style": "line-height: 31.1875px; height: 31.1875px;"
                       },
                       "children": [
                         "Footer"
@@ -1749,17 +1831,29 @@
         {
           "tag": "div",
           "attributes": {
+            "aria-describedby": "description",
             "aria-label": "Zone",
             "class": "st-diagramZone st-diagramZone--expanded",
             "role": "group",
-            "style": "width: 600px; height: 207.625px;"
+            "style": "width: 600px; height: 208.8125px;",
+            "title": "KICKER\nZone\nSubtitle\nFooter"
           },
           "children": [
+            {
+              "tag": "span",
+              "attributes": {
+                "hidden": "",
+                "id": "description"
+              },
+              "children": [
+                "KICKER\nZone\nSubtitle\nFooter"
+              ]
+            },
             {
               "tag": "div",
               "attributes": {
                 "class": "st-diagramZone-header",
-                "style": "top: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); height: 106.1875px;"
+                "style": "top: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); height: 107.375px;"
               },
               "children": [
                 {
@@ -1830,7 +1924,8 @@
                             {
                               "tag": "span",
                               "attributes": {
-                                "class": "st-diagramCard-kicker"
+                                "class": "st-diagramCard-kicker",
+                                "style": "line-height: 28.59375px; height: 28.59375px;"
                               },
                               "children": [
                                 "KICKER"
@@ -1839,7 +1934,8 @@
                             {
                               "tag": "span",
                               "attributes": {
-                                "class": "st-diagramCard-title"
+                                "class": "st-diagramCard-title",
+                                "style": "line-height: 41.59375px; height: 41.59375px;"
                               },
                               "children": [
                                 "Zone"
@@ -1911,7 +2007,8 @@
                         {
                           "tag": "span",
                           "attributes": {
-                            "class": "st-diagramZone-subtitle"
+                            "class": "st-diagramZone-subtitle",
+                            "style": "line-height: 31.1875px; height: 31.1875px;"
                           },
                           "children": [
                             "Subtitle"
@@ -1928,7 +2025,7 @@
               "attributes": {
                 "aria-hidden": "true",
                 "class": "st-diagramZone-rule",
-                "style": "top: calc(126.1875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(127.375px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1936,7 +2033,7 @@
               "tag": "div",
               "attributes": {
                 "class": "st-diagramZone-content",
-                "style": "top: calc(142.1875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); bottom: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(143.375px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); bottom: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1945,7 +2042,7 @@
               "attributes": {
                 "aria-hidden": "true",
                 "class": "st-diagramZone-footerRule",
-                "style": "top: calc(160.6875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
+                "style": "top: calc(161.875px - var(--st-component-diagramZone-borderWidth, 1.5px)); left: calc(16px - var(--st-component-diagramZone-borderWidth, 1.5px)); right: calc(10px - var(--st-component-diagramZone-borderWidth, 1.5px));"
               },
               "children": []
             },
@@ -1959,7 +2056,8 @@
                 {
                   "tag": "span",
                   "attributes": {
-                    "class": "st-diagramZone-footerLine"
+                    "class": "st-diagramZone-footerLine",
+                    "style": "line-height: 31.1875px; height: 31.1875px;"
                   },
                   "children": [
                     "Footer"

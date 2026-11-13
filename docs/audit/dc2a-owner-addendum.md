@@ -1,6 +1,6 @@
 # DC-2a owner addendum
 
-This patch carries owner sections A1–A13 through the shared scene model and
+This patch carries owner sections A1–A14 through the shared scene model and
 the Svelte and Vue hosts. It preserves endpoint provenance, Vue menu cascade
 and the ERD work merged from main. ERD tables remain exempt from card icons.
 
@@ -10,7 +10,7 @@ and the ERD work merged from main. ERD tables remain exempt from card icons.
 | --- | --- | --- |
 | A1, A9 | Each nested or root channel counts routed occurrences, including members of folded bundles, and the labels intersecting its strips. Both axes use a token-driven clamped formula. Empty channels use the minimum. Parallel routes retain dock normals, containment, obstacles and pair reservations. | `owner-addendum.test.ts` independently recounts h-cond traffic in both fold states; `dense-labels.test.ts` retains 14 separate labels and disjoint parallel routes. |
 | A2, A3 | Resolve explicit icon → profile/type data binding → closed role default. The scene host defaults to the DS registry and strict mode; unresolved components report `card-icon-missing` and display `unknown`. | Shared resolution tests cover precedence, missing roles and shape exemptions; jsdom mounts both hosts with default and unresolved icons. |
-| A4, A5, A11 | Replay the measured label text, retain all card and zone slots, wrap full footers/subtitles, and grow/repack content. Overflow is diagnostic; DOM and SVG helpers retain the component. | h-cond, vue-globale, memory and README content fixtures; both hosts check nonempty labels, icons, complete footers and zero refusals. |
+| A4, A5, A11 | Replay measured labels and retain every component. A14 supersedes content growth: cards stay 460 × 200; slots truncate with measured ellipses, while title, accessible descriptions and the textual relation fallback retain complete text. Expanded zones retain content-driven frames and bounded title/subtitle/footer slots. | h-cond, vue-globale, memory and README content fixtures; both hosts check fixed cards, bounded visible lines, complete accessible footers, icons and zero refusals. |
 | A6, A13 | The fixture adapter consumes approved `source.layout.top` and `source.layout.children`. A resize changes the camera while preserving the figure arrangement. | `owner-order.test.ts` compares visible membership, containment, column reading order and physical channels with independently extracted R14 geometry, unfolded and folded. Paired old/new column snapshots expose regrouping. The existing 390/1440 and route/label collision checks remain. |
 | A7, A8 | Both fold states use the inset token. The anatomy contract includes both hosts' rendered slot trees, inline positioning, actual button dimensions, button styles and relevant tokens. Component-index exposes its digest to all ports. | `diagram-anatomy-rendered.test.ts` mounts each host's standalone card and folded/expanded zone. Changing an inline slot position or the actual button size fails the golden assertion. Token overrides at 8/20 units retain equal top/right offsets. CI's `anatomy change` label gate remains. |
 | A10 | Default lines, arrowheads, card bars and label chips use neutral colors. Existing icon colors remain part of the icon anatomy. | Standalone SVG tests and host parity; neutral edge/chip tokens are explicit. |
@@ -20,16 +20,13 @@ The DC-2b fingerprint includes both axes' channel metrics, label band, caps,
 effective dock spacing and the bundle width cap. Bundle measurements are
 reused on cache hits.
 
-## Calibration needing owner resolution
+## A9 resolved: V1
 
-A9 names two target bands that do not intersect on the supplied inputs.
-The 0.40.0 medians are 24 px horizontally and vertically for both appctx
-architecture and vue-globale. Doubling gives 48 px (±15%: 40.8–55.2).
-The approved R14 inner gaps are 160 px on each axis; its root vertical gap
-is 280 px. Applying the specified old-inner ratios gives 106.67 px
-horizontally (90.67–122.67) and 80 px vertically (68–92).
-
-The current defaults are retained pending owner choice:
+The owner selected **72 vertical / 96 horizontal** for 0.40.1. The
+acceptance test pins these minima directly, retaining flow/label growth.
+Historical 0.40.0 medians (24/24) and R14 inner gaps (160/160) remain in
+owner-spacing.json as provenance; the earlier provisional calibration is
+superseded by this explicit choice.
 
 | Parameter | Horizontal | Vertical |
 | --- | ---: | ---: |
@@ -38,13 +35,6 @@ The current defaults are retained pending owner choice:
 | Track pitch | 14 | 7 |
 | Label band | 30 | 30 |
 | Maximum | 240 | 240 |
-
-The owner is comparing V1 **72/96**, V2 **48/48**, and V3 **20/80** world units
-(vertical/horizontal). A9 and Carbon M5 remain pending that selection. No
-numerical A9 target is accepted by this patch. `owner-spacing.json` retains
-the independently derived historical measurements and lists the choices;
-acceptance reads the current token data instead of pinning provisional medians
-or declaring an old-ratio target accepted.
 
 The single source is `packages/tokens/src/diagramSpacing.ts`. Its first data
 line contains `gapMin`, `gapMinBlock`, `gapBase`, and `gapBaseBlock`; the
@@ -61,7 +51,7 @@ and `-gapBaseBlock`. Inner padding is
 card-to-frame and nested-zone placement, footer measurement, both mounted
 hosts and standalone SVG use that same padding. Regressions cover 16/32 units.
 
-Residual differences from R14 include DS card anatomy, content-driven heights,
+Residual differences from R14 include DS card anatomy, content-driven zone heights,
 16:9 packing instead of the old large fixed whitespace, and exterior label
 lanes when a channel is saturated. This is geometry/content validation through
 SSR and jsdom, without a browser pixel comparison.
@@ -78,7 +68,8 @@ The three Astra Major reproductions failed before their fixes:
   controls, with negative mutation witnesses for position and size drift.
 - **A11:** a 100-character identifier exceeded every default standalone
   text slot. The default measurer now uses the content-preserving wrapper,
-  breaking long words while retaining characters and growing height.
+  breaking long words while retaining characters. A14 now bounds visible slots
+  with ellipses and retains full text in title/aria instead of growing cards.
   Pure card/zone/SVG and both hosts check complete strings and line widths
   for title, subtitle/body, kicker and footer. Explicit hard caps still
   report overflow.
@@ -108,7 +99,7 @@ Carbon Blocking/Major findings were also checked:
 - **M3:** expanded toggles resolve the same inset token as folded cards.
 - **M4:** DOM/SVG directed links have neutral arrowheads; standalone scenes
   retain ERD tables, cardinalities, label leaders and injected line measurements.
-- **M5:** belongs to the pending A9 owner decision above.
+- **M5:** resolved by the owner selection of V1 above.
 
 Golden updates cover approved memory ordering, feasible label clearance,
 rendered anatomy/button tokens and the measured tuning grid. Historical
@@ -148,7 +139,7 @@ Golden changes required by the addendum:
 
 Historical `baseline.json`, stability input and old reference artifacts remain
 the comparison evidence. Anatomy changes requiring owner approval are the
-mandatory icon allocation, complete content slots, equal toggle insets and
+mandatory icon allocation, fixed A14 slots with full accessible text, equal toggle insets and
 neutral default accent. The PR carries the required label and lists them.
 
 ## Side-by-side artifacts
@@ -183,3 +174,10 @@ includes vue-tsc and published-type checks. Anatomy and generated-spacing
 freshness checks, index generation/check (430 artifacts), diff checks and
 licensing (22 packages) passed. Package versions are retained. No root test
 command, browser, Python or Track command was used.
+
+## A14 and browser-probe follow-up
+
+See [the measured follow-up](dc2a-probe-fixes.md) for the eight-view jsdom
+matrix in both hosts, before/after witnesses, exact scoped checks and
+limits of the validation. The original h-cond browser report and captures
+are preserved.

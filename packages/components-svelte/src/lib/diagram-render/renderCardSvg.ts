@@ -8,11 +8,12 @@
  * `../diagramCardModel.js` (shared projection + line layout).
  *
  * Exactly one rule element, drawn non-scaling (§5.4, DIF-07, DH-04); fixed
- * 460 × 200 box; square corners; footer pinned at 9.25; no shortening —
- * over-long slots are reported through the returned diagnostics (DC-D4) and
- * all content is retained (owner A11), never truncated.
+ * 460 × 200 box; square corners; footer pinned at 9.25. Long slots use
+ * measured ellipses (owner A14); title/description retain the complete text
+ * and informational diagnostics report the hidden length.
  */
 import {
+  cardFullText,
   CARD_GEOMETRY,
   defaultCardMeasure,
   layoutCard,
@@ -100,7 +101,7 @@ export function renderCardContent(
 ): { readonly content: string; readonly layout: ReturnType<typeof layoutCard> } {
   const layout = layoutCard(props, measure);
   const g = { ...CARD_GEOMETRY, height: layout.box.height };
-  const parts: string[] = [];
+  const parts: string[] = [`<title>${escapeXml(cardFullText(props))}</title><desc>${escapeXml(cardFullText(props))}</desc>`];
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
   // (owner criterion 5); the dash pattern is the kit's `4 5`.
@@ -226,8 +227,7 @@ export function renderCardSvg(
   );
   const firstOverflow = overflowSlots.length === 0 ? undefined : overflowSlots[0];
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
-    `<title>${escapeXml(props.title)}</title>` +
+    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" aria-description="${escapeXml(cardFullText(props))}" style="font-family:${FONT_STACK}">` +
     content +
     `</svg>`;
   return {

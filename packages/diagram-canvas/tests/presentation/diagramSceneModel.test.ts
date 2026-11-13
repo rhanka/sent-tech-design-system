@@ -90,7 +90,8 @@ describe("shared scene presentation (DC-2b)", () => {
       if (n < 120) { scrollLeft += 1; scrollTop += 2; }
       const placement = scenePlacement(scene.bounds, zoom, fit);
       const matrix = worldToView({ x: -placement.translateX / zoom, y: -placement.translateY / zoom, zoom });
-      expect(matrix).toMatchObject({ a: zoom, d: zoom, e: placement.translateX, f: placement.translateY });
+      expect(matrix).toMatchObject({ a: zoom, d: zoom });
+      expect(matrix.e).toBeCloseTo(placement.translateX,12);expect(matrix.f).toBeCloseTo(placement.translateY,12);
       times.push(performance.now() - start);
     }
     expect(scrollLeft).toBe(120); expect(scrollTop).toBe(240);
