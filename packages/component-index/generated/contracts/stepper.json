@@ -1,7 +1,7 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:d4b1bc3e837988f0997ae03655d1fc59dc43103f92fd6d6c44345c9474e61d72",
+  "digest": "sha256:9daa57566f4f7f15baf6f12074b3555816dc1f2bf2a427d798f647c0c1d8e221",
   "entryDigest": "sha256:12b3891126bee670be4496c0d2926e727fa051a75ebc8f446fedf1ea197d6a0d",
   "format": "component-contract/v1",
   "frameworks": {
@@ -276,7 +276,11 @@
           }
         },
         {
-          "name": "stepClick"
+          "name": "stepClick",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -336,7 +340,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "stepClick.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:21247175993fd054a0a94c48da6f374f2b48f9a1cced6cccc46473c0d4326626",
@@ -348,7 +359,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"stepClick\": payload not in declaration",
         "event pair: emits \"stepClick\" and prop \"onStepClick\" both listed verbatim"
       ]
     }
