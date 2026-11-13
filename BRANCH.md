@@ -56,3 +56,50 @@ The owner authorizes this merge commit and push to update PR #272; earlier no-pu
 - [x] Component-index: 15 files / 138 passed.
 - [x] node --test scripts/component-index.test.mjs scripts/verify-deps-published.test.mjs: 22 passed.
 - [x] git diff --check.
+# ERD — erd@1 notation
+
+## Objective
+Deliver entity-table diagrams with field ports and crow’s-foot relationships through the shared diagram engine and the Svelte and Vue DiagramSceneFigure hosts.
+
+## Completed lots
+- [x] Define and export erd@1, its registry integration, validation, typed cardinalities, field metadata and Engram scene conversion.
+- [x] Preserve all five acceptance scenes, their entities, fields, keys and relationships in the vendored fixture.
+- [x] Implement measured entity tables, field anchors, crow’s-foot geometry, folding, self loops and dense orthogonal routing in diagram-canvas.
+- [x] Integrate shared rendering, accessible fallback tables and fold controls in Svelte and Vue.
+- [x] Add ERD tokens and regressions for conversion, validation, geometry, routing and framework parity.
+- [x] Merge origin/main 00900974 (PR #270 endpoint provenance), preserving the provenance contract and ERD behavior; recompute receipt file hashes from merged UTF-8 contents.
+- [x] Regenerate component-index artifacts from merged sources.
+
+## Checks
+- [x] npm ci and node scripts/ensure-theme-dists.mjs; no lockfile repair required.
+- [x] Builds: diagram-core, diagram-canvas, Svelte, Vue and component-index.
+- [x] notices:generate, index:generate, index:check and licensing:check (22 publishable packages).
+- [x] diagram-core: 43 files / 657 passed, including the receipt hash gate and endpoint provenance.
+- [x] diagram-canvas: 40 files / 466 passed, 1 existing skip.
+- [x] Svelte diagram/ERD selection: 8 files / 361 passed.
+- [x] Full Vue suite: 109 files / 1,749 passed.
+- [x] Core/canvas type checks and Vue published-type build.
+- [x] Both svelte-check configurations: 0 errors; main has 26 warnings, parity has 0.
+- [x] Component-index: 15 files / 138 passed.
+- [x] node --test scripts/component-index.test.mjs scripts/verify-deps-published.test.mjs: 22 passed.
+- [x] git diff --check.
+
+ No root test command, browser, Track command or release tags are part of this work.
+
+## Versions
+Planned minor releases: diagram-core, diagram-canvas, design-system-svelte and design-system-vue. Release tags require owner confirmation.
+
+## Detailed implementation evidence
+See spec/ERD-BUILD-NOTES.md for the ERD contract, design decisions, fixture counts and prior regression evidence.
+
+## PR #272 CI repair and ERD integration
+
+- Merged origin/main 213a81f8 (ERD #278), retaining numbered flows and ERD layout, markers, cards, folding and both hosts. Vue ERD rendering lives in the extracted base host.
+- Excluded token tests from the production tsc build and moved the engine/token equality assertion into canvas tests. Token typography, dimming and theme contrast coverage remain in tokens.
+- Reproduced TS2307 with canvas dist temporarily absent; the same tokens build passes after the fix.
+- Regenerated theme CSS, component-index artifacts and receipt hashes from merged sources; generated notices for all 22 publishable packages.
+- Passed tokens build and 20 tests; core build/check and 669 tests; canvas build/check and support builds; Svelte diagram selection 473 tests; Vue diagram/ERD selection 216 tests; Vue build and both Svelte check configurations (0 errors, 26 main warnings).
+- Passed layering guard (3 tests), index:check (430 fresh artifacts), licensing:check (22 packages), and diff whitespace checks.
+- Integration regressions: ERD style parity follows the extracted Vue base host; the no-flow SSR comparison normalizes inter-element whitespace on both sides.
+- Initial broad host filters also selected generated Svelte test copies; corrected verification uses source-only diagram filters. Initial concurrent canvas performance samples hit the existing 10-second timeout; rerun uses two workers without changing thresholds.
+- Final full canvas suite with two workers: 47 files, 504 passed, 1 existing skip; all performance thresholds and timeouts unchanged.

@@ -77,7 +77,8 @@ describe("DC-2c A14 static flow output", () => {
     const { flowFixture } = await import("../../../diagram-canvas/dist-test-support/flowFixture.js");
     const f = flowFixture(0);
     const { body } = render(DiagramSceneFigure, { props: { document: f.document, registry: f.options.registry, bindings: f.options.bindings, presentation: f.presentation, measureLines: f.options.measureLines } });
-    const normalized = body.replace(/<!--[\s\S]*?-->/g, "").replace(/\bsvelte-[a-z0-9]+/g, "").replace(/\s+/g, " ").trim();
-    expect(normalized).toBe(readFileSync(new URL("./flow-fixtures/before.html", import.meta.url), "utf8").trim());
+    // Conditional ERD markup can add inter-element whitespace without changing the DOM.
+    const normalize = (html: string) => html.replace(/<!--[\s\S]*?-->/g, "").replace(/\bsvelte-[a-z0-9]+/g, "").replace(/\s+/g, " ").replace(/>\s+</g, "><").trim();
+    expect(normalize(body)).toBe(normalize(readFileSync(new URL("./flow-fixtures/before.html", import.meta.url), "utf8")));
   });
 });
