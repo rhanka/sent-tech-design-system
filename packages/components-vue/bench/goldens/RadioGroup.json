@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "RadioGroup",
+  "sourceRevision": "ed9acf53d2c0fe0f12d81a6a33b1c2093ef7235d",
+  "source": "src/RadioGroup.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--vertical\"><legend class=\"st-radioGroup__legend\">Choose one</legend><div class=\"st-radioGroup__options\"><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Alpha</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"b\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Beta</span><span class=\"st-choice__help\">Second choice</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" disabled=\"\" name=\"group\" type=\"radio\" value=\"c\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Gamma</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "selected-horizontal",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--horizontal\"><legend class=\"st-radioGroup__legend\">Pick a letter</legend><p class=\"st-radioGroup__help\">Only one</p><div class=\"st-radioGroup__options\"><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Alpha</span></span></label><label class=\"st-choice st-choice--radio\"><input checked=\"\" class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"b\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Beta</span><span class=\"st-choice__help\">Second choice</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" disabled=\"\" name=\"group\" type=\"radio\" value=\"c\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Gamma</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "disabled-group",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--vertical consumer\" data-bench=\"radiogroup\" disabled=\"\" style=\"color:red;\"><legend class=\"st-radioGroup__legend\">Disabled group</legend><div class=\"st-radioGroup__options\"><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Alpha</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"b\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Beta</span><span class=\"st-choice__help\">Second choice</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" disabled=\"\" name=\"group\" type=\"radio\" value=\"c\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Gamma</span></span></label></div></fieldset>"
+    },
+    {
+      "id": "empty-options",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--vertical\"><legend class=\"st-radioGroup__legend\">No options</legend><div class=\"st-radioGroup__options\"></div></fieldset>"
+    },
+    {
+      "id": "default-slot",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--vertical\"><legend class=\"st-radioGroup__legend\">Extra slot</legend><div class=\"st-radioGroup__options\"><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"1\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">One</span></span></label><span>Custom extra</span></div></fieldset>"
+    },
+    {
+      "id": "missing-value",
+      "html": "<fieldset class=\"st-radioGroup st-radioGroup--vertical\"><legend class=\"st-radioGroup__legend\">Missing</legend><div class=\"st-radioGroup__options\"><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"a\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Alpha</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" name=\"group\" type=\"radio\" value=\"b\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Beta</span><span class=\"st-choice__help\">Second choice</span></span></label><label class=\"st-choice st-choice--radio\"><input class=\"st-choice__input\" disabled=\"\" name=\"group\" type=\"radio\" value=\"c\"><span class=\"st-choice__content\"><span class=\"st-choice__label\">Gamma</span></span></label></div></fieldset>"
+    }
+  ],
+  "sourceSha256": "e258f56c27def6c29968e67ca6a5616fd62decb666ee7e1aca7a198cf82edada",
+  "fixtureSha256": "b7d4295e9096ff024f6e1c7f21d02091f82bd7cd949dcc8910563ee9ba05886a",
+  "publicExports": [
+    {
+      "name": "RadioGroup",
+      "typeOnly": false
+    },
+    {
+      "name": "RadioGroupProps",
+      "typeOnly": true
+    },
+    {
+      "name": "RadioGroupOption",
+      "typeOnly": true
+    }
+  ]
+}
