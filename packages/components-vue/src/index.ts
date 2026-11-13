@@ -81,8 +81,8 @@ export { default as Pagination } from "./Pagination.vue";
 export type { PaginationProps } from "./Pagination.vue";
 export { default as PaginationNav } from "./PaginationNav.vue";
 export type { PaginationNavProps } from "./PaginationNav.vue";
-export { PasswordInput } from "./PasswordInput.js";
-export type { PasswordInputProps, PasswordInputSize } from "./PasswordInput.js";
+export { default as PasswordInput } from "./PasswordInput.vue";
+export type { PasswordInputProps, PasswordInputSize } from "./PasswordInput.vue";
 export { ProgressBar } from "./ProgressBar.js";
 export type {
   ProgressBarProps,
