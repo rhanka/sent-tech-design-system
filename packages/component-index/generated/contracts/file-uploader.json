@@ -1,8 +1,8 @@
 {
   "componentId": "file-uploader",
   "contractSource": "derived",
-  "digest": "sha256:01ecb7ac29c71e25335a1039e411d1409426f10a381b4e033f00e6b87a77b495",
-  "entryDigest": "sha256:2682cb24fb62b57a6710730609487b7db5a3235d7a96e7973620d1e5516ef114",
+  "digest": "sha256:2bb4533eda1cb9aa7f9758222b25e3c72e462b266b7123e5c3d1fb2cb78d568f",
+  "entryDigest": "sha256:84d382fe780142792cf74f8e8c3ed419ec9a008602318ea82e06ff691229e475",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -125,7 +125,7 @@
         "declarationPath": "packages/components-angular/dist/FileUploader.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [
@@ -273,11 +273,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FileUploaderProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

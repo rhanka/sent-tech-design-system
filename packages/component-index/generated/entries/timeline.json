@@ -17,7 +17,7 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Timeline.tsx",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Timeline.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical/horizontal list of dated events: a connecting line, status dots, title, meta (date) and description per item.",
     "fr": "Liste verticale/horizontale d'événements datés : ligne de connexion, pastilles de statut, titre, méta (date) et description par item."
   },
-  "digest": "sha256:9f5ddc99200351495eb9734fb2e75e714f0ae0e12a52ad210412076c6d2a9b3d",
+  "digest": "sha256:c485e1a7b97dcb19ffe0626f4253a8d4994b77c069ec74c3bc19ad0396d7a630",
   "displayName": "Timeline",
   "format": "component-entry/v1",
   "frameworks": [

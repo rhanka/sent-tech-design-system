@@ -1,8 +1,8 @@
 {
   "componentId": "heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:bcac99cdb2c9e38c9396c859a9e422a3c1bdd1cfeea999f363f3484536b7ab9d",
-  "entryDigest": "sha256:8169940047caeb67b5b3365dfd059eacbdc90141f4bc4fc07433b1773e592e66",
+  "digest": "sha256:6df05dc131bdf63729c7061a20ce033231d5a265dd76e4f11c4e18e3d4f329a6",
+  "entryDigest": "sha256:850b31ef8755aa03485921a5eb84385d4ff2695f0599cdee4ce35cc4c53c572e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -86,7 +86,7 @@
         "declarationPath": "packages/components-angular/dist/HeatmapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HeatmapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-react/dist/HeatmapChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HeatmapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

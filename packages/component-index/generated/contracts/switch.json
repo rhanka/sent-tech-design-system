@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:6ce800685a5ced504c917f746fbd1456f4a8ff29af6a72401442675cfa5b9b4f",
-  "entryDigest": "sha256:ca4226b003718c4ae9d8dea6d83f10261343d30422923910ef7cc68f0f3c8c84",
+  "digest": "sha256:931bb5e4d427bc0d62d2af2e8cdc6004c19b6c46522953669c472d3397990980",
+  "entryDigest": "sha256:c804958ae0e09e02e01008ec34868ead264d0e6da46910b217cdb8ef08c0a502",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -58,7 +58,7 @@
         "declarationPath": "packages/components-angular/dist/Switch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -98,11 +98,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SwitchProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
