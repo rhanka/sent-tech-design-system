@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:dcb3185a281fffcd9c47ba5d69f58573ad739052b4aa94d09e71d94cfafff2a0",
+  "digest": "sha256:8f0d4dc91b72794612852a1576c46e9a7c23edfa13c6d03f972296a9064ff5a7",
   "entryDigest": "sha256:c617329d4a0d0cedcc31c7205dd3f5fa7b6828709c50eea13daa68a9066ace02",
   "format": "component-contract/v1",
   "frameworks": {
@@ -159,6 +159,19 @@
               }
             ],
             "type": "array"
+          }
+        },
+        {
+          "name": "onHighlightChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/EffectiveTarget"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         },
         {
@@ -364,6 +377,15 @@
           }
         },
         {
+          "name": "onScenarioChange",
+          "payload": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        {
           "name": "onSelect",
           "payload": {
             "additionalProperties": false,
@@ -382,6 +404,19 @@
           "name": "onSizeChange",
           "payload": {
             "$ref": "#/$defs/DiagramSceneSize"
+          }
+        },
+        {
+          "name": "onStepChange",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/StepChange"
+              },
+              {
+                "type": "null"
+              }
+            ]
           }
         }
       ],
@@ -661,6 +696,70 @@
             "required": [
               "height",
               "width"
+            ],
+            "type": "object"
+          },
+          "EffectiveTarget": {
+            "additionalProperties": false,
+            "properties": {
+              "step": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "visible"
             ],
             "type": "object"
           },
@@ -2631,6 +2730,82 @@
             ],
             "type": "object"
           },
+          "StepChange": {
+            "additionalProperties": false,
+            "properties": {
+              "ordinal": {
+                "type": "number"
+              },
+              "realises": {
+                "type": "string"
+              },
+              "relation": {
+                "type": "string"
+              },
+              "scenario": {
+                "type": "string"
+              },
+              "visible": {
+                "anyOf": [
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "edge"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "kind": {
+                        "const": "bundle"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "kind"
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "additionalProperties": false,
+                    "properties": {
+                      "kind": {
+                        "const": "box"
+                      },
+                      "occurrence": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "kind",
+                      "occurrence"
+                    ],
+                    "type": "object"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "ordinal",
+              "relation",
+              "scenario",
+              "visible"
+            ],
+            "type": "object"
+          },
           "StructAttributeValue": {
             "additionalProperties": false,
             "properties": {
@@ -3468,6 +3643,12 @@
         },
         "additionalProperties": false,
         "properties": {
+          "activeStep": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "bindings": {
             "$ref": "#/$defs/ExecutorProfileBindings"
           },
@@ -3484,6 +3665,9 @@
           "contentSize": {
             "$ref": "#/$defs/DiagramSceneSize"
           },
+          "defaultActiveStep": {
+            "type": "string"
+          },
           "defaultFolds": {
             "description": "Initial collapsed occurrence ids when `collapsed` is not controlled.",
             "items": {
@@ -3491,8 +3675,20 @@
             },
             "type": "array"
           },
+          "defaultScenario": {
+            "type": "string"
+          },
           "document": {
             "$ref": "#/$defs/SemanticDocument"
+          },
+          "flows": {
+            "additionalProperties": false,
+            "properties": {
+              "fanOutMax": {
+                "type": "number"
+              }
+            },
+            "type": "object"
           },
           "hints": {
             "$ref": "#/$defs/LayoutHints",
@@ -3527,6 +3723,12 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "scenario": {
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -3791,7 +3993,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6dc8ad953edc8f2f74493faa02eaa6f5f708f60a6dfb670aceae8597024ebdd7",
+        "declarationDigest": "sha256:ce10739046de5b434488f9a5ab9f57a111d4d83e12868ae8050f4e1de36cd9c6",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
