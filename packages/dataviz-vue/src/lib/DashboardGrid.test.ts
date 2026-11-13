@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import type { DashboardLayout } from '@sentropic/dataviz-core';
-import { DashboardGrid } from './DashboardGrid.js';
+import DashboardGrid from './DashboardGrid.vue';
 
 const layout: DashboardLayout = {
   columns: 12,

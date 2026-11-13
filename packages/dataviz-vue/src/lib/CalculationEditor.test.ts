@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { type CalculatedFieldConfig, type CalculationVariable, type DataModel } from '@sentropic/dataviz-core';
-import { CalculationEditor } from './CalculationEditor.js';
+import CalculationEditor from './CalculationEditor.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'segment', label: 'Segment', type: 'discrete' }],

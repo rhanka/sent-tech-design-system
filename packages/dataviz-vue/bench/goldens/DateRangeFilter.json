@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "DateRangeFilter",
+  "sourceRevision": "14f3b72af8be3723db8d3c2cd8b16ba0e6c57d31",
+  "source": "src/lib/DateRangeFilter.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-1\"><span class=\"st-field__label\">Période</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-1\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "custom-label",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-2\"><span class=\"st-field__label\">Period</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-2\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-3\"><span class=\"st-field__label\">Période</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-3\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-field consumer\" data-bench=\"timerange\"><label class=\"st-field__control\" for=\"st-datepicker-4\"><span class=\"st-field__label\">Période</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-4\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-datepicker-5\"><span class=\"st-field__label\">Période</span><span class=\"st-datepicker st-datepicker--md\"><input class=\"st-datepicker__control\" id=\"st-datepicker-5\" placeholder=\"jj/mm/aaaa - jj/mm/aaaa\" readonly=\"\" type=\"text\" value=\"\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-label=\"Ouvrir le calendrier\" class=\"st-datepicker__trigger\" type=\"button\"><span aria-hidden=\"true\">📅</span></button></span></label></div>"
+    }
+  ],
+  "sourceSha256": "ce002e45455807b5d67e386c92a649323787a1fbff47a49a3516f21c2d001ade",
+  "fixtureSha256": "95a222eb4ac15d36985ef0e58478b8f08af605335c3d7ea8e1f9bc185ad3a077",
+  "publicExports": [
+    {
+      "name": "DateRangeFilter",
+      "typeOnly": false
+    },
+    {
+      "name": "dateRangeToSpec",
+      "typeOnly": false
+    },
+    {
+      "name": "DateRangeFilterProps",
+      "typeOnly": true
+    }
+  ]
+}
