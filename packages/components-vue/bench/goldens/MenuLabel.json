@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "component": "MenuLabel",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/MenuLabel.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "Label"
+    },
+    {
+      "id": "empty",
+      "html": ""
+    },
+    {
+      "id": "number",
+      "html": "12"
+    },
+    {
+      "id": "rich",
+      "html": "<strong>Rich</strong>"
+    }
+  ],
+  "sourceSha256": "559046b9d9d4b0877070b779f9788e3303dca805bd301dc016e3d14a378830d3",
+  "fixtureSha256": "c63d9acbb47e6db1c04a4d4909cc9355faf3dd1596fcbb10a38e6800faf37a72",
+  "publicExports": []
+}

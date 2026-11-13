@@ -1,5 +1,5 @@
 import { createRequire, registerHooks } from 'node:module';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, extname, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import ts from 'typescript';
@@ -7,7 +7,7 @@ import ts from 'typescript';
 export const bench = dirname(fileURLToPath(import.meta.url));
 export const pkg = resolve(bench, '..');
 export const src = resolve(pkg, 'src');
-export const names = ['Button', 'Badge', 'Alert', 'Input', 'Checkbox', 'Select', 'Tabs', 'Pagination', 'Tooltip', 'BarChart'];
+export const names = readdirSync(resolve(bench, 'fixtures')).filter(f => f.endsWith('.fixtures.ts')).map(f => f.replace('.fixtures.ts', '')).sort();
 export const require = createRequire(resolve(pkg, 'package.json'));
 export const compilers = { classic: require('vue/compiler-sfc'), vapor: require('@vue/compiler-sfc') };
 for (const compiler of Object.values(compilers)) compiler.registerTS(() => ts);
@@ -88,7 +88,7 @@ export function wrapperSource(name, fixture, legacy = false) {
 export function normalizeHtml(html, JSDOM) {
   const fragment = JSDOM.fragment(html);
   const idMap = new Map();
-  const generated = /\bst-(?:input|select|checkbox|tabs|tooltip)-(?:\d+|v-\d+(?:-\d+)*)\b/g;
+  const generated = /\bst-(?:input|select|checkbox|tabs|tooltip|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)\b/g;
   const mask = value => value.replace(generated, id => {
     if (!idMap.has(id)) idMap.set(id, `generated-${idMap.size + 1}`);
     return idMap.get(id);
@@ -101,6 +101,7 @@ export function normalizeHtml(html, JSDOM) {
     if (node.nodeType !== 1) return children(node);
     const attrs = [...node.attributes].sort((a, b) => a.name < b.name ? -1 : a.name > b.name ? 1 : 0)
       .map(a => ` ${a.name}="${escapeText(a.name === 'id' || a.name === 'for' || a.name.startsWith('aria-')
+        || (a.name === 'name' && /^st-tileGroup-(?:\d+|v-\d+(?:-\d+)*)$/.test(a.value))
         ? mask(a.value) : a.value).replace(/"/g, '&quot;')}"`).join('');
     const tag = node.localName;
     return `<${tag}${attrs}>` + (voidTags.has(tag) ? '' : `${children(node.content ?? node)}</${tag}>`);

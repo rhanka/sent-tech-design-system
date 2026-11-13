@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "VennChart",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/VennChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Overlap\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"152.4\" cy=\"180\" data-chart-index=\"0\" r=\"108\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category2\" cx=\"267.6\" cy=\"180\" data-chart-index=\"1\" r=\"72\"></circle><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"180\">2</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"38.400000000000006\" y=\"180\">A</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"start\" x=\"345.6\" y=\"180\">B</text></svg></div><ul aria-label=\"Data values for Overlap\" class=\"st-chartDataList\"><li>A: 10</li><li>B: 5</li><li>A ∩ B: 2</li></ul></div>"
+    },
+    {
+      "id": "three",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Three\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 300\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"249\" cy=\"119.4\" data-chart-index=\"0\" r=\"90\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category2\" cx=\"351\" cy=\"119.4\" data-chart-index=\"1\" r=\"60\"></circle><circle class=\"st-vennChart__circle st-vennChart__circle--category3\" cx=\"300\" cy=\"193.35\" data-chart-index=\"2\" r=\"72.98644433217213\"></circle><text class=\"st-vennChart__value\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"300\" y=\"144.04999999999998\">2</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"166.68067913159575\" y=\"70.00840747895747\">A</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"start\" x=\"407.5945330970279\" y=\"85.44328014178326\">B</text><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"300\" y=\"272.3364443321721\">C</text></svg></div><ul aria-label=\"Data values for Three\" class=\"st-chartDataList\"><li>A: 10</li><li>B: 5</li><li>C: 7</li><li>A ∩ B ∩ C: 2</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Empty\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "invalid",
+      "html": "<div class=\"st-vennChart\"><div aria-label=\"Invalid\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-vennChart consumer\" data-bench=\"venn\" style=\"color:red;\"><div aria-label=\"&lt;Chart&gt;\" class=\"st-vennChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 420 360\" width=\"100%\"><circle class=\"st-vennChart__circle st-vennChart__circle--category1\" cx=\"210\" cy=\"180\" data-chart-index=\"0\" r=\"108\"></circle><text class=\"st-vennChart__label\" dominant-baseline=\"middle\" text-anchor=\"middle\" x=\"210\" y=\"66\">&lt;A&gt;</text></svg></div><ul aria-label=\"Data values for &lt;Chart&gt;\" class=\"st-chartDataList\"><li>&lt;A&gt;: 4</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "318bb701235ab68de0b3f8c74d49bd2a08c2f69a9e077dfe5dc4513d623b55cc",
+  "fixtureSha256": "c960232359c67931f2ac94b064cd12d8ab7060328610ba7f46a99a4f66d6a2e1",
+  "publicExports": [
+    {
+      "name": "VennChart",
+      "typeOnly": false
+    },
+    {
+      "name": "VennChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "VennChartArea",
+      "typeOnly": true
+    },
+    {
+      "name": "VennChartTone",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TreeView",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/TreeView.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Arborescence\" class=\"st-treeView\" role=\"tree\"><div aria-expanded=\"false\" aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"a\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"0\"><span aria-hidden=\"true\" class=\"st-treeView__caret\"></span><span class=\"st-treeView__label\">Alpha</span></div><div aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"d\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"-1\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Delta</span></div></div>"
+    },
+    {
+      "id": "static",
+      "html": "<div aria-label=\"Arborescence\" class=\"st-treeView\" role=\"tree\"><div aria-expanded=\"true\" aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"a\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--open\"></span><span class=\"st-treeView__label\">Alpha</span></div><div aria-level=\"2\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"b\" role=\"treeitem\" style=\"padding-inline-start: calc(1 * var(--st-spacing-4, 1rem) + 0.25rem)\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Beta</span></div><div aria-disabled=\"true\" aria-level=\"2\" aria-selected=\"false\" class=\"st-treeView__row st-treeView__row--disabled\" data-tree-id=\"c\" role=\"treeitem\" style=\"padding-inline-start: calc(1 * var(--st-spacing-4, 1rem) + 0.25rem)\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Disabled</span></div><div aria-level=\"1\" aria-selected=\"true\" class=\"st-treeView__row st-treeView__row--selected\" data-tree-id=\"d\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Delta</span></div></div>"
+    },
+    {
+      "id": "controlled",
+      "html": "<div aria-label=\"Custom\" class=\"st-treeView consumer\" role=\"tree\"><div aria-expanded=\"true\" aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"a\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"0\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--open\"></span><span class=\"st-treeView__label\">Alpha</span></div><div aria-level=\"2\" aria-selected=\"true\" class=\"st-treeView__row st-treeView__row--selected\" data-tree-id=\"b\" role=\"treeitem\" style=\"padding-inline-start: calc(1 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"-1\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Beta</span></div><div aria-disabled=\"true\" aria-level=\"2\" aria-selected=\"false\" class=\"st-treeView__row st-treeView__row--disabled\" data-tree-id=\"c\" role=\"treeitem\" style=\"padding-inline-start: calc(1 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"-1\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Disabled</span></div><div aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"d\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\" tabindex=\"-1\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\">Delta</span></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div aria-label=\"Arborescence\" class=\"st-treeView\" role=\"tree\"></div>"
+    },
+    {
+      "id": "rich",
+      "html": "<div aria-label=\"Arborescence\" class=\"st-treeView\" role=\"tree\"><div aria-level=\"1\" aria-selected=\"false\" class=\"st-treeView__row\" data-tree-id=\"a\" role=\"treeitem\" style=\"padding-inline-start: calc(0 * var(--st-spacing-4, 1rem) + 0.25rem)\"><span aria-hidden=\"true\" class=\"st-treeView__caret st-treeView__caret--leaf\"></span><span class=\"st-treeView__label\"><strong>Alpha</strong></span></div></div>"
+    }
+  ],
+  "sourceSha256": "338a7e52305aee19102029901351dd88d34e255d9e0985c0c1e0ceecb30fe757",
+  "fixtureSha256": "1cdb078a449ca295232e440968121e3d204203dfdc5b92d9da78f19fe7ed6b5c",
+  "publicExports": [
+    {
+      "name": "TreeView",
+      "typeOnly": false
+    },
+    {
+      "name": "TreeViewProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TreeNode",
+      "typeOnly": true
+    }
+  ]
+}

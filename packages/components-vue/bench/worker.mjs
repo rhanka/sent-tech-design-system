@@ -13,7 +13,7 @@ try {
   if (!names.includes(name) || !['ssr', 'vapor'].includes(operation)) throw new Error('Invalid worker arguments');
   const { JSDOM } = await import('jsdom');
   let dom;
-  if (operation === 'vapor') {
+  if (operation === 'vapor' || name === 'Dropdown' || name === 'Popper') {
     dom = new JSDOM('<!doctype html><html><body><div id="app"></div></body></html>', { url: 'http://localhost/' });
     for (const key of ['window', 'document', 'Node', 'Element', 'HTMLElement', 'SVGElement', 'Text', 'Comment', 'Document', 'DocumentFragment', 'MutationObserver', 'Event', 'CustomEvent']) {
       Object.defineProperty(globalThis, key, { value: dom.window[key], configurable: true });
@@ -25,7 +25,7 @@ try {
     throw new Error('Expected 4–8 uniquely named fixtures with default first');
   }
   temporary = mkdtempSync(resolve(bench, '.tmp-worker-'));
-  const legacy = !existsSync(resolve(src, `${name}.vue`));
+  const legacy = existsSync(resolve(src, `${name}.ts`));
   if (operation === 'ssr') {
     const { createSSRApp } = await import('vue');
     const { renderToString } = await import('@vue/server-renderer');

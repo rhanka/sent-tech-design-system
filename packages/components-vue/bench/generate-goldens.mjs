@@ -3,11 +3,15 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-import { bench, src, names } from './lib.mjs';
+import { bench, src, names as availableNames } from './lib.mjs';
+
+const names = process.argv.slice(2);
+if (!names.length || names.some(name => !availableNames.includes(name))) throw new Error('Pass explicit module names with fixtures');
 
 // Explicit maintenance command, never called by check.mjs. Refuse conversions.
 for (const name of names) {
-  if (!existsSync(resolve(src, `${name}.ts`)) || existsSync(resolve(src, `${name}.vue`))) throw new Error(`${name}: restore original .ts before capturing goldens`);
+  if (!existsSync(resolve(src, `${name}.ts`))) throw new Error(`${name}: restore original .ts before capturing goldens`);
+  if (existsSync(resolve(bench, 'goldens', `${name}.json`))) throw new Error(`${name}: frozen golden already exists`);
 }
 const revision = spawnSync('git', ['rev-parse', 'HEAD'], { cwd: bench, encoding: 'utf8' });
 if (revision.status !== 0) throw new Error(revision.stderr);
