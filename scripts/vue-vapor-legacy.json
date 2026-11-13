@@ -31,7 +31,6 @@
   "packages/dataviz-vue/src/lib/DateRangeFilter.ts",
   "packages/dataviz-vue/src/lib/DrillBarChart.ts",
   "packages/dataviz-vue/src/lib/ErrorBarsChart.ts",
-  "packages/dataviz-vue/src/lib/EventFeedPanel.ts",
   "packages/dataviz-vue/src/lib/ExportMenu.ts",
   "packages/dataviz-vue/src/lib/FieldPane.ts",
   "packages/dataviz-vue/src/lib/FlamegraphChart.ts",
