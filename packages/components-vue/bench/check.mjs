@@ -13,7 +13,7 @@ if (!names.includes(name) || args.slice(1).some(arg => arg !== '--json') || args
   console.error(`Usage: node bench/check.mjs <${names.join('|')}> [--json]`);
   process.exit(2);
 }
-const file = resolve(src, `${name}.vue`);
+const file = resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`);
 const gates = [];
 let temporary;
 const fail = message => { throw new Error(message); };
@@ -54,7 +54,9 @@ function typecheck(files) {
 try {
   gate('G1', 'Template source', () => {
     const problems = [];
-    if (existsSync(resolve(src, `${name}.ts`))) problems.push(`Old src/${name}.ts still exists`);
+    if (name === 'cellDecoration') {
+      if (/\b(?:h|defineComponent)\s*\(/.test(readFileSync(resolve(src, 'cellDecoration.ts'), 'utf8'))) problems.push('Decoration helper still renders VNodes');
+    } else if (existsSync(resolve(src, `${name}.ts`))) problems.push(`Old src/${name}.ts still exists`);
     const { descriptor, errors } = compilers.classic.parse(source(), { filename: file });
     if (errors.length) fail(errors.map(String).join('; '));
     if (!descriptor.scriptSetup || descriptor.scriptSetup.lang !== 'ts') problems.push('Requires <script setup lang="ts">');
@@ -166,7 +168,7 @@ try {
     if (!expectedExports.length) {
       temporary ??= mkdtempSync(resolve(bench, '.tmp-check-'));
       const probe = resolve(temporary, 'private.ts');
-      writeFileSync(probe, `import Component, { type ${target} } from '../../src/${name}.vue';\nconst component: object | Function = Component;\ntype Props = ${target};\nvoid component;\n`);
+      writeFileSync(probe, `import Component, { type ${target} } from '../../src/${name === 'cellDecoration' ? 'CellDecorationIcon' : name}.vue';\nconst component: object | Function = Component;\ntype Props = ${target};\nvoid component;\n`);
       typecheck([probe]);
       return 'Internal component; direct default export and Props resolve (no public barrel exports in reference)';
     }
