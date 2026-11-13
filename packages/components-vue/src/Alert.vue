@@ -6,9 +6,9 @@ export type AlertTone = 'info' | 'success' | 'warning' | 'error';
 
 export type AlertProps = {
   tone?: AlertTone;
-  title?: unknown;
-  message?: unknown;
-  actions?: unknown;
+  title?: string | number;
+  message?: string | number;
+  actions?: string | number;
   class?: string;
 };
 

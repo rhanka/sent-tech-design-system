@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, onUnmounted, watch } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -59,7 +60,7 @@ defineSlots<{ "default"?: () => unknown; "footer"?: () => unknown }>();
       <div class="st-modal__header">
         <h2 v-if="props.title" class="st-modal__title">{{ props.title }}</h2>
         <button type="button" class="st-modal__close" :aria-label="props.closeLabel" @click="emit('close')">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>
+          <Icon name="x" :size="18" />
         </button>
       </div>
       <p v-if="props.description" class="st-modal__description">{{ props.description }}</p>

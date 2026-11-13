@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:b3bba050fcb1f29bcaa84d935fdad22253eef72677b3a467d2b049b873e1a22b",
+      "digest": "sha256:030b12f11a8902d995c51390bd99dbd4909ba550dcd9e9bb7b0a6691b555a727",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Accordion.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "List of collapsible panels.",
     "fr": "Liste de panneaux pliables."
   },
-  "digest": "sha256:a0d993b50657c472fc3c8e0861e90fc75976962f6f4684b3ac97e6e267cb7da3",
+  "digest": "sha256:57dfc0d00e023ee013f7d6ebfc8a3a90f82b71c2fca56e1c1b6825bb4c75dcd8",
   "displayName": "Accordion",
   "format": "component-entry/v1",
   "frameworks": [

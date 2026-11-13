@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:67e55cb3c83b0512a525d600d7ea2c0c5b84e1cb4f0335186e18129af21fa940",
+      "digest": "sha256:49f66717d562b0775480e65da3775eb2406847aa866e0aa46c8516107740addb",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MenuTriggerButton.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Square icon button preconfigured to open a menu (haspopup/expanded wired).",
     "fr": "Bouton icône carré préconfiguré pour ouvrir un menu (haspopup/expanded câblés)."
   },
-  "digest": "sha256:a661a998c358f30ac7a191383d41b069f984ff893e6bf8aea8e79766b9555d9e",
+  "digest": "sha256:16d970f5060af7531d212b79b1943f268b574bed135e9b5ecbfe82290c7863ae",
   "displayName": "MenuTriggerButton",
   "format": "component-entry/v1",
   "frameworks": [

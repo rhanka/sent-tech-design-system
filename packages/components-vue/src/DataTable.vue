@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import type { VNodeChild } from 'vue';
 import { classNames } from './classNames.js';
 import { scalarContent } from './slotContent.js';
 import { type CellDecoration, cellDecorationClass, cellDecorationLabel } from './cellDecoration.js';
@@ -14,11 +13,11 @@ export interface DataTableColumn<R extends DataTableRow = DataTableRow> {
   key: string;
 
   /** @slot column-label */
-  label?: VNodeChild;
+  label?: string | number;
   sortable?: boolean;
   align?: "start" | "center" | "end";
   width?: string;
-  cell?: (row: R, column: DataTableColumn<R>) => VNodeChild;
+  cell?: (row: R, column: DataTableColumn<R>) => string | number;
   /**
    * Conditional formatting (confort) : décoration sémantique calculée par
    * cellule. Si une `decorations` map est aussi fournie, la map gagne.
@@ -52,7 +51,7 @@ export type DataTableProps = {
    * `rowId` → `colId` → décoration. Prioritaire sur `column.cellDecoration`.
    */
   decorations?: Record<string, Record<string, CellDecoration>>;
-  caption?: VNodeChild;
+  caption?: string | number;
   size?: DataTableSize;
   selectable?: DataTableSelectMode;
   selectedIds?: string[];
@@ -264,7 +263,7 @@ const state = computed(() => {
 </script>
 
 <template>
-  <div v-bind="$attrs" class="st-dataTable-wrap"><table v-bind="{ ...$attrs, class: classNames('st-dataTable', `st-dataTable--${state.size}`, props.class) }">
+  <div class="st-dataTable-wrap"><table v-bind="{ ...$attrs, class: classNames('st-dataTable', `st-dataTable--${state.size}`, props.class) }">
     <caption v-if="props.caption || $slots.caption"><slot v-if="$slots.caption" name="caption" /><template v-else>{{ scalarContent(props.caption) }}</template></caption>
     <thead><tr><th v-if="state.selectable === 'multiple'" scope="col" class="st-dataTable__select"><label class="st-dataTable__selectLabel"><input type="checkbox" :checked="state.allVisibleSelected" :indeterminate="state.someVisibleSelected" :aria-label="props.selectAllLabel" @change="state.toggleAllVisible(($event.currentTarget as HTMLInputElement).checked)" /><span class="st-visually-hidden">{{ props.selectAllLabel }}</span></label></th><th v-else-if="state.selectable === 'single'" scope="col" class="st-dataTable__select" :aria-label="props.selectRowLabel" />
       <th v-for="(column, columnIndex) in state.columns" :key="column.key" scope="col" :class="state.alignClass(column.align)" :aria-sort="state.ariaSortFor(column)" :style="column.width ? `width: ${column.width}` : undefined"><button v-if="state.isColumnSortable(column)" type="button" class="st-dataTable__sortBtn" @click="state.toggleSort(column)"><span><slot v-if="$slots['column-label']" name="column-label" :column="column" :column-index="columnIndex" /><template v-else>{{ scalarContent(column.label) }}</template></span><span class="st-dataTable__sortIcon" aria-hidden="true">{{ state.ariaSortFor(column) === 'ascending' ? '↑' : state.ariaSortFor(column) === 'descending' ? '↓' : '↕' }}</span><span class="st-visually-hidden">{{ state.ariaSortFor(column) === 'ascending' ? props.sortAscendingLabel : state.ariaSortFor(column) === 'descending' ? props.sortDescendingLabel : props.sortNoneLabel }}</span></button><template v-else><slot v-if="$slots['column-label']" name="column-label" :column="column" :column-index="columnIndex" /><template v-else>{{ scalarContent(column.label) }}</template></template></th>

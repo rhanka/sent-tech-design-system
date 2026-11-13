@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:7830fdae114c881b6c5166a1009394d20d33fcf39af420775f5048d1550c874d",
+      "digest": "sha256:e2b59b57e8feb0521f235ff796b7176a2f7120dc7a9572f7b7ed630dd0d7735a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AppHeader.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Compact application header with menu trigger, navigation, and actions.",
     "fr": "En-tête applicatif compact avec burger, navigation et zone d’actions."
   },
-  "digest": "sha256:2c70e4e7e0c0c83d22c562c568b4aa37d57166aed0e5711216e0c6e712167aef",
+  "digest": "sha256:df9c2778b50124d77f85be9c8c9869e4567a4e6ebe52214392d1812560533feb",
   "displayName": "AppHeader",
   "format": "component-entry/v1",
   "frameworks": [
