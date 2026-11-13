@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:72b23609c5f45f0deb4093fdfb8feb1d0d9230d4bc865699e299ea542771ae96",
-  "entryDigest": "sha256:dc45ca2473004252c5d51757085a1d55eb716e8e925c823779d8adfc23d92121",
+  "digest": "sha256:bcef89a80b1fe3e65fca35872cc53f2b62f0597b9046bea7e9a1f11ad870e42d",
+  "entryDigest": "sha256:e5940a25a08ada4d2ed8de01c6ad1f82eda22fba91ee3ef204f46adf157bf50b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -4900,14 +4900,50 @@
               {
                 "additionalProperties": false,
                 "properties": {
+                  "channels": {
+                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutChannel"
+                    },
+                    "type": "array"
+                  },
                   "edgeBundles": {
                     "additionalProperties": {
                       "additionalProperties": false,
                       "properties": {
+                        "chip": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "groups": {
+                              "items": {
+                                "$ref": "#/$defs/BundleLabelGroup"
+                              },
+                              "type": "array"
+                            },
+                            "header": {
+                              "type": "string"
+                            },
+                            "layout": {
+                              "$ref": "#/$defs/LineLayout"
+                            }
+                          },
+                          "required": [
+                            "groups",
+                            "header",
+                            "layout"
+                          ],
+                          "type": "object"
+                        },
                         "label": {
                           "type": "string"
                         },
                         "members": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "relations": {
                           "items": {
                             "type": "string"
                           },
@@ -4956,7 +4992,6 @@
                       ],
                       "type": "object"
                     },
-                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
                     "properties": {},
                     "type": "object"
                   },
@@ -5053,6 +5088,29 @@
       ],
       "props": {
         "$defs": {
+          "BundleLabelGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "lines": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "top": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "lines",
+              "top"
+            ],
+            "type": "object"
+          },
           "CategoryTokenBinding": {
             "additionalProperties": false,
             "properties": {
@@ -5147,6 +5205,12 @@
             "properties": {
               "code": {
                 "enum": [
+                  "erd-missing-pk",
+                  "erd-multiple-pk",
+                  "erd-dangling-fk",
+                  "erd-missing-end",
+                  "erd-duplicate-field",
+                  "erd-invalid-fk-target",
                   "dangling-reference",
                   "reference-type-mismatch",
                   "hierarchy-cycle",
@@ -5828,6 +5892,77 @@
             ],
             "type": "object"
           },
+          "LayoutChannel": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "description": "Axis of the gap (horizontal gap separates columns).",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "edges": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "expected": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "labelled": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": "number"
+              },
+              "strips": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "height": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "height",
+                    "width",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "axis",
+              "edges",
+              "expected",
+              "gap",
+              "id",
+              "labelled",
+              "n",
+              "strips"
+            ],
+            "type": "object"
+          },
           "LayoutFit": {
             "additionalProperties": false,
             "properties": {
@@ -6045,7 +6180,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "card-icon-missing",
                   "card-grown",
+                  "channel-unresolved",
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
@@ -8623,6 +8760,30 @@
             "$ref": "#/$defs/LayoutHints",
             "description": "Declaration order (`rootOrder`, `ordering[parent]`) and the other layout hints."
           },
+          "iconBindings": {
+            "additionalProperties": {
+              "additionalProperties": false,
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "shape": {
+                  "enum": [
+                    "component",
+                    "flow",
+                    "erd",
+                    "note"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "properties": {},
+            "type": "object"
+          },
           "label": {
             "description": "Accessible name of the figure. Defaults to `title`.",
             "type": "string"
@@ -8652,6 +8813,9 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "strictIcons": {
+            "type": "boolean"
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -8764,6 +8928,12 @@
           "sourceType": "Readonly<Record<string, SummaryDefinition>>"
         },
         {
+          "name": "iconBindings",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"icon\":{\"type\":\"string\"},\"role\":{\"type\":\"string\"},\"shape\":{\"enum\":[\"component\",\"flow\",\"erd\",\"note\"]}},\"additionalProperties\":false}",
+          "sourceType": "Readonly<Record<string, { readonly icon?: string | undefined; readonly role?: string | undefined; readonly shape?: \"component\" | \"flow\" | \"erd\" | \"note\" | undefined; }>>"
+        },
+        {
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -8778,8 +8948,8 @@
         {
           "name": "result.edgeBundles",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
-          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; }>>"
+          "replacement": "{\"type\":\"object\",\"properties\":{\"chip\":{\"type\":\"object\",\"properties\":{\"groups\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/BundleLabelGroup\"}},\"header\":{\"type\":\"string\"},\"layout\":{\"$ref\":\"#/$defs/LineLayout\"}},\"additionalProperties\":false,\"required\":[\"groups\",\"header\",\"layout\"]},\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"relations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
+          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[] | undefined; chip?: { header: string; groups: BundleLabelGroup[]; layout: LineLayout; } | undefined; }>>"
         },
         {
           "name": "result.labelBoxes",
@@ -8796,7 +8966,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6dc8ad953edc8f2f74493faa02eaa6f5f708f60a6dfb670aceae8597024ebdd7",
+        "declarationDigest": "sha256:62555e93d1a8eba7e7ddc6f66ac148cff5a0133e7781a86162b00a7490004330",
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
@@ -13637,7 +13807,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -13646,7 +13816,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -13662,7 +13832,7 @@
                   "occurrence": {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "occurrence"
                       },
                       "length": {
@@ -13671,7 +13841,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -13694,14 +13864,50 @@
               {
                 "additionalProperties": false,
                 "properties": {
+                  "channels": {
+                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
+                    "items": {
+                      "$ref": "#/$defs/LayoutChannel"
+                    },
+                    "type": "array"
+                  },
                   "edgeBundles": {
                     "additionalProperties": {
                       "additionalProperties": false,
                       "properties": {
+                        "chip": {
+                          "additionalProperties": false,
+                          "properties": {
+                            "groups": {
+                              "items": {
+                                "$ref": "#/$defs/BundleLabelGroup"
+                              },
+                              "type": "array"
+                            },
+                            "header": {
+                              "type": "string"
+                            },
+                            "layout": {
+                              "$ref": "#/$defs/LineLayout"
+                            }
+                          },
+                          "required": [
+                            "groups",
+                            "header",
+                            "layout"
+                          ],
+                          "type": "object"
+                        },
                         "label": {
                           "type": "string"
                         },
                         "members": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "relations": {
                           "items": {
                             "type": "string"
                           },
@@ -13750,7 +13956,6 @@
                       ],
                       "type": "object"
                     },
-                    "description": "Box of every placed edge label, keyed by relation occurrence id, in\nworld units. Present on measured views only. A label the capped\ngutters cannot hold has no box and one `label-unplaced` warning. A\nhost draws labels from these boxes and unions them into its fit\nbounds (DEC-5, BF-7).",
                     "properties": {},
                     "type": "object"
                   },
@@ -13863,6 +14068,29 @@
       ],
       "props": {
         "$defs": {
+          "BundleLabelGroup": {
+            "additionalProperties": false,
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "lines": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "top": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "height",
+              "lines",
+              "top"
+            ],
+            "type": "object"
+          },
           "CategoryTokenBinding": {
             "additionalProperties": false,
             "properties": {
@@ -13872,7 +14100,7 @@
               "legendRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "entity"
                   },
                   "length": {
@@ -13881,7 +14109,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -13905,7 +14133,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "relation"
                     },
                     "length": {
@@ -13914,7 +14142,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -13926,7 +14154,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "relation"
                     },
                     "length": {
@@ -13935,7 +14163,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -13957,6 +14185,12 @@
             "properties": {
               "code": {
                 "enum": [
+                  "erd-missing-pk",
+                  "erd-multiple-pk",
+                  "erd-dangling-fk",
+                  "erd-missing-end",
+                  "erd-duplicate-field",
+                  "erd-invalid-fk-target",
                   "dangling-reference",
                   "reference-type-mismatch",
                   "hierarchy-cycle",
@@ -14399,7 +14633,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "entity"
                   },
                   "length": {
@@ -14408,7 +14642,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -14436,7 +14670,7 @@
               "entity": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "entity"
                   },
                   "length": {
@@ -14445,7 +14679,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -14460,7 +14694,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14469,7 +14703,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -14492,7 +14726,7 @@
               "categoryRef": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "entity"
                   },
                   "length": {
@@ -14501,7 +14735,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -14606,7 +14840,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14615,7 +14849,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -14635,6 +14869,77 @@
               "occurrence",
               "overflow",
               "title"
+            ],
+            "type": "object"
+          },
+          "LayoutChannel": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "description": "Axis of the gap (horizontal gap separates columns).",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ]
+              },
+              "edges": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              "expected": {
+                "type": "number"
+              },
+              "gap": {
+                "type": "number"
+              },
+              "id": {
+                "type": "string"
+              },
+              "labelled": {
+                "type": "boolean"
+              },
+              "n": {
+                "type": "number"
+              },
+              "strips": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "height": {
+                      "type": "number"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "x": {
+                      "type": "number"
+                    },
+                    "y": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "height",
+                    "width",
+                    "x",
+                    "y"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "axis",
+              "edges",
+              "expected",
+              "gap",
+              "id",
+              "labelled",
+              "n",
+              "strips"
             ],
             "type": "object"
           },
@@ -14700,7 +15005,7 @@
                     {
                       "additionalProperties": false,
                       "properties": {
-                        "__@refBrand@29414": {
+                        "__@refBrand@29480": {
                           "const": "entity"
                         },
                         "length": {
@@ -14709,7 +15014,7 @@
                         }
                       },
                       "required": [
-                        "__@refBrand@29414",
+                        "__@refBrand@29480",
                         "length"
                       ],
                       "type": "object"
@@ -14756,7 +15061,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "entity"
                     },
                     "length": {
@@ -14765,7 +15070,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -14855,7 +15160,9 @@
               "code": {
                 "enum": [
                   "card-overflow",
+                  "card-icon-missing",
                   "card-grown",
+                  "channel-unresolved",
                   "label-unplaced",
                   "label-budget-exhausted",
                   "route-obstructed",
@@ -14903,7 +15210,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "entity"
                     },
                     "length": {
@@ -14912,7 +15219,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -14970,7 +15277,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -14979,7 +15286,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15033,7 +15340,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15042,7 +15349,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15053,7 +15360,7 @@
               "ownerOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15062,7 +15369,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15070,7 +15377,7 @@
               "port": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "port"
                   },
                   "length": {
@@ -15079,7 +15386,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15237,7 +15544,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29414": {
+                          "__@refBrand@29480": {
                             "const": "entity"
                           },
                           "length": {
@@ -15246,7 +15553,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29414",
+                          "__@refBrand@29480",
                           "length"
                         ],
                         "type": "object"
@@ -15267,7 +15574,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29414": {
+                          "__@refBrand@29480": {
                             "const": "relation"
                           },
                           "length": {
@@ -15276,7 +15583,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29414",
+                          "__@refBrand@29480",
                           "length"
                         ],
                         "type": "object"
@@ -15297,7 +15604,7 @@
                       "target": {
                         "additionalProperties": false,
                         "properties": {
-                          "__@refBrand@29414": {
+                          "__@refBrand@29480": {
                             "const": "port"
                           },
                           "length": {
@@ -15306,7 +15613,7 @@
                           }
                         },
                         "required": [
-                          "__@refBrand@29414",
+                          "__@refBrand@29480",
                           "length"
                         ],
                         "type": "object"
@@ -15670,7 +15977,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "relation"
                   },
                   "length": {
@@ -15679,7 +15986,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15712,7 +16019,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "entity"
                       },
                       "length": {
@@ -15721,7 +16028,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15729,7 +16036,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "relation"
                       },
                       "length": {
@@ -15738,7 +16045,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15746,7 +16053,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "port"
                       },
                       "length": {
@@ -15755,7 +16062,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15782,7 +16089,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15791,7 +16098,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15799,7 +16106,7 @@
               "relation": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "relation"
                   },
                   "length": {
@@ -15808,7 +16115,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15846,7 +16153,7 @@
                 "additionalProperties": false,
                 "description": "The occurrence this end attaches to: an entity, port or relation\noccurrence (M3 §3.9.1/§4.4.2). A relation occurrence draws a RelationRef\ntarget through its `relation` field.",
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15855,7 +16162,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15869,7 +16176,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "entity"
                       },
                       "length": {
@@ -15878,7 +16185,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15886,7 +16193,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "relation"
                       },
                       "length": {
@@ -15895,7 +16202,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15903,7 +16210,7 @@
                   {
                     "additionalProperties": false,
                     "properties": {
-                      "__@refBrand@29414": {
+                      "__@refBrand@29480": {
                         "const": "port"
                       },
                       "length": {
@@ -15912,7 +16219,7 @@
                       }
                     },
                     "required": [
-                      "__@refBrand@29414",
+                      "__@refBrand@29480",
                       "length"
                     ],
                     "type": "object"
@@ -15924,7 +16231,7 @@
                 "additionalProperties": false,
                 "description": "The original endpoint occurrence in the retained source view. Present iff\nfold provenance is used; mutually exclusive with `chainProvenance`.",
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -15933,7 +16240,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -15957,7 +16264,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "resource"
                   },
                   "length": {
@@ -15966,7 +16273,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16034,7 +16341,7 @@
               "documentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "document"
                   },
                   "length": {
@@ -16043,7 +16350,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16361,7 +16668,7 @@
               "id": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "port"
                   },
                   "length": {
@@ -16370,7 +16677,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16381,7 +16688,7 @@
               "owner": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "entity"
                   },
                   "length": {
@@ -16390,7 +16697,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16422,7 +16729,7 @@
               "occurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16431,7 +16738,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16718,7 +17025,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "relation"
                     },
                     "length": {
@@ -16727,7 +17034,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -16739,7 +17046,7 @@
                 "items": {
                   "additionalProperties": false,
                   "properties": {
-                    "__@refBrand@29414": {
+                    "__@refBrand@29480": {
                       "const": "occurrence"
                     },
                     "length": {
@@ -16748,7 +17055,7 @@
                     }
                   },
                   "required": [
-                    "__@refBrand@29414",
+                    "__@refBrand@29480",
                     "length"
                   ],
                   "type": "object"
@@ -16758,7 +17065,7 @@
               "sourceOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16767,7 +17074,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -16782,7 +17089,7 @@
               "targetOccurrence": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -16791,7 +17098,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -17283,7 +17590,7 @@
               "semanticDocumentId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "document"
                   },
                   "length": {
@@ -17292,7 +17599,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -17308,7 +17615,7 @@
               "viewId": {
                 "additionalProperties": false,
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "view"
                   },
                   "length": {
@@ -17317,7 +17624,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -17352,7 +17659,7 @@
                 "additionalProperties": false,
                 "description": "The entity occurrence this group folds (M3 §4.1.1). Present on every fold\ngroup in a completed-profile view. Membership is still derived through\n`EntityOccurrence.group`, never stored here.",
                 "properties": {
-                  "__@refBrand@29414": {
+                  "__@refBrand@29480": {
                     "const": "occurrence"
                   },
                   "length": {
@@ -17361,7 +17668,7 @@
                   }
                 },
                 "required": [
-                  "__@refBrand@29414",
+                  "__@refBrand@29480",
                   "length"
                 ],
                 "type": "object"
@@ -17383,7 +17690,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29414": {
+                "__@refBrand@29480": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17392,7 +17699,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29414",
+                "__@refBrand@29480",
                 "length"
               ],
               "type": "object"
@@ -17410,7 +17717,7 @@
             "items": {
               "additionalProperties": false,
               "properties": {
-                "__@refBrand@29414": {
+                "__@refBrand@29480": {
                   "const": "occurrence"
                 },
                 "length": {
@@ -17419,7 +17726,7 @@
                 }
               },
               "required": [
-                "__@refBrand@29414",
+                "__@refBrand@29480",
                 "length"
               ],
               "type": "object"
@@ -17432,6 +17739,30 @@
           "hints": {
             "$ref": "#/$defs/LayoutHints",
             "description": "Declaration order (`rootOrder`, `ordering[parent]`) and the other layout hints."
+          },
+          "iconBindings": {
+            "additionalProperties": {
+              "additionalProperties": false,
+              "properties": {
+                "icon": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string"
+                },
+                "shape": {
+                  "enum": [
+                    "component",
+                    "flow",
+                    "erd",
+                    "note"
+                  ]
+                }
+              },
+              "type": "object"
+            },
+            "properties": {},
+            "type": "object"
           },
           "label": {
             "description": "Accessible name of the figure. Defaults to `title`.",
@@ -17462,6 +17793,9 @@
           },
           "rowPack": {
             "$ref": "#/$defs/RowPackOptions"
+          },
+          "strictIcons": {
+            "type": "boolean"
           },
           "targetWidth": {
             "description": "L-R7 report width. The measured path never re-packs on it (D-3).",
@@ -17574,6 +17908,12 @@
           "sourceType": "Readonly<Record<string, SummaryDefinition>>"
         },
         {
+          "name": "iconBindings",
+          "reason": "index-signature: open-ended map loses key discipline",
+          "replacement": "{\"type\":\"object\",\"properties\":{\"icon\":{\"type\":\"string\"},\"role\":{\"type\":\"string\"},\"shape\":{\"enum\":[\"component\",\"flow\",\"erd\",\"note\"]}},\"additionalProperties\":false}",
+          "sourceType": "Readonly<Record<string, { readonly icon?: string | undefined; readonly role?: string | undefined; readonly shape?: \"component\" | \"flow\" | \"erd\" | \"note\" | undefined; }>>"
+        },
+        {
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -17588,8 +17928,8 @@
         {
           "name": "result.edgeBundles",
           "reason": "index-signature: open-ended map loses key discipline",
-          "replacement": "{\"type\":\"object\",\"properties\":{\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
-          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; }>>"
+          "replacement": "{\"type\":\"object\",\"properties\":{\"chip\":{\"type\":\"object\",\"properties\":{\"groups\":{\"type\":\"array\",\"items\":{\"$ref\":\"#/$defs/BundleLabelGroup\"}},\"header\":{\"type\":\"string\"},\"layout\":{\"$ref\":\"#/$defs/LineLayout\"}},\"additionalProperties\":false,\"required\":[\"groups\",\"header\",\"layout\"]},\"label\":{\"type\":\"string\"},\"members\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"relations\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"title\":{\"type\":\"string\"}},\"additionalProperties\":false,\"required\":[\"label\",\"members\",\"title\"]}",
+          "sourceType": "Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[] | undefined; chip?: { header: string; groups: BundleLabelGroup[]; layout: LineLayout; } | undefined; }>>"
         },
         {
           "name": "result.labelBoxes",
@@ -17606,7 +17946,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:edd5947bd6c5973115c02b39f2a6d31bede87443fb2de10fc58f53527e1a2485",
+        "declarationDigest": "sha256:d3b1ed0c8158c17dcc60bf4856c6a49496178293e1c10df5fc9ae5eb74b26247",
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",

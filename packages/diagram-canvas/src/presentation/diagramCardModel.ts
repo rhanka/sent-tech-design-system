@@ -692,9 +692,7 @@ export interface CardDiagnostic {
   readonly neededPx: number;
   readonly allocatedPx: number;
   /**
-   * Original, unwrapped slot text. Overflow is refused, never shortened
-   * (owner criterion: overflow = refusal, never a truncation), so the
-   * diagnostic carries the source string the host must shorten.
+   * Original, unwrapped slot text, retained alongside hard-cap diagnostics.
    */
   readonly text?: string;
 }
@@ -779,15 +777,9 @@ export interface CardLayout {
 }
 
 /**
- * Lay out one card: wrap every slot against its frozen allocation, position
- * every line, pin the footer, emit diagnostics. Never truncates or clips
- * (DC-D4): the layout always describes the complete content inside the
- * fixed 460 × 200 box. Any overflow — a too-wide line, a line-count
- * overflow, or a combined header+body height that does not fit the space
- * above the pinned rule — raises `card-overflow` carrying the original slot
- * text, and both renderers refuse on it (overflow = refusal, owner
- * criterion): no normal card is emitted until the content fits. An icon
- * name with no glyph data raises `card-icon-unknown` and the slot collapses.
+ * Lay out every card slot, grow the content height and pin the footer.
+ * Explicit hard caps produce diagnostics while retaining every character.
+ * Missing glyphs use the visible unknown icon (owner A2/A11).
  */
 export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): CardLayout {
   const icon = props.icon ?? "base";
@@ -819,7 +811,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // Overflow diagnostic (Astra J4): a too-wide line reports horizontal dims
   // (neededPx = widest measured line, allocatedPx = availableWidth, so
   // neededPx > allocatedPx always); a line-count overflow reports line dims.
-  // `text` carries the original slot string: overflow is refused, never
+  // `text` carries the original slot string: overflow is diagnosed, never
   // shortened, so the diagnostic preserves what the host must shorten.
   const pushOverflow = (
     slot: string,
@@ -984,7 +976,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // footer, so the body allocation is bodyAreaBottom − bodyY — a two-line
   // title already leaves less than one body line above the rule, and the
   // second body baseline would cross the footer baseline. Diagnosed here and
-  // refused by both renderers (overflow = refusal), never silently overlapped.
+  // diagnosed against the explicit hard cap; all content remains rendered.
   const bodyBlockHeight = wrappedBody.length * bodyHeight;
   const bodyAreaHeight = bodyAreaBottom - bodyY;
   if (!bodyOverflowPushed && wrappedBody.length > 0 && bodyBlockHeight > bodyAreaHeight) {
@@ -1217,7 +1209,7 @@ export interface ZoneDiagnostic {
   readonly entityId: string;
   readonly neededPx: number;
   readonly allocatedPx: number;
-  /** Original, unwrapped slot text (overflow = refusal keeps the source). */
+  /** Original, unwrapped slot text retained with the diagnostic. */
   readonly text?: string;
 }
 
@@ -1515,9 +1507,8 @@ export function layoutZone(
   const requiredHeight = Math.max(childrenBottom, contentTop) + g.contentInsetBottom - y + footerReserve;
   const height = props.autoSize ? Math.max(props.height ?? g.collapsedHeight, requiredHeight)
     : props.height ?? Math.max(g.collapsedHeight, requiredHeight);
-  // An explicitly undersized frame is refused (overflow = refusal): the
-  // header + content + footer requirement does not fit, diagnosed as a
-  // zone-overflow on the frame slot, and both renderers refuse on it.
+  // An explicitly undersized frame reports a hard-cap diagnostic.
+  // Renderers retain all content (owner A11).
   if (!props.autoSize && props.height !== undefined && requiredHeight > props.height) {
     diagnostics.push({
       code: "zone-overflow",
