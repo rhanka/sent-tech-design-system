@@ -154,7 +154,6 @@
   "packages/components-vue/src/Search.ts",
   "packages/components-vue/src/Select.ts",
   "packages/components-vue/src/SelectableList.ts",
-  "packages/components-vue/src/SelectableRow.ts",
   "packages/components-vue/src/SelectionChip.ts",
   "packages/components-vue/src/SideNav.ts",
   "packages/components-vue/src/SkeletonText.ts",
