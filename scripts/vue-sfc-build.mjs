@@ -40,6 +40,8 @@ for (const file of sfcs) {
     let output = ts.transpileModule(script.content, {
       compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
     }).outputText;
+    if (mode === 'vapor' && basename(resolve('.')) === 'dataviz-vue')
+      output = output.replace(/(from\s+)(["'])@sentropic\/design-system-vue\2/g, '$1$2@sentropic/design-system-vue/vapor$2');
     if (mode === 'vapor') output = output.replace(/(from\s+)(["'])(\.[^"']+)(\2)/g,
       (match, prefix, quote, path) => path.endsWith('.vue') ? match :
         `${prefix}${quote}${specifier(relative(dirname(target), join('dist', relative('src', dirname(file)), path)))}${quote}`);
@@ -75,7 +77,21 @@ if (!stable) {
       const bindings = node.importClause?.namedBindings ?? node.exportClause;
       if (bindings?.elements?.length && bindings.elements.every(item => item.isTypeOnly)) continue;
       const path = node.moduleSpecifier.text;
-      if (path === 'lucide-vue-next' || path === '@sentropic/design-system-vue') return false;
+      if (path === 'lucide-vue-next') return false;
+      if (path === '@sentropic/design-system-vue' || path === '@sentropic/design-system-vue/vapor') {
+        if (!ts.isImportDeclaration(node) || !bindings || !ts.isNamedImports(bindings)) return false;
+        const dsSrc = resolve('../components-vue/src');
+        const dsIndex = ts.createSourceFile('index.ts', readFileSync(join(dsSrc, 'index.ts'), 'utf8'), ts.ScriptTarget.Latest, true);
+        for (const item of bindings.elements.filter(item => !item.isTypeOnly)) {
+          const imported = (item.propertyName ?? item.name).text;
+          const declaration = dsIndex.statements.find(entry => ts.isExportDeclaration(entry) && !entry.isTypeOnly && entry.exportClause && ts.isNamedExports(entry.exportClause)
+            && entry.exportClause.elements.some(entry => !entry.isTypeOnly && entry.name.text === imported));
+          if (!declaration?.moduleSpecifier) return false;
+          const dependency = resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.js$/, '.ts'));
+          if (!native(dependency, seen)) return false;
+        }
+        continue;
+      }
       if (path.startsWith('.')) {
         const dependency = resolve(dirname(file), path.replace(/\.js$/, '.ts'));
         if (!native(dependency, seen)) return false;

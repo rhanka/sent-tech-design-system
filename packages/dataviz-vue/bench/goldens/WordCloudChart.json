@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "WordCloudChart",
+  "sourceRevision": "e29630770ec2efbb6058acf10deca69c965339d5",
+  "source": "src/lib/WordCloudChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category4\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"240\" y=\"160\">D</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"271.20209234287637\" y=\"153.70386866004273\">B</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"2\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"216.02775442906608\" y=\"160.5834529684558\">A</text></svg></div><ul aria-label=\"Data values for Word cloud\" class=\"st-chartDataList\"><li>D: 20</li><li>B: 15</li><li>A: 10</li></ul></div>"
+    },
+    {
+      "id": "region-words",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category4\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"240\" y=\"160\">South</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"241.03299757254607\" y=\"113.32597986829573\">North</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"2\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"242.0495917529635\" y=\"198.56717676224298\">North</text></svg></div><ul aria-label=\"Data values for Word cloud\" class=\"st-chartDataList\"><li>South: 20</li><li>North: 15</li><li>North: 10</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-wordCloudChart consumer\" data-bench=\"cloud\" style=\"color:red;\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category4\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"240\" y=\"120\">D</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"33\" text-anchor=\"middle\" x=\"210.30820211729235\" y=\"123.69744738382234\">B</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"2\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"264.00128592027994\" y=\"121.22243659557816\">A</text></svg></div><ul aria-label=\"Data values for Word cloud\" class=\"st-chartDataList\"><li>D: 20</li><li>B: 15</li><li>A: 10</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category2\" data-chart-index=\"0\" dominant-baseline=\"central\" font-size=\"52\" text-anchor=\"middle\" x=\"240\" y=\"160\">B</text><text class=\"st-wordCloudChart__word st-wordCloudChart__word--category1\" data-chart-index=\"1\" dominant-baseline=\"central\" font-size=\"14\" text-anchor=\"middle\" x=\"216.02775442906608\" y=\"160.5834529684558\">A</text></svg></div><ul aria-label=\"Data values for Word cloud\" class=\"st-chartDataList\"><li>B: 15</li><li>A: 10</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-wordCloudChart\"><div aria-label=\"Word cloud\" class=\"st-wordCloudChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 320\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "19c22f22c5d8e60f493b01e86dce28cc47e1d7b970c68e0b42c6bb4abb0a1266",
+  "fixtureSha256": "da76193f8c59c094b9e1db687e5d13e9c22f07d21d64d5276c71d4b789694226",
+  "publicExports": [
+    {
+      "name": "WordCloudChart",
+      "typeOnly": false
+    },
+    {
+      "name": "WordCloudChartProps",
+      "typeOnly": true
+    }
+  ]
+}

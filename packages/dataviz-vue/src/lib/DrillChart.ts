@@ -3,7 +3,7 @@ import { Button, Inline, type BarChartTone } from '@sentropic/design-system-vue'
 import type { DashboardStore } from '@sentropic/dataviz-core';
 import { useDashboard } from '../adapter.js';
 import { drillLevel, onDrillSelect } from './drill.js';
-import { DrillBarChart } from './DrillBarChart.js';
+import DrillBarChart from './DrillBarChart.vue';
 import { DonutChart } from './DonutChart.js';
 import { TreemapChart } from './TreemapChart.js';
 

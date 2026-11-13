@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "BookmarkNavigator",
+  "sourceRevision": "6723612d01f6350b88f796dc7825bcec29afedd1",
+  "source": "src/lib/BookmarkNavigator.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Signets\" class=\"\" role=\"group\"><button aria-label=\"Précédent\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Précédent</button><button aria-label=\"Suivant\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Suivant</button><button aria-label=\"Lecture\" class=\"st-button st-button--ghost st-button--sm\" type=\"button\">Lecture</button><button aria-label=\"France\" aria-pressed=\"true\" class=\"st-button st-button--primary st-button--sm\" type=\"button\">France</button><button aria-label=\"South\" aria-pressed=\"false\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">South</button></div>"
+    },
+    {
+      "id": "selected",
+      "html": "<div aria-label=\"Signets\" class=\"\" role=\"group\"><button aria-label=\"Précédent\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Précédent</button><button aria-label=\"Suivant\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Suivant</button><button aria-label=\"Lecture\" class=\"st-button st-button--ghost st-button--sm\" type=\"button\">Lecture</button><button aria-label=\"France\" aria-pressed=\"false\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">France</button><button aria-label=\"South\" aria-pressed=\"true\" class=\"st-button st-button--primary st-button--sm\" type=\"button\">South</button></div>"
+    },
+    {
+      "id": "no-playback",
+      "html": "<div aria-label=\"Signets\" class=\"\" role=\"group\"><button aria-label=\"Précédent\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Précédent</button><button aria-label=\"Suivant\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Suivant</button><button aria-label=\"France\" aria-pressed=\"true\" class=\"st-button st-button--primary st-button--sm\" type=\"button\">France</button><button aria-label=\"South\" aria-pressed=\"false\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">South</button></div>"
+    },
+    {
+      "id": "custom-labels",
+      "html": "<div aria-label=\"Views\" class=\"\" role=\"group\"><button aria-label=\"Back\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Back</button><button aria-label=\"Fwd\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Fwd</button><button aria-label=\"Play\" class=\"st-button st-button--ghost st-button--sm\" type=\"button\">Play</button><button aria-label=\"France\" aria-pressed=\"true\" class=\"st-button st-button--primary st-button--sm\" type=\"button\">France</button><button aria-label=\"South\" aria-pressed=\"false\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">South</button></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div aria-label=\"Signets\" class=\"\" role=\"group\"><span>None</span></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div aria-label=\"Signets\" class=\"consumer\" data-bench=\"bookmarks\" role=\"group\"><button aria-label=\"Précédent\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Précédent</button><button aria-label=\"Suivant\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">Suivant</button><button aria-label=\"Lecture\" class=\"st-button st-button--ghost st-button--sm\" type=\"button\">Lecture</button><button aria-label=\"France\" aria-pressed=\"true\" class=\"st-button st-button--primary st-button--sm\" type=\"button\">France</button><button aria-label=\"South\" aria-pressed=\"false\" class=\"st-button st-button--secondary st-button--sm\" type=\"button\">South</button></div>"
+    }
+  ],
+  "sourceSha256": "44417c1cd4c11ded75319c38cf64ea472fabc26c0b8f74e4c4ca76231e46fb3f",
+  "fixtureSha256": "8d5fd0ed581707b779ef4addff563ff061038c0e94db8d9f1d92fe2a923d1fd4",
+  "publicExports": [
+    {
+      "name": "BookmarkNavigator",
+      "typeOnly": false
+    },
+    {
+      "name": "BookmarkNavigatorProps",
+      "typeOnly": true
+    }
+  ]
+}

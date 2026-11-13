@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "SolidGaugeChart",
+  "sourceRevision": "d25894d4bddf22bb4d94aac4941c583b6183ca0c",
+  "source": "src/lib/SolidGaugeChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Sales\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Sales: 40\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 81.29850156245487 21.665870766506146\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">40</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Sales</text></svg></div><ul aria-label=\"Data values for Sales\" class=\"st-chartDataList\"><li>Sales: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "min-max-unit",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Sales gauge\" aria-valuemax=\"50\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Sales gauge: 40 EUR\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 185.14149843754512 55.406505767075075\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">40 EUR</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Sales gauge</text></svg></div><ul aria-label=\"Data values for Sales gauge\" class=\"st-chartDataList\"><li>Sales gauge: 40 EUR (min 0, max 50)</li></ul></div>"
+    },
+    {
+      "id": "angles",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Sales\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Sales: 40\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 200 196\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 60.80000000000001 32.103608343299996 A 78.4 78.4 0 1 1 60.80000000000001 167.89639165670002\" fill=\"none\" stroke-width=\"39.2\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 60.80000000000001 32.103608343299996 A 78.4 78.4 0 0 1 171.62196387917993 68.11184718285726\" fill=\"none\" stroke-width=\"39.2\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"100\" y=\"96.08\">40</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"100\" y=\"113.72\">Sales</text></svg></div><ul aria-label=\"Data values for Sales\" class=\"st-chartDataList\"><li>Sales: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Sales\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"25\" aria-valuetext=\"Sales: 25\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 44.32392216339345 44.323922163393476\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">25</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Sales</text></svg></div><ul aria-label=\"Data values for Sales\" class=\"st-chartDataList\"><li>Sales: 25 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-solidGaugeChart consumer\" data-bench=\"gauge\" style=\"color:red;\"><div aria-label=\"Sales\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"40\" aria-valuetext=\"Sales: 40\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><path class=\"st-solidGaugeChart__progress\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 81.29850156245487 21.665870766506146\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">40</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Sales</text></svg></div><ul aria-label=\"Data values for Sales\" class=\"st-chartDataList\"><li>Sales: 40 (min 0, max 100)</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-solidGaugeChart\"><div aria-label=\"Sales\" aria-valuemax=\"100\" aria-valuemin=\"0\" aria-valuenow=\"0\" aria-valuetext=\"Sales: 0\" class=\"st-solidGaugeChart__visual\" role=\"meter\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" viewBox=\"0 2 220 108.00000000000001\" width=\"100%\"><path class=\"st-solidGaugeChart__track\" d=\"M 17.120000000000005 110.00000000000001 A 92.88 92.88 0 0 1 202.88 109.99999999999997\" fill=\"none\" stroke-width=\"30.24000000000001\"></path><text class=\"st-solidGaugeChart__value\" dominant-baseline=\"auto\" text-anchor=\"middle\" x=\"110\" y=\"106.976\">0</text><text class=\"st-solidGaugeChart__label\" dominant-baseline=\"hanging\" text-anchor=\"middle\" x=\"110\" y=\"120.584\">Sales</text></svg></div><ul aria-label=\"Data values for Sales\" class=\"st-chartDataList\"><li>Sales: 0 (min 0, max 100)</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "a4b1798861ba24d9c344007a8740c975b698531684f7cb5dfb4acdf563d3e3dc",
+  "fixtureSha256": "95ad2bd187e1c6f79837faa330dca0d8013747c1748ca98dc064a83b80d1cd54",
+  "publicExports": [
+    {
+      "name": "SolidGaugeChart",
+      "typeOnly": false
+    },
+    {
+      "name": "SolidGaugeChartProps",
+      "typeOnly": true
+    }
+  ]
+}

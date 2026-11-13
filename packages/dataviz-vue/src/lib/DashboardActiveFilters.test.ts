@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel } from '@sentropic/dataviz-core';
-import { DashboardActiveFilters } from './DashboardActiveFilters.js';
+import DashboardActiveFilters from './DashboardActiveFilters.vue';
 
 const model: DataModel = {
   dimensions: [

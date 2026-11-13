@@ -7,7 +7,7 @@ import {
   type DateHistogramBin,
   type Row,
 } from '@sentropic/dataviz-core';
-import { DateHistogramChart } from './DateHistogramChart.js';
+import DateHistogramChart from './DateHistogramChart.vue';
 
 const DAY = 24 * 60 * 60 * 1000;
 const start = Date.UTC(2026, 0, 1);

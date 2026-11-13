@@ -19,7 +19,7 @@ import {
   type ChartGoalLine,
   type ChartReferenceLine,
   type ChartScale,
-} from './chartScale.js';
+} from './chartScaleModel.js';
 import {
   annotationDataListItems,
   polygonPoints,
