@@ -477,12 +477,12 @@ export { default as Avatar } from "./Avatar.vue";
 export type { AvatarProps, AvatarSize, AvatarShape, AvatarTone } from "./Avatar.vue";
 export { default as AvatarGroup } from "./AvatarGroup.vue";
 export type { AvatarGroupProps } from "./AvatarGroup.vue";
-export { ButtonGroup } from "./ButtonGroup.js";
+export { default as ButtonGroup } from "./ButtonGroup.vue";
 export type {
   ButtonGroupProps,
   ButtonGroupOrientation,
   ButtonGroupSize,
-} from "./ButtonGroup.js";
+} from "./ButtonGroup.vue";
 export { CheckboxGroup } from "./CheckboxGroup.js";
 export type { CheckboxGroupProps, CheckboxGroupOption } from "./CheckboxGroup.js";
 export { RadioGroup } from "./RadioGroup.js";
