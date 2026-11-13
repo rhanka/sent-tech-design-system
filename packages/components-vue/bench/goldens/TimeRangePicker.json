@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "component": "TimeRangePicker",
+  "sourceRevision": "cd40029c6fe0cf8f221edc8f5f8c319e17336564",
+  "source": "src/TimeRangePicker.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-1-text\">30 dernières minutes</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "absolute-value",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-2-text\">06/01/2025 04:30–06:00</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "relative-en",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-3-text\">Last 7 days</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "labelled-lg",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--lg\"><span class=\"st-timeRangePicker__label\" id=\"st-timerangepicker-4-label\">Range</span><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-labelledby=\"st-timerangepicker-4-label st-timerangepicker-4-text\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-4-text\">30 dernières minutes</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "disabled",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" class=\"st-timeRangePicker__trigger\" disabled=\"\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-5-text\">Dernière heure</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "custom-format",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><button aria-expanded=\"false\" aria-haspopup=\"dialog\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-6-text\">Last hour (custom)</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md consumer\" data-bench=\"timeRangePicker\" style=\"color:red;\"><span class=\"st-timeRangePicker__label\" id=\"st-timerangepicker-7-label\">Range</span><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-labelledby=\"st-timerangepicker-7-label st-timerangepicker-7-text\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-7-text\">3 dernières heures</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    },
+    {
+      "id": "custom-extra-slot",
+      "html": "<div class=\"st-timeRangePicker st-timeRangePicker--md\"><span class=\"st-timeRangePicker__label\" id=\"st-timerangepicker-8-label\">Range</span><button aria-expanded=\"false\" aria-haspopup=\"dialog\" aria-labelledby=\"st-timerangepicker-8-label st-timerangepicker-8-text\" class=\"st-timeRangePicker__trigger\" type=\"button\"><svg aria-hidden=\"true\" class=\"lucide lucide-clock-icon lucide-clock\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 6v6l4 2\"></path><circle cx=\"12\" cy=\"12\" r=\"10\"></circle></svg><span class=\"st-timeRangePicker__triggerLabel\" id=\"st-timerangepicker-8-text\">24 dernières heures</span><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"16\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" viewBox=\"0 0 24 24\" width=\"16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></button></div>"
+    }
+  ],
+  "sourceSha256": "99dfee427589e8f2a7047d7f7a25140d6cbd724221b3cc40e6e54cf96e9ca47c",
+  "fixtureSha256": "2e4e5ffb0ffeddfca4bcca26ccf9c12b07f68cb2ddf48f4fa5e69161164580b3",
+  "publicExports": [
+    {
+      "name": "TimeRangePicker",
+      "typeOnly": false
+    },
+    {
+      "name": "TimeRangePickerProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TimeRangePickerSize",
+      "typeOnly": true
+    },
+    {
+      "name": "TimeRangePickerPlacement",
+      "typeOnly": true
+    },
+    {
+      "name": "TimeRangePickerAlign",
+      "typeOnly": true
+    },
+    {
+      "name": "TimeRangePickerTimeFormat",
+      "typeOnly": true
+    }
+  ]
+}
