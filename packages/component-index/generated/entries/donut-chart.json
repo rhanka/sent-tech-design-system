@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/DonutChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Donut chart (parts of a whole), tooltip and center total.",
     "fr": "Graphique en anneau (parts d'un total), tooltip et total au centre."
   },
-  "digest": "sha256:7f527693a6820ed561b67bea1e882c2a5cd9ab857cfd504c55a4795b175b8b25",
+  "digest": "sha256:d402536b76604f551a03a5c8d67c42ab74d7a5cfe4f00ec73270344f22f30d82",
   "displayName": "DonutChart",
   "format": "component-entry/v1",
   "frameworks": [
