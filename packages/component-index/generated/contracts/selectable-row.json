@@ -1,7 +1,7 @@
 {
   "componentId": "selectable-row",
   "contractSource": "derived",
-  "digest": "sha256:ccb9d4d2a75951e0963553eff81dd4406ee1d2da6d62457e43b441a7493b37f1",
+  "digest": "sha256:c284d208086b86e9caa7ade0ef15729c6ac85e8540adfcc8c0d978a829b3cabc",
   "entryDigest": "sha256:481c7e37fc1518fe2845c2d427f30200bce02fe3040a3f8b7d821de7a44bdab7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -263,7 +263,10 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
@@ -315,7 +318,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

@@ -1,7 +1,7 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:d4b291fe864228349f0e8309baa4939e39487dcc68cb78524b0e307128c9f600",
+  "digest": "sha256:740e384e74e0ff476bb2be6b9b1549fe4f210aeec9a75bc8ddca1e98daafd814",
   "entryDigest": "sha256:4762cf05ef652c975bb9ada5275ed7db363a81f3f43c5985cb07826c57ea39f9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -598,6 +598,7 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)",
         "generic type parameter \"R\" of \"DataTableProps\" instantiated with its default (DataTableRow)"
       ]
     },

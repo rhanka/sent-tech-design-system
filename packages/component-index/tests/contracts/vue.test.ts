@@ -7,8 +7,9 @@ import { extractVue, type FrameworkInput } from "../../src/generator/contracts/v
 const FIXTURE = join(import.meta.dirname, "fixtures", "vue-fixture.d.ts");
 
 function inputFor(identifier: string, expectedSlots: string[] = []): FrameworkInput {
-  const loaded = loadDeclarationProgram([FIXTURE]);
-  const declFile = loaded.program.getSourceFile(FIXTURE);
+  const fixture = identifier === "SceneWidget" ? join(import.meta.dirname, "fixtures", "vue-default-fixture.d.ts") : FIXTURE;
+  const loaded = loadDeclarationProgram([fixture]);
+  const declFile = loaded.program.getSourceFile(fixture);
   if (declFile === undefined) throw new Error("fixture file missing from program");
   return {
     program: loaded.program,
@@ -63,5 +64,12 @@ describe("K1b Vue extractor (spec 7.4)", () => {
     expect(body.status).toBe("none");
     expect(body.reason).toBe("no-props-type");
     expect(body.props).toBeUndefined();
+  });
+
+  it("does not assign an unrelated default export to a missing named component", () => {
+    const body = extractVue(inputFor("Unrelated"));
+    expect(body.status).toBe("partial");
+    expect(body.events).toEqual([]);
+    expect(body.warnings).toContain("component value declaration not found; events and slots unavailable");
   });
 });
