@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, useId, useAttrs } from 'vue';
 import { ref } from 'vue';
 import { classNames } from './classNames.js';
@@ -133,23 +134,7 @@ const fileRows = computed(() => props.items.map((item, index) => ({ item, index,
       />
       <div :class="'st-fileUploader__content'">
         <span :class="'st-fileUploader__affordance'" :aria-hidden="'true'"
-          ><svg
-            xmlns="http://www.w3.org/2000/svg"
-            :width="18"
-            :height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="lucide lucide-upload-icon lucide-upload"
-            :aria-hidden="'true'"
-          >
-            <path d="M12 3v12" />
-            <path d="m17 8-5-5-5 5" />
-            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /></svg
-        ></span>
+          ><Icon name="upload" :size="18" /></span>
         <button
           :type="'button'"
           :class="'st-fileUploader__trigger'"
@@ -182,82 +167,15 @@ const fileRows = computed(() => props.items.map((item, index) => ({ item, index,
                 <span :class="'st-fileUploader__itemIcon'" :aria-hidden="'true'"
                   ><template v-if="item.status === 'uploading'"
                     ><span :class="'st-fileUploader__spinner'"
-                      ><svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        :width="16"
-                        :height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-loader-circle-icon lucide-loader-circle"
-                        :aria-hidden="'true'"
-                      >
-                        <path
-                          d="M21 12a9 9 0 1 1-6.219-8.56"
-                        /></svg></span></template
+                      ><Icon name="loader-circle" :size="16" /></span></template
                   ><template v-else
                     ><template v-if="item.status === 'complete'"
-                      ><svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        :width="16"
-                        :height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        class="lucide lucide-circle-check-icon lucide-circle-check"
-                        :aria-hidden="'true'"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="m9 12 2 2 4-4" /></svg></template
+                      ><Icon name="circle-check" :size="16" /></template
                     ><template v-else
                       ><template v-if="item.status === 'error'"
-                        ><svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          :width="16"
-                          :height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-circle-alert-icon lucide-circle-alert"
-                          :aria-hidden="'true'"
-                        >
-                          <circle cx="12" cy="12" r="10" />
-                          <line x1="12" x2="12" y1="8" y2="12" />
-                          <line
-                            x1="12"
-                            x2="12.01"
-                            y1="16"
-                            y2="16"
-                          /></svg></template
+                        ><Icon name="circle-alert" :size="16" /></template
                       ><template v-else
-                        ><svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          :width="16"
-                          :height="16"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          class="lucide lucide-file-icon lucide-file"
-                          :aria-hidden="'true'"
-                        >
-                          <path
-                            d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
-                          />
-                          <path
-                            d="M14 2v5a1 1 0 0 0 1 1h5"
-                          /></svg></template></template></template
+                        ><Icon name="file" :size="16" /></template></template></template
                 ></span>
                 <span :class="'st-fileUploader__itemMeta'"
                   ><span
@@ -282,22 +200,7 @@ const fileRows = computed(() => props.items.map((item, index) => ({ item, index,
                   :disabled="props.disabled"
                   @click="() => props.onRemoveItem?.(index)"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    :width="16"
-                    :height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    class="lucide lucide-x-icon lucide-x"
-                    :aria-hidden="'true'"
-                  >
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                  </svg>
+                  <Icon name="x" :size="16" />
                 </button></li></template></ul></template
     ><template v-else></template>
   </div>

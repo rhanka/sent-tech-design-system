@@ -1,8 +1,8 @@
 {
   "componentId": "composer-editor",
   "contractSource": "derived",
-  "digest": "sha256:7221891043a605b617397b3183df1fddfd7f76b306a665be02bede63277b2462",
-  "entryDigest": "sha256:9a0389710765ca5ffc2477daced61bac813a05166315030610db253ca1af9fe2",
+  "digest": "sha256:89029aa878c0e331f2b80054bdf8c38d7188717b20647ae0796234680a36cf43",
+  "entryDigest": "sha256:ca38ce2a7a0cbe03958f8adf1f8645ea84ce9f2e6c05b17be3496416542f72a9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -311,6 +311,12 @@
         },
         {
           "kind": "function",
+          "name": "onKeydown",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: ComposerKeyEvent) => boolean | void"
+        },
+        {
+          "kind": "function",
           "name": "onReadinessChange",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(e: RichTextReadiness) => void"
@@ -324,6 +330,18 @@
           }
         },
         {
+          "name": "keyDown",
+          "payload": {
+            "$ref": "#/$defs/ComposerKeyEvent"
+          }
+        },
+        {
+          "name": "keydown",
+          "payload": {
+            "$ref": "#/$defs/ComposerKeyEvent"
+          }
+        },
+        {
           "name": "onChange",
           "payload": {
             "type": "string"
@@ -331,6 +349,12 @@
         },
         {
           "name": "onKeyDown",
+          "payload": {
+            "$ref": "#/$defs/ComposerKeyEvent"
+          }
+        },
+        {
+          "name": "onKeydown",
           "payload": {
             "$ref": "#/$defs/ComposerKeyEvent"
           }
@@ -522,16 +546,18 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c52a961bc3ea35524ace126f0c5d3ad4a0bad70cb1c874459da6cc488a055104",
+        "declarationDigest": "sha256:ca1bac1c26cb05a1a19ebbe54cf8aa5f75adb2f0bb67f086ff6738bbc6b62b29",
         "declarationPath": "packages/components-vue/dist/rich-text-editor/ComposerEditor.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComposerEditorProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
+        "event pair: emits \"keyDown\" and prop \"onKeyDown\" both listed verbatim",
+        "event pair: emits \"keydown\" and prop \"onKeydown\" both listed verbatim",
         "event pair: emits \"readinessChange\" and prop \"onReadinessChange\" both listed verbatim"
       ]
     }

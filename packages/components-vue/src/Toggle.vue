@@ -6,10 +6,10 @@ import { classNames } from './classNames.js';
 export type ToggleSize = 'sm' | 'md';
 
 export type ToggleProps = {
-  label?: unknown;
+  label?: string | number;
   labelOn?: string;
   labelOff?: string;
-  helperText?: unknown;
+  helperText?: string | number;
   size?: ToggleSize;
   modelValue?: boolean;
   checked?: boolean;

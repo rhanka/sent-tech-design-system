@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ScoreCard.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Score card: title, symbolic rating (stars / crosses) and numeric score, value and complexity types.",
     "fr": "Carte de score : titre, notation symbolique (étoiles / croix) et score chiffré, types value et complexity."
   },
-  "digest": "sha256:8180ee4891a3564e14b26ba8c2d026b0c5a27268e44cb6a2b38a74dc65973cb2",
+  "digest": "sha256:3a5e6fae594f2b1045528c68ed0188b9cdadc334b2d51bcdd4dd8b9b422998be",
   "displayName": "ScoreCard",
   "format": "component-entry/v1",
   "frameworks": [

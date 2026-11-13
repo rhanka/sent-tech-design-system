@@ -3,9 +3,9 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type EmptyStateProps = {
-  title?: unknown;
-  message?: unknown;
-  action?: unknown;
+  title?: string | number;
+  message?: string | number;
+  action?: string | number;
   class?: string;
 };
 

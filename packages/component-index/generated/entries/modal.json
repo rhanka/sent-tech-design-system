@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:0c7c92a976b2ae533b15e727821196cc102bdfc1d8f9914155e85489d592aeb7",
+      "digest": "sha256:36ab0412d2e1c94a79d03d1140b38c1e8471121a9a148c381e36d1484d008a98",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Modal.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Centered modal dialog.",
     "fr": "Dialogue modal recentré."
   },
-  "digest": "sha256:6ecc6e3344e9f275703ad6c048b8c45f2c966af6dfb28dbf2018db33a4e6d5bf",
+  "digest": "sha256:d49c32eb5010f508b45e0e852f3bb1e4787464e29516f31233ceb80179b74ccf",
   "displayName": "Modal",
   "format": "component-entry/v1",
   "frameworks": [

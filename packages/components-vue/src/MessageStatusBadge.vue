@@ -10,7 +10,7 @@ export type MessageStatusBadgeProps = {
   status: ChatMessageStatus;
   tone?: MessageStatusBadgeTone;
   /** @slot label */
-  labels?: Partial<Record<ChatMessageStatus, unknown>>;
+  labels?: Partial<Record<ChatMessageStatus, string | number>>;
   class?: string;
 };
 

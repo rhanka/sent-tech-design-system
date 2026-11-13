@@ -1,4 +1,3 @@
-import type { Component } from "vue";
 import type { SubMenuSide } from "./menu-cascade.js";
 
 // `value` (Svelte-canonical) is accepted as an alias of `id`; `danger: true`
@@ -9,13 +8,13 @@ import type { SubMenuSide } from "./menu-cascade.js";
 export type MenuActionItem = {
   id?: string;
   value?: string;
-  label: unknown;
+  label: string | number;
   disabled?: boolean;
   variant?: "default" | "danger";
   danger?: boolean;
-  /** Optional leading icon component or string character (rendered in `.st-menu__itemIcon`). */
+  /** Optional DS Icon name or string character (rendered in `.st-menu__itemIcon`). */
   /** Component icons require the item-icon slot in both compiled modes. */
-  icon?: Component | string;
+  icon?: string;
   onClick?: () => void;
   children?: MenuItem[];
   selected?: boolean;
@@ -27,7 +26,7 @@ export type MenuGroupItem = {
   type?: "group";
   kind?: "group";
   id?: string;
-  label: unknown;
+  label: string | number;
   items?: MenuActionItem[];
 };
 

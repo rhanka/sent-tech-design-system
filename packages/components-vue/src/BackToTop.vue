@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -71,7 +72,7 @@ function goTop() {
     @click="goTop"
   >
     <span class="st-backToTop__icon" aria-hidden="true">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-icon lucide-arrow-up"><path d="m5 12 7-7 7 7" /><path d="M12 19V5" /></svg>
+      <Icon name="arrow-up" :size="16" />
     </span>
     <span class="st-backToTop__label">{{ props.label }}</span>
   </button>

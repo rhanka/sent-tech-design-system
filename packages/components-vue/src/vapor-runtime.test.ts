@@ -2,7 +2,10 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { afterEach, expect, it, vi } from 'vitest';
 import { createVaporApp, nextTick, vaporInteropPlugin, type VaporComponent } from 'vue';
-import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend } from '../dist/vapor/index.js';
+import { DiagramCard, DiagramZone, DiagramSceneFigure, ForceGraph, GraphCanvas, GraphLegend, DataTable, LabelledIconButton, WebFrame, CopyButton, Toast, TreeView } from '../dist/vapor/index.js';
+import { ComposerEditor, RichTextEditor } from '../dist/vapor/rich-text-editor/index.js';
+import { LockPresenceBadge } from '../dist/vapor/presence-badge/index.js';
+import { parseFullMarkdown } from '@sentropic/design-system-rich-text';
 import { DiagramIcon, DIAGRAM_GLYPH_NAMES } from '../dist/vapor/diagram-icons/index.js';
 import { BpmnCanvas } from '../dist/vapor/bpmn/index.js';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN, m3ProfileRegistry, shippedExecutorBindings } from '../../diagram-canvas/tests/scene-host-fixtures.js';
@@ -22,6 +25,45 @@ function mount(component: VaporComponent, props: Record<string, unknown>, intero
   apps.push(app);
   const vm = app.mount(root); return { root, vm };
 }
+
+it('should apply the V8 attribute, tooltip, fallback and icon contracts in native Vapor', async () => {
+  const clicked = vi.fn(), table = mount(DataTable, { columns: [{ key: 'name' }], rows: [{ id: 'one', name: 'Ada' }], id: 'users', onClick: clicked });
+  expect(table.root.querySelectorAll('#users')).toHaveLength(1);
+  table.root.querySelector('td')!.dispatchEvent(new MouseEvent('click', { bubbles: true })); expect(clicked).toHaveBeenCalledTimes(1);
+  const button = mount(LabelledIconButton, { label: 'Comments', icon: 'comment', id: 'comments' });
+  expect(button.root.querySelector('button')?.id).toBe('comments');
+  const tooltip = button.root.querySelector('[role=tooltip]')!;
+  expect(tooltip.getAttribute('aria-hidden')).toBe('true');
+  button.root.querySelector('button')!.dispatchEvent(new FocusEvent('focusin', { bubbles: true })); await nextTick();
+  expect(tooltip.getAttribute('aria-hidden')).toBe('false');
+  const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+  expect(mount(LabelledIconButton, { label: 'Unknown', icon: 'missing-icon' }).root.querySelector('svg.st-icon')).not.toBeNull(); expect(warn).toHaveBeenCalled();
+  const frame = mount(WebFrame, { frame: { src: 'about:blank' }, id: 'preview', class: 'custom' }); expect(frame.root.querySelector('iframe.custom')?.id).toBe('preview');
+  const badge = mount(LockPresenceBadge, { lock: null, presence: null, capabilities: { currentActorId: 'self', canAcquire: false, canRequestUnlock: false, canForceUnlock: false }, messages: {}, nowIso: '2026-11-13T12:00:00Z', id: 'badge', class: 'custom' }); expect(badge.root.querySelector('.st-presence-badge.custom')?.id).toBe('badge');
+  expect(mount(CopyButton, { value: 'Copy' }).root.querySelector('svg.st-icon')?.getAttribute('stroke-width')).toBe('2.25');
+});
+
+it('should keep once listeners and merged listener arrays usable in native Vapor', async () => {
+  const first = vi.fn(), second = vi.fn(), close = vi.fn(), selected = vi.fn();
+  const merged = mount(Toast, { title: 'Saved', onClose: [first, second] }); merged.root.querySelector('button')!.click(); expect(first).toHaveBeenCalledTimes(1); expect(second).toHaveBeenCalledTimes(1);
+  const once = mount(Toast, { title: 'Saved', onCloseOnce: close }); once.root.querySelector('button')!.click(); once.root.querySelector('button')!.click(); expect(close).toHaveBeenCalledTimes(1);
+  const tree = mount(TreeView, { nodes: [{ id: 'one', label: 'One' }], onSelectOnce: selected });
+  const item = tree.root.querySelector('[role=treeitem]')!; expect(item.getAttribute('tabindex')).toBe('0'); item.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); expect(selected).toHaveBeenCalledExactlyOnceWith('one');
+});
+
+const editorMessages = { editorLabel: 'Editor', placeholder: 'Write', preservedBlockLabel: 'Preserved {kind}', externalConflictLabel: 'Conflict' };
+for (const profile of ['p0', 'full']) it(`should capture initialized ${profile} editors and intercept Enter before ProseMirror in native Vapor`, async () => {
+  const onKeydown = vi.fn(() => true), input = profile === 'full' ? 'First\n\nHard  \nbreak\n\n- item' : 'Draft';
+  const composer = mount(ComposerEditor, { value: input, profile, messages: editorMessages, onKeydown, class: 'custom', id: 'discard', role: 'textbox' });
+  expect((await composer.vm.captureComposer()).text).toBe(input);
+  const native = new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }); composer.root.querySelector('.ProseMirror')!.dispatchEvent(native);
+  expect(onKeydown).toHaveBeenCalledTimes(1); expect(onKeydown.mock.calls[0][0]).not.toBeInstanceOf(KeyboardEvent); expect(native.defaultPrevented).toBe(true); expect((await composer.vm.captureComposer()).text).toBe(input);
+  expect(composer.root.querySelector('#discard')).toBeNull(); expect(composer.root.querySelectorAll('[role=textbox]')).toHaveLength(1);
+  const value = profile === 'full' ? parseFullMarkdown('Draft', () => 'p:1').document : { format: 'focus.markdown.p0@1', blocks: [{ paragraphId: 'p:1', kind: 'paragraph', text: 'Draft' }] };
+  const editor = mount(RichTextEditor, { value, profile, messages: editorMessages, id: 'discard', role: 'textbox', class: 'custom' });
+  const block = (await editor.vm.captureDocument()).document.blocks[0];
+  expect(block.text ?? block.segments?.map((segment: { text?: string }) => segment.text ?? '').join('')).toBe('Draft'); expect(editor.root.querySelectorAll('[role=textbox]')).toHaveLength(1);
+});
 
 it('should execute published Vapor card, zone, icon and legend modules and emit once', async () => {
   const onSelect = vi.fn();

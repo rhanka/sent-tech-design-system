@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:eebbaf28067eb7b6d39193374416b8c2703fa117d86e7605d0a171e706bcaddc",
-  "entryDigest": "sha256:849cc867040bd6ecd3bde20c0e2dc60686a45cb67c0088c63cb47ae3868baad8",
+  "digest": "sha256:d67d16c18b08a0d5aabf35e2f533bb98026151fa6cda50c5001e25a2bc3aaec6",
+  "entryDigest": "sha256:ef0e290907a3f7ca46b0bec2a70d582398ffd2cc970688d744ac75c94ccc19fb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -269,12 +269,39 @@
           "disabled": {
             "type": "boolean"
           },
-          "errorText": {},
-          "helperText": {},
+          "errorText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "invalid": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "modelValue": {
             "type": "string"
           },
@@ -290,26 +317,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "errorText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "error-text"
@@ -322,11 +330,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0f2d5be6bd3715ca27557fbf5bb4ab9e0972e856e372e5f7c50499e93fca3556",
+        "declarationDigest": "sha256:681795a3189b04add37643adfb579b2f10fc99058fc67b5184394d89b688f884",
         "declarationPath": "packages/components-vue/dist/Textarea.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TextareaProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [

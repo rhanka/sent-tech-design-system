@@ -235,6 +235,290 @@ const glyphs = {
     ]
   }
 } as const;
-export const ICONS = { "settings": glyphs["settings"], "eye": glyphs["eye"], "eye-off": glyphs["eye-off"], "layers": glyphs["layers"], "target": glyphs["target"], "close": glyphs["x"], "chevron-down": glyphs["chevron-down"], "chevron-right": glyphs["chevron-right"], "comment": glyphs["message-square"], "circle-dashed": glyphs["circle-dashed"] } as const;
+const controlGlyphs = {
+  "loader-circle": {
+    "name": "loader-circle",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M21 12a9 9 0 1 1-6.219-8.56"
+        }
+      ]
+    ]
+  },
+  "circle-check": {
+    "name": "circle-check",
+    "nodes": [
+      [
+        "circle",
+        {
+          "cx": "12",
+          "cy": "12",
+          "r": "10"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "m9 12 2 2 4-4"
+        }
+      ]
+    ]
+  },
+  "circle-alert": {
+    "name": "circle-alert",
+    "nodes": [
+      [
+        "circle",
+        {
+          "cx": "12",
+          "cy": "12",
+          "r": "10"
+        }
+      ],
+      [
+        "line",
+        {
+          "x1": "12",
+          "x2": "12",
+          "y1": "8",
+          "y2": "12"
+        }
+      ],
+      [
+        "line",
+        {
+          "x1": "12",
+          "x2": "12.01",
+          "y1": "16",
+          "y2": "16"
+        }
+      ]
+    ]
+  },
+  "arrow-up": {
+    "name": "arrow-up",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "m5 12 7-7 7 7"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "M12 19V5"
+        }
+      ]
+    ]
+  },
+  "chevron-left": {
+    "name": "chevron-left",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "m15 18-6-6 6-6"
+        }
+      ]
+    ]
+  },
+  "send": {
+    "name": "send",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "m21.854 2.147-10.94 10.939"
+        }
+      ]
+    ]
+  },
+  "x": {
+    "name": "x",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M18 6 6 18"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "m6 6 12 12"
+        }
+      ]
+    ]
+  },
+  "check": {
+    "name": "check",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M20 6 9 17l-5-5"
+        }
+      ]
+    ]
+  },
+  "copy": {
+    "name": "copy",
+    "nodes": [
+      [
+        "rect",
+        {
+          "height": "14",
+          "rx": "2",
+          "ry": "2",
+          "width": "14",
+          "x": "8",
+          "y": "8"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"
+        }
+      ]
+    ]
+  },
+  "upload": {
+    "name": "upload",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M12 3v12"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "m17 8-5-5-5 5"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+        }
+      ]
+    ]
+  },
+  "file": {
+    "name": "file",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "M14 2v5a1 1 0 0 0 1 1h5"
+        }
+      ]
+    ]
+  },
+  "circle-chevron-down": {
+    "name": "circle-chevron-down",
+    "nodes": [
+      [
+        "circle",
+        {
+          "cx": "12",
+          "cy": "12",
+          "r": "10"
+        }
+      ],
+      [
+        "path",
+        {
+          "d": "m16 10-4 4-4-4"
+        }
+      ]
+    ]
+  },
+  "ellipsis": {
+    "name": "ellipsis",
+    "nodes": [
+      [
+        "circle",
+        {
+          "cx": "12",
+          "cy": "12",
+          "r": "1"
+        }
+      ],
+      [
+        "circle",
+        {
+          "cx": "19",
+          "cy": "12",
+          "r": "1"
+        }
+      ],
+      [
+        "circle",
+        {
+          "cx": "5",
+          "cy": "12",
+          "r": "1"
+        }
+      ]
+    ]
+  },
+  "search": {
+    "name": "search",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "m21 21-4.34-4.34"
+        }
+      ],
+      [
+        "circle",
+        {
+          "cx": "11",
+          "cy": "11",
+          "r": "8"
+        }
+      ]
+    ]
+  },
+  "clock": {
+    "name": "clock",
+    "nodes": [
+      [
+        "path",
+        {
+          "d": "M12 6v6l4 2"
+        }
+      ],
+      [
+        "circle",
+        {
+          "cx": "12",
+          "cy": "12",
+          "r": "10"
+        }
+      ]
+    ]
+  }
+} as const;
+export const ICONS = { ...controlGlyphs, "settings": glyphs["settings"], "eye": glyphs["eye"], "eye-off": glyphs["eye-off"], "layers": glyphs["layers"], "target": glyphs["target"], "close": glyphs["x"], "chevron-down": glyphs["chevron-down"], "chevron-right": glyphs["chevron-right"], "comment": glyphs["message-square"], "circle-dashed": glyphs["circle-dashed"] } as const;
 export type IconName = keyof typeof ICONS;
 export const ICON_NAMES = Object.keys(ICONS) as IconName[];

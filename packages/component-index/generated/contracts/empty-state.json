@@ -1,8 +1,8 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:cba9c41bcf1085d97e1947f5cd3abd6b97fc669acc25a01b99315e8ce9f4f818",
-  "entryDigest": "sha256:3fc44e2b2ad0bfcc0edbb9671d3bc5a44810faed2f1ce3f6b7a45d5830e748e9",
+  "digest": "sha256:73e1ee7dc339ca340af02c0af8f22100d7aacd6ea5ba1b4a8c12c8aa7d193f5a",
+  "entryDigest": "sha256:b2242a6ba8b7fa8f90f44b59fb36680477d9db74db9d47b20cf5ebd941a661b9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -169,35 +169,43 @@
       "props": {
         "additionalProperties": false,
         "properties": {
-          "action": {},
+          "action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
-          "message": {},
-          "title": {}
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "action",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "message",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "action"
@@ -213,13 +221,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:7fd317c1f570889d85282827b1f6f6a9adddf3809f1ccfac1a511f40c25b1905",
+        "declarationDigest": "sha256:2e4c43a61191c6f3ab7c700093b5dad35da2b3d4be3b85e7170897a3b0ebb753",
         "declarationPath": "packages/components-vue/dist/EmptyState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmptyStateProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }
