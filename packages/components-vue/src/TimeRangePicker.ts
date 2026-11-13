@@ -18,7 +18,7 @@ import { Calendar } from "./Calendar.js";
 import type { CalendarValue } from "./Calendar.js";
 import { TimePicker } from "./TimePicker.js";
 import { Input } from "./Input.js";
-import { Button } from "./Button.js";
+import Button from "./Button.vue";
 import {
   DEFAULT_TIME_RANGE_PRESETS,
   parsePresetMs,
