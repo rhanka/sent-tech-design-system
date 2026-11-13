@@ -25,7 +25,9 @@ try {
     throw new Error('Expected 4–8 uniquely named fixtures with default first');
   }
   temporary = mkdtempSync(resolve(bench, '.tmp-worker-'));
-  const legacy = existsSync(resolve(src, `${name}.ts`));
+  const legacy = name === 'cellDecoration'
+    ? /\bh\(/.test(readFileSync(resolve(src, 'cellDecoration.ts'), 'utf8'))
+    : existsSync(resolve(src, `${name}.ts`));
   if (operation === 'ssr') {
     const { createSSRApp } = await import('vue');
     const { renderToString } = await import('@vue/server-renderer');
@@ -48,7 +50,7 @@ try {
     if (legacy) throw new Error('G5 requires the converted .vue');
     const { createVaporApp, nextTick } = await import('vue');
     if (typeof createVaporApp !== 'function') throw new Error('Runtime does not export createVaporApp');
-    const { default: Target } = await import(pathToFileURL(resolve(src, `${name}.vue`)).href);
+    const { default: Target } = await import(pathToFileURL(resolve(src, name === 'cellDecoration' ? 'CellDecorationIcon.vue' : `${name}.vue`)).href);
     if (Target.__vapor !== true) throw new Error('Target is not a compiled Vapor component');
     const file = resolve(temporary, 'mount.vue');
     writeFileSync(file, wrapperSource(name, fixtures[0]));

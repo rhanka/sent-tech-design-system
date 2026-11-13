@@ -72,7 +72,9 @@ export function installSourceLoader(mode) {
 }
 
 export function wrapperSource(name, fixture, legacy = false) {
-  const componentFile = resolve(src, name + (legacy ? '.ts' : '.vue'));
+  const componentFile = name === 'cellDecoration'
+    ? legacy ? resolve(bench, 'cellDecoration-reference.ts') : resolve(src, 'CellDecorationIcon.vue')
+    : resolve(src, name + (legacy ? '.ts' : '.vue'));
   const slots = Object.entries(fixture.slots ?? {}).map(([name, value]) => {
     const { html, scope } = typeof value === 'string' ? { html: value, scope: '' } : value;
     return `<template #${name}${scope ? `="${scope}"` : ''}>${html}</template>`;
