@@ -5,8 +5,8 @@ import type { EntityRef, ErdCardinality } from "@sentropic/diagram-core";
  * SPEC_EVOL_DC2A §4.3, §5, §6.7, Appendix D).
  *
  * Everything here is a function of its arguments: no `window`, no
- * `document`, no timer. The Svelte component owns the DOM reads (figure
- * width, window height, token values, reduced-motion query) and feeds
+ * `document`, no timer. The Svelte and Vue hosts own the DOM reads (figure
+ * width, viewport height, token values, reduced-motion query) and feed
  * them in.
  *
  * The host consumes the public API of `@sentropic/diagram-canvas` only
@@ -27,6 +27,7 @@ import {
   relationRoute,
   sceneNodes,
   type CameraFit,
+  type LayoutCacheStats,
   type LayoutHints,
   type LayoutMetrics,
   type LayoutOptions,
@@ -38,7 +39,7 @@ import {
   type Vec2,
 } from "../index.js";
 
-import type { CardPresentationInput } from "./diagramCardModel.js";
+import type { EntityPresentation } from "@sentropic/diagram-core";
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -49,6 +50,16 @@ export type SceneOccurrenceRef = NonNullable<LayoutOptions["collapsed"]>[number]
 export type ScenePresentation = NonNullable<LayoutOptions["presentation"]>;
 export type SceneLaidOut = Extract<LayoutResult, { readonly status: "laid-out" }>;
 export type SceneOrientations = Readonly<Record<string, LevelOrientation>>;
+
+/** Named public boundary keeps host declaration emission in the canvas layer. */
+export interface SceneLayoutCache {
+  layout(document: SceneDocument, options: LayoutOptions, sourceView?: SceneView): LayoutResult;
+  layoutFolded(document: SceneDocument, sourceView: SceneView, options: LayoutOptions): LayoutResult;
+  has(document: SceneDocument, options: LayoutOptions, sourceView?: SceneView): boolean;
+  clear(): void;
+  dispose(): void;
+  stats(): LayoutCacheStats;
+}
 
 /**
  * `targetWidth` handed to the engine when the host supplies none. The
@@ -67,7 +78,18 @@ export const ZOOM_STEP_RATIO = 1.2;
 /** Zoom ratio per wheel delta unit (Ctrl + wheel, trackpad pinch). */
 export const WHEEL_ZOOM_RATE = 0.0015;
 
+export interface DiagramSceneSize {
+  readonly width: number;
+  readonly height: number;
+}
+
+/** Drawing union size at zoom 1, available without measuring rendered elements. */
+export function sceneContentSize(result: LayoutResult | undefined): DiagramSceneSize {
+  return result?.status === "laid-out" ? { width: result.fit.width, height: result.fit.height } : { width: 0, height: 0 };
+}
+
 export interface SceneLayoutInput {
+  readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
   /** Retained source view (authored occurrences, fold groups). Optional: the engine synthesises one. */
   readonly view?: SceneView;
@@ -113,6 +135,11 @@ export function layoutScene(input: SceneLayoutInput): LayoutResult {
     targetWidth: input.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     ...(input.previousOrientation === undefined ? {} : { previousOrientation: input.previousOrientation }),
   };
+  if (input.cache !== undefined) {
+    return input.view === undefined
+      ? input.cache.layout(input.document, options)
+      : input.cache.layoutFolded(input.document, input.view, options);
+  }
   return input.view === undefined
     ? layoutMeasured(input.document, options)
     : layoutFolded(input.document, input.view, options);
@@ -138,7 +165,7 @@ export interface SceneNodeModel {
   /** Zones only: drawn as the atomic card (collapsed) or as the frame. */
   readonly collapsed: boolean;
   readonly rect: Rect;
-  readonly presentation?: CardPresentationInput;
+  readonly presentation?: EntityPresentation;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
@@ -159,6 +186,7 @@ export interface SceneLabelModel {
 }
 
 export interface SceneModel {
+  readonly contentSize: DiagramSceneSize;
   /** Bottom to top, in the scene's paint order. */
   readonly nodes: readonly SceneNodeModel[];
   readonly edges: readonly SceneEdgeModel[];
@@ -185,7 +213,8 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
 
 /**
  * The drawable scene of one laid-out result: nodes at emitted geometry,
- * routes, and the edge-label boxes replayed from the emitted view with the
+ * routes, and the emitted edge-label boxes and measured lines. Older results
+ * without label boxes fall back to replay with the
  * engine's own placement function, measurer, margin and blockers (cards,
  * collapsed boxes and the title band of each expanded zone — an expanded
  * zone's interior is not a blocker on the row-pack path).
@@ -198,7 +227,7 @@ export function resolveScene(
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = input.presentation.entities[node.occurrence] as CardPresentationInput | undefined;
+    const presentation = input.presentation.entities[node.occurrence] as EntityPresentation | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";
@@ -224,6 +253,9 @@ export function resolveScene(
     };
   });
 
+  const measuredLabels = new Map(
+    (result.measurements?.slots ?? []).filter((slot) => slot.role === "edge-label").map((slot) => [slot.occurrence as string, slot.layout]),
+  );
   const headerHeights = new Map<string, number>(
     (result.measurements?.headers ?? []).map((header) => [header.occurrence as string, header.height] as const),
   );
@@ -258,11 +290,12 @@ export function resolveScene(
       markers = renderErdMarkerSvg(erdText(semantic.attributes,'fromCardinality') as ErdCardinality, first, {x:second.x-first.x,y:second.y-first.y}) + renderErdMarkerSvg(erdText(semantic.attributes,'toCardinality') as ErdCardinality,last,{x:before.x-last.x,y:before.y-last.y});
     }
     edges.push({ occurrence: occurrence.id, points, ...(markers === undefined ? {} : { markers }) });
+    if (result.labelBoxes !== undefined && result.labelBoxes[id] === undefined) continue;
     const label = semantic?.profile === 'erd@1'
       ? ['fromRole','toRole'].map(role => erdText(semantic.attributes,role)).filter(Boolean).join(' / ') || edgeLabelOf(input.document, occurrence.relation)
       : edgeLabelOf(input.document, occurrence.relation);
     if (label === undefined) continue;
-    const layout = input.measureLines({
+    const layout = measuredLabels.get(id) ?? input.measureLines({
       text: label,
       role: "edge-label",
       availableWidth: EDGE_LABEL_ALLOCATION,
@@ -277,14 +310,19 @@ export function resolveScene(
   const labels: SceneLabelModel[] = [];
   let bounds = frame.bounds;
   const erd = input.document.profileRefs.length === 1 && input.document.profileRefs[0] === 'erd@1';
-  const placed = erd ? placeErdRoleLabels(entries,blockers,margin) : placeEdgeLabels(entries, blockers, margin);
-  for (const [id, placement] of placed) {
+  const placements = erd
+    ? placeErdRoleLabels(entries, blockers, margin)
+    : result.labelBoxes === undefined
+      ? placeEdgeLabels(entries, blockers, margin)
+      : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
+  for (const [id, placement] of placements) {
     if (placement === undefined) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}) });
     bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
   return {
+    contentSize: sceneContentSize(result),
     nodes,
     edges,
     labels,

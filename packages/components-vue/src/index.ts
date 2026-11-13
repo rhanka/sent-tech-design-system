@@ -705,6 +705,7 @@ export { PanelSection } from "./PanelSection.js";
 export type { PanelSectionProps } from "./PanelSection.js";
 
 export { default as DiagramCard } from './DiagramCard.vue';
+export type { DiagramIconProps } from './diagram-icons/index.js';
 export type { DiagramCardProps } from './DiagramCard.vue';
 export { default as DiagramZone } from './DiagramZone.vue';
 export type { DiagramZoneProps } from './DiagramZone.vue';
@@ -713,3 +714,5 @@ export type { DiagramSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCam
 export { default as GraphCanvas } from './GraphCanvas.vue';
 export type { GraphCanvasProps } from './GraphCanvas.vue';
 export { useGraphEngine } from './useGraphEngine.js';
+export type { CardDiagnostic, CardLineMeasure, DiagramCardToggle, DiagramGlyphPaths, DiagramZoneToggle, ZoneDiagnostic, ZoneChildSpec } from './diagramCardModel.js';
+export type { SceneDocument, SceneOccurrenceRef, ScenePresentation, SceneView } from './diagramSceneModel.js';

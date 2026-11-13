@@ -1,8 +1,8 @@
 {
   "componentId": "candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:b4b8c5109bfe48746f14f5c97f60d3e44d51fd03a3a998226c9a6e4e279b2217",
-  "entryDigest": "sha256:6951ffb3118bab43b7e3877f6164325b96b7021eca8718a249d036f8e5ec67e4",
+  "digest": "sha256:bff62f42573b5aaef0841b907929ac9c2c699ea611fb25af73d8f56f6fac76fa",
+  "entryDigest": "sha256:3051d0cfb107cc707e3a91bebcb175119ae4b8b326cab34b46cc89589fb12352",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/CandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CandlestickChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

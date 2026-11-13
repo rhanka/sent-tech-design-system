@@ -3,7 +3,7 @@ import { mount } from '@vue/test-utils';
 import { isProxy, nextTick } from 'vue';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import GraphCanvas from './GraphCanvas.vue';
-import { graphIntentStyle, type GraphEngineData } from '@sentropic/graph/engine';
+import { createGraphEngine, graphIntentStyle, type GraphEngineData } from '@sentropic/graph/engine';
 import ts from 'typescript';
 
 function fixture(): GraphEngineData {
@@ -23,6 +23,15 @@ afterEach(() => { frames.clear(); vi.restoreAllMocks(); vi.unstubAllGlobals(); }
 function draw() { const pending = [...frames.values()]; frames.clear(); for (const callback of pending) callback(0); }
 
 describe('raw graph data and engine-owned frames', () => {
+  it('should treat absent and freshly allocated empty engine selections alike', () => {
+    const engine = createGraphEngine(document.createElement('canvas'));
+    engine.setData(fixture()); engine.setIntent({ hover: 'a' }); draw();
+    const setStyle = vi.spyOn(engine.renderer, 'setStyle');
+    engine.setIntent({ selection: [], hover: 'a', viewport: { x: 1, y: 1, zoom: 2 } }); draw();
+    engine.setIntent({ selection: [], hover: 'a', viewport: { x: 2, y: 2, zoom: 3 } }); draw();
+    engine.setIntent({ hover: 'a', viewport: { x: 3, y: 3, zoom: 4 } }); draw();
+    expect(setStyle).not.toHaveBeenCalled(); engine.destroy();
+  });
   it('should apply selection/hover/filter masks without mutating caller buffers', () => {
     const data = fixture();
     const style = graphIntentStyle(data, { selection: ['a'], hover: 'b', filters: ['a'] });
@@ -48,6 +57,11 @@ describe('raw graph data and engine-owned frames', () => {
     const setGraph = vi.spyOn(state.engine.value.renderer, 'setGraph');
     const setStyle = vi.spyOn(state.engine.value.renderer, 'setStyle');
     const destroy = vi.spyOn(state.engine.value.renderer, 'destroy');
+    await vue.setProps({ viewport: { x: 5, y: 5, zoom: 1.5 } }); await nextTick(); draw();
+    expect(setStyle).not.toHaveBeenCalled();
+    await vue.setProps({ hover: 'a' }); await nextTick(); draw(); setStyle.mockClear();
+    await vue.setProps({ viewport: { x: 6, y: 6, zoom: 2 } }); await nextTick(); draw();
+    expect(setStyle).not.toHaveBeenCalled();
     await vue.setProps({ selection: ['a'], hover: 'b', filters: ['a'], viewport: { x: 1, y: 2, zoom: 2 } });
     await nextTick(); expect(frames.size).toBe(1); draw();
     expect(setGraph).not.toHaveBeenCalled(); expect(setStyle).toHaveBeenCalledTimes(1);

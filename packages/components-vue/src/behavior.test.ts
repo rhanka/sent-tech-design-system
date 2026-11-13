@@ -3486,7 +3486,7 @@ describe("Vue behavioral parity — batch 5", () => {
   describe("ForceGraph", () => {
     it("renders div.st-forceGraph with role img", () => {
       const wrapper = mount(ForceGraph, {
-        props: { nodes: [{ id: "a", label: "A" }], edges: [] },
+        props: { label: "Graph", nodes: [{ id: "a", label: "A" }], edges: [] },
       });
       const root = wrapper.find("div.st-forceGraph");
       expect(root.exists()).toBe(true);
@@ -3496,6 +3496,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("renders node circles", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }, { id: "b" }],
           edges: [],
         },
@@ -3506,6 +3507,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("renders edges as lines", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }, { id: "b" }],
           edges: [{ source: "a", target: "b" }],
         },
@@ -3516,6 +3518,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("marks selected nodes", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }],
           edges: [],
           selectedIds: ["a"],
@@ -3527,6 +3530,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("applies weak class to weak edges", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }, { id: "b" }],
           edges: [{ source: "a", target: "b", weak: true }],
         },
@@ -3536,23 +3540,23 @@ describe("Vue behavioral parity — batch 5", () => {
 
     it("emits select when node clicked", async () => {
       const wrapper = mount(ForceGraph, {
-        props: { nodes: [{ id: "n1" }], edges: [] },
+        props: { label: "Graph", nodes: [{ id: "n1" }], edges: [] },
       });
-      await wrapper.find(".st-forceGraph__node").trigger("click");
+      await wrapper.find(".st-forceGraph__dot").trigger("click");
       expect(wrapper.emitted("select")).toBeTruthy();
       expect(wrapper.emitted("select")?.[0]).toEqual(["n1"]);
     });
 
     it("renders an svg", () => {
       const wrapper = mount(ForceGraph, {
-        props: { nodes: [{ id: "a" }], edges: [] },
+        props: { label: "Graph", nodes: [{ id: "a" }], edges: [] },
       });
       expect(wrapper.find("svg").exists()).toBe(true);
     });
 
     it("renders a node group per node", () => {
       const wrapper = mount(ForceGraph, {
-        props: { nodes: [{ id: "a" }, { id: "b" }, { id: "c" }], edges: [] },
+        props: { label: "Graph", nodes: [{ id: "a" }, { id: "b" }, { id: "c" }], edges: [] },
       });
       expect(wrapper.findAll(".st-forceGraph__node").length).toBe(3);
     });
@@ -3560,6 +3564,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("renders a path.st-forceGraph__shape for non-dot shapes", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [
             { id: "d", shape: "diamond" },
             { id: "s", shape: "star" },
@@ -3573,6 +3578,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("uses a circle (no shape path) for dot/circle shapes", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a", shape: "dot" }, { id: "b", shape: "circle" }],
           edges: [],
         },
@@ -3584,6 +3590,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("renders the legend overlay when legend prop is set", () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }],
           edges: [],
           legend: [
@@ -3599,6 +3606,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("emits edgeHover when an edge hit area is hovered", async () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [{ id: "a" }, { id: "b" }],
           edges: [{ source: "a", target: "b", relation: "knows" }],
         },
@@ -3616,10 +3624,10 @@ describe("Vue behavioral parity — batch 5", () => {
       const nodes = [{ id: "a" }, { id: "b" }, { id: "c" }];
       const edges = [{ source: "a", target: "b" }];
       expect(() =>
-        mount(ForceGraph, { props: { nodes, edges, repulsion: 4 } }),
+        mount(ForceGraph, { props: { label: "Graph", nodes, edges, repulsion: 4 } }),
       ).not.toThrow();
       expect(() =>
-        mount(ForceGraph, { props: { nodes, edges, repulsion: 0.2 } }),
+        mount(ForceGraph, { props: { label: "Graph", nodes, edges, repulsion: 0.2 } }),
       ).not.toThrow();
     });
 
@@ -3628,6 +3636,7 @@ describe("Vue behavioral parity — batch 5", () => {
       // Edges a—b and b—c are incident to b (full) ; c—d is not (dimmed).
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [
             { id: "a", label: "Alpha" },
             { id: "b", label: "Beta" },
@@ -3669,6 +3678,7 @@ describe("Vue behavioral parity — batch 5", () => {
     it("emits nodeHover with the node on enter and null on leave", async () => {
       const wrapper = mount(ForceGraph, {
         props: {
+          label: "Graph",
           nodes: [
             { id: "a", label: "Alpha" },
             { id: "b", label: "Beta" },
@@ -3705,6 +3715,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3723,6 +3734,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3742,6 +3754,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3762,6 +3775,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3783,6 +3797,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3802,6 +3817,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "a", into: "b" },
@@ -3831,6 +3847,7 @@ describe("Vue behavioral parity — batch 5", () => {
           const onMergeComplete = vi.fn();
           mount(ForceGraph, {
             props: {
+              label: "Graph",
               nodes: mergeNodes,
               edges: mergeEdges,
               mergePair: { id: "m1", from: "a", into: "b" },
@@ -3850,6 +3867,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         const wrapper = mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: { id: "m1", from: "missing", into: "b" },
@@ -3865,6 +3883,7 @@ describe("Vue behavioral parity — batch 5", () => {
         const onMergeComplete = vi.fn();
         mount(ForceGraph, {
           props: {
+            label: "Graph",
             nodes: mergeNodes,
             edges: mergeEdges,
             mergePair: null,

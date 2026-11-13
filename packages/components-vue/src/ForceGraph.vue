@@ -6,7 +6,7 @@ import { computeLayout } from '@sentropic/graph/processing';
 import { nodeShapePath, edgeDashArray, type ForceGraphNode, type ForceGraphEdge, type ForceGraphTone } from '@sentropic/graph/presentation';
 import type { ForceGraphProps } from './ForceGraph.types.js';
 import { classNames } from './classNames.js';
-const props = withDefaults(defineProps<ForceGraphProps>(), { label: 'Force graph', width: 480, height: 360, nodeRadius: 7, showLabels: true, iterations: 300, selectedIds: () => [], focusId: null, edgeCurve: 0.15, repulsion: 1, mergePair: null, resetViewLabel: 'Reset view', legendLabel: 'Graph legend' });
+const props = withDefaults(defineProps<ForceGraphProps>(), { width: 480, height: 360, nodeRadius: 7, showLabels: true, iterations: 300, selectedIds: () => [], focusId: null, edgeCurve: 0.15, repulsion: 1, mergePair: null, resetViewLabel: 'Reset view', legendLabel: 'Graph legend' });
 const emit = defineEmits<{
     select: [
         id: string
@@ -37,9 +37,10 @@ const emit = defineEmits<{
 // Merge (reconciliation) glide duration.
 // ease-in-out (cubic) for a smooth glide.
 // SSR-safe reduced-motion check (window may be undefined during SSR/tests).
-const prefersReducedMotion = typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const motionQuery = typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)') : undefined;
+const prefersReducedMotion = ref(motionQuery?.matches ?? false);
+function updateReducedMotion() { prefersReducedMotion.value = motionQuery?.matches ?? false; }
 const layout = computed(() => new Map(computeLayout(props.nodes, props.edges, { width: props.width, height: props.height, iterations: Math.max(1, Math.round(props.iterations)), repulsion: props.repulsion }).map(node => [node.id, { x: node.x, y: node.y }])));
 const positionedNodes = computed(() => positionForceNodes(props.nodes, layout.value, props.width, props.height, props.nodeRadius));
 const positionedEdges = computed(() => positionForceEdges(props.nodes, props.edges, layout.value, props.edgeCurve));
@@ -129,7 +130,7 @@ onMounted(() => {
         };
         // Reduced motion: no animation, resolve on a microtask. Guarded so
         // a late microtask after unmount or after a newer id took over is a no-op.
-        if (prefersReducedMotion ||
+        if (prefersReducedMotion.value ||
             typeof requestAnimationFrame !== "function") {
             queueMicrotask(() => {
                 if (disposed || handledMergeId !== id)
@@ -302,19 +303,15 @@ function isHoverDimmedEdge(e: ForceGraphEdge): boolean {
     return e.source !== id && e.target !== id;
 }
 function fireSelect(id: string) {
-    props.onSelect?.(id);
     emit("select", id);
 }
 function fireOpenEntity(id: string) {
-    props.onOpenEntity?.(id);
     emit("openEntity", id);
 }
 function fireEdgeHover(edge: ForceGraphEdge) {
-    props.onEdgeHover?.(edge);
     emit("edgeHover", edge);
 }
 function fireNodeHover(node: ForceGraphNode | null) {
-    props.onNodeHover?.(node);
     emit("nodeHover", node);
 }
 // Keyboard handler for a node: Space/Enter → select, Enter → openEntity.
@@ -355,7 +352,7 @@ function resetView() {
     panY.value = 0;
 }
 function handleWheel(ev: WheelEvent) {
-    if (prefersReducedMotion)
+    if (prefersReducedMotion.value)
         return;
     ev.preventDefault();
     // Zoom factor: ~10% per step.
@@ -383,7 +380,7 @@ function handleBgMouseDown(ev: MouseEvent) {
     // Only start pan when clicking the background (not a node/edge element).
     if ((ev.target as Element).closest(".st-forceGraph__node"))
         return;
-    if (prefersReducedMotion)
+    if (prefersReducedMotion.value)
         return;
     isPanning.value = true;
     panStart = { x: ev.clientX, y: ev.clientY, panX: panX.value, panY: panY.value };
@@ -402,7 +399,17 @@ function handleMouseUp() {
 }
 const viewBox = computed(() => `${vbX.value} ${vbY.value} ${vbW.value} ${vbH.value}`);
 const isZoomed = computed(() => zoomScale.value !== 1 || panX.value !== 0 || panY.value !== 0);
-onUnmounted(() => { disposed = true; cancelMergeRaf(); });
+let mountedSvg: SVGSVGElement | null = null;
+onMounted(() => {
+    mountedSvg = svgEl.value;
+    mountedSvg?.addEventListener('wheel', handleWheel, { passive: false });
+    motionQuery?.addEventListener?.('change', updateReducedMotion);
+});
+onUnmounted(() => {
+    disposed = true; cancelMergeRaf();
+    mountedSvg?.removeEventListener('wheel', handleWheel); mountedSvg = null;
+    motionQuery?.removeEventListener?.('change', updateReducedMotion);
+});
 const hoveredNode = computed(() => hoveredNodeIndex.value === null ? undefined : positionedNodes.value[hoveredNodeIndex.value]);
 const hoveredEdge = computed(() => positionedEdges.value.find(edge => edge.i === hoveredEdgeIndex.value));
 const relationCount = computed(() => positionedEdges.value.filter(edge => edge.edge.source === hoveredNode.value?.node.id || edge.edge.target === hoveredNode.value?.node.id).length);
@@ -412,7 +419,7 @@ const edgeClass = (e: (typeof positionedEdges.value)[number]) => classNames('st-
 <template>
   <div :class="classNames('st-forceGraph', prefersReducedMotion && 'st-forceGraph--static', props.class)" role="img" :aria-label="label">
     <svg ref="svgEl" :viewBox="viewBox" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" focusable="false" aria-hidden="true"
-      :class="{ 'st-forceGraph__svg--panning': isPanning }" @wheel="handleWheel" @mousedown="handleBgMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp" @mouseleave="handleMouseUp">
+      :class="{ 'st-forceGraph__svg--panning': isPanning }" @mousedown="handleBgMouseDown" @mousemove="handleMouseMove" @mouseup="handleMouseUp" @mouseleave="handleMouseUp">
       <g class="st-forceGraph__edges">
         <template v-for="e in positionedEdges" :key="e.i">
           <path v-if="e.path" class="st-forceGraph__edgeHit" role="presentation" :d="e.path" fill="none" @mouseenter="hoveredEdgeIndex = e.i; fireEdgeHover(e.edge)" @mouseleave="hoveredEdgeIndex = null" />
@@ -425,10 +432,12 @@ const edgeClass = (e: (typeof positionedEdges.value)[number]) => classNames('st-
         <g v-for="p in positionedNodes" :key="p.node.id"
           :class="classNames('st-forceGraph__node', `st-forceGraph__node--${p.tone}`, (isHoverDimmedNode(p.node.id) || isSelectionDimmed(p.node.id)) && 'st-forceGraph__node--dim', selectedSet.has(p.node.id) && 'st-forceGraph__node--selected', focusId === p.node.id && 'st-forceGraph__node--focus', (mergeFromId === p.node.id || isMasked(p.node.id)) && 'st-forceGraph__node--merging')"
           :aria-hidden="isMasked(p.node.id) ? 'true' : undefined" :opacity="mergeNodeOpacity(p.node.id)" :transform="`translate(${p.x + mergeOffset(p.node.id).x} ${p.y + mergeOffset(p.node.id).y})`"
-          @click="fireSelect(p.node.id)" @dblclick="fireOpenEntity(p.node.id)">
+          >
           <path v-if="p.shapePath" class="st-forceGraph__shape st-forceGraph__dot" :d="p.shapePath" tabindex="0" role="button" :aria-label="`${p.title}${p.node.group !== undefined ? `: ${p.node.group}` : ''}`" :aria-pressed="selectedSet.has(p.node.id)"
+            @click="fireSelect(p.node.id)" @dblclick="fireOpenEntity(p.node.id)"
             @mouseenter="hoveredNodeIndex = p.i; fireNodeHover(p.node)" @mouseleave="hoveredNodeIndex = null; fireNodeHover(null)" @focus="hoveredNodeIndex = p.i; fireNodeHover(p.node)" @blur="hoveredNodeIndex = null; fireNodeHover(null)" @keydown="handleNodeKeydown(p.node.id, $event)" />
           <circle v-else class="st-forceGraph__dot" :r="p.r" tabindex="0" role="button" :aria-label="`${p.title}${p.node.group !== undefined ? `: ${p.node.group}` : ''}`" :aria-pressed="selectedSet.has(p.node.id)"
+            @click="fireSelect(p.node.id)" @dblclick="fireOpenEntity(p.node.id)"
             @mouseenter="hoveredNodeIndex = p.i; fireNodeHover(p.node)" @mouseleave="hoveredNodeIndex = null; fireNodeHover(null)" @focus="hoveredNodeIndex = p.i; fireNodeHover(p.node)" @blur="hoveredNodeIndex = null; fireNodeHover(null)" @keydown="handleNodeKeydown(p.node.id, $event)" />
           <text v-if="showLabels" class="st-forceGraph__label" :x="p.r + 3" y="0" dominant-baseline="middle">{{ p.title }}</text>
         </g>

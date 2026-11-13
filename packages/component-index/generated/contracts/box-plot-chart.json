@@ -1,8 +1,8 @@
 {
   "componentId": "box-plot-chart",
   "contractSource": "derived",
-  "digest": "sha256:7192dafb38abea33b5ae4e499e4e7bfd878bff37be1eac7a9bab2237d7efddf9",
-  "entryDigest": "sha256:cd05c7997cb44f4b20c4392c5fa0774a5680e4532779c0d914ff894ebe8c075b",
+  "digest": "sha256:1fc4be94859a4b8887a38bde42bab3810aa3fa845268147d99b6044bd9bf6825",
+  "entryDigest": "sha256:4054d2e4477c1021eb4353d2583c5ef1d0c67eecc5f7c4a3170b56fdfe51b370",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -301,7 +301,7 @@
         "declarationPath": "packages/components-svelte/dist/BoxPlotChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BoxPlotChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

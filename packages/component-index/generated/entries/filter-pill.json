@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FilterPill.svelte",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Active filter pill: field, operator, value, and remove button.",
     "fr": "Pilule de filtre actif : champ, opérateur, valeur et bouton de retrait."
   },
-  "digest": "sha256:81387682494af55d35f84a20b592e7109c40e8591c467d7bf6c63d1fdb2ee1ea",
+  "digest": "sha256:24b7d20443c980bb891f62713e01498714c83b660e21b071f8eb31c82abe0f89",
   "displayName": "FilterPill",
   "format": "component-entry/v1",
   "frameworks": [
