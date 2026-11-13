@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ColorSwatch.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Swatch of an arbitrary color (hex/rgb/oklch/token) with an optional label: a palette or legend building block.",
     "fr": "Pastille d'une couleur arbitraire (hex/rgb/oklch/token) avec libellé optionnel : brique d'une palette ou d'une légende."
   },
-  "digest": "sha256:3e76c78bb639bf474ce868c55588f2abc11a618a5b5e34d9473a2b80ffb04dce",
+  "digest": "sha256:5d4bb30ce2fca879614b4fe976fe1d2574f61cc99b9aea2fee8c5f6337721c92",
   "displayName": "ColorSwatch",
   "format": "component-entry/v1",
   "frameworks": [

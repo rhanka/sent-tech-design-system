@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:053c510107cab43a3325b739413bdab8b27002993a3c29c3cda09d10affe231f",
-  "entryDigest": "sha256:b3a64908f263b00b5f8e1384f6f6f90810bc1387db9b582cd97545d739948e8d",
+  "digest": "sha256:b9edeb29027d2bbfb4701808ce47d74a0cf893148931276328ab6c7bd7ca3dd8",
+  "entryDigest": "sha256:fe99b1f4f1e66b7ade76f7beaa0163aa747c2dba5f563a2b169a61b673d31875",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -229,7 +229,7 @@
         "declarationPath": "packages/components-vue/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StatusDotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

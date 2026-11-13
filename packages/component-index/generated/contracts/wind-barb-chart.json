@@ -1,8 +1,8 @@
 {
   "componentId": "wind-barb-chart",
   "contractSource": "derived",
-  "digest": "sha256:3111ba16c33e2177184650d61d5bbde404e336aabcb830a5882388bd2bd50e4b",
-  "entryDigest": "sha256:18f03ce104264507225647a9d7fc5c2729c5e16cfef670ffec973ff001e93765",
+  "digest": "sha256:d9d6b33f026597fa036d59da99d532f2953e36211a2febe398cbf73299310756",
+  "entryDigest": "sha256:a9ba271858cdcc752100a7f7b6a1db8b71011487421173543e7e5b1853ea0983",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -300,7 +300,7 @@
         "declarationPath": "packages/components-vue/dist/WindBarbChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WindBarbChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

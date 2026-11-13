@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:5df9d93081a21f9c4d1b1050deea39c1a261543333488495934db46ee4ec3f22",
-  "entryDigest": "sha256:a8bb0eb44b82bae00efe57b434d27a45c57f0702991767e76aba94082e1e9a23",
+  "digest": "sha256:fab3c90ea9fe63c53d2de63dad4d16241af734fbc3d04ba3e5e6e78aba2eb413",
+  "entryDigest": "sha256:23b73fc0d5d79e732e54af3e5ed5056b279231e44d46615b2503f865ee4b7b36",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -285,7 +285,7 @@
         "declarationPath": "packages/components-vue/dist/Notification.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NotificationProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

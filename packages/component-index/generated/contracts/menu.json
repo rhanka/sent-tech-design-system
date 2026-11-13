@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:473f98382083f3b7253d2d9fe5ba9dacfb743875968e9c491322e4d52a9158e0",
-  "entryDigest": "sha256:3b8485c4976d03e5921356248abc50963e610f5d1fb4c2044f56ad24b999ce1e",
+  "digest": "sha256:0d120eef0be73dbe2fe95359a0499c9f89148d958f7bdf05ca0dea810a2044f5",
+  "entryDigest": "sha256:788bb18afe264e686fd1516f7c1d98af072fa604a982bdf909afa574d1d24bf8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -548,6 +548,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -558,6 +574,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -640,6 +659,13 @@
           },
           "role": {
             "type": "string"
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -675,11 +701,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:756fbad39f709aeee2972c4b13be79d384bdab5c12e7d75a56ebbe71c1ebd31c",
+        "declarationDigest": "sha256:cd15895d30651503523a23e762a10a1b51062d3dde13608c80e9c81ddfc12640",
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

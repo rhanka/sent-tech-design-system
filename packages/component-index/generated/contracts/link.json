@@ -1,8 +1,8 @@
 {
   "componentId": "link",
   "contractSource": "derived",
-  "digest": "sha256:b9e24907e8767a91a527472ffc8b49d05e458277ae147def9b7aa73bd84b24e7",
-  "entryDigest": "sha256:5e127b01cc0635975cd825ae9b4dff5e242610ab993dbf6b902285a01b5d3f86",
+  "digest": "sha256:4a37a6d7001ba92d3aa2688ea5b2f3bb735889ad2100ac27a3de5415bc6c243e",
+  "entryDigest": "sha256:300ec9b0ee6d36b5f28a168348a833c6e529c6f732a81c0ed18eb3b5b193d30e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -254,7 +254,7 @@
         "declarationPath": "packages/components-vue/dist/Link.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LinkProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
