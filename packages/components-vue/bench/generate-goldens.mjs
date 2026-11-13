@@ -3,7 +3,9 @@ import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import ts from 'typescript';
-import { bench, src, names } from './lib.mjs';
+import { bench, src, names as allNames } from './lib.mjs';
+// Optional explicit targets: node generate-goldens.mjs <Name> [<Name> ...]; default = every fixtures file.
+const names = process.argv.slice(2).length ? process.argv.slice(2) : allNames;
 
 // Explicit maintenance command, never called by check.mjs. Refuse conversions.
 for (const name of names) {
