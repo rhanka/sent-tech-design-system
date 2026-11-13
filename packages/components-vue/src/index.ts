@@ -588,12 +588,12 @@ export type {
   ParallelCoordinatesChartTone,
   ParallelAxis,
 } from "./ParallelCoordinatesChart.js";
-export { BumpChart } from "./BumpChart.js";
+export { default as BumpChart } from "./BumpChart.vue";
 export type {
   BumpChartProps,
   BumpChartSeries,
   BumpChartTone,
-} from "./BumpChart.js";
+} from "./BumpChart.vue";
 export { FilterPill } from "./FilterPill.js";
 export type { FilterPillProps, FilterPillTone } from "./FilterPill.js";
 export { FilterBar } from "./FilterBar.js";
