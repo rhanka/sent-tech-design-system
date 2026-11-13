@@ -1,8 +1,8 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:cb019aa7aaf1816f51a8c40f5dffd29763fda9a143559bf46594078b0131247d",
-  "entryDigest": "sha256:22412d1f008008ed934fcb2547c16404972eba69c3854f12fe969794217a4a54",
+  "digest": "sha256:1a550f38a5ed578594afa5ac2c5e1403157289a60a578b62964c46a7efeff215",
+  "entryDigest": "sha256:550e2c0c106fbd6d7f40aa17ebcd95b9d868fde4d57baca9df9c0208f86ed306",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -735,12 +735,6 @@
       "dropped": [
         {
           "kind": "function",
-          "name": "MenuActionItem.icon",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "FunctionalComponent<any, {}, any, {}>"
-        },
-        {
-          "kind": "function",
           "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
@@ -806,10 +800,23 @@
               "disabled": {
                 "type": "boolean"
               },
+              "icon": {
+                "description": "Component icons require the item-icon slot in both compiled modes.",
+                "type": "string"
+              },
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "selected": {
                 "type": "boolean"
               },
@@ -858,7 +865,16 @@
               "kind": {
                 "const": "group"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "type": {
                 "const": "group"
               }
@@ -921,24 +937,6 @@
         "type": "object"
       },
       "replaced": [
-        {
-          "name": "MenuActionItem.icon",
-          "reason": "library type not expanded",
-          "replacement": "{}",
-          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
-        },
-        {
-          "name": "MenuActionItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "MenuGroupItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
         {
           "name": "onSelect.args[]",
           "reason": "any JSON value, stated in the row",
@@ -1036,7 +1034,7 @@
         "declarationPath": "packages/components-vue/dist/OverflowMenu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OverflowMenuProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],

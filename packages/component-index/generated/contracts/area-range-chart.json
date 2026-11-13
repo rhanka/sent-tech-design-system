@@ -1,8 +1,8 @@
 {
   "componentId": "area-range-chart",
   "contractSource": "derived",
-  "digest": "sha256:52561ab9dff6fd44ca3d0fa07a5c65e300b869c4099cb574261332c15019c89c",
-  "entryDigest": "sha256:fe7ed8a3f30eb89b98eec8ac1d5f2cf81928c63f63e794b7e0b2f25aba24a18c",
+  "digest": "sha256:a2e2633d75ec47d065c02a123a1ad50838594fcb94e8ebe27a90e8a0e3121f71",
+  "entryDigest": "sha256:705ff9705a1365bdb4e1812a005c1ced4074e78d854ec768357ffa3b5bee1ace",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-vue/dist/AreaRangeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AreaRangeChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

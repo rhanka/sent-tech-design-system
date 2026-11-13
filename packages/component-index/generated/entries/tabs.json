@@ -21,11 +21,11 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:c5e3ce20f0d2d81fec5e6a0a743dd3c601c937a8f715ba467e9313c0223e6dbd",
+      "digest": "sha256:d2a415188aebeacaf68e880347c6679a11ec149147a6d5771a8b4b1dabd5dc44",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tabs.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:8af05a1da92a971793f803bf0e1636abb575ed57d1d65a03d82c9ccd0dd06b51",
+  "digest": "sha256:356a7f31183d449e13844ba0f6d71e615a88f36a6a337c3b2d2c2393976c7c67",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

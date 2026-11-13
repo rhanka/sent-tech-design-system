@@ -1,8 +1,8 @@
 {
   "componentId": "accordion",
   "contractSource": "derived",
-  "digest": "sha256:62c421ab7e61f8e406f919278378e400b04df81e706712b0158ed459ea473800",
-  "entryDigest": "sha256:a0d993b50657c472fc3c8e0861e90fc75976962f6f4684b3ac97e6e267cb7da3",
+  "digest": "sha256:158d1c29ded7493d9b24de8a4ac3650755abcd904f31f35a9a9f825dbb593c66",
+  "entryDigest": "sha256:57dfc0d00e023ee013f7d6ebfc8a3a90f82b71c2fca56e1c1b6825bb4c75dcd8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -340,7 +340,7 @@
           "kind": "function",
           "name": "AccordionItem.content",
           "reason": "function surface has no JSON Schema form",
-          "sourceType": "() => unknown"
+          "sourceType": "() => string | number"
         }
       ],
       "events": [
@@ -466,11 +466,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:1181bd8cc3556129717d691ab501ae435c3529b432e02153918b69d6d34d9483",
+        "declarationDigest": "sha256:63343fd8da52f87bd8dc45e5aed298fe507093c7c8ef05fc631048e9e62c6ca0",
         "declarationPath": "packages/components-vue/dist/Accordion.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AccordionProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [],

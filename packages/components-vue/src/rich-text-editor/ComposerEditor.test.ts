@@ -43,7 +43,8 @@ vi.mock("@sentropic/design-system-rich-text/editor", async (importOriginal) => {
       options: Parameters<typeof actual.createRichTextEditor>[0],
     ) => {
       const instance = actual.createRichTextEditor(options);
-      createdCores.push(instance);
+      if (instance instanceof Promise) void instance.then(core => createdCores.push(core));
+      else createdCores.push(instance);
       return instance;
     },
   };
@@ -98,6 +99,15 @@ function compositionEnd(editable: HTMLElement): void {
 }
 
 describe("composer string round-trip (CL-2 witness 7, RED)", () => {
+  it('should preserve untouched full-profile source slices after editing one paragraph', async () => {
+    const input = 'First\n\nHard  \nbreak\n\n- item';
+    const { component } = render(ComposerEditor, { props: composerProps({ value: input, profile: 'full' }) });
+    expect((await component.captureComposer()).text).toBe(input);
+    const editor = lastCore();
+    const id = editor.getDocument().blocks[0].paragraphId;
+    editor.typeText(id, '!');
+    expect((await component.captureComposer()).text).toBe('First!\n\nHard  \nbreak\n\n- item');
+  });
   it("mounts the host string and emits strings, never documents", async () => {
     const seen: string[] = [];
     const { container } = render(ComposerEditor, {

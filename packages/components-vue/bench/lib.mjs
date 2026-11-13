@@ -86,12 +86,14 @@ export function wrapperSource(name, fixture, legacy = false) {
     const { html, scope } = typeof value === 'string' ? { html: value, scope: '' } : value;
     return `<template #${name}${scope ? `="${scope}"` : ''}>${html}</template>`;
   }).join('');
+  const editor = ['RichTextEditor', 'ComposerEditor'].includes(name);
   return `<script setup lang="ts">\n`
     + (legacy ? `import { ${name} as Target }` : 'import Target') + ` from '${pathToFileURL(componentFile).href}';\n`
     + `import fixtures from '${pathToFileURL(resolve(bench, 'fixtures', `${name}.fixtures.ts`)).href}';\n`
     + `const fixture = fixtures.find(f => f.id === ${JSON.stringify(fixture.id)})!;\n`
     + `const props = ${legacy ? '{ ...fixture.props, ...fixture.legacyProps }' : 'fixture.props'};\n`
-    + `</script>\n<template><Target v-bind="props">${slots}</Target></template>`;
+    + (editor ? `import { ref } from 'vue';\nconst target = ref();\ndefineExpose({ capture: () => target.value.${name === 'RichTextEditor' ? 'captureDocument' : 'captureComposer'}(), readiness: () => target.value.readiness() });\n` : '')
+    + `</script>\n<template><Target${editor ? ' ref="target"' : ''} v-bind="props">${slots}</Target></template>`;
 }
 
 export function normalizeHtml(html, JSDOM) {

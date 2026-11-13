@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/ColumnRangeChart.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:2cc5e2bdff2255f615e5a2a46157e3eb30db816e9528ffc5ecb330f0defd7828",
+  "digest": "sha256:1ade0c6f0f45e78918d1d37c645ee6c0845a80261e251dac5015c49aa8584acb",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

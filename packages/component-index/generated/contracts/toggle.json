@@ -1,8 +1,8 @@
 {
   "componentId": "toggle",
   "contractSource": "derived",
-  "digest": "sha256:9afaf132e601d55f58497d1097b9649933e64267879e7187a8e27712a38aba27",
-  "entryDigest": "sha256:98cea9577dc3e98c4e9579d3c1f1c430201119774b8a984bed4809555bb74548",
+  "digest": "sha256:1d55633dc48955f04750f57427028b6775ffc6b7ef465d7eae96b73fa1d53e55",
+  "entryDigest": "sha256:4313af41d781fa5665981e07a073d9e8f174dc1fbd26699af40f1c5b0ec09ee0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -253,8 +253,26 @@
           "disabled": {
             "type": "boolean"
           },
-          "helperText": {},
-          "label": {},
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "labelOff": {
             "type": "string"
           },
@@ -279,20 +297,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "helper-text"
@@ -305,11 +310,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:06c4cf4684bcf394961abc1c5b6734f7376212f4b57043bf717616d14f9a029e",
+        "declarationDigest": "sha256:67e95ad0da883b6baad20b53ee8c0ed444f0f7339217311b41fb9ecde17b3732",
         "declarationPath": "packages/components-vue/dist/Toggle.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToggleProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [

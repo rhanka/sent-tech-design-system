@@ -1,8 +1,8 @@
 {
   "componentId": "toggletip",
   "contractSource": "derived",
-  "digest": "sha256:9f0b1b22f4b2838c8cabed6079943a39f574b417cac2e3121981e7ef0158c06e",
-  "entryDigest": "sha256:072135d1c6551566ccbe45620322acbf9a6daea5f704f95606b653a11690ae70",
+  "digest": "sha256:0e8301a03b6c5db88551ccb7f3c3eb650618265eefd3a54d6e4ec28984a6bbdf",
+  "entryDigest": "sha256:019ab78efa426aa61e92ad0513cf1c9268e55abb0d76c2f61d38b9aa0f7b86ae",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -212,8 +212,26 @@
           "class": {
             "type": "string"
           },
-          "content": {},
-          "label": {},
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "open": {
             "type": "boolean"
           },
@@ -228,20 +246,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "content"
@@ -254,13 +259,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:3cf9e1896f010a4496881da3dbef01d722bd9f6698659c8a6a16f5696d08dd68",
+        "declarationDigest": "sha256:3782da147132fafc410f0ddce17c0eb681637416fdd154e20e60358854c8cfbe",
         "declarationPath": "packages/components-vue/dist/Toggletip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToggletipProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",

@@ -1,8 +1,8 @@
 {
   "componentId": "progress-bar",
   "contractSource": "derived",
-  "digest": "sha256:65f11638d03459ac56ac9032d70bfbfa9f498717d69f6458d367c553f1083d6b",
-  "entryDigest": "sha256:077332cb2c46be5606f4a6145b49188178c328549a6796349582f81c41f1a190",
+  "digest": "sha256:99bf0b887f7d151c572aaa65b8041225dbe53a74d60577541389aa54abc3e0c1",
+  "entryDigest": "sha256:54699519fc2566b7fb9ccb57bd38643c520de3b0ab832ab6bd1171d0cb9f2dd5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -240,7 +240,16 @@
           "indeterminate": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "max": {
             "type": "number"
           },
@@ -272,27 +281,20 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "label"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:d88175e17cd1050a5ece20654e45951bde79fc008be75988cf40b28ef13d925f",
+        "declarationDigest": "sha256:5b66a32ab2753cd145f87c45727f2e643f9887779de699bbc32a6f12682e8533",
         "declarationPath": "packages/components-vue/dist/ProgressBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ProgressBarProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

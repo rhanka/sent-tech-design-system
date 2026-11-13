@@ -6,8 +6,8 @@ import { classNames } from './classNames.js';
 export type TileVariant = 'static' | 'clickable' | 'selectable';
 
 export type TileProps = {
-  title?: unknown;
-  description?: unknown;
+  title?: string | number;
+  description?: string | number;
   variant?: TileVariant;
   /** Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`. */
   href?: string;

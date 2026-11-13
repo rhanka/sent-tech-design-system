@@ -1,8 +1,8 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:f131f324ffb65b36fc5516e2222d0752f7ba8e8bef7e009467ffd707938775a0",
-  "entryDigest": "sha256:0afd17f5ea2c85db977e88a31d125c53b04d9634d697b61992fc22eb1bf81025",
+  "digest": "sha256:3c9927850242c123aba9a7f78498a3bd5392b3f15caeeaad661ae84596cc1711",
+  "entryDigest": "sha256:cba97f88e33941b0240225c4b986dd5aeb1a540f72ea646d8df1f9d848e1dadb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -192,6 +192,7 @@
           },
           "icon": {
             "enum": [
+              "x",
               "close",
               "layers",
               "settings",
@@ -201,7 +202,21 @@
               "chevron-down",
               "chevron-right",
               "comment",
-              "circle-dashed"
+              "circle-dashed",
+              "loader-circle",
+              "circle-check",
+              "circle-alert",
+              "arrow-up",
+              "chevron-left",
+              "send",
+              "check",
+              "copy",
+              "upload",
+              "file",
+              "circle-chevron-down",
+              "ellipsis",
+              "search",
+              "clock"
             ]
           },
           "label": {
@@ -244,11 +259,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:8f51426287039bd5bd866e9d8ac1986a225a3a0ef0b7b64bacfb9116f4e54772",
+        "declarationDigest": "sha256:522d461619f792489211a0f4b30ef8c436551facd97283340ee00835c2ab1051",
         "declarationPath": "packages/components-vue/dist/LabelledIconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [
