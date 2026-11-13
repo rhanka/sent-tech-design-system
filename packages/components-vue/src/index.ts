@@ -573,13 +573,13 @@ export { TimelineChart } from "./TimelineChart.js";
 export type { TimelineChartProps, TimelineChartEvent, TimelineChartTone } from "./TimelineChart.js";
 export { GanttChart } from "./GanttChart.js";
 export type { GanttChartProps, GanttChartTask } from "./GanttChart.js";
-export { StreamgraphChart } from "./StreamgraphChart.js";
+export { default as StreamgraphChart } from "./StreamgraphChart.vue";
 export type {
   StreamgraphChartProps,
   StreamgraphChartDatum,
   StreamgraphChartSeriesValue,
   StreamgraphChartTone,
-} from "./StreamgraphChart.js";
+} from "./StreamgraphChart.vue";
 export { CalendarHeatmapChart } from "./CalendarHeatmapChart.js";
 export type { CalendarHeatmapChartProps, CalendarHeatmapChartDatum, CalendarHeatmapChartScale } from "./CalendarHeatmapChart.js";
 export { ParallelCoordinatesChart } from "./ParallelCoordinatesChart.js";
