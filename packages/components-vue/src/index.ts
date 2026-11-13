@@ -16,12 +16,12 @@ export { default as Checkbox } from "./Checkbox.vue";
 export type { CheckboxProps } from "./Checkbox.vue";
 export { CodeSnippet } from "./CodeSnippet.js";
 export type { CodeSnippetProps } from "./CodeSnippet.js";
-export { ContentSwitcher } from "./ContentSwitcher.js";
+export { default as ContentSwitcher } from "./ContentSwitcher.vue";
 export type {
   ContentSwitcherProps,
   ContentSwitcherItem,
   ContentSwitcherSize,
-} from "./ContentSwitcher.js";
+} from "./ContentSwitcher.vue";
 export { CopyButton } from "./CopyButton.js";
 export type { CopyButtonProps, CopyButtonSize } from "./CopyButton.js";
 export { Drawer } from "./Drawer.js";
