@@ -4176,6 +4176,17 @@
   }
 
   
+  /* A transformed host is the fixed submenus' containing block. Let those
+     panels escape it; only the inner root list owns cascade scrolling. */
+  .st-menuPopover--hasCascade {
+    overflow: visible;
+  }
+
+  .st-menuPopover--hasCascade .st-menu--hasCascade,
+  .st-menuPopover--hasCascade .st-menu__scroll {
+    max-height: inherit;
+  }
+
   .st-menuPopover--alignEnd {
     
     transform: translateX(-100%);

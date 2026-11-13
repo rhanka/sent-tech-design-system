@@ -1607,3 +1607,198 @@ describe("control review regressions", () => {
     expect(version).toMatch(/^3\.6\./);
   });
 });
+
+describe("second review regressions", () => {
+  const nestedItems: MenuItem[] = [
+    {
+      label: "Class",
+      value: "class",
+      children: [
+        {
+          label: "Mid",
+          value: "mid",
+          children: [
+            { label: "Disabled", value: "disabled", disabled: true },
+            { label: "Deep", value: "deep" },
+          ],
+        },
+        { label: "Other", value: "other" },
+      ],
+    },
+    { label: "Direct", value: "direct" },
+  ];
+
+  async function openTwoLevels(wrapper: ReturnType<typeof mount>) {
+    await buttonByText(wrapper, "Class").trigger("click");
+    await buttonByText(wrapper, "Mid").trigger("click");
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(true);
+  }
+
+  it.each([
+    { placement: "top-start", align: "start" },
+    { placement: "top-end", align: "end" },
+    { placement: "bottom-end", align: "end" },
+    { placement: "bottom-start", align: "center" },
+  ])("P1: lets cascade panels escape the $placement/$align host while keeping flat scrolling", async ({ placement, align }) => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    stubRect(trigger, { top: 400, bottom: 420, left: 400, right: 440, width: 40, height: 20 });
+    const wrapper = mount(MenuPopover, {
+      props: { open: true, trigger, placement, align, items: nestedItems },
+      attachTo: document.body,
+    });
+    mounted.push(wrapper);
+    await nextTick();
+    const panel = wrapper.find('.st-menuPopover');
+    expect(panel.classes()).toContain("st-menuPopover--" + placement);
+    expect(panel.classes()).toContain("st-menuPopover--hasCascade");
+    await openTwoLevels(wrapper);
+    const scroll = wrapper.find('.st-menu__scroll');
+    for (const submenu of wrapper.findAll('.st-menu--submenu')) {
+      expect(scroll.element.contains(submenu.element)).toBe(false);
+    }
+    const css = readFileSync(join(here, "styles.css"), "utf8");
+    const hostRule = css.match(/\.st-menuPopover--hasCascade\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(hostRule).toMatch(/overflow:\s*visible\s*;/);
+    const scrollRule = css.match(/\.st-menuPopover--hasCascade\s+\.st-menu--hasCascade\s*,\s*\.st-menuPopover--hasCascade\s+\.st-menu__scroll\s*\{([^}]*)\}/)?.[1] ?? "";
+    expect(scrollRule).toMatch(/max-height:\s*inherit\s*;/);
+    expect(css.match(/\.st-menu__scroll\s*\{([^}]*)\}/)?.[1]).toMatch(/overflow-y:\s*auto\s*;/);
+    await wrapper.setProps({ items: [{ label: "Flat", value: "flat" }] });
+    expect(panel.classes()).not.toContain("st-menuPopover--hasCascade");
+    expect(css.match(/\.st-menuPopover\s*\{([^}]*)\}/)?.[1]).toMatch(/overflow:\s*auto\s*;/);
+  });
+
+  it("P1: also marks a cascade supplied through the MenuPopover slot", async () => {
+    const wrapper = mount(MenuPopover, {
+      props: { open: true, placement: "top-end" },
+      slots: { default: () => h(Menu, { items: nestedItems }) },
+      attachTo: document.body,
+    });
+    mounted.push(wrapper);
+    await nextTick();
+    expect(wrapper.classes()).toContain("st-menuPopover--hasCascade");
+  });
+
+  it.each([
+    { preferred: "auto", rootLeft: 100, rootRight: 292, firstLeft: 292, firstRight: 484, opening: "ArrowLeft", closing: "ArrowRight", firstChevron: "end", secondChevron: "start" },
+    { preferred: "left", rootLeft: 208, rootRight: 400, firstLeft: 16, firstRight: 208, opening: "ArrowRight", closing: "ArrowLeft", firstChevron: "start", secondChevron: "end" },
+  ])("P2: follows the independently flipped second panel for $preferred parents and leaves (AC-19/30)", async (geometry) => {
+    Object.defineProperty(window, "innerWidth", { configurable: true, writable: true, value: 500 });
+    const wrapper = mountMenu({ items: nestedItems, submenuSide: geometry.preferred });
+    await openTwoLevels(wrapper);
+    stubRect(wrapper.find('[data-menu-level="0"]').element, { left: geometry.rootLeft, right: geometry.rootRight });
+    stubRect(wrapper.find('[data-menu-level="1"]').element, { left: geometry.firstLeft, right: geometry.firstRight, width: 192, height: 100 });
+    stubRect(wrapper.find('[data-menu-level="2"]').element, { width: 192, height: 100 });
+    window.dispatchEvent(new Event("resize"));
+    await nextTick();
+    expect(buttonByText(wrapper, "Class").find('.st-menu__itemChevron--' + geometry.firstChevron).exists()).toBe(true);
+    const mid = buttonByText(wrapper, "Mid");
+    expect(mid.find('.st-menu__itemChevron--' + geometry.secondChevron).exists()).toBe(true);
+    (mid.element as HTMLElement).focus();
+    await mid.trigger("keydown", { key: geometry.opening });
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(true);
+    expect(document.activeElement).toBe(buttonByText(wrapper, "Deep").element);
+    // Leaves keep their containing panel's side for closing.
+    await buttonByText(wrapper, "Deep").trigger("keydown", { key: geometry.closing });
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(false);
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(true);
+    expect(document.activeElement).toBe(mid.element);
+  });
+
+  it.each(["deep", "outside"])("P2: restores only removed descendant focus on ancestor hover close (%s)", async (focus) => {
+    const wrapper = mountMenu({ items: nestedItems });
+    await openTwoLevels(wrapper);
+    const outside = document.createElement("button");
+    document.body.append(outside);
+    const active = focus === "deep" ? buttonByText(wrapper, "Deep").element as HTMLElement : outside;
+    active.focus();
+    buttonByText(wrapper, "Direct").element.dispatchEvent(new PointerEvent("pointerenter", mouseProps()));
+    await vi.advanceTimersByTimeAsync(249);
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(true);
+    expect(document.activeElement).toBe(active);
+    await vi.advanceTimersByTimeAsync(1);
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(false);
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(false);
+    expect(document.activeElement).toBe(focus === "deep" ? buttonByText(wrapper, "Class").element : outside);
+  });
+
+  it("P2: restores deeper keyboard focus when hover closes an ancestor inside a shadow root", async () => {
+    const host = document.createElement("div");
+    document.body.append(host);
+    const shadow = host.attachShadow({ mode: "open" });
+    const target = document.createElement("div");
+    shadow.append(target);
+    const wrapper = mount(Menu, { props: { items: nestedItems }, attachTo: target });
+    mounted.push(wrapper);
+    await openTwoLevels(wrapper);
+    (buttonByText(wrapper, "Deep").element as HTMLElement).focus();
+    expect(shadow.activeElement).toBe(buttonByText(wrapper, "Deep").element);
+    buttonByText(wrapper, "Direct").element.dispatchEvent(new PointerEvent("pointerenter", mouseProps()));
+    await vi.advanceTimersByTimeAsync(250);
+    expect(wrapper.find('[data-menu-level="1"]').exists()).toBe(false);
+    expect(wrapper.find('[data-menu-level="2"]').exists()).toBe(false);
+    expect(shadow.activeElement).toBe(buttonByText(wrapper, "Class").element);
+  });
+
+  it.each(["pointer", "Enter", " "])("P2: OverflowMenu emits one leaf selection and one close for %s", async (activation) => {
+    const onClick = vi.fn();
+    const wrapper = mount(OverflowMenu, {
+      props: {
+        items: [{ label: "Class", value: "class", children: [{ label: "Leaf", value: "leaf", onClick }] }],
+      },
+      attachTo: document.body,
+    });
+    mounted.push(wrapper);
+    const trigger = wrapper.find('.st-overflowMenu__trigger');
+    await trigger.trigger("click");
+    await buttonByText(wrapper, "Class").trigger("click");
+    const leaf = buttonByText(wrapper, "Leaf");
+    if (activation === "pointer") {
+      const outside = document.createElement("button");
+      document.body.append(outside);
+      outside.focus();
+      await leaf.trigger("click");
+      expect(document.activeElement).toBe(outside);
+    } else {
+      (leaf.element as HTMLElement).focus();
+      await leaf.trigger("keydown", { key: activation });
+      expect(document.activeElement).toBe(trigger.element);
+    }
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(wrapper.emitted("select")).toEqual([[expect.objectContaining({ label: "Leaf", value: "leaf" }), ["class", "leaf"]]]);
+    expect(wrapper.emitted("update:open")).toEqual([[true], [false]]);
+    expect(wrapper.find('.st-overflowMenu__list').exists()).toBe(false);
+  });
+
+  it.each([MenuPopover, OverflowMenu])("AC-32: Tab and Shift+Tab close $name without preventing navigation or focusing the trigger", async (component) => {
+    const trigger = document.createElement("button");
+    document.body.append(trigger);
+    const open = ref(true);
+    const onUpdate = vi.fn((value: boolean) => { open.value = value; });
+    const wrapper = mount(defineComponent({
+      setup: () => () => h(component, { open: open.value, "onUpdate:open": onUpdate, items: nestedItems, trigger }),
+    }), { attachTo: document.body });
+    mounted.push(wrapper);
+    for (const shiftKey of [false, true]) {
+      open.value = true;
+      await nextTick();
+      await openTwoLevels(wrapper);
+      const leaf = buttonByText(wrapper, "Deep");
+      (leaf.element as HTMLElement).focus();
+      const focusExternal = vi.spyOn(trigger, "focus");
+      const ownedTrigger = wrapper.find('.st-overflowMenu__trigger');
+      const focusOwned = ownedTrigger.exists() ? vi.spyOn(ownedTrigger.element as HTMLElement, "focus") : undefined;
+      const onKeyDown = vi.fn();
+      leaf.element.addEventListener("keydown", onKeyDown, { once: true });
+      // trigger() handles Vue's event timestamps under the frozen clock.
+      await leaf.trigger("keydown", { key: "Tab", shiftKey });
+      expect(onKeyDown.mock.calls[0][0].defaultPrevented).toBe(false);
+      expect(open.value).toBe(false);
+      expect(onUpdate.mock.calls).toEqual([[false]]);
+      expect(wrapper.find('[role="menu"]').exists()).toBe(false);
+      expect(focusExternal).not.toHaveBeenCalled();
+      expect(focusOwned?.mock.calls ?? []).toHaveLength(0);
+      onUpdate.mockClear();
+    }
+  });
+});

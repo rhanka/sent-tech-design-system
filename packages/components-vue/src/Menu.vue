@@ -488,9 +488,12 @@ function armClose(level: number) {
   // at openPath[level] while the timer is pending (§3.3 step 5).
   const parentIndex = openPath.value[level];
   closeTimer = setTimeout(() => {
-    const active = document.activeElement;
+    const treeRoot = hostRef.value?.getRootNode();
+    const active = treeRoot instanceof ShadowRoot
+      ? treeRoot.activeElement
+      : document.activeElement;
     const closingRoots = hostRef.value?.querySelectorAll(
-      `[data-menu-level="${level + 1}"]`,
+      "[data-menu-level]",
     );
     openPath.value = openPath.value.slice(0, level);
     safeApex = null;
@@ -498,7 +501,10 @@ function armClose(level: number) {
     // Focus inside a pointer-closed level moves to its parent line (§3.3).
     if (active && closingRoots) {
       for (const root of closingRoots) {
-        if (root.contains(active)) {
+        if (
+          Number(root.getAttribute("data-menu-level")) > level &&
+          root.contains(active)
+        ) {
           if (parentIndex !== undefined) focusButton(level, parentIndex);
           break;
         }
@@ -607,20 +613,19 @@ function resolvedSideFor(depth: number, index: number): ResolvedSubMenuSide {
 }
 
 /**
- * Opening side for keyboard handling: inside a sub-menu the whole level
- * shares its containing level's resolved side, so a flipped panel keeps
- * one opening arrow for parents and leaves alike (§3.4, AC-06/AC-19).
- * Depth 0 keeps the per-item rule (open parents use their resolved side).
+ * Expandable parents follow their own panel's resolved side, since each
+ * level can flip independently. Leaves use their containing panel's side
+ * so the opposite arrow closes that level (§3.4, AC-06/AC-19/AC-30).
  */
 function openingSideFor(
   depth: number,
   index: number,
   item: MenuActionItem,
 ): ResolvedSubMenuSide {
+  if (depth < 2 && hasSubMenu(item)) return resolvedSideFor(depth, index);
   if (depth >= 1 && levelSides.value[depth - 1] !== undefined) {
     return levelSides.value[depth - 1];
   }
-  if (hasSubMenu(item)) return resolvedSideFor(depth, index);
   return openingArrow() === "ArrowRight" ? "right" : "left";
 }
 
