@@ -7,7 +7,8 @@ import ts from 'typescript';
 export const bench = dirname(fileURLToPath(import.meta.url));
 export const pkg = resolve(bench, '..');
 export const src = resolve(pkg, 'src');
-export const names = ['Button', 'Badge', 'Alert', 'Input', 'Checkbox', 'Select', 'Tabs', 'Pagination', 'Tooltip', 'BarChart'];
+// Any component that has a fixtures file is benchable (overnight port: the list grows per lane).
+export const names = (await import('node:fs')).readdirSync(resolve(dirname(fileURLToPath(import.meta.url)), 'fixtures')).filter(f => f.endsWith('.fixtures.ts')).map(f => f.slice(0, -'.fixtures.ts'.length));
 export const require = createRequire(resolve(pkg, 'package.json'));
 export const compilers = { classic: require('vue/compiler-sfc'), vapor: require('@vue/compiler-sfc') };
 for (const compiler of Object.values(compilers)) compiler.registerTS(() => ts);
