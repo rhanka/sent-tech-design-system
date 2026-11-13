@@ -23,7 +23,6 @@ import { ChevronLeft, ChevronRight } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 import MenuLabel from './MenuLabel.vue';
 import type { MenuLabelSlots } from './menu-label-slots.js';
-defineSlots<MenuLabelSlots>();
 import {
   CLOSE_DELAY,
   MENU_HOST_KEY,
@@ -83,6 +82,8 @@ interface ExpandedRow {
   kind: "divider" | "group" | "action";
   action?: MenuActionItem;
 }
+
+defineSlots<MenuLabelSlots>();
 
 defineOptions({ name: "Menu", inheritAttrs: false });
 const props = defineProps({

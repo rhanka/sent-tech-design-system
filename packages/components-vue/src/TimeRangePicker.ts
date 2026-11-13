@@ -13,7 +13,7 @@ import { Clock, ChevronDown } from "lucide-vue-next";
 import { classNames } from "./classNames.js";
 import { ContentSwitcher } from "./ContentSwitcher.js";
 import { SelectableList } from "./SelectableList.js";
-import { SelectableRow } from "./SelectableRow.js";
+import SelectableRow from './SelectableRow.vue';
 import { Calendar } from "./Calendar.js";
 import type { CalendarValue } from "./Calendar.js";
 import { TimePicker } from "./TimePicker.js";
