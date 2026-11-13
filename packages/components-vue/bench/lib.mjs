@@ -72,10 +72,16 @@ export function installSourceLoader(mode) {
   });
 }
 
+export function componentPath(name) {
+  const subpath = ['RichTextEditor', 'ComposerEditor'].includes(name) ? 'rich-text-editor/'
+    : name === 'LockPresenceBadge' ? 'presence-badge/' : '';
+  return resolve(src, subpath + name + '.vue');
+}
+
 export function wrapperSource(name, fixture, legacy = false) {
   const componentFile = name === 'cellDecoration'
     ? legacy ? resolve(bench, 'cellDecoration-reference.ts') : resolve(src, 'CellDecorationIcon.vue')
-    : resolve(src, name + (legacy ? '.ts' : '.vue'));
+    : legacy ? resolve(src, name + '.ts') : componentPath(name);
   const slots = Object.entries(fixture.slots ?? {}).map(([name, value]) => {
     const { html, scope } = typeof value === 'string' ? { html: value, scope: '' } : value;
     return `<template #${name}${scope ? `="${scope}"` : ''}>${html}</template>`;
@@ -91,7 +97,7 @@ export function wrapperSource(name, fixture, legacy = false) {
 export function normalizeHtml(html, JSDOM) {
   const fragment = JSDOM.fragment(html);
   const idMap = new Map();
-  const generated = /\bst-(?:(?:input|select|checkbox|tabs|tooltip|search|combobox|eventFeedPanel|multiSelect|datepicker|numberInput|passwordInput|textarea|timepicker|timerangepicker|menu|menupopover|overflowmenu|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)|file-uploader-(?:v-\d+(?:-\d+)*|[a-z0-9]{7})|(?:areachart|arearangechart|areasplinerangechart|bellcurve)-gradient-(?:v-\d+(?:-\d+)*|[a-z0-9]+-[a-z0-9]{7})|treemap-clip-(?:v\d+|[a-z0-9]{7}))\b/g;
+  const generated = /\bst-(?:(?:input|select|checkbox|tabs|tooltip|presence-badge-tooltip|search|combobox|eventFeedPanel|multiSelect|datepicker|numberInput|passwordInput|textarea|timepicker|timerangepicker|menu|menupopover|overflowmenu|navSection|appChrome-drawer|appHeader-drawer|tileGroup|collapsible)-(?:\d+|v-\d+(?:-\d+)*)|file-uploader-(?:v-\d+(?:-\d+)*|[a-z0-9]{7})|(?:areachart|arearangechart|areasplinerangechart|bellcurve)-gradient-(?:v-\d+(?:-\d+)*|[a-z0-9]+-[a-z0-9]{7})|treemap-clip-(?:v\d+|[a-z0-9]{7}))\b/g;
   const mask = value => value.replace(generated, id => {
     if (!idMap.has(id)) idMap.set(id, `generated-${idMap.size + 1}`);
     return idMap.get(id);

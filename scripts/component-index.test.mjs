@@ -380,8 +380,8 @@ test("K1b: every contract and the contract index validate their v1 schemas", () 
   const validateContract = ajv.compile(contractSchema);
   const validateIndex = ajv.compile(indexSchema);
   const paths = contractPaths();
-  // Reviewed population: 212 contracts, plus diagram-scene-figure from PR #265.
-  assert.equal(paths.length, 213, `the reviewed population is 213 contracts, found ${paths.length}`);
+  // V8 adds the two editors and LockPresenceBadge to the reviewed population.
+  assert.equal(paths.length, 216, `the reviewed population is 216 contracts, found ${paths.length}`);
   for (const path of paths) {
     const document = JSON.parse(readFileSync(path, "utf8"));
     assert.equal(

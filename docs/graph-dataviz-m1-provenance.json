@@ -5160,7 +5160,7 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "f7be0315d334725ba7cb802e43643e78c1d702bcc3da8412a20fb62d68cfe9e5",
+      "destinationSha256": "6b1541b9e571c4c091d9be35e67557760a9874a5fe4e5d0ff99eb3d0c049883c",
       "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release"
     },
     {
