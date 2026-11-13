@@ -432,8 +432,8 @@ export { StreamingMessage } from "./StreamingMessage.js";
 export type { StreamingMessageProps, StreamingMessageEvent, StreamingMessageMode } from "./StreamingMessage.js";
 export { default as MessageActions } from "./MessageActions.vue";
 export type { MessageActionsProps, MessageAction, MessageActionVariant } from "./MessageActions.vue";
-export { MessageStatusBadge } from "./MessageStatusBadge.js";
-export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
+export { default as MessageStatusBadge } from "./MessageStatusBadge.vue";
+export type { MessageStatusBadgeProps } from "./MessageStatusBadge.vue";
 
 export { BackToTop } from "./BackToTop.js";
 export type { BackToTopProps } from "./BackToTop.js";
