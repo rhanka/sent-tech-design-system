@@ -1,7 +1,7 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:4d547f8c941ffbcbe4ef31d4bccfafb1b41d0b733b159cd04dc757ea2c40a326",
+  "digest": "sha256:d34d475304cb4439b0a5d427c4579e78332f1bce9abb038b5df7dfbc4136941c",
   "entryDigest": "sha256:3e6b9167196224d3d89c51c5a8a4403f0ba99ed460edb91c4df00839406186b0",
   "format": "component-contract/v1",
   "frameworks": {
@@ -270,10 +270,18 @@
       ],
       "events": [
         {
-          "name": "close"
+          "name": "close",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "dismiss"
+          "name": "dismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onClose",
@@ -377,6 +385,18 @@
           "sourceType": "unknown"
         },
         {
+          "name": "close.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "dismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "message",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -403,7 +423,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:61edde93771b72cd742f323ba383dab11deeba9997a21d0e626223a2e0b0ec55",
+        "declarationDigest": "sha256:d48f8ec669ef909272eaab41056c1e62e4b8f12ef2105af8675fbed6fb7d8ce4",
         "declarationPath": "packages/components-vue/dist/Toast.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
@@ -412,8 +432,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"close\": payload not in declaration",
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"close\" and prop \"onClose\" both listed verbatim",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]

@@ -1,7 +1,7 @@
 {
   "componentId": "language-toggle",
   "contractSource": "derived",
-  "digest": "sha256:1cd47b0d704bb13e5f1a48c5a4f5dedaf30a48d346c49c3d4022df550236f641",
+  "digest": "sha256:b19660ae55c5f3d4cbddcc9184f14ddbd4b3bc9bdb3af3866f0a4edcbcb11120",
   "entryDigest": "sha256:5d76a31ec37000ef3839f950f115fc4ab76fbff2bf03a5e3170aab6a12b94e64",
   "format": "component-contract/v1",
   "frameworks": {
@@ -227,7 +227,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "localeChange"
+          "name": "localeChange",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onLocaleChange",
@@ -281,6 +285,12 @@
       },
       "replaced": [
         {
+          "name": "localeChange.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onLocaleChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -298,7 +308,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"localeChange\": payload not in declaration",
         "event pair: emits \"localeChange\" and prop \"onLocaleChange\" both listed verbatim"
       ]
     }

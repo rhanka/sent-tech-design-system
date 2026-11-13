@@ -1,7 +1,7 @@
 {
   "componentId": "input",
   "contractSource": "derived",
-  "digest": "sha256:c39b0e910653e6e48f1498b5959f43882a3c882ce35df8269eb6fade23805ac6",
+  "digest": "sha256:6c1433d8837cd30e068b003d5a9cda3bd94691e688641ed3e984a54c28f7b21f",
   "entryDigest": "sha256:c15ece1034bef1ceaf7ab291e1113274d9fb7f7f7acec5e82f33eabd5823b5fe",
   "format": "component-contract/v1",
   "frameworks": {
@@ -256,16 +256,32 @@
       "dropped": [],
       "events": [
         {
-          "name": "blur"
+          "name": "blur",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "focus"
+          "name": "focus",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
-          "name": "input"
+          "name": "input",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onBlur",
@@ -303,7 +319,11 @@
           }
         },
         {
-          "name": "update:modelValue"
+          "name": "update:modelValue",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -355,6 +375,30 @@
       },
       "replaced": [
         {
+          "name": "blur.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "focus.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
+          "name": "input.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onBlur.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -383,6 +427,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:modelValue.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -396,11 +446,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"blur\": payload not in declaration",
-        "emit \"change\": payload not in declaration",
-        "emit \"focus\": payload not in declaration",
-        "emit \"input\": payload not in declaration",
-        "emit \"update:modelValue\": payload not in declaration",
         "event pair: emits \"blur\" and prop \"onBlur\" both listed verbatim",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",
         "event pair: emits \"focus\" and prop \"onFocus\" both listed verbatim",

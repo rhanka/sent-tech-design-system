@@ -1,7 +1,7 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:6e88890748c4c378216f1fd0e6e365616e0065e70b603b328fafa522db3cf834",
+  "digest": "sha256:4ce59cb145064013024603adcec473c718dae0f73d131f8201fe923e1a95bc95",
   "entryDigest": "sha256:53aa5f1a8df830bf8eb15c140f6b945df9e54246d4c5c0022aefea0ce8c2d5de",
   "format": "component-contract/v1",
   "frameworks": {
@@ -309,7 +309,11 @@
           "name": "onRetry"
         },
         {
-          "name": "retry"
+          "name": "retry",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -382,6 +386,12 @@
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
           "sourceType": "Date"
+        },
+        {
+          "name": "retry.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -395,7 +405,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"retry\": payload not in declaration",
         "event pair: emits \"retry\" and prop \"onRetry\" both listed verbatim"
       ]
     }

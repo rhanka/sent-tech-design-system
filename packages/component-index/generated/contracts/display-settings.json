@@ -1,7 +1,7 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:66640cb1d2151c9a001d6a6ee062b7c9b1368609a3f4ecd0ad4d778d6c2e73eb",
+  "digest": "sha256:bb8214611a7290610f0e7b73124bc8e2fcde72d368cf7764c9948aaa047d16f8",
   "entryDigest": "sha256:ff15edde1bd8dfb7cc863adae80192a51e310d81e484f6353d5ec3a84f402142",
   "format": "component-contract/v1",
   "frameworks": {
@@ -310,7 +310,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -351,6 +355,12 @@
       },
       "replaced": [
         {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onChange.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -374,7 +384,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

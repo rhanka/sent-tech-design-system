@@ -1,7 +1,7 @@
 {
   "componentId": "popover",
   "contractSource": "derived",
-  "digest": "sha256:6c4da0adb26f945f4c1199dd8aed82697d56ab1dc643bd4f876f0cdfa8023fca",
+  "digest": "sha256:ea530dd482a25d34f40f0241e08170a3ef4b2f5cd9f95c81897c2f9f7b3b41f0",
   "entryDigest": "sha256:ae41b03b32555cc726ef37c7e82b063bbbcaea0f7de9cb622c2c3484e331e2ec",
   "format": "component-contract/v1",
   "frameworks": {
@@ -210,7 +210,11 @@
           }
         },
         {
-          "name": "update:open"
+          "name": "update:open",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -249,6 +253,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "update:open.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -262,7 +272,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"update:open\": payload not in declaration",
         "event pair: emits \"update:open\" and prop \"onUpdate:open\" both listed verbatim",
         "two-way binding: prop \"open\" paired with emit \"update:open\""
       ]

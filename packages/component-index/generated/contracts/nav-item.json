@@ -1,7 +1,7 @@
 {
   "componentId": "nav-item",
   "contractSource": "derived",
-  "digest": "sha256:cb5a0c35cb5330cfc7d3b931b0d292392b4e3d489b1e85cd6669df1852f9a8a1",
+  "digest": "sha256:1c2c2e45f5b100187c8061df6a359dc166466a14e66527a464b7f339670d00a9",
   "entryDigest": "sha256:5dbd8e42cbab1f450a3b6751b2b21b4ea7879c8afd6c07d460f2decbc9c1a472",
   "format": "component-contract/v1",
   "frameworks": {
@@ -392,7 +392,10 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "boolean"
+          }
         }
       ],
       "limitations": [
@@ -508,7 +511,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }

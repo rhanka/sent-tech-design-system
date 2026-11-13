@@ -1,7 +1,7 @@
 {
   "componentId": "checkbox-group",
   "contractSource": "derived",
-  "digest": "sha256:a3d32edcb19d9a7769b3d5219e723b03f0a39f3e619d8215594dffa34f89d0ad",
+  "digest": "sha256:e4f8c23328694d6d85487662fee9aa2c71b287f3fac31dc17400271409abf744",
   "entryDigest": "sha256:2cc123d8577102533003b1bf56a1485d8d33ee17d957004d4c8383959c76d9c6",
   "format": "component-contract/v1",
   "frameworks": {
@@ -342,7 +342,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -428,7 +432,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:1646eb04000a5f7f38160065d2224af8a4940bf3103409ea4953861d7343857e",
@@ -440,7 +451,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

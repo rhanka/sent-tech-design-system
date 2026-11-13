@@ -1,7 +1,7 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:4249f4b6efc2188563853659007fa7d3d2e8c94279edd34b74c1acc0285c8aff",
+  "digest": "sha256:d747448cccdd393123a15cf7cc991efebd6e2e0b6ec0808833a01260dc684d8c",
   "entryDigest": "sha256:eb3f64aaceef19df96d1b3aad1c813be292f8b087e5ebb9c9991e63284c2b6a2",
   "format": "component-contract/v1",
   "frameworks": {
@@ -222,7 +222,11 @@
       "dropped": [],
       "events": [
         {
-          "name": "dismiss"
+          "name": "dismiss",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onDismiss",
@@ -273,6 +277,12 @@
       },
       "replaced": [
         {
+          "name": "dismiss.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "onDismiss.args[]",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -290,7 +300,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"dismiss\": payload not in declaration",
         "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
       ]
     }
