@@ -1,8 +1,8 @@
 {
   "componentId": "timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:09921c07ea41fad3c60386162c4f3680406ed4e5a9f178df86b374d106185972",
-  "entryDigest": "sha256:b4a0ea9c98ccbfd75999440e8ec2b609419861961491c86d7f6103cc4e7dd9cb",
+  "digest": "sha256:0d36dcf9d2f0ebc593d89deb9f53f5a132dd2f03e6b778f6c39768d61789fd56",
+  "entryDigest": "sha256:a3258fdafbe94f58a14b62a11c40c1ca440671ed9dc5bdd900bb450ee4e83f22",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/TimelineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

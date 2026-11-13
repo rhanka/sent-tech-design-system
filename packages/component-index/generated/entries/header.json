@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Header.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Application header with logo, navigation, and actions.",
     "fr": "En-tête applicatif avec logo, navigation et actions."
   },
-  "digest": "sha256:aedbd3311a694556f884d6d100b550390e5ed71f20728a575b9830d2a053a5c1",
+  "digest": "sha256:37697db0bcb87eb5e5448981bc2058114ad36156c90b12aea0721c4d6a41bcbd",
   "displayName": "Header",
   "format": "component-entry/v1",
   "frameworks": [

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Grid.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Simple CSS grid: fixed columns or responsive auto-fill.",
     "fr": "Grille CSS simple : colonnes fixes ou auto-fill responsive."
   },
-  "digest": "sha256:a0f006b491b33d1905306c74e450927f0d47581cc8d246e271e0c6f97985e6f6",
+  "digest": "sha256:40449b458f88ac7ff483b3e216565e0e6ca512ff9b5aa167ff5d3dfeac88f54f",
   "displayName": "Grid",
   "format": "component-entry/v1",
   "frameworks": [

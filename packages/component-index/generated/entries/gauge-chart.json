@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/GaugeChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Semi-circular gauge with color thresholds, centered value and unit.",
     "fr": "Jauge semi-circulaire avec seuils colorés, valeur et unité centrées."
   },
-  "digest": "sha256:293980261342ec798e91f945b22f307ced4f767f034246b3095187b7bd7970b4",
+  "digest": "sha256:9065db681bf0e5ec247a3d991ea37d38ad4e59156e3b533ed1e1b689fce98428",
   "displayName": "GaugeChart",
   "format": "component-entry/v1",
   "frameworks": [

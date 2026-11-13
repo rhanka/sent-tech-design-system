@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/StreamgraphChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Streamgraph (themeriver): stacked smoothed areas on a centred \"wiggle\" baseline, for time-series data.",
     "fr": "Streamgraph (themeriver) : aires empilées et lissées sur une ligne de base centrée « wiggle », pour des séries temporelles."
   },
-  "digest": "sha256:9d9b0a3ad73fecd042879fb69913ea8ebb06bcab343c33141e4b0a59db79df93",
+  "digest": "sha256:029ef24803adeca074631df694bedc2c27890dbcbd727ccc3845acf3ae606acd",
   "displayName": "StreamgraphChart",
   "format": "component-entry/v1",
   "frameworks": [

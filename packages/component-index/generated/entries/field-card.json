@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FieldCard.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Field group card: titled header, optional comment pill, bordered / plain / accent variants.",
     "fr": "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent."
   },
-  "digest": "sha256:bf7bd20b384f04a712f37af91b47cb171f28cfb53ad2ab1944e83044505b3a9e",
+  "digest": "sha256:8f4bdb350337dd722c64f7909f436ea24327a6480deacd9c2b83a6c8a8934c47",
   "displayName": "FieldCard",
   "format": "component-entry/v1",
   "frameworks": [

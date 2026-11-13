@@ -1,14 +1,14 @@
 /**
- * diagram-view-schema@1/@2 private frozen record (DS share of Engram lots 3 and 4).
+ * diagram-view-schema@1/@2/@3 private frozen record.
  *
- * Both schemas are vendored as data: the exact JSON values of the Engram
+ * Schemas are vendored as data: the exact JSON values of the Engram
  * canonical files, each with its Pin
- * `{ id: "diagram-view-schema", version: "1" | "2", contentDigest }`,
+ * `{ id: "diagram-view-schema", version: "1" | "2" | "3", contentDigest }`,
  * deeply frozen. The digests are measured through the DS canonical bytes
  * (`sha256Hex(canonicalBytes(schema))`), the same procedure as Engram
  * `govern` (graphify@310a9270 `src/ontology-guardian/diagram-schemas.ts`).
  *
- * Resolution is by exact pin only: @2 and @1 both resolve, @1 exact-pin-only
+ * Resolution is by exact pin only: @3, @2 and @1 all resolve
  * (no "latest", no fallback, no reverse migration). Refusals are typed
  * values, never throws. Transitional and partial references are refused.
  *
@@ -25,7 +25,7 @@ export interface ViewSchemaPin {
   readonly contentDigest: string;
 }
 
-export type ViewSchemaVersion = "1" | "2";
+export type ViewSchemaVersion = "1" | "2" | "3";
 
 export const DIAGRAM_VIEW_SCHEMA_ID = "diagram-view-schema" as const;
 
@@ -127,6 +127,15 @@ function isPlainRecord(value: unknown): value is Record<string, unknown> {
   return proto === Object.prototype || proto === null;
 }
 
+/** Additive successor: endpoint pairing is plain, fold, or chain, exclusively. */
+const PRIVATE_V3_SCHEMA: Record<string, unknown> = {"$id":"engram:diagram-view-schema/3","$schema":"https://json-schema.org/draft/2020-12/schema","additionalProperties":false,"properties":{"entityOccurrences":{"additionalProperties":{"additionalProperties":false,"properties":{"entity":{"type":"string"},"geometry":{"additionalProperties":false,"properties":{"height":{"type":"number"},"width":{"type":"number"},"x":{"type":"number"},"y":{"type":"number"}},"required":["x","y","width","height"],"type":"object"},"group":{"type":"string"},"id":{"type":"string"},"z":{"type":"number"}},"required":["id","entity","geometry"],"type":"object"},"type":"object"},"filters":{"items":{"anyOf":[{"additionalProperties":false,"properties":{"id":{"type":"string"},"kind":{"const":"entity-type"},"mode":{"enum":["include","exclude"]},"types":{"items":{"type":"string"},"type":"array"}},"required":["id","kind","types","mode"],"type":"object"},{"additionalProperties":false,"properties":{"id":{"type":"string"},"kind":{"const":"relation-type"},"mode":{"enum":["include","exclude"]},"types":{"items":{"type":"string"},"type":"array"}},"required":["id","kind","types","mode"],"type":"object"},{"additionalProperties":false,"properties":{"attribute":{"type":"string"},"id":{"type":"string"},"kind":{"const":"attribute-equals"},"mode":{"enum":["include","exclude"]},"value":{"type":"string"}},"required":["id","kind","attribute","value","mode"],"type":"object"}]},"type":"array"},"groups":{"additionalProperties":{"additionalProperties":false,"properties":{"collapsed":{"type":"boolean"},"id":{"type":"string"},"label":{"type":"string"},"occurrence":{"type":"string"}},"required":["id"],"type":"object"},"type":"object"},"portOccurrences":{"additionalProperties":{"additionalProperties":false,"properties":{"anchor":{"maximum":1,"minimum":0,"type":"number"},"id":{"type":"string"},"order":{"type":"number"},"ownerOccurrence":{"type":"string"},"port":{"type":"string"},"side":{"enum":["north","east","south","west"]}},"required":["id","port","ownerOccurrence","side","order","anchor"],"type":"object"},"type":"object"},"presentation":{"additionalProperties":false,"properties":{"camera":{"additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"},"zoom":{"type":"number"}},"required":["x","y","zoom"],"type":"object"},"diagram":{"additionalProperties":false,"properties":{"categoryTokens":{"items":{"additionalProperties":false,"properties":{"category":{"maxLength":40,"minLength":1,"pattern":"^[a-z][a-z0-9-]*$","type":"string"},"legendRef":{"minLength":1,"type":"string"},"token":{"maxLength":80,"minLength":1,"pattern":"^[a-z][a-z0-9-]*(\\.[a-z][a-z0-9-]*)*$","type":"string"}},"required":["legendRef","category","token"],"type":"object"},"type":"array"},"contractPin":{"additionalProperties":false,"properties":{"contentDigest":{"pattern":"^[0-9a-f]{64}$","type":"string"},"id":{"const":"diagram-presentation"},"version":{"const":"1"}},"required":["id","version","contentDigest"],"type":"object"},"entities":{"additionalProperties":{"additionalProperties":false,"allOf":[{"if":{"properties":{"form":{"const":"legend-key"}},"required":["form"]},"then":{"properties":{"text":{"properties":{"title":{"maxLength":120,"type":"string"}},"type":"object"}}}}],"properties":{"categoryRef":{"minLength":1,"type":"string"},"form":{"enum":["card","container","legend","legend-key"]},"icon":{"maxLength":40,"minLength":1,"pattern":"^[a-z][a-z0-9-]*$","type":"string"},"text":{"additionalProperties":false,"properties":{"body":{"maxLength":400,"type":"string"},"detail":{"maxLength":400,"type":"string"},"footer":{"maxLength":120,"type":"string"},"kicker":{"maxLength":80,"type":"string"},"subtitle":{"maxLength":600,"type":"string"},"title":{"maxLength":200,"type":"string"}},"type":"object"}},"required":["form","text"],"type":"object"},"type":"object"},"legends":{"additionalProperties":{"additionalProperties":false,"properties":{"order":{"items":{"minLength":1,"type":"string"},"type":"array","uniqueItems":true}},"required":["order"],"type":"object"},"type":"object"}},"required":["contractPin","entities","legends","categoryTokens"],"type":"object"},"grid":{"additionalProperties":false,"properties":{"size":{"type":"number"},"snap":{"type":"boolean"}},"required":["size","snap"],"type":"object"},"theme":{"type":"string"}},"required":["camera"],"type":"object"},"relationOccurrences":{"additionalProperties":{"additionalProperties":false,"properties":{"endpoints":{"items":{"additionalProperties":false,"dependentRequired":{"sourceOccurrence":["semanticTarget"],"chainProvenance":["semanticTarget"]},"properties":{"occurrence":{"type":"string"},"role":{"type":"string"},"semanticTarget":{"type":"string"},"sourceOccurrence":{"type":"string"},"chainProvenance":{"type":"object","additionalProperties":false,"required":["predicateId","hops"],"properties":{"predicateId":{"type":"string","minLength":1},"hops":{"type":"array","items":{"type":"string"}},"members":{"type":"array","items":{"type":"string"}}}}},"required":["role","occurrence"],"type":"object","dependentSchemas":{"semanticTarget":{"oneOf":[{"properties":{"sourceOccurrence":true,"chainProvenance":false},"required":["sourceOccurrence"]},{"properties":{"chainProvenance":true,"sourceOccurrence":false},"required":["chainProvenance"]}]}}},"type":"array"},"id":{"type":"string"},"relation":{"type":"string"},"strokeStyle":{"enum":["solid","dashed"]},"waypoints":{"items":{"additionalProperties":false,"properties":{"x":{"type":"number"},"y":{"type":"number"}},"required":["x","y"],"type":"object"},"type":"array"}},"required":["id","relation","endpoints"],"type":"object"},"type":"object"},"revision":{"minimum":0,"type":"integer"},"semanticDocumentId":{"type":"string"},"summaryLabels":{"additionalProperties":{"additionalProperties":false,"properties":{"id":{"type":"string"},"label":{"type":"string"},"relationIds":{"items":{"type":"string"},"minItems":1,"type":"array"},"relationOccurrences":{"items":{"type":"string"},"type":"array"},"sourceOccurrence":{"type":"string"},"strokeStyle":{"enum":["solid","dashed"]},"targetOccurrence":{"type":"string"}},"required":["id","sourceOccurrence","targetOccurrence","label","relationIds"],"type":"object"},"type":"object"},"viewId":{"type":"string"}},"required":["viewId","semanticDocumentId","revision","entityOccurrences","relationOccurrences","portOccurrences","groups","filters","presentation"],"type":"object"};
+deepFreezeValue(PRIVATE_V3_SCHEMA);
+export const DIAGRAM_VIEW_SCHEMA_V3 = frozenCopy(PRIVATE_V3_SCHEMA);
+export const DIAGRAM_VIEW_SCHEMA_V3_DIGEST = sha256Hex(canonicalBytes(PRIVATE_V3_SCHEMA));
+export const DIAGRAM_VIEW_SCHEMA_V3_PIN: ViewSchemaPin = deepFreezeValue({
+  id: DIAGRAM_VIEW_SCHEMA_ID, version: "3", contentDigest: DIAGRAM_VIEW_SCHEMA_V3_DIGEST,
+});
+
 const ALLOWED_PIN_KEYS = new Set(["id", "version", "contentDigest"]);
 
 /**
@@ -180,13 +189,14 @@ export function resolveViewSchema(pin: unknown): ViewSchemaResolution {
     }
     if (!DIGEST_PATTERN.test(contentDigest)) return { ok: false, refusal: { code: "pin-malformed" } };
     if (id !== DIAGRAM_VIEW_SCHEMA_ID) return { ok: false, refusal: { code: "unknown-schema-id" } };
-    if (version !== "1" && version !== "2") return { ok: false, refusal: { code: "unknown-schema-version" } };
-    const expected = version === "1" ? DIAGRAM_VIEW_SCHEMA_V1_DIGEST : DIAGRAM_VIEW_SCHEMA_V2_DIGEST;
+    if (version !== "1" && version !== "2" && version !== "3") return { ok: false, refusal: { code: "unknown-schema-version" } };
+    const expected = version === "1" ? DIAGRAM_VIEW_SCHEMA_V1_DIGEST : version === "2" ? DIAGRAM_VIEW_SCHEMA_V2_DIGEST : DIAGRAM_VIEW_SCHEMA_V3_DIGEST;
     if (contentDigest !== expected) return { ok: false, refusal: { code: "schema-digest-mismatch" } };
     if (version === "1") {
       if (DIAGRAM_VIEW_SCHEMA_V1 === undefined) return { ok: false, refusal: { code: "schema-bytes-unavailable" } };
       return { ok: true, version: "1", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V1_PIN), schema: DIAGRAM_VIEW_SCHEMA_V1 };
     }
+    if (version === "3") return { ok: true, version: "3", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V3_PIN), schema: DIAGRAM_VIEW_SCHEMA_V3 };
     if (DIAGRAM_VIEW_SCHEMA_V2 === undefined) return { ok: false, refusal: { code: "schema-bytes-unavailable" } };
     return { ok: true, version: "2", pin: frozenCopy(DIAGRAM_VIEW_SCHEMA_V2_PIN), schema: DIAGRAM_VIEW_SCHEMA_V2 };
   } catch {

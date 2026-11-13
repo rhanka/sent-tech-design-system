@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/VariablePieChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Variable-radius pie: each slice's angle scales with value, its radius with a 2nd metric z mapped between a min and max radius.",
     "fr": "Camembert à rayon variable : l'angle de chaque part ∝ value, le rayon ∝ une 2e métrique z mappée entre rayon min et max."
   },
-  "digest": "sha256:3425750d584afa24b5104acc3e53a9415d5465d8094322dad0b28f13c84e380e",
+  "digest": "sha256:b3bd6f37d512a049db3714c85caf814addea0cf5750b7151450e5a4909e3ee07",
   "displayName": "VariablePieChart",
   "format": "component-entry/v1",
   "frameworks": [

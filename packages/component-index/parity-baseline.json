@@ -469,19 +469,19 @@
     "diagram-card": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "diagram-scene-figure": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "diagram-zone": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "config-item-card": {
@@ -1325,30 +1325,30 @@
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC-1 atomic diagram card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
     },
     {
       "componentId": "diagram-scene-figure",
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC2a L4 diagram scene host (lot feat/dc2a-l4-host): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/angular counterparts are outside this lot and the Vue port lands in a later PR."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
     },
     {
       "componentId": "diagram-zone",
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC-2 static half, folded wrapping card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
     },
     {
       "componentId": "labelled-icon-button",
@@ -1443,6 +1443,7 @@
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",
+      "GraphCanvas",
       "GraphLegend",
       "ICONS",
       "ICON_NAMES",
@@ -1478,7 +1479,8 @@
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "useGraphEngine"
     ],
     "angular": [
       "AppShell",

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Slider.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Continuous value slider.",
     "fr": "Curseur de valeur continue."
   },
-  "digest": "sha256:0ba89319ec3b54e8db9126f0d0202eeca89f4503df75307666246b5f7181bb3c",
+  "digest": "sha256:fe98eebfdf813514e8b967f596bd69b653aba2913eaa8f71e4871747e388c8ae",
   "displayName": "Slider",
   "format": "component-entry/v1",
   "frameworks": [

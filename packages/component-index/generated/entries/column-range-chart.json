@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColumnRangeChart.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:e6e078df4b81aa70da53c4bd7a0d41a22e964819ba7686534036fe1e7a6a9524",
+  "digest": "sha256:4b61b1cf7c08160b6dbf22ac94dc45f3f686409b57d00782545301df80cd7e2a",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

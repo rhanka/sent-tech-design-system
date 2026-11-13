@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:440a49618856aea119101e755d8ba1a8077c38aeac37e2142416c1eceb4e27da",
-  "entryDigest": "sha256:358316cebf0d78705f0444f62acd5a3ad69db2f87f48da17c91a68cdf911ca64",
+  "digest": "sha256:f7d8debd776581992afc8bed643728b6e178dff0949a08614b8ab65e99a068a7",
+  "entryDigest": "sha256:086487e145b2a5cc9ce943e1d866e5367749303b91abe36b202532904d2901c4",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -173,7 +173,7 @@
         "declarationPath": "packages/components-svelte/dist/StatusDot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StatusDotProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

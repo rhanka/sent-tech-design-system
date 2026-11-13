@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CopyButton.svelte",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Button dedicated to copying a value to the clipboard.",
     "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
-  "digest": "sha256:95f5da20962507984fad4a48c0bc1b728260e7308806bd4c332c570ca759652e",
+  "digest": "sha256:9956638deb899c9a4c55540b4bfdc2ef307139ab4536a18ecd56ba1328f4a2ce",
   "displayName": "CopyButton",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:34adb60b9c85d4a4961a57516d04d33cd136dd27ada13850f25edc705edafc72",
-  "entryDigest": "sha256:c63f686df52685f331593ccf7e630fe58053d9c13e4c9542504f1336cf9a7cc6",
+  "digest": "sha256:06ea8d62c13c89a3476aad986f44f1c7f5a71904ab3b366658f33ced881ba3f4",
+  "entryDigest": "sha256:b7c482ab9ef1977f37f837df1b778a6afc0dd0a53926a0306c536d8cc6eb8bfd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Embed.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmbedProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -240,7 +240,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9029105c171229e4a0eb257314ae629a800b62be2d2a62350925e015f5586c56",
+        "declarationDigest": "sha256:3cdc847bdb1d5b3e564a84eccb9883e458366fcc0a5dbf180c6957d5f7c0487e",
         "declarationPath": "packages/components-vue/dist/Embed.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmbedProps",

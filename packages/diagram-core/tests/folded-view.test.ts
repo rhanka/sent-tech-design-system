@@ -39,6 +39,46 @@ import {
   type ViewDocument,
 } from "../src/index.js";
 import { baseDocument, ent, port, rel, scopedOptions } from "./m3-helpers.js";
+import { single as chainFixture, bundle as chainBundle, draw as chainDraw, endpoint as chainEndpoint,
+  options as chainOptions, change as changeChain } from "./endpoint-provenance-fixtures.js";
+
+describe("AC-48 verbatim chain carriage", () => {
+  it("preserves a chain while collapsing an unrelated occurrence", () => {
+    const f = chainFixture(); chainDraw(f, "repo");
+    const before = canonicalise(chainEndpoint(f));
+    const projected = projectView(f.d, f.v, [occurrenceRef("repo")]);
+    expect(canonicalise(projected.relationOccurrences[occurrenceRef("edge")]!.endpoints[0])).toBe(before);
+    expect(validateView(projected, f.d, chainOptions(f))).toEqual([]);
+    expect(canonicalise(chainEndpoint(f))).toBe(before);
+  });
+  it("preserves aggregate member order across fold/unfold", () => {
+    const f = chainBundle(); const before = canonicalise(chainEndpoint(f));
+    for (const collapsed of [[], [occurrenceRef("repo")]]) {
+      const projected = projectView(f.d, f.v, collapsed);
+      expect(canonicalise(projected.relationOccurrences[occurrenceRef("edge")]!.endpoints[0])).toBe(before);
+      expect(validateView(projected, f.d, chainOptions(f))).toEqual([]);
+    }
+  });
+  it("copies chain fields in internal, hidden and visible projection branches", () => {
+    const f = chainFixture(); chainDraw(f, "repo");
+    f.v.entityOccurrences[occurrenceRef("svc")] = { ...f.v.entityOccurrences[occurrenceRef("svc")]!, group: "fold" };
+    f.v.groups.fold = { id: "fold", occurrence: occurrenceRef("repo") };
+    const before = canonicalise(chainEndpoint(f));
+    const internal = projectView(f.d, f.v, [occurrenceRef("repo")]);
+    expect(canonicalise(internal.relationOccurrences[occurrenceRef("edge")]!.endpoints[0])).toBe(before);
+    // An external endpoint keeps the relation outside while the chain end is hidden.
+    chainDraw(f, "client");
+    const edge = f.v.relationOccurrences[occurrenceRef("edge")]!;
+    f.v.relationOccurrences[edge.id] = { ...edge, endpoints: [...edge.endpoints, { role: "source", occurrence: occurrenceRef("client") }] };
+    const external = projectView(f.d, f.v, [occurrenceRef("repo")]);
+    expect(canonicalise(external.relationOccurrences[edge.id]!.endpoints[0])).toBe(before);
+  });
+  it("leaves invalid chain refusals to validateView", () => {
+    const f = chainFixture(); changeChain(f, { chainProvenance: { predicateId: "unknown", hops: [] } });
+    const projected = projectView(f.d, f.v, []);
+    expect(validateView(projected, f.d, chainOptions(f))).toMatchObject([{ details: { check: "chain-not-declared" } }]);
+  });
+});
 
 const options = () => scopedOptions([generic2Profile]);
 

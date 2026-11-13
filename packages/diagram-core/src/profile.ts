@@ -18,6 +18,7 @@
 import type { AttributeSchema, QuantitySchema, TextSchema } from "./attributes.js";
 import { stableStringify, type DeclarationAdapter } from "./bindings.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
+import { validateChainPredicates } from "./chain-profile.js";
 
 /** `<name>@<major>`; the major is part of the identity, so `bpmn@1` and `bpmn@2` coexist. */
 export type ProfileId = `${string}@${number}`;
@@ -182,6 +183,45 @@ export interface ProfileLimits {
   readonly maxEndpointsPerRelation?: number;
 }
 
+/** Pure DATA consumed by the document-only endpoint provenance evaluator. */
+export interface ChainConstraint {
+  readonly attribute: string;
+  readonly equals: string | boolean;
+}
+
+export interface ChainStep {
+  readonly relationTypes: readonly string[];
+  readonly direction: "forward" | "inverse";
+  readonly repeat: "one" | "zeroOrMore" | "oneOrMore";
+}
+
+export interface ChainPath {
+  readonly steps: readonly ChainStep[];
+  readonly endTypes: readonly string[];
+  readonly endConstraints?: readonly ChainConstraint[];
+}
+
+export interface ChainAggregation {
+  readonly memberRelationTypes: readonly string[];
+  readonly memberTargetChain: ChainPath;
+  readonly memberSourceChain: ChainPath;
+  /** Fixed UTF-16 tuple order; never a locale-dependent comparator. */
+  readonly sort?: "sourceId,targetId,relationId";
+}
+
+export interface ChainPredicate {
+  readonly id: string;
+  readonly appliesTo: {
+    readonly relationTypes: readonly string[];
+    readonly roles: readonly string[];
+    readonly startTypes: readonly string[];
+  };
+  readonly startConstraints?: readonly ChainConstraint[];
+  readonly alternatives: readonly ChainPath[];
+  readonly selection: "unique" | "ordered" | "first-drawn" | "aggregate";
+  readonly aggregation?: ChainAggregation;
+}
+
 export interface Profile {
   readonly id: ProfileId;
   readonly name: string;
@@ -192,6 +232,7 @@ export interface Profile {
   readonly relationTypes: readonly RelationTypeDeclaration[];
   readonly constraints: readonly ProfileConstraint[];
   readonly limits: ProfileLimits;
+  readonly chainPredicates?: readonly ChainPredicate[];
   /** Declared limits, in prose, for a human reading a skeleton profile. */
   readonly notes: readonly string[];
 }
@@ -338,6 +379,7 @@ export function validateProfile(
   }
 
   diagnostics.push(...validateM3Declarations(profile, seenEntityTypes, adapter));
+  diagnostics.push(...validateChainPredicates(profile));
 
   return diagnostics;
 }
