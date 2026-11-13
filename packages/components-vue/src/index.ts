@@ -154,7 +154,7 @@ export { default as UnorderedList } from './UnorderedList.vue';
 export type { UnorderedListProps, UnorderedListItem, UnorderedListInput } from './UnorderedList.vue';
 export { Combobox } from "./Combobox.js";
 export type { ComboboxProps, ComboboxOption, ComboboxSize } from "./Combobox.js";
-export { DataTable } from "./DataTable.js";
+export { default as DataTable } from './DataTable.vue';
 export type {
   DataTableProps,
   DataTableColumn,
@@ -162,7 +162,7 @@ export type {
   DataTableSize,
   DataTableSelectMode,
   DataTableSort,
-} from "./DataTable.js";
+} from './DataTable.vue';
 export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerSize, DatePickerRange, DatePickerValue } from "./DatePicker.js";

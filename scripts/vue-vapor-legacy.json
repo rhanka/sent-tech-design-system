@@ -46,7 +46,6 @@
   "packages/components-vue/src/Dashboard.ts",
   "packages/components-vue/src/DashboardGrid.ts",
   "packages/components-vue/src/DataImage.ts",
-  "packages/components-vue/src/DataTable.ts",
   "packages/components-vue/src/DatePicker.ts",
   "packages/components-vue/src/DecompositionTreeChart.ts",
   "packages/components-vue/src/Density2DChart.ts",
