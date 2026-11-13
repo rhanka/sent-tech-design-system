@@ -638,7 +638,7 @@ export type {
   NavSectionProps,
   NavSectionHeadingLevel,
 } from "./NavSection.js";
-export { ListReportPage } from "./ListReportPage.js";
+export { default as ListReportPage } from "./ListReportPage.vue";
 export type {
   ListReportPageProps,
   ListReportPageNavItem,
@@ -646,7 +646,7 @@ export type {
   ListReportPageRow,
   ListReportPageAction,
   ListReportPageFilter,
-} from "./ListReportPage.js";
+} from "./ListReportPage.vue";
 export { ObjectPage } from "./ObjectPage.js";
 export type {
   ObjectPageProps,
