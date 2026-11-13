@@ -1,8 +1,8 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:708c7bc067b4ece51e10569bf773708a14e934a5fc90c47941f774719ce1e3cb",
-  "entryDigest": "sha256:668c7b38dff43b8920baaddc13325227805563ba639f277c71a072397e5e5692",
+  "digest": "sha256:e51bed195626b6d9aae855db1985168fabc3b61dcd0fc31a7b8c8e37bbccebae",
+  "entryDigest": "sha256:e4ec513ce5322663c5f9ce797c5a8569837d9e596358142a873d4dd8c8346101",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -156,25 +156,117 @@
     },
     "vue": {
       "bindable": [],
-      "dropped": [],
-      "events": [],
-      "limitations": [
-        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onclick",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: MouseEvent) => void"
+        }
       ],
-      "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "events": [
+        {
+          "name": "click",
+          "payload": {}
+        },
+        {
+          "name": "onClick",
+          "payload": {}
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "additionalProperties": false,
+        "properties": {
+          "ariaKeyshortcuts": {
+            "type": "string"
+          },
+          "class": {
+            "type": "string"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "icon": {
+            "enum": [
+              "close",
+              "layers",
+              "settings",
+              "eye",
+              "eye-off",
+              "target",
+              "chevron-down",
+              "chevron-right",
+              "comment",
+              "circle-dashed"
+            ]
+          },
+          "label": {
+            "description": "Hover/focus label and accessible name.",
+            "type": "string"
+          },
+          "pressed": {
+            "type": "boolean"
+          },
+          "size": {
+            "enum": [
+              "sm",
+              "md",
+              "lg"
+            ]
+          },
+          "tooltipContent": {
+            "type": "string"
+          },
+          "tooltipPlacement": {
+            "enum": [
+              "top",
+              "bottom"
+            ]
+          },
+          "variant": {
+            "enum": [
+              "secondary",
+              "ghost",
+              "danger"
+            ]
+          }
+        },
+        "required": [
+          "icon",
+          "label"
+        ],
+        "type": "object"
+      },
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:65ae6cf92b6b84477636d4c4f6c2e9dcb205ba9697cb824ae5796d23adae9d64",
-        "declarationPath": "packages/components-vue/dist/LabelledIconButton.d.ts",
+        "declarationDigest": "sha256:8f51426287039bd5bd866e9d8ac1986a225a3a0ef0b7b64bacfb9116f4e54772",
+        "declarationPath": "packages/components-vue/dist/LabelledIconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LabelledIconButtonProps",
         "version": "0.41.0-next.0"
       },
-      "status": "none",
-      "unresolved": [],
+      "status": "partial",
+      "unresolved": [
+        {
+          "kind": "other",
+          "name": "click.args",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        },
+        {
+          "kind": "other",
+          "name": "onClick.event",
+          "reason": "library type has no JSON Schema form",
+          "sourceType": "MouseEvent"
+        }
+      ],
       "warnings": [
-        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+        "event pair: emits \"click\" and prop \"onClick\" both listed verbatim"
       ]
     }
   },

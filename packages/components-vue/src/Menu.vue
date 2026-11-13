@@ -19,7 +19,8 @@ import {
   ref,
   watch,
 } from "vue";
-import { ChevronLeft, ChevronRight } from "lucide-vue-next";
+import Icon from "./Icon.vue";
+import { ICONS, type IconGlyph } from "./icon-data.js";
 import { classNames } from "./classNames.js";
 import MenuLabel from './MenuLabel.vue';
 import type { MenuLabelSlots } from './menu-label-slots.js';
@@ -36,6 +37,12 @@ import {
   type CascadePoint,
   type ResolvedSubMenuSide,
 } from "./menu-cascade.js";
+
+// Lucide v0.562.0 neutral nodes (ISC; notice in icon-data.ts).
+const chevronLeft: IconGlyph = {
+  name: "chevron-left",
+  nodes: [["path", { d: "m15 18-6-6 6-6" }]],
+};
 
 function itemKind(item: MenuItem): string | undefined {
   const tagged = item as { type?: string; kind?: string };
@@ -1106,8 +1113,9 @@ const panelDepths = computed(() => [
               class="st-menu__itemChevron st-menu__itemChevron--start"
               aria-hidden="true"
             >
-              <component
-                :is="ChevronLeft"
+              <Icon
+                bare
+                :glyph="chevronLeft"
                 :size="16"
                 :stroke-width="2"
                 aria-hidden="true"
@@ -1136,8 +1144,9 @@ const panelDepths = computed(() => [
               class="st-menu__itemChevron st-menu__itemChevron--end"
               aria-hidden="true"
             >
-              <component
-                :is="ChevronRight"
+              <Icon
+                bare
+                :glyph="ICONS['chevron-right']"
                 :size="16"
                 :stroke-width="2"
                 aria-hidden="true"

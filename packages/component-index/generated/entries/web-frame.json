@@ -21,26 +21,28 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
+      "digest": "sha256:5b45e175c9d9dc555d909bbeb37f07e90799c043d46bcc91215295fac1b22272",
       "framework": "vue",
-      "package": "@sentropic/dataviz-vue",
-      "path": "packages/dataviz-vue/src/lib/ObjectLayers.ts",
-      "version": "0.5.0"
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/WebFrame.vue",
+      "version": "0.41.0-next.0"
     }
   ],
   "description": {
     "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
     "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
   },
-  "digest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "digest": "sha256:96c4605c19b1eeba62227e647fb163130afbd6f94847ff9770a429d1f3f2c01b",
   "displayName": "WebFrame",
   "format": "component-entry/v1",
-  "frameworks": [],
+  "frameworks": [
+    "vue"
+  ],
   "parity": {
     "angular": "missing",
     "react": "missing",
     "svelte": "missing",
-    "vue": "missing"
+    "vue": "match"
   },
   "producerId": "sentropic-ds",
   "renderable": "doc-only",
