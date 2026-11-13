@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:cb9431921cc0b41bc6be0f769450edbd18aa3598a086c540acdd6adcabb4368b",
+  "digest": "sha256:ebad8af0d60cfeefcbb96d7464199c665dd6f530fa8e5e9a8f3e33202e7f8f50",
   "entryDigest": "sha256:d392484249ac38ea7271fa63439506294c1bcfd36e3f7175947650aea43a10d7",
   "format": "component-contract/v1",
   "frameworks": {
@@ -157,7 +157,7 @@
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
                 "type": "string"
               }
             },
@@ -390,7 +390,7 @@
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
                 "type": "string"
               }
             },

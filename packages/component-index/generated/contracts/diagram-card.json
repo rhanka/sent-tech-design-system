@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:629f71d8f031752ae67eda718856f550646d087da17acf267a9a1ec55ff02b7c",
+  "digest": "sha256:ffb5e9ab03703760c292054a0795b9a8b7c3000753a85e740c1d34544a2c600d",
   "entryDigest": "sha256:df2aa7609bc69e4f9ad49b97bb94ed974c76d80bb8a2bafb773209a511cd2d8e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -119,7 +119,7 @@
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
                 "type": "string"
               }
             },
@@ -339,7 +339,7 @@
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
                 "type": "string"
               }
             },
