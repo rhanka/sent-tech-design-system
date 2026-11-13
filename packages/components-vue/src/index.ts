@@ -473,8 +473,8 @@ export { Divider } from "./Divider.js";
 export type { DividerProps, DividerOrientation, DividerVariant } from "./Divider.js";
 export { deriveInitials } from "./Header.js";
 
-export { Avatar } from "./Avatar.js";
-export type { AvatarProps, AvatarSize, AvatarShape, AvatarTone } from "./Avatar.js";
+export { default as Avatar } from "./Avatar.vue";
+export type { AvatarProps, AvatarSize, AvatarShape, AvatarTone } from "./Avatar.vue";
 export { AvatarGroup } from "./AvatarGroup.js";
 export type { AvatarGroupProps } from "./AvatarGroup.js";
 export { ButtonGroup } from "./ButtonGroup.js";
