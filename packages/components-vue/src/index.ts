@@ -174,8 +174,8 @@ export {
 } from "./menu-cascade.js";
 export { MenuPopover } from "./MenuPopover.js";
 export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverSubmenuSide } from "./MenuPopover.js";
-export { MenuTriggerButton } from "./MenuTriggerButton.js";
-export type { MenuTriggerButtonProps } from "./MenuTriggerButton.js";
+export { default as MenuTriggerButton } from "./MenuTriggerButton.vue";
+export type { MenuTriggerButtonProps } from "./MenuTriggerButton.vue";
 export { Modal } from "./Modal.js";
 export type { ModalProps } from "./Modal.js";
 export { MultiSelect } from "./MultiSelect.js";
