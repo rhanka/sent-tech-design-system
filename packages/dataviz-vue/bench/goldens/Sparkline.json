@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "Sparkline",
+  "sourceRevision": "d25894d4bddf22bb4d94aac4941c583b6183ca0c",
+  "source": "src/lib/Sparkline.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__line\" d=\"M2.00,2.00 L118.00,26.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "styled",
+      "html": "<span aria-label=\"Sales trend\" class=\"st-sparkline st-sparkline--category3\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__area\" d=\"M2.00,2.00 L118.00,26.00 L118.00,26.00 L2.00,26.00 Z\"></path><path class=\"st-sparkline__line\" d=\"M2.00,2.00 L118.00,26.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"3\"></path></svg></span>"
+    },
+    {
+      "id": "city-size",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"80\" preserveAspectRatio=\"none\" viewBox=\"0 0 240 80\" width=\"240\"><path class=\"st-sparkline__line\" d=\"M2.00,32.40 L80.67,17.20 L159.33,78.00 L238.00,2.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "filtered",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__line\" d=\"M2.00,26.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "attrs",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral consumer\" data-bench=\"spark\" role=\"img\" style=\"color:red;\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__line\" d=\"M2.00,2.00 L118.00,26.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span>"
+    },
+    {
+      "id": "empty",
+      "html": "<span class=\"st-sparkline st-sparkline--neutral\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"></svg></span>"
+    }
+  ],
+  "sourceSha256": "701454aca3b1e1d3c26cfef30a6d101c41c9528b77d06b68ffbd8063e7514cf0",
+  "fixtureSha256": "5af02213abcb85129604cb7cb1d876c5162501828b17285da7978f7ebdb9f17d",
+  "publicExports": [
+    {
+      "name": "Sparkline",
+      "typeOnly": false
+    },
+    {
+      "name": "SparklineProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SparklineTone",
+      "typeOnly": true
+    }
+  ]
+}
