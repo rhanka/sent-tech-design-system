@@ -33,7 +33,6 @@
   "packages/dataviz-vue/src/lib/ErrorBarsChart.ts",
   "packages/dataviz-vue/src/lib/FieldPane.ts",
   "packages/dataviz-vue/src/lib/ForceGraph.ts",
-  "packages/dataviz-vue/src/lib/GanttChart.ts",
   "packages/dataviz-vue/src/lib/GaugeChart.ts",
   "packages/dataviz-vue/src/lib/GeoClusterMap.ts",
   "packages/dataviz-vue/src/lib/GeoDensityMap.ts",
