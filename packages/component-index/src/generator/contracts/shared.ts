@@ -2,6 +2,7 @@ import * as ts from "typescript";
 
 import {
   convertObjectMembers,
+  dropSymbolMember,
   convertType,
   createConvertState,
   isDomBaseType,
@@ -51,7 +52,15 @@ function propsTypeByName(
 /** Find `<Identifier>Props` in the declaration file (no fallback). */
 export function findPropsType(input: FrameworkInput): PropsTypeFound | undefined {
   const name = `${input.identifier}Props`;
-  const found = propsTypeByName(input.checker, input.declFile, name);
+  const module = input.checker.getSymbolAtLocation(input.declFile);
+  const exported = module && input.checker.getExportsOfModule(module).find(symbol => symbol.name === name);
+  const target = exported && ((exported.flags & ts.SymbolFlags.Alias) !== 0 ? input.checker.getAliasedSymbol(exported) : exported);
+  const declaration = target?.declarations?.find(node => ts.isTypeAliasDeclaration(node) || ts.isInterfaceDeclaration(node));
+  const found = declaration && ts.isTypeAliasDeclaration(declaration)
+    ? { type: input.checker.getTypeFromTypeNode(declaration.type), node: declaration.type }
+    : target && declaration
+      ? { type: input.checker.getDeclaredTypeOfSymbol(target), node: undefined }
+      : propsTypeByName(input.checker, input.declFile, name);
   if (found === undefined) return undefined;
   const roots = new Set(input.program.getRootFileNames());
   const typeNode = found.node === undefined ? undefined : normalizeAliasNode(input.checker, roots, found.node);
@@ -306,6 +315,7 @@ export function convertMember(
   required: string[],
 ): void {
   const checker = state.checker;
+  if (dropSymbolMember(state, symbol)) return;
   const memberType = checker.getTypeOfSymbol(symbol);
   const converted = convertType(state, memberType, symbol.name);
   if (converted.outcome === "omitted") return;

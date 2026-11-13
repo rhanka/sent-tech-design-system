@@ -1,7 +1,7 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:8cf5269dc21d80e102a545bd92b04a1661031ec7c8d68a0547614f1061ba1892",
+  "digest": "sha256:71615323922f5c69bda82e10a7fff52c3db6ebc51b73a8f090316c04a6c421d7",
   "entryDigest": "sha256:2ddeaf37a3fff95aba5793c5e452709cc2370f9f9b3378d93bc12a1bc9e7d78c",
   "format": "component-contract/v1",
   "frameworks": {
@@ -280,7 +280,11 @@
           }
         },
         {
-          "name": "submit"
+          "name": "submit",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -311,6 +315,12 @@
           "sourceType": "any"
         },
         {
+          "name": "submit.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        },
+        {
           "name": "submitLabel",
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
@@ -328,7 +338,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"submit\": payload not in declaration",
         "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"
       ]
     }

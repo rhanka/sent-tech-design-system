@@ -1,7 +1,7 @@
 {
   "componentId": "dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:d62a26c1fbccca676e50b68b264dc5ea2d83aa6da931c2ebee1f1c6a91ba6375",
+  "digest": "sha256:86d7def3226ea0558f527f88c74f5943af67042c76485f0869d4e382652192ba",
   "entryDigest": "sha256:19907dfd645ea7699df426aa8e04a696bb72bc4892d27268c4d272bfe0a2abac",
   "format": "component-contract/v1",
   "frameworks": {
@@ -333,7 +333,13 @@
       ],
       "events": [
         {
-          "name": "layout"
+          "name": "layout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onLayout",
@@ -433,7 +439,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"layout\": payload not in declaration",
         "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim"
       ]
     }

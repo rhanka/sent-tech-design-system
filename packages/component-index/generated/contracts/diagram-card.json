@@ -1,7 +1,7 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:f3bc754b2580a99be920ca67f730487d68058d35c289a8e430235a28a795db20",
+  "digest": "sha256:65347f204462222c59a2bc04b3bdf64b265a1bf623a86422c88618c256055641",
   "entryDigest": "sha256:668bad59882f5ce8a1844b4507df4309838dc6dd8536478ffb4c439d3373dc7b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -273,7 +273,10 @@
       ],
       "events": [
         {
-          "name": "diagnostic"
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/CardDiagnostic"
+          }
         },
         {
           "name": "onDiagnostic",
@@ -297,7 +300,19 @@
           }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
         }
       ],
       "limitations": [
@@ -453,8 +468,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"diagnostic\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]

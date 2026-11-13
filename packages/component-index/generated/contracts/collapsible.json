@@ -1,7 +1,7 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:41e134980acc1aafbec13e915530615a43528bdcb9bf8bd91d57afd369b65e21",
+  "digest": "sha256:6c31c844b4dae321dcbbdc08458b5c3bec79161f96c808f9e5c0bf2052ffdaab",
   "entryDigest": "sha256:1ffc3907c0f85e49618683e6ea51e493486fac901eb8d102be3fd24cffe1cffa",
   "format": "component-contract/v1",
   "frameworks": {
@@ -223,7 +223,11 @@
           }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -252,7 +256,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "toggle.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:883dfd9151d21b960b8e249fefbf48e844dca972663d4d6945d6990e19560f91",
@@ -264,7 +275,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
       ]
     }

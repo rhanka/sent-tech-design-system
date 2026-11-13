@@ -1,7 +1,7 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:0b72b135860ece4d2fa85410767c0edb459998016567abd3166f43d4e7e1ea59",
+  "digest": "sha256:b71a6192dccd3edd87b8fc4d5898e4f0dac5a290b6a6524db430f8e5ebb8c9a8",
   "entryDigest": "sha256:e72bc89c5ba480b396594c1af94b71952e8cf21967853210ffac82ec8ab96b95",
   "format": "component-contract/v1",
   "frameworks": {
@@ -333,7 +333,13 @@
       ],
       "events": [
         {
-          "name": "layout"
+          "name": "layout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
         },
         {
           "name": "onLayout",
@@ -433,7 +439,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"layout\": payload not in declaration",
         "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim"
       ]
     }

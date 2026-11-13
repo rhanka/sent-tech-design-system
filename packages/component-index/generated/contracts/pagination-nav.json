@@ -1,7 +1,7 @@
 {
   "componentId": "pagination-nav",
   "contractSource": "derived",
-  "digest": "sha256:7389293f8f9bc90d57a611c966d0503fdcbfb592aa4e2a921494b905d0fce1e0",
+  "digest": "sha256:0980714dd819234a9386cc800fcb2052e7bd09a718d2a253fdd6dfe4f9b586e5",
   "entryDigest": "sha256:682c26cf3437f886c2a7d96930659a041e1cd606a408fe4e507dd0e4a077575f",
   "format": "component-contract/v1",
   "frameworks": {
@@ -211,7 +211,11 @@
           }
         },
         {
-          "name": "page-change"
+          "name": "page-change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -260,6 +264,12 @@
           "reason": "any JSON value, stated in the row",
           "replacement": "{}",
           "sourceType": "any"
+        },
+        {
+          "name": "page-change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
         }
       ],
       "slots": [],
@@ -273,7 +283,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"page-change\": payload not in declaration",
         "event pair: emits \"page-change\" and prop \"onPage-change\" both listed verbatim"
       ]
     }

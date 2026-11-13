@@ -1,7 +1,7 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:1e67bcb1f8aa67e0bdcdddf820e30fd5d4327b5bd9eeff091a4ea04a02a38629",
+  "digest": "sha256:46fc0e81df0e084cf29fa0bd2ad7a772376204410a24aa2bc5418ab526c29718",
   "entryDigest": "sha256:5be36828faf1ada7fe20fc0b2eea68c3fcda7e461c074115d86d6afb2c3e0ee9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -1042,13 +1042,46 @@
       ],
       "events": [
         {
-          "name": "edgeHover"
+          "name": "edgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
         },
         {
-          "name": "mergeComplete"
+          "name": "mergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
         },
         {
-          "name": "nodeHover"
+          "name": "nodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
         },
         {
           "name": "onEdgeHover",
@@ -1105,10 +1138,16 @@
           }
         },
         {
-          "name": "openEntity"
+          "name": "openEntity",
+          "payload": {
+            "type": "string"
+          }
         },
         {
-          "name": "select"
+          "name": "select",
+          "payload": {
+            "type": "string"
+          }
         }
       ],
       "limitations": [
@@ -1391,11 +1430,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"edgeHover\": payload not in declaration",
-        "emit \"mergeComplete\": payload not in declaration",
-        "emit \"nodeHover\": payload not in declaration",
-        "emit \"openEntity\": payload not in declaration",
-        "emit \"select\": payload not in declaration",
         "event pair: emits \"edgeHover\" and prop \"onEdgeHover\" both listed verbatim",
         "event pair: emits \"mergeComplete\" and prop \"onMergeComplete\" both listed verbatim",
         "event pair: emits \"nodeHover\" and prop \"onNodeHover\" both listed verbatim",

@@ -1,7 +1,7 @@
 {
   "componentId": "portal",
   "contractSource": "derived",
-  "digest": "sha256:ec620eedc743afa3c008370ae1fec1c27be955c0a443391218a5c2d0c5c1c63a",
+  "digest": "sha256:f129f362d912f21273e191c13172401c6fbae20d064c5911d8431afc12b69a17",
   "entryDigest": "sha256:da3dd3d8791b16c29d66c9241e9a17ad5fc2ae4187d3fa245f124627dcf68f9a",
   "format": "component-contract/v1",
   "frameworks": {
@@ -169,8 +169,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -203,7 +202,16 @@
           "sourceType": "HTMLElement"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default",
+          "params": {
+            "additionalProperties": false,
+            "properties": {},
+            "type": "object"
+          }
+        }
+      ],
       "source": {
         "declarationDigest": "sha256:85ca15d1c17ea143c25582cd3dba3b75e7eafe99d27d8f67e068108b34e881c3",
         "declarationPath": "packages/components-vue/dist/Portal.d.ts",

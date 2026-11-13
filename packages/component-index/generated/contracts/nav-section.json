@@ -1,7 +1,7 @@
 {
   "componentId": "nav-section",
   "contractSource": "derived",
-  "digest": "sha256:2af9915d48794086049c79b8c63aa7110d545ca7492403c8d8bbeed98dd38657",
+  "digest": "sha256:d6d97edd162683dca3de211bf573081b9058fccaaf1d44d8d05bf41898a9a013",
   "entryDigest": "sha256:ac9ca27d7be3823d0c935de5fa6eb338a254f7bcb579e1058dca867882cce4e4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -205,7 +205,11 @@
           }
         },
         {
-          "name": "toggle"
+          "name": "toggle",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         }
       ],
       "limitations": [
@@ -247,7 +251,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "toggle.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:f7a299287c946dce717ebfbf84a5bc698983be6922154a1392d273c7dd5a3661",
@@ -259,7 +270,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"toggle\": payload not in declaration",
         "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
       ]
     }

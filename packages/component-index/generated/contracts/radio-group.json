@@ -1,7 +1,7 @@
 {
   "componentId": "radio-group",
   "contractSource": "derived",
-  "digest": "sha256:434854e17e687bd1ba7f5fe4ea6934fd040d0ee58769eef942de609712e43090",
+  "digest": "sha256:df204212b3c50a32c773ffbdfb6cb29013b7083afe929209732bbf033491cd1d",
   "entryDigest": "sha256:85bbd10ab8a074a548c2e21222248381388ae20e5c118e56c1042d1c5630e3cf",
   "format": "component-contract/v1",
   "frameworks": {
@@ -319,7 +319,11 @@
       ],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "items": {},
+            "type": "array"
+          }
         },
         {
           "name": "onChange",
@@ -399,7 +403,14 @@
         ],
         "type": "object"
       },
-      "replaced": [],
+      "replaced": [
+        {
+          "name": "change.args[]",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "any"
+        }
+      ],
       "slots": [],
       "source": {
         "declarationDigest": "sha256:cfc76bf7a647a64cd8abba83d2b244cd667ef3b10a25ae3cf215c25cf2b07e99",
@@ -411,7 +422,6 @@
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }
