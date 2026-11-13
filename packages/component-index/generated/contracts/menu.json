@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:928a4715d24f72e1855d5d520b845f3bc44894a9d765407f278a11fbcde9c4f4",
-  "entryDigest": "sha256:a85ba76e995dfca594540723838241df85b2f0ae8be6f8268dbf63bf0cfd4db2",
+  "digest": "sha256:fb6f8f708f631ada68a81b0ffd4e8f4904b1a1315a0b283129428cb16cfd5686",
+  "entryDigest": "sha256:82864cd803fe4959cce91c0319d4847ad909c2b99e4da6086a897fa899b5fc1d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -19,17 +19,13 @@
         {
           "name": "select",
           "payload": {
-            "anyOf": [
-              {
-                "$ref": "#/$defs/MenuActionItem"
-              },
-              {
-                "$ref": "#/$defs/MenuDividerItem"
-              },
-              {
-                "$ref": "#/$defs/MenuGroupItem"
-              }
-            ]
+            "$ref": "#/$defs/MenuActionItem"
+          }
+        },
+        {
+          "name": "selectPath",
+          "payload": {
+            "$ref": "#/$defs/MenuSelectPath"
           }
         }
       ],
@@ -41,6 +37,22 @@
           "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -54,6 +66,9 @@
                 "type": "string"
               },
               "label": {},
+              "selected": {
+                "type": "boolean"
+              },
               "value": {
                 "type": "string"
               },
@@ -106,6 +121,25 @@
             },
             "required": [
               "label"
+            ],
+            "type": "object"
+          },
+          "MenuSelectPath": {
+            "additionalProperties": false,
+            "properties": {
+              "item": {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              "path": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            },
+            "required": [
+              "item",
+              "path"
             ],
             "type": "object"
           }
@@ -136,6 +170,13 @@
           },
           "role": {
             "type": "string"
+          },
+          "submenuSide": {
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "type": "object"
@@ -162,11 +203,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:fd6dcfd4fa6c22ebbd9cfa141f20e74cd59710cd134079633e2b5b21f3cf88c8",
+        "declarationDigest": "sha256:b9970ee4101ccccb0a18c66e3e7b43b0ae53a93217f8d3671b855bfac72a7837",
         "declarationPath": "packages/components-angular/dist/Menu.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -177,19 +218,19 @@
       "dropped": [
         {
           "kind": "node",
-          "name": "ActionItem.icon",
+          "name": "MenuActionItem.icon",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "node",
-          "name": "ActionItem.label",
+          "name": "MenuActionItem.label",
           "reason": "renderable-node surface has no JSON Schema form",
           "sourceType": "ReactElement<unknown, string | JSXElementConstructor<any>>"
         },
         {
           "kind": "function",
-          "name": "ActionItem.onClick",
+          "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
         },
@@ -204,7 +245,19 @@
         {
           "name": "onSelect",
           "payload": {
-            "$ref": "#/$defs/ActionItem"
+            "items": false,
+            "prefixItems": [
+              {
+                "$ref": "#/$defs/MenuActionItem"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              }
+            ],
+            "type": "array"
           }
         }
       ],
@@ -213,13 +266,31 @@
       ],
       "passthrough": {
         "base": "React.HTMLAttributes<HTMLDivElement>",
-        "omitted": []
+        "omitted": [
+          "onSelect"
+        ]
       },
       "props": {
         "$defs": {
-          "ActionItem": {
+          "MenuActionItem": {
             "additionalProperties": false,
             "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/$defs/MenuActionItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuDividerItem"
+                    },
+                    {
+                      "$ref": "#/$defs/MenuGroupItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
               "danger": {
                 "type": "boolean"
               },
@@ -228,6 +299,9 @@
               },
               "id": {
                 "type": "string"
+              },
+              "selected": {
+                "type": "boolean"
               },
               "value": {
                 "type": "string"
@@ -264,7 +338,7 @@
               },
               "items": {
                 "items": {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 "type": "array"
               },
@@ -287,7 +361,7 @@
             "items": {
               "anyOf": [
                 {
-                  "$ref": "#/$defs/ActionItem"
+                  "$ref": "#/$defs/MenuActionItem"
                 },
                 {
                   "$ref": "#/$defs/MenuDividerItem"
@@ -298,6 +372,14 @@
               ]
             },
             "type": "array"
+          },
+          "submenuSide": {
+            "description": "Preferred side for sub-menu panels; `auto` prefers right (D2, §2.2).",
+            "enum": [
+              "auto",
+              "left",
+              "right"
+            ]
           }
         },
         "required": [
@@ -308,11 +390,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

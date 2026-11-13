@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:41e134980acc1aafbec13e915530615a43528bdcb9bf8bd91d57afd369b65e21",
-  "entryDigest": "sha256:1ffc3907c0f85e49618683e6ea51e493486fac901eb8d102be3fd24cffe1cffa",
+  "digest": "sha256:537e7e8bbbe51f795e15d71e1f66fa9650e0317de1f11a367c58675ed09c869d",
+  "entryDigest": "sha256:3aef8eb3826e3d43f81cd6414d41e64ef22d6a752907f2e16b8e5a39a3bfd5ca",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Collapsible.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CollapsibleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -126,7 +126,7 @@
         "declarationPath": "packages/components-react/dist/Collapsible.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CollapsibleProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
