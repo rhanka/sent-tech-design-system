@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:a9c96a7181e632b5f0d352d24e54d8d329bbb802000051249da42cbae464b86d",
-  "entryDigest": "sha256:49c8524f110fa6fd896cfbbf8600e15b6ef95f3ba3138d39eba37ea821fbd37d",
+  "digest": "sha256:0b72b135860ece4d2fa85410767c0edb459998016567abd3166f43d4e7e1ea59",
+  "entryDigest": "sha256:e72bc89c5ba480b396594c1af94b71952e8cf21967853210ffac82ec8ab96b95",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -333,6 +333,9 @@
       ],
       "events": [
         {
+          "name": "layout"
+        },
+        {
           "name": "onLayout",
           "payload": {
             "items": {
@@ -425,11 +428,14 @@
         "declarationPath": "packages/components-vue/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DashboardGridProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "emit \"layout\": payload not in declaration",
+        "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"
