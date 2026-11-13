@@ -1,8 +1,8 @@
 {
   "componentId": "nav-action-stack",
   "contractSource": "derived",
-  "digest": "sha256:e3e3adb4e42925243f0b113dd9aa12f69dfda45c6412e3c4274b01834004646d",
-  "entryDigest": "sha256:5718a046c5e0f6c974470dd0b5a9dc228fd4b022d392fe912930f5164fd74bba",
+  "digest": "sha256:9ad219f4b05c184e03558965a1e74673fca9b5b7ea2a6c04ee793ec1606ef339",
+  "entryDigest": "sha256:92ffc7ccab1ac42ef0fcf76b3b89295896376ca73bf7e92f711cf29528a9b0ee",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -475,7 +475,7 @@
         "declarationPath": "packages/components-vue/dist/NavActionStack.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NavActionStackProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "skip-link",
   "contractSource": "derived",
-  "digest": "sha256:a457212232f748faac1a2c7b690078ad76b52857045872b397ee17835a4141a3",
-  "entryDigest": "sha256:160bfc5e84926036f745e2c0b8512590ae80181cd2dd6aeef7b5ddd4d26acbb4",
+  "digest": "sha256:005386e1c6ff9929029a17ffe7aebc0254cd5bda13894898e01203ec9523ac86",
+  "entryDigest": "sha256:69ecdb7f279486c6c5b6ce498f17138d7164f48fdaebfe23fd0d2dc3afa682de",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -145,7 +145,7 @@
         "declarationPath": "packages/components-vue/dist/SkipLink.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SkipLinkProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

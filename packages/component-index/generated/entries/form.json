@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Form.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:85bdfe9188a7eea3a547eaafa5091c5ae9aa965d4cd775d6f8fb787fdfcb849d",
+  "digest": "sha256:314d0e157050f24153ee7c753ad1b18ace9d42dc586f37bc6d75daad6a374d1f",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

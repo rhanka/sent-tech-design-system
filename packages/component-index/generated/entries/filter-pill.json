@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/FilterPill.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Active filter pill: field, operator, value, and remove button.",
     "fr": "Pilule de filtre actif : champ, opérateur, valeur et bouton de retrait."
   },
-  "digest": "sha256:f1ad5b90310bee84d054c568d43cc3f5b05815b3ad3eaa370c52c220c5616a71",
+  "digest": "sha256:a1bc14325eed8bcb64fc11b4a11b826b27b0cbf40cb24ea77e6472879e2b0fcf",
   "displayName": "FilterPill",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/AreaChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Area chart to visualize temporal or numeric data.",
     "fr": "Graphique d’aire pour visualiser des données temporelles ou numériques."
   },
-  "digest": "sha256:b672892b7183ac8f8933e318f9bfe1a31f8458e92748f406eaa279ad8f64c2a8",
+  "digest": "sha256:9a38c4525222ef4846d8b0ad69180566fb09135170d209b2fa87eed91b85598b",
   "displayName": "AreaChart",
   "format": "component-entry/v1",
   "frameworks": [

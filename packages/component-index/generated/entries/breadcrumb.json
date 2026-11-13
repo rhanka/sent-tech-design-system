@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Breadcrumb.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Semantic breadcrumb trail.",
     "fr": "Fil d’Ariane sémantique."
   },
-  "digest": "sha256:273788e32c0a55750d403f227ea8ad9b383be727b51165f23bb5e1c5d5435e5e",
+  "digest": "sha256:d47db57842b84b4cda1bec278065b519e7ccc7ac917b2e1c35e7968ae6672564",
   "displayName": "Breadcrumb",
   "format": "component-entry/v1",
   "frameworks": [

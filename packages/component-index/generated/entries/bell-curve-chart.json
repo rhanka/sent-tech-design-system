@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/BellCurveChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "From a raw sample of numbers, computes the mean μ and standard deviation σ then draws the normal-distribution density (bell curve) with markers at μ and μ±σ, μ±2σ.",
     "fr": "À partir d'un échantillon de nombres bruts, calcule la moyenne μ et l'écart-type σ puis trace la densité de la loi normale (courbe en cloche) avec repères à μ et μ±σ, μ±2σ."
   },
-  "digest": "sha256:4558a2782bbda117e14e3767c945ce85c2a8a502d1789007f9ee83f87bd30180",
+  "digest": "sha256:9ed0da345ee54c29c028c8f298c383079ea964a96bf525ed28300c467391064b",
   "displayName": "BellCurveChart",
   "format": "component-entry/v1",
   "frameworks": [

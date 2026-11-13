@@ -1,8 +1,8 @@
 {
   "componentId": "container",
   "contractSource": "derived",
-  "digest": "sha256:ef1cb419eb31f4904a3be5c74d206eb5134d0a7bd06be4bfcc2c3072b8be9650",
-  "entryDigest": "sha256:20471613f9ff8e14977a89b3cff7c3fdbcf5f92efc32e24384f5411dd635701e",
+  "digest": "sha256:c875a5b9901ab661841f2a64cce15e5f39a087e2a8b37484b06051eb0d84715c",
+  "entryDigest": "sha256:5c90811cf08aae3f095b235dad50abd21f2c4107f8251028f226510b8ed62dd6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-vue/dist/Container.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContainerProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

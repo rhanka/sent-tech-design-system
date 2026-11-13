@@ -1,8 +1,8 @@
 {
   "componentId": "button",
   "contractSource": "derived",
-  "digest": "sha256:bdfcd9c491409cc0660e4532c44d966e817ae2fcd4325131aab462309e290295",
-  "entryDigest": "sha256:b6296546cb934cf887631493b9adba770123828c0bfeff179674bae169a4c063",
+  "digest": "sha256:7757090ce5732f2d8582b7705771f3dd919001b0a4edfd715210c92d007d4f57",
+  "entryDigest": "sha256:6d336a86b1af5ebefbc07b6fed517587703087142cf62b5d6c47fc702075a60c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -248,7 +248,7 @@
         "declarationPath": "packages/components-vue/dist/Button.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],

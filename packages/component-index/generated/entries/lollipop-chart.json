@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/LollipopChart.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Lollipop chart: thin stems and dots to compare values across categories.",
     "fr": "Diagramme en sucette : tige fine et pastille pour comparer des valeurs par catégorie."
   },
-  "digest": "sha256:d00ad149c79e837d7b7ca4349b970fa16b26f2f10b71dfb9390c02387642d895",
+  "digest": "sha256:804b92515962b9d8c0920f7251e7a3975e293e5cc34ad7913d4cbebc4310b18b",
   "displayName": "LollipopChart",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/NavSection.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Group header for a rail/drawer: small-caps label, count, section action, and a collapsible (disclosure) mode.",
     "fr": "En-tête de groupe d'un rail/drawer : libellé small-caps, compteur, action de section et mode repliable (disclosure)."
   },
-  "digest": "sha256:5ace504ff1f27971165dfdfbc7c0e2598e87f2d1684bae1584202e7002e8fc97",
+  "digest": "sha256:3c3f243fd70808f4bb1bb30ab50f26816c2560769e6219f682ca69a1e0639a82",
   "displayName": "NavSection",
   "format": "component-entry/v1",
   "frameworks": [

@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Checkbox.ts",
-      "version": "0.39.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Checkbox with error/disabled states and helper text.",
     "fr": "Case à cocher avec états error/disabled et helper text."
   },
-  "digest": "sha256:b62163e824dabafe86c01bdf5e9bcaf0180d9762df4b23b81343c5e0434b1bbb",
+  "digest": "sha256:b100455ea5bd8c0fb7742c645d933a3b1d0b1d30196fecf3e20d9ebcc010ade0",
   "displayName": "Checkbox",
   "format": "component-entry/v1",
   "frameworks": [

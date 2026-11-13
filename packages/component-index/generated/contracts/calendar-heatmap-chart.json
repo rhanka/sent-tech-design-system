@@ -1,8 +1,8 @@
 {
   "componentId": "calendar-heatmap-chart",
   "contractSource": "derived",
-  "digest": "sha256:78db23ebdaa4a54b117a6839cfe9883d6f8ac41583c2dd735f20f11813c3c1f2",
-  "entryDigest": "sha256:ec07b791f93611ed6673a49832cb4b9cfe664b57e900d8b49fe5f2e1ebe81a5f",
+  "digest": "sha256:6c36207b050980ffac41a5c9b69bf8136bb5db18fb66fc524fe3fdbaa9594469",
+  "entryDigest": "sha256:3f6f7fa0a87b9999c878de553691a6521ec6d1b6b1ca36be53174a1cf4448951",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -290,7 +290,7 @@
         "declarationPath": "packages/components-vue/dist/CalendarHeatmapChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CalendarHeatmapChartProps",
-        "version": "0.39.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
