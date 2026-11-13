@@ -12,8 +12,8 @@
 export * from './adapter.js';
 
 // Dashboard components (state consumers built on the design system).
-export { DashboardActiveFilters } from './lib/DashboardActiveFilters.js';
-export type { DashboardActiveFiltersProps } from './lib/DashboardActiveFilters.js';
+export { default as DashboardActiveFilters } from './lib/DashboardActiveFilters.vue';
+export type { DashboardActiveFiltersProps } from './lib/DashboardActiveFilters.vue';
 export { DashboardFilterBar } from './lib/DashboardFilterBar.js';
 export type { DashboardFilterBarProps, ActiveFilter, FilterControl, ExportConfig } from './lib/DashboardFilterBar.js';
 export { default as DashboardGrid } from './lib/DashboardGrid.vue';
