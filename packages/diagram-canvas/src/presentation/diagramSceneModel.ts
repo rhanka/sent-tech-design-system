@@ -23,6 +23,7 @@ import {
   CONTENT_INSET,
   DEFAULT_ALLOCATED_LINES,
   DEFAULT_LAYOUT_METRICS,
+  DEFAULT_MIN_READABLE_SCALE,
   layoutFolded,
   layoutMeasured,
   placeEdgeLabels,
@@ -327,15 +328,16 @@ export function resolveScene(
     }
     const height = headerHeights.get(node.occurrence);
     if (height === undefined) continue;
+    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
     blockers.push({
       x: node.rect.x,
       y: node.rect.y,
       width: node.rect.width,
-      height: CONTENT_INSET + height,
+      height: CONTENT_INSET + height + ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
     });
     const reserve = measureSceneBox(node.presentation, node.occurrence, node.rect.width, false, input.measureLines, input.metrics?.containerPadding).footerReserve;
-    if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth,
-      width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth });
+    if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
+      width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
   }
 
   const allFlows = flowIndex(input.document);

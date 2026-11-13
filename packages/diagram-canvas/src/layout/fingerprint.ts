@@ -21,7 +21,7 @@ import { channelMetrics } from "./channels.js";
 import { DEFAULT_LAYOUT_METRICS, resolveRowPack, type LayoutMetrics, type LayoutOptions } from "./types.js";
 
 /** Bumped whenever measured placement changes for unchanged inputs. */
-export const LAYOUT_ENGINE_VERSION = "dc2c.owner.4";
+export const LAYOUT_ENGINE_VERSION = "dc2c.owner.5";
 
 export interface LayoutFingerprintInput {
   readonly options: Pick<LayoutOptions, "collapsed" | "hints" | "metrics" | "rowPack" | "previousOrientation" | "viewId" | "flows" | "flowTokens">;

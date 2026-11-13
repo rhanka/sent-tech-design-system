@@ -1,5 +1,5 @@
 {
-  "contractsRevision": "sha256:f13ac303c70aa82b11380988ad1f7acb739bb3c88c2fc25a5c5ac49125531345",
+  "contractsRevision": "sha256:324025e3bc73a0a5128f3b3fabb5b9cf1eb96f2a5fec23c4fd3e55313caa422d",
   "counts": {
     "byFramework": {
       "angular": {
@@ -762,8 +762,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-card",
-      "contractDigest": "sha256:06b26cd89b61b1f7bce429b919068376224a6c89c9a14fdcde395c2d7102aafb",
-      "entryDigest": "sha256:7161ce69415f33be3244080a546bf087031db5369ba8d050a482ab9351961d3b",
+      "contractDigest": "sha256:8a827579ced9a55cc25953fe34876888b9d616247752f53f9c5bab27576c719c",
+      "entryDigest": "sha256:cf1571d5edc30facc62a4231cf4546251c1965eae077a14dcba23edc92184282",
       "path": "contracts/diagram-card.json",
       "producerId": "sentropic-ds"
     },
@@ -775,8 +775,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-scene-figure",
-      "contractDigest": "sha256:cc466ca2b721e2d3ec0eab418b0dacebdeb78af82a301f155d7352ef45b4b099",
-      "entryDigest": "sha256:d575dcbf4a879cd3ebad8332ed92fa28cafa2b61617b4ec00203927069768408",
+      "contractDigest": "sha256:d354406b3e9fe5c1cf7cf7b953c7bcc7cf6df578fce05a136d8dd45a2b4f033c",
+      "entryDigest": "sha256:f136b5158a49269c9732217d218828195a428dad8c46f18ab155a99f5f4cfcbf",
       "path": "contracts/diagram-scene-figure.json",
       "producerId": "sentropic-ds"
     },
@@ -788,8 +788,8 @@
         "vue": "partial"
       },
       "componentId": "diagram-zone",
-      "contractDigest": "sha256:0781f521a26bb14c4d92aa43b35661dd9cbe79279c9aabdf504739f7a0573ef2",
-      "entryDigest": "sha256:4e9e226072c8e934109068501fb88676fda53acad78b494c5aec18f56dd4905e",
+      "contractDigest": "sha256:c83ac699347c54c4460595417b8da2b360470bc0f90424c52d03ac9758203ca6",
+      "entryDigest": "sha256:2b75fb0646bd88813c4248eb2a9d3573c94c7552eb135fc90d1a2b4ce3cf0560",
       "path": "contracts/diagram-zone.json",
       "producerId": "sentropic-ds"
     },
@@ -1048,7 +1048,7 @@
         "vue": "partial"
       },
       "componentId": "force-graph",
-      "contractDigest": "sha256:abbcba9b18f93e2d035a0f49802680952f41b0f207ca9bca2b5532f7a46c7b59",
+      "contractDigest": "sha256:5a190c41344d6fc142e65dababeab9e5180e541bea4f6fc5ddbcd6c46a0efb87",
       "entryDigest": "sha256:ced8097e53645810cb3fe78549b0cd1ae1dd59eb387a760413571d99518bcfdb",
       "path": "contracts/force-graph.json",
       "producerId": "sentropic-ds"
@@ -2824,5 +2824,5 @@
     "version": "0.2.0"
   },
   "producerId": "sentropic-ds",
-  "sourceCommit": "dce62ca83cadea598b7c12e15c0ecd54297461a2"
+  "sourceCommit": "b8e3144ca853e30973e9076aad3f21435986bbe7"
 }

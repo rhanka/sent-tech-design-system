@@ -73,3 +73,8 @@ Final command results are recorded in the PR. After the main merge, the core sui
 h-cond should repeat the existing 1440×900 and 390×844 captures with the patched packages, check loaded and fallback fonts for painted overflow, scroll to the rightmost/bottom content at the readability floor, inspect bundle titles and confirm that capped folded frames have no large empty band. This patch has only Node/Vitest/jsdom validation.
 
 The named standalone DC-2a/DC-2b spec files are absent from this checkout; the committed DC-2a Appendix E proof, acceptance suites, DC-2b integration notes and the owner’s explicit acceptance criteria were used.
+## Second browser probe
+
+Current fixes and validation: [second probe corrections](../docs/audit/dc2a-probe2-fixes.md).
+The display floor is 0.45, followed by scrolling. Complete slot text is
+the accessible card name, and zone rules have explicit label clearance.

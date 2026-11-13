@@ -720,9 +720,9 @@ describe("zero-ellipsis and token discipline — shipped sources", () => {
   ];
   const texts = SOURCES.map((file) => ({ file, source: readFileSync(resolve(HERE, file), "utf8") }));
 
-  it("no ellipsis, clamp, nowrap or clipping on card text (DC-D4, DIF-02)", () => {
+  it("uses measured truncation instead of CSS clipping on card text (A14)", () => {
     for (const { file, source } of texts) {
-      for (const banned of ["…", "ellipsis", "line-clamp", "webkit-line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
+      for (const banned of ["text-overflow", "line-clamp", "webkit-line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
         expect(source, `${file} ${banned}`).not.toContain(banned);
       }
     }

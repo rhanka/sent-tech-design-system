@@ -3,6 +3,7 @@ import { validateFlows } from "@sentropic/diagram-core";
 import { relationVerdict } from "../visibility.js";
 import { DEFAULT_FLOW_TOKENS, planFlows, placeFlowMarks } from "./flows.js";
 import { layoutErd } from "./erd.js";
+import { DEFAULT_MIN_READABLE_SCALE } from "../camera.js";
 /**
  * Measured diagram layout (M3 §4.6–§4.8, layout half of §5.6; placement by
  * SPEC_EVOL_DC2A §3–§4).
@@ -722,6 +723,8 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
   const edgeBundles: Record<string, { members: string[]; label: string; title: string; relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }> = {};
   const liftedPairs = new Map<string, DrawnEdge[]>();
   for (const edge of drawnEdges) {
+    // Numbered steps retain the flow planner's bundle carriers and targets.
+    if (flowOccurrences.has(edge.relation)) continue;
     const projectedEdge = projected.relationOccurrences[edge.occurrence]!;
     if (!projectedEdge.endpoints.some(end => end.sourceOccurrence !== undefined)) continue;
     const key = JSON.stringify([edge.source.entity, edge.target.entity]);
@@ -1144,11 +1147,12 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const header = headers.get(id)!;
       const inner = innerWidthOf(size.width);
       rects.set(id, { x, y, width: size.width, height: size.height });
+      const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
       titleBands.set(id, { x, y, width: size.width, height: ZONE_GEOMETRY.headerInset + header.height });
       const footerReserve = sceneBoxAt(representativeOf(id), size.width, false).footerReserve;
       if (footerReserve > 0) footerBands.set(id, {
-        x, y: y + size.height - footerReserve - ZONE_GEOMETRY.borderWidth,
-        width: size.width, height: footerReserve + ZONE_GEOMETRY.borderWidth,
+        x, y: y + size.height - footerReserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
+        width: size.width, height: footerReserve + ZONE_GEOMETRY.borderWidth + ruleClearance,
       });
       const contentX = x + contentInset;
       const contentY = y + ZONE_GEOMETRY.headerInset + header.height + contentInset;
@@ -1260,7 +1264,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     ];
     // Footer bands constrain text placement. Routes may cross a zone's
     // footer while leaving it; a label on that route still has to clear it.
-    const fixedShapes: Rect[] = [...routeShapes, ...footerBands.values()];
+    // Header measurement ends at the rule's top. Reserve its non-scaling
+    // paint plus one CSS px at the display floor for label placement.
+    // Routes may cross a rule while leaving their own zone.
+    const ruleClearance = (ZONE_GEOMETRY.ruleHeight / 2 + 1) / DEFAULT_MIN_READABLE_SCALE;
+    const fixedShapes: Rect[] = [...routeShapes, ...[...titleBands.values()].map(band => ({
+      x: band.x, y: band.y + band.height, width: band.width,
+      height: ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
+    })), ...footerBands.values()];
     const zoneShapes = [...rects].filter(([id]) => isStretchedBox(id));
     const shapesByEdge = new Map<RelationRef, Rect[]>();
     for (const edge of drawnEdges) {

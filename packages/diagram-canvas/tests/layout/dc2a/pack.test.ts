@@ -261,14 +261,17 @@ describe("camera fit (§5)", () => {
     expect(clampZoom(0.55, fit)).toBe(0.55);
   });
 
-  it("fit reaches the entire drawing below the readability preference", () => {
+  it("fit stops at the readability floor and scrolls the remaining drawing", () => {
     expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
     expect(huge.zoomFit).toBeCloseTo(808 / 8000, 6);
-    expect(huge.zoom).toBe(huge.zoomFit);
-    expect(huge.pans).toBe(false);
-    // Zoom-out still reaches the whole drawing (Z-2).
-    expect(clampZoom(0, huge)).toBeCloseTo(808 / 8000, 6);
+    expect(huge.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+    expect(huge.pans).toBe(true);
+    expect(clampZoom(0, huge)).toBe(DEFAULT_MIN_READABLE_SCALE);
+    const loweredTokens = cameraFit({ bounds: { width: 8000, height: 8000 }, viewWidth: 390, windowHeight: 844,
+      minReadableScale: .1, maxDisplayScale: .3 });
+    expect(loweredTokens.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+    expect(loweredTokens.minZoom).toBe(DEFAULT_MIN_READABLE_SCALE);
   });
 
   it("§5.3: an edge label renders at 8 CSS px or more at the floor; 0.45 is the smallest two-decimal floor that holds it", () => {
@@ -281,8 +284,9 @@ describe("camera fit (§5)", () => {
     // Every fit, whatever the drawing, shows the label at the minimum or more.
     for (const height of [200, 810, 2000, 8000, 40000]) {
       const fit = cameraFit({ bounds: { width: 2000, height }, viewWidth: 1440, windowHeight: 2000 });
-      expect(fit.zoom).toBe(fit.zoomFit);
-      expect(fit.zoom * height).toBeLessThanOrEqual(fit.fitHeight);
+      expect(fit.zoom).toBe(Math.max(DEFAULT_MIN_READABLE_SCALE, fit.zoomFit));
+      expect(edgeLabelCssPx(fit.zoom)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+      expect(fit.pans).toBe(fit.zoomFit < DEFAULT_MIN_READABLE_SCALE);
     }
   });
 });

@@ -623,7 +623,7 @@
       "tag": "div",
       "attributes": {
         "aria-describedby": "description",
-        "aria-label": "Title",
+        "aria-label": "KICKER\nTitle\nBody\nDetail\nFooter",
         "class": "st-diagramCard",
         "data-entity": "contract",
         "role": "group",
@@ -869,7 +869,7 @@
           "tag": "div",
           "attributes": {
             "aria-describedby": "description",
-            "aria-label": "Zone",
+            "aria-label": "KICKER\nZone\nSubtitle\nFooter",
             "class": "st-diagramCard st-diagramCard--subtitle",
             "data-entity": "contract-zone",
             "role": "group",
@@ -1348,7 +1348,7 @@
       "tag": "div",
       "attributes": {
         "aria-describedby": "description",
-        "aria-label": "Title",
+        "aria-label": "KICKER\nTitle\nBody\nDetail\nFooter",
         "class": "st-diagramCard",
         "data-entity": "contract",
         "role": "group",
@@ -1594,7 +1594,7 @@
           "tag": "div",
           "attributes": {
             "aria-describedby": "description",
-            "aria-label": "Zone",
+            "aria-label": "KICKER\nZone\nSubtitle\nFooter",
             "class": "st-diagramCard st-diagramCard--subtitle",
             "data-entity": "contract-zone",
             "role": "group",

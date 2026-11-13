@@ -86,7 +86,7 @@ const descriptionId = useId();
 </script>
 
 <template>
-<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+<div :class="`st-diagramCard${bodyMode === 'subtitle' ? ' st-diagramCard--subtitle' : ''}${align === 'center' ? ' st-diagramCard--center' : ''}${proposed === true ? ' st-diagramCard--proposed' : ''}`" :data-entity="entityId" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" :style="`height:${layout.box.height}px`" :data-card-overflow="overflowSlot" :data-card-icon-unknown="unknownIcon ? '' : undefined" role="group" :title="cardFullText({ entityId, kicker, title, body, footer })" :aria-label="cardFullText({ entityId, kicker, title, body, footer })" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
   <span :id="descriptionId" hidden>{{ cardFullText({ entityId, kicker, title, body, footer }) }}</span>
   <DiagramCardHeader :kicker="layout.kicker" :title="layout.title" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="layout.headerTextWidth" :headerBlockHeight="layout.headerBlockHeight" :toggle="toggle"></DiagramCardHeader>
   <div class="st-diagramCard-gap" aria-hidden="true"></div>

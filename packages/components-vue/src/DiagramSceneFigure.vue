@@ -9,7 +9,7 @@ import type { SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 import type { DiagramSceneSize, SceneOccurrenceRef } from '@sentropic/diagram-canvas/diagramSceneModel';
 
 export type DiagramSceneFigureProps = SceneFigureProps;
-const props = defineProps<DiagramSceneFigureProps>();
+const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
 const emit = defineEmits<{
   'update:contentSize': [size: DiagramSceneSize];
   foldChange: [collapsed: SceneCollapsedOccurrences, change: { occurrence: SceneOccurrenceRef; collapsed: boolean }];
@@ -32,10 +32,10 @@ const hostEvents = {
   onHighlightChange: (target: EffectiveTarget | null) => emit('highlightChange', target),
 };
 // Retain the SFC camera/transition host for existing diagrams, and the shared
-// flow binding for documents carrying flow definitions or explicit flow/cache inputs.
+// flow binding for documents carrying flow definitions or explicit flow inputs.
+// The classic host also supports cache, font measurement and content-size inputs.
 const sceneHost = computed(() => props.document.typeDefinitions['flow-step'] !== undefined
-  || props.flows !== undefined || props.layoutCache !== undefined
-  || props.contentSize !== undefined || props.onSizeChange !== undefined
+  || props.flows !== undefined
   ? NumberedScene : DiagramSceneFigureBase);
 const scene = shallowRef<{
   setZoom: (zoom: number) => void;

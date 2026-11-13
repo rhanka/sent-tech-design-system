@@ -28,7 +28,7 @@ describe("DiagramCard — fixed box and slots", () => {
     expect(root.dataset.entity).toBe("entity:h2a-roles");
     expect(root.dataset.tone).toBe("identity");
     expect(root.getAttribute("role")).toBe("group");
-    expect(root.getAttribute("aria-label")).toBe("Rôles et mandats");
+    expect(root.getAttribute("aria-label")).toBe([BASE.kicker, BASE.title, ...BASE.body, BASE.footer].join('\n'));
   });
 
   it("renders every slot string completely, detail line secondary", () => {

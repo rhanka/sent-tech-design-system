@@ -900,10 +900,10 @@ describe("hack absence — no FOLDED-CARD-HACKS.md marker survives in DS code", 
     }
   });
 
-  it("no ellipsis/clamp/nowrap on zone text, no hex, no redefined --st-* token", () => {
+  it("uses measured truncation without CSS clipping, hex or redefined tokens (A14)", () => {
     for (const { file, source } of texts) {
       const withoutComments = codeOnly(source);
-      for (const banned of ["…", "ellipsis", "line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
+      for (const banned of ["text-overflow", "line-clamp", "nowrap", "overflow:hidden", "overflow: hidden"]) {
         expect(withoutComments, `${file} ${banned}`).not.toContain(banned);
       }
       expect(withoutComments, `${file} hex`).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);

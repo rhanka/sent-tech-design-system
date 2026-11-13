@@ -117,7 +117,7 @@
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
   title={cardFullText({ entityId, kicker, title, body, footer })}
-  aria-label={title}
+  aria-label={cardFullText({ entityId, kicker, title, body, footer })}
   aria-describedby={descriptionId}
   onclick={() => onSelect?.({ entityId })}
 >
