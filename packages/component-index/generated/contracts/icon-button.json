@@ -1,7 +1,7 @@
 {
   "componentId": "icon-button",
   "contractSource": "derived",
-  "digest": "sha256:e2633bb9aa8fb21c240639c26e90b7c3c8ff97516d5d7ff5857ea8dcfcb55369",
+  "digest": "sha256:5b23472978c81db301dca943eb54a751802d5a1d08f4f9b39aa2d8f1a4215979",
   "entryDigest": "sha256:e48ce5b918902658a9cc39fc82a779810dfd4a321d7658c7741322e8c5ca6cf1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -99,7 +99,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:379ae2b0b092e393fe4f88e3129d4c6cf8e1f9f08da2e034260d61b132717cde",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "IconButtonProps",
