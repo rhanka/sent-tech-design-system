@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "MekkoChart",
+  "sourceRevision": "c7163210e71c3078cf51424b31dc54bf82a1898d",
+  "source": "src/lib/MekkoChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"North-A\" height=\"102.4\" width=\"284\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"150.5\" y=\"63.2\">40%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category2\" data-chart-key=\"North-B\" height=\"153.6\" width=\"284\" x=\"8\" y=\"114.4\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"150.5\" y=\"191.2\">60%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"South-D\" height=\"256\" width=\"170\" x=\"293\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"378.5\" y=\"140\">100%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"150.5\" y=\"284\">North</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"378.5\" y=\"284\">South</text></svg></div><ul aria-label=\"Data values for Mekko\" class=\"st-chartDataList\"><li>North, A: 40% (colonne 63%)</li><li>North, B: 60% (colonne 63%)</li><li>South, D: 100% (colonne 38%)</li></ul></div>"
+    },
+    {
+      "id": "swap-dims",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"A-North\" height=\"256\" width=\"100.33333333333333\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"58.666666666666664\" y=\"140\">100%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"B-North\" height=\"256\" width=\"151\" x=\"109.33333333333333\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"185.33333333333331\" y=\"140\">100%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"D-South\" height=\"256\" width=\"201.66666666666666\" x=\"261.3333333333333\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"362.66666666666663\" y=\"140\">100%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"58.666666666666664\" y=\"284\">A</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"185.33333333333331\" y=\"284\">B</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"362.66666666666663\" y=\"284\">D</text></svg></div><ul aria-label=\"Data values for Mekko\" class=\"st-chartDataList\"><li>A, North: 100% (colonne 22%)</li><li>B, North: 100% (colonne 33%)</li><li>D, South: 100% (colonne 44%)</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-marimekkoChart consumer\" data-bench=\"mekko\" style=\"color:red;\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"208\" y2=\"208\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"North-A\" height=\"78.4\" width=\"284\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"150.5\" y=\"51.2\">40%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category2\" data-chart-key=\"North-B\" height=\"117.6\" width=\"284\" x=\"8\" y=\"90.4\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"150.5\" y=\"149.2\">60%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"South-D\" height=\"196\" width=\"170\" x=\"293\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"378.5\" y=\"110\">100%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"150.5\" y=\"224\">North</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"378.5\" y=\"224\">South</text></svg></div><ul aria-label=\"Data values for Mekko\" class=\"st-chartDataList\"><li>North, A: 40% (colonne 63%)</li><li>North, B: 60% (colonne 63%)</li><li>South, D: 100% (colonne 38%)</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category1\" data-chart-key=\"North-A\" height=\"102.4\" width=\"455\" x=\"8\" y=\"12\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(98% 0.005 255)\" text-anchor=\"middle\" x=\"236\" y=\"63.2\">40%</text><rect class=\"st-marimekkoChart__cell st-marimekkoChart__cell--category2\" data-chart-key=\"North-B\" height=\"153.6\" width=\"455\" x=\"8\" y=\"114.4\"></rect><text class=\"st-marimekkoChart__cellLabel\" dominant-baseline=\"middle\" pointer-events=\"none\" style=\"fill:oklch(18% 0.025 255)\" text-anchor=\"middle\" x=\"236\" y=\"191.2\">60%</text><text class=\"st-marimekkoChart__catLabel\" text-anchor=\"middle\" x=\"236\" y=\"284\">North</text></svg></div><ul aria-label=\"Data values for Mekko\" class=\"st-chartDataList\"><li>North, A: 40% (colonne 100%)</li><li>North, B: 60% (colonne 100%)</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-marimekkoChart\"><div aria-label=\"Mekko\" class=\"st-marimekkoChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><line class=\"st-marimekkoChart__axis\" x1=\"8\" x2=\"464\" y1=\"268\" y2=\"268\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "f7e4e221eb308e972599aba79672d437ce6cfb96f59c01a430f37cbcdbcb263e",
+  "fixtureSha256": "ffa763458c0599aea78c8dd0f76d683f3259fee0e646b44b99afcde3e5256d82",
+  "publicExports": [
+    {
+      "name": "MekkoChart",
+      "typeOnly": false
+    },
+    {
+      "name": "MekkoChartProps",
+      "typeOnly": true
+    }
+  ]
+}

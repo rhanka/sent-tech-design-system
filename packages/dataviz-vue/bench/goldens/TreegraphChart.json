@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TreegraphChart",
+  "sourceRevision": "75018d8d4ebb21065c48c8dbcaf216e2570a79dc",
+  "source": "src/lib/TreegraphChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"54\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"54\">A</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"320\" cy=\"138\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"138\">B</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category3\" cx=\"320\" cy=\"222\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"222\">C</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category4\" cx=\"320\" cy=\"306\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"306\">D</text></g></svg></div><ul aria-label=\"Data values for Treegraph\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li><li>C (C)</li><li>D (D)</li></ul></div>"
+    },
+    {
+      "id": "swap-fields",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"96\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"96\">North</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category3\" cx=\"320\" cy=\"264\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"264\">South</text></g></svg></div><ul aria-label=\"Data values for Treegraph\" class=\"st-chartDataList\"><li>North (North)</li><li>South (South)</li></ul></div>"
+    },
+    {
+      "id": "size-attrs",
+      "html": "<div class=\"st-treegraphChart consumer\" data-bench=\"tree\" style=\"color:red;\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"240\" cy=\"39\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"251\" y=\"39\">A</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"240\" cy=\"93\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"251\" y=\"93\">B</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category3\" cx=\"240\" cy=\"147\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"251\" y=\"147\">C</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category4\" cx=\"240\" cy=\"201\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"251\" y=\"201\">D</text></g></svg></div><ul aria-label=\"Data values for Treegraph\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li><li>C (C)</li><li>D (D)</li></ul></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"96\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"96\">A</text></g><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category2\" cx=\"320\" cy=\"264\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"264\">B</text></g></svg></div><ul aria-label=\"Data values for Treegraph\" class=\"st-chartDataList\"><li>A (A)</li><li>B (B)</li></ul></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"><g class=\"st-treegraphChart__node\"><circle class=\"st-treegraphChart__dot st-treegraphChart__dot--category1\" cx=\"320\" cy=\"180\" r=\"7\"></circle><text class=\"st-treegraphChart__label\" dominant-baseline=\"central\" style=\"font-size: 11px\" text-anchor=\"start\" x=\"331\" y=\"180\">A</text></g></svg></div><ul aria-label=\"Data values for Treegraph\" class=\"st-chartDataList\"><li>A ()</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-treegraphChart\"><div aria-label=\"Treegraph\" class=\"st-treegraphChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 360\" width=\"100%\"></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "d11ef6ebed43fc1032589ccb3fc439d40406f26701856bb3af1bb6052b226234",
+  "fixtureSha256": "157781712b0caba1865ce58c50d2bfe86394bb95200ebd62042a89b9ddb93cb6",
+  "publicExports": [
+    {
+      "name": "TreegraphChart",
+      "typeOnly": false
+    },
+    {
+      "name": "TreegraphChartProps",
+      "typeOnly": true
+    }
+  ]
+}
