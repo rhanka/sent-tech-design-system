@@ -14,7 +14,7 @@ Sent Tech Design System publishes twenty-two public npm packages from this priva
 - `@sentropic/design-system-theme-latex`
 - `@sentropic/design-system-codemirror`
 - `@sentropic/graph` (tag `graph-v<version>`)
-- `@sentropic/dataviz-core`, `@sentropic/dataviz-svelte`, `@sentropic/dataviz-react`, `@sentropic/dataviz-vue`, `@sentropic/dataviz-angular` (tag `dataviz-v<version>`, lockstep)
+- `@sentropic/dataviz-core`, `@sentropic/dataviz-svelte`, `@sentropic/dataviz-react`, `@sentropic/dataviz-vue`, `@sentropic/dataviz-angular` (tag `dataviz-v<version>`, lockstep except an ahead Vue prerelease; Vue-only prereleases use `dataviz-vue-v<version>`)
 - `@sentropic/design-system-rich-text` (tag `rich-text-v<version>`)
 - `@sentropic/design-system-elements` (tag `elements-v<version>`)
 - `@sentropic/diagram-core` (tag `diagram-core-v<version>`)
@@ -73,6 +73,8 @@ Plus, for the diagram-canvas package:
 
 The packages are scoped and public. Keep `publishConfig.access = "public"` in each publishable workspace.
 
+Both Dataviz tag forms use `dataviz-publish.yml`, preserving its npm Trusted Publisher identity. For example, `dataviz-vue-v0.6.0-next.0` validates and publishes only Vue under `next`, with its exact stable `dataviz-core@0.5.0` dependency. A `dataviz-v0.5.x` release validates the core/Svelte/React/Angular lockstep and omits Vue while Vue is on a higher prerelease line; an unrelated stable Vue version or a behind prerelease still fails. Matching Vue versions join the family release. The publish and post-publish checks use the same guarded package selection. Prereleases use their first identifier as dist-tag (`next`, `beta`, `rc`); `latest` is rejected for prereleases. Every selected package retains its npm-existence guard, and Vue additionally requires the registry-only packed closure check before publication.
+
 Before the first release, confirm the npm `@sentropic` scope is owned by the publishing account or organization.
 
 ## Owner Prerequisites Before the First Graph/Dataviz Tag
@@ -105,7 +107,7 @@ git status --short --branch
 
 The gate imports every JavaScript public export and every concrete wildcard export, and resolves/reads public assets (JSON exports are imported as JSON). It runs Node with workspace resolution disabled. Svelte source is compiled to server JavaScript by the installed Svelte compiler, with extension resolution for component-source imports only; CSS is resolved/read with an empty Node module adapter. Published JavaScript retains Node's strict resolution. Angular partial output uses the registry compiler peer for JIT. Vue classic entries run against stable Vue in Node, then all entries, including `/vapor`, run against the registry Vue version matching the workspace's Vapor compiler, using its ESM runtime. Missing modules or named exports fail the process. No browser is involved.
 
-The diagram release repair publishes core **0.2.0**, canvas **0.2.1**, Svelte **0.41.1**, and Vue **0.41.0-next.3**, in that dependency order (Svelte and Vue can follow canvas independently). Core 0.1.0 on npm lacks `flowIndex`, `validateFlows`, `relationBaseType`, `erdEntityOccurrence`, and `erdPortOccurrence`, which canvas 0.2.0 imports. The regression test installs that published canvas against registry core 0.1.0 and requires the import to fail, then checks the repaired candidate. The existing registry-presence gates still require dependencies to be published before downstream releases; local sibling allowances are explicitly pre-release verification evidence.
+The diagram release repair publishes core **0.2.0**, canvas **0.2.2**, Svelte **0.41.2**, and Vue **0.41.0-next.4** (under `next`), in that dependency order (Svelte and Vue can follow canvas independently). Core 0.1.0 on npm lacks `flowIndex`, `validateFlows`, `relationBaseType`, `erdEntityOccurrence`, and `erdPortOccurrence`, which canvas 0.2.0 imports. The regression test installs that published canvas against registry core 0.1.0 and requires the import to fail, then checks the repaired candidate. The existing registry-presence gates still require dependencies to be published before downstream releases; local sibling allowances are explicitly pre-release verification evidence.
 
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
