@@ -19,6 +19,7 @@ import {
   DEFAULT_MIN_READABLE_SCALE,
   FIT_WINDOW_HEIGHT_SHARE,
   FIXED_CARD_HEIGHT,
+  floorToQuantum,
   FIXED_CARD_WIDTH,
   MIN_ZOOM,
   type LayoutResult,
@@ -39,11 +40,11 @@ import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "./diagramCardModel.js";
 import {
+  FIT_QUANTUM,
   layoutScene,
   parseDurationMs,
   parseEasing,
   resolveScene,
-  quantiseFit,
   scenePlacement,
   sceneFit,
   ZOOM_STEP_RATIO,
@@ -461,15 +462,19 @@ describe("DiagramSceneFigure camera", () => {
       await fireEvent.click(view.button("Fit"));
       let fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
       const raw = Math.min((width - 2) / bounds.width, (fitHeight - 2) / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
-      fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * Math.max(DEFAULT_MIN_READABLE_SCALE, raw) + 2) * 64) / 64);
+      // The applied fit is the quantum at or below the raw fit, never above it;
+      // the cap and the readability floor (BF-2) apply as they are.
+      const applied = raw >= DEFAULT_MAX_DISPLAY_SCALE ? raw : Math.max(DEFAULT_MIN_READABLE_SCALE, floorToQuantum(raw, FIT_QUANTUM));
+      fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * applied + 2) * 64) / 64);
       expect(view.viewport.style.height).toBe(`${fitHeight}px`);
-      // BF-2: the fit holds at the readability floor.
-      expect(view.zoom()).toBeCloseTo(Math.max(DEFAULT_MIN_READABLE_SCALE, raw), 12);
+      expect(view.zoom()).toBe(applied);
       expect(view.zoom()).toBeLessThanOrEqual(DEFAULT_MAX_DISPLAY_SCALE);
       const placed = scenePlacement(bounds, view.zoom(), { fitWidth: width, fitHeight });
+      // One scale: the transform prints the camera zoom as it is.
       expect(view.world.style.transform).toBe(
-        `translate(${quantiseFit(placed.translateX)}px,${quantiseFit(placed.translateY)}px) scale(${quantiseFit(view.zoom())})`,
+        `translate(${placed.translateX}px,${placed.translateY}px) scale(${view.zoom()})`,
       );
+      expect(view.viewport.style.getPropertyValue("--st-diagram-zoom")).toBe(String(view.zoom()));
       if (raw >= DEFAULT_MIN_READABLE_SCALE) {
         // Whole drawing inside the box, centred on both axes.
         expect(bounds.width * view.zoom()).toBeLessThanOrEqual(width + 1e-6);
@@ -531,6 +536,83 @@ describe("DiagramSceneFigure camera", () => {
     await fireEvent.keyDown(view.viewport, { key: "0" });
     expect(view.zoom()).toBe(fitZoom);
     expect(view.component.getCamera().fitZoom).toBe(fitZoom);
+  });
+
+  it("Z-3 fit is one scale and a fixed point: repeated Fit keeps the camera while painted rects flip on the layout grid", async () => {
+    // Painted rects derive from the rendered world transform, never from
+    // camera state. Edges land on the 1/64 CSS px layout grid, every node
+    // carries ink the model geometry lacks, and the world origin moves by
+    // one LayoutUnit on every other read: two consecutive reads of the same
+    // paint never agree.
+    const snap = (px: number): number => Math.round(px * 64) / 64;
+    const original = Element.prototype.getBoundingClientRect;
+    let reads = 0;
+    vi.spyOn(Element.prototype, "getBoundingClientRect").mockImplementation(function (this: Element) {
+      const world = this.closest<HTMLElement>(".st-diagramSceneFigure-world");
+      if (world === null) return original.call(this);
+      const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/
+        .exec(world.style.transform)!.slice(1).map(Number) as [number, number, number];
+      if (this === world) {
+        reads++;
+        return new DOMRect(snap(tx) - (reads % 2) / 64, snap(ty) - (reads % 2) / 64, 0, 0);
+      }
+      if (!(this instanceof HTMLElement) || !this.matches("[data-scene-occurrence]")) return new DOMRect();
+      const x = parseFloat(this.style.left), y = parseFloat(this.style.top);
+      const left = snap(tx + x * scale), top = snap(ty + (y - 40) * scale);
+      return new DOMRect(left, top, snap(tx + (x + parseFloat(this.style.width)) * scale) - left,
+        snap(ty + (y + parseFloat(this.style.height)) * scale) - top);
+    });
+    const zooms: number[] = [];
+    for (const [width, height] of [[1920, 1080], [1600, 900], [1280, 720]] as const) {
+      setWindow(width, height);
+      const view = mount(WIDE);
+      await tick();
+      await tick();
+      const state = () => ({
+        zoom: view.zoom(),
+        transform: view.world.style.transform,
+        viewport: view.viewport.style.cssText,
+        extent: (view.root.querySelector(".st-diagramSceneFigure-extent") as HTMLElement).style.cssText,
+        camera: view.cameras.at(-1),
+      });
+      const settled = state();
+      zooms.push(settled.zoom);
+      // The painted ink was read: the camera no longer frames the model bounds.
+      expect(reads).toBeGreaterThan(0);
+      const modelBounds = modelOf(WIDE).model.bounds!;
+      const modelFit = sceneFit({ bounds: modelBounds, viewWidth: width, windowHeight: height });
+      const modelPlaced = scenePlacement(modelBounds, modelFit.zoom, modelFit);
+      expect(settled.transform).not.toBe(`translate(${modelPlaced.translateX}px,${modelPlaced.translateY}px) scale(${modelFit.zoom})`);
+      for (let repeat = 0; repeat < 5; repeat++) {
+        const before = reads;
+        await fireEvent.click(view.button("Fit"));
+        await tick();
+        expect(reads).toBe(before + 1);
+        expect(state(), `${width}: Fit ${repeat + 1}`).toEqual(settled);
+      }
+      // One scale: the transform, data-zoom, the camera and the CSS custom
+      // property carry the same number, on the 1e-3 fit grid.
+      const scale = Number(/scale\(([-\d.e+]+)\)/.exec(settled.transform)![1]);
+      expect(scale).toBe(settled.zoom);
+      expect(scale).toBe(Number(scale.toFixed(3)));
+      expect([settled.camera!.zoom, settled.camera!.fitZoom, settled.camera!.minZoom]).toEqual([scale, scale, scale]);
+      expect(view.viewport.style.getPropertyValue("--st-diagram-zoom")).toBe(String(scale));
+      if (settled.zoom < DEFAULT_MAX_DISPLAY_SCALE) {
+        // From an interactive zoom the read goes through another transform.
+        await fireEvent.click(view.button("Zoom in"));
+        expect(view.zoom()).toBeGreaterThan(settled.zoom);
+        expect(view.world.style.transform.endsWith(`scale(${view.zoom()})`)).toBe(true);
+        await fireEvent.click(view.button("Fit"));
+        await tick();
+        expect(state(), `${width}: Fit after zoom`).toEqual(settled);
+      }
+      view.unmount();
+    }
+    // The three windows cover the cap, an uncapped fit and the floor.
+    expect(zooms[0]).toBe(DEFAULT_MAX_DISPLAY_SCALE);
+    expect(zooms[1]).toBeGreaterThan(DEFAULT_MIN_READABLE_SCALE);
+    expect(zooms[1]).toBeLessThan(DEFAULT_MAX_DISPLAY_SCALE);
+    expect(zooms[2]).toBe(DEFAULT_MIN_READABLE_SCALE);
   });
 
   it("empty scene fits at 100 %", async () => {

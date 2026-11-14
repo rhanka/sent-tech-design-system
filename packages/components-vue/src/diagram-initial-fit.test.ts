@@ -67,6 +67,35 @@ function geometry(element: Element) {
 }
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; });
 
+/**
+ * Painted rects for the jsdom hosts, derived from the rendered world
+ * transform and never from camera state: a host that paints one scale and
+ * measures with another reads wrong bounds here, as it does in a browser.
+ * Edges land on the 1/64 CSS px layout grid, labels carry ink the model
+ * geometry lacks, and the world origin moves by one LayoutUnit on every
+ * other read: two consecutive reads of the same paint never agree.
+ */
+function paintOnLayoutGrid() {
+  const original = Element.prototype.getBoundingClientRect;
+  const snap = (px: number) => Math.round(px * 64) / 64;
+  let reads = 0;
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function(this: Element) {
+    const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
+    if (!world) return original.call(this);
+    const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number);
+    if (this === world) { reads++; return new DOMRect(snap(tx) - (reads % 2) / 64, snap(ty) - (reads % 2) / 64, 0, 0); }
+    if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
+    const box = rect(this);
+    // Independently supplied painted overshoot, absent from model geometry.
+    const top = this.hasAttribute('data-scene-label') ? box.y - 300 : box.y;
+    const left = snap(tx + box.x * scale), topPx = snap(ty + top * scale);
+    return new DOMRect(left, topPx, snap(tx + (box.x + box.width) * scale) - left, snap(ty + (box.y + box.height) * scale) - topPx);
+  });
+  return { reads: () => reads };
+}
+/** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.45, for both scenes below. */
+const UNCAPPED_WIDTH = 550;
+
 function snapshot(element: Element) {
   const { zoom, tx, ty, boxes, paths, viewport, extent } = geometry(element);
   return { zoom, tx, ty, boxes, paths, viewport: viewport.style.cssText, extent: extent.style.cssText,
@@ -204,19 +233,7 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
   for (const scene of cases.filter(scene => ['three cards', 'numbered flows'].includes(scene.name))) it(`should stay at fit while initial ${scene.name} painted bounds settle, before Ajuster`, async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(900);
     vi.stubGlobal('innerHeight', 900);
-    const original = Element.prototype.getBoundingClientRect;
-    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function(this: Element) {
-      const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
-      if (!world) return original.call(this);
-      const [tx, ty] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)/.exec(world.style.transform)!.slice(1).map(Number);
-      const zoom = Number(world.closest<HTMLElement>('figure')!.dataset.zoom);
-      if (this === world) return new DOMRect(tx, ty, 0, 0);
-      if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
-      const box = rect(this);
-      // Independently supplied painted overshoot, absent from model geometry.
-      const top = this.hasAttribute('data-scene-label') ? box.y - 300 : box.y;
-      return new DOMRect(tx + box.x * zoom, ty + top * zoom, box.width * zoom, (box.height + box.y - top) * zoom);
-    });
+    paintOnLayoutGrid();
     const cameras: { zoom: number; fitZoom: number }[] = [];
     const view = await host.mount({ ...scene.input(), onCameraChange: (camera: { zoom: number; fitZoom: number }) => cameras.push(camera) });
     await view.flush();
@@ -227,6 +244,63 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
     expect(geometry(view.element).zoom).toBe(before);
     view.dispose();
   });
+  // Both Vue hosts: `three cards` renders through the base scene host,
+  // `numbered flows` through the numbered one. 1206 px caps the fit at 0.62;
+  // the narrower frame lands between the 0.45 floor and the cap.
+  for (const [name, width, capped] of [['three cards', 1206, true], ['three cards', UNCAPPED_WIDTH, false],
+    ['numbered flows', 1206, true], ['numbered flows', UNCAPPED_WIDTH, false]] as const) {
+    it(`should keep one scale and a single fixed point across repeated Ajuster on ${name} at ${width}`, async () => {
+      vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
+      vi.stubGlobal('innerHeight', 900);
+      const painted = paintOnLayoutGrid();
+      const cameras: { zoom: number; fitZoom: number; minZoom: number }[] = [];
+      const view = await host.mount({ ...cases.find(scene => scene.name === name)!.input(), labels: { fit: 'Ajuster' },
+        onCameraChange: (camera: { zoom: number; fitZoom: number; minZoom: number }) => cameras.push(camera) });
+      await view.flush(); await view.flush();
+      const state = () => {
+        const current = geometry(view.element);
+        return { zoom: current.zoom, transform: current.world.style.transform, viewport: current.viewport.style.cssText,
+          extent: current.extent.style.cssText, camera: cameras.at(-1) };
+      };
+      const ajuster = async () => {
+        [...view.element.querySelectorAll('button')].find(button => button.textContent?.trim() === 'Ajuster')!.click();
+        await view.flush(); await view.flush();
+      };
+      const settled = state();
+      // The painted overshoot was read: the fit is no longer the model fit.
+      expect(painted.reads()).toBeGreaterThan(0);
+      if (capped) expect(settled.zoom).toBe(.62);
+      else {
+        expect(settled.zoom).toBeGreaterThan(.45);
+        expect(settled.zoom).toBeLessThan(.62);
+      }
+      for (let repeat = 0; repeat < 5; repeat++) {
+        const reads = painted.reads();
+        await ajuster();
+        // Every click reads the paint again, one LayoutUnit away…
+        expect(painted.reads()).toBe(reads + 1);
+        // …and lands on the same fit.
+        expect(state(), `Ajuster ${repeat + 1}`).toEqual(settled);
+      }
+      // One scale: the painted transform, data-zoom, the camera and the CSS
+      // custom property all carry the same number, on the 1e-3 fit grid.
+      const scale = Number(/scale\(([-\d.e+]+)\)/.exec(settled.transform)![1]);
+      expect(scale).toBe(settled.zoom);
+      expect(scale).toBe(Number(scale.toFixed(3)));
+      expect([settled.camera!.zoom, settled.camera!.fitZoom, settled.camera!.minZoom]).toEqual([scale, scale, scale]);
+      expect(geometry(view.element).viewport.style.getPropertyValue('--st-diagram-zoom')).toBe(String(scale));
+      if (!capped) {
+        // From an interactive zoom the read goes through another transform.
+        geometry(view.element).viewport.dispatchEvent(new KeyboardEvent('keydown', { key: '+', bubbles: true }));
+        await view.flush();
+        expect(geometry(view.element).zoom).toBeGreaterThan(settled.zoom);
+        expect(Number(/scale\(([-\d.e+]+)\)/.exec(geometry(view.element).world.style.transform)![1])).toBe(geometry(view.element).zoom);
+        await ajuster();
+        expect(state(), 'Ajuster after zoom').toEqual(settled);
+      }
+      view.dispose();
+    });
+  }
   it('should retain the reclamped numbered-flow zoom when a resize restores the old range', async () => {
     vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(340);
     vi.stubGlobal('innerHeight', 900);

@@ -24,4 +24,20 @@ for (const [host, measure] of [['Svelte', svelteBounds], ['Vue', vueBounds]] as 
     expect(bounds.x * 64).toBe(Math.floor(bounds.x * 64));
     expect(bounds.y * 64).toBe(Math.floor(bounds.y * 64));
   });
+  it(`should hand ${host} the model bounds back, by identity, when the paint stays inside them`, () => {
+    const frame = document.createElement('div');
+    frame.innerHTML = '<div class="st-diagramSceneFigure-world"><div data-scene-occurrence="card"></div></div>';
+    const world = frame.firstElementChild!;
+    vi.spyOn(world, 'getBoundingClientRect').mockReturnValue(new DOMRect(100, 200, 0, 0));
+    const paint = vi.spyOn(frame.querySelector('[data-scene-occurrence]')!, 'getBoundingClientRect');
+    // On the 1/64 world grid, as layout bounds are: nothing to round outward.
+    const model = { x: -12.5, y: -26, width: 640.25, height: 230 };
+    paint.mockReturnValue(new DOMRect(100, 200, 460 * .62, 200 * .62));
+    expect(measure(frame, model, .62)).toBe(model);
+    // Ink past the model bounds is a new rect, never the model object.
+    paint.mockReturnValue(new DOMRect(100 - 20 * .62, 200, 460 * .62, 200 * .62));
+    const grown = measure(frame, model, .62)!;
+    expect(grown).not.toBe(model);
+    expect(grown.x).toBeLessThan(model.x);
+  });
 }
