@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.41.0-next.3",
+  "version": "0.41.0-next.4",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
@@ -68,7 +68,8 @@
     "./rich-text-editor/styles.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/.srchash"
   ],
   "scripts": {
     "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/copy-styles.mjs && node scripts/check-published-types.mjs",
@@ -81,7 +82,7 @@
   },
   "dependencies": {
     "@sentropic/design-system-themes": "0.14.0",
-    "@sentropic/diagram-canvas": "0.2.1",
+    "@sentropic/diagram-canvas": "0.2.2",
     "@sentropic/graph": "0.3.1",
     "@sentropic/design-system-rich-text": "0.1.1"
   },

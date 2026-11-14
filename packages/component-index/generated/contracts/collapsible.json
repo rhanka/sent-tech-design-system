@@ -1,8 +1,8 @@
 {
   "componentId": "collapsible",
   "contractSource": "derived",
-  "digest": "sha256:00476391442436417dc206a8d3d19b5a9425145cb1ba556396484fed46083c3a",
-  "entryDigest": "sha256:09900d494c09289d9fdb804ce50c78373ae7a63f787ce94097fcf1089da020fc",
+  "digest": "sha256:ca104335ffcd88eb120e866ab0d6bb19b08c35407811f33eeeac25278c4b7a19",
+  "entryDigest": "sha256:84cb0e1413f54bdad569c3897b5cecae0502da9372b414f9aef51d369b1bf2af",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/Collapsible.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CollapsibleProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -268,7 +268,7 @@
         "declarationPath": "packages/components-vue/dist/Collapsible.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CollapsibleProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],

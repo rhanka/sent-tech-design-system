@@ -8,6 +8,26 @@ import { renderSceneSvg } from '../src/presentation/renderSceneSvg.js';
 const scenes = JSON.parse(readFileSync(new URL('../../diagram-core/tests/fixtures/erd/ERD-SCENES.json', import.meta.url), 'utf8')).ontologies as EngramErdScene[];
 const options = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings, measureText: () => ({ width: 1, height: 1 }), measureLines: cardLineMeasurer(), targetWidth: 1440, rowPack: {} };
 describe('ERD measured layout and SVG', () => {
+  it('should attach leaders to the final label borders after connector clearance in engram-spec', () => {
+    const source = scenes.find(scene => scene.id === 'engram:engram-spec@1')!;
+    const data = convertEngramErdScene(source);
+    const result = layoutMeasured(data.document, { ...options, presentation: data.presentation }, data.view);
+    expect(result.status).toBe('laid-out');
+    if (result.status !== 'laid-out') throw new Error('engram-spec refused');
+    const scene = resolveScene(result, { ...data, measureLines: options.measureLines });
+    const leaders = scene.labels.filter(label => label.leader !== undefined);
+    expect(leaders.length).toBeGreaterThan(0);
+    for (const label of leaders) {
+      const end = label.leader!.at(-1)!;
+      const box = label.box;
+      expect(end.x, label.occurrence).toBeGreaterThanOrEqual(box.x);
+      expect(end.x, label.occurrence).toBeLessThanOrEqual(box.x + box.width);
+      expect(end.y, label.occurrence).toBeGreaterThanOrEqual(box.y);
+      expect(end.y, label.occurrence).toBeLessThanOrEqual(box.y + box.height);
+      expect(end.x === box.x || end.x === box.x + box.width
+        || end.y === box.y || end.y === box.y + box.height, label.occurrence).toBe(true);
+    }
+  });
   it('should retain ERD fields, cardinalities and leaders in standalone scene SVG (Carbon M4)', () => {
     const data = convertEngramErdScene(scenes[0]!);
     const rendered = renderSceneSvg({ ...data, collapsed: [], registry: m3ProfileRegistry, bindings: shippedExecutorBindings, measureLines: options.measureLines });
