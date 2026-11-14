@@ -2,6 +2,7 @@ import { mount } from 'svelte';
 import { createApp, h } from 'vue';
 import Harness from './Harness.svelte';
 import VueFigure from '../../packages/components-vue/src/DiagramSceneFigure.vue';
+import '../../packages/components-vue/src/styles.css';
 import { compileTheme, sentTechTheme } from '@sentropic/design-system-themes';
 import { fixture } from './fixtures.js';
 

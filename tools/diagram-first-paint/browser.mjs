@@ -56,8 +56,10 @@ function measure() {
     if (!text.textContent.trim() || text.parentElement.closest('defs,title,desc,[hidden]') || !paintsText(text)) continue;
     const range = document.createRange();
     range.selectNodeContents(text);
+    const carrier = text.parentElement.closest('[data-flow-badge]')?.dataset.flowBadge;
     for (const r of range.getClientRects()) labels.push({ id: text.textContent,
-      left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height });
+      left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height,
+      ...(carrier === undefined ? {} : { carrier }) });
   }
   const paths = [...figure.querySelectorAll('[data-scene-edge]')].map(element => {
     const style = getComputedStyle(element);
@@ -79,6 +81,18 @@ function measure() {
     const r = box(element);
     const inset = Math.max(...['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius']
       .map(key => parseFloat(style[key]) || 0)) * scale;
+    if (element.matches('.st-diagramSceneFigure-flowBadge')) {
+      // CSS reduces the pill's nominal 999px radius to its painted radius.
+      // Clip against the actual rounded surface: its central rectangles and
+      // corner disks. Insetting a circle by its radius leaves no interior.
+      const radius = Math.min(inset, r.width / 2, r.height / 2);
+      return [
+        { left: r.left + radius, top: r.top, right: r.right - radius, bottom: r.bottom },
+        { left: r.left, top: r.top + radius, right: r.right, bottom: r.bottom - radius },
+        ...[r.left + radius, r.right - radius].flatMap(x =>
+          [r.top + radius, r.bottom - radius].map(y => ({ x, y, radius }))),
+      ];
+    }
     return [{ left: r.left + inset, top: r.top + inset, right: r.right - inset, bottom: r.bottom - inset }];
   });
   const frameBox = box(frame);
@@ -124,6 +138,17 @@ async function settle(page) {
 const epsilon = 1 / 64; // CSS layout precision, not a visual clearance allowance.
 
 function segmentInterval(box, a, b) {
+  if ('radius' in box) {
+    const dx = b.x - a.x, dy = b.y - a.y, x = a.x - box.x, y = a.y - box.y;
+    const length = dx * dx + dy * dy;
+    const outside = x * x + y * y - box.radius * box.radius;
+    if (length === 0) return outside <= 0 ? [0, 1] : undefined;
+    const dot = x * dx + y * dy, discriminant = dot * dot - length * outside;
+    if (discriminant < 0) return undefined;
+    const enter = Math.max(0, (-dot - Math.sqrt(discriminant)) / length);
+    const leave = Math.min(1, (-dot + Math.sqrt(discriminant)) / length);
+    return enter <= leave ? [enter, leave] : undefined;
+  }
   const dx = b.x - a.x, dy = b.y - a.y;
   let enter = 0, leave = 1;
   for (const [start, delta, low, high] of [[a.x, dx, box.left, box.right], [a.y, dy, box.top, box.bottom]]) {
@@ -247,6 +272,10 @@ function check(state, scene) {
       && label.bottom <= state.frame.top + state.scroll[2] + epsilon,
     `label unreachable within scroll extent: ${label.id}`);
     for (const path of visiblePaths) {
+      // A numbered badge intentionally straddles its carrier. Keep its ink
+      // in containment/parity checks and enforce clearance to every other
+      // connector; ordinary connector labels have no carrier exemption.
+      if (label.carrier === path.id) continue;
       for (const [a, b] of path.segments) {
         const distance = segmentDistance(label, a, b) - path.stroke;
         assert.ok(distance + epsilon >= state.clearance,
