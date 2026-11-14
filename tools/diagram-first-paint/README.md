@@ -4,11 +4,12 @@
 with Chrome for Testing and `puppeteer-core`, matching the graph golden setup.
 The runner refuses execution outside GitHub CI. Never run it locally.
 
-The 20 cases mount the actual Svelte and Vue `DiagramSceneFigure` sources with
-the production theme: architecture and ontology h-cond fixtures, each folded
-and unfolded, plus three generic cards, at 1440×900 and 390×844. They use browser
-font measurement and stable animation frames without interaction before the
-initial snapshot. The only interaction afterwards is the actual Ajuster button.
+The 28 cases (`2 frameworks × 2 viewports × cases.length` from `scenes.js`) mount
+the actual Svelte and Vue `DiagramSceneFigure` sources with the production theme:
+architecture and ontology h-cond fixtures, each folded and unfolded, three generic
+cards, and numbered flows with and without bundles, at 1440×900 and 390×844. They
+use browser font measurement and stable animation frames without interaction
+before the initial snapshot. The only interaction afterwards is the actual Ajuster button.
 
 Assertions read DOM scroll dimensions, text ranges, label rectangles,
 transformed connector segments (including stroke), and the numeric world
@@ -30,9 +31,10 @@ The browser job is an explicit dependency of Verify's workspace shards and runs
 on every Verify event, including diagram packages and their shared dependencies.
 Repository branch-protection settings are managed separately from workflow YAML.
 
-Local validation is static only:
+Local validation uses numeric unit checks and static compilation:
 
 ```sh
+node --test scripts/diagram-first-paint-geometry.test.mjs
 node --check tools/diagram-first-paint/browser.mjs
 node --check tools/diagram-first-paint/build.mjs
 node tools/diagram-first-paint/build.mjs /tmp/diagram-first-paint-static

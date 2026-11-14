@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import DiagramErdNode from './DiagramErdNode.vue';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import { projectCardProps, projectZoneProps, type DiagramGlyphPaths, type CardLineMeasure } from '@sentropic/diagram-canvas/diagramCardModel';
@@ -17,7 +18,8 @@ const zone = computed(() => {
 });
 </script>
 <template>
-  <DiagramCard v-if="card?.kind === 'card'" v-bind="card.props" :measure="measure" @select="select" />
+  <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="expand" :collapse="collapse" :toggle="toggle" />
+  <DiagramCard v-else-if="card?.kind === 'card'" v-bind="card.props" :measure="measure" @select="select" />
   <DiagramZone v-else-if="zone?.kind === 'zone'" v-bind="zone.props" :measure="measure" @select="select" @toggle="toggle" />
   <div v-else class="st-diagramSceneFigure-label" :data-entity="node.entity">{{ node.text }}</div>
 </template>
