@@ -43,6 +43,6 @@ The rest of the first-party runtime closure is already on public npm: `@sentropi
 - Carbon 4 / Astra 1: pending public npm closure documented above; versions unchanged, publication still blocked.
 - Carbon 5: current pins and provenance note refreshed, preserving upstream identities and recomputing changed destination hashes.
 
-Scoped verification after these corrections: dataviz-vue build and published type parity pass; 37 package test files / 161 tests and 134 scoped script tests pass; packed smoke imports/type-checks 322 exports; provenance verifies all 1,193 entries; component-index checks 436 fresh artifacts. No final registry import success is claimed while the three prerequisites remain unpublished.
+Scoped verification after these corrections: dataviz-vue build and published type parity pass; 37 package test files / 161 tests and 134 scoped script tests pass; packed smoke imports/type-checks 322 exports; provenance verifies all 1,193 entries; component-index checks 436 fresh artifacts. The isolated K25 fixtures copy the control-byte guard along with the lint, exercise raw NUL rejection versus the escaped separator, and retain all 14 compatibility witnesses. No final registry import success is claimed while the three prerequisites remain unpublished.
 
 No root test command, browser, Chromium, Python or tracking commands were run.
