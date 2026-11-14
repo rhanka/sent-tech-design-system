@@ -84,6 +84,8 @@ for (const scene of cases) for (const width of [1440, 340]) it(`should give Svel
   const views = [];
   for (const [i, host] of hosts.entries()) views.push(await host.mount({ ...scene.input(), onCameraChange: (camera: unknown) => cameras[i].push(camera) }));
   const compare = () => {
+    const labelTexts = (element: Element) => [...element.querySelectorAll('[data-scene-label]')].map(node => node.textContent);
+    expect(labelTexts(views[1].element)).toEqual(labelTexts(views[0].element));
     const rows = (element: Element) => [...element.querySelectorAll('.st-diagramSceneFigure-fallback p')].map(row => row.textContent);
     expect(rows(views[0].element).length).toBeGreaterThan(0);
     expect(rows(views[1].element)).toEqual(rows(views[0].element));
