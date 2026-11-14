@@ -244,9 +244,9 @@ describe("camera fit (§5)", () => {
     expect(fitBox(1440, 2000)).toEqual({ width: 1440, height: 810 });
     expect(fitBox(1440, 800)).toEqual({ width: 1440, height: 680 });
     const wide = cameraFit({ bounds: { width: 2880, height: 810 }, viewWidth: 1440, windowHeight: 2000 });
-    expect(wide.zoomFit).toBe(0.5);
+    expect(wide.zoomFit).toBe(1438 / 2880);
     const tall = cameraFit({ bounds: { width: 1440, height: 1620 }, viewWidth: 1440, windowHeight: 2000 });
-    expect(tall.zoomFit).toBe(0.5);
+    expect(tall.zoomFit).toBe(808 / 1620);
     expect(tall.pans).toBe(false);
   });
 
@@ -257,18 +257,21 @@ describe("camera fit (§5)", () => {
     expect([empty.zoom, zoomReadout(empty.zoom)]).toEqual([0.62, 100]);
     const fit = cameraFit({ bounds: { width: 2880, height: 810 }, viewWidth: 1440, windowHeight: 2000 });
     expect(clampZoom(5, fit)).toBe(0.62);
-    expect(clampZoom(0.01, fit)).toBe(0.5);
+    expect(clampZoom(0.01, fit)).toBe(1438 / 2880);
     expect(clampZoom(0.55, fit)).toBe(0.55);
   });
 
-  it("readability floor: a drawing larger than the floor allows is held at the floor and pans", () => {
+  it("fit stops at the readability floor and scrolls the remaining drawing", () => {
     expect(DEFAULT_MIN_READABLE_SCALE).toBe(0.45);
     const huge = cameraFit({ bounds: { width: 460, height: 8000 }, viewWidth: 1440, windowHeight: 2000 });
-    expect(huge.zoomFit).toBeCloseTo(810 / 8000, 6);
-    expect(huge.zoom).toBe(0.45);
+    expect(huge.zoomFit).toBeCloseTo(808 / 8000, 6);
+    expect(huge.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
     expect(huge.pans).toBe(true);
-    // Zoom-out still reaches the whole drawing (Z-2).
-    expect(clampZoom(0, huge)).toBeCloseTo(810 / 8000, 6);
+    expect(clampZoom(0, huge)).toBe(DEFAULT_MIN_READABLE_SCALE);
+    const loweredTokens = cameraFit({ bounds: { width: 8000, height: 8000 }, viewWidth: 390, windowHeight: 844,
+      minReadableScale: .1, maxDisplayScale: .3 });
+    expect(loweredTokens.zoom).toBe(DEFAULT_MIN_READABLE_SCALE);
+    expect(loweredTokens.minZoom).toBe(DEFAULT_MIN_READABLE_SCALE);
   });
 
   it("§5.3: an edge label renders at 8 CSS px or more at the floor; 0.45 is the smallest two-decimal floor that holds it", () => {
@@ -281,7 +284,9 @@ describe("camera fit (§5)", () => {
     // Every fit, whatever the drawing, shows the label at the minimum or more.
     for (const height of [200, 810, 2000, 8000, 40000]) {
       const fit = cameraFit({ bounds: { width: 2000, height }, viewWidth: 1440, windowHeight: 2000 });
-      expect(edgeLabelCssPx(fit.zoom), String(height)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+      expect(fit.zoom).toBe(Math.max(DEFAULT_MIN_READABLE_SCALE, fit.zoomFit));
+      expect(edgeLabelCssPx(fit.zoom)).toBeGreaterThanOrEqual(MIN_EDGE_LABEL_CSS_PX);
+      expect(fit.pans).toBe(fit.zoomFit < DEFAULT_MIN_READABLE_SCALE);
     }
   });
 });

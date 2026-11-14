@@ -230,7 +230,8 @@ describe("DC-2a L3 #203 wiring (W-1–W-6, AC-9, AC-10)", () => {
       for (const link of layout.input.links) {
         const source = representative(link.source);
         const target = representative(link.target);
-        const route = layout.routes.find((candidate) => candidate.id === `occurrence:r.link.${link.id}`);
+        const route = layout.routes.find((candidate) => candidate.id === `occurrence:r.link.${link.id}`
+          || layout.bundles?.[candidate.id]?.members.includes(`occurrence:r.link.${link.id}`));
         if (source === target) {
           // W-2: internal to one collapsed box — no route, no label, no space.
           hidden += 1;
@@ -268,12 +269,13 @@ describe("DC-2a L3 #203 wiring (W-1–W-6, AC-9, AC-10)", () => {
     }
   });
 
-  it("AC-10: cards and collapsed zones keep their 460 × 200 footprint in every fold state", () => {
+  it("AC-10: cards and collapsed zones keep their width and content height in every fold state", () => {
     for (const view of views) {
       const layout = layouts.get(view.key)!;
       for (const id of layout.input.leaves) {
         const rect = layout.rects.get(id)!;
-        expect([rect.width, rect.height], `${view.key} ${id}`).toEqual([460, 200]);
+        expect(rect.width, `${view.key} ${id}`).toBe(460);
+        expect(rect.height, `${view.key} ${id}`).toBeGreaterThanOrEqual(200);
       }
     }
   });

@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:523f1b00ab3a1d4b2b7be86cf18d29279e887d34cbdbac26e090e9c630c4d910",
+      "digest": "sha256:688b91706b68851749068ae661770b1161a3417e34d5c9ca18e4d92c5858e27b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Breadcrumb.vue",
@@ -40,7 +40,7 @@
     "en": "Semantic breadcrumb trail.",
     "fr": "Fil d’Ariane sémantique."
   },
-  "digest": "sha256:6ec8e562d905db46d949c8883f0174959a4c37bf9a931b0d8dc25e0cbcdb02a6",
+  "digest": "sha256:d1a66c642e16d82179e85593226fb5e778df1664c192c4914de09909e893a7fd",
   "displayName": "Breadcrumb",
   "format": "component-entry/v1",
   "frameworks": [

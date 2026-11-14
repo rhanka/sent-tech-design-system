@@ -1,4 +1,5 @@
 import type { Fixture } from './types.js';
+import { parseFullMarkdown } from '@sentropic/design-system-rich-text';
 export default [
   {
     "id": "default",
@@ -112,5 +113,6 @@ export default [
         "canRequestUnlock": true
       }
     }
-  }
+  },
+  { id: "full-profile", props: { profile: "full", value: parseFullMarkdown('Full editor', () => 'p:1').document, messages: { editorLabel: "Editor", placeholder: "Write here", preservedBlockLabel: "Preserved {kind}", externalConflictLabel: "Conflict" } } }
 ] satisfies Fixture[];

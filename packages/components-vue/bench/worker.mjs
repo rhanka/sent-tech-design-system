@@ -77,8 +77,18 @@ try {
       document.querySelector('#app').setAttribute('data-v-app', '');
       const beforeMount = normalizeHtml(document.body.innerHTML, JSDOM);
       try {
-        app.mount(document.querySelector('#app'));
+        const handle = app.mount(document.querySelector('#app'));
         await nextTick();
+        if (['RichTextEditor', 'ComposerEditor'].includes(name)) {
+          const captured = await handle.capture();
+          assert.equal(handle.readiness().ready, true, fixture.id + ': editor is not ready');
+          assert.ok(document.querySelector('.ProseMirror'), fixture.id + ': missing initialized editor');
+          if (name === 'ComposerEditor') assert.equal(captured.text, fixture.props.value);
+          else {
+            const text = block => block?.text ?? block?.segments?.map(segment => segment.text ?? '').join('');
+            assert.equal(text(captured.document.blocks[0]), text(fixture.props.value.blocks[0]));
+          }
+        }
         await new Promise(done => setTimeout(done, 0));
         const expected = golden.fixtures.find(f => f.id === fixture.id);
         if ((expected.html || Object.values(expected.teleports ?? {}).some(Boolean)) && !document.body.textContent && !document.querySelector('#app *') && !document.querySelector('.st-popper,.st-portal')) throw new Error(fixture.id + ': mount produced no content');

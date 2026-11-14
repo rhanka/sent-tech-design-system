@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:436ed0c8a28a165ed9380a15d321941531271d73ab121a054ddf1d533ca08fa0",
+      "digest": "sha256:86e479f7cbe36abeb0a9974a973d63aa376603be445c33976847102fb47828f0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/WebFrame.vue",
@@ -32,7 +32,7 @@
     "en": "Hardened embedded web frame (sandbox, title, lazy loading).",
     "fr": "Cadre web intégré et durci (sandbox, titre, chargement paresseux)."
   },
-  "digest": "sha256:a200103b488bdd5e37264c844514aa3c652b5be33ea06693ef99d413fc6044d8",
+  "digest": "sha256:eb410ae197dea2190569048911082f007214248ae82e6e424a610c6f7880a955",
   "displayName": "WebFrame",
   "format": "component-entry/v1",
   "frameworks": [

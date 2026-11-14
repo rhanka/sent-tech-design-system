@@ -1,8 +1,8 @@
 {
   "componentId": "unordered-list",
   "contractSource": "derived",
-  "digest": "sha256:c5e5f9aa97e4a7604b589694f55485ffb13b03dbd225e9563bcbeff46d9bc8eb",
-  "entryDigest": "sha256:a2d4d2fa6cba4e9f215378558379401ce55e77ab7a15528d21fca75790817652",
+  "digest": "sha256:9341fbe28cee257c5d38e6fb6d3e86604a7db93f1c7444f9025f44be60ee066d",
+  "entryDigest": "sha256:145ec2ee8fd59b595d357a8e1339c149405e8bd92c6ab4bc9aa7ee882e31714b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -218,13 +218,59 @@
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
+        "$defs": {
+          "UnorderedListItem": {
+            "additionalProperties": false,
+            "properties": {
+              "children": {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "$ref": "#/$defs/UnorderedListItem"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              "content": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
+            },
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
           "class": {
             "type": "string"
           },
           "items": {
-            "items": {},
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "number"
+                },
+                {
+                  "$ref": "#/$defs/UnorderedListItem"
+                }
+              ]
+            },
             "type": "array"
           },
           "nested": {
@@ -242,20 +288,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "items[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "scope.item",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "item",
@@ -265,7 +298,19 @@
               "index": {
                 "type": "number"
               },
-              "item": {},
+              "item": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "$ref": "#/$defs/UnorderedListItem"
+                  }
+                ]
+              },
               "path": {
                 "items": {
                   "type": "number"
@@ -283,13 +328,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:db5557d315da6b874edf01e369ff8e322ee14af6a04a388caa125a4424521523",
+        "declarationDigest": "sha256:b64b388dea069c2a2ae9c171853e5e68a0dfc54e955eb17adfec8ae8f2b44ade",
         "declarationPath": "packages/components-vue/dist/UnorderedList.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "UnorderedListProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

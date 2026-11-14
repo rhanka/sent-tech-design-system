@@ -6,16 +6,16 @@ export interface NavRailItem {
   id: string;
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
   href?: string;
   active?: boolean;
   disabled?: boolean;
 
   /** @slot item-badge */
-  badge?: unknown;
+  badge?: string | number;
 
   /** @slot item-icon */
-  icon?: unknown;
+  icon?: string | number;
 }
 
 export type NavRailProps = {

@@ -152,6 +152,8 @@ jobs:
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
+      - name: Verify core runtime dependencies and peers exist on npm
+        run: node scripts/verify-deps-published.mjs --workspace packages/dataviz-core --runtime
       - name: Publish Dataviz packages in dependency order
         id: publish
         env:
@@ -172,6 +174,9 @@ jobs:
             fi
           fi
           for package in @sentropic/dataviz-core @sentropic/dataviz-svelte @sentropic/dataviz-react @sentropic/dataviz-vue @sentropic/dataviz-angular; do
+            # Core must be available before an adapter can pass this guard.
+            # Each adapter checks every dependency and peer, including optional ones.
+            node scripts/verify-deps-published.mjs --workspace "packages/${package#@sentropic/}" --runtime
             if npm view "${package}@${VERSION}" version --silent > /dev/null 2>&1; then
               echo "${package}@${VERSION} is already on npm: skipped."
             else

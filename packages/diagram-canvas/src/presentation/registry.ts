@@ -57,6 +57,7 @@ function glyph(
  * collisions across the two sources — no aliasing was needed.
  */
 export const DIAGRAM_GLYPHS: Readonly<Record<string, DiagramGlyph>> = {
+  base: glyph("M10 12H54V48H10Z", "M18 22H46M18 32H40"),
   // --- radar-immobilier fa8133c2 (19): interiors preserved verbatim, base
   // replaced by the canonical diamond (§9.1, DIF-12) ---
   s3: glyph("M12 18Q32 6 52 18L47 47Q32 58 17 47Z", "M12 18Q32 30 52 18M18 29Q32 38 46 29", {
@@ -157,5 +158,5 @@ export const DIAGRAM_GLYPH_NAMES = Object.keys(DIAGRAM_GLYPHS);
  * silent substitution).
  */
 export function getDiagramGlyph(name: string): DiagramGlyph | undefined {
-  return DIAGRAM_GLYPHS[name];
+  return Object.hasOwn(DIAGRAM_GLYPHS, name) ? DIAGRAM_GLYPHS[name] : undefined;
 }
