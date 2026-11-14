@@ -17,7 +17,8 @@ pixels. Display scale must reach 0.45. The unclamped fit is derived from the DOM
 extent and world scale; when feasible at 0.45, the viewport must have no scroll
 overflow. Otherwise, only overflowing axes may scroll, starting at the origin,
 and every label must remain reachable. The outer frame must never overflow.
-Labels must clear every painted connector segment. Initial camera and scroll
+Labels must clear every painted connector segment; portions hidden behind
+opaque card and zone surfaces are excluded. Initial camera and scroll
 state must equal those after Ajuster exactly; numeric geometry and transform
 components may differ by at most 1/64 CSS px. No case skips or falls back to a
 synthetic DOM. Failure artifacts include untouched initial screenshots, failure
