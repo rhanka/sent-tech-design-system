@@ -30,11 +30,16 @@ export function useDiagramSceneViewport(
     let atFit = true;
     const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
     const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
+    // `zoom` is the scale the world is painted at: the fit is quantised once,
+    // in `sceneFit`, and printed as it is, so painted rects divide back by it.
+    // The first read of a scene fits; a later one refits only when it differs
+    // from that read by more than the measurement granularity.
     function readRenderedBounds() {
         if (frameEl.value === undefined || scene.value === undefined) return;
         const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
+        const previous = renderedBounds.value?.scene === scene.value ? renderedBounds.value.bounds : undefined;
         if (bounds !== undefined && bounds !== scene.value.bounds
-            && shouldRefitRenderedBounds(cameraBounds.value, bounds, zoom.value)) {
+            && shouldRefitRenderedBounds(previous, bounds)) {
             if (atFit) requestedZoom.value = undefined;
             renderedBounds.value = { scene: scene.value, bounds };
         }

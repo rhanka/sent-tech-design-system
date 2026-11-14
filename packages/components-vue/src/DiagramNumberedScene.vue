@@ -10,7 +10,7 @@ import {
   type FlowState, type FlowAction, type Visible,
 } from "@sentropic/diagram-canvas/flowModel";
 import {
-  collapsedOccurrencesOf, sceneContentSize, layoutScene, quantiseFit, resolveScene,
+  collapsedOccurrencesOf, sceneContentSize, layoutScene, resolveScene,
   parseScale,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -246,7 +246,7 @@ const scenarioId = useId();
         @pointerover="dispatch({ type: 'hover', target: targetAt($event.target) })" @pointerout="dispatch({ type: 'hover', target: targetAt($event.relatedTarget) })"
         @focusin="dispatch({ type: 'focus', target: targetAt($event.target) })" @focusout="dispatch({ type: 'focus', target: targetAt($event.relatedTarget) })" @click="click" @click.capture="captureClick">
         <div class="st-diagramSceneFigure-extent" :style="`width:${placement.contentWidth}px;height:${placement.contentHeight}px`">
-          <div class="st-diagramSceneFigure-world" :style="`transform:translate(${quantiseFit(placement.translateX)}px,${quantiseFit(placement.translateY)}px) scale(${quantiseFit(zoom)})`" :data-flow-active="highlight !== undefined && (highlight.primary.size > 0 || highlight.dimmed.size > 0) ? 'true' : undefined">
+          <div class="st-diagramSceneFigure-world" :style="`transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`" :data-flow-active="highlight !== undefined && (highlight.primary.size > 0 || highlight.dimmed.size > 0) ? 'true' : undefined">
             <template v-if="scene !== undefined">
               <svg class="st-diagramSceneFigure-edges" aria-hidden="true">
                 <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>

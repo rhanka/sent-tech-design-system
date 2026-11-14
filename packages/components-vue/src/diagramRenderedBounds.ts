@@ -1,4 +1,5 @@
 import type { Rect } from '@sentropic/diagram-canvas';
+import { RENDERED_BOUNDS_GRID_STEPS as GRID } from '@sentropic/diagram-canvas/diagramSceneModel';
 
 /** Painted bounds in world units, after font/layout settling. DOM-free
  * scene geometry remains the SSR fallback. Include text ink and SVG strokes:
@@ -40,6 +41,11 @@ export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undef
   }
   if (!measured || !Number.isFinite(left)) return fallback;
   // CSS layout uses a 1/64 px grid. Always round the outer edges outward.
-  const x = Math.floor(left * 64) / 64, y = Math.floor(top * 64) / 64;
-  return { x, y, width: Math.ceil(right * 64) / 64 - x, height: Math.ceil(bottom * 64) / 64 - y };
+  // `RENDERED_BOUNDS_REFIT_TOLERANCE` is derived from this same grid.
+  const x = Math.floor(left * GRID) / GRID, y = Math.floor(top * GRID) / GRID;
+  const width = Math.ceil(right * GRID) / GRID - x, height = Math.ceil(bottom * GRID) / GRID - y;
+  // Paint that stays inside the model bounds is the model bounds: hosts
+  // compare by identity, so an unchanged rect must not look like a new read.
+  if (fallback !== undefined && x === fallback.x && y === fallback.y && width === fallback.width && height === fallback.height) return fallback;
+  return { x, y, width, height };
 }

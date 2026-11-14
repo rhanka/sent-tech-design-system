@@ -2,12 +2,12 @@ import { setTimeout as realDelay } from "node:timers/promises";
 import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createLayoutCache, worldToView } from "../../src/index.js";
+import { cameraFit, createLayoutCache, floorToQuantum, worldToView, type Rect } from "../../src/index.js";
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
-  layoutScene, quantiseFit, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
-  shouldRefitRenderedBounds,
+  FIT_QUANTUM, layoutScene, RENDERED_BOUNDS_GRID_STEPS, RENDERED_BOUNDS_REFIT_TOLERANCE, resolveScene, resolveZoom,
+  sceneContentSize, sceneFit, scenePlacement, shouldRefitRenderedBounds,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
 import { pinnedMeasurer, sceneInput } from "../layout/dc2a/scenes.js";
@@ -19,6 +19,48 @@ const input: SceneLayoutInput = {
   hints: { ordering: witness.ordering, rootOrder: witness.rootOrder },
 };
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
+
+/**
+ * The scene hosts' fit loop over the pure model. The world is painted at
+ * the fit transform (or at an interactive zoom), painted rects land on the
+ * 1/64 CSS px grid, and a read divides them back by the painted scale,
+ * unions them with the model bounds and rounds outward to 1/64 world unit,
+ * as `measureRenderedBounds` does. `ajuster` returns the distance of the
+ * read to the previous one, world units.
+ */
+function hostLoop(model: Rect, initialPaint: Rect, viewWidth: number) {
+  const snap = (px: number) => Math.round(px * 64) / 64;
+  let painted = initialPaint;
+  let read: Rect | undefined;
+  const frame = () => {
+    const bounds = read ?? model;
+    const fit = sceneFit({ bounds, viewWidth, windowHeight: 900 });
+    return { bounds, fit };
+  };
+  return {
+    paint(next: Rect) { painted = next; },
+    ajuster(interactiveZoom?: number): number {
+      const { bounds, fit } = frame();
+      const zoom = interactiveZoom ?? fit.zoom;
+      const placement = scenePlacement(bounds, zoom, fit);
+      const edge = (world: number, translate: number) => (snap(translate + world * zoom) - snap(translate)) / zoom;
+      const left = Math.min(model.x, edge(painted.x, placement.translateX));
+      const top = Math.min(model.y, edge(painted.y, placement.translateY));
+      const right = Math.max(model.x + model.width, edge(painted.x + painted.width, placement.translateX));
+      const bottom = Math.max(model.y + model.height, edge(painted.y + painted.height, placement.translateY));
+      const x = Math.floor(left * 64) / 64, y = Math.floor(top * 64) / 64;
+      const next = { x, y, width: Math.ceil(right * 64) / 64 - x, height: Math.ceil(bottom * 64) / 64 - y };
+      const distance = read === undefined ? 0 : Math.max(Math.abs(next.x - read.x), Math.abs(next.y - read.y),
+        Math.abs(next.x + next.width - read.x - read.width), Math.abs(next.y + next.height - read.y - read.height));
+      if (shouldRefitRenderedBounds(read, next)) read = next;
+      return distance;
+    },
+    state() {
+      const { bounds, fit } = frame();
+      return { bounds, zoom: fit.zoom, fitHeight: fit.fitHeight, placement: scenePlacement(bounds, fit.zoom, fit) };
+    },
+  };
+}
 
 describe("shared scene presentation (DC-2b)", () => {
   it.each([0, 15, 20])('should keep drawing content reachable with a %i px horizontal scrollbar', (scrollbarHeight) => {
@@ -37,24 +79,110 @@ describe("shared scene presentation (DC-2b)", () => {
       }
     }
   });
-  it('should keep the fit idempotent when painted bounds alternate by a sub-pixel step', () => {
-    // h-cond probe D1/D2: 1206 px frame, capped zoom, and « Ajuster »
-    // alternates between two transforms 0.005 px apart in translate.
-    const bounds = { x: -634.6, y: -44, width: 1900, height: 300 };
+  it('should floor an uncapped fit to the fit quantum, never above the fit, with the cap and the floor exact', () => {
+    // 1204 / 2405.5 = 0.500519…: the applied zoom is the quantum below it.
+    const bounds = { x: 0, y: 0, width: 2405.5, height: 500 };
     const fit = sceneFit({ bounds, viewWidth: 1206, windowHeight: 900 });
-    expect(fit.zoom).toBe(0.62);
-    const initial = scenePlacement(bounds, fit.zoom, fit);
-    const flipped = { ...bounds, x: bounds.x - 0.005 / fit.zoom, y: bounds.y + 0.00297 / fit.zoom };
-    let current = bounds;
-    for (const candidate of [flipped, bounds, flipped, bounds]) {
-      if (shouldRefitRenderedBounds(current, candidate, fit.zoom)) current = candidate;
+    expect(fit.zoomFit).toBe(1204 / 2405.5);
+    expect([fit.zoom, fit.minZoom, fit.pans]).toEqual([0.5, 0.5, false]);
+    expect(fit.fitHeight).toBeGreaterThanOrEqual(bounds.height * fit.zoom + 2);
+    expect(fit.fitHeight).toBeLessThan(bounds.height * fit.zoom + 2 + 1 / 64);
+    expect(scenePlacement(bounds, fit.zoom, fit)).toMatchObject({ overflowX: false, overflowY: false });
+    // 1204 / 2672 = 0.450599…: rounding to the nearest quantum (0.451) would
+    // paint 1 + 2672 × 0.451 = 1206.07 px wide in a 1206 px frame.
+    const tight = sceneFit({ bounds: { x: 0, y: 0, width: 2672, height: 400 }, viewWidth: 1206, windowHeight: 900 });
+    expect(tight.zoom).toBe(0.45);
+    expect(tight.pans).toBe(false);
+    expect(2672 * tight.zoom + 2).toBeLessThanOrEqual(1206);
+    // An exact multiple stays where it is: 501 / 1000 × 1000 is not 501 in
+    // floating point, and must not fall to the step below.
+    expect(sceneFit({ bounds: { x: 0, y: 0, width: 1000, height: 100 }, viewWidth: 503, windowHeight: 900 }).zoom).toBe(0.501);
+    for (let width = 1950; width < 2700; width += 7.3) {
+      const swept = sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 });
+      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.45, swept.zoomFit));
+      expect(swept.zoomFit - swept.zoom, String(width)).toBeLessThan(FIT_QUANTUM);
+      // On the grid: the printed scale has three decimals at most.
+      expect(swept.zoom, String(width)).toBe(Number(swept.zoom.toFixed(3)));
+      expect(sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 })).toEqual(swept);
     }
-    expect(current).toBe(bounds);
-    expect(scenePlacement(current, fit.zoom, fit)).toEqual(initial);
-    expect(shouldRefitRenderedBounds(bounds, { ...bounds, width: bounds.width + 100 }, fit.zoom)).toBe(true);
-    expect(quantiseFit(392.71349)).toBe(392.713);
-    expect(quantiseFit(27.30695)).toBe(27.307);
-    expect(quantiseFit(fit.zoom)).toBe(fit.zoom);
+    // Token values are not quantised: an off-grid cap or floor applies as it is.
+    const capped = sceneFit({ bounds: { x: 0, y: 0, width: 460, height: 200 }, viewWidth: 1206, windowHeight: 900, maxDisplayScale: 0.6255 });
+    expect([capped.zoom, capped.maxZoom]).toEqual([0.6255, 0.6255]);
+    const floored = sceneFit({ bounds: { x: 0, y: 0, width: 1204 / 0.4557, height: 100 }, viewWidth: 1206, windowHeight: 900, minReadableScale: 0.4555 });
+    expect(floored.zoomFit).toBeGreaterThan(0.4555);
+    expect([floored.zoom, floored.pans]).toEqual([0.4555, false]);
+    // The camera contract itself keeps the exact fit unless a quantum is given.
+    expect(cameraFit({ bounds, viewWidth: 1206, windowHeight: 900 }).zoom).toBe(1204 / 2405.5);
+    expect(floorToQuantum(0.4999999, FIT_QUANTUM)).toBe(0.499);
+    expect(floorToQuantum(0.62, FIT_QUANTUM)).toBe(0.62);
+  });
+  it('should keep a single fixed point when Ajuster is repeated, at capped, uncapped and floored fits', () => {
+    // h-cond probe D1/D2 bounds. The painted bounds overshoot the model, as
+    // text ink and strokes do.
+    const model = { x: -634.6, y: -44, width: 1900, height: 300 };
+    const zooms = new Set<number>();
+    let widestFlipPx = 0;
+    for (const viewWidth of [1440, 1206, 1000, 900, 700]) for (let step = 0; step < 40; step++) {
+      const painted = { x: model.x - 3.2 - step * 0.37, y: model.y - 7.1 - step * 0.11,
+        width: model.width + 9.3 + step * 0.53, height: model.height + 12.7 + step * 0.29 };
+      const host = hostLoop(model, painted, viewWidth);
+      host.ajuster();
+      const settled = host.state();
+      zooms.add(settled.zoom);
+      for (let repeat = 0; repeat < 6; repeat++) {
+        widestFlipPx = Math.max(widestFlipPx, host.ajuster() * settled.zoom);
+        expect(host.state(), `${viewWidth}/${step}/${repeat}`).toEqual(settled);
+      }
+      // « Ajuster » from an interactive zoom reads through another transform.
+      host.ajuster(0.62);
+      expect(host.state(), `${viewWidth}/${step}/zoomed`).toEqual(settled);
+      // A real change of the paint still refits, once.
+      host.paint({ ...painted, width: painted.width + 1 });
+      host.ajuster();
+      const grown = host.state();
+      expect(grown.bounds.width, `${viewWidth}/${step}/grown`).toBeGreaterThan(settled.bounds.width + 0.9);
+      host.ajuster();
+      expect(host.state(), `${viewWidth}/${step}/grown`).toEqual(grown);
+    }
+    // The sweep covers the cap, the floor and uncapped fits between them…
+    expect(zooms.has(0.62) && zooms.has(0.45)).toBe(true);
+    expect([...zooms].some(zoom => zoom > 0.45 && zoom < 0.62)).toBe(true);
+    // …and reads that flip by more than 1/64 CSS px, the step a fit ignores.
+    expect(widestFlipPx).toBeGreaterThan(1 / 64);
+  });
+  it('should hold two reads of an unchanged edge within the refit tolerance at every grid alignment', () => {
+    const snap = (px: number) => Math.round(px * 64) / 64;
+    const read = (edge: number, translate: number, zoom: number) =>
+      Math.floor(((snap(translate + edge * zoom) - snap(translate)) / zoom) * 64) / 64;
+    const widest = (zoomA: number, zoomB: number) => {
+      let flip = 0;
+      for (let i = 0; i < 4000; i++) {
+        const edge = -700 + i * 0.3713;
+        flip = Math.max(flip, Math.abs(read(edge, 392.713 + i * 0.0131, zoomA) - read(edge, 27.307 + i * 0.0173, zoomB)));
+      }
+      return flip;
+    };
+    // One LayoutUnit step read back at the same scale spans ceil(1 / zoom)
+    // world steps: 2/64 at 0.62, 3/64 at 0.45, more than 1/64 CSS px.
+    expect(widest(0.62, 0.62)).toBe(2 / 64);
+    expect(widest(0.45, 0.45)).toBe(3 / 64);
+    expect(widest(0.62, 0.62) * 0.62).toBeGreaterThan(1 / 64);
+    expect(widest(0.45, 0.45) * 0.45).toBeGreaterThan(1 / 64);
+    for (const [zoomA, zoomB] of [[0.45, 0.45], [0.5, 0.5], [0.521, 0.522], [0.62, 0.62], [0.45, 0.62], [0.62, 0.45]] as const) {
+      expect(widest(zoomA, zoomB), `${zoomA}/${zoomB}`).toBeLessThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+      // At least one LayoutUnit step after the outward rounding, in CSS px.
+      expect(RENDERED_BOUNDS_REFIT_TOLERANCE * zoomB).toBeGreaterThan((1 + zoomB) / RENDERED_BOUNDS_GRID_STEPS);
+    }
+    expect(RENDERED_BOUNDS_REFIT_TOLERANCE).toBe((2 / 0.45 + 1) / 64);
+    const bounds = { x: -634.6, y: -44, width: 1900, height: 300 };
+    expect(shouldRefitRenderedBounds(undefined, bounds)).toBe(true);
+    expect(shouldRefitRenderedBounds(bounds, { ...bounds })).toBe(false);
+    for (const edge of ['x', 'y', 'width', 'height'] as const) {
+      expect(shouldRefitRenderedBounds(bounds, { ...bounds, [edge]: bounds[edge] + 3 / 64 }), edge).toBe(false);
+      expect(shouldRefitRenderedBounds(bounds, { ...bounds, [edge]: bounds[edge] - 3 / 64 }), edge).toBe(false);
+      expect(shouldRefitRenderedBounds(bounds, { ...bounds, [edge]: bounds[edge] + 0.1 }), edge).toBe(true);
+      expect(shouldRefitRenderedBounds(bounds, { ...bounds, [edge]: bounds[edge] - 0.1 }), edge).toBe(true);
+    }
   });
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
