@@ -31,8 +31,12 @@
   export interface ComposerEditorProps extends ComposerContract {
     allocateId?: () => string;
     class?: string;
+    /** Vue template spelling of @keydown; same capture contract as onKeyDown. */
+    onKeydown?: (event: ComposerKeyEvent) => boolean | void;
   }
 
+  /** @attrs none The editor owns its inner textbox; class is an explicit prop. */
+  defineOptions({ name: 'ComposerEditor', inheritAttrs: false });
   const {
     value,
     profile = "p0",
@@ -45,6 +49,7 @@
     onChange,
     onReadinessChange,
     onKeyDown,
+    onKeydown,
   } = defineProps<ComposerEditorProps>();
 
   const root = ref<HTMLDivElement>();
@@ -56,6 +61,8 @@
   const emit = defineEmits<{
     change: [value: string];
     readinessChange: [event: RichTextReadiness];
+    keyDown: [event: ComposerKeyEvent];
+    keydown: [event: ComposerKeyEvent];
   }>();
   defineExpose({ captureComposer, readiness });
 
@@ -293,13 +300,14 @@
   // Enter inserts no newline. Forwarded during composition as well, flagged
   // `isComposing`; an inert surface forwards nothing.
   function forwardKey(native: KeyboardEvent): void {
-    if (!onKeyDown || !core.value) return;
+    if ((!onKeyDown && !onKeydown) || !core.value) return;
     if (!isActive()) return;
     if (!(native.target instanceof Node)) return;
     if (!mountEl.value?.contains(native.target)) return;
     const forwarded = toComposerKeyEvent(native);
-    const result = onKeyDown(forwarded);
-    if (result === true || forwarded.defaultPrevented) {
+    const result = onKeyDown?.(forwarded);
+    const lowerResult = onKeydown !== onKeyDown ? onKeydown?.(forwarded) : undefined;
+    if (result === true || lowerResult === true || forwarded.defaultPrevented) {
       native.preventDefault();
     }
   }

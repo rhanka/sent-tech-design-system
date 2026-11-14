@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:0617bfd6ac55407b3040328c438f4b1045578ee7d7e7d023c264462548bb26f0",
-  "entryDigest": "sha256:2046c96dcf078feec03ca0adb0a52d9c61c3b1f276f173d3684ee974d315ba85",
+  "digest": "sha256:2afd87b694abba274f755935baeb24da99fdb781cf94967e0038b6295dc85dea",
+  "entryDigest": "sha256:b3cd30301d9194abad5094ac1bc825d5efaf1c0a8a05e172625efaf106f0d448",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -598,12 +598,6 @@
       "dropped": [
         {
           "kind": "function",
-          "name": "MenuActionItem.icon",
-          "reason": "function surface has no JSON Schema form",
-          "sourceType": "FunctionalComponent<any, {}, any, {}>"
-        },
-        {
-          "kind": "function",
           "name": "MenuActionItem.onClick",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "() => void"
@@ -655,10 +649,23 @@
               "disabled": {
                 "type": "boolean"
               },
+              "icon": {
+                "description": "Component icons require the item-icon slot in both compiled modes.",
+                "type": "string"
+              },
               "id": {
                 "type": "string"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "selected": {
                 "type": "boolean"
               },
@@ -707,7 +714,16 @@
               "kind": {
                 "const": "group"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "type": {
                 "const": "group"
               }
@@ -759,24 +775,6 @@
         "type": "object"
       },
       "replaced": [
-        {
-          "name": "MenuActionItem.icon",
-          "reason": "library type not expanded",
-          "replacement": "{}",
-          "sourceType": "ComponentOptions<any, any, any, ComputedOptions, MethodOptions, any, any, any, string, {}, {}, string, {}, {}, {}, string, ComponentProvideOptions>"
-        },
-        {
-          "name": "MenuActionItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "MenuGroupItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
         {
           "name": "onSelect.args[]",
           "reason": "any JSON value, stated in the row",
@@ -858,7 +856,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:f5dfe86c1d71ba664926f243011dfb05143a35c63d7fb780080537d61c52b258",
+        "declarationDigest": "sha256:b577d49943e757f5406ee5f569341174d011045e3430ef27f7a25f3e715c2048",
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",

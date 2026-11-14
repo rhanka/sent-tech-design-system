@@ -37,7 +37,7 @@ const asideProps = () => {
     class: classNames('st-drawer', `st-drawer--${props.placement}`, props.class),
     role: 'dialog',
     'aria-modal': true,
-    'aria-label': props.title || 'Drawer',
+    'aria-label': props.title || (attrs['aria-labelledby'] ? undefined : (attrs['aria-label'] as string | undefined) ?? 'Drawer'),
     tabindex: -1,
   };
 };
@@ -49,23 +49,29 @@ const onKeyDown = (event: KeyboardEvent) => {
   }
 };
 
+let previousOverflow: string | undefined;
+function cleanup() {
+  if (typeof document === 'undefined' || previousOverflow === undefined) return;
+  document.body.style.overflow = previousOverflow;
+  previousOverflow = undefined;
+  document.removeEventListener('keydown', onKeyDown);
+}
 watch(
   () => props.open,
   (open) => {
+    if (typeof document === 'undefined') return;
     if (open) {
+      previousOverflow = document.body.style.overflow;
       document.body.style.overflow = 'hidden';
       document.addEventListener('keydown', onKeyDown);
     } else {
-      document.body.style.overflow = '';
-      document.removeEventListener('keydown', onKeyDown);
+      cleanup();
     }
   },
+  { immediate: true },
 );
 
-onUnmounted(() => {
-  document.body.style.overflow = '';
-  document.removeEventListener('keydown', onKeyDown);
-});
+onUnmounted(cleanup);
 
 const onBackdropClick = (event: MouseEvent) => {
   if (event.target === event.currentTarget) emit('close');

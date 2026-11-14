@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:b59110a8425772b9d235a04693ccc147a0db363a6ae7ec7c732357d784aa86df",
-  "entryDigest": "sha256:1eb573c57234ccfbd42dd2f450f5330dafafefc62fc45608ef3b5f1f19fa7136",
+  "digest": "sha256:8702901a9f2fa2dc0e9d17c61f46339b16b654ed04415ab7a401219c8416e009",
+  "entryDigest": "sha256:a909995f45ddef1c3693ff9ef3e53b1608ba09e96a43849926d4eb5a4fdaf5df",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -117,8 +117,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -140,21 +149,33 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown",
                   "zone-overflow",
-                  "zone-icon-unknown"
+                  "zone-icon-unknown",
+                  "zone-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
                 "type": "string"
               }
             },
@@ -177,8 +198,14 @@
               "left"
             ]
           },
+          "autoSize": {
+            "type": "boolean"
+          },
           "collapsed": {
             "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
           },
           "entityId": {
             "type": "string"
@@ -240,7 +267,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0214d1605488f469a357bc82e145c21a605c01e2184c67214779a2154e2114aa",
+        "declarationDigest": "sha256:e180567301fd050476422baacc68bad21a5a3967d4acce3575f018c4ca6a66f2",
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
@@ -374,8 +401,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -397,21 +433,33 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown",
                   "zone-overflow",
-                  "zone-icon-unknown"
+                  "zone-icon-unknown",
+                  "zone-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
                 "type": "string"
               }
             },
@@ -434,8 +482,14 @@
               "left"
             ]
           },
+          "autoSize": {
+            "type": "boolean"
+          },
           "collapsed": {
             "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
           },
           "entityId": {
             "type": "string"
@@ -497,7 +551,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:879a556d8424bd1c730e5a92e978415edcfbd88c2ceb37de9d9615b61479b1a7",
+        "declarationDigest": "sha256:1492d83246357d08b84ec8865425ab6e559f8f0ac089322d5b072cde3630b94a",
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",

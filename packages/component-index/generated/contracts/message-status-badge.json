@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:03c59fb45b94c665deeea5a26a2bd5cf32a021f817068496fdac994c2531e214",
-  "entryDigest": "sha256:808c80f3d0300457a2abd2dfa3a09496ff0fead9af6c211d84149ac14f397e33",
+  "digest": "sha256:c7603c8bdd4771901086120b445bfd81567f27f71f4f0b1d72a35cf4923ba021",
+  "entryDigest": "sha256:819ad537216036cd6bd3e80b003f72726f6f66a087f0b92f372fb6ce67024f0b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -239,7 +239,7 @@
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
-          "sourceType": "Partial<Record<ChatMessageStatus, unknown>>"
+          "sourceType": "Partial<Record<ChatMessageStatus, string | number>>"
         },
         {
           "name": "scope.label",
@@ -277,7 +277,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:a4da60fcf36459f5d317833ea7c042916559fe95d26f6973d0b691dac39d7e01",
+        "declarationDigest": "sha256:78957996ec20cd6470342e91bc8f6834090ee6363008272dd22cf9f10013fd63",
         "declarationPath": "packages/components-vue/dist/MessageStatusBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",

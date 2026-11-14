@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * The layout engine's contract: what it takes, what it returns, and the few
  * numbers it is tuned by. No diagram model is declared here. The input is a
@@ -60,6 +61,15 @@ export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => T
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
+  readonly gapMin?: number;
+  readonly gapMinBlock?: number;
+  readonly gapBase?: number;
+  readonly gapBaseBlock?: number;
+  readonly trackSpacing?: number;
+  readonly trackSpacingBlock?: number;
+  readonly labelBand?: number;
+  readonly gapMax?: number;
+  readonly bundleLabelMaxWidth?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
@@ -113,8 +123,8 @@ export const DEFAULT_ROW_PACK: ResolvedRowPack = {
 };
 
 /** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
-export const DEFAULT_ROW_GAP = 24;
-export const DEFAULT_ROW_GAP_MAX = 32;
+export const DEFAULT_ROW_GAP = spacing.gapMin;
+export const DEFAULT_ROW_GAP_MAX = spacing.gapMax;
 
 /** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
 export type LevelOrientation = "rows" | "columns";
@@ -154,7 +164,7 @@ export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
   nodePaddingY: 8,
   nodeMinWidth: 64,
   nodeMinHeight: 32,
-  containerPadding: 16,
+  containerPadding: spacing.containerPadding,
   titlePaddingY: 6,
   rankGap: 56,
   nodeGap: 24,
@@ -234,6 +244,8 @@ export interface LayoutFit {
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
 export type LayoutWarningCode =
+  | "channel-unresolved"
+  | "card-icon-missing"
   | "flow-bundled"
   | "badge-unplaced"
   | "flow-layout-unsupported"
@@ -242,10 +254,12 @@ export type LayoutWarningCode =
   | "route-obstructed"
   | "row-fill-partial"
   | "card-overflow"
+  | "card-grown"
   | "zone-overflow"
   | "docking-overflow";
 
 export interface LayoutWarning {
+  readonly severity?: "info";
   readonly code: LayoutWarningCode;
   readonly refs: readonly string[];
   readonly message: string;
@@ -300,7 +314,10 @@ export type LayoutResult =
        * host draws labels from these boxes and unions them into its fit
        * bounds (DEC-5, BF-7).
        */
+      readonly channels?: readonly import("./channels.js").LayoutChannel[];
       readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
+      /** Lifted parallel relations share a route; semantic occurrences remain intact. */
+      readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;
     }
   | {
       readonly status: "refused";

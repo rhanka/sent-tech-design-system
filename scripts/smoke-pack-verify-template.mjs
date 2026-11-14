@@ -19,6 +19,8 @@
 //                                 frameworks use their built module lists.
 // SMOKE_REQUIRED_EXPORTS placeholder -> public Vue names from source barrels,
 //                                 each required in the installed package.
+// SMOKE_RICH_TEXT_VERSION placeholder -> candidate neutral package version
+//                                 read from its workspace manifest.
 import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -28,6 +30,7 @@ const minExportCounts = __SMOKE_MIN_EXPORT_COUNTS_JSON__;
 // Vue's public runtime names come from source barrels, independently of how
 // many Classic, stable-compiler or Vapor files happen to be in dist/.
 const requiredExports = __SMOKE_REQUIRED_EXPORTS_JSON__;
+const richTextVersion = __SMOKE_RICH_TEXT_VERSION_JSON__;
 const failures = [];
 
 function fail(label, message) {
@@ -146,7 +149,7 @@ async function verifySvelte() {
       return;
     }
     const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
-    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== "0.1.0") {
+    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== richTextVersion) {
       fail("@sentropic/design-system-svelte", "rich-text resolved to an unexpected package: " + manifest.name + "@" + manifest.version);
       return;
     }

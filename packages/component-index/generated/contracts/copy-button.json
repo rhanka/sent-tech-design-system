@@ -1,8 +1,8 @@
 {
   "componentId": "copy-button",
   "contractSource": "derived",
-  "digest": "sha256:39bc9dddbb208c8852233d91b3d9f9a2dc449839d40c7380cbbe61efdd66c8cf",
-  "entryDigest": "sha256:92120391df8fcac6b02b7451da02e646b72df47c9073c407377668949650ccab",
+  "digest": "sha256:d7b615c460b4cb865dda9942f44f7063621c2425984ce1b7daa4334b269c1b12",
+  "entryDigest": "sha256:93d1bb5c2f3bfa2014cd1093cbb7f614633673b7b6d631f2f6a90e4468378e61",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

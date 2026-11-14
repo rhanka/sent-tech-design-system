@@ -17,3 +17,5 @@ Native control attributes inside CalculationEditor, FormatPanel, QueryBar, Relat
 SelectionLegend still renders nothing with an empty selection; it appears and clears reactively. Its empty default is checked against both mounted runtimes, rather than requiring an element where the original contract returns none.
 
 The release is `@sentropic/dataviz-vue@0.6.0-next.0`, a minor prerelease with `publishConfig.tag: next`. Classic remains available on the root entry with Vue 3.5 support; native Vapor is the opt-in `./vapor` entry on Vue 3.6. No tag or publication is part of this integration.
+
+After merging main's PR 286, the WebFrame SFC delegates to the DS WebFrame while retaining its existing barrel destination and Props. It forwards attrs once with inheritance disabled. Packed Classic and Vapor tests compare both iframe outputs and assert one listener notification. Nested DS controls now use Icon's class, focusability and default stroke policy; DataTable attrs belong only to the table. The bounded SSR reference adapter applies those reviewed changes to archived measurements without changing frozen fixtures or goldens.

@@ -1,8 +1,8 @@
 {
   "componentId": "tile-group",
   "contractSource": "derived",
-  "digest": "sha256:3d195326913971c8430d088731a1a829dfc52412ef5325365f7781555ead658b",
-  "entryDigest": "sha256:26bd602f4f09f2f4ee23da8f364d46751c5dbb744223e390d4c4f80318e055f3",
+  "digest": "sha256:43a1b817e2a2cddb7f4364c766051333d2fcb1c62b78928c257946800ca09945",
+  "entryDigest": "sha256:011420cede0150f7ee572a807ded06fe548e020ac8d496b3865d37228282ea02",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -335,12 +335,39 @@
           "TileGroupItem": {
             "additionalProperties": false,
             "properties": {
-              "description": {},
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "disabled": {
                 "type": "boolean"
               },
-              "label": {},
-              "title": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -365,7 +392,16 @@
             },
             "type": "array"
           },
-          "legend": {},
+          "legend": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "legendHidden": {
             "type": "boolean"
           },
@@ -381,32 +417,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "TileGroupItem.description",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "TileGroupItem.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "TileGroupItem.title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "legend",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "item-description",
@@ -451,7 +462,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:1299e31e0191e2fb4bab3d49da61d3449d445f3d1426272c52e095782d187640",
+        "declarationDigest": "sha256:ec4559bf564000efc31e3684d6b37beba7cd81a0247dca6f9482132da798d094",
         "declarationPath": "packages/components-vue/dist/TileGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileGroupProps",

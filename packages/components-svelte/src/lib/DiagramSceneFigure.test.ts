@@ -37,7 +37,7 @@ import {
 } from "../../../diagram-core/dist/index.js";
 import DiagramSceneFigure from "./DiagramSceneFigure.svelte";
 import type { DiagramSceneCamera, DiagramSceneFigureProps } from "./DiagramSceneFigure.svelte";
-import { cardLineMeasurer } from "./diagramCardModel.js";
+import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "./diagramCardModel.js";
 import {
   layoutScene,
   parseDurationMs,
@@ -458,11 +458,12 @@ describe("DiagramSceneFigure camera", () => {
       view.component.setZoom(DEFAULT_MAX_DISPLAY_SCALE);
       await tick();
       await fireEvent.click(view.button("Fit"));
-      const fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
-      const raw = Math.min(width / bounds.width, fitHeight / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
+      let fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
+      const raw = Math.min((width - 2) / bounds.width, (fitHeight - 2) / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
+      if (raw === DEFAULT_MAX_DISPLAY_SCALE) fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * raw + 2) * 64) / 64);
       expect(view.viewport.style.height).toBe(`${fitHeight}px`);
       // BF-2: the fit holds at the readability floor.
-      expect(view.zoom()).toBeCloseTo(Math.max(raw, DEFAULT_MIN_READABLE_SCALE), 12);
+      expect(view.zoom()).toBeCloseTo(Math.max(DEFAULT_MIN_READABLE_SCALE, raw), 12);
       expect(view.zoom()).toBeLessThanOrEqual(DEFAULT_MAX_DISPLAY_SCALE);
       const placed = scenePlacement(bounds, view.zoom(), { fitWidth: width, fitHeight });
       expect(view.world.style.transform).toBe(
@@ -872,7 +873,7 @@ describe("DiagramSceneFigure transition", () => {
 /* ── M1 production measurer and readability floor (BF-6) ─────── */
 
 describe("M1 production edge labels (BF-6) and readability floor", () => {
-  const productionLines = cardLineMeasurer();
+  const productionLines = cardLineMeasurer(sceneCardMeasure(defaultCardMeasure));
   const edgeSample = (text: string): { readonly height: number } =>
     productionLines({ text, role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false });
 

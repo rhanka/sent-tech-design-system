@@ -7,7 +7,8 @@ export type { IconGlyph, IconName } from './icon-data.js';
 export type IconProps = {
   /** Complete SVG class list for DS controls preserving their reference markup. */
   svgClass?: string;
-  size?: number; strokeWidth?: number; title?: string; class?: string; name?: IconName; glyph?: IconGlyph;
+  /** Pixels or a CSS length. Absolute stroke normalization requires pixels. */
+  size?: number | string; strokeWidth?: number; title?: string; class?: string; name?: IconName; glyph?: IconGlyph;
   /** Preserve the existing Lucide markup when composing DS controls. */
   bare?: boolean;
 };
@@ -22,9 +23,15 @@ if ((typeof process === 'undefined' || process.env?.NODE_ENV !== 'production') &
 function svgAttrs() {
   const { color = 'currentColor', absoluteStrokeWidth, 'absolute-stroke-width': absoluteKebab, ...rest } = attrs;
   const absolute = absoluteStrokeWidth === true || absoluteStrokeWidth === '' || absoluteKebab === true || absoluteKebab === '';
-  return { ...rest, width: props.size, height: props.size, stroke: color as string, 'stroke-width': absolute ? (props.strokeWidth ?? 2.25) * 24 / props.size : props.strokeWidth ?? 2.25 };
+  return { ...rest, width: props.size, height: props.size, stroke: color as string, 'stroke-width': absolute && typeof props.size === 'number' ? (props.strokeWidth ?? 2.25) * 24 / props.size : props.strokeWidth ?? 2.25 };
 }
-const glyph = computed(() => props.glyph ?? (props.name ? ICONS[props.name] : undefined));
+const glyph = computed(() => {
+  if (props.glyph) return props.glyph;
+  if (!props.name) return undefined;
+  if (Object.hasOwn(ICONS, props.name)) return ICONS[props.name];
+  if (typeof process === 'undefined' || process.env?.NODE_ENV !== 'production') console.warn(`[st-icon] Unknown icon: ${props.name}`);
+  return ICONS['circle-dashed'];
+});
 const iconClass = computed(() => props.bare ? props.class : classNames('st-icon', props.class));
 const classes = computed(() => props.svgClass ?? classNames('lucide', iconClass.value, glyph.value?.name ? `lucide-${glyph.value.name}-icon lucide-${glyph.value.name}` : 'lucide-icon'));
 

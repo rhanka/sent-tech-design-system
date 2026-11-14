@@ -16,7 +16,7 @@ import { useId,
   watch,
 } from "vue";
 import Icon from "./Icon.vue";
-import { ICONS, type IconGlyph } from "./icon-data.js";
+import { ICONS, type IconName, type IconGlyph } from "./icon-data.js";
 import { classNames } from "./classNames.js";
 import MenuLabel from './MenuLabel.vue';
 import type { MenuLabelSlots } from './menu-label-slots.js';
@@ -989,9 +989,7 @@ const panelDepths = computed(() => [
           class="st-menu__itemIcon"
           aria-hidden="true"
         >
-          <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
-            row.action!.icon
-          }}</template>
+          <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><Icon v-else-if="typeof row.action!.icon === 'string' && Object.hasOwn(ICONS, row.action!.icon)" :name="row.action!.icon as IconName" :size="16" /><template v-else-if="typeof row.action!.icon === 'string'">{{ row.action!.icon }}</template>
 
         </span>
         <span class="st-menu__itemLabel">
@@ -1117,9 +1115,7 @@ const panelDepths = computed(() => [
               class="st-menu__itemIcon"
               aria-hidden="true"
             >
-              <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
-                row.action!.icon
-              }}</template>
+              <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><Icon v-else-if="typeof row.action!.icon === 'string' && Object.hasOwn(ICONS, row.action!.icon)" :name="row.action!.icon as IconName" :size="16" /><template v-else-if="typeof row.action!.icon === 'string'">{{ row.action!.icon }}</template>
 
             </span>
             <span class="st-menu__itemLabel">
@@ -1161,9 +1157,7 @@ const panelDepths = computed(() => [
             class="st-menu__itemIcon"
             aria-hidden="true"
           >
-            <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><template v-else-if="typeof row.action!.icon === 'string'">{{
-              row.action!.icon
-            }}</template>
+            <slot v-if="$slots['item-icon']" name="item-icon" :item="row.action!" :index="row.index" /><Icon v-else-if="typeof row.action!.icon === 'string' && Object.hasOwn(ICONS, row.action!.icon)" :name="row.action!.icon as IconName" :size="16" /><template v-else-if="typeof row.action!.icon === 'string'">{{ row.action!.icon }}</template>
 
           </span>
           <span class="st-menu__itemLabel">

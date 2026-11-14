@@ -1,8 +1,8 @@
 {
   "componentId": "menu-trigger-button",
   "contractSource": "derived",
-  "digest": "sha256:4d2f0e1245725a6b5a72a2c86494e68c6972b649368920777814bac6722a62be",
-  "entryDigest": "sha256:a661a998c358f30ac7a191383d41b069f984ff893e6bf8aea8e79766b9555d9e",
+  "digest": "sha256:a34a1bab2fd2a33a15d0775032b533aed83dc6aa74b351c50eb55dc617a7f5be",
+  "entryDigest": "sha256:2830b104d6b4b6aca2bb6a23932752b46f2a905aa5e253e7af733f7c2c5037e6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
