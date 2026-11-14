@@ -3,12 +3,14 @@ import { dirname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { inventory, renderCalls, files, sfcSafety, moduleCounters } from './vue-vapor-source.mjs';
+import { checkTextFiles } from './dataviz-vue-text.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const baselinePath = 'scripts/vue-vapor-legacy.json';
 const allowed = JSON.parse(readFileSync(resolve(root, baselinePath), 'utf8'));
 const current = inventory(root).flatMap(pkg => pkg.legacy.map(file => relative(root, file))).sort();
 const errors = current.filter(file => !allowed.includes(file)).map(file => `K25: new render-function module: ${file}`);
+errors.push(...checkTextFiles([resolve(root, 'packages/dataviz-vue/src')]));
 errors.push(...allowed.filter(file => !current.includes(file)).map(file => `K25: remove converted/deleted file from allow-list: ${file}`));
 // SFCs are never grandfathered. Inspect script blocks, not template text.
 for (const pkg of ['components-vue', 'dataviz-vue']) for (const file of files(resolve(root, 'packages', pkg, 'src')).filter(file => file.endsWith('.vue'))) {

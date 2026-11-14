@@ -11,6 +11,8 @@
   },
   "files": [
     "dist",
+    "!dist/.srchash",
+    "!dist/**/*.map",
     "LICENSE"
   ],
   "exports": {
@@ -27,7 +29,7 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/check-published-types.mjs",
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node ../../scripts/dataviz-vue-text.mjs && node scripts/check-published-types.mjs",
     "check": "npm run check:types",
     "test": "vitest run",
     "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
