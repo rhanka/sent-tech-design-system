@@ -155,7 +155,7 @@ describe("the manifest keeps the promises the layering guard relies on", () => {
 
   it("is public on its own tag line with no private flag", () => {
     expect(manifest.name).toBe("@sentropic/diagram-core");
-    expect(manifest.version).toBe("0.1.0");
+    expect(manifest.version).toBe("0.2.0");
     expect(manifest.private).toBeUndefined();
     expect(manifest.publishConfig?.access).toBe("public");
     expect(manifest.files).toEqual(["dist", "!dist/**/*.map", "!dist/.srchash", "schemas"]);

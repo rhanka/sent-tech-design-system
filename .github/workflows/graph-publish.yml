@@ -82,6 +82,8 @@ jobs:
         run: |
           npm ci
           npm --workspace @sentropic/graph run build
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/graph
       - name: Publish Graph package
         run: npm publish --workspace @sentropic/graph --access public
 

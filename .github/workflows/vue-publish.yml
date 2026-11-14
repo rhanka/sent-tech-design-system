@@ -88,6 +88,8 @@ jobs:
           npm ci
           # Rebuild the same closure without shipping dist/.srchash markers.
           node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/design-system-vue
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-vue
       - name: Verify runtime dependencies and peers exist on npm
         run: node scripts/verify-deps-published.mjs --workspace packages/components-vue --runtime
       - name: Publish Vue package

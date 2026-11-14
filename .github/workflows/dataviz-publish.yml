@@ -149,6 +149,8 @@ jobs:
           # dotfiles inside `files` directories, so the marker would otherwise
           # ship inside the published tarballs.
           node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
