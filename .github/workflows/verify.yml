@@ -43,6 +43,41 @@ permissions:
   contents: read
 
 jobs:
+  # Required by the verify shards below. Always run so changes to shared tokens,
+  # themes, fonts or build tooling cannot bypass the diagram browser gate.
+  diagram-first-paint:
+    name: diagram first paint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      # Same Chrome for Testing setup as graph-golden/golden-webgl.
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+      - run: npm ci
+      - name: Build diagram dependencies
+        run: node scripts/ensure-theme-dists.mjs --workspaces="@sentropic/design-system-svelte,@sentropic/design-system-vue"
+      - name: Diagram first paint (28 real DOM cases, no skips)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          DIAGRAM_ARTIFACTS: ${{ runner.temp }}/diagram-first-paint
+        run: node tools/diagram-first-paint/browser.mjs
+      - name: Upload first paint failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: diagram-first-paint-failures
+          path: ${{ runner.temp }}/diagram-first-paint
+          if-no-files-found: warn
+
   # Deliberately NOT sharded and NOT gated on the affected-workspace plan: the
   # package this catches is the one nobody thought to select. It needs no build
   # (it reads manifests, the lockfile and `npm pack --dry-run`), so it is the
@@ -82,6 +117,9 @@ jobs:
       # Via the runner rather than `node --test scripts/*.test.mjs` because that
       # form exits 0 when the glob resolves to nothing; the runner asserts a floor
       # on the number of guard files first. See its header for the measurement.
+      - name: Dist import closure (all publishable packages)
+        run: npm run dist:import-closure
+
       - name: Repository guards (scripts/*.test.mjs)
         run: node scripts/run-script-guards.mjs
 
@@ -128,7 +166,7 @@ jobs:
           echo "$MATRIX"
 
   verify:
-    needs: plan
+    needs: [plan, diagram-first-paint]
     if: ${{ needs.plan.outputs.matrix != '{"include":[]}' }}
     name: verify (${{ matrix.task }} / shard ${{ matrix.shard }})
     runs-on: ubuntu-latest

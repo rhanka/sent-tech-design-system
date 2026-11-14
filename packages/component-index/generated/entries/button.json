@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Button.svelte",
-      "version": "0.41.0"
+      "version": "0.41.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Button.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.4"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Primary, secondary, ghost, or destructive action.",
     "fr": "Action primaire, secondaire, fantôme ou destructive."
   },
-  "digest": "sha256:a81c34d49bee3e359c5fc55d3cf049dfbd8d33ab03840a0a2dbd69141837551e",
+  "digest": "sha256:5eba38bf8a1fe308b233ebd28314ee7b91112fe9da77c68d7fb116b5b779255a",
   "displayName": "Button",
   "format": "component-entry/v1",
   "frameworks": [

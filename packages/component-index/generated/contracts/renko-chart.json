@@ -1,8 +1,8 @@
 {
   "componentId": "renko-chart",
   "contractSource": "derived",
-  "digest": "sha256:cbe306e208a5b74d6a27947b33811785100e1f3cb673441cf06b8718dda5d459",
-  "entryDigest": "sha256:c564dce28c16333da2c622ce418f0e648933d58df48734810e626e8f0b162e06",
+  "digest": "sha256:686a0a0dd8a080e4e3b0aff2677108fc31ed016f6efab296da27a9be859ad291",
+  "entryDigest": "sha256:d18b2b25fbe8e50b79591e76f58508d647024570185d300a89bcea79abdf25c9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -219,7 +219,7 @@
         "declarationPath": "packages/components-svelte/dist/RenkoChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RenkoChartProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -293,7 +293,7 @@
         "declarationPath": "packages/components-vue/dist/RenkoChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RenkoChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

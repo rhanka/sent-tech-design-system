@@ -1,0 +1,22 @@
+{
+  "name": "@sentropic/ui-ontology",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "description": "DS-owned ui@1 ontology draft; publication and catalog registration gated.",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit && node scripts/check.mjs --check",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "profile:verify": "node scripts/verify-engram.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "0.27.7",
+    "typescript": "^5.9.3",
+    "yaml": "2.9.0"
+  }
+}
