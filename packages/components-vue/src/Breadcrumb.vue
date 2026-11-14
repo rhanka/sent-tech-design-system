@@ -5,7 +5,7 @@ import { scalarContent } from './slotContent.js';
 export interface BreadcrumbItem {
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
   href?: string;
   current?: boolean;
 }

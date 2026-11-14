@@ -26,7 +26,11 @@ async function mount(name, props = {}, slots = '', copies = 1) {
   const app = (mode === 'vapor' ? vue.createVaporApp : vue.createApp)(Host);
   const errors = []; app.config.warnHandler = e => errors.push(String(e)); app.config.errorHandler = e => errors.push(String(e));
   app.mount(element); await flush();
-  return { element, state, props: state.props, async close() { app.unmount(); await flush(); element.remove(); assert.deepEqual(errors, []); } };
+  return { element, state, props: state.props, async close(expectedDiagnostics = []) {
+    app.unmount(); await flush(); element.remove();
+    assert.equal(errors.length, expectedDiagnostics.length, errors.join('\n'));
+    errors.forEach((error, index) => assert.match(error, expectedDiagnostics[index]));
+  } };
 }
 
 test('N1: Breadcrumb should render scoped linked and current rich labels without placeholder props', async () => {
@@ -46,7 +50,7 @@ for (const [name, props] of [['Breadcrumb', { items: [{ label: vue.h('b', 'Legac
   test(`R2-M2: ${name} should keep non-scalar legacy content out of text, values and accessible names`, async () => {
     const h = await mount(name, props);
     try { assert.doesNotMatch(h.element.innerHTML, /\[object Object\]|__v_isVNode/); for (const input of h.element.querySelectorAll('input')) assert.doesNotMatch(input.value, /\[object Object\]/); }
-    finally { await h.close(); }
+    finally { await h.close(name === 'ChatComposer' ? [/Invalid prop: type check failed for prop "submitLabel"\. Expected String \| Number, got Object/] : []); }
   });
 test('audit: MessageStatusBadge should expose a scoped rich label', async () => {
   const h = await mount('MessageStatusBadge', { status: 'sent' }, '<template #label="{status}"><strong>{{status}}</strong></template>');
@@ -59,7 +63,7 @@ test('audit: Accordion should expose optional scoped item content for rich rende
 test('audit: DatePicker should use its dialog-name fallback for a non-scalar legacy label', async () => {
   const h = await mount('DatePicker', { label: vue.h('b', 'Date'), openLabel: 'Choose date' });
   try { h.element.querySelector('.st-datepicker__trigger').click(); await flush(); assert.equal(h.element.querySelector('[role="dialog"]').getAttribute('aria-label'), 'Choose date'); }
-  finally { await h.close(); }
+  finally { await h.close([/Invalid prop: type check failed for prop "label"\. Expected String \| Number, got Object/]); }
 });
 test('audit: Toast should give slot-only queue items a scalar dismiss name', async () => {
   const h = await mount('Toast', { items: [{ id: 'one' }], onDismiss: () => {} }, '<template #title><strong>Rich</strong></template>');

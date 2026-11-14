@@ -12,9 +12,9 @@ export type DatePickerRange = { start: Date | null; end: Date | null };
 export type DatePickerValue = Date | DatePickerRange | null;
 
 export type DatePickerProps = {
-  label?: unknown;
-  helperText?: unknown;
-  errorText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
+  errorText?: string | number;
   invalid?: boolean;
   disabled?: boolean;
   mode?: 'single' | 'range';

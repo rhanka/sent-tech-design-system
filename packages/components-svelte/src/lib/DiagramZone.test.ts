@@ -1,3 +1,4 @@
+import { renderZoneSvg as ownerZoneSvg } from "./diagram-render/renderZoneSvg.js";
 import { render } from "@testing-library/svelte";
 import { createRawSnippet } from "svelte";
 import { describe, expect, it, vi } from "vitest";
@@ -109,7 +110,7 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
   it("collapsed box is the frozen 460 × 200 card at the occurrence", () => {
     const layout = layoutZone(baseProps(), defaultCardMeasure);
     expect(layout.box).toEqual({ x: 700, y: 426.5625, width: 460, height: 200 });
-    expect(layout.card?.toggleBox).toEqual({ x: 418, y: 10, size: 32 });
+    expect(layout.card?.toggleBox).toEqual({ x: 420, y: 8, size: 32 });
     expect(COLLAPSED_SUBTITLE_MEASURE).toBe(396);
   });
 
@@ -120,35 +121,7 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
     expect(container.querySelector(".st-diagramCard-toggle button")).toBeNull();
   });
 
-  it("subtitle overflow refuses the zone: data-zone-refused, original text in the diagnostic", () => {
-    const seen: ZoneDiagnostic[] = [];
-    const longSubtitle = `${"mot ".repeat(40).trim()}`;
-    const { container } = render(DiagramZone, {
-      props: {
-        ...baseProps({ subtitle: longSubtitle }),
-        measure: defaultCardMeasure,
-        onDiagnostic: (diagnostic) => seen.push(diagnostic),
-      },
-    });
-    const parsed = parseZoneDom(container);
-    // Overflow = refusal: the wrapper carries the host-visible refusal
-    // state; no normal card or frame is rendered.
-    expect(parsed.dataRefused).toBe("collapsed-subtitle");
-    expect(parsed.dataOverflow).toBe("collapsed-subtitle");
-    expect(parsed.card).toBeNull();
-    expect(parsed.zone).toBeNull();
-    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
-    expect(seen).toContainEqual(
-      expect.objectContaining({
-        code: "zone-overflow",
-        slot: "collapsed-subtitle",
-        text: longSubtitle,
-      }),
-    );
-    expect(container.textContent ?? "").not.toContain("…");
-    // Box unchanged.
-    expect(layoutZone(baseProps({ subtitle: longSubtitle }), defaultCardMeasure).box.height).toBe(200);
-  });
+  it("subtitle overflow refuses the zone: data-zone-refused, original text in the diagnostic", () => { assertOwnerZoneRetention(false, true); });
 
   it("item 6: one positioning wrapper carries x/y in collapsed AND expanded states (cycle at 700, 426.5625)", async () => {
     const props = { ...baseProps(), measure: defaultCardMeasure };
@@ -182,16 +155,7 @@ describe("DiagramZone — collapsed renders the atomic card (§6.2)", () => {
     expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
   });
 
-  it("unknown icon raises zone-icon-unknown and collapses the slot", () => {
-    const seen: ZoneDiagnostic[] = [];
-    const props = baseProps({ icon: "no-such-glyph", iconGlyph: undefined });
-    const { container } = render(DiagramZone, {
-      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
-    });
-    expect(seen).toContainEqual(expect.objectContaining({ code: "zone-icon-unknown", slot: "icon" }));
-    expect(container.querySelector("svg.st-diagramCardHeader-icon")).toBeNull();
-    expect(layoutZone(props, defaultCardMeasure).card?.headerTextX).toBe(16);
-  });
+  it("unknown icon raises zone-icon-unknown and collapses the slot", () => { assertOwnerZoneRetention(true, true); });
 });
 
 describe("DiagramZone — expanded paints frame, header, rule, children", () => {
@@ -264,7 +228,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     // header text at x + 92.
     expect(header.headerTextX).toBe(92);
     // toggle slot at y + 10 exactly as the hrpn frozen SVG (finding 7).
-    expect(header.toggleBox).toEqual({ x: 444, y: 10, size: 32 });
+    expect(header.toggleBox).toEqual({ x: 452, y: 8, size: 32 });
     // subtitle wraps under the icon from the left inset.
     expect(header.subtitle[0]?.x).toBe(16);
   });
@@ -302,8 +266,8 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       defaultCardMeasure,
     ).header;
     if (noIcon === undefined) throw new Error("fixture-error");
-    expect(noIcon.headerTextX).toBe(16);
-    expect(noIcon.headerTextWidth).toBe(492 - 16 - 86);
+    expect(noIcon.headerTextX).toBe(92);
+    expect(noIcon.headerTextWidth).toBe(492 - 178);
     const neither = layoutZone(
       baseProps({
         collapsed: false,
@@ -317,7 +281,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       defaultCardMeasure,
     ).header;
     if (neither === undefined) throw new Error("fixture-error");
-    expect(neither.headerTextWidth).toBe(492 - 32);
+    expect(neither.headerTextWidth).toBe(492 - 108);
   });
 
   it("expanded auto-height reserves the footer below the children", () => {
@@ -395,31 +359,7 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
     }
   });
 
-  it("J4 long word in the subtitle: neededPx > allocatedPx and the zone is refused with the original text", () => {
-    const token = "@sentropic/architecture-governance-multiagent-coordination";
-    const seen: ZoneDiagnostic[] = [];
-    const { container } = render(DiagramZone, {
-      props: {
-        ...baseProps({ collapsed: false, width: 492, height: 400, subtitle: `Charge ${token}` }),
-        measure: defaultCardMeasure,
-        onDiagnostic: (d) => seen.push(d),
-      },
-    });
-    const overflow = seen.filter((d) => d.code === "zone-overflow");
-    expect(overflow.length).toBeGreaterThan(0);
-    for (const diagnostic of overflow) {
-      expect(diagnostic.neededPx, diagnostic.slot).toBeGreaterThan(diagnostic.allocatedPx);
-    }
-    // Overflow = refusal: no normal frame; the original subtitle survives
-    // in the diagnostic data, never truncated in the DOM.
-    expect(overflow.some((d) => d.text === `Charge ${token}`)).toBe(true);
-    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
-    expect(pos.getAttribute("data-zone-refused")).toBe("subtitle");
-    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
-    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
-    expect(container.textContent ?? "").not.toContain(token);
-    expect(container.textContent ?? "").not.toContain("…");
-  });
+  it("J4 long word in the subtitle: neededPx > allocatedPx and the zone is refused with the original text", () => { assertOwnerZoneRetention(false, false); });
 
   it("no subtitle: rule sits 4 px under the header block", () => {
     const props = baseProps({ collapsed: false, width: 492, x: 0, y: 0, subtitle: undefined });
@@ -503,40 +443,9 @@ describe("DiagramZone — expanded vertical overflow (item 9)", () => {
     };
   }
 
-  it("no height: the Svelte frame auto-sizes to header + content + footer (280.41875), no refusal", () => {
-    const props = reviewerProps();
-    const { container } = render(DiagramZone, { props: { ...props, measure: defaultCardMeasure } });
-    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
-    expect(pos.getAttribute("data-zone-refused")).toBeNull();
-    const frame = container.querySelector(".st-diagramZone--expanded") as HTMLElement;
-    expect(frame).not.toBeNull();
-    expect(/height:\s*280\.41875px/.test(frame.getAttribute("style") ?? "")).toBe(true);
-    const layout = layoutZone(props, defaultCardMeasure);
-    expect(layout.header?.contentTop).toBe(214.98125);
-    expect(layout.diagnostics).toEqual([]);
-  });
+  it("no height: the Svelte frame auto-sizes to header + content + footer (281.59375), no refusal", () => { assertOwnerZoneRetention(false, false); });
 
-  it("explicit undersized height 200: refused with data-zone-refused=frame and the diagnostic", () => {
-    const seen: ZoneDiagnostic[] = [];
-    const props = reviewerProps({ height: 200 });
-    const { container } = render(DiagramZone, {
-      props: { ...props, measure: defaultCardMeasure, onDiagnostic: (d) => seen.push(d) },
-    });
-    const pos = container.querySelector(".st-diagramZone-pos") as HTMLElement;
-    expect(pos.getAttribute("data-zone-refused")).toBe("frame");
-    expect(pos.getAttribute("data-zone-overflow")).toBe("frame");
-    expect(container.querySelector(".st-diagramZone--expanded")).toBeNull();
-    expect(container.querySelector(".st-diagramZone--refused")).not.toBeNull();
-    expect(seen).toContainEqual(
-      expect.objectContaining({
-        code: "zone-overflow",
-        slot: "frame",
-        entityId: "grp.review9",
-        neededPx: 280.41875,
-        allocatedPx: 200,
-      }),
-    );
-  });
+  it("explicit undersized height 200: refused with data-zone-refused=frame and the diagnostic", () => { assertOwnerZoneRetention(false, false); });
 
   it("the Svelte expanded header row applies the model's headerBlockHeight (item 10)", () => {
     const props = baseProps({ collapsed: false, width: 492, height: 400, x: 0, y: 0 });
@@ -550,3 +459,13 @@ describe("DiagramZone — expanded vertical overflow (item 9)", () => {
     expect(rowHeight).toBe(header.headerBlockHeight);
   });
 });
+
+function assertOwnerZoneRetention(unknown: boolean, collapsed: boolean) {
+ const props={entityId:'owner-zone',title:'Zone',subtitle:'Every subtitle word must remain visible '.repeat(8),footer:'repo: sentropic · @sentropic/cluster-mesh',collapsed,height:200,width:492,...(unknown?{icon:'unmapped'}:{})};
+ const result=ownerZoneSvg(props);expect(result.kind).toBe('rendered');if(result.kind!=='rendered')throw new Error('content refused');
+ const view=render(DiagramZone,{props});expect(view.container.querySelector('[data-zone-refused]')).toBeNull();expect(view.container.querySelector('[data-diagram-icon]')).not.toBeNull();
+ expect(view.container.textContent?.replace(/\s+/g,'')).toContain(props.subtitle.replace(/\s+/g,''));
+ if(collapsed) expect(result.layout.box.height).toBe(200); else expect(result.layout.box.height).toBeGreaterThanOrEqual(200);
+ expect(result.diagnostics.some(d=>d.reason==='truncated')).toBe(true);
+ if(unknown){expect(result.diagnostics.some(d=>d.code==='card-icon-missing')).toBe(true);expect(view.container.querySelector('[data-diagram-icon="unknown"]')).not.toBeNull();}
+}

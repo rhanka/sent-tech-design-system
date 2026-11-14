@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:e08de1bd1aae7acb400c91ed64cb2804a47065857642b995bedf44185b225600",
-  "entryDigest": "sha256:dc6b6311a16074a31ad1c836d03c1dd4f55b243df496d57f2848715a8d4a516e",
+  "digest": "sha256:c58dfebd3efcaf739244343b769047e1b088f8c6c37797405205ac33ce15f3e4",
+  "entryDigest": "sha256:91fe3cd6c1f2a017e353b8fc4054db0f1a825448e7b341c3eec647b8fbaf869b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -164,7 +164,16 @@
           "class": {
             "type": "string"
           },
-          "content": {},
+          "content": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "placement": {
             "enum": [
               "top",
@@ -174,14 +183,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "content",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "content"
@@ -191,13 +193,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:16fd78bff6d4472af957e2edd47345b502c4e28b3f1a489f0d19c85abd8b0640",
+        "declarationDigest": "sha256:3eb634582c2bb252bc1978124cd4afa350560bfc0d0e6feb7eb4c0e1af2edce7",
         "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

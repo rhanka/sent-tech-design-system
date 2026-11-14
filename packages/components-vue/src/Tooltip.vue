@@ -6,7 +6,7 @@ import { classNames } from './classNames.js';
 export type TooltipPlacement = 'top' | 'bottom';
 
 export type TooltipProps = {
-  content?: unknown;
+  content?: string | number;
   placement?: TooltipPlacement;
   class?: string;
 };
@@ -30,6 +30,8 @@ function hide() { open.value = false; }
   <span
     v-bind="{ ...($attrs), class: (classNames('st-tooltip', `st-tooltip--${props.placement}`, props.class)) }"
 
+    @focusin="show"
+    @focusout="hide"
     @focus="show"
     @blur="hide"
     @mouseenter="show"

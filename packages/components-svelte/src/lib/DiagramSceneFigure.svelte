@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { getDiagramGlyph } from "./diagram-icons/registry.js";
   import { tick, untrack } from "svelte";
   import { Minus, Plus } from "@lucide/svelte";
   import {
@@ -19,11 +20,14 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
+  import { measureRenderedBounds } from "./diagramRenderedBounds.js";
+  import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
   import { INITIAL_FLOW_STATE, DEFAULT_FLOW_STRINGS, visibleOf, effectiveTarget, highlightOf, flowStateOf, reduce, describeTarget, announce, flowHitSize, stepChange, stepsOf, type FlowState, type FlowAction, type Visible, type StepChange, type EffectiveTarget, type FlowStrings } from "@sentropic/diagram-canvas/flowModel";
   import {
     cardLineMeasurer,
+    sceneCardMeasure,
     defaultCardMeasure,
     projectCardProps,
     projectZoneProps,
@@ -46,6 +50,7 @@
     resolveZoom,
     sameRects,
     sceneFit,
+    sceneTextRows,
     scenePlacement,
     WHEEL_ZOOM_RATE,
     ZOOM_STEP_RATIO,
@@ -71,10 +76,9 @@
    * `diagramScene.maxDisplayScale`), never zoom 1: no input — buttons,
    * keys, Ctrl + wheel, pinch, `setZoom` — goes above it. The fit frames
    * the scene bounds plus the placed label boxes on both axes inside the
-   * fit box `viewW × min(viewW × 9/16, 0.85 × windowH)`; it holds at the
-   * readability floor (token `diagramScene.minReadableScale`), where the
-   * viewport scrolls the overflowing axis from its start, and zoom-out
-   * still reaches the whole drawing. The camera is never seeded from the
+   * fit box `viewW × min(viewW × 9/16, 0.85 × windowH)`. Fit reaches the
+   * whole rendered drawing, including below the readability preference.
+   * Zooming in scrolls the overflowing axis from its start. The camera is never seeded from the
    * layout fit report. Zoom is a transform: it re-runs no layout.
    *
    * Folds. A fold toggle re-runs the whole layout, feeding the previous
@@ -163,6 +167,8 @@
     label?: string;
     compact?: boolean;
     labels?: Partial<DiagramSceneFigureLabels>;
+    iconBindings?: import("@sentropic/diagram-canvas/diagramSceneModel").SceneIconBindings;
+    strictIcons?: boolean;
     resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
     onFoldChange?: (
       collapsed: readonly SceneOccurrenceRef[],
@@ -213,7 +219,9 @@
     label,
     compact = false,
     labels,
-    resolveGlyph,
+    resolveGlyph = getDiagramGlyph,
+    iconBindings,
+    strictIcons = true,
     onFoldChange,
     onSelect,
     onLayout,
@@ -244,7 +252,13 @@
     untrack(() => defaultFolds ?? collapsedOccurrencesOf(view)),
   );
   const collapsedNow = $derived(collapsed ?? foldState);
-  const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(measure));
+  const arrowInstance = $props.id();
+  const arrowId = "diagram-arrow-" + arrowInstance;
+  let browserMeasure = $state.raw<CardLineMeasure>();
+  const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
+  let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
+  const effectiveMetrics = $derived({ ...tokenMetrics, ...metrics });
+  const lineMeasurer = $derived<LineMeasurer>(measureLines ?? cardLineMeasurer(effectiveMeasure));
 
   // O-4: the orientation record last emitted, fed back to the next layout
   // call. Deliberately not reactive state: it is an input of the next pass,
@@ -266,10 +280,13 @@
       flowTokens,
       ...(bindings === undefined ? {} : { bindings }),
       presentation,
+      ...(iconBindings === undefined ? {} : { iconBindings }),
+      strictIcons,
+      resolveGlyph: resolveGlyph as typeof getDiagramGlyph,
       measureLines: lineMeasurer,
       collapsed: collapsedNow,
       ...(hints === undefined ? {} : { hints }),
-      ...(metrics === undefined ? {} : { metrics }),
+      metrics: effectiveMetrics,
       ...(rowPack === undefined ? {} : { rowPack }),
       ...(targetWidth === undefined ? {} : { targetWidth }),
       ...(previousOrientation === undefined ? {} : { previousOrientation }),
@@ -284,10 +301,14 @@
     layoutResult.status === "laid-out"
       ? resolveScene(layoutResult, {
           document: semanticDocument,
+          ...(view === undefined ? {} : { view }),
           presentation,
+      ...(iconBindings === undefined ? {} : { iconBindings }),
+      strictIcons,
+      resolveGlyph,
           measureLines: lineMeasurer,
           flows: flowOptions,
-          ...(metrics === undefined ? {} : { metrics }),
+          metrics: effectiveMetrics,
         })
       : undefined,
   );
@@ -319,7 +340,7 @@
   const nodeTab = $derived(scene?.nodeTargets.some((n) => n.occurrence === nodeCursor) ? nodeCursor : selectedVisible?.kind === "box" && scene?.nodeTargets.some((n) => n.occurrence === selectedVisible.occurrence) ? selectedVisible.occurrence : scene?.nodeTargets[0]?.occurrence);
   const stateOf = (id: string) => flowHighlight === undefined ? undefined : flowStateOf(flowHighlight, id);
   const descriptionId = (group: string, id: string) => `${hostId}-${group}-${encodeURIComponent(id)}`;
-  const hostId = $props.id();
+  const hostId = arrowInstance;
   const flowDescription = (target: Visible) => scene === undefined ? "" : describeTarget(scene, target, strings as FlowStrings);
   const boxTarget = (occurrence: string): Visible => ({ kind: "box", occurrence });
   function dispatchFlow(action: FlowAction): void {
@@ -478,6 +499,36 @@
   let windowHeight = $state<number>();
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
+  let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
+  const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
+  function readRenderedBounds(): void {
+    if (frameEl === undefined || scene === undefined) return;
+    const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
+    if (bounds !== undefined && bounds !== scene.bounds) {
+      if (atFit && (renderedBounds === undefined || renderedBounds.scene === scene)) requestedZoom = undefined;
+      renderedBounds = { scene, bounds };
+    }
+  }
+  $effect(() => {
+    const current = scene;
+    if (current === undefined) return;
+    let active = true;
+    void tick().then(() => { if (active && scene === current) readRenderedBounds(); });
+    return () => { active = false; };
+  });
+
+  $effect(() => {
+    const element = frameEl;
+    const current = scene;
+    if (element === undefined || current === undefined || browserMeasure !== undefined
+      || measureLines !== undefined || measure !== defaultCardMeasure) return;
+    let active = true;
+    void document.fonts?.ready.then(() => {
+      if (!active) return;
+      browserMeasure = measureRenderedSceneFont(element, current, effectiveMeasure);
+    });
+    return () => { active = false; };
+  });
 
   function tokenValue(name: string): string | undefined {
     if (frameEl === undefined) return undefined;
@@ -493,6 +544,12 @@
   // m3: camera tokens are re-read on every measure and before every camera
   // input, so a post-mount theme change applies without waiting for a resize.
   function readCameraTokens(): void {
+    const values: Record<string, number> = {};
+    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
+      const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
+      if (Number.isFinite(value)) values[key] = value;
+    }
+    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) tokenMetrics = values;
     const nextTokens = { ...DEFAULT_FLOW_TOKENS };
     for (const name of Object.keys(nextTokens) as (keyof FlowTokens)[]) {
       const value = tokenValue(`--st-component-diagramScene-${name}`);
@@ -535,7 +592,7 @@
   const measured = $derived(viewWidth !== undefined && windowHeight !== undefined);
   const fit = $derived(
     sceneFit({
-      ...(scene?.bounds === undefined ? {} : { bounds: scene.bounds }),
+      ...(cameraBounds === undefined ? {} : { bounds: cameraBounds }),
       // Before the frame is measured (server render, hidden mount) the fit
       // box is the nominal 16:9 box of the layout target width.
       viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
@@ -546,7 +603,7 @@
   );
   const zoom = $derived(resolveZoom(requestedZoom, fit));
   const readout = $derived(zoomReadout(zoom, fit.maxZoom));
-  const placement = $derived(scenePlacement(scene?.bounds, zoom, fit));
+  const placement = $derived(scenePlacement(cameraBounds, zoom, fit));
   const canZoomIn = $derived(zoom < fit.maxZoom);
   const canZoomOut = $derived(zoom > fit.minZoom);
 
@@ -557,6 +614,8 @@
     if (cameraDocument !== undefined && cameraDocument !== id) {
       atFit = true;
       requestedZoom = undefined;
+      browserMeasure = undefined;
+      renderedBounds = undefined;
     }
     cameraDocument = id;
   });
@@ -620,6 +679,7 @@
   /** Z-3/Z-4: fit and reset are one action. An overflowing axis scrolls from its start. */
   export function fitToFrame(): void {
     readCameraTokens();
+    readRenderedBounds();
     atFit = true;
     requestedZoom = fit.zoom;
     const element = viewportEl;
@@ -813,19 +873,20 @@
       entityId: node.entity,
       ...(resolveGlyph === undefined ? {} : { resolveGlyph }),
     });
-    return projected.kind === "card" ? projected.props : undefined;
+    return projected.kind === "card" ? { ...projected.props, autoSize: true, height: node.rect.height } : undefined;
   };
 
   const zonePropsOf = (node: SceneNodeModel, rect: Rect) => {
     const zoneTitle = node.presentation?.text.title ?? "";
     const projected = projectZoneProps(node.presentation, {
+      containerPadding: effectiveMetrics.containerPadding,
       entityId: node.entity,
       collapsed: node.collapsed,
       toggleLabel: node.collapsed ? strings.expand(zoneTitle) : strings.collapse(zoneTitle),
       ...(node.collapsed ? {} : { width: rect.width, height: rect.height }),
       ...(resolveGlyph === undefined ? {} : { resolveGlyph }),
     });
-    return projected.kind === "zone" ? projected.props : undefined;
+    return projected.kind === "zone" ? { ...projected.props, autoSize: true, height: rect.height } : undefined;
   };
 
   const erdTable = $derived(semanticDocument.profileRefs.includes("erd@1") ? renderErdTable(semanticDocument) : "");
@@ -833,8 +894,9 @@
   const pointsOf = (points: readonly { readonly x: number; readonly y: number }[]): string =>
     points.map((point) => `${point.x},${point.y}`).join(" ");
 
+  const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
-    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom}${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
@@ -923,8 +985,9 @@
               aria-hidden="true"
               style={animating ? `opacity:${eased}` : undefined}
             >
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
               {#each scene.edges as edge (edge.occurrence)}
-                <polyline class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
                 {#if edge.directed}
                   <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
                   {#each edge.arrows as arrow, index (index)}
@@ -954,12 +1017,12 @@
                 {:else if node.kind === "card"}
                   {@const cardProps = cardPropsOf(node)}
                   {#if cardProps !== undefined}
-                    <DiagramCard {...cardProps} {measure} onSelect={(event) => selectNode(node, event)} />
+                    <DiagramCard {...cardProps} measure={effectiveMeasure} onSelect={(event) => selectNode(node, event)} />
                   {/if}
                 {:else if node.kind === "zone"}
                   {@const zoneProps = zonePropsOf(node, rect)}
                   {#if zoneProps !== undefined}
-                    <DiagramZone {...zoneProps} {measure} onSelect={(event) => selectNode(node, event)} onToggle={() => toggleFold(node)} />
+                    <DiagramZone {...zoneProps} measure={effectiveMeasure} onSelect={(event) => selectNode(node, event)} onToggle={() => toggleFold(node)} />
                   {/if}
                 {:else}
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
@@ -978,12 +1041,20 @@
               <div
                 class="st-diagramSceneFigure-edgeLabel"
                 data-scene-label={edgeLabel.occurrence}
+                title={edgeLabel.title}
                 data-erd-label={edgeLabel.erd || undefined}
                 style={`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ""}`}
               >
-                {#each edgeLabel.lines as line, lineIndex (lineIndex)}
-                  <span>{line}</span>
-                {/each}
+                {#if edgeLabel.bundle !== undefined}
+                  <strong class="st-diagramSceneFigure-bundleHeader">{edgeLabel.bundle.header}</strong>
+                  {#each edgeLabel.bundle.groups as group, index (index)}
+                    <div class="st-diagramSceneFigure-bundleRelation" data-bundle-relation={index}>
+                      <span aria-hidden="true">•</span><div>{#each group.lines as line}<span>{line}</span>{/each}</div>
+                    </div>
+                  {/each}
+                {:else}
+                  {#each edgeLabel.lines as line, lineIndex (lineIndex)}<span>{line}</span>{/each}
+                {/if}
               </div>
             {/each}
           {/if}
@@ -991,10 +1062,13 @@
       </div>
     </div>
   </div>
+  {#if scene}<div class="st-diagramSceneFigure-fallback">{#each sceneTextRows(scene, semanticDocument) as row}<p>{row}</p>{/each}</div>{/if}
   {#if erdTable}<div class="st-diagramErd-fallback">{@html erdTable}</div>{/if}
 </figure>
 
 <style>
+  .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
   .st-diagramSceneFigure-flowNavigator { display: flex; align-items: center; gap: var(--st-spacing-2); grid-column: 1 / -1; }
   .st-diagramSceneFigure-flowHit { fill: none; stroke: var(--st-component-diagramScene-flowHitStroke); stroke-width: var(--st-component-diagramScene-flowHitWidth); pointer-events: stroke; cursor: pointer; }
   .st-diagramSceneFigure-edge[data-flow-step] { stroke: var(--st-component-diagramScene-flowStroke); stroke-width: var(--st-component-diagramScene-flowStrokeWidth); }
@@ -1088,7 +1162,7 @@
     box-sizing: border-box;
     color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));
     display: flex;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
     height: 100%;
     line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
@@ -1105,22 +1179,29 @@
   }
   .st-diagramSceneFigure-edge {
     fill: none;
-    stroke: var(--st-component-diagramCard-border, var(--st-semantic-border-strong));
+    stroke: var(--st-component-diagramScene-edgeStroke, var(--st-semantic-border-strong));
     stroke-linejoin: round;
     stroke-width: var(--st-component-diagramZone-borderWidth, 1.5px);
     vector-effect: non-scaling-stroke;
   }
   .st-diagramSceneFigure-edgeLabel {
+    box-sizing: border-box;
+    background: var(--st-component-diagramScene-labelSurface, var(--st-semantic-surface-raised));
+    box-shadow: inset 0 0 0 var(--st-component-diagramScene-labelBorderWidth, 1px) var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle));
     align-items: center;
-    color: var(--st-semantic-text-secondary);
+    color: var(--st-component-diagramScene-labelText, var(--st-semantic-text-primary));
     display: flex;
     flex-direction: column;
-    font-family: var(--st-component-diagramCard-fontFamily, inherit);
+    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans, Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif));
     font-size: var(--st-component-diagramScene-edgeLabelFontSize, 18px);
     justify-content: center;
-    line-height: var(--st-component-diagramScene-edgeLabelLineHeight, 22px);
+    line-height: var(--st-diagram-label-line-height, var(--st-component-diagramScene-edgeLabelLineHeight, 22px));
     pointer-events: none;
     position: absolute;
     white-space: nowrap;
   }
+  .st-diagramSceneFigure-edgeLabel > span { display: block; flex: none; height: var(--st-diagram-label-line-height, 22px); }
+  .st-diagramSceneFigure-bundleHeader { display: block; padding: var(--st-component-diagramScene-labelPadding, 4px); font-weight: 400; }
+  .st-diagramSceneFigure-bundleRelation { display: flex; align-self: stretch; gap: var(--st-component-diagramScene-bundleMarkerGap, 6px); padding: var(--st-component-diagramScene-labelPadding, 4px); box-shadow: inset 0 var(--st-component-diagramScene-labelBorderWidth, 1px) 0 var(--st-component-diagramScene-labelBorder, var(--st-semantic-border-subtle)); }
+  .st-diagramSceneFigure-bundleRelation div { display: flex; flex-direction: column; }
 </style>

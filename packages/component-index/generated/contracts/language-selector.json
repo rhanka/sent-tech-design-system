@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:7529db40e36cde4c6b83c32d8dd6430b95a972c24c6d1de1f6c53e8851ef7c19",
-  "entryDigest": "sha256:4e69a663d7fbebd8ae65284201d9f1fa6c1a1e6550330e1d62c81f7fe887fa5b",
+  "digest": "sha256:d3a6eee8fb7b8424f4f7b40ddc23b3a38b770ee2bfc3a32d2b178dad70358c45",
+  "entryDigest": "sha256:cb216bffb5890701334ecba81e1146ed77adfec3a944cd398338be5a3acfd3a3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -259,7 +259,16 @@
           "LanguageOption": {
             "additionalProperties": false,
             "properties": {
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -293,14 +302,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "LanguageOption.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "current-label",
@@ -328,13 +330,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:91fe7485393b29d15551e9cb10b5ada6440a2d579d6d0ce5004c5c158ac2362d",
+        "declarationDigest": "sha256:7bebce1b1e1edad2bdda8bb9934beb3176b0f2badc27c7c18880c04f72b58ffd",
         "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"

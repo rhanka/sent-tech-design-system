@@ -1,8 +1,8 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:b74049a187bfcf34f0e758d6239ec2404b9a7941cfdfe535c0f519ccfadcb465",
-  "entryDigest": "sha256:83116a5cccb9c33bf7ea56b31e541ea8e75bc8c7a3f9377983f04f9eb550ea96",
+  "digest": "sha256:9f81edd35b22892c8cbae6619627229aac223cbd0d204b53d0d6038fd2a33703",
+  "entryDigest": "sha256:0839cc56f9dd3fd7ff2d926ac9ddaae82446520c8defcf98ff246084d8f66435",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -196,8 +196,26 @@
           "disabled": {
             "type": "boolean"
           },
-          "helperText": {},
-          "label": {},
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "modelValue": {
             "type": "boolean"
           },
@@ -210,20 +228,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "helper-text"
@@ -233,7 +238,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:3aeae06b670d62dbb7ed0649756c9f3c5c9060d46eefcff737318da62266ce27",
+        "declarationDigest": "sha256:5a1c8065e6a27065d8d99a0f1d4798a9ce58bae8b90eff777c0327b5a9d6e7ca",
         "declarationPath": "packages/components-vue/dist/Switch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SwitchProps",

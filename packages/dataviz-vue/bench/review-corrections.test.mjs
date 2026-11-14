@@ -23,6 +23,29 @@ test('review correction retains date-picker and range-slider wrapper destination
   ]) assert.equal(normalizeHtml(reviewCorrections('DashboardFilterBar', { html }, JSDOM).html, JSDOM), normalizeHtml(html, JSDOM));
 });
 
+test('PR 286 corrections keep glyph geometry and unrelated SVG markup significant', () => {
+  const svg = '<svg class="lucide lucide-x-icon lucide-x" width="12" stroke-width="2.5"><path d="M18 6 6 18"></path></svg>';
+  const fixture = { html: `<div><button class="st-filterPill__remove">${svg}</button>${svg}</div>` };
+  const tree = JSDOM.fragment(reviewCorrections('DashboardActiveFilters', fixture, JSDOM).html);
+  const corrected = tree.querySelector('button svg');
+  assert.equal(corrected.getAttribute('class'), 'lucide st-icon lucide-x-icon lucide-x');
+  assert.equal(corrected.getAttribute('stroke-width'), '2.25');
+  assert.equal(corrected.getAttribute('focusable'), 'false');
+  assert.equal(corrected.getAttribute('width'), '12');
+  assert.equal(corrected.querySelector('path').getAttribute('d'), 'M18 6 6 18');
+  assert.equal(tree.querySelector('div > svg').outerHTML, svg);
+  assert.equal(reviewCorrections('AreaChart', fixture, JSDOM), fixture);
+});
+
+test('PR 286 table correction removes only duplicated wrapper attrs', () => {
+  const fixture = { html: '<div class="st-dataTable-wrap" data-shared="same" data-unique="kept"><table class="st-dataTable" data-shared="same" aria-label="Rows"></table></div>' };
+  const tree = JSDOM.fragment(reviewCorrections('AdvancedPivotDataTable', fixture, JSDOM).html);
+  assert.equal(tree.firstElementChild.hasAttribute('data-shared'), false);
+  assert.equal(tree.firstElementChild.getAttribute('data-unique'), 'kept');
+  assert.equal(tree.querySelector('table').getAttribute('data-shared'), 'same');
+  assert.equal(tree.querySelector('table').getAttribute('aria-label'), 'Rows');
+});
+
 test('G5 serializer keeps live properties and valid style declarations observable', () => {
   const dom = new JSDOM('<body><input value="old"><textarea>old</textarea><button style="border:1px solid var(--border, #ccc);display:flex">Play</button></body>');
   const before = mountedHtml(dom.window.document.body, JSDOM);

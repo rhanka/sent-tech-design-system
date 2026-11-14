@@ -1,8 +1,8 @@
 {
   "componentId": "rich-text-editor",
   "contractSource": "derived",
-  "digest": "sha256:ae91583673276808ab2b753956af12a7bf3d4e9cf2e4f30800d822d74aa26563",
-  "entryDigest": "sha256:bd359c11e0398920b6a0b8ce1cc143baac3102617ca1f4eeda47cc74111441cf",
+  "digest": "sha256:588c64d7d5e5ae71f9dd5e31094549f0d1df9bd6202d83f663a6f2f4c9e7a4ac",
+  "entryDigest": "sha256:5ef00d6c45da7f5ee81d1fef7bfb7dbb2bc0761f0be4e4f25937a74f9d8b0255",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -3091,10 +3091,10 @@
               "kind": {
                 "enum": [
                   "type",
-                  "delete",
                   "split",
                   "merge",
                   "paste",
+                  "delete",
                   "undo",
                   "redo",
                   "composition-commit"
