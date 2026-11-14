@@ -1,8 +1,8 @@
 {
   "componentId": "card",
   "contractSource": "derived",
-  "digest": "sha256:bdf0ee3f4f9ec02c465e29148495899322787762c4df3a7569263a2590a32a28",
-  "entryDigest": "sha256:29bd4d055780ecedeb62ee011e7168d8be87064c033f9c83e10552be6d88a0e8",
+  "digest": "sha256:787f02be8a2c3417b1b57cc69ef088163abbe2be2fc561e5e7f79d94eabffc44",
+  "entryDigest": "sha256:2906871d0de0e8b1c6ec6a92b9700177f054121dc231dbbc42b043e10868ec50",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -110,7 +110,7 @@
         "declarationPath": "packages/components-svelte/dist/Card.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CardProps",
-        "version": "0.41.0"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -146,7 +146,7 @@
         "declarationPath": "packages/components-vue/dist/Card.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CardProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

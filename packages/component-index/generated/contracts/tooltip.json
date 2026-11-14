@@ -1,8 +1,8 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:c58dfebd3efcaf739244343b769047e1b088f8c6c37797405205ac33ce15f3e4",
-  "entryDigest": "sha256:91fe3cd6c1f2a017e353b8fc4054db0f1a825448e7b341c3eec647b8fbaf869b",
+  "digest": "sha256:5ac384306f3178811f4afaaa8984c6c28d26c4e35f54f3b3d977dd6c0176e8b9",
+  "entryDigest": "sha256:d524fc48dff6932d7849e162b6a435902d61167fcfa3fe6d51c503a55c2c6c89",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -145,7 +145,7 @@
         "declarationPath": "packages/components-svelte/dist/Tooltip.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TooltipProps",
-        "version": "0.41.0"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-vue/dist/Tooltip.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TooltipProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

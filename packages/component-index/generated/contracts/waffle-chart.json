@@ -1,8 +1,8 @@
 {
   "componentId": "waffle-chart",
   "contractSource": "derived",
-  "digest": "sha256:42ee283bfe6b85091f361da96887a68bdb99925697ddc9a1b861854b942f2e02",
-  "entryDigest": "sha256:0129f2eebf7fc6e31a55f45d4429fe04d089ab771e27a66a7575a86ec5339e05",
+  "digest": "sha256:bde79789fa6f35f6c8af38c0e0af37f95127e640cfd13850b1aa19271e1afd67",
+  "entryDigest": "sha256:050b38268fb8f892c1e2108f04849e3562eec7b441733803c6e38d5e652f6704",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -257,7 +257,7 @@
         "declarationPath": "packages/components-svelte/dist/WaffleChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WaffleChartProps",
-        "version": "0.41.0"
+        "version": "0.41.1"
       },
       "status": "complete",
       "unresolved": [],
@@ -343,7 +343,7 @@
         "declarationPath": "packages/components-vue/dist/WaffleChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WaffleChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "complete",
       "unresolved": [],

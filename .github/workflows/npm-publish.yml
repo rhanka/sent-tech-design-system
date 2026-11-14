@@ -132,6 +132,8 @@ jobs:
           npm ci
           npm run build
 
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-tokens,@sentropic/design-system-themes,@sentropic/design-system-svelte
       - name: Publish packages
         run: |
           # Design-system packages only, in dependency order.

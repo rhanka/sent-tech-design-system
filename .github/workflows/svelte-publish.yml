@@ -113,6 +113,8 @@ jobs:
       # an unresolvable pin. Release order (docs/release.md): diagram-core →
       # diagram-canvas (tag `diagram-canvas-v<version>`,
       # diagram-canvas-publish.yml) → tokens/themes if changed → svelte.
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-svelte
       - name: Verify pinned @sentropic dependencies are on npm (fail closed)
         run: node scripts/verify-deps-published.mjs --workspace packages/components-svelte
       - name: Publish Svelte package
