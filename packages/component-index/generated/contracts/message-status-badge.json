@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:7e1854d687bb75ab22aed035d6c77234bd543e18abc35d47155597da8e098546",
-  "entryDigest": "sha256:b7f2ea424dd4533c14f063cd4713de5a6bebd6ecf153406d7fe3879e52142732",
+  "digest": "sha256:c27ba5e1ee5028abf76702daad5fe1d04725534e931d16fb0d571dedd0a2f3b3",
+  "entryDigest": "sha256:7bc49b070c2a2cc91c24a8363adf5377324876eca6c52139085d40fe027c39fe",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageStatusBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -281,7 +281,7 @@
         "declarationPath": "packages/components-vue/dist/MessageStatusBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],

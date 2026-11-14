@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:d93ad2ec13d51260d0dd118d09a53950fa22e828c170743ee9e9d80a1d3ea220",
-  "entryDigest": "sha256:946d113e1b157dbd87049afdd7abe0fe23008d88f91dae708a1a5af836e91288",
+  "digest": "sha256:027a28a5b5671bde4651e596d0a5871bbe42bd9e845a1c10bc673742ee9c39c2",
+  "entryDigest": "sha256:f018c3f08c7ee7fa3965853bfad1c8f118c1866badab517f2bd9ec0888270b70",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -717,7 +717,7 @@
         "declarationPath": "packages/components-svelte/dist/AppChrome.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppChromeProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -972,7 +972,7 @@
         "declarationPath": "packages/components-vue/dist/AppChrome.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppChromeProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],
