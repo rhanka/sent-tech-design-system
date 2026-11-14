@@ -14,6 +14,7 @@ import {
   parseScale,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
+import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 import SceneNode from "./DiagramFlowNode.vue";
 import DiagramControlGlyph from "./DiagramControlGlyph.vue";
 import type { DiagramSceneFigureProps as SharedSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -256,6 +257,8 @@ const scenarioId = useId();
                     <path v-for="(arrow, index) in edge.arrows" :key="index" class="st-diagramSceneFigure-flowArrow" :data-flow-arrow="edge.occurrence" :data-flow-state="stateOf(edge.occurrence)" :d="tokens.flowArrowPath" :transform="`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-tokens.flowArrowLength} ${-tokens.flowArrowWidth / 2})`" />
                   </template>
                 </template>
+                <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
+                <polyline v-for="label in scene.labels.filter(label => label.leader)" :key="label.occurrence" class="st-diagramSceneFigure-edge" :points="points(label.leader!)" />
               </svg>
               <div v-for="node in scene.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
                 <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
@@ -268,7 +271,7 @@ const scenarioId = useId();
                 <button type="button" class="st-diagramSceneFigure-flowNode" :data-flow-node="target.occurrence" :data-flow-state="stateOf(target.occurrence)" :aria-label="description(boxTarget(target.occurrence))" :aria-pressed="selected?.kind === 'box' && selected.occurrence === target.occurrence" :aria-describedby="descriptionId('node', target.occurrence)" :tabindex="nodeTab === target.occurrence ? 0 : -1" :style="`left:${target.anchor.x}px;top:${target.anchor.y}px`">{{ strings.node }}</button>
                 <span class="st-diagramSceneFigure-flowDescription" :id="descriptionId('node', target.occurrence)">{{ description(boxTarget(target.occurrence)) }}</span>
               </template>
-              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :style="boxStyle(label.box)">
+              <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
                 <template v-if="label.bundle !== undefined">
                   <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>
                   <div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
@@ -282,5 +285,6 @@ const scenarioId = useId();
         </div>
       </div>
     </div>
+    <DiagramSceneFallback :scene="scene" :document="props.document" />
   </figure>
 </template>
