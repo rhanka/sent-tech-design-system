@@ -58,6 +58,17 @@ function measure() {
     });
     return { id: element.dataset.sceneEdge, stroke, points };
   });
+  // The connector SVG is behind the node surfaces. Keep a conservative
+  // opaque interior (excluding rounded corners), so hidden route portions
+  // cannot cause a clearance failure against the text painted over them.
+  const occluders = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone')].flatMap(element => {
+    const style = getComputedStyle(element);
+    if (!/^rgb\([^/]+\)$/.test(style.backgroundColor) || style.opacity !== '1') return [];
+    const r = box(element);
+    const inset = Math.max(...['borderTopLeftRadius', 'borderTopRightRadius', 'borderBottomLeftRadius', 'borderBottomRightRadius']
+      .map(key => parseFloat(style[key]) || 0)) * scale;
+    return [{ left: r.left + inset, top: r.top + inset, right: r.right - inset, bottom: r.bottom - inset }];
+  });
   return { camera: window.__camera, scale, transform, frame: box(frame),
     // The rendered extent includes all scene bounds and the two 1 px paint
     // insets. Recover the fit BEFORE the readability clamp from DOM geometry.
@@ -69,7 +80,7 @@ function measure() {
     outerScroll: (() => { const el = figure.querySelector('.st-diagramSceneFigure-frame');
       return [el.scrollWidth, el.clientWidth, el.scrollHeight, el.clientHeight]; })(),
     nodes: [...figure.querySelectorAll('[data-scene-occurrence]')].map(element => ({ id: element.dataset.sceneOccurrence, ...box(element) })),
-    labels, paths };
+    labels, paths, occluders };
 }
 
 async function settle(page) {
@@ -96,9 +107,7 @@ async function settle(page) {
 
 const epsilon = 1 / 64; // CSS layout precision, not a visual clearance allowance.
 
-// Distance to the actual painted segment, including bends only where they
-// occur. A polyline's combined bounding rectangle contains unpainted space.
-function segmentDistance(box, a, b) {
+function segmentInterval(box, a, b) {
   const dx = b.x - a.x, dy = b.y - a.y;
   let enter = 0, leave = 1;
   for (const [start, delta, low, high] of [[a.x, dx, box.left, box.right], [a.y, dy, box.top, box.bottom]]) {
@@ -110,7 +119,31 @@ function segmentDistance(box, a, b) {
       leave = Math.min(leave, Math.max(t1, t2));
     }
   }
-  if (enter <= leave) return 0;
+  return enter <= leave ? [enter, leave] : undefined;
+}
+
+function exposedSegments(a, b, occluders, stroke) {
+  let segments = [[a, b]];
+  for (const box of occluders) {
+    const interior = { left: box.left + stroke, top: box.top + stroke,
+      right: box.right - stroke, bottom: box.bottom - stroke };
+    if (interior.left >= interior.right || interior.top >= interior.bottom) continue;
+    segments = segments.flatMap(([start, end]) => {
+      const interval = segmentInterval(interior, start, end);
+      if (interval === undefined) return [[start, end]];
+      const [enter, leave] = interval;
+      const at = t => ({ x: start.x + t * (end.x - start.x), y: start.y + t * (end.y - start.y) });
+      return [...(enter > 0 ? [[start, at(enter)]] : []), ...(leave < 1 ? [[at(leave), end]] : [])];
+    });
+  }
+  return segments;
+}
+
+// Distance to the actual painted segment, including bends only where they
+// occur. A polyline's combined bounding rectangle contains unpainted space.
+function segmentDistance(box, a, b) {
+  if (segmentInterval(box, a, b) !== undefined) return 0;
+  const dx = b.x - a.x, dy = b.y - a.y;
   const pointToBox = p => Math.hypot(Math.max(box.left - p.x, 0, p.x - box.right),
     Math.max(box.top - p.y, 0, p.y - box.bottom));
   const pointToSegment = (x, y) => {
@@ -162,17 +195,21 @@ function check(state, scene) {
   }
   assert.equal(state.camera.pans, overflow.some(Boolean), 'camera panning must match overflowing axes');
   assert.deepEqual(state.scroll.slice(4), [0, 0], 'fit starts at the scroll origin');
+  const visiblePaths = state.paths.map(path => {
+    assert.ok(path.points.length >= 2 && Number.isFinite(path.stroke), `measurable connector ${path.id}`);
+    return { ...path, segments: path.points.slice(1).flatMap((point, i) =>
+      exposedSegments(path.points[i], point, state.occluders, path.stroke)) };
+  });
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
       && label.right <= state.frame.left + state.scroll[0] + epsilon
       && label.bottom <= state.frame.top + state.scroll[2] + epsilon,
     `label unreachable within scroll extent: ${label.id}`);
-    for (const path of state.paths) {
-      assert.ok(path.points.length >= 2 && Number.isFinite(path.stroke), `measurable connector ${path.id}`);
-      for (let i = 1; i < path.points.length; i++) {
-        const distance = segmentDistance(label, path.points[i - 1], path.points[i]) - path.stroke;
+    for (const path of visiblePaths) {
+      for (const [a, b] of path.segments) {
+        const distance = segmentDistance(label, a, b) - path.stroke;
         assert.ok(distance + epsilon >= state.clearance,
-          `label ${label.id} clearance ${distance} < ${state.clearance} at connector ${path.id} segment ${i}`);
+          `label ${label.id} clearance ${distance} < ${state.clearance} at connector ${path.id}`);
       }
     }
   }
