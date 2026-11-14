@@ -1,8 +1,8 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:8eb8be797e1e786f9a9fcd1a77cdc27370a06719ad32588f4f50e261744055ef",
-  "entryDigest": "sha256:ab45b628935b7cb9807a8579f82fa98db58512d8c46d559160782eff1bf2d28c",
+  "digest": "sha256:33d0ead745c012c4118e7a3146a25c609ac2f31f487be3c5cc74618ecdd7fe07",
+  "entryDigest": "sha256:c41f02dd09b45b3e7685affbca6135f06468c446a87a7a484a5521fc1b8017be",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/LanguageSelector.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LanguageSelectorProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -334,7 +334,7 @@
         "declarationPath": "packages/components-vue/dist/LanguageSelector.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LanguageSelectorProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

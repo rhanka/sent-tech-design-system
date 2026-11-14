@@ -77,7 +77,7 @@ export function cameraFit(input: CameraFitInput): CameraFit {
   // All hosts and camera inputs share this range. A small frame or a large
   // unfolded scene reaches the floor, then scrolls instead of shrinking text.
   const zoom = Math.max(readableFloor, zoomFit);
-  const fitHeight = zoomFit === maxZoom ? Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64) : box.height;
+  const fitHeight = Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64);
   return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoom, maxZoom, pans: zoom > zoomFit };
 }
 
