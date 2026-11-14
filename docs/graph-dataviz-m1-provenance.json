@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "e0a4c408182e00d6ce285eaedcf69d03923a8146e8560aba6300ab8a4e194b0e",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained. PR 282: pin design-system-vue to main 0.41.0-next.2 and verify published declarations during build. ; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
+      "destinationSha256": "a633762c0bcc04d0d28b590abb966a7255bcd66c3e3954f626b4539d7ce0c310",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.4, whose diagram-canvas 0.2.2 -> diagram-core 0.2.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Upstream identity retained."
     },
     {
       "repository": "dataviz",
@@ -5332,8 +5332,8 @@
       "gitBlob": "a02e1f4e43dde8c5e6219550aa97a01c04ca678b",
       "sha256": "44417c1cd4c11ded75319c38cf64ea472fabc26c0b8f74e4c4ca76231e46fb3f",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "60f121f5477177e17b86cc5853bf81aea6d4841b2945a83bd9571c44537b5249",
-      "note": "Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained."
+      "destinationSha256": "a4734d5642e297c87b488b5881dc6accca2d4b662743403e4e0baed9af630dcf",
+      "note": "Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained. PR 282 final review: restore the original ASCII unicode escape for the bookmark-key NUL separator."
     },
     {
       "repository": "dataviz",
@@ -6936,7 +6936,9 @@
       "destination": "packages/dataviz-vue/tsconfig.json",
       "gitBlob": "3b9dd47243e7821b0f2efaa9714f8cdbf9d06936",
       "sha256": "ae3272aad9cd708fc1083d419d302def96b940511adf647b213d98e5119cbc6d",
-      "status": "copied-byte-identical"
+      "status": "adapted-vue-vapor",
+      "destinationSha256": "01dfca9fd9ec454cd98c983a65f1155066b0a3b921503a5af2df510b9813d87a",
+      "note": "PR 282 final review: disable source/declaration maps because the SFC compiler replaces Volar virtual JavaScript and source files do not ship. Upstream identity retained."
     },
     {
       "repository": "dataviz",
@@ -8561,7 +8563,7 @@
     },
     {
       "destination": "packages/dataviz-vue/scripts/build-sfc.mjs",
-      "sha256": "40784db56769bfca12ba79a2829478dd241b5ede45fac091d6361473a42e69b8",
+      "sha256": "b587f783cbe61c667a2e98bd451ab715b8b1b319154f64b36152cd870b67bc1b",
       "status": "local-vue-vapor",
       "note": "Monorepo-authored Vue Vapor port helper, build harness or verification artifact."
     },
