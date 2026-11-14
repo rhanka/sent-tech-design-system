@@ -1,0 +1,65 @@
+{
+  "name": "@sentropic/design-system-preact",
+  "version": "0.0.0-s1.0",
+  "license": "MIT",
+  "description": "Preact + Signals components for the Sentropic design system. JSX source of truth for the Preact and the emitted React builds (spike S1).",
+  "type": "module",
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
+    "directory": "packages/components-preact"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "!dist/.srchash"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json --noEmit && tsc -p react/tsconfig.json",
+    "test": "npm run test:emit && npm run test:preact && npm run test:react",
+    "test:emit": "node --test scripts/emit-react.test.mjs",
+    "test:preact": "vitest run",
+    "test:react": "node scripts/emit-react.mjs && cd ../components-react && vitest run --config ../components-preact/vitest.react.config.ts",
+    "emit:react": "node scripts/emit-react.mjs",
+    "measure": "node scripts/measure.mjs"
+  },
+  "dependencies": {
+    "@sentropic/design-system-themes": "0.14.0",
+    "lucide-preact": "0.562.0"
+  },
+  "peerDependencies": {
+    "@preact/signals": "^2.11.4",
+    "preact": "^10.29.8"
+  },
+  "devDependencies": {
+    "@babel/core": "7.29.7",
+    "@preact/preset-vite": "2.10.6",
+    "@preact/signals": "2.11.4",
+    "@sentropic/design-system-react": "0.40.0",
+    "@testing-library/preact": "3.2.6",
+    "@testing-library/react": "16.3.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.2.3",
+    "jsdom": "27.4.0",
+    "lucide-react": "0.562.0",
+    "preact": "10.29.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "typescript": "5.9.3",
+    "vite": "8.3.4",
+    "vitest": "4.1.11"
+  }
+}
