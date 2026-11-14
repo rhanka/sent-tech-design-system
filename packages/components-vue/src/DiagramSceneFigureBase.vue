@@ -1,16 +1,18 @@
 <script setup lang="ts">
+import DiagramErdNode from "./DiagramErdNode.vue";
+import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 defineOptions({ name: 'DiagramSceneFigureBase' });
 import { useDiagramSceneViewport } from './useDiagramSceneViewport.js';
 import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, useId, watch } from 'vue';
-import { renderErdCardSvg, renderErdTable, createLayoutCache, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
+import { createLayoutCache, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
 import { sceneContentSize, type DiagramSceneSize } from './diagramSceneModel.js';
 import { DEFAULT_FLOW_STRINGS } from '@sentropic/diagram-canvas/flowModel';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneTextRows, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -237,7 +239,6 @@ function zonePropsOf(node: SceneNodeModel) {
         resolveGlyph: props.resolveGlyph ?? getDiagramGlyph });
     return projected.kind === 'zone' ? { ...projected.props, autoSize: true, height: rect.height } : undefined;
 }
-const erdTable = computed(() => props.document.profileRefs.includes("erd@1") ? renderErdTable(props.document) : "");
 const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
@@ -276,10 +277,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
               </svg>
               <div v-for="{ node, cardProps, zoneProps } in projectedNodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
-                <template v-if="node.kind === 'erd' && node.erd">
-                  <button class="st-diagramErd-toggle" type="button" :aria-label="node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)" :aria-expanded="!node.collapsed" :style="`--st-erd-header-height: ${node.erd.headerHeight}px`" @click="toggleFold(node)">{{ node.erd.title }}</button>
-                  <div class="st-diagramErd-svg" v-html="renderErdCardSvg(node.erd)" />
-                </template>
+                <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="strings.expand" :collapse="strings.collapse" :toggle="() => toggleFold(node)" />
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
                 </template>
@@ -303,20 +301,11 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         </div>
       </div>
     </div>
-  <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in sceneTextRows(scene, props.document)" :key="i">{{ row }}</p></div>
-  <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
+  <DiagramSceneFallback :scene="scene" :document="props.document" />
   </figure>
 </template>
 
 <style>
-  .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
-  .st-diagramErd-svg { height: 100%; width: 100%; }
-
-  .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
-  .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
-  .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;
