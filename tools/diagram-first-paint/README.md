@@ -16,7 +16,9 @@ transform. The clearance is the computed `diagramScene.labelPadding` token scale
 pixels. Display scale must reach 0.45. The unclamped fit is derived from the DOM
 extent and world scale; when feasible at 0.45, the viewport must have no scroll
 overflow. Otherwise, only overflowing axes may scroll, starting at the origin,
-and every label must remain reachable. The outer frame must never overflow.
+and all drawing content must remain reachable within the usable viewport,
+excluding scrollbar thickness. Chrome's default `--hide-scrollbars` is removed;
+horizontal overflow must display a classic scrollbar. The outer frame must never overflow.
 Labels must clear every painted connector segment; portions hidden behind
 opaque card and zone surfaces are excluded. Initial camera and scroll
 state must equal those after Ajuster exactly; numeric geometry and transform

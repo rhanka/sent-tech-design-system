@@ -50,6 +50,7 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
+    "!dist/**/*Fixture.svelte.d.ts*",
     "!dist/**/*Fixture.d.ts",
     "!dist/**/diagram-card-corpus.js",
     "!dist/**/diagram-card-corpus.d.ts",
