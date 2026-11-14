@@ -26,13 +26,14 @@ const failures = [];
 function measure() {
   const figure = document.querySelector('.st-diagramSceneFigure');
   const frame = figure.querySelector('.st-diagramSceneFigure-viewport');
+  const extent = figure.querySelector('.st-diagramSceneFigure-extent');
   const world = figure.querySelector('.st-diagramSceneFigure-world');
   const box = element => {
     const r = element.getBoundingClientRect();
     return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height };
   };
-  const transform = getComputedStyle(world).transform;
-  const matrix = new DOMMatrixReadOnly(transform);
+  const matrix = new DOMMatrixReadOnly(getComputedStyle(world).transform);
+  const transform = [matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f];
   const scale = Math.hypot(matrix.a, matrix.b);
   const labels = [...figure.querySelectorAll('[data-scene-label],.st-diagramSceneFigure-label')]
     .map(element => ({ id: element.dataset.sceneLabel ?? element.textContent, ...box(element) }));
@@ -51,11 +52,17 @@ function measure() {
     const ctm = element.getScreenCTM();
     const strokeScale = style.vectorEffect === 'non-scaling-stroke' ? 1 : Math.hypot(ctm.a, ctm.b);
     const stroke = parseFloat(style.strokeWidth) * strokeScale / 2;
-    const r = box(element);
-    return { id: element.dataset.sceneEdge, left: r.left - stroke, top: r.top - stroke,
-      right: r.right + stroke, bottom: r.bottom + stroke };
+    const points = Array.from(element.points, point => {
+      const p = new DOMPoint(point.x, point.y).matrixTransform(ctm);
+      return { x: p.x, y: p.y };
+    });
+    return { id: element.dataset.sceneEdge, stroke, points };
   });
   return { camera: window.__camera, scale, transform, frame: box(frame),
+    // The rendered extent includes all scene bounds and the two 1 px paint
+    // insets. Recover the fit BEFORE the readability clamp from DOM geometry.
+    content: box(extent),
+    overflow: [getComputedStyle(frame).overflowX, getComputedStyle(frame).overflowY],
     clearance: parseFloat(getComputedStyle(figure).getPropertyValue('--st-component-diagramScene-labelPadding')) * scale,
     refused: figure.dataset.sceneRefused ?? null,
     scroll: [frame.scrollWidth, frame.clientWidth, frame.scrollHeight, frame.clientHeight, frame.scrollLeft, frame.scrollTop],
@@ -87,6 +94,43 @@ async function settle(page) {
   }, measure.toString());
 }
 
+const epsilon = 1 / 64; // CSS layout precision, not a visual clearance allowance.
+
+// Distance to the actual painted segment, including bends only where they
+// occur. A polyline's combined bounding rectangle contains unpainted space.
+function segmentDistance(box, a, b) {
+  const dx = b.x - a.x, dy = b.y - a.y;
+  let enter = 0, leave = 1;
+  for (const [start, delta, low, high] of [[a.x, dx, box.left, box.right], [a.y, dy, box.top, box.bottom]]) {
+    if (delta === 0) {
+      if (start < low || start > high) { leave = -1; break; }
+    } else {
+      const t1 = (low - start) / delta, t2 = (high - start) / delta;
+      enter = Math.max(enter, Math.min(t1, t2));
+      leave = Math.min(leave, Math.max(t1, t2));
+    }
+  }
+  if (enter <= leave) return 0;
+  const pointToBox = p => Math.hypot(Math.max(box.left - p.x, 0, p.x - box.right),
+    Math.max(box.top - p.y, 0, p.y - box.bottom));
+  const pointToSegment = (x, y) => {
+    const t = dx === 0 && dy === 0 ? 0 : Math.max(0, Math.min(1, ((x - a.x) * dx + (y - a.y) * dy) / (dx * dx + dy * dy)));
+    return Math.hypot(x - a.x - t * dx, y - a.y - t * dy);
+  };
+  return Math.min(pointToBox(a), pointToBox(b),
+    ...[box.left, box.right].flatMap(x => [box.top, box.bottom].map(y => pointToSegment(x, y))));
+}
+
+function equalGeometry(actual, expected, path = 'geometry') {
+  if (typeof expected === 'number') {
+    assert.ok(Number.isFinite(actual) && Math.abs(actual - expected) <= epsilon,
+      `${path}: ${actual} != ${expected} within ${epsilon} CSS px`);
+  } else if (expected !== null && typeof expected === 'object') {
+    assert.deepEqual(Object.keys(actual), Object.keys(expected), `${path} structure`);
+    for (const key of Object.keys(expected)) equalGeometry(actual[key], expected[key], `${path}.${key}`);
+  } else assert.equal(actual, expected, path);
+}
+
 function check(state, scene) {
   assert.equal(state.refused, null, 'scene must render');
   assert.ok(state.nodes.length >= 3, 'must render at least three cards');
@@ -97,21 +141,39 @@ function check(state, scene) {
   if (scene !== 'three-cards') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
   }
-  if (state.camera.fitZoom >= 0.45) {
-    for (const [name, dims] of [['viewport', state.scroll], ['frame', state.outerScroll]]) {
-      assert.ok(dims[0] <= dims[1] && dims[2] <= dims[3], `${name} overflows: ${dims}`);
-    }
+  const worldWidth = (state.content.width - 2) / state.scale;
+  const worldHeight = (state.content.height - 2) / state.scale;
+  const unclampedFit = Math.min((state.frame.width - 2) / worldWidth,
+    (state.frame.height - 2) / worldHeight);
+  assert.ok(Number.isFinite(unclampedFit) && unclampedFit > 0, 'finite geometric fit');
+  const overflow = [state.content.width > state.frame.width + 0.5,
+    state.content.height > state.frame.height + 0.5];
+  assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
+    `outer frame overflows: ${state.outerScroll}`);
+  if (unclampedFit >= 0.45) {
+    assert.deepEqual(overflow, [false, false], `feasible fit ${unclampedFit} must not scroll`);
+  } else {
+    assert.equal(state.scale, 0.45, 'infeasible fit must stop at the readability floor');
   }
-  const epsilon = 1 / 64; // CSS layout precision, not a visual clearance allowance.
+  for (const [axis, index] of [['x', 0], ['y', 1]]) {
+    assert.equal(state.scroll[index * 2] > state.scroll[index * 2 + 1], overflow[index],
+      `${axis} scroll extent must match geometric overflow: ${state.scroll}`);
+    assert.equal(state.overflow[index], overflow[index] ? 'auto' : 'hidden', `${axis} scrolling policy`);
+  }
+  assert.equal(state.camera.pans, overflow.some(Boolean), 'camera panning must match overflowing axes');
+  assert.deepEqual(state.scroll.slice(4), [0, 0], 'fit starts at the scroll origin');
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
-      && label.right <= state.frame.right + epsilon && label.bottom <= state.frame.bottom + epsilon,
-    `label outside frame: ${label.id}`);
+      && label.right <= state.frame.left + state.scroll[0] + epsilon
+      && label.bottom <= state.frame.top + state.scroll[2] + epsilon,
+    `label unreachable within scroll extent: ${label.id}`);
     for (const path of state.paths) {
-      const c = state.clearance;
-      assert.ok(label.right + c <= path.left + epsilon || label.left - c >= path.right - epsilon
-        || label.bottom + c <= path.top + epsilon || label.top - c >= path.bottom - epsilon,
-      `label ${label.id} intersects connector bbox ${path.id} with clearance ${c}`);
+      assert.ok(path.points.length >= 2 && Number.isFinite(path.stroke), `measurable connector ${path.id}`);
+      for (let i = 1; i < path.points.length; i++) {
+        const distance = segmentDistance(label, path.points[i - 1], path.points[i]) - path.stroke;
+        assert.ok(distance + epsilon >= state.clearance,
+          `label ${label.id} clearance ${distance} < ${state.clearance} at connector ${path.id} segment ${i}`);
+      }
     }
   }
 }
@@ -149,7 +211,10 @@ try {
           assert.deepEqual(errors, [], 'no browser runtime errors');
           check(initial, scene);
           check(after, scene);
-          assert.deepEqual(after, initial, 'initial DOM/camera must equal state after Ajuster');
+          assert.deepEqual(after.camera, initial.camera, 'initial camera must equal state after Ajuster');
+          assert.deepEqual(after.scroll, initial.scroll, 'initial scrolling must equal state after Ajuster');
+          assert.deepEqual(after.outerScroll, initial.outerScroll, 'initial outer scrolling must equal state after Ajuster');
+          equalGeometry(after, initial);
           completed++;
           console.log(`PASS ${name}`);
         } catch (error) {
