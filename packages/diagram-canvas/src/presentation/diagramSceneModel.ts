@@ -24,6 +24,7 @@ import {
   DEFAULT_ALLOCATED_LINES,
   DEFAULT_LAYOUT_METRICS,
   DEFAULT_MIN_READABLE_SCALE,
+  FIT_PAINT_INSET,
   layoutFolded,
   layoutMeasured,
   placeEdgeLabels,
@@ -46,8 +47,8 @@ import {
 
 import { measureBundleLabel, type BundleLabelGroup } from "../layout/bundleLabel.js";
 import { getDiagramGlyph } from "./registry.js";
-import { ZONE_GEOMETRY } from "./diagramCardModel.js";
-import { measureSceneBox } from "../layout/sceneMeasure.js";
+import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
+import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
 
 /** The semantic document the layout engine reads. */
@@ -321,7 +322,7 @@ export function resolveScene(
     (result.measurements?.headers ?? []).map((header) => [header.occurrence as string, header.height] as const),
   );
   const blockers: Rect[] = [];
-  for (const node of result.labelBoxes === undefined || input.document.profileRefs.includes("erd@1") ? nodes : []) {
+  for (const node of nodes) {
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
       continue;
@@ -335,7 +336,10 @@ export function resolveScene(
       width: node.rect.width,
       height: CONTENT_INSET + height + ZONE_GEOMETRY.ruleHeight / 2 + ruleClearance,
     });
-    const reserve = measureSceneBox(node.presentation, node.occurrence, node.rect.width, false, input.measureLines, input.metrics?.containerPadding).footerReserve;
+    // A zone footer has one allocated line. Reserve its fixed chrome from
+    // the presentation instead of measuring the scene again during replay.
+    const reserve = node.presentation?.text.footer?.trim()
+      ? lineBoxHeight(ZONE_GEOMETRY.footer.size) + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset : 0;
     if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
       width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
   }
@@ -415,7 +419,6 @@ export function resolveScene(
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
       ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });
-    bounds = bounds === undefined ? placement.box : rectUnion(bounds, placement.box);
   }
 
   const badges: SceneBadgeModel[] = [];
@@ -430,6 +433,19 @@ export function resolveScene(
     bounds = bounds === undefined ? box : rectUnion(bounds,box);
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
+  // Non-scaling connector paint is widest in world units at the readability
+  // floor. Reserve it as well as the label-padding token supplied by hosts.
+  const clearedLabels = clearSceneLabels(labels, edges.map(edge => edge.points),
+    [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
+    margin + ZONE_GEOMETRY.borderWidth / (2 * DEFAULT_MIN_READABLE_SCALE));
+  for (const { box } of clearedLabels) {
+    const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
+    bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
+  }
+  if (bounds !== undefined) {
+    const x = Math.floor(bounds.x * 64) / 64, y = Math.floor(bounds.y * 64) / 64;
+    bounds = { x, y, width: Math.ceil((bounds.x + bounds.width) * 64) / 64 - x, height: Math.ceil((bounds.y + bounds.height) * 64) / 64 - y };
+  }
   const nodeTargets = nodes.filter((node) => Object.values(flowEnds).some((ends) => ends.some((id) => id === node.occurrence || (flowAncestors[id] ?? []).includes(node.occurrence)))).map((node) => ({ occurrence: node.occurrence, entity: node.entity, anchor: { x: node.rect.x, y: node.rect.y } }));
   return {
     badges, flows, flowTargets, nodeTargets, flowEnds, flowRepresentatives, flowAncestors,
@@ -437,7 +453,7 @@ export function resolveScene(
     contentSize: sceneContentSize(result),
     nodes,
     edges,
-    labels,
+    labels: clearedLabels,
     ...(bounds === undefined ? {} : { bounds }),
     orientations: result.orientations ?? {},
   };
@@ -504,13 +520,13 @@ export function scenePlacement(bounds: Rect | undefined, zoom: number, fit: Pick
   if (bounds === undefined) {
     return { contentWidth: 0, contentHeight: 0, translateX: 0, translateY: 0, overflowX: false, overflowY: false };
   }
-  const contentWidth = bounds.width * zoom;
-  const contentHeight = bounds.height * zoom;
+  const contentWidth = bounds.width * zoom + 2 * FIT_PAINT_INSET;
+  const contentHeight = bounds.height * zoom + 2 * FIT_PAINT_INSET;
   // Half a CSS px of tolerance: a fit computed by division must not scroll.
   const overflowX = contentWidth > fit.fitWidth + 0.5;
   const overflowY = contentHeight > fit.fitHeight + 0.5;
-  const startX = overflowX ? 0 : (fit.fitWidth - contentWidth) / 2;
-  const startY = overflowY ? 0 : (fit.fitHeight - contentHeight) / 2;
+  const startX = overflowX ? FIT_PAINT_INSET : (fit.fitWidth - bounds.width * zoom) / 2;
+  const startY = overflowY ? FIT_PAINT_INSET : (fit.fitHeight - bounds.height * zoom) / 2;
   return {
     contentWidth,
     contentHeight,

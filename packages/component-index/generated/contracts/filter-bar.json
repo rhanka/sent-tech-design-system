@@ -1,8 +1,8 @@
 {
   "componentId": "filter-bar",
   "contractSource": "derived",
-  "digest": "sha256:c070a786b98e7836416a212469d190a0cbaa43545dca3b5c6d68eeeff91b4803",
-  "entryDigest": "sha256:0b1a0adaf22e2913190d5f427bcdb42782d28f25beb2b7e652e8fb7da2ee7035",
+  "digest": "sha256:e2f4ae191f1090a1bdb47b86e6b67de2d97eec240af9aba1fb57964298cec7a5",
+  "entryDigest": "sha256:cfb05fbdabb379842360fb67cde5040aea286d538b1cd7d41af73ccdd061e3f7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/FilterBar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FilterBarProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -196,7 +196,7 @@
         "declarationPath": "packages/components-vue/dist/FilterBar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FilterBarProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],

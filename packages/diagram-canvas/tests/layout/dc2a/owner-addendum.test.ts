@@ -19,9 +19,12 @@ describe('Owner addendum A1–A13',()=>{
   for(const c of result.channels!){
     const routed=scene.edges.filter(edge=>edge.points.slice(1).some((end,index)=>{const start=edge.points[index]!;return c.strips.some(strip=>hits(strip,{x:Math.min(start.x,end.x),y:Math.min(start.y,end.y),width:Math.abs(start.x-end.x),height:Math.abs(start.y-end.y)}));}));
     const n=routed.reduce((sum,edge)=>sum+(result.edgeBundles?.[edge.occurrence]?.members.length??1),0);
-    const labelled=scene.labels.some(label=>c.strips.some(strip=>hits(strip,label.box)));
+    // Channel sizing reserves the engine's measured label boxes. The scene
+    // then offsets painted labels to clear connector strokes.
+    const measuredLabels=Object.values(result.labelBoxes??{});
+    const labelled=measuredLabels.some(box=>c.strips.some(strip=>hits(strip,box)));
     const parameters=channelMetrics(spacing,c.axis==='horizontal');
-    const boxes=scene.labels.filter(label=>c.strips.some(strip=>hits(strip,label.box))).map(label=>label.box);
+    const boxes=measuredLabels.filter(box=>c.strips.some(strip=>hits(strip,box)));
     const floor=Math.max(0,...boxes.map(box=>(c.axis==='horizontal'?box.width:box.height)+8).filter(needed=>needed<=parameters.gapMax));
     const expected=Math.min(parameters.gapMax,Math.max(channelGap(n,labelled,parameters),floor));
     expect(c.n).toBe(n);expect(c.labelled).toBe(labelled);expect(c.gap,c.id).toBeCloseTo(expected,0);

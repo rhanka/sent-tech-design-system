@@ -1,8 +1,8 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:13f905c3ef20aa27339cc4492be098e8ad9049ec55e30b3e2697250a6cd522d8",
-  "entryDigest": "sha256:cfa1dc5edc2f8d49fd0e33e307bb6fd83f9b6a6b4ed7f73edc53fdc833161f98",
+  "digest": "sha256:b38d5e75433f97eb9e5931f5d0b1a22ec6b3aaf387dff2312947f8be0ac1ba49",
+  "entryDigest": "sha256:0fffa1926573ca9bfb7f42bc8ecb9cfd0df26a537eb1bd378e26f662267f443d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/BumpChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BumpChartProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -365,7 +365,7 @@
         "declarationPath": "packages/components-vue/dist/BumpChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BumpChartProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],
