@@ -1,0 +1,42 @@
+{
+  "validator": {
+    "name": "@sentropic/engram",
+    "version": "0.27.0",
+    "tag": "v0.27.0",
+    "revision": "566cbbd4b214bb89fa5899b1b8ea0f772042b414",
+    "mode": "bindings-only",
+    "sources": {
+      "src/json-value.ts": "991fd45ddd7185b11304449b0b23af94a190559b70d256c603a45e49c01fc623",
+      "src/ontology-guardian/canonical.ts": "29197286d28337f61900da7a125e88417ca808e04cdaa71dd528537128544858",
+      "src/citations.ts": "ad6c41c8ae6291f96d1465b58ef009ba676c40be033d3d4a9707b8985f7382b1",
+      "src/source-grounding.ts": "7b48f66b9210968d7d17a40c53df122b087e04abd071c4f03484e891ff126285",
+      "src/cite-grounding.ts": "78158f9ff4d39f06f79aee2347ef240eaba494503e548e1c35ca4cdbcd0345fe",
+      "src/entity-normalizer.ts": "0b3dd63b9d6b49e8ffe18958ac573956a16d196320c50794c4195a9f0cb0d500",
+      "src/ontology-profile.ts": "0833fb06be812b3f2c81a19a4cf47dd28f31b32c2143b9479d82a9ba7228f48d",
+      "src/ontology-guardian/digests.ts": "49cec7b137b8f9ec3ab074b7357472ba2b7204e8afa6212dc61142b6f3ec4405",
+      "src/ontology-guardian/types.ts": "e6f9e1627bcdca53c837466424c3deb853f72e5be208b6ddaa6e07e2baa0a631",
+      "src/profile-bundle.ts": "d2a1ce93b45d25581df830ebcbcc8a79ee8a6cc90c8b33d3a21708d5e91d9144"
+    }
+  },
+  "study": {
+    "profileHash": "90aa64383475611882a57ca6a739f418dc5a4e7fba2b56df541434b65ef442de",
+    "parsedHash": "cf1b524ce02e8a3917e2f17cfa3c8f6e0959ee429ebda01b4cb3afcef30a1fd8",
+    "bundleDigest": "dd6298d0dce500221428f801e8d28b57584de46cc34e79b9e7880267305cd798",
+    "rawSha256": "cf2f6894cdd2e07d5b18369314c1a1198e3d4070b0f19d0152fb9942fd0e4e06",
+    "nodeTypes": 20,
+    "relationTypes": 30,
+    "errors": [],
+    "warnings": []
+  },
+  "committed": {
+    "profileHash": "90aa64383475611882a57ca6a739f418dc5a4e7fba2b56df541434b65ef442de",
+    "parsedHash": "b31716eba96b3b87ba1997ad17c01d8d5aa1fd6513d1821c831d2e6a84ebf728",
+    "bundleDigest": "8decbdeba380c239875fa9c90ff7568528d9e8242687b9734925b804aa730afd",
+    "rawSha256": "689f9b5f07387d4c89153c16febdcf112acfae249cb82edfd2a941a03888b24d",
+    "nodeTypes": 20,
+    "relationTypes": 30,
+    "errors": [],
+    "warnings": []
+  },
+  "studyReserializedSha256": "20841fe341d5bbb603bb3bd321603a001ef7831cc07b926f9d7d8d0e08bdec15"
+}
