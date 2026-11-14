@@ -3,7 +3,7 @@ import type { Rect, Vec2 } from '../transform.js';
 
 /** Keep measured label sizes and routes; move only labels whose paint would
  * cover a connector. The same deterministic placement is used by both hosts. */
-export function clearSceneLabels<T extends { readonly box: Rect }>(
+export function clearSceneLabels<T extends { readonly box: Rect; readonly leader?: readonly Vec2[] }>(
   labels: readonly T[], routes: readonly (readonly Vec2[])[], shapes: readonly Rect[], clearance: number,
 ): T[] {
   const obstacles = [...shapes];
@@ -32,7 +32,15 @@ export function clearSceneLabels<T extends { readonly box: Rect }>(
       if (hit === undefined) {
         const placed = { ...box, x: choice.x, y: choice.y };
         obstacles.push(placed);
-        return choice.cost === 0 ? label : { ...label, box: placed };
+        if (choice.cost === 0) return label;
+        // Keep the route anchor and attach the last segment to the moved box.
+        const anchor = label.leader?.at(-2);
+        const leader = anchor === undefined ? undefined : [
+          ...label.leader!.slice(0, -1),
+          { x: Math.max(placed.x, Math.min(anchor.x, placed.x + placed.width)),
+            y: Math.max(placed.y, Math.min(anchor.y, placed.y + placed.height)) },
+        ];
+        return { ...label, box: placed, ...(leader === undefined ? {} : { leader }) };
       }
       add(hit.x - clearance - box.width, choice.y);
       add(hit.x + hit.width + clearance, choice.y);
