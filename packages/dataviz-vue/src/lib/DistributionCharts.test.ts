@@ -2,12 +2,12 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { BoxPlotChart } from './BoxPlotChart.js';
-import { BulletChart } from './BulletChart.js';
-import { CalendarHeatmapChart } from './CalendarHeatmapChart.js';
-import { GaugeChart } from './GaugeChart.js';
-import { HeatmapChart } from './HeatmapChart.js';
-import { HistogramChart } from './HistogramChart.js';
+import BoxPlotChart from './BoxPlotChart.vue';
+import BulletChart from './BulletChart.vue';
+import CalendarHeatmapChart from './CalendarHeatmapChart.vue';
+import GaugeChart from './GaugeChart.vue';
+import HeatmapChart from './HeatmapChart.vue';
+import HistogramChart from './HistogramChart.vue';
 
 const model: DataModel = {
   dimensions: [

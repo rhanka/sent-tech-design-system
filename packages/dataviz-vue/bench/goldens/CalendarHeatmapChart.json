@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "CalendarHeatmapChart",
+  "sourceRevision": "4137b9a5f4a129860daa965f8173776b55f4ed77",
+  "source": "src/lib/CalendarHeatmapChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-calendarHeatmapChart st-calendarHeatmapChart--sequential\"><div aria-label=\"Calendar heat\" class=\"st-calendarHeatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 140\" width=\"100%\"><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"47.142857142857146\">Mon</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"77.99999999999999\">Wed</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"108.85714285714285\">Fri</text></svg></div></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-calendarHeatmapChart st-calendarHeatmapChart--sequential\"><div aria-label=\"Calendar heat\" class=\"st-calendarHeatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 560 300\" width=\"100%\"><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"81.42857142857143\">Mon</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"158\">Wed</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"234.57142857142856\">Fri</text></svg></div></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-calendarHeatmapChart st-calendarHeatmapChart--sequential consumer\" data-bench=\"calheat\"><div aria-label=\"Calendar heat\" class=\"st-calendarHeatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 140\" width=\"100%\"><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"47.142857142857146\">Mon</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"77.99999999999999\">Wed</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"108.85714285714285\">Fri</text></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-calendarHeatmapChart st-calendarHeatmapChart--sequential\"><div aria-label=\"Calendar heat\" class=\"st-calendarHeatmapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 140\" width=\"100%\"><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"47.142857142857146\">Mon</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"77.99999999999999\">Wed</text><text class=\"st-calendarHeatmapChart__dayLabel\" dominant-baseline=\"middle\" text-anchor=\"end\" x=\"20\" y=\"108.85714285714285\">Fri</text></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "3e9be4731889564f2cf0c837bbbba8e6d714ba7942e9ebd52a5092c192381206",
+  "fixtureSha256": "9c0386efb58cb86a20367c95a038aef8a6cf41fc2c817d888364e511e8522944",
+  "publicExports": [
+    {
+      "name": "CalendarHeatmapChart",
+      "typeOnly": false
+    },
+    {
+      "name": "CalendarHeatmapChartProps",
+      "typeOnly": true
+    }
+  ]
+}

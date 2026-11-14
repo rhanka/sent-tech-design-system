@@ -341,6 +341,7 @@ const packages = [
   },
   {
     name: "@sentropic/dataviz-vue",
+    absentPatterns: ["\\.srchash$", "\\.map$"],
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizVueLibFiles()]; },
   },
   {
@@ -535,22 +536,27 @@ const deepVerify = {
   },
 };
 
-function vuePublicExportCount() {
+function vuePublicExports(packageDirectory) {
   // Internal SFCs and their emitted helpers are tarball files, not public
   // exports. Keep the file-membership check above, and measure the public
   // runtime contract independently from the source barrel.
-  const source = ts.createSourceFile("index.ts", readFileSync(join(root, "packages/components-vue/src/index.ts"), "utf8"), ts.ScriptTarget.Latest, true);
+  const source = ts.createSourceFile("index.ts", readFileSync(join(root, "packages", packageDirectory, "src/index.ts"), "utf8"), ts.ScriptTarget.Latest, true);
   return source.statements.filter(ts.isExportDeclaration).filter(node => !node.isTypeOnly)
     .flatMap(node => node.exportClause && ts.isNamedExports(node.exportClause)
-      ? node.exportClause.elements.filter(entry => !entry.isTypeOnly) : []).length;
+      ? node.exportClause.elements.filter(entry => !entry.isTypeOnly).map(entry => entry.name.text) : []);
 }
+
+const vueExportDirectories = {
+  "@sentropic/design-system-vue": "components-vue",
+  "@sentropic/dataviz-vue": "dataviz-vue",
+};
 
 const minExportCounts = {
   "@sentropic/design-system-react": () => reactComponentFiles().length,
-  "@sentropic/design-system-vue": vuePublicExportCount,
+  "@sentropic/design-system-vue": () => vuePublicExports("components-vue").length,
   "@sentropic/design-system-angular": () => angularComponentFiles().length,
   "@sentropic/dataviz-react": () => datavizReactLibFiles().length,
-  "@sentropic/dataviz-vue": () => datavizVueLibFiles().length,
+  "@sentropic/dataviz-vue": () => vuePublicExports("dataviz-vue").length,
   "@sentropic/dataviz-angular": () => datavizAngularLibFiles().length,
 };
 
@@ -681,6 +687,10 @@ function writeVerifyScript(installDir, targetNames) {
   const content = template
     .replaceAll("__SMOKE_TARGETS_JSON__", JSON.stringify(targetNames))
     .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts))
+    .replaceAll("__SMOKE_REQUIRED_EXPORTS_JSON__", JSON.stringify(Object.fromEntries(
+      targetNames.filter(name => vueExportDirectories[name])
+        .map(name => [name, vuePublicExports(vueExportDirectories[name])]),
+    )))
     .replaceAll("__SMOKE_RICH_TEXT_VERSION_JSON__", JSON.stringify(richTextManifest.version));
 
   const smokePath = join(installDir, "verify.mjs");

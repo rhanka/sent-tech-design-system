@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "TopNFilter",
+  "sourceRevision": "99fc35717c3385f4c2f16bb0cfc3dc78b381f326",
+  "source": "src/lib/TopNFilter.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-1\"><span class=\"st-field__label\">Top N</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-1\" min=\"1\" step=\"1\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "n5-label",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-2\"><span class=\"st-field__label\">Top regions</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-2\" min=\"1\" step=\"1\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "n1",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-3\"><span class=\"st-field__label\">Top N</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-3\" min=\"1\" step=\"1\" type=\"number\" value=\"1\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" disabled=\"\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "city",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-4\"><span class=\"st-field__label\">Top N</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-4\" min=\"1\" step=\"1\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-field consumer\" data-bench=\"topn\" style=\"color:red;\"><label class=\"st-field__control\" for=\"st-numberInput-5\"><span class=\"st-field__label\">Top N</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" data-bench=\"topn\" id=\"st-numberInput-5\" min=\"1\" step=\"1\" style=\"color:red;\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-field\"><label class=\"st-field__control\" for=\"st-numberInput-6\"><span class=\"st-field__label\">Top N</span><span class=\"st-numberInput st-numberInput--md\"><input class=\"st-numberInput__control\" id=\"st-numberInput-6\" min=\"1\" step=\"1\" type=\"number\" value=\"5\"><span class=\"st-numberInput__buttons\"><button aria-label=\"Decrement value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">−</span></button><button aria-label=\"Increment value\" class=\"st-numberInput__button\" type=\"button\"><span aria-hidden=\"true\">+</span></button></span></span></label></div>"
+    }
+  ],
+  "sourceSha256": "bedee63103605958a05857ed6d4dc162815693476212a62fd9548ba94b867fee",
+  "fixtureSha256": "520b055457fad1c56e66f24ae4a679a48ab69140eacdef1168fd6897c8c7d2a3",
+  "publicExports": [
+    {
+      "name": "TopNFilter",
+      "typeOnly": false
+    },
+    {
+      "name": "TopNFilterProps",
+      "typeOnly": true
+    }
+  ]
+}

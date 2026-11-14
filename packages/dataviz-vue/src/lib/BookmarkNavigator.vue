@@ -1,0 +1,110 @@
+<script setup lang="ts">
+import { computed, onUnmounted, ref, watch } from 'vue';
+import { Button } from '@sentropic/design-system-vue';
+import { applyDashboardBookmark, type DashboardActionRuntime, type DashboardBookmark, type DashboardStore } from '@sentropic/dataviz-core';
+export type BookmarkNavigatorProps = {
+  store: DashboardStore;
+  bookmarks: readonly DashboardBookmark[];
+  selectedId?: string;
+  label?: string;
+  previousLabel?: string;
+  nextLabel?: string;
+  playLabel?: string;
+  pauseLabel?: string;
+  emptyLabel?: string;
+  showPlaybackControls?: boolean;
+  autoPlay?: boolean;
+  intervalMs?: number;
+  runtime?: DashboardActionRuntime;
+  onBookmarkChange?: (bookmark: DashboardBookmark) => void;
+  class?: string;
+};
+function normaliseIndex(index: number, length: number): number {
+  return ((index % length) + length) % length;
+}
+defineOptions({ name: 'BookmarkNavigator' });
+const props = withDefaults(defineProps<BookmarkNavigatorProps>(), {
+  selectedId: undefined, label: 'Signets', previousLabel: 'Précédent', nextLabel: 'Suivant',
+  playLabel: 'Lecture', pauseLabel: 'Pause', emptyLabel: 'Aucun signet',
+  showPlaybackControls: true, autoPlay: false, intervalMs: 5000,
+  runtime: undefined, onBookmarkChange: undefined, class: undefined,
+});
+const activeId = ref<string | undefined>(props.selectedId ?? props.bookmarks[0]?.id);
+const playing = ref(props.autoPlay);
+let timer: ReturnType<typeof setInterval> | undefined;
+function activeIndex(): number {
+  const index = props.bookmarks.findIndex((bookmark) => bookmark.id === activeId.value);
+  return index >= 0 ? index : 0;
+}
+function applyAt(index: number) {
+  if (props.bookmarks.length === 0) return;
+  const bookmark = props.bookmarks[normaliseIndex(index, props.bookmarks.length)];
+  if (!bookmark) return;
+  activeId.value = bookmark.id;
+  applyDashboardBookmark(props.store, bookmark, props.runtime);
+  props.onBookmarkChange?.(bookmark);
+}
+function clearTimer() {
+  if (timer !== undefined) clearInterval(timer);
+  timer = undefined;
+}
+watch(
+  () => [props.selectedId, props.bookmarks.map((bookmark) => bookmark.id).join('\u0000')],
+  () => {
+    const nextId =
+      props.selectedId ??
+      (activeId.value && props.bookmarks.some((bookmark) => bookmark.id === activeId.value)
+        ? activeId.value
+        : props.bookmarks[0]?.id);
+    activeId.value = nextId;
+  },
+  { immediate: true },
+);
+watch(
+  () => props.autoPlay,
+  () => {
+    playing.value = props.autoPlay;
+  },
+  { immediate: true },
+);
+watch(
+  () => [playing.value, props.bookmarks.length, props.intervalMs],
+  () => {
+    clearTimer();
+    if (playing.value && props.bookmarks.length > 1) {
+      timer = setInterval(() => applyAt(activeIndex() + 1), props.intervalMs);
+    }
+  },
+  { immediate: true },
+);
+onUnmounted(clearTimer);
+const hasBookmarks = computed(() => props.bookmarks.length > 0);
+const hasMultiple = computed(() => props.bookmarks.length > 1);
+function onPrev() { applyAt(activeIndex() - 1); }
+function onNext() { applyAt(activeIndex() + 1); }
+function onTogglePlay() { playing.value = !playing.value; }
+function onBookmark(index: number) { applyAt(index); }
+</script>
+
+<template>
+  <div role="group" :aria-label="props.label" :class="props.class">
+    <template v-if="hasBookmarks">
+      <Button variant="secondary" size="sm" :aria-label="props.previousLabel" :disabled="!hasMultiple" @click="onPrev">
+        {{ props.previousLabel }}
+      </Button>
+      <Button variant="secondary" size="sm" :aria-label="props.nextLabel" :disabled="!hasMultiple" @click="onNext">
+        {{ props.nextLabel }}
+      </Button>
+      <Button v-if="props.showPlaybackControls" variant="ghost" size="sm"
+        :aria-label="playing ? props.pauseLabel : props.playLabel" :disabled="!hasMultiple" @click="onTogglePlay">
+        {{ playing ? props.pauseLabel : props.playLabel }}
+      </Button>
+      <Button v-for="(bookmark, index) in props.bookmarks" :key="bookmark.id"
+        :variant="bookmark.id === activeId ? 'primary' : 'secondary'" size="sm" :aria-label="bookmark.label"
+        :aria-pressed="bookmark.id === activeId" @click="onBookmark(index)">
+        {{ bookmark.label }}
+      </Button>
+    </template>
+    <span v-else>{{ props.emptyLabel }}</span>
+  </div>
+</template>

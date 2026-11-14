@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel } from '@sentropic/dataviz-core';
-import { DrillBreadcrumb } from './DrillBreadcrumb.js';
+import DrillBreadcrumb from './DrillBreadcrumb.vue';
 
 const model: DataModel = {
   dimensions: [

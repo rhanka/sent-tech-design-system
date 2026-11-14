@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { QueryBar } from './QueryBar.js';
+import QueryBar from './QueryBar.vue';
 
 const model: DataModel = {
   dimensions: [

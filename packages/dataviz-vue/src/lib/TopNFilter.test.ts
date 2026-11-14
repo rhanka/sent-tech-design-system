@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type FilterSpec, type Row } from '@sentropic/dataviz-core';
-import { TopNFilter } from './TopNFilter.js';
+import TopNFilter from './TopNFilter.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'country', label: 'Pays', type: 'discrete' }],

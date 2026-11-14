@@ -40,6 +40,8 @@ for (const file of sfcs) {
     let output = ts.transpileModule(script.content, {
       compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
     }).outputText;
+    if (mode === 'vapor' && basename(resolve('.')) === 'dataviz-vue')
+      output = output.replace(/(from\s+)(["'])@sentropic\/design-system-vue\2/g, '$1$2@sentropic/design-system-vue/vapor$2');
     if (mode === 'vapor') output = output.replace(/(from\s+)(["'])(\.[^"']+)(\2)/g,
       (match, prefix, quote, path) => path.endsWith('.vue') ? match :
         `${prefix}${quote}${specifier(relative(dirname(target), join('dist', relative('src', dirname(file)), path)))}${quote}`);
@@ -49,7 +51,7 @@ for (const file of sfcs) {
       const adapterPath = specifier(relative(dirname(target), 'dist/vapor/sfc.js'));
       writeFileSync(target.replace(/\.js$/, '.d.ts'),
         `import type Classic from '${classicPath}';\nimport type { VaporSfc } from '${adapterPath}';\n`
-        + `declare const component: VaporSfc<typeof Classic>;\nexport default component;\nexport type * from '${classicPath}';\n`);
+        + `declare const component: VaporSfc<typeof Classic>;\nexport default component;\nexport * from '${classicPath}';\n`);
     }
   }
 }
@@ -75,7 +77,26 @@ if (!stable) {
       const bindings = node.importClause?.namedBindings ?? node.exportClause;
       if (bindings?.elements?.length && bindings.elements.every(item => item.isTypeOnly)) continue;
       const path = node.moduleSpecifier.text;
-      if (path === 'lucide-vue-next' || path === '@sentropic/design-system-vue') return false;
+      if (path === 'lucide-vue-next') return false;
+      if (path === '@sentropic/design-system-vue' || path === '@sentropic/design-system-vue/vapor') {
+        if (!ts.isImportDeclaration(node) || !bindings || !ts.isNamedImports(bindings)) return false;
+        const dsSrc = resolve('../components-vue/src');
+        const dsIndex = ts.createSourceFile('index.ts', readFileSync(join(dsSrc, 'index.ts'), 'utf8'), ts.ScriptTarget.Latest, true);
+        for (const item of bindings.elements.filter(item => !item.isTypeOnly)) {
+          const imported = (item.propertyName ?? item.name).text;
+          const declaration = dsIndex.statements.find(entry => ts.isExportDeclaration(entry) && !entry.isTypeOnly && entry.exportClause && ts.isNamedExports(entry.exportClause)
+            && entry.exportClause.elements.some(entry => !entry.isTypeOnly && entry.name.text === imported));
+          if (!declaration?.moduleSpecifier) return false;
+          // Match the native barrel's SFC selection even when Classic keeps a
+          // compatibility .ts entry (ForceGraph also exports pure helpers).
+          const candidate = resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.(?:js|vue)$/, '.vue'));
+          const exported = declaration.exportClause.elements.find(entry => entry.name.text === imported);
+          const isComponent = (exported.propertyName ?? exported.name).text === 'default' || imported === basename(candidate, '.vue');
+          const dependency = existsSync(candidate) && isComponent ? candidate : resolve(dsSrc, declaration.moduleSpecifier.text.replace(/\.js$/, '.ts'));
+          if (!native(dependency, seen)) return false;
+        }
+        continue;
+      }
       if (path.startsWith('.')) {
         const dependency = resolve(dirname(file), path.replace(/\.js$/, '.ts'));
         if (!native(dependency, seen)) return false;
@@ -109,13 +130,14 @@ if (!stable) {
         if (item.isTypeOnly) continue;
         if ((item.propertyName ?? item.name).text === 'default' || (item.propertyName ?? item.name).text === name)
           entries.push(`export { default as ${item.name.text} } from '${specifier(relative(resolve('src'), component))}.js';`);
+        else if (path.endsWith('.vue')) entries.push(`export { ${item.getText(index)} } from '${specifier(relative(resolve('src'), component))}.js';`);
       }
     } else if (!path.startsWith('.') || native(resolve('src', path.replace(/\.js$/, '.ts')))) {
       entries.push(node.getText(index).replace(path, shared));
     }
   }
   // These pure helpers share a compatibility wrapper with ForceGraph.
-  if (sfcs.some(file => file.endsWith('/ForceGraph.vue')))
+  if (basename(resolve('.')) === 'components-vue' && sfcs.some(file => file.endsWith('/ForceGraph.vue')))
     entries.push("export { nodeShapePath, edgeDashArray } from '@sentropic/graph/presentation';");
   const entry = entries.join('\n') + '\n';
   writeFileSync('dist/vapor/index.d.ts', entry);

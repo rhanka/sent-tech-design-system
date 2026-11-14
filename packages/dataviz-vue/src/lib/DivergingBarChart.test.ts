@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { DivergingBarChart } from './DivergingBarChart.js';
+import DivergingBarChart from './DivergingBarChart.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'region', label: 'Region', type: 'discrete' }],

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "GeoJsonMap",
+  "sourceRevision": "564bda53b1a5c11800b0eda9bc205237648ce18b",
+  "source": "src/lib/GeoJsonMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-geoJsonMap\"><div aria-label=\"Json map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--geojson\"></g></svg></div><ul aria-label=\"Data values for Json map\" class=\"st-chartDataList\"><li>Json map: 0 entités</li></ul></div>"
+    },
+    {
+      "id": "id-labelfield",
+      "html": "<div class=\"st-geoMap st-geoJsonMap\"><div aria-label=\"Json map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--geojson\"></g></svg></div><ul aria-label=\"Data values for Json map\" class=\"st-chartDataList\"><li>Json map: 0 entités</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-geoJsonMap\"><div aria-label=\"Json map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--geojson\"></g></svg></div><ul aria-label=\"Data values for Json map\" class=\"st-chartDataList\"><li>Json map: 0 entités</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-geoJsonMap consumer\" data-bench=\"jsons\"><div aria-label=\"Json map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--geojson\"></g></svg></div><ul aria-label=\"Data values for Json map\" class=\"st-chartDataList\"><li>Json map: 0 entités</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "702d8fceaf5c8e7fee228d399e34990dd16e0f9b5597f1101d1f867a285c6f9b",
+  "fixtureSha256": "1f361ebe489ba4816adf6bcf94361ffedcc89506478a26c82eb2bb165f7f0b0b",
+  "publicExports": [
+    {
+      "name": "GeoJsonMap",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoJsonMapProps",
+      "typeOnly": true
+    }
+  ]
+}

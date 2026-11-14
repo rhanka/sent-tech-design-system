@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
-import { DashboardFilterBar } from './DashboardFilterBar.js';
+import DashboardFilterBar from './DashboardFilterBar.vue';
 
 describe('DashboardFilterBar (vue)', () => {
   it('renders a search input for query-search control', () => {

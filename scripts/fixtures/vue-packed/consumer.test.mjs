@@ -18,11 +18,10 @@ it('should mount the installed diagram SFC with the consumer runtime', () => {
   expect(root.textContent).toContain('Installed legend'); expect(root.textContent).toContain('Nodes');
 });
 
-it('should expose the installed dataviz adapter without claiming unconverted charts', () => {
+it('should expose the installed dataviz adapter and converted charts', () => {
   expect(dataviz.useDashboard).toBeTypeOf('function');
   expect(dataviz.provideDashboard).toBeTypeOf('function');
-  if (vapor) expect(dataviz).not.toHaveProperty('DashboardGrid');
-  else expect(dataviz.DashboardGrid).toBeDefined();
+  for (const name of ['DashboardGrid', 'SelectionLegend', 'WebFrame', 'DataImage', 'ObjectLayerPanel', 'AreaChart', 'DrillChart']) expect(dataviz[name]).toBeDefined();
 });
 
 const messages = { editorLabel: 'Installed editor', placeholder: 'Write', preservedBlockLabel: 'Preserved {kind}', externalConflictLabel: 'Conflict' };
@@ -54,8 +53,21 @@ it('should mount the installed badge, labelled icon button and WebFrame', async 
   }
 });
 
-it('should share the installed WebFrame implementation across both public packages', () => {
-  expect(dataviz.WebFrame).toBe(ds.WebFrame);
+it('should preserve the DS WebFrame behavior through the dataviz SFC', async () => {
+  const frames = [];
+  for (const component of [ds.WebFrame, dataviz.WebFrame]) {
+    const root = document.createElement('div'); document.body.append(root);
+    const click = vi.fn();
+    const app = (vapor ? Vue.createVaporApp : Vue.createApp)(component, {
+      frame: { src: 'https://example.com', title: 'Preview', sandbox: ['allow-scripts'], allow: 'fullscreen' },
+      id: 'consumer-frame', class: 'consumer', style: 'color: red', onClick: click,
+    });
+    apps.push(app); app.mount(root); await Vue.nextTick();
+    const frame = root.querySelector('iframe');
+    expect(frame).not.toBeNull(); frame.click(); expect(click).toHaveBeenCalledTimes(1);
+    frames.push(frame.outerHTML);
+  }
+  expect(frames[1]).toBe(frames[0]);
 });
 
 it('should intercept idiomatic keydown once in capture phase through the packed composer subpath', async () => {
@@ -72,4 +84,20 @@ it('should expose every Classic runtime export from the installed Vapor barrel',
   const classic = await import('@sentropic/design-system-vue');
   expect(Object.keys(ds).sort()).toEqual(Object.keys(classic).sort());
   for (const name of ['Menu', 'MenuPopover', 'OverflowMenu', 'DumbbellChart', 'ErrorBarChart', 'DependencyWheelChart', 'ArcDiagramChart', 'CellDecorationIcon']) expect(ds[name]).toBeDefined();
+});
+
+it('should preserve every dataviz runtime export in the installed Vapor barrel', async () => {
+  if (!vapor) return;
+  const classic = await import('@sentropic/dataviz-vue');
+  expect(Object.keys(dataviz).sort()).toEqual(Object.keys(classic).sort());
+});
+
+it('should mount the installed dataviz chart with the consumer runtime', async () => {
+  const { createDashboardStore } = await import('@sentropic/dataviz-core');
+  const store = createDashboardStore({ model: { dimensions: [{ id: 'name', label: 'Name', type: 'discrete' }], measures: [{ id: 'value', label: 'Value', aggregation: 'sum' }] }, data: [{ name: 'Alpha', value: 12 }] });
+  const root = document.createElement('div'); document.body.append(root);
+  const app = (vapor ? Vue.createVaporApp : Vue.createApp)(dataviz.CrossfilteredBarChart, { store, viewId: 'packed', dimension: 'name', measure: 'value', label: 'Installed chart' });
+  apps.push(app); app.mount(root); await Vue.nextTick();
+  expect(root.querySelector('svg')).toBeTruthy();
+  expect(root.textContent).toContain('Alpha');
 });

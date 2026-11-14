@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "DataImage",
+  "sourceRevision": "2678243775ccaabee15f672276b4cdd2cd1b6e0f",
+  "source": "src/lib/ObjectLayers.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<img alt=\"Logo\" src=\"https://example.com/logo.png\">"
+    },
+    {
+      "id": "template",
+      "html": "<img alt=\"Logo Acme\" src=\"https://example.com/acme.png\">"
+    },
+    {
+      "id": "fallback",
+      "html": "<img alt=\"\" src=\"fallback.png\">"
+    },
+    {
+      "id": "attrs",
+      "html": "<img alt=\"Logo\" class=\"consumer\" data-bench=\"image\" src=\"https://example.com/logo.png\" style=\"color:red\">"
+    }
+  ],
+  "sourceSha256": "84b68ccdfb6cca75a7e565e036b3a2cae03b5166d6f7f49abf2409dc0938ed7c",
+  "fixtureSha256": "64f3af9f21b2815ec76a1239aa94218a8b569e4376c99d5763ead8d49aedb347",
+  "publicExports": [
+    {
+      "name": "DataImage",
+      "typeOnly": false
+    },
+    {
+      "name": "DataImageProps",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "GeoDensityMap",
+  "sourceRevision": "a50139c769216d397947df3be52dfc997adefd67",
+  "source": "src/lib/GeoDensityMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-geoDensityMap\"><div aria-label=\"Density map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--density\"><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle></g></svg></div><ul aria-label=\"Data values for Density map\" class=\"st-chartDataList\"><li>Density map: 4 points</li><li>(48.85, 2.35): 1</li><li>(45.76, 4.83): 1</li><li>(43.3, 5.37): 1</li><li>(47.21, -1.55): 1</li></ul></div>"
+    },
+    {
+      "id": "value-cell",
+      "html": "<div class=\"st-geoMap st-geoDensityMap\"><div aria-label=\"Density map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--density\"><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"12.09090909090909\" style=\"--st-geoMap-mix: 41%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"14.136363636363637\" style=\"--st-geoMap-mix: 49%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"11.272727272727273\" style=\"--st-geoMap-mix: 38%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle></g></svg></div><ul aria-label=\"Data values for Density map\" class=\"st-chartDataList\"><li>Density map: 4 points</li><li>(48.85, 2.35): 10</li><li>(45.76, 4.83): 15</li><li>(43.3, 5.37): 8</li><li>(47.21, -1.55): 22</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-geoDensityMap\"><div aria-label=\"Density map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--density\"><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"327.22869955156955\" cy=\"70.62251655629137\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"480.6995515695067\" cy=\"214.68609271523184\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"514.1165919282512\" cy=\"329.3774834437086\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"85.88340807174887\" cy=\"147.08344370860922\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle></g></svg></div><ul aria-label=\"Data values for Density map\" class=\"st-chartDataList\"><li>Density map: 4 points</li><li>(48.85, 2.35): 1</li><li>(45.76, 4.83): 1</li><li>(43.3, 5.37): 1</li><li>(47.21, -1.55): 1</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-geoDensityMap consumer\" data-bench=\"density\"><div aria-label=\"Density map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--density\"><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle><circle class=\"st-geoMap__density st-geoMap__density--category3\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"17\" style=\"--st-geoMap-mix: 60%\"></circle></g></svg></div><ul aria-label=\"Data values for Density map\" class=\"st-chartDataList\"><li>Density map: 4 points</li><li>(48.85, 2.35): 1</li><li>(45.76, 4.83): 1</li><li>(43.3, 5.37): 1</li><li>(47.21, -1.55): 1</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "d80a827938147f9f5048d4856c6aed01f59311cf9dec27f6610526a046c56bad",
+  "fixtureSha256": "088d579568bb03cfbdef9d3fe022f716b47c6574aae3a4947c65f3e921a28ed5",
+  "publicExports": [
+    {
+      "name": "GeoDensityMap",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoDensityMapProps",
+      "typeOnly": true
+    }
+  ]
+}

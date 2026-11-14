@@ -1,8 +1,8 @@
 name: Dataviz Publish
 
-# Publication des cinq paquets @sentropic/dataviz-* en lockstep, sur leur
-# propre ligne de version, indépendante de @sentropic/graph et des paquets DS
-# existants. Déclenchée par un tag `dataviz-v<version>`.
+# Publication de la famille via `dataviz-v<version>` en lockstep, sauf Vue
+# lorsqu'il est sur une ligne de préversion en avance. Vue publie alors seul
+# via `dataviz-vue-v<version>`, dans ce même workflow lié au trusted publisher.
 #
 # Ordre de publication : dataviz-core d'abord, puis svelte, react, vue,
 # angular (les adaptateurs dépendent du cœur à la version exacte du tag).
@@ -15,7 +15,7 @@ name: Dataviz Publish
 
 on:
   push:
-    tags: ["dataviz-v*"]
+    tags: ["dataviz-v*", "dataviz-vue-v*"]
   workflow_dispatch:
 
 permissions:
@@ -66,6 +66,9 @@ jobs:
   release-guard:
     needs: verify
     runs-on: ubuntu-latest
+    outputs:
+      packages: ${{ steps.release.outputs.packages }}
+      workspaces: ${{ steps.release.outputs.workspaces }}
     if: startsWith(github.ref, 'refs/tags/dataviz-v')
     env:
       RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
@@ -82,45 +85,8 @@ jobs:
             exit 1
           fi
       - name: Verify Dataviz versions match tag
-        run: |
-          EXPECTED="${TAG#dataviz-v}"
-          EXPECTED="$EXPECTED" node --input-type=module <<'NODE'
-          import { readFileSync } from "node:fs";
-
-          const expected = process.env.EXPECTED;
-          // The five dataviz packages move in lockstep: every manifest and
-          // every internal dependency must carry the tag version.
-          const manifests = [
-            "packages/dataviz-core/package.json",
-            "packages/dataviz-svelte/package.json",
-            "packages/dataviz-react/package.json",
-            "packages/dataviz-vue/package.json",
-            "packages/dataviz-angular/package.json",
-          ];
-          const failures = [];
-
-          for (const manifestPath of manifests) {
-            const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-            if (manifest.version !== expected) {
-              failures.push(`${manifest.name}: ${manifest.version}`);
-            }
-            for (const field of ["dependencies", "peerDependencies", "optionalDependencies"]) {
-              for (const [name, version] of Object.entries(manifest[field] ?? {})) {
-                if (name.startsWith("@sentropic/dataviz-") && version !== expected) {
-                  failures.push(`${manifest.name} -> ${name}: ${version}`);
-                }
-              }
-            }
-          }
-
-          if (failures.length > 0) {
-            console.error(`Tag version ${expected} does not match dataviz versions:`);
-            for (const failure of failures) console.error(`- ${failure}`);
-            process.exit(1);
-          }
-
-          console.log(`All dataviz package versions match ${expected}`);
-          NODE
+        id: release
+        run: node scripts/dataviz-release.mjs
 
   publish:
     needs: release-guard
@@ -133,6 +99,7 @@ jobs:
       id-token: write
     env:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      PACKAGES: ${{ needs.release-guard.outputs.packages }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
@@ -148,9 +115,9 @@ jobs:
           # --no-hash leaves no dist/.srchash marker: npm pack includes
           # dotfiles inside `files` directories, so the marker would otherwise
           # ship inside the published tarballs.
-          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
+          node scripts/ensure-theme-dists.mjs --no-hash --workspaces=${{ needs.release-guard.outputs.workspaces }}
       - name: Dist import closure (packed package with registry dependencies)
-        run: npm run dist:import-closure -- --workspaces=@sentropic/dataviz-core,@sentropic/dataviz-svelte,@sentropic/dataviz-react,@sentropic/dataviz-vue,@sentropic/dataviz-angular
+        run: npm run dist:import-closure -- --workspaces=${{ needs.release-guard.outputs.workspaces }}
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
@@ -164,7 +131,8 @@ jobs:
           # A version already on npm (first publication done by hand under the
           # owner's browser 2FA, because npm cannot attach a trusted publisher to
           # a package that does not exist yet) is skipped, never republished.
-          VERSION="${TAG#dataviz-v}"
+          VERSION="${TAG#dataviz-vue-v}"
+          VERSION="${VERSION#dataviz-v}"
           VERSION_CORE="${VERSION%%+*}"
           DIST_TAG=latest
           if [[ "$VERSION_CORE" == *-* ]]; then
@@ -175,10 +143,14 @@ jobs:
               exit 1
             fi
           fi
-          for package in @sentropic/dataviz-core @sentropic/dataviz-svelte @sentropic/dataviz-react @sentropic/dataviz-vue @sentropic/dataviz-angular; do
+          read -r -a SELECTED_PACKAGES <<< "${PACKAGES:?Missing guarded release selection}"
+          for package in "${SELECTED_PACKAGES[@]}"; do
             # Core must be available before an adapter can pass this guard.
             # Each adapter checks every dependency and peer, including optional ones.
             node scripts/verify-deps-published.mjs --workspace "packages/${package#@sentropic/}" --runtime
+            if [ "$package" = @sentropic/dataviz-vue ]; then
+              node scripts/dataviz-vue-registry-packed.mjs
+            fi
             if npm view "${package}@${VERSION}" version --silent > /dev/null 2>&1; then
               echo "${package}@${VERSION} is already on npm: skipped."
             else
@@ -188,31 +160,27 @@ jobs:
           echo "dist-tag=$DIST_TAG" >> "$GITHUB_OUTPUT"
 
   post-publish-check:
-    needs: publish
+    needs: [release-guard, publish]
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/dataviz-v')
     env:
       TAG: ${{ github.ref_name }}
       DIST_TAG: ${{ needs.publish.outputs.dist-tag }}
+      PACKAGES: ${{ needs.release-guard.outputs.packages }}
     steps:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: "24"
       - name: Wait for npm propagation
         run: |
-          VERSION="${TAG#dataviz-v}"
-          PACKAGES=(
-            "@sentropic/dataviz-core"
-            "@sentropic/dataviz-svelte"
-            "@sentropic/dataviz-react"
-            "@sentropic/dataviz-vue"
-            "@sentropic/dataviz-angular"
-          )
+          VERSION="${TAG#dataviz-vue-v}"
+          VERSION="${VERSION#dataviz-v}"
+          read -r -a SELECTED_PACKAGES <<< "${PACKAGES:?Missing guarded release selection}"
 
           for attempt in {1..20}; do
             missing=()
 
-            for package in "${PACKAGES[@]}"; do
+            for package in "${SELECTED_PACKAGES[@]}"; do
               if [ "$(npm view "${package}@${DIST_TAG}" version --silent 2>/dev/null)" != "$VERSION" ]; then
                 missing+=("${package}@${DIST_TAG} -> ${VERSION}")
               fi
@@ -232,16 +200,18 @@ jobs:
 
       - name: Install published packages
         run: |
-          VERSION="${TAG#dataviz-v}"
+          VERSION="${TAG#dataviz-vue-v}"
+          VERSION="${VERSION#dataviz-v}"
+          read -r -a SELECTED_PACKAGES <<< "${PACKAGES:?Missing guarded release selection}"
+          CANDIDATES=()
+          for package in "${SELECTED_PACKAGES[@]}"; do
+            CANDIDATES+=("${package}@${VERSION}")
+          done
           mkdir /tmp/sent-tech-dataviz-post-publish
           cd /tmp/sent-tech-dataviz-post-publish
           npm init -y --silent
           npm install \
-            "@sentropic/dataviz-core@${VERSION}" \
-            "@sentropic/dataviz-svelte@${VERSION}" \
-            "@sentropic/dataviz-react@${VERSION}" \
-            "@sentropic/dataviz-vue@${VERSION}" \
-            "@sentropic/dataviz-angular@${VERSION}" \
+            "${CANDIDATES[@]}" \
             "svelte@^5" \
             "react@^19" \
             "react-dom@^19" \
@@ -253,29 +223,16 @@ jobs:
         run: |
           cd /tmp/sent-tech-dataviz-post-publish
           node --input-type=module <<'NODE'
-          const core = await import("@sentropic/dataviz-core");
-          if (typeof core.validateModel !== "function") {
-            throw new Error("@sentropic/dataviz-core missing validateModel export");
-          }
-
-          const react = await import("@sentropic/dataviz-react");
-          if (Object.keys(react).length === 0) {
-            throw new Error("@sentropic/dataviz-react has no exports");
-          }
-
-          const vue = await import("@sentropic/dataviz-vue");
-          if (Object.keys(vue).length === 0) {
-            throw new Error("@sentropic/dataviz-vue has no exports");
-          }
-
-          await import("@angular/compiler");
-          const angular = await import("@sentropic/dataviz-angular");
-          if (Object.keys(angular).length === 0) {
-            throw new Error("@sentropic/dataviz-angular has no exports");
-          }
-
-          const svelteEntry = await import.meta.resolve("@sentropic/dataviz-svelte");
-          if (!svelteEntry.endsWith("dist/index.js")) {
-            throw new Error("@sentropic/dataviz-svelte resolves to an unexpected entry: " + svelteEntry);
+          for (const packageName of process.env.PACKAGES.split(' ')) {
+            if (packageName === '@sentropic/dataviz-svelte') {
+              const entry = import.meta.resolve(packageName);
+              if (!entry.endsWith('dist/index.js')) throw new Error(`Unexpected Svelte entry: ${entry}`);
+              continue;
+            }
+            if (packageName === '@sentropic/dataviz-angular') await import('@angular/compiler');
+            const module = await import(packageName);
+            if (Object.keys(module).length === 0) throw new Error(`${packageName} has no exports`);
+            if (packageName === '@sentropic/dataviz-core' && typeof module.validateModel !== 'function')
+              throw new Error('@sentropic/dataviz-core missing validateModel export');
           }
           NODE

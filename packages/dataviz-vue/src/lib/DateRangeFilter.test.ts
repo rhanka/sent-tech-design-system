@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { DateRangeFilter, dateRangeToSpec } from './DateRangeFilter.js';
+import DateRangeFilter, { dateRangeToSpec } from './DateRangeFilter.vue';
 
 const D1 = new Date('2020-01-01T00:00:00Z');
 const D2 = new Date('2020-12-31T00:00:00Z');
