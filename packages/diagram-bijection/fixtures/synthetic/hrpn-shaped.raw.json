@@ -1,0 +1,42 @@
+{
+  "schema": "dl-synthetic-fixture/v1",
+  "profile": { "name": "synthetic", "version": "1" },
+  "profileMapping": {},
+  "coordinates": {},
+  "scene": {
+    "id": "SYNTH-SCENE",
+    "title": "Scène synthétique",
+    "caption": "Fixture de test du générateur, libellés inventés.",
+    "legendPassages": []
+  },
+  "source": { "kind": "synthetic" },
+  "counts": { "entities": 7, "relations": 3 },
+  "entities": [
+    { "id": "ZONE_ALPHA", "kind": "zone", "parent": null, "label": "Zone alpha inventée", "tint": "TINT_ROUGE", "code": "ZA", "detail": "détail alpha", "footer": "pied alpha" },
+    { "id": "ZONE_BETA", "kind": "zone", "parent": "ZONE_ALPHA", "label": "Zone bêta inventée", "tint": null, "code": "ZB" },
+    { "id": "ZONE_GAMMA", "kind": "zone", "parent": "ZONE_ALPHA", "label": "Zone gamma inventée", "tint": "TINT_VERT", "code": "ZG" },
+    { "id": "CARD_UN", "kind": "card", "parent": "ZONE_ALPHA", "label": "Carte un inventée", "tint": "TINT_ROUGE", "code": "CU", "name": "Carte un", "role": "Rôle un", "store": "magasin un", "detail": "détail un", "footer": "pied un" },
+    { "id": "CARD_DEUX", "kind": "card", "parent": "ZONE_BETA", "label": "Carte deux inventée", "tint": "TINT_VERT", "code": "CD", "name": "Carte deux", "role": "Rôle deux", "store": "magasin deux" },
+    { "id": "CARD_TROIS", "kind": "card", "parent": "ZONE_BETA", "label": "Carte trois inventée", "tint": null, "code": "CT", "name": "Carte trois", "role": "Rôle trois", "store": "magasin trois" },
+    { "id": "CARD_QUATRE", "kind": "card", "parent": "ZONE_GAMMA", "label": "Carte quatre inventée", "tint": "TINT_VERT", "code": "CQ", "name": "Carte quatre", "role": "Rôle quatre", "store": "magasin quatre" }
+  ],
+  "relations": [
+    { "id": "REL_01", "from": "CARD_UN", "to": "CARD_DEUX", "label": "lien un inventé", "style": "solid" },
+    { "id": "REL_02", "from": "CARD_DEUX", "to": "CARD_TROIS", "label": "lien deux inventé", "style": "dashed" },
+    { "id": "REL_03", "from": "CARD_TROIS", "to": "CARD_QUATRE", "label": "lien trois inventé", "style": "solid" }
+  ],
+  "zoneHierarchy": {
+    "rootCards": [],
+    "zones": [
+      {
+        "id": "ZONE_ALPHA",
+        "label": "Zone alpha inventée",
+        "cards": ["CARD_UN"],
+        "zones": [
+          { "id": "ZONE_BETA", "label": "Zone bêta inventée", "cards": ["CARD_DEUX", "CARD_TROIS"], "zones": [] },
+          { "id": "ZONE_GAMMA", "label": "Zone gamma inventée", "cards": ["CARD_QUATRE"], "zones": [] }
+        ]
+      }
+    ]
+  }
+}

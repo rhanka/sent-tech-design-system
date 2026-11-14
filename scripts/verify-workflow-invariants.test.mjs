@@ -884,3 +884,103 @@ test("guard fixture (item 5): missing, empty, write-all and write scopes fail", 
     assert.ok(!hasAcceptableTopLevelPermissions(strippedText), `expected rejected permissions, got:\n${snippet}`);
   }
 });
+
+// --- W-DL0.11 (§2.9 of SPEC_EVOL_DL01_BIJECTION_HARNESS): raw-label-gate.yml -
+// The CI raw-label gate must run on every pull request and every push to main
+// with no path filter (a raw label can land in any file), must install no npm
+// package (the only code that sees the secret is the dependency-free gate), and
+// must expose DL_RAWGATE_KEY to the gate step only.
+test("raw-label-gate.yml has no paths/paths-ignore filter and triggers on pull_request and push to main", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  assert.ok(
+    !/^\s*paths(-ignore)?\s*:/m.test(strippedText),
+    "raw-label-gate.yml must not carry a paths or paths-ignore filter: a raw label can land in any file",
+  );
+  assert.ok(/^ {2}pull_request:\s*$/m.test(strippedText), "raw-label-gate.yml must trigger on pull_request");
+  assert.ok(/^ {2}push:\s*$/m.test(strippedText), "raw-label-gate.yml must trigger on push");
+  assert.ok(
+    /branches\s*:\s*\[\s*"main"\s*\]/.test(strippedText),
+    "raw-label-gate.yml must scope its push trigger to main",
+  );
+});
+
+test("raw-label-gate.yml installs no npm package and checks out with full history", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  assert.ok(
+    !/\bnpm\s+(ci|install|i)\b/.test(strippedText),
+    "raw-label-gate.yml must not run npm ci/install: the gate is dependency-free",
+  );
+  assert.ok(
+    !/cache\s*:\s*["']?npm/.test(strippedText),
+    "raw-label-gate.yml must not cache npm: no npm install happens in this workflow",
+  );
+  assert.ok(/fetch-depth:\s*0/.test(strippedText), "raw-label-gate.yml must fetch full history for the commit ranges");
+});
+
+test("raw-label-gate.yml exposes DL_RAWGATE_KEY to the gate step only and fails closed", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("raw-label-gate.yml"));
+  const occurrences = strippedText.match(/DL_RAWGATE_KEY\s*:/g) ?? [];
+  assert.equal(
+    occurrences.length,
+    1,
+    `DL_RAWGATE_KEY must be set exactly once (the gate step env), saw ${occurrences.length}`,
+  );
+  assert.ok(
+    /DL_RAWGATE_KEY:\s*\$\{\{\s*secrets\.DL_RAWGATE_KEY\s*\}\}/.test(strippedText),
+    "the gate step must read the secret from secrets.DL_RAWGATE_KEY",
+  );
+  assert.ok(/DL_RAWGATE_REQUIRED:\s*"1"/.test(strippedText), "the gate must fail closed when the secret is absent");
+  assert.ok(
+    /dl-rawgate\.mjs\s+scan\s+--tree\s+--commits=/.test(strippedText),
+    "the gate step must run the tree scan and the commit-message scan",
+  );
+});
+
+// --- DL-0 (§4 of SPEC_EVOL_DL01_BIJECTION_HARNESS): diagram-bijection.yml ---
+// The DL-0 job runs the harness reports only: no Chrome setup, no pinned
+// Mermaid preview install, no G-T5 step and no --checks (those three steps are
+// added by DL-1). It still triggers on every PR and every push to main that
+// touches the diagram surface, and uploads the reports.
+test("diagram-bijection.yml triggers on push to main and pull_request with the diagram paths", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("diagram-bijection.yml"));
+  assert.ok(!/^\s*paths-ignore\s*:/m.test(strippedText), "diagram-bijection.yml must not carry paths-ignore");
+  assert.ok(/^ {2}push:\s*$/m.test(strippedText), "must trigger on push");
+  assert.ok(/branches\s*:\s*\[\s*"main"\s*\]/.test(strippedText), "push must be scoped to main");
+  assert.ok(/^ {2}pull_request:\s*$/m.test(strippedText), "must trigger on pull_request");
+  assert.ok(/^ {2}workflow_dispatch:\s*$/m.test(strippedText), "must be dispatchable");
+  for (const p of [
+    "packages/diagram-bijection/**",
+    "packages/diagram-core/**",
+    "packages/diagram-canvas/**",
+    "packages/components-svelte/src/lib/diagramCardModel.ts",
+    "packages/components-svelte/src/lib/diagram-render/**",
+    "packages/components-svelte/src/lib/diagram-icons/**",
+    ".github/workflows/diagram-bijection.yml",
+    "package-lock.json",
+  ]) {
+    assert.ok(strippedText.includes(`"${p}"`), `paths must include ${p}`);
+  }
+});
+
+test("diagram-bijection.yml DL-0 job runs the harness reports without the DL-1 Chrome/preview steps", () => {
+  const { strippedText } = scanWorkflow(readWorkflow("diagram-bijection.yml"));
+  assert.ok(/npm ci/.test(strippedText), "the job must install the lockfile");
+  assert.ok(
+    /ensure-theme-dists\.mjs\s+--workspaces=@sentropic\/diagram-bijection/.test(strippedText),
+    "the job must build the harness workspace via the shared entry point",
+  );
+  assert.ok(
+    /dl-harness\.mjs\s+run\s+--all\s+--out=/.test(strippedText),
+    "the job must run the harness for every format and fixture",
+  );
+  assert.ok(!/--checks/.test(strippedText), "DL-0 runs the harness without --checks (no G-T5 yet)");
+  assert.ok(!/setup-chrome/.test(strippedText), "DL-0 has no Chrome setup step");
+  assert.ok(!/CHROME_BIN/.test(strippedText), "DL-0 sets no CHROME_BIN");
+  assert.ok(!/g-t5\.browser\.mjs/.test(strippedText), "DL-0 has no G-T5 preview step");
+  assert.ok(!/diagram-bijection\/preview/.test(strippedText), "DL-0 installs no pinned Mermaid preview");
+  assert.ok(/upload-artifact@/.test(strippedText), "the job must upload the reports");
+  assert.ok(
+    /group:\s*diagram-bijection-\$\{\{\s*github\.ref\s*\}\}/.test(strippedText),
+    "the job must carry the diagram-bijection concurrency group",
+  );
+});

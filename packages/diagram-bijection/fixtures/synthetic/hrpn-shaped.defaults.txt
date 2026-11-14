@@ -1,0 +1,6 @@
+// Synthetic fold defaults for the W-DL0.8 fixture (invented identifiers).
+// The generator reads this file as text only, never imports it.
+export const FOCUS_DEFAULTS = {
+  'SYNTH-SCENE': ['ZONE_BETA', 'ZONE_INCONNUE'],
+  'AUTRE-SCENE': ['ZONE_ALPHA'],
+};
