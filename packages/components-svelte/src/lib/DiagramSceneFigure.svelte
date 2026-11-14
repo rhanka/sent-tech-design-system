@@ -47,7 +47,6 @@
     parseScale,
     rectsOf,
     resolveScene,
-    quantiseFit,
     shouldRefitRenderedBounds,
     resolveZoom,
     sameRects,
@@ -504,11 +503,16 @@
   let minReadableScale = $state<number>();
   let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
   const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
+  // `zoom` is the scale the world is painted at: the fit is quantised once,
+  // in `sceneFit`, and printed as it is, so painted rects divide back by it.
+  // The first read of a scene fits; a later one refits only when it differs
+  // from that read by more than the measurement granularity.
   function readRenderedBounds(): void {
     if (frameEl === undefined || scene === undefined) return;
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
+    const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
     if (bounds !== undefined && bounds !== scene.bounds
-      && shouldRefitRenderedBounds(cameraBounds, bounds, zoom)) {
+      && shouldRefitRenderedBounds(previous, bounds)) {
       if (atFit) requestedZoom = undefined;
       renderedBounds = { scene, bounds };
     }
@@ -908,7 +912,7 @@
     `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
-    `transform:translate(${quantiseFit(placement.translateX)}px,${quantiseFit(placement.translateY)}px) scale(${quantiseFit(zoom)})`,
+    `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
   );
 </script>
 
