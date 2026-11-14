@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:6aed81c9583e1691cd311057783945d7d123fad00a93c7aa2cc261682bb5c037",
-  "entryDigest": "sha256:30dc6d7fa07d0809e2655d733f1ecca347c2c69988ad620431c14010cdc69c83",
+  "digest": "sha256:ba808167b63cc922f610422d4cdcdb6d3fe8bcca6e453c5fc8147154c8e90f94",
+  "entryDigest": "sha256:eb2dfabcaea806ec55a2c0679f522afe8ea060f0baa4f3a7d2ad879ddcb8ba93",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/FlamegraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlamegraphChartProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -287,7 +287,7 @@
         "declarationPath": "packages/components-vue/dist/FlamegraphChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlamegraphChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

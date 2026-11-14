@@ -1,8 +1,8 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:686001bcb6c819cd9de6078a0620d34982d0cdef51ca00b0a9b78efc31e7ce8a",
-  "entryDigest": "sha256:9743d121c9411a24beb8c11df9ce5f14b3035bd10b75f56964bdbbce8ca3b744",
+  "digest": "sha256:8f89a6c5ba56af4e6ec15cc232900204354043c309e0221e5ec3ecab1c59534e",
+  "entryDigest": "sha256:000f36730ddc7f11c9dddfce7ea65dbaaa99a371f4fb6775fa409210a917bf88",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -351,7 +351,7 @@
         "declarationPath": "packages/components-svelte/dist/SankeyChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SankeyChartProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -469,7 +469,7 @@
         "declarationPath": "packages/components-vue/dist/SankeyChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SankeyChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "avatar-group",
   "contractSource": "derived",
-  "digest": "sha256:408530b69bd3ef0f2a6a6ccafa048c1d96024249a1bb9ee4f47a5b9db6cd3625",
-  "entryDigest": "sha256:7137cad10dded28461bd3744a8b5275bc65b0ea198c3824c7e18e5bd4dd17029",
+  "digest": "sha256:288fe652cbdc816228488d432251fbe5a9fefad442a4c69b8ca593f079ef28f8",
+  "entryDigest": "sha256:dad4defd69e7b1ca3f8a2c87559274028e41894bd6a833fcfdfac0746ab06abd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -154,7 +154,7 @@
         "declarationPath": "packages/components-svelte/dist/AvatarGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AvatarGroupProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-vue/dist/AvatarGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarGroupProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

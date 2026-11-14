@@ -1,8 +1,8 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:2afd87b694abba274f755935baeb24da99fdb781cf94967e0038b6295dc85dea",
-  "entryDigest": "sha256:b3cd30301d9194abad5094ac1bc825d5efaf1c0a8a05e172625efaf106f0d448",
+  "digest": "sha256:d16db33f49d42186c3a2cba293fdbed7a91a39e5133934a0d73acac5feb5ce5c",
+  "entryDigest": "sha256:415a49fb02c3981e190b9bb0aa10d97cbbf953accfa1cc7526d52a409e5043a8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -587,7 +587,7 @@
         "declarationPath": "packages/components-svelte/dist/Menu.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MenuProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "partial",
       "unresolved": [],
@@ -860,7 +860,7 @@
         "declarationPath": "packages/components-vue/dist/Menu.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MenuProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],
