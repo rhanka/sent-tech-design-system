@@ -14,17 +14,18 @@ import type {
   FunctionComponent,
   Ref,
   TargetedEvent,
+  TargetedFocusEvent,
   TargetedKeyboardEvent,
   TargetedMouseEvent,
   VNode,
 } from "preact";
-import { useEffect, useLayoutEffect, useState } from "preact/hooks";
+import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 
 /** Anything renderable. `ComponentChildren` in Preact, `ReactNode` in React. */
 export type { ComponentChildren };
 
 /** Event types handed to DOM handlers (React twin: the synthetic event types). */
-export type { TargetedKeyboardEvent, TargetedMouseEvent };
+export type { TargetedFocusEvent, TargetedKeyboardEvent, TargetedMouseEvent };
 
 // ---------------------------------------------------------------------------
 // forwardRef
@@ -75,19 +76,38 @@ export const useInsertionEffect: typeof useLayoutEffect = useLayoutEffect;
 
 /**
  * External store subscription with React's contract (`subscribe`,
- * `getSnapshot`). Re-reads the snapshot after mount and on every notification,
- * so a store that changes between render and subscription is not missed.
+ * `getSnapshot`), structured like the one of `preact/compat`:
+ *
+ * - the subscription depends on `subscribe` only, so an inline `getSnapshot`
+ *   or a new snapshot never tears it down and re-creates it;
+ * - the rendered value and the current `getSnapshot` are kept in a ref, which
+ *   is what the store listener compares against;
+ * - the store is re-read in the layout phase of every render and once more
+ *   when the subscription starts, so a change between render and subscription
+ *   is not missed.
  */
 export function useSyncExternalStore<T>(subscribe: (onChange: () => void) => () => void, getSnapshot: () => T): T {
   const value = getSnapshot();
   const [, forceRender] = useState(0);
+  const rendered = useRef({ value, getSnapshot });
+  const [recheck] = useState(() => () => {
+    const { value: shown, getSnapshot: read } = rendered.current;
+    let moved = true;
+    try {
+      moved = !Object.is(shown, read());
+    } catch {
+      // A reader that throws re-renders, so the error surfaces in render.
+    }
+    if (moved) forceRender((count) => count + 1);
+  });
+  useLayoutEffect(() => {
+    rendered.current = { value, getSnapshot };
+    recheck();
+  }, [subscribe, value, getSnapshot]);
   useEffect(() => {
-    const check = () => {
-      if (!Object.is(value, getSnapshot())) forceRender((count) => count + 1);
-    };
-    check();
-    return subscribe(check);
-  }, [subscribe, getSnapshot, value]);
+    recheck();
+    return subscribe(recheck);
+  }, [subscribe]);
   return value;
 }
 
@@ -104,4 +124,21 @@ export function textInput<T extends HTMLInputElement | HTMLTextAreaElement>(
   handler: (value: string) => void,
 ): { onInput: (event: TargetedEvent<T>) => void } {
   return { onInput: (event) => handler(event.currentTarget.value) };
+}
+
+// ---------------------------------------------------------------------------
+// Focus events
+// ---------------------------------------------------------------------------
+
+/**
+ * Focus handler of a container, spread onto the element: it runs when the
+ * element or any of its descendants receives focus. Preact core attaches
+ * `onFocus` to the native `focus` event, which does not bubble, so a container
+ * never hears a child; the bubbling native event is `focusin` (`onFocusIn`).
+ * React: its `onFocus`, which already bubbles.
+ */
+export function focusWithin<T extends EventTarget>(
+  handler: (event: TargetedFocusEvent<T>) => void,
+): { onFocusIn: (event: TargetedFocusEvent<T>) => void } {
+  return { onFocusIn: handler };
 }

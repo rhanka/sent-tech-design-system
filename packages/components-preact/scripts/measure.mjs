@@ -51,15 +51,20 @@ function entry(runtime, components) {
 
 const EXTERNAL_RUNTIME = /^(?:preact|react|react-dom|@preact\/signals|@preact\/signals-core|lucide-preact|lucide-react)(?:\/|$)/;
 
-/** Alternative for the compat-shim decision: `forwardRef` and the two React 18 hooks from `preact/compat`. */
+/**
+ * Alternative for the compat-shim decision: `forwardRef` and the two React 18
+ * hooks from `preact/compat`. The two event helpers are restated here rather
+ * than imported from the core adapter, whose module-level `options` hook would
+ * otherwise stay in the bundle and be counted against the compat variant.
+ */
 function compatRuntimeVariant() {
   const variant = join(workDir, "runtime.compat.js");
-  const core = join(preactDist, "runtime.js");
   writeFileSync(
     variant,
     [
       `export { forwardRef, useInsertionEffect, useSyncExternalStore } from "preact/compat";`,
-      `export { textInput } from ${JSON.stringify(core)};`,
+      `export function textInput(handler) { return { onInput: (event) => handler(event.currentTarget.value) }; }`,
+      `export function focusWithin(handler) { return { onFocusIn: handler }; }`,
       "",
     ].join("\n"),
   );

@@ -4,8 +4,11 @@ Preact + Signals components for the Sentropic design system, and the **JSX
 source of truth** for two builds: the Preact package and the React tree emitted
 from it by a build-time specifier rewrite.
 
-Status: **spike S1**. Eight modules are ported; the package is not published.
-Findings, measurements and the revised estimate are in
+Status: **spike S1**. Eight modules are ported. The manifest is
+`"private": true`: the package is not published and npm refuses to publish it;
+the licensing and notices gates of the repository, which follow publishable
+packages, skip it until lot P0 removes the flag. Findings, measurements and
+the revised estimate are in
 [`docs/preact-s1-spike.md`](../../docs/preact-s1-spike.md).
 
 ## Layout
@@ -14,14 +17,22 @@ Findings, measurements and the revised estimate are in
 src/                    Preact tree, the only authored source
   compat.ts             the only module importing preact/compat (createPortal)
   runtime.ts            core-only adapter: forwardRef, useInsertionEffect,
-                        useSyncExternalStore, textInput, type aliases
+                        useSyncExternalStore, textInput, focusWithin, type
+                        aliases
   signals.ts            the only module importing @preact/signals:
                         MaybeSignal, useValue, unwrap
   <Component>.tsx       component modules: preact, preact/hooks, lucide-preact
   *.test.tsx            Preact leg (@testing-library/preact, jsdom)
 react/                  React twins of the three adapters + React-leg checks
+                        (props parity, provenance, adapter paths)
 scripts/emit-react.mjs  the React emission (specifier rewrite + adapter swap)
 scripts/measure.mjs     bundle-size report
+scripts/port-metrics.mjs        port table, port rate, lines per W3 lot,
+                                projection and reach counts of the spike
+scripts/probe-preact-major.mjs  the same source on another Preact major, in
+                                an isolated project
+measurements/           raw timing log (input) and raw outputs of the two
+                        scripts above
 .react-emit/            generated React tree (git-ignored)
 ```
 
@@ -57,7 +68,15 @@ npm run check        # type-check both trees + React props parity
 npm test             # emitter cases, Preact leg, then the React leg
 npm run test:react   # existing components-react tests on the emitted modules
 npm run measure      # bundle sizes (after build)
+npm run measure:port        # port metrics -> measurements/port-metrics.{txt,json}
+npm run measure:port:check  # fails when that committed output is stale
+npm run probe:preact        # Preact 11.2.0 probe (network) -> measurements/preact-major-probe.txt
 ```
+
+`sideEffects` names `dist/runtime.js` and `dist/signals.js`: the first installs
+a Preact `options` hook when it is loaded, the second imports
+`@preact/signals`, which installs its own. Both must stay in a bundle even
+when none of their exports is used.
 
 The React leg runs unmodified test files of `packages/components-react`
 against the emitted modules: `vitest.react.config.ts` resolves `./<Module>.js`
