@@ -123,6 +123,8 @@ jobs:
       # local-tarball smoke cannot catch an unresolvable pin. Runs before the
       # bootstrap token is configured: `npm view` on a public package needs no
       # credentials.
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/diagram-canvas
       - name: Verify pinned @sentropic dependencies are on npm (fail closed)
         run: node scripts/verify-deps-published.mjs --workspace packages/diagram-canvas
       - name: Bootstrap npm auth for first publish (inactive without secret)

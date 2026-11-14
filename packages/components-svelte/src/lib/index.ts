@@ -282,8 +282,8 @@ export type {
   ThemeOption,
   ColorMode,
   ActionMode
-} from "./site-config";
-export { SITE_CONFIG_SCHEMA_VERSION, SHELL_TOKEN_CONTRACT } from "./site-config";
+} from "./site-config.js";
+export { SITE_CONFIG_SCHEMA_VERSION, SHELL_TOKEN_CONTRACT } from "./site-config.js";
 export { default as Textarea } from "./Textarea.svelte";
 export { default as TimePicker } from "./TimePicker.svelte";
 export { default as Tile } from "./Tile.svelte";
