@@ -341,6 +341,7 @@ const packages = [
   },
   {
     name: "@sentropic/dataviz-vue",
+    absentPatterns: ["\\.srchash$", "\\.map$"],
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizVueLibFiles()]; },
   },
   {
