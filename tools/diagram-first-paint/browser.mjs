@@ -8,6 +8,7 @@ const { mkdir, writeFile, mkdtemp, rm } = await import('node:fs/promises');
 const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
+const { cases } = await import('./scenes.js');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -20,6 +21,7 @@ let server;
 let browser;
 let completed = 0;
 const failures = [];
+const parity = new Map();
 
 // This function executes inside Chrome. Every geometric value comes from DOM
 // layout, SVG paint or the computed transform, never layout-engine fixtures.
@@ -39,9 +41,19 @@ function measure() {
     .map(element => ({ id: element.dataset.sceneLabel ?? element.textContent, ...box(element) }));
   // Include actual text ink, which can overflow its allocated label/card box.
   const walker = document.createTreeWalker(world, NodeFilter.SHOW_TEXT);
+  const paintsText = text => {
+    for (let element = text.parentElement; element && element !== world; element = element.parentElement) {
+      const style = getComputedStyle(element);
+      // Numbered flows also carry clipped screen-reader descriptions and
+      // transparent focus targets. Their ranges do not paint any text ink.
+      if (style.display === 'none' || style.visibility === 'hidden'
+        || style.opacity === '0' || style.clipPath === 'inset(50%)') return false;
+    }
+    return true;
+  };
   let text;
   while ((text = walker.nextNode())) {
-    if (!text.textContent.trim() || text.parentElement.closest('defs,title,desc,[hidden]')) continue;
+    if (!text.textContent.trim() || text.parentElement.closest('defs,title,desc,[hidden]') || !paintsText(text)) continue;
     const range = document.createRange();
     range.selectNodeContents(text);
     for (const r of range.getClientRects()) labels.push({ id: text.textContent,
@@ -58,10 +70,10 @@ function measure() {
     });
     return { id: element.dataset.sceneEdge, stroke, points };
   });
-  // The connector SVG is behind the node surfaces. Keep a conservative
+  // The connector SVG is behind the node and numbered-badge surfaces. Keep a conservative
   // opaque interior (excluding rounded corners), so hidden route portions
   // cannot cause a clearance failure against the text painted over them.
-  const occluders = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone')].flatMap(element => {
+  const occluders = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge')].flatMap(element => {
     const style = getComputedStyle(element);
     if (!/^rgb\([^/]+\)$/.test(style.backgroundColor) || style.opacity !== '1') return [];
     const r = box(element);
@@ -71,7 +83,7 @@ function measure() {
   });
   const frameBox = box(frame);
   const scrollbars = [frame.offsetWidth - frame.clientWidth, frame.offsetHeight - frame.clientHeight];
-  return { camera: window.__camera, scale, transform, frame: frameBox, scrollbars,
+  return { camera: window.__camera, scale, transform, world: box(world), frame: frameBox, scrollbars,
     viewport: { ...frameBox, right: frameBox.right - scrollbars[0], bottom: frameBox.bottom - scrollbars[1],
       width: frameBox.width - scrollbars[0], height: frameBox.height - scrollbars[1] },
     // The rendered extent includes all scene bounds and the two 1 px paint
@@ -168,6 +180,19 @@ function equalGeometry(actual, expected, path = 'geometry') {
   } else assert.equal(actual, expected, path);
 }
 
+function parityGeometry(state) {
+  const bounds = ({ id, left, top, width, height }) => ({ id,
+    x: (left - state.world.left) / state.scale, y: (top - state.world.top) / state.scale,
+    width: width / state.scale, height: height / state.scale });
+  return { camera: state.camera, scale: state.scale,
+    viewport: { width: state.viewport.width, height: state.viewport.height },
+    origin: { x: state.world.left - state.viewport.left, y: state.world.top - state.viewport.top },
+    nodes: state.nodes.map(bounds), labels: state.labels.map(bounds),
+    edges: state.paths.map(path => ({ id: path.id, stroke: path.stroke / state.scale,
+      points: path.points.map(point => ({ x: (point.x - state.world.left) / state.scale,
+        y: (point.y - state.world.top) / state.scale })) })) };
+}
+
 function check(state, scene) {
   assert.equal(state.refused, null, 'scene must render');
   assert.ok(state.nodes.length >= 3, 'must render at least three cards');
@@ -241,7 +266,7 @@ try {
     args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   for (const framework of ['svelte', 'vue']) {
     for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {
-      for (const scene of ['architecture-folded', 'architecture-unfolded', 'ontology-folded', 'ontology-unfolded', 'three-cards']) {
+      for (const scene of cases) {
         const name = `${framework}-${scene}-${viewport.width}x${viewport.height}`;
         const page = await browser.newPage();
         const errors = [];
@@ -271,20 +296,29 @@ try {
           assert.deepEqual(after.scroll, initial.scroll, 'initial scrolling must equal state after Ajuster');
           assert.deepEqual(after.outerScroll, initial.outerScroll, 'initial outer scrolling must equal state after Ajuster');
           equalGeometry(after, initial);
+          const key = `${scene}-${viewport.width}x${viewport.height}`;
+          const current = parityGeometry(initial);
+          if (framework === 'svelte') parity.set(key, current);
+          else {
+            assert.ok(parity.has(key), `Svelte baseline must exist for ${key}`);
+            equalGeometry(current, parity.get(key), `Svelte/Vue ${key}`);
+          }
           completed++;
           console.log(`PASS ${name}`);
         } catch (error) {
           failures.push(name);
           console.error(`FAIL ${name}: ${error.stack}`);
           await page.screenshot({ path: join(artifacts, `${name}-failure.png`), captureBeyondViewport: false });
-          await writeFile(join(artifacts, `${name}.json`), JSON.stringify({ error: String(error), errors, consoleMessages, initial, after }, null, 2));
+          await writeFile(join(artifacts, `${name}.json`), JSON.stringify({ error: String(error), errors, consoleMessages, initial, after,
+            svelteBaseline: parity.get(`${scene}-${viewport.width}x${viewport.height}`) }, null, 2));
         } finally {
           await page.close();
         }
       }
     }
   }
-  assert.equal(completed, 20, `All 20 cases must pass; failures: ${failures.join(', ')}`);
+  const expected = 2 * 2 * cases.length;
+  assert.equal(completed, expected, `All ${expected} cases must pass; failures: ${failures.join(', ')}`);
 } finally {
   await browser?.close();
   await server?.close();

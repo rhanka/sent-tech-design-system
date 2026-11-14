@@ -4,13 +4,19 @@ import ontology from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h
 import ontologyView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtures/h-cond/appctx-ontology.view-ontology.json';
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN,
   m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
+import { flowFixture } from '../../packages/diagram-canvas/test-support/flowFixture.ts';
 
-export const cases = ['architecture-folded', 'architecture-unfolded', 'ontology-folded', 'ontology-unfolded', 'three-cards'];
+import { cases } from './scenes.js';
+export { cases } from './scenes.js';
 
 export function fixture(name) {
   if (!cases.includes(name)) throw new Error(`Unknown scene: ${name}`);
   const common = { registry: m3ProfileRegistry, bindings: shippedExecutorBindings,
     labels: { fit: 'Ajuster' }, title: name };
+  if (name.startsWith('numbered-flows')) {
+    const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });
+    return { ...common, document: source.document, presentation: source.presentation, flows: { fanOutMax: 4 } };
+  }
   if (name !== 'three-cards') {
     const document = name.startsWith('architecture') ? architecture : ontology;
     const view = name.startsWith('architecture') ? architectureView : ontologyView;
