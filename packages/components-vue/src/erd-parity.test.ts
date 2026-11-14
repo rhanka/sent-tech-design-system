@@ -25,12 +25,14 @@ function dom(node: Element): unknown {
 describe('ERD Vue/Svelte DOM and ARIA parity', () => {
   it('should keep ERD and base scene token styles identical across both hosts', () => {
     // Vue delegates ordinary scenes to the base host; flow-only rules are separate.
-    const styles = ['../components-svelte/src/lib/DiagramSceneFigure.svelte', 'src/DiagramSceneFigureBase.vue'].map(path => {
-      const style = readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!;
-      expect(style).toContain('  .st-diagramErd-toggle');
-      return style.slice(style.indexOf('  .st-diagramErd-toggle')).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\s+/g, ' ').trim();
-    });
-    expect(styles[0]).toBe(styles[1]);
+    const styles = (path: string) => readFileSync(path, 'utf8').split('<style>')[1]!.split('</style>')[0]!;
+    const rules = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
+      .map(rule => rule.replace(/\s+/g, ' ').trim()).filter(Boolean).sort();
+    const svelte = styles('../components-svelte/src/lib/DiagramSceneFigure.svelte');
+    const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramSceneFallback.vue')
+      .replace(/\.st-diagramSceneFigure-fallback\s*\{[^}]*\}/, '');
+    expect(rules(svelte.slice(svelte.indexOf('  .st-diagramErd-toggle')))).toEqual(
+      rules(shared + styles('src/DiagramSceneFigureBase.vue')));
   });
   for (const source of scenes)
     it('should keep identical expanded and folded DOM for ' + source.id, async () => {
@@ -67,4 +69,38 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
         vue.unmount();
       }
     });
+});
+
+for (const source of scenes) it('should retain ERD overlays and accessible text through explicit flows for ' + source.id, async () => {
+  const data = convertEngramErdScene(source);
+  const props = { ...data, registry: m3ProfileRegistry, bindings: shippedExecutorBindings };
+  const base = mount(VueFigure, { props });
+  const vue = mount(VueFigure, { props: { ...props, flows: {} } });
+  const svelte = render(SvelteFigure, { ...props, flows: {} });
+  const selectors = ['.st-diagramSceneFigure-fallback', '.st-diagramErd-fallback', '.st-diagramErd-svg',
+    '.st-diagramErd-toggle', '[data-erd-marker]', '[data-erd-label]', '.st-diagramSceneFigure-edges > polyline:not([data-scene-edge])'];
+  const compare = () => {
+    for (const selector of selectors) {
+      const expected = [...base.element.querySelectorAll(selector)].map(dom);
+      expect([...vue.element.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
+      expect([...svelte.container.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
+    }
+    expect(vue.find('.st-diagramSceneFigure-fallback').text()).not.toBe('');
+    expect(vue.findAll('[data-erd-marker]')).toHaveLength(2 * source.relations.length);
+    expect(vue.findAll('[data-erd-field]')).toHaveLength(source.classes.reduce((n, c) => n + c.fields.length, 0));
+  };
+  try {
+    await nextTick(); await tick(); compare();
+    await base.find('.st-diagramErd-toggle').trigger('click');
+    await vue.find('.st-diagramErd-toggle').trigger('click');
+    await fireEvent.click(svelte.container.querySelector('.st-diagramErd-toggle')!);
+    await nextTick(); await tick();
+    // Collapsed cards intentionally omit their fields.
+    for (const selector of selectors) {
+      const expected = [...base.element.querySelectorAll(selector)].map(dom);
+      expect([...vue.element.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
+      expect([...svelte.container.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
+    }
+    expect(vue.find('.st-diagramErd-toggle').attributes('aria-expanded')).toBe('false');
+  } finally { base.unmount(); vue.unmount(); }
 });
