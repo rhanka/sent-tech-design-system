@@ -497,6 +497,7 @@
   });
   let viewWidth = $state<number>();
   let windowHeight = $state<number>();
+  let scrollbarHeight = $state(0);
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
   let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
@@ -570,6 +571,7 @@
     const viewportWidth = viewportEl?.clientWidth ?? 0;
     const width = viewportWidth > 0 ? viewportWidth : frameEl.clientWidth;
     viewWidth = width > 0 ? width : undefined;
+    scrollbarHeight = viewportEl === undefined ? 0 : viewportEl.offsetHeight - viewportEl.clientHeight;
     windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
     readCameraTokens();
     if (atFit) requestedZoom = undefined;
@@ -583,6 +585,7 @@
     window.addEventListener("resize", onResize);
     const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(onResize);
     observer?.observe(element);
+    if (viewportEl !== undefined) observer?.observe(viewportEl);
     return () => {
       window.removeEventListener("resize", onResize);
       observer?.disconnect();
@@ -599,6 +602,7 @@
       // box is the nominal 16:9 box of the layout target width.
       viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
       windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
+      scrollbarHeight,
       ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
       ...(minReadableScale === undefined ? {} : { minReadableScale }),
     }),
@@ -898,7 +902,7 @@
 
   const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
-    `height:${fit.fitHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,

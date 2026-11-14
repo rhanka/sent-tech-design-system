@@ -69,7 +69,11 @@ function measure() {
       .map(key => parseFloat(style[key]) || 0)) * scale;
     return [{ left: r.left + inset, top: r.top + inset, right: r.right - inset, bottom: r.bottom - inset }];
   });
-  return { camera: window.__camera, scale, transform, frame: box(frame),
+  const frameBox = box(frame);
+  const scrollbars = [frame.offsetWidth - frame.clientWidth, frame.offsetHeight - frame.clientHeight];
+  return { camera: window.__camera, scale, transform, frame: frameBox, scrollbars,
+    viewport: { ...frameBox, right: frameBox.right - scrollbars[0], bottom: frameBox.bottom - scrollbars[1],
+      width: frameBox.width - scrollbars[0], height: frameBox.height - scrollbars[1] },
     // The rendered extent includes all scene bounds and the two 1 px paint
     // insets. Recover the fit BEFORE the readability clamp from DOM geometry.
     content: box(extent),
@@ -176,11 +180,23 @@ function check(state, scene) {
   }
   const worldWidth = (state.content.width - 2) / state.scale;
   const worldHeight = (state.content.height - 2) / state.scale;
-  const unclampedFit = Math.min((state.frame.width - 2) / worldWidth,
-    (state.frame.height - 2) / worldHeight);
+  const unclampedFit = Math.min((state.viewport.width - 2) / worldWidth,
+    (state.viewport.height - 2) / worldHeight);
   assert.ok(Number.isFinite(unclampedFit) && unclampedFit > 0, 'finite geometric fit');
-  const overflow = [state.content.width > state.frame.width + 0.5,
-    state.content.height > state.frame.height + 0.5];
+  const overflow = [state.content.width > state.viewport.width + 0.5,
+    state.content.height > state.viewport.height + 0.5];
+  if (overflow[0]) assert.ok(state.scrollbars[1] > 0, 'horizontal scrolling must exercise a visible classic scrollbar');
+  const reachableRight = state.viewport.right + (state.overflow[0] === 'auto' ? state.scroll[0] - state.scroll[1] : 0);
+  const reachableBottom = state.viewport.bottom + (state.overflow[1] === 'auto' ? state.scroll[2] - state.scroll[3] : 0);
+  const drawing = [...state.nodes, ...state.labels, ...state.paths.flatMap(path => path.points.map(point => ({
+    id: path.id, left: point.x - path.stroke, right: point.x + path.stroke,
+    top: point.y - path.stroke, bottom: point.y + path.stroke,
+  })))];
+  for (const paint of drawing) {
+    assert.ok(paint.left >= state.viewport.left - epsilon && paint.top >= state.viewport.top - epsilon
+      && paint.right <= reachableRight + epsilon && paint.bottom <= reachableBottom + epsilon,
+    `drawing clipped by viewport or visible scrollbar: ${paint.id}`);
+  }
   assert.ok(state.outerScroll[0] <= state.outerScroll[1] && state.outerScroll[2] <= state.outerScroll[3],
     `outer frame overflows: ${state.outerScroll}`);
   if (unclampedFit >= 0.45) {
@@ -221,6 +237,7 @@ try {
     build: { outDir: join(work, 'dist') }, preview: { host: '127.0.0.1', port: 0 } });
   const address = server.httpServer.address();
   browser = await puppeteer.launch({ executablePath: process.env.CHROME_BIN, headless: true,
+    ignoreDefaultArgs: ['--hide-scrollbars'],
     args: ['--no-sandbox', '--disable-dev-shm-usage'] });
   for (const framework of ['svelte', 'vue']) {
     for (const viewport of [{ width: 1440, height: 900 }, { width: 390, height: 844 }]) {

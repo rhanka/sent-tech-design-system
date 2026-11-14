@@ -179,6 +179,7 @@ function scrollSelection(): void {
 watch(() => JSON.stringify([state.value.selection, selected.value]), () => { badgeCursor.value = undefined; nodeCursor.value = undefined; void nextTick(scrollSelection); });
 
 const width = shallowRef<number>(), windowHeight = shallowRef<number>(), maxScale = shallowRef<number>(), minScale = shallowRef<number>(), requestedZoom = shallowRef<number>();
+const scrollbarHeight = shallowRef(0);
 let atFit = true;
 const measured = computed(() => width.value !== undefined && windowHeight.value !== undefined);
 const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
@@ -189,7 +190,7 @@ function readRenderedBounds(): void {
   if (bounds !== undefined && bounds !== scene.value.bounds) renderedBounds.value = { scene: scene.value, bounds };
 }
 onMounted(() => { watch(scene, readRenderedBounds, { immediate: true, flush: 'post' }); });
-const fit = computed(() => sceneFit({ ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }), viewWidth: width.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH, windowHeight: windowHeight.value ?? Infinity, ...(maxScale.value === undefined ? {} : { maxDisplayScale: maxScale.value }), ...(minScale.value === undefined ? {} : { minReadableScale: minScale.value }) }));
+const fit = computed(() => sceneFit({ ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }), viewWidth: width.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH, windowHeight: windowHeight.value ?? Infinity, scrollbarHeight: scrollbarHeight.value, ...(maxScale.value === undefined ? {} : { maxDisplayScale: maxScale.value }), ...(minScale.value === undefined ? {} : { minReadableScale: minScale.value }) }));
 const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
 const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
 const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
@@ -202,7 +203,7 @@ function readTokens(): void {
   maxScale.value = parseScale(value("maxDisplayScale")); minScale.value = parseScale(value("minReadableScale"));
   labelMargin.value = parseScale(value('labelPadding'));
 }
-function measureFrame(): void { if (frame.value === undefined) return; width.value = (viewport.value?.clientWidth || frame.value.clientWidth) || undefined; windowHeight.value = window.innerHeight || undefined; readTokens(); if (atFit) requestedZoom.value = undefined; }
+function measureFrame(): void { if (frame.value === undefined) return; width.value = (viewport.value?.clientWidth || frame.value.clientWidth) || undefined; scrollbarHeight.value = viewport.value === undefined ? 0 : viewport.value.offsetHeight - viewport.value.clientHeight; windowHeight.value = window.innerHeight || undefined; readTokens(); if (atFit) requestedZoom.value = undefined; }
 function setZoom(next: number): void {
   if (!Number.isFinite(next)) return;
   readTokens(); const before = zoom.value, target = clampZoom(next, fit.value); atFit = target === fit.value.zoom;
@@ -221,7 +222,7 @@ watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value
 watch(getCamera, (camera) => props.onCameraChange?.(camera), { immediate: true });
 const wheel = (event: WheelEvent) => { if (event.ctrlKey || event.metaKey) { event.preventDefault(); setZoom(zoom.value * Math.exp(-event.deltaY * WHEEL_ZOOM_RATE)); } };
 let observer: ResizeObserver | undefined;
-onMounted(() => { measureFrame(); window.addEventListener("resize", measureFrame); observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measureFrame); if (frame.value !== undefined) observer?.observe(frame.value); viewport.value?.addEventListener("wheel", wheel, { passive: false }); });
+onMounted(() => { measureFrame(); window.addEventListener("resize", measureFrame); observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(measureFrame); if (frame.value !== undefined) observer?.observe(frame.value); if (viewport.value !== undefined) observer?.observe(viewport.value); viewport.value?.addEventListener("wheel", wheel, { passive: false }); });
 const touches = new Map<number, { x: number; y: number }>();
 let touchOrigin: { x: number; y: number } | undefined, pinch: { distance: number; zoom: number } | undefined;
 const distance = () => { const [a, b] = [...touches.values()]; return a === undefined || b === undefined ? 0 : Math.hypot(a.x - b.x, a.y - b.y); };
@@ -271,7 +272,7 @@ const scenarioId = useId();
     <div ref="frame" class="st-diagramSceneFigure-frame">
       <p v-if="layout.status === 'refused'" class="st-diagramSceneFigure-refused" role="alert">Diagram unavailable ({{ layout.refusals[0]?.code ?? 'refused' }})</p>
       <div ref="viewport" class="st-diagramSceneFigure-viewport" role="group" tabindex="0" :aria-label="strings.viewport" :aria-keyshortcuts="steps.length > 0 ? '+ - 0 [ ] Escape' : '+ - 0'" aria-busy="false" :data-pans="placement.overflowX || placement.overflowY ? 'true' : 'false'"
-        :style="`height:${fit.fitHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom}${steps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, tokens)}px` : ''}`"
+        :style="`height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom}${steps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, tokens)}px` : ''}`"
         @keydown="keydown" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerEnd" @pointercancel="pointerEnd"
         @pointerover="dispatch({ type: 'hover', target: targetAt($event.target) })" @pointerout="dispatch({ type: 'hover', target: targetAt($event.relatedTarget) })"
         @focusin="dispatch({ type: 'focus', target: targetAt($event.target) })" @focusout="dispatch({ type: 'focus', target: targetAt($event.relatedTarget) })" @click="click" @click.capture="captureClick">

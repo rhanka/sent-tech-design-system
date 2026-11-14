@@ -104,6 +104,7 @@ const frameEl = shallowRef<HTMLElement>();
 const viewportEl = shallowRef<HTMLElement>();
 const viewWidth = shallowRef<number>();
 const windowHeight = shallowRef<number>();
+const scrollbarHeight = shallowRef(0);
 const maxDisplayScale = shallowRef<number>();
 const minReadableScale = shallowRef<number>();
 const requestedZoom = shallowRef<number>();
@@ -139,6 +140,7 @@ function measureFrame() {
         return;
     const width = viewportEl.value?.clientWidth || frameEl.value.clientWidth;
     viewWidth.value = width > 0 ? width : undefined;
+    scrollbarHeight.value = viewportEl.value === undefined ? 0 : viewportEl.value.offsetHeight - viewportEl.value.clientHeight;
     windowHeight.value = window.innerHeight > 0 ? window.innerHeight : undefined;
     readCameraTokens();
     if (atFit)
@@ -149,6 +151,7 @@ const fit = computed(() => sceneFit({
     ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
     viewWidth: viewWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
     windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
+    scrollbarHeight: scrollbarHeight.value,
     ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
     ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
 }));
@@ -318,6 +321,8 @@ onMounted(() => {
     observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measureFrame);
     if (frameEl.value)
         observer?.observe(frameEl.value);
+    if (viewportEl.value)
+        observer?.observe(viewportEl.value);
     mountedViewport = viewportEl.value;
     mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
     {
@@ -391,7 +396,7 @@ const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
 const edgeLabelLineHeight = computed(() => measureLines.value({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
-const viewportStyle = computed(() => `height:${fit.value.fitHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
+const viewportStyle = computed(() => `height:${fit.value.fitHeight + scrollbarHeight.value}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
