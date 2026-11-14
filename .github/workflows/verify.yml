@@ -65,7 +65,7 @@ jobs:
       - run: npm ci
       - name: Build diagram dependencies
         run: node scripts/ensure-theme-dists.mjs --workspaces="@sentropic/design-system-svelte,@sentropic/design-system-vue"
-      - name: Diagram first paint (20 real DOM cases, no skips)
+      - name: Diagram first paint (28 real DOM cases, no skips)
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
           DIAGRAM_ARTIFACTS: ${{ runner.temp }}/diagram-first-paint
