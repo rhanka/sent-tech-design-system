@@ -3593,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "762688e3a63df24ff485f0061e68e9f56ea3adaa98fefbfa1bfc89341a5d9b76",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure."
+      "destinationSha256": "cdf2463d419dbecf7d7e33fc8a3ff26915af6c2575a22adcfe26c215457c4571",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
     },
     {
       "repository": "dataviz",
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "c19718ae32a08e83d0d9bf3d3a5aa54307ccb7006822325eee5f13c7f0ab3e30",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; PR 281 follow-up: pin the shared Vue component implementation to 0.41.0-next.2.; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure."
+      "destinationSha256": "f65a17499bd689f4ecac9d98947b8e21dbab55e971fa6ff0b47375f1c46d561b",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; PR 281 follow-up: pin the shared Vue component implementation to 0.41.0-next.2.; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
     },
     {
       "repository": "dataviz",

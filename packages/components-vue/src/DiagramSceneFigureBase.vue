@@ -114,7 +114,7 @@ function readRenderedBounds() {
     if (frameEl.value === undefined || scene.value === undefined) return;
     const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
     if (bounds !== undefined && bounds !== scene.value.bounds) {
-        if (atFit && (renderedBounds.value === undefined || renderedBounds.value.scene === scene.value)) requestedZoom.value = undefined;
+        if (atFit) requestedZoom.value = undefined;
         renderedBounds.value = { scene: scene.value, bounds };
     }
 }
@@ -128,6 +128,8 @@ function readCameraTokens() {
         const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
         if (Number.isFinite(value)) values[key] = value;
     }
+    const labelMargin = parseFloat(token('--st-component-diagramScene-labelPadding') ?? '');
+    if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
     if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) tokenMetrics.value = values;
     maxDisplayScale.value = parseScale(token('--st-component-diagramScene-maxDisplayScale'));
     minReadableScale.value = parseScale(token('--st-component-diagramScene-minReadableScale'));
@@ -162,9 +164,7 @@ watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value
 watch([measured, zoom, fit], () => {
     if (!measured.value)
         return;
-    requestedZoom.value = zoom.value;
-    if (zoom.value !== fit.value.zoom)
-        atFit = false;
+    if (!atFit) requestedZoom.value = zoom.value;
 });
 onMounted(() => {
     watch(camera, value => emit('cameraChange', value), { immediate: true });
@@ -196,7 +196,7 @@ function fitToFrame() {
     readCameraTokens();
     readRenderedBounds();
     atFit = true;
-    requestedZoom.value = fit.value.zoom;
+    requestedZoom.value = undefined;
     void nextTick(() => {
         if (viewportEl.value) {
             viewportEl.value.scrollLeft = 0;
@@ -348,6 +348,8 @@ function nodeStyle(node: SceneNodeModel) {
     return `left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${origin.value !== undefined && !origin.value.has(node.occurrence) ? `;opacity:${eased.value}` : ''}`;
 }
 function toggleFold(node: SceneNodeModel) {
+    requestedZoom.value = zoom.value;
+    atFit = false;
     pendingFocus = { occurrence: node.occurrence, collapsed: !node.collapsed };
     const next = node.collapsed ? collapsedNow.value.filter(id => id !== node.occurrence) : [...collapsedNow.value, node.occurrence];
     if (props.collapsed === undefined)
@@ -389,7 +391,7 @@ const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
 const edgeLabelLineHeight = computed(() => measureLines.value({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
-const viewportStyle = computed(() => `${measured.value ? `height:${fit.value.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
+const viewportStyle = computed(() => `height:${fit.value.fitHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.value.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.value.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 

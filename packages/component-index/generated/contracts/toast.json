@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:cf261de8a2306ad873f58359465181b0db4f937f824682c76b4a92b4cd0e466b",
-  "entryDigest": "sha256:50a85f0a3263386b88e8d35e3c8e7010e0821f816a6a0527311ab70284fb48a6",
+  "digest": "sha256:a190e1d3cb3ef8a0d097a21f0f27ed6db794048d37b315f460696093e340d74a",
+  "entryDigest": "sha256:fdb06cda454b7d3173e9b4d7a33bd49368ba0215383fd3f8805d8b6cea129890",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -469,7 +469,7 @@
         "declarationPath": "packages/components-vue/dist/Toast.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "partial",
       "unresolved": [],

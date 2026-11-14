@@ -16,6 +16,7 @@ import {
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import SceneNode from "./DiagramFlowNode.vue";
 import DiagramControlGlyph from "./DiagramControlGlyph.vue";
+import { measureRenderedBounds } from './diagramRenderedBounds.js';
 import type { DiagramSceneFigureProps as SharedSceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
 export interface DiagramSceneFigureProps extends SharedSceneFigureProps {}
 export type { DiagramSceneFigureLabels, DiagramSceneCamera } from "@sentropic/diagram-canvas/diagramSceneModel";
@@ -33,6 +34,8 @@ const frame = shallowRef<HTMLElement>(), viewport = shallowRef<HTMLElement>();
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
+const labelMargin = shallowRef<number>();
+const effectiveMetrics = computed(() => ({ ...(labelMargin.value === undefined ? {} : { labelMargin: labelMargin.value }), ...props.metrics }));
 const foldState = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? foldState.value);
 const measure = computed(() => props.measure ?? defaultCardMeasure);
@@ -44,14 +47,14 @@ const layout = computed(() => {
     cache: props.layoutCache ?? ownedCache, document: props.document, registry: props.registry, presentation: props.presentation,
     measureLines: measureLines.value, collapsed: collapsedNow.value, flows: flowOptions.value, flowTokens: tokens.value,
     ...(props.view === undefined ? {} : { view: props.view }), ...(props.bindings === undefined ? {} : { bindings: props.bindings }),
-    ...(props.hints === undefined ? {} : { hints: props.hints }), ...(props.metrics === undefined ? {} : { metrics: props.metrics }),
+    ...(props.hints === undefined ? {} : { hints: props.hints }), metrics: effectiveMetrics.value,
     ...(props.rowPack === undefined ? {} : { rowPack: props.rowPack }), ...(props.targetWidth === undefined ? {} : { targetWidth: props.targetWidth }),
     ...(previousOrientation === undefined ? {} : { previousOrientation }),
   });
   if (result.status === "laid-out") previousOrientation = result.orientations;
   return result;
 });
-const scene = computed<SceneModel | undefined>(() => layout.value.status !== "laid-out" ? undefined : resolveScene(layout.value, { document: props.document, presentation: props.presentation, measureLines: measureLines.value, flows: flowOptions.value, ...(props.metrics === undefined ? {} : { metrics: props.metrics }) }));
+const scene = computed<SceneModel | undefined>(() => layout.value.status !== "laid-out" ? undefined : resolveScene(layout.value, { document: props.document, presentation: props.presentation, measureLines: measureLines.value, flows: flowOptions.value, metrics: effectiveMetrics.value }));
 watch(layout, (result) => props.onLayout?.(result), { immediate: true });
 watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
 
@@ -115,6 +118,8 @@ function click(event: MouseEvent): void {
   else if (!element.closest("button")) dispatch({ type: "escape" });
 }
 function toggle(node: SceneNodeModel): void {
+  requestedZoom.value = zoom.value;
+  atFit = false;
   const next = node.collapsed ? collapsedNow.value.filter((id) => id !== node.occurrence) : [...collapsedNow.value, node.occurrence];
   if (props.collapsed === undefined) foldState.value = next;
   props.onFoldChange?.(next, { occurrence: node.occurrence, collapsed: !node.collapsed });
@@ -176,10 +181,18 @@ watch(() => JSON.stringify([state.value.selection, selected.value]), () => { bad
 const width = shallowRef<number>(), windowHeight = shallowRef<number>(), maxScale = shallowRef<number>(), minScale = shallowRef<number>(), requestedZoom = shallowRef<number>();
 let atFit = true;
 const measured = computed(() => width.value !== undefined && windowHeight.value !== undefined);
-const fit = computed(() => sceneFit({ ...(scene.value?.bounds === undefined ? {} : { bounds: scene.value.bounds }), viewWidth: width.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH, windowHeight: windowHeight.value ?? Infinity, ...(maxScale.value === undefined ? {} : { maxDisplayScale: maxScale.value }), ...(minScale.value === undefined ? {} : { minReadableScale: minScale.value }) }));
+const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
+const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
+function readRenderedBounds(): void {
+  if (frame.value === undefined || scene.value === undefined) return;
+  const bounds = measureRenderedBounds(frame.value, scene.value.bounds, zoom.value);
+  if (bounds !== undefined && bounds !== scene.value.bounds) renderedBounds.value = { scene: scene.value, bounds };
+}
+onMounted(() => { watch(scene, readRenderedBounds, { immediate: true, flush: 'post' }); });
+const fit = computed(() => sceneFit({ ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }), viewWidth: width.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH, windowHeight: windowHeight.value ?? Infinity, ...(maxScale.value === undefined ? {} : { maxDisplayScale: maxScale.value }), ...(minScale.value === undefined ? {} : { minReadableScale: minScale.value }) }));
 const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
 const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
-const placement = computed(() => scenePlacement(scene.value?.bounds, zoom.value, fit.value));
+const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
 function readTokens(): void {
   if (frame.value === undefined) return;
   const style = getComputedStyle(frame.value), value = (key: string) => style.getPropertyValue(`--st-component-diagramScene-${key}`).trim();
@@ -187,6 +200,7 @@ function readTokens(): void {
   for (const key of Object.keys(next) as (keyof FlowTokens)[]) { const token = value(key); if (key === "flowArrowPath") { if (token) next.flowArrowPath = token; } else { const parsed = parseScale(token); if (parsed !== undefined) (next as unknown as Record<string, number>)[key] = parsed; } }
   if (!same(next, tokens.value)) tokens.value = next;
   maxScale.value = parseScale(value("maxDisplayScale")); minScale.value = parseScale(value("minReadableScale"));
+  labelMargin.value = parseScale(value('labelPadding'));
 }
 function measureFrame(): void { if (frame.value === undefined) return; width.value = (viewport.value?.clientWidth || frame.value.clientWidth) || undefined; windowHeight.value = window.innerHeight || undefined; readTokens(); if (atFit) requestedZoom.value = undefined; }
 function setZoom(next: number): void {
@@ -200,7 +214,7 @@ function setZoom(next: number): void {
 }
 function zoomIn(): void { setZoom(zoom.value * ZOOM_STEP_RATIO); }
 function zoomOut(): void { setZoom(zoom.value / ZOOM_STEP_RATIO); }
-function fitToFrame(): void { readTokens(); atFit = true; requestedZoom.value = fit.value.zoom; void nextTick(() => { if (viewport.value !== undefined) { viewport.value.scrollLeft = 0; viewport.value.scrollTop = 0; } }); }
+function fitToFrame(): void { readTokens(); readRenderedBounds(); atFit = true; requestedZoom.value = undefined; void nextTick(() => { if (viewport.value !== undefined) { viewport.value.scrollLeft = 0; viewport.value.scrollTop = 0; } }); }
 function getCamera(): DiagramSceneCamera { return { zoom: zoom.value, readout: readout.value, minZoom: fit.value.minZoom, maxZoom: fit.value.maxZoom, fitZoom: fit.value.zoom, pans: placement.value.overflowX || placement.value.overflowY }; }
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; });
@@ -257,7 +271,7 @@ const scenarioId = useId();
     <div ref="frame" class="st-diagramSceneFigure-frame">
       <p v-if="layout.status === 'refused'" class="st-diagramSceneFigure-refused" role="alert">Diagram unavailable ({{ layout.refusals[0]?.code ?? 'refused' }})</p>
       <div ref="viewport" class="st-diagramSceneFigure-viewport" role="group" tabindex="0" :aria-label="strings.viewport" :aria-keyshortcuts="steps.length > 0 ? '+ - 0 [ ] Escape' : '+ - 0'" aria-busy="false" :data-pans="placement.overflowX || placement.overflowY ? 'true' : 'false'"
-        :style="`${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom}${steps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, tokens)}px` : ''}`"
+        :style="`height:${fit.fitHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom}${steps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, tokens)}px` : ''}`"
         @keydown="keydown" @pointerdown="pointerDown" @pointermove="pointerMove" @pointerup="pointerEnd" @pointercancel="pointerEnd"
         @pointerover="dispatch({ type: 'hover', target: targetAt($event.target) })" @pointerout="dispatch({ type: 'hover', target: targetAt($event.relatedTarget) })"
         @focusin="dispatch({ type: 'focus', target: targetAt($event.target) })" @focusout="dispatch({ type: 'focus', target: targetAt($event.relatedTarget) })" @click="click" @click.capture="captureClick">
