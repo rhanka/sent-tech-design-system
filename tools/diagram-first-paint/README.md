@@ -10,13 +10,16 @@ and unfolded, plus three generic cards, at 1440×900 and 390×844. They use brow
 font measurement and stable animation frames without interaction before the
 initial snapshot. The only interaction afterwards is the actual Ajuster button.
 
-Assertions read DOM scroll dimensions, text ranges, label rectangles, painted
-connector bounding boxes (including stroke), and the world transform. The
-clearance is the computed `diagramScene.labelPadding` token scaled into screen
-pixels. Display scale must reach 0.45; when fit reaches 0.45, both the frame and
-viewport must have no scroll overflow. Labels must stay inside the viewport and
-clear every connector bounding box. Initial camera, transforms, geometry and
-scroll state must equal those after Ajuster. No case skips or falls back to a
+Assertions read DOM scroll dimensions, text ranges, label rectangles,
+transformed connector segments (including stroke), and the numeric world
+transform. The clearance is the computed `diagramScene.labelPadding` token scaled into screen
+pixels. Display scale must reach 0.45. The unclamped fit is derived from the DOM
+extent and world scale; when feasible at 0.45, the viewport must have no scroll
+overflow. Otherwise, only overflowing axes may scroll, starting at the origin,
+and every label must remain reachable. The outer frame must never overflow.
+Labels must clear every painted connector segment. Initial camera and scroll
+state must equal those after Ajuster exactly; numeric geometry and transform
+components may differ by at most 1/64 CSS px. No case skips or falls back to a
 synthetic DOM. Failure artifacts include untouched initial screenshots, failure
 screenshots and measured JSON with browser errors.
 
