@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "WindBarbChart",
+  "sourceRevision": "e29630770ec2efbb6058acf10deca69c965339d5",
+  "source": "src/lib/WindBarbChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-windBarbChart\"><div class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    },
+    {
+      "id": "label-size",
+      "html": "<div class=\"st-windBarbChart\"><div aria-label=\"Wind barbs\" class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 240\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"220\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"462\" y1=\"204\" y2=\"204\"></line></svg></div></div>"
+    },
+    {
+      "id": "attrs",
+      "html": "<div class=\"st-windBarbChart consumer\" data-bench=\"wind\" style=\"color:red;\"><div class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    },
+    {
+      "id": "filtered",
+      "html": "<div class=\"st-windBarbChart\"><div class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    },
+    {
+      "id": "invalid-fields",
+      "html": "<div class=\"st-windBarbChart\"><div class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-windBarbChart\"><div class=\"st-windBarbChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 160\" width=\"100%\"><text class=\"st-windBarbChart__tick\" text-anchor=\"middle\" x=\"24\" y=\"140\">0</text><line class=\"st-windBarbChart__axis\" x1=\"24\" x2=\"622\" y1=\"124\" y2=\"124\"></line></svg></div></div>"
+    }
+  ],
+  "sourceSha256": "fce6332e0b6949774b7bc1d30545cb2cd15a31f47d37e39847589c1e6e264677",
+  "fixtureSha256": "79cf54fcf5bbb62b1f01b4008100bc52cb83b9257f4f53fb4f843ba3dc0cd575",
+  "publicExports": [
+    {
+      "name": "WindBarbChart",
+      "typeOnly": false
+    },
+    {
+      "name": "WindBarbChartProps",
+      "typeOnly": true
+    }
+  ]
+}

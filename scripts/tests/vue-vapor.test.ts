@@ -15,7 +15,7 @@ it.each(aliasFixtures)('should reject %s aliases in K25 and exclude them from th
   try {
     mkdirSync(join(root, 'scripts'));
     symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
-    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
+    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs', 'dataviz-vue-text.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
     for (const name of ['components-vue', 'dataviz-vue']) mkdirSync(join(root, 'packages', name, 'src'), { recursive: true });
     writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
     const pkg = join(root, 'packages/dataviz-vue');
@@ -39,6 +39,55 @@ it('should reject aliased and namespace render calls while accepting signal help
   expect(renderCalls(`import * as Vue from 'vue'; const value=Vue.ref(1); Vue['computed'](()=>value.value);`)).toEqual([]);
   expect(renderCalls(`import type { h } from 'vue'; import { type defineComponent } from 'vue';`)).toEqual([]);
   expect(renderCalls(`// h('p')\nconst text = "Vue.h('p')"; const api = { h() {} }; api.h();`)).toEqual([]);
+});
+
+it('should resolve a dataviz child through its native DS SFC without adding DS-only helpers', () => {
+  const root = mkdtempSync(join(tmpdir(), 'dataviz-native-child-'));
+  try {
+    symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
+    const pkg = join(root, 'packages/dataviz-vue');
+    const ds = join(root, 'packages/components-vue/src');
+    mkdirSync(join(pkg, 'src'), { recursive: true });
+    mkdirSync(ds, { recursive: true });
+    writeFileSync(join(pkg, 'package.json'), '{"type":"module"}');
+    writeFileSync(join(ds, 'index.ts'), "export { ForceGraph } from './ForceGraph.js';");
+    writeFileSync(join(ds, 'ForceGraph.ts'), "import { defineComponent } from 'vue'; export const ForceGraph = defineComponent({});");
+    writeFileSync(join(ds, 'ForceGraph.vue'), '<script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/ForceGraph.vue'), `<script setup lang="ts">
+import { ForceGraph as Presenter } from '@sentropic/design-system-vue';
+</script><template><Presenter label="Native graph" /></template>`);
+    writeFileSync(join(pkg, 'src/index.ts'), "export { default as ForceGraph } from './ForceGraph.vue';");
+    const build = spawnSync(process.execPath, [resolve('scripts/vue-sfc-build.mjs')], { cwd: pkg, encoding: 'utf8' });
+    expect(build.status, build.stdout + build.stderr).toBe(0);
+    const entry = readFileSync(join(pkg, 'dist/vapor/index.js'), 'utf8');
+    expect(entry).toContain('default as ForceGraph');
+    expect(entry).not.toContain('nodeShapePath');
+    expect(entry).not.toContain('edgeDashArray');
+  } finally { rmSync(root, { recursive: true, force: true }); }
+});
+
+it('should keep compatibility helpers separate from native SFC named exports', () => {
+  const root = mkdtempSync(join(tmpdir(), 'vue-native-exports-'));
+  try {
+    symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
+    const pkg = join(root, 'packages/components-vue');
+    mkdirSync(join(pkg, 'src'), { recursive: true });
+    writeFileSync(join(pkg, 'package.json'), '{"type":"module"}');
+    writeFileSync(join(pkg, 'src/ForceGraph.ts'), "export { default as ForceGraph } from './ForceGraph.vue'; export { nodeShapePath, edgeDashArray } from '@sentropic/graph/presentation';");
+    writeFileSync(join(pkg, 'src/ForceGraph.vue'), '<script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/Filter.vue'), '<script lang="ts">export const toSpec = (value: string) => value;</script><script setup lang="ts">defineProps<{label?:string}>();</script><template><div>{{label}}</div></template>');
+    writeFileSync(join(pkg, 'src/index.ts'), "export { ForceGraph, nodeShapePath, edgeDashArray } from './ForceGraph.js';\nexport { default as Filter, toSpec } from './Filter.vue';");
+    const build = spawnSync(process.execPath, [resolve('scripts/vue-sfc-build.mjs')], { cwd: pkg, encoding: 'utf8' });
+    expect(build.status, build.stdout + build.stderr).toBe(0);
+    for (const file of ['index.js', 'index.d.ts']) {
+      const entry = readFileSync(join(pkg, 'dist/vapor', file), 'utf8');
+      expect(entry.match(/nodeShapePath/g)).toHaveLength(1);
+      expect(entry.match(/edgeDashArray/g)).toHaveLength(1);
+      expect(entry).toContain("from '@sentropic/graph/presentation'");
+      expect(entry).toContain("export { toSpec } from './Filter.vue.js'");
+      expect(entry).not.toMatch(/export \{ (?:nodeShapePath|edgeDashArray) \} from '.\/ForceGraph/);
+    }
+  } finally { rmSync(root, { recursive: true, force: true }); }
 });
 
 it('should compile a future dataviz SFC with imported props, slots and declarations in both modes', () => {
@@ -79,7 +128,7 @@ it('should fail the build lint for a new module and require removal after conver
   try {
     mkdirSync(join(root, 'scripts'));
     symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
-    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
+    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs', 'dataviz-vue-text.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
     for (const name of ['components-vue', 'dataviz-vue']) mkdirSync(join(root, 'packages', name, 'src'), { recursive: true });
     const module = 'packages/dataviz-vue/src/Chart.ts';
     writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
@@ -90,5 +139,10 @@ it('should fail the build lint for a new module and require removal after conver
     expect(lint().status).toBe(0);
     writeFileSync(join(root, module), `export const value = 1;`);
     expect(lint().status).toBe(1); expect(lint().stderr).toContain('remove converted/deleted file');
+    writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
+    writeFileSync(join(root, module), "export const key = '\u0000';");
+    expect(lint().status).toBe(1); expect(lint().stderr).toContain('control byte 0x00');
+    writeFileSync(join(root, module), "export const key = '\\u0000';");
+    expect(lint().status).toBe(0);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });

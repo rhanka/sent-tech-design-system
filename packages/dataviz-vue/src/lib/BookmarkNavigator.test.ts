@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi } from 'vitest';
 import { createDashboardStore, type DashboardBookmark, type DataModel } from '@sentropic/dataviz-core';
-import { BookmarkNavigator } from './BookmarkNavigator.js';
+import BookmarkNavigator from './BookmarkNavigator.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'country', label: 'Pays', type: 'discrete' }],
