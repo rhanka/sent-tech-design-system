@@ -6,15 +6,14 @@ import type { Rect, Vec2 } from '../transform.js';
 export function clearSceneLabels<T extends { readonly box: Rect; readonly leader?: readonly Vec2[] }>(
   labels: readonly T[], routes: readonly (readonly Vec2[])[], shapes: readonly Rect[], clearance: number,
 ): T[] {
-  const obstacles = [...shapes];
+  const bounds = shapes.map(normaliseRect);
   for (const route of routes) for (let i = 1; i < route.length; i++) {
     const a = route[i - 1]!, b = route[i]!;
-    obstacles.push({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
+    bounds.push({ x: Math.min(a.x, b.x), y: Math.min(a.y, b.y), width: Math.abs(a.x - b.x), height: Math.abs(a.y - b.y) });
   }
   // Normalise each obstacle once, rather than allocating two rectangles for
-  // every candidate/obstacle pair during the search. Keep the original edges
+  // every candidate/obstacle pair during the search. Use these same bounds
   // for candidate generation, including persisted negative extents.
-  const bounds = obstacles.map(normaliseRect);
   return labels.map(label => {
     const { box } = label;
     const padded = (x: number, y: number): Rect => ({ x: x - clearance, y: y - clearance, width: box.width + 2 * clearance, height: box.height + 2 * clearance });
@@ -60,10 +59,9 @@ export function clearSceneLabels<T extends { readonly box: Rect; readonly leader
       const right = area.x + area.width, bottom = area.y + area.height;
       const hitIndex = bounds.findIndex(obstacle => area.x < obstacle.x + obstacle.width && obstacle.x < right
         && area.y < obstacle.y + obstacle.height && obstacle.y < bottom);
-      const hit = obstacles[hitIndex];
+      const hit = bounds[hitIndex];
       if (hit === undefined) {
         const placed = { ...box, x: choice.x, y: choice.y };
-        obstacles.push(placed);
         bounds.push(normaliseRect(placed));
         if (choice.cost === 0) return label;
         // Keep the route anchor and attach the last segment to the moved box.

@@ -4,6 +4,17 @@ import { rectsIntersect } from "../../src/geometry.js";
 import { clearSceneLabels } from "../../src/presentation/sceneLabelClearance.js";
 
 describe("scene label clearance", () => {
+  it("should choose the nearest exterior boundary of a negative-extent obstacle", () => {
+    const label = { box: { x: 68, y: 30, width: 4, height: 18 } };
+    const obstacle = { x: 100, y: 50, width: -40, height: -20 };
+    // Horizontal exits are cheaper than either vertical exit. The raw edges
+    // generate only inward horizontal candidates for this persisted rectangle.
+    const cleared = clearSceneLabels([label], [], [obstacle], 2);
+    expect(cleared[0]!.box).toEqual({ x: 54, y: 30, width: 4, height: 18 });
+    expect(cleared).toEqual(clearSceneLabels([label], [], [{ x: 60, y: 30, width: 40, height: 20 }], 2));
+    expect(rectsIntersect({ x: 52, y: 28, width: 8, height: 22 }, obstacle)).toBe(false);
+  });
+
   it("should retain an unobstructed label and its leader", () => {
     const label = { box: { x: 10, y: 10, width: 20, height: 10 }, leader: [{ x: 0, y: 0 }, { x: 10, y: 10 }] };
     expect(clearSceneLabels([label], [], [], 2)).toEqual([label]);
