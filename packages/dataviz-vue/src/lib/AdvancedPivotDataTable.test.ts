@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { AdvancedPivotDataTable } from './AdvancedPivotDataTable.js';
+import AdvancedPivotDataTable from './AdvancedPivotDataTable.vue';
 
 const model: DataModel = {
   dimensions: [

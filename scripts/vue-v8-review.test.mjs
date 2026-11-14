@@ -35,6 +35,7 @@ test('Vue pack closure includes rich-text and asserts every V8 subpath and CSS a
   assert.equal(manifest('packages/components-vue').exports['./rich-text-editor/styles.css'], './dist/rich-text-editor/rich-text-editor.css');
 });
 test('dataviz reuses WebFrame from the DS and the DS exports its configuration', () => {
-  assert.doesNotMatch(read('packages/dataviz-vue/src/lib/ObjectLayers.ts'), /h\(['"]iframe/);
+  assert.match(read('packages/dataviz-vue/src/lib/WebFrame.vue'), /import \{ WebFrame as DsWebFrame \} from '@sentropic\/design-system-vue'/);
+  assert.match(read('packages/dataviz-vue/src/lib/WebFrame.vue'), /<DsWebFrame v-bind="\$attrs"/);
   assert.match(read('packages/components-vue/src/index.ts'), /type[^;]*WebFrameConfig/);
 });

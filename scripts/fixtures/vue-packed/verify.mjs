@@ -9,8 +9,11 @@ const suffix = vapor ? '/vapor' : '';
 writeFileSync('consumer.ts', `import { GraphLegend, LabelledIconButton, WebFrame } from '@sentropic/design-system-vue${suffix}';
 import { RichTextEditor, ComposerEditor, type RichTextEditorProps, type ComposerEditorProps } from '@sentropic/design-system-vue${suffix}/rich-text-editor';
 import { LockPresenceBadge, type LockPresenceBadgeProps } from '@sentropic/design-system-vue${suffix}/presence-badge';
-import { useDashboard } from '@sentropic/dataviz-vue${suffix}';
-export { GraphLegend, LabelledIconButton, WebFrame, RichTextEditor, ComposerEditor, LockPresenceBadge, useDashboard };
+import { useDashboard, DashboardGrid, CrossfilteredBarChart, ObjectLayerPanel, SelectionLegend, rowsToCsv, dateRangeToSpec, relativeRangeToSpec, DEFAULT_RELATIVE_PRESETS } from '@sentropic/dataviz-vue${suffix}';
+export { GraphLegend, LabelledIconButton, WebFrame, RichTextEditor, ComposerEditor, LockPresenceBadge, useDashboard, DashboardGrid, CrossfilteredBarChart, ObjectLayerPanel, SelectionLegend };
+rowsToCsv([], []);
+dateRangeToSpec({ start: null, end: null });
+relativeRangeToSpec(DEFAULT_RELATIVE_PRESETS[0].days, new Date(0));
 export type { RichTextEditorProps, ComposerEditorProps, LockPresenceBadgeProps };\n`);
 const program = ts.createProgram(['consumer.ts'], { target: ts.ScriptTarget.ES2022,
   module: ts.ModuleKind.NodeNext, moduleResolution: ts.ModuleResolutionKind.NodeNext,

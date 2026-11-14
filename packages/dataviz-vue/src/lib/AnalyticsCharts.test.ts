@@ -1,12 +1,12 @@
 import { mount } from '@vue/test-utils';
 import { describe, expect, it } from 'vitest';
 import { createDashboardStore, type DataModel, type Row } from '@sentropic/dataviz-core';
-import { AnalyticsClusterPlot } from './AnalyticsClusterPlot.js';
-import { ErrorBarsChart } from './ErrorBarsChart.js';
-import { ForecastLineChart } from './ForecastLineChart.js';
-import { PercentileBandChart } from './PercentileBandChart.js';
-import { ReferenceLineChart } from './ReferenceLineChart.js';
-import { TrendLineChart } from './TrendLineChart.js';
+import AnalyticsClusterPlot from './AnalyticsClusterPlot.vue';
+import ErrorBarsChart from './ErrorBarsChart.vue';
+import ForecastLineChart from './ForecastLineChart.vue';
+import PercentileBandChart from './PercentileBandChart.vue';
+import ReferenceLineChart from './ReferenceLineChart.vue';
+import TrendLineChart from './TrendLineChart.vue';
 
 const model: DataModel = {
   dimensions: [

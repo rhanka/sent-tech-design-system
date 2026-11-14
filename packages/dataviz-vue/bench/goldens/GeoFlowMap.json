@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "GeoFlowMap",
+  "sourceRevision": "a50139c769216d397947df3be52dfc997adefd67",
+  "source": "src/lib/GeoFlowMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-geoFlowMap\"><div aria-label=\"Flow map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--flow\"><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 283.2825112107623 60.02649006622514 Q 283.2825112107623 60.02649006622514 283.2825112107623 60.02649006622514\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 414.5112107623318 171.34834437086099 Q 414.5112107623318 171.34834437086099 414.5112107623318 171.34834437086099\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 443.085201793722 259.97350993377484 Q 443.085201793722 259.97350993377484 443.085201793722 259.97350993377484\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 76.91479820627802 119.1099337748344 Q 76.91479820627802 119.1099337748344 76.91479820627802 119.1099337748344\" stroke-width=\"9\"></path></g></svg></div><ul aria-label=\"Data values for Flow map\" class=\"st-chartDataList\"><li>Flow map: 4</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li></ul></div>"
+    },
+    {
+      "id": "value",
+      "html": "<div class=\"st-geoMap st-geoFlowMap\"><div aria-label=\"Flow map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--flow\"><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 283.2825112107623 60.02649006622514 Q 283.2825112107623 60.02649006622514 283.2825112107623 60.02649006622514\" stroke-width=\"5.181818181818182\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 414.5112107623318 171.34834437086099 Q 414.5112107623318 171.34834437086099 414.5112107623318 171.34834437086099\" stroke-width=\"6.7727272727272725\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 443.085201793722 259.97350993377484 Q 443.085201793722 259.97350993377484 443.085201793722 259.97350993377484\" stroke-width=\"4.545454545454545\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 76.91479820627802 119.1099337748344 Q 76.91479820627802 119.1099337748344 76.91479820627802 119.1099337748344\" stroke-width=\"9\"></path></g></svg></div><ul aria-label=\"Data values for Flow map\" class=\"st-chartDataList\"><li>Flow map: 4</li><li>1 flows: 10</li><li>1 flows: 15</li><li>1 flows: 8</li><li>1 flows: 22</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-geoFlowMap\"><div aria-label=\"Flow map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--flow\"><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 327.22869955156955 70.62251655629137 Q 327.22869955156955 70.62251655629137 327.22869955156955 70.62251655629137\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 480.6995515695067 214.68609271523184 Q 480.6995515695067 214.68609271523184 480.6995515695067 214.68609271523184\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 514.1165919282512 329.3774834437086 Q 514.1165919282512 329.3774834437086 514.1165919282512 329.3774834437086\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 85.88340807174887 147.08344370860922 Q 85.88340807174887 147.08344370860922 85.88340807174887 147.08344370860922\" stroke-width=\"9\"></path></g></svg></div><ul aria-label=\"Data values for Flow map\" class=\"st-chartDataList\"><li>Flow map: 4</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-geoFlowMap consumer\" data-bench=\"flows\"><div aria-label=\"Flow map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--flow\"><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 283.2825112107623 60.02649006622514 Q 283.2825112107623 60.02649006622514 283.2825112107623 60.02649006622514\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 414.5112107623318 171.34834437086099 Q 414.5112107623318 171.34834437086099 414.5112107623318 171.34834437086099\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 443.085201793722 259.97350993377484 Q 443.085201793722 259.97350993377484 443.085201793722 259.97350993377484\" stroke-width=\"9\"></path><path class=\"st-geoMap__flow st-geoMap__flow--category1\" d=\"M 76.91479820627802 119.1099337748344 Q 76.91479820627802 119.1099337748344 76.91479820627802 119.1099337748344\" stroke-width=\"9\"></path></g></svg></div><ul aria-label=\"Data values for Flow map\" class=\"st-chartDataList\"><li>Flow map: 4</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li><li>1 flows: 1</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "5d090afe7feec00a096fe0f1104b48262196c60830347450263820454398c7f4",
+  "fixtureSha256": "a78081f879b35bf83d769b9af2d756e9325b7e07c2de44c320e616145b726535",
+  "publicExports": [
+    {
+      "name": "GeoFlowMap",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoFlowMapProps",
+      "typeOnly": true
+    }
+  ]
+}
