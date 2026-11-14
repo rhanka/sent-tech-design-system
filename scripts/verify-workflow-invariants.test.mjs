@@ -41,6 +41,17 @@ function publishWorkflowFiles() {
   return workflowFiles().filter((name) => /-publish\.ya?ml$/.test(name));
 }
 
+test('every publish job checks packed dist import closure before npm publish', () => {
+  for (const file of publishWorkflowFiles()) {
+    const text = readFileSync(join(workflowsDir, file), 'utf8');
+    const publish = text.split('\n  publish:\n')[1]?.split(/\n  [\w-]+:\n/)[0];
+    assert(publish, `${file}: missing publish job`);
+    const gate = publish.indexOf('run: npm run dist:import-closure -- --workspaces=');
+    const shipping = publish.search(/^\s+(?:run: )?npm publish\b/m);
+    assert(gate >= 0 && shipping > gate, `${file}: dist import closure must precede publish in the same job`);
+  }
+});
+
 // --- shared structural scan -------------------------------------------------
 //
 // Nothing in this repository can parse real YAML without adding a dependency.
