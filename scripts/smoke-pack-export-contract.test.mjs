@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 
 test('packed Vue verification rejects missing public names even when export counts match', async () => {
+  const richText = JSON.parse(readFileSync(new URL('../packages/rich-text/package.json', import.meta.url), 'utf8'));
   const template = readFileSync(new URL('./smoke-pack-verify-template.mjs', import.meta.url), 'utf8')
+    .replaceAll('__SMOKE_RICH_TEXT_VERSION_JSON__', JSON.stringify(richText.version))
     .replaceAll('__SMOKE_TARGETS_JSON__', '[]')
     .replaceAll('__SMOKE_MIN_EXPORT_COUNTS_JSON__', '{}')
     .replaceAll('__SMOKE_REQUIRED_EXPORTS_JSON__', JSON.stringify({ proof: ['Chart', 'toSpec'] }));
