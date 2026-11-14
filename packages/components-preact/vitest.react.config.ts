@@ -63,7 +63,9 @@ export default defineConfig({
     testTimeout: 20000,
     include: [
       ...reactTests.map((name) => `components-react/src/${name}.test.tsx`),
-      "components-preact/react/*.test.ts",
+      // React-leg checks of this package: provenance, and the adapter paths that
+      // no `components-react` test reaches (text input, focus inside a row).
+      "components-preact/react/*.test.{ts,tsx}",
     ],
   },
 });

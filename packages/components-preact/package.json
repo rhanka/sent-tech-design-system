@@ -1,19 +1,19 @@
 {
   "name": "@sentropic/design-system-preact",
   "version": "0.0.0-s1.0",
+  "private": true,
   "license": "MIT",
   "description": "Preact + Signals components for the Sentropic design system. JSX source of truth for the Preact and the emitted React builds (spike S1).",
   "type": "module",
-  "publishConfig": {
-    "access": "public",
-    "tag": "next"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rhanka/sent-tech-design-system.git",
     "directory": "packages/components-preact"
   },
-  "sideEffects": false,
+  "sideEffects": [
+    "./dist/runtime.js",
+    "./dist/signals.js"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -30,11 +30,14 @@
     "build": "tsc -p tsconfig.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json",
     "check": "tsc -p tsconfig.json --noEmit && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json --noEmit && tsc -p react/tsconfig.json",
     "test": "npm run test:emit && npm run test:preact && npm run test:react",
-    "test:emit": "node --test scripts/emit-react.test.mjs",
+    "test:emit": "node --test scripts/emit-react.test.mjs scripts/port-metrics.test.mjs",
     "test:preact": "vitest run",
     "test:react": "node scripts/emit-react.mjs && cd ../components-react && vitest run --config ../components-preact/vitest.react.config.ts",
     "emit:react": "node scripts/emit-react.mjs",
-    "measure": "node scripts/measure.mjs"
+    "measure": "node scripts/measure.mjs",
+    "measure:port": "node scripts/port-metrics.mjs --write",
+    "measure:port:check": "node scripts/port-metrics.mjs --check",
+    "probe:preact": "node scripts/probe-preact-major.mjs --write"
   },
   "dependencies": {
     "@sentropic/design-system-themes": "0.14.0",
