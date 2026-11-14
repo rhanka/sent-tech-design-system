@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { createRef } from "preact";
 import { useState } from "preact/hooks";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -167,10 +167,75 @@ describe("SelectableRow (Preact), managed through context", () => {
 
     fireEvent.keyDown(beta, { key: "ArrowDown" });
     expect(spy.navigate).toHaveBeenLastCalledWith(beta, "ArrowDown");
-    fireEvent.focus(alpha);
+    // A real focus: the DOM dispatches `focus` (does not bubble) then `focusin`.
+    alpha.focus();
     expect(spy.focusRow).toHaveBeenLastCalledWith(alpha);
 
     unmount();
     expect(unregister).toHaveBeenCalledTimes(2);
+  });
+
+  /** A list that moves its roving tab stop on `focusRow`, like `SelectableList`. */
+  function RovingList({ focusRow }: { focusRow: (el: HTMLElement) => void }) {
+    const [version, setVersion] = useState(0);
+    const [actions] = useState(() => {
+      let tabStop: HTMLElement | null = null;
+      const value: SelectableListContextValue = {
+        managed: true,
+        itemRole: "option",
+        register: () => () => {},
+        isSelected: () => false,
+        isTabStop: (el) => tabStop === el,
+        activate: () => {},
+        focusRow: (el) => {
+          focusRow(el);
+          tabStop = el;
+          setVersion((count) => count + 1);
+        },
+        navigate: () => {},
+      };
+      return value;
+    });
+    return (
+      <SelectableListContext.Provider value={actions}>
+        <SelectableListVersionContext.Provider value={version}>
+          <div role="listbox">
+            <SelectableRow value="a">Alpha</SelectableRow>
+            <SelectableRow value="b" trailing={<button type="button">More</button>}>
+              Beta
+            </SelectableRow>
+            <SelectableRow value="c" disabled trailing={<button type="button">Locked</button>}>
+              Gamma
+            </SelectableRow>
+          </div>
+        </SelectableListVersionContext.Provider>
+      </SelectableListContext.Provider>
+    );
+  }
+
+  it("becomes the roving tab stop when a focusable child of `trailing` takes focus", async () => {
+    const focusRow = vi.fn();
+    render(<RovingList focusRow={focusRow} />);
+    const alpha = screen.getByRole("option", { name: "Alpha" });
+    const beta = screen.getByRole("option", { name: /Beta/ });
+
+    alpha.focus();
+    expect(focusRow).toHaveBeenLastCalledWith(alpha);
+    await waitFor(() => expect(alpha.getAttribute("tabindex")).toBe("0"));
+    expect(beta.getAttribute("tabindex")).toBe("-1");
+
+    // Focus lands on the button inside the row, not on the row: the row hears
+    // it because the handler is bound to the bubbling focus event.
+    const more = screen.getByRole("button", { name: "More" });
+    more.focus();
+    expect(document.activeElement).toBe(more);
+    expect(focusRow).toHaveBeenCalledTimes(2);
+    expect(focusRow).toHaveBeenLastCalledWith(beta);
+    await waitFor(() => expect(beta.getAttribute("tabindex")).toBe("0"));
+    expect(alpha.getAttribute("tabindex")).toBe("-1");
+
+    // A disabled row stays out of the roving, whatever takes focus inside it.
+    screen.getByRole("button", { name: "Locked" }).focus();
+    expect(focusRow).toHaveBeenCalledTimes(2);
   });
 });

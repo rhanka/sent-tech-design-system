@@ -2,7 +2,7 @@ import { createContext, createElement } from "preact";
 import type { HTMLAttributes } from "preact";
 import { useCallback, useContext, useEffect, useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
-import { forwardRef } from "./runtime.js";
+import { focusWithin, forwardRef } from "./runtime.js";
 import type { ComponentChildren, TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
 
 /**
@@ -193,6 +193,8 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
       }
     }
 
+    // Runs for the row and for a focusable descendant placed in `leading` /
+    // `trailing`: either way this row becomes the roving tab stop of the list.
     function handleFocus() {
       if (disabled) return;
       const node = innerRef.current;
@@ -221,7 +223,7 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
         tabIndex,
         onClick: activate,
         onKeyDown: handleKeyDown,
-        onFocus: handleFocus,
+        ...focusWithin<HTMLElement>(handleFocus),
       },
       <>
         {leading != null ? <span className="st-selectableRow__leading">{leading}</span> : null}

@@ -1,0 +1,79 @@
+Port metrics of spike S1 - React trees read at 81083403e58dd1810bd1bd4f639882d226375d97
+
+== Trees ==
+components-react: 226 non-test modules, 40146 lines
+  catalog.tsx: 8451 lines, 80 re-export modules; 6895 lines attributed to them, 1556 residual (imports, private helpers) kept in P4c
+  component index: 207 entries point to a module of this tree, 3 modules shared by two entries (owned once), 22 modules without an entry
+dataviz-react: 128 non-test modules, 9562 lines
+
+== Port of the eight modules ==
+module               category  lot  React lines  Preact lines  tokens touched    of    %  rewrites  tests  test lines
+Button                 action   P1           26            27               6   163  3.7         1      5          69
+Input                    form   P2           55            58              19   289  6.6         2      6          92
+Modal                 overlay   P3           47            69              19   408  4.7         3      6          98
+Tabs               navigation   P3           94           108              17   814  2.1         2      5          96
+SelectableRow            form   P2          252           247              57  1035  5.5         3      8         241
+ChatComposer             chat  P4c           34            58              18   279  6.5         3      4          76
+Portal                  other  P4c           88            76              24   304  7.9         1      5          99
+ThemeProvider  (uncatalogued)  P4c           35            37              12   229  5.2         1      3          53
+total                                       631           680             172  3521  4.9        16     42         824
+shared code (lines): src/internal.ts 97, src/classNames.ts 14, src/index.ts 16, preactAdapters 192, reactTwins 62, scripts/emit-react.mjs 174, vitest.react.config.ts 71
+Preact test lines per React source line: 1.3
+
+== Port rate (measurements/port-timing.json) ==
+step                                            modules  React lines  file-time s  s/module  s/line  reported s  reported s/module
+Adapters, emission script, both test harnesses        0            0          204         -       -         162                  -
+Button (first port, harness fixes included)           1           26          189       189    7.27         209                209
+Input + Modal + internal.ts                           2          102          100        50    0.98         100                 50
+Tabs                                                  1           94           60        60    0.64          62                 62
+SelectableRow + ChatComposer + Portal                 3          374          247      82.3    0.66         139               46.3
+ThemeProvider + adapter tests                         1           35         >=15        15    0.43          49                 49
+eight modules, file times: 611 s = 76.4 s/module, 0.968 s/line (631 React lines)
+eight modules, reported  : 559 s = 69.9 s/module, 0.886 s/line
+after the first port (7 modules): 60.3 s/module by file times, 50 s/module reported
+setup before the first module: 204 s by file times, 162 s reported
+
+== Lines per lot and per category ==
+lot                  category  modules  lines            sampled by
+P1                      (all)       37   1980
+                       layout       18    961                  none
+                     feedback       14    840                  none
+                       action        5    179                Button
+P2                      (all)       27   3491
+                         form       27   3491  Input, SelectableRow
+P3                      (all)       31   3904
+                   navigation       24   3007                  Tabs
+                      overlay        7    897                 Modal
+P4a+P4b                 (all)       92  24676
+                         data       92  24676                  none
+P4c                     (all)       39   6095
+               (uncatalogued)       22   5143         ThemeProvider
+                        other       11    757                Portal
+                         chat        6    195          ChatComposer
+P6                      (all)      128   9562
+         (dataviz-react tree)      128   9562                  none
+
+== Projection (file-time rate 0.968 s/line; factors 1 / 2 / 3 are judgment, not measurement) ==
+lot            status  modules  lines  sampled lines  sampled %  plan h  at rate h  revised h  range h
+P1           measured       37   1980             26        1.3      10        0.5        1.1  0.5-1.6
+P2           measured       27   3491            307        8.8      12        0.9        1.9  0.9-2.8
+P3           measured       31   3904            141        3.6      14          1        2.1    1-3.1
+P4a+P4b  not measured       92  24676              0          0      24        6.6  plan kept        -
+P4c          measured       39   6095            157        2.6       8        1.6        3.3  1.6-4.9
+P6       not measured      128   9562              0          0      20        2.6  plan kept        -
+not measured, plan hours kept: P4a+P4b, P6, P5, P0, P7, P8, P9, P10, P11, P12 = 113 h
+measured lots: plan 44 h -> revised 8.4 h (range 4-12.4)
+W3 derivable from S1: 121.4 h (range 117-125.4), plan 157 h
+for reference only, not measured: if the rate held on all 49708 conversion lines, W3 would be 95.7 h (range 82.4-109.1), P5 and the lots outside the conversion kept at plan hours
+
+== Reach of the runtime gaps in components-react ==
+SVG presentation attributes in camelCase, on elements (affected): 78 files / 396 uses
+  same names passed as component props (not affected): 5 files / 45 uses; both: 81 files / 441 uses
+  data modules with an affected use: 75 of 92 (23038 lines); dataviz-react files: 2 of 128
+onFocus / onBlur: 10 files / 18 uses = on elements 8 files / 13 uses, component props 1 files / 2 uses, object keys 2 files / 3 uses (SelectableRow.tsx, catalog.tsx)
+onChange: 6 files / 25 uses = on input / textarea 3 files / 12 uses, on other elements 2 files / 4 uses, component props 3 files / 9 uses
+React. namespace: 135 files / 1234 uses
+inline style: object literal on an element 67 files / 86 uses; every style attribute 86 files / 114 uses
+APIs: forwardRef 29 files / 29 uses; useSyncExternalStore 0 files / 0 uses; useInsertionEffect 1 files / 1 uses; createPortal 1 files / 1 uses
+type names (React.X uses): ReactNode 226, PointerEvent 75, KeyboardEvent 30, MouseEvent 8, FocusEvent 0, ChangeEvent 0, ElementType 8, CSSProperties 24
+hard set of P5 (Portal, ThemeProvider, forwardRef, external-store and insertion-effect users): 31 modules, 2091 lines, counted in their category lots
