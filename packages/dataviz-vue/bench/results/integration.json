@@ -1,0 +1,4916 @@
+[
+  {
+    "component": "AdvancedPivotDataTable",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, columns-subtotals, heatmap-sparkline, collapsed, caption-size-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AdvancedPivotDataTable, AdvancedPivotDataTableProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AnalyticsClusterPlot",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, iterations-size, filtered, class-attrs, single-cluster, three-clusters; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AnalyticsClusterPlot, AnalyticsClusterPlotProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AnimatedBubbleChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, series, sized-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AnimatedBubbleChart, AnimatedBubbleChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AnomalySwimLaneChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, with-max, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AnomalySwimLaneChart, AnomalySwimLaneChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ArcDiagramChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, labels, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ArcDiagramChart, ArcDiagramChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AreaChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tone-smooth, sized, annotations-datalabels, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AreaChart, AreaChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AreaRangeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tone, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AreaRangeChart, AreaRangeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "AreaSplineRangeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tone, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "AreaSplineRangeChart, AreaSplineRangeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "BellCurveChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tone-smooth, intervals, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "BellCurveChart, BellCurveChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "BookmarkNavigator",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, selected, no-playback, custom-labels, empty, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "BookmarkNavigator, BookmarkNavigatorProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "BoxPlotChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-group, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "BoxPlotChart, BoxPlotChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "BulletChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, ranges, vertical, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "BulletChart, BulletChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "BumpChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, asc, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "BumpChart, BumpChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "CalculationEditor",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, dimension, aggregation, variables, custom-label; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "CalculationEditor, CalculationEditorProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "CalendarHeatmapChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "CalendarHeatmapChart, CalendarHeatmapChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "CandlestickChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "CandlestickChart, CandlestickChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ChartExport",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, formats, labels, no-store, named, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ChartExport, ChartExportProps, ChartExportTarget resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ChordChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ChordChart, ChordChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ChoroplethMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, geometry, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ChoroplethMap, ChoroplethMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ColumnPyramidChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ColumnPyramidChart, ColumnPyramidChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ColumnRangeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, horizontal, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ColumnRangeChart, ColumnRangeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ComboChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, series-stacked, axes-legend, hidden, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ComboChart, ComboChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ContourChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, levels, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ContourChart, ContourChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "CorrelationMatrix",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-legend, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "CorrelationMatrix, CorrelationMatrixProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "CrossfilteredBarChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, horizontal-attrs, selected-hover, filtered, output-only, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "CrossfilteredBarChart, CrossfilteredBarChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DashboardActiveFilters",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-filters, custom-labels, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DashboardActiveFilters, DashboardActiveFiltersProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DashboardFilterBar",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, date-range, relative, variable, export-chips, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DashboardFilterBar, DashboardFilterBarProps, ActiveFilter, FilterControl, ExportConfig resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DashboardGrid",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, panels, editable, sized, custom-slot, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DashboardGrid, DashboardGridPanel, DashboardGridProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DataImage",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, template, fallback, attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DataImage, DataImageProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DateHistogramChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, bins-tone, selectable-off, brush, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DateHistogramChart, DateHistogramChartProps, DateHistogramChartTone, DateHistogramLabelFormatter resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DateRangeFilter",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, custom-label, filtered, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DateRangeFilter, dateRangeToSpec, DateRangeFilterProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DecompositionTreeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DecompositionTreeChart, DecompositionTreeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "Density2DChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, bins-weight, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "Density2DChart, Density2DChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DependencyWheelChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, labels, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DependencyWheelChart, DependencyWheelChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DivergingBarChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, domain, no-legend, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DivergingBarChart, DivergingBarChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DonutChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sorted, center-datalabels, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DonutChart, DonutChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DrillBarChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, horizontal-attrs, drilled-selected, empty-hierarchy, invalid-measure, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DrillBarChart, DrillBarChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DrillBreadcrumb",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, drilled, custom-labels, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DrillBreadcrumb, DrillBreadcrumbProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DrillChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, donut, treemap, horizontal; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DrillChart, DrillChartProps, DrillChartKind resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "DumbbellChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tones-labels, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "DumbbellChart, DumbbellChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ErrorBarsChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, interval, annotations, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ErrorBarsChart, ErrorBarsChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "EventFeedPanel",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, populated, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "EventFeedPanel, EventFeedPanelProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ExportMenu",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, view-fields, named, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ExportMenu, rowsToCsv, ExportMenuProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "FieldPane",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, dimensions-only, measures-only, selected, interactive, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "FieldPane, FieldPaneProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "FlamegraphChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "FlamegraphChart, FlamegraphChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ForceGraph",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, weighted, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ForceGraph, ForceGraphProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ForecastLineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, step, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ForecastLineChart, ForecastLineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "FormatPanel",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, empty, custom-label, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "FormatPanel, FormatPanelProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "FunnelChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, horizontal, percentages, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "FunnelChart, FunnelChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GanttChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, category-marker, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GanttChart, GanttChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GaugeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, range, thresholds, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GaugeChart, GaugeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoClusterMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, id-value, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoClusterMap, GeoClusterMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoDensityMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, value-cell, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoDensityMap, GeoDensityMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoFlowMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, value, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoFlowMap, GeoFlowMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoHexbinMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, value-cell, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoHexbinMap, GeoHexbinMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoJsonMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, id-labelfield, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoJsonMap, GeoJsonMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "GeoPointMap",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, id-labelfield, sized, class-attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "GeoPointMap, GeoPointMapProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "HeatmapChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-legend, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "HeatmapChart, HeatmapChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "HeikinAshiChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sized, class-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "HeikinAshiChart, HeikinAshiChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "HistogramChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, bins-domain-attrs, filtered, no-view, invalid-value, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "HistogramChart, HistogramChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "HLCChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "HLCChart, HLCChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "HollowCandlestickChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "HollowCandlestickChart, HollowCandlestickChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ItemChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ItemChart, ItemChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "KpiCardGroup",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, multi-cards, compared, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "KpiCardGroup, KpiCardGroupProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "LollipopChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, horizontal-domain, city-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "LollipopChart, LollipopChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "MekkoChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, swap-dims, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "MekkoChart, MekkoChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ObjectLayerPanel",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, selected, collapsed, attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ObjectLayerPanel, ObjectLayerPanelProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "OHLCChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "OHLCChart, OHLCChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "OrganizationChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, swap-fields, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "OrganizationChart, OrganizationChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PackedBubbleChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-sort-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PackedBubbleChart, PackedBubbleChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PalettePicker",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, sequential, diverging, all, empty, attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PalettePicker, PalettePickerProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ParallelCoordinatesChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, series, city-labels, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ParallelCoordinatesChart, ParallelCoordinatesChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ParetoChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-tone, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ParetoChart, ParetoChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PercentileBandChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, tight-band, size-attrs, filtered, narrow-band, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PercentileBandChart, PercentileBandChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PivotDataTable",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, columns-caption, no-cf, filtered, attrs, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PivotDataTable, PivotDataTableProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PointAndFigureChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, box-reversal, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PointAndFigureChart, PointAndFigureChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "PolygonChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, region-tone, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "PolygonChart, PolygonChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "QueryBar",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, fields, matching, labels, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "QueryBar, QueryBarProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RadarChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, series-levels, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RadarChart, RadarChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RangeSliderFilter",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, bounds, label, min-only, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RangeSliderFilter, numericDomain, rangeBoundsToSpec, RangeSliderFilterProps, NumericDomain resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RecordsTable",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, fields, caption-page, no-cf, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RecordsTable, RecordsTableProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ReferenceLineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, measure-ref, domain-hover, size-attrs, filtered, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ReferenceLineChart, ReferenceLineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RelativeDateFilter",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, custom-presets, label, attrs, empty-presets, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RelativeDateFilter, relativeRangeToSpec, DEFAULT_RELATIVE_PRESETS, RelativeDateFilterProps, RelativeDatePreset resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RenkoChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, box-size-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RenkoChart, RenkoChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RibbonChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, size-label, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RibbonChart, RibbonChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "RoseChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "RoseChart, RoseChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "SankeyChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, swap, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "SankeyChart, SankeyChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ScatterPlot",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, series-labels, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ScatterPlot, ScatterPlotProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ScatterPlotMatrix",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, single, attrs, filtered, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ScatterPlotMatrix, ScatterPlotMatrixProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ScoreCard",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, goal-spark, format-unit, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ScoreCard, ScoreCardProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "SelectionLegend",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, selected, labels, attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "SelectionLegend, SelectionLegendProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "SmallMultiples",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "5/5 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, columns-tone-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "SmallMultiples, SmallMultiplesProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "SolidGaugeChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, min-max-unit, angles, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "SolidGaugeChart, SolidGaugeChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "Sparkline",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, styled, city-size, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "Sparkline, SparklineProps, SparklineTone resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "StackedBarChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, grouped-hidden, no-legend, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "StackedBarChart, StackedBarChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "StateTimelineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, label-size, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "StateTimelineChart, StateTimelineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "StatusHistoryChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, label-size, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "StatusHistoryChart, StatusHistoryChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "StepLineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-tone, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "StepLineChart, StepLineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "StreamgraphChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, smooth-no-legend, swap, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "StreamgraphChart, StreamgraphChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "SunburstChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-legend, deep, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "SunburstChart, SunburstChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TileMapChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, region-label, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TileMapChart, TileMapChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TimelineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, description-tone, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TimelineChart, TimelineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TopNFilter",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, n5-label, n1, city, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TopNFilter, TopNFilterProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TraceWaterfallChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, label-size, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TraceWaterfallChart, TraceWaterfallChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TreegraphChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, swap-fields, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TreegraphChart, TreegraphChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TreemapChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, no-labels-legend, deep, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TreemapChart, TreemapChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "TrendLineChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city-hover, size-attrs, filtered, measure-x, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "TrendLineChart, TrendLineChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ValueSlicer",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, legend-horizontal, city, filtered, attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ValueSlicer, ValueSlicerProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "VariablePieChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, city, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "VariablePieChart, VariablePieChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "VectorFieldChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, label-size, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "VectorFieldChart, VectorFieldChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "VennChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, three-sets, size-attrs, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "VennChart, VennChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "ViolinChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, bins-no-quartiles, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "ViolinChart, ViolinChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "WaffleChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, cells-columns, city, filtered, attrs, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "WaffleChart, WaffleChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "WaterfallChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "7/7 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, total-conn-format, city, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "WaterfallChart, WaterfallChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "WebFrame",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "4/4 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, title, policy, attrs; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "WebFrame, WebFrameProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "WindBarbChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, label-size, attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "WindBarbChart, WindBarbChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  },
+  {
+    "component": "WordCloudChart",
+    "ok": true,
+    "gates": [
+      {
+        "gate": "G1",
+        "title": "Template source",
+        "status": "PASS",
+        "detail": "Old .ts absent; typed script setup + template; forbidden syntax absent"
+      },
+      {
+        "gate": "G2",
+        "title": "Classic + Vapor compile",
+        "status": "PASS",
+        "detail": "Build-script compiler options; classic 3.6.0-rc.15, Vapor 3.6.0-rc.15"
+      },
+      {
+        "gate": "G3",
+        "title": "Scoped vue-tsc",
+        "status": "PASS",
+        "detail": "Target SFC and its transitive imports; inherited strict package settings"
+      },
+      {
+        "gate": "G4",
+        "title": "SSR golden parity",
+        "status": "PASS",
+        "detail": "6/6 fixtures (vue implementation)"
+      },
+      {
+        "gate": "G5",
+        "title": "Vapor jsdom mount",
+        "status": "PASS",
+        "detail": "createVaporApp; fixture=default, region-words, size-attrs, filtered, invalid-fields, empty; interop=false; mounted, flushed, unmounted"
+      },
+      {
+        "gate": "G6",
+        "title": "Public exports + Props",
+        "status": "PASS",
+        "detail": "WordCloudChart, WordCloudChartProps resolve through selected index.ts exports; value/type kinds preserved"
+      }
+    ]
+  }
+]

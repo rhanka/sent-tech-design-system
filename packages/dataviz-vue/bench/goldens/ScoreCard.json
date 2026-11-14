@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "ScoreCard",
+  "sourceRevision": "a3dfbad1bbde834ce448f4cbeed0a3a196dce17a",
+  "source": "src/lib/ScoreCard.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<article aria-label=\"Sales, 40\" class=\"st-kpiCard st-kpiCard--md\" role=\"group\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">40</span></p></article>"
+    },
+    {
+      "id": "goal-spark",
+      "html": "<article aria-label=\"Sales, 40\" class=\"st-kpiCard st-kpiCard--md\" role=\"group\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">40</span></p><div class=\"st-kpiCard__footer\"><span class=\"st-sparkline st-sparkline--neutral st-kpiCard__sparkline\" role=\"img\"><svg focusable=\"false\" height=\"28\" preserveAspectRatio=\"none\" viewBox=\"0 0 120 28\" width=\"120\"><path class=\"st-sparkline__area\" d=\"M2.00,11.60 L40.67,6.80 L79.33,26.00 L118.00,2.00 L118.00,26.00 L2.00,26.00 Z\"></path><path class=\"st-sparkline__line\" d=\"M2.00,11.60 L40.67,6.80 L79.33,26.00 L118.00,2.00\" fill=\"none\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.5\"></path></svg></span></div></article>"
+    },
+    {
+      "id": "format-unit",
+      "html": "<article aria-label=\"Sales, 40, €, 0 stable\" class=\"st-kpiCard st-kpiCard--lg st-kpiCard--info st-kpiCard--toned\" role=\"group\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">40</span><span class=\"st-kpiCard__unit\">€</span></p><div class=\"st-kpiCard__footer\"><span aria-hidden=\"true\" class=\"st-kpiCard__delta st-kpiCard__delta--flat\"><svg aria-hidden=\"true\" class=\"st-kpiCard__arrow\" focusable=\"false\" height=\"14\" viewBox=\"0 0 14 14\" width=\"14\"><path d=\"M3 7h8\" fill=\"none\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"1.75\"></path></svg><span class=\"st-kpiCard__deltaValue\">0</span></span></div></article>"
+    },
+    {
+      "id": "filtered",
+      "html": "<article aria-label=\"Sales, 25\" class=\"st-kpiCard st-kpiCard--md\" role=\"group\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">25</span></p></article>"
+    },
+    {
+      "id": "attrs",
+      "html": "<article aria-label=\"Sales, 40\" class=\"st-kpiCard st-kpiCard--md consumer\" data-bench=\"score\" role=\"group\" style=\"color:red;\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">40</span></p></article>"
+    },
+    {
+      "id": "empty",
+      "html": "<article aria-label=\"Sales, 0\" class=\"st-kpiCard st-kpiCard--md\" role=\"group\"><p class=\"st-kpiCard__label\">Sales</p><p class=\"st-kpiCard__value\"><span class=\"st-kpiCard__number\">0</span></p></article>"
+    }
+  ],
+  "sourceSha256": "8b3c7c0c4a1436392dcb0f8649d43bcba81e82c07d1855fddeaf27afa01f8270",
+  "fixtureSha256": "f663722541dc356591e9fac7a72a8f3d2be4339a7d151e47da67f4581c648a5c",
+  "publicExports": [
+    {
+      "name": "ScoreCard",
+      "typeOnly": false
+    },
+    {
+      "name": "ScoreCardProps",
+      "typeOnly": true
+    }
+  ]
+}

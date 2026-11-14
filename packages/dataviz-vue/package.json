@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/dataviz-vue",
-  "version": "0.5.0",
+  "version": "0.6.0-next.0",
   "description": "Vue 3 adapter for @sentropic/dataviz-core, built on @sentropic/design-system-vue.",
   "type": "module",
   "license": "MIT",
@@ -11,6 +11,8 @@
   },
   "files": [
     "dist",
+    "!dist/.srchash",
+    "!dist/**/*.map",
     "LICENSE"
   ],
   "exports": {
@@ -27,13 +29,14 @@
   "main": "./dist/index.js",
   "sideEffects": false,
   "scripts": {
-    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node ../../scripts/vue-sfc-build.mjs",
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node ../../scripts/dataviz-vue-text.mjs && node scripts/check-published-types.mjs",
     "check": "npm run check:types",
     "test": "vitest run",
     "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
     "check:types": "vue-tsc -p tsconfig.json --noEmit",
     "build:declarations": "vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly",
-    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
+    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable",
+    "check:published-types": "node scripts/check-published-types.mjs"
   },
   "dependencies": {
     "@sentropic/dataviz-core": "0.5.0",
@@ -55,6 +58,7 @@
     "vue-tsc": "3.3.14"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   }
 }
