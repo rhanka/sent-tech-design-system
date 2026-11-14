@@ -14,7 +14,7 @@
     "lint": "node scripts/run-workspaces.mjs lint",
     "notices:generate": "node scripts/generate-third-party-notices.mjs",
     "licensing:check": "node scripts/verify-publishable-licensing.mjs",
-    "verify": "npm run licensing:check && npm run check && npm test && npm run pack:smoke",
+    "verify": "npm run licensing:check && npm run check && npm test && npm run dist:import-closure && npm run pack:smoke",
     "pack:smoke": "node scripts/smoke-pack.mjs",
     "docs:dev": "npm --workspace apps/docs run dev",
     "docs:build": "npm --workspace apps/docs run build",
@@ -24,7 +24,8 @@
     "re:harness:selftest": "node tools/re-harness/src/harness.mjs selftest && node tools/re-harness/src/harness.mjs coverage && node --test tools/re-harness/tests/harness.test.mjs",
     "lint:vue-vapor": "node scripts/vue-vapor-lint.mjs",
     "coverage:vue-vapor": "node scripts/vue-vapor-coverage.mjs",
-    "test:vue-packed": "node scripts/vue-vapor-packed.mjs"
+    "test:vue-packed": "node scripts/vue-vapor-packed.mjs",
+    "dist:import-closure": "node scripts/dist-import-closure.mjs"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
