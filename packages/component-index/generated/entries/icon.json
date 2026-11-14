@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Icon.svelte",
-      "version": "0.41.1"
+      "version": "0.41.2"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Icon.vue",
-      "version": "0.41.0-next.3"
+      "version": "0.41.0-next.4"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:2911cf135554455991a2187a60dcdef5c5456741aacc724a1017d1af43c88193",
+  "digest": "sha256:92b27f686f4bf22348c6beaecc136df964674f1c2c20f9826f078eb42130ee76",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

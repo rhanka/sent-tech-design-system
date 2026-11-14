@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:94c6231a86df320781f582c631a2cecaca63bbc335de00eb8354a5ca57b5f083",
-  "entryDigest": "sha256:8e0e57f90ab3f87731977fd20ff76c9ddf7c1c894ec3e30642a32e887d1db775",
+  "digest": "sha256:9f267947fe906b8575d1c371f73f49caf19da4f2dfc70a9ec9969cd307512d5e",
+  "entryDigest": "sha256:fffd5cd1b03bf5442656c4583af2efe1902a3637f1f03d2e0bbf0e2118723e3b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-svelte/dist/HLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HLCChartProps",
-        "version": "0.41.1"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -298,7 +298,7 @@
         "declarationPath": "packages/components-vue/dist/HLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HLCChartProps",
-        "version": "0.41.0-next.3"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

@@ -497,6 +497,7 @@
   });
   let viewWidth = $state<number>();
   let windowHeight = $state<number>();
+  let scrollbarHeight = $state(0);
   let maxDisplayScale = $state<number>();
   let minReadableScale = $state<number>();
   let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
@@ -505,7 +506,7 @@
     if (frameEl === undefined || scene === undefined) return;
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
     if (bounds !== undefined && bounds !== scene.bounds) {
-      if (atFit && (renderedBounds === undefined || renderedBounds.scene === scene)) requestedZoom = undefined;
+      if (atFit) requestedZoom = undefined;
       renderedBounds = { scene, bounds };
     }
   }
@@ -549,6 +550,8 @@
       const value = parseFloat(tokenValue('--st-component-diagramScene-' + key) ?? '');
       if (Number.isFinite(value)) values[key] = value;
     }
+    const labelMargin = parseFloat(tokenValue('--st-component-diagramScene-labelPadding') ?? '');
+    if (Number.isFinite(labelMargin)) values.labelMargin = labelMargin;
     if (JSON.stringify(values) !== JSON.stringify(tokenMetrics)) tokenMetrics = values;
     const nextTokens = { ...DEFAULT_FLOW_TOKENS };
     for (const name of Object.keys(nextTokens) as (keyof FlowTokens)[]) {
@@ -568,6 +571,7 @@
     const viewportWidth = viewportEl?.clientWidth ?? 0;
     const width = viewportWidth > 0 ? viewportWidth : frameEl.clientWidth;
     viewWidth = width > 0 ? width : undefined;
+    scrollbarHeight = viewportEl === undefined ? 0 : viewportEl.offsetHeight - viewportEl.clientHeight;
     windowHeight = window.innerHeight > 0 ? window.innerHeight : undefined;
     readCameraTokens();
     if (atFit) requestedZoom = undefined;
@@ -581,6 +585,7 @@
     window.addEventListener("resize", onResize);
     const observer = typeof ResizeObserver === "undefined" ? undefined : new ResizeObserver(onResize);
     observer?.observe(element);
+    if (viewportEl !== undefined) observer?.observe(viewportEl);
     return () => {
       window.removeEventListener("resize", onResize);
       observer?.disconnect();
@@ -597,6 +602,7 @@
       // box is the nominal 16:9 box of the layout target width.
       viewWidth: viewWidth ?? targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
       windowHeight: windowHeight ?? Number.POSITIVE_INFINITY,
+      scrollbarHeight,
       ...(maxDisplayScale === undefined ? {} : { maxDisplayScale }),
       ...(minReadableScale === undefined ? {} : { minReadableScale }),
     }),
@@ -620,15 +626,13 @@
     cameraDocument = id;
   });
 
-  // Z-7: once the frame is measured the camera holds a number, clamped to
-  // the nearest bound of the current range; a zoom inside the range stays.
+  // Z-7: clamp a user-selected zoom. Until an interaction, keep the camera
+  // at fit through token, font and painted-bounds updates during mounting.
   $effect(() => {
     if (!measured) return;
     const current = zoom;
-    const fitZoom = fit.zoom;
     untrack(() => {
-      if (requestedZoom !== current) requestedZoom = current;
-      if (current !== fitZoom) atFit = false;
+      if (!atFit && requestedZoom !== current) requestedZoom = current;
     });
   });
 
@@ -681,7 +685,7 @@
     readCameraTokens();
     readRenderedBounds();
     atFit = true;
-    requestedZoom = fit.zoom;
+    requestedZoom = undefined;
     const element = viewportEl;
     if (element === undefined) return;
     void tick().then(() => {
@@ -851,6 +855,8 @@
   const entering = (node: SceneNodeModel): boolean => origin !== undefined && !origin.has(node.occurrence);
 
   function toggleFold(node: SceneNodeModel): void {
+    requestedZoom = zoom;
+    atFit = false;
     const next = node.collapsed
       ? collapsedNow.filter((id) => id !== node.occurrence)
       : [...collapsedNow, node.occurrence];
@@ -896,7 +902,7 @@
 
   const edgeLabelLineHeight = $derived(lineMeasurer({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
   const viewportStyle = $derived(
-    `${measured ? `height:${fit.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
+    `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
     `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,

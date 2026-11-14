@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.41.1",
+  "version": "0.41.2",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -50,6 +50,7 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
+    "!dist/**/*Fixture.svelte.d.ts*",
     "!dist/**/*Fixture.d.ts",
     "!dist/**/diagram-card-corpus.js",
     "!dist/**/diagram-card-corpus.d.ts",
@@ -64,7 +65,7 @@
     "@lucide/svelte": "^0.562.0",
     "@sentropic/design-system-rich-text": "0.1.1",
     "@sentropic/design-system-themes": "0.14.0",
-    "@sentropic/diagram-canvas": "0.2.1",
+    "@sentropic/diagram-canvas": "0.2.2",
     "@sentropic/graph": "0.3.1"
   },
   "peerDependencies": {
