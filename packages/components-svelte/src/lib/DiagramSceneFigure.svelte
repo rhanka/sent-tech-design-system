@@ -47,6 +47,8 @@
     parseScale,
     rectsOf,
     resolveScene,
+    quantiseFit,
+    shouldRefitRenderedBounds,
     resolveZoom,
     sameRects,
     sceneFit,
@@ -505,7 +507,8 @@
   function readRenderedBounds(): void {
     if (frameEl === undefined || scene === undefined) return;
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
-    if (bounds !== undefined && bounds !== scene.bounds) {
+    if (bounds !== undefined && bounds !== scene.bounds
+      && shouldRefitRenderedBounds(cameraBounds, bounds, zoom)) {
       if (atFit) requestedZoom = undefined;
       renderedBounds = { scene, bounds };
     }
@@ -905,7 +908,7 @@
     `height:${fit.fitHeight + scrollbarHeight}px;aspect-ratio:${FIT_ASPECT};overflow-x:${placement.overflowX ? 'auto' : 'hidden'};overflow-y:${placement.overflowY ? 'auto' : 'hidden'};--st-diagram-zoom:${zoom};--st-diagram-label-line-height:${edgeLabelLineHeight}px${flowSteps.length > 0 ? `;--st-diagramSceneFigure-flowHit:${flowHitSize(zoom, flowTokens)}px` : ""}`,
   );
   const worldStyle = $derived(
-    `transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`,
+    `transform:translate(${quantiseFit(placement.translateX)}px,${quantiseFit(placement.translateY)}px) scale(${quantiseFit(zoom)})`,
   );
 </script>
 

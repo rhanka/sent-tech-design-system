@@ -6,7 +6,8 @@ import { createLayoutCache, worldToView } from "../../src/index.js";
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
-  layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
+  layoutScene, quantiseFit, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
+  shouldRefitRenderedBounds,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
 import { pinnedMeasurer, sceneInput } from "../layout/dc2a/scenes.js";
@@ -35,6 +36,25 @@ describe("shared scene presentation (DC-2b)", () => {
           .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
       }
     }
+  });
+  it('should keep the fit idempotent when painted bounds alternate by a sub-pixel step', () => {
+    // h-cond probe D1/D2: 1206 px frame, capped zoom, and « Ajuster »
+    // alternates between two transforms 0.005 px apart in translate.
+    const bounds = { x: -634.6, y: -44, width: 1900, height: 300 };
+    const fit = sceneFit({ bounds, viewWidth: 1206, windowHeight: 900 });
+    expect(fit.zoom).toBe(0.62);
+    const initial = scenePlacement(bounds, fit.zoom, fit);
+    const flipped = { ...bounds, x: bounds.x - 0.005 / fit.zoom, y: bounds.y + 0.00297 / fit.zoom };
+    let current = bounds;
+    for (const candidate of [flipped, bounds, flipped, bounds]) {
+      if (shouldRefitRenderedBounds(current, candidate, fit.zoom)) current = candidate;
+    }
+    expect(current).toBe(bounds);
+    expect(scenePlacement(current, fit.zoom, fit)).toEqual(initial);
+    expect(shouldRefitRenderedBounds(bounds, { ...bounds, width: bounds.width + 100 }, fit.zoom)).toBe(true);
+    expect(quantiseFit(392.71349)).toBe(392.713);
+    expect(quantiseFit(27.30695)).toBe(27.307);
+    expect(quantiseFit(fit.zoom)).toBe(fit.zoom);
   });
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };

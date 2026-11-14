@@ -43,6 +43,7 @@ import {
   parseDurationMs,
   parseEasing,
   resolveScene,
+  quantiseFit,
   scenePlacement,
   sceneFit,
   ZOOM_STEP_RATIO,
@@ -467,7 +468,7 @@ describe("DiagramSceneFigure camera", () => {
       expect(view.zoom()).toBeLessThanOrEqual(DEFAULT_MAX_DISPLAY_SCALE);
       const placed = scenePlacement(bounds, view.zoom(), { fitWidth: width, fitHeight });
       expect(view.world.style.transform).toBe(
-        `translate(${placed.translateX}px,${placed.translateY}px) scale(${view.zoom()})`,
+        `translate(${quantiseFit(placed.translateX)}px,${quantiseFit(placed.translateY)}px) scale(${quantiseFit(view.zoom())})`,
       );
       if (raw >= DEFAULT_MIN_READABLE_SCALE) {
         // Whole drawing inside the box, centred on both axes.

@@ -12,7 +12,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, quantiseFit, rectsOf, resolveScene, sameRects, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -243,7 +243,7 @@ const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
-const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
+const worldStyle = computed(() => `transform:translate(${quantiseFit(placement.value.translateX)}px,${quantiseFit(placement.value.translateY)}px) scale(${quantiseFit(zoom.value)})`);
 </script>
 
 <template>
@@ -289,8 +289,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <template v-if="edgeLabel.bundle !== undefined">
-                  <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>
-                  <div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
+                  <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>
                   </div>
                 </template>

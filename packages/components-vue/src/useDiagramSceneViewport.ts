@@ -1,7 +1,7 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { clampZoom, FIT_ASPECT, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
-import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
+import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, shouldRefitRenderedBounds, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
 import { measureRenderedBounds } from './diagramRenderedBounds.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { DiagramSceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
@@ -33,7 +33,8 @@ export function useDiagramSceneViewport(
     function readRenderedBounds() {
         if (frameEl.value === undefined || scene.value === undefined) return;
         const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
-        if (bounds !== undefined && bounds !== scene.value.bounds) {
+        if (bounds !== undefined && bounds !== scene.value.bounds
+            && shouldRefitRenderedBounds(cameraBounds.value, bounds, zoom.value)) {
             if (atFit) requestedZoom.value = undefined;
             renderedBounds.value = { scene: scene.value, bounds };
         }
