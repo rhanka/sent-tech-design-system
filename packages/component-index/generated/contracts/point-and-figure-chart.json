@@ -1,8 +1,8 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:8945607934db19dbd1bb3afe0d9b9adac659429329238408855ac62c038fafd0",
-  "entryDigest": "sha256:c40c09f6e2e2fbdd370ab453dabb1d14a4b2166eec2a5a8e9945fffdc719b982",
+  "digest": "sha256:67aa346cac50400430b8aa6444c0e43a0039383d368075929c8c8768dff51c6b",
+  "entryDigest": "sha256:6c77d89f87a237764b1bd7b997efa2def5897ea815a5db77ae3f699bfa6e35ff",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/PointAndFigureChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.41.0"
+        "version": "0.41.2"
       },
       "status": "complete",
       "unresolved": [],
@@ -305,7 +305,7 @@
         "declarationPath": "packages/components-vue/dist/PointAndFigureChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.4"
       },
       "status": "complete",
       "unresolved": [],

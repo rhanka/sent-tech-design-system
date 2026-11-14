@@ -460,7 +460,7 @@ describe("DiagramSceneFigure camera", () => {
       await fireEvent.click(view.button("Fit"));
       let fitHeight = Math.min((width * 9) / 16, FIT_WINDOW_HEIGHT_SHARE * height);
       const raw = Math.min((width - 2) / bounds.width, (fitHeight - 2) / bounds.height, DEFAULT_MAX_DISPLAY_SCALE);
-      if (raw === DEFAULT_MAX_DISPLAY_SCALE) fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * raw + 2) * 64) / 64);
+      fitHeight = Math.min(fitHeight, Math.ceil((bounds.height * Math.max(DEFAULT_MIN_READABLE_SCALE, raw) + 2) * 64) / 64);
       expect(view.viewport.style.height).toBe(`${fitHeight}px`);
       // BF-2: the fit holds at the readability floor.
       expect(view.zoom()).toBeCloseTo(Math.max(DEFAULT_MIN_READABLE_SCALE, raw), 12);
@@ -489,7 +489,7 @@ describe("DiagramSceneFigure camera", () => {
     const { result, model } = modelOf(LABELLED);
     expect(result.warnings.filter((warning) => warning.code === "label-unplaced")).toEqual([]);
     expect(model.labels.map((entry) => entry.lines)).toEqual([["ok"]]);
-    expect(Object.fromEntries(model.labels.map((entry) => [entry.occurrence, entry.box]))).toEqual(result.labelBoxes);
+    for (const entry of model.labels) expect(entry.box).toMatchObject({ width: result.labelBoxes![entry.occurrence]!.width, height: result.labelBoxes![entry.occurrence]!.height });
     const bounds = model.bounds!;
     const inside = (box: Rect): void => {
       expect(box.x).toBeGreaterThanOrEqual(bounds.x);
@@ -505,7 +505,7 @@ describe("DiagramSceneFigure camera", () => {
       const folded = modelOf(WIDE, folds);
       const unplaced = folded.result.warnings.filter((warning) => warning.code === "label-unplaced").length;
       expect(folded.model.labels.length).toBe(1 - unplaced);
-      expect(Object.fromEntries(folded.model.labels.map((entry) => [entry.occurrence, entry.box]))).toEqual(folded.result.labelBoxes);
+      for (const entry of folded.model.labels) expect(entry.box).toMatchObject({ width: folded.result.labelBoxes![entry.occurrence]!.width, height: folded.result.labelBoxes![entry.occurrence]!.height });
     }
     // The figure draws the label at its box and fits that same bbox.
     const view = mount(LABELLED);

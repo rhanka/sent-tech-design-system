@@ -96,7 +96,7 @@ describe("h-cond golden scenes", () => {
       const placement = scenePlacement(bounds, fit.zoom, fit);
       expect(bounds.x * fit.zoom + placement.translateX).toBeGreaterThanOrEqual(0);
       expect(bounds.y * fit.zoom + placement.translateY).toBeGreaterThanOrEqual(0);
-      expect(placement.contentWidth).toBeCloseTo(bounds.width * fit.zoom);
+      expect(placement.contentWidth).toBeCloseTo(bounds.width * fit.zoom + 2);
       expect({ nodes: scene.nodes.map(n => [n.occurrence, n.rect]), edges: scene.edges, labels: scene.labels, bounds }).toMatchSnapshot();
     });
   }

@@ -125,6 +125,8 @@ jobs:
           # The tarball guard, against THIS runner's bytes, right before publish:
           # jsDelivr serves tarball bytes, so the SRI pin must hold on them.
           node --test scripts/elements-publish-tarball.test.mjs
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-elements
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
