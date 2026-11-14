@@ -539,6 +539,35 @@ export function scenePlacement(bounds: Rect | undefined, zoom: number, fit: Pick
   };
 }
 
+/** Quantum of the rendered fit transform, CSS px / scale units. */
+export const FIT_QUANTUM = 1e-3;
+
+/** Round a fit scale or translate to the rendered quantum. */
+export function quantiseFit(value: number): number {
+  return Math.round(value * 1000) / 1000;
+}
+
+/**
+ * Screen-space tolerance below which a painted-bounds remeasure is the
+ * same fit: one CSS layout grid step (1/64 px). Painted bounds are read
+ * back through the current transform, so remeasuring them at a shifted
+ * origin can flip the last grid step and alternate between two fits;
+ * ignoring that step makes the fit a fixed point.
+ */
+export const RENDERED_BOUNDS_REFIT_TOLERANCE_PX = 1 / 64;
+
+/** Whether painted bounds differ enough from the fitted bounds to refit. */
+export function shouldRefitRenderedBounds(previous: Rect | undefined, next: Rect, zoom: number): boolean {
+  if (previous === undefined || !(zoom > 0)) return true;
+  const delta = Math.max(
+    Math.abs(next.x - previous.x),
+    Math.abs(next.y - previous.y),
+    Math.abs(next.x + next.width - previous.x - previous.width),
+    Math.abs(next.y + next.height - previous.y - previous.height),
+  ) * zoom;
+  return delta > RENDERED_BOUNDS_REFIT_TOLERANCE_PX;
+}
+
 /* ─────────────────────────── transition ─────────────────────────── */
 
 /** A CSS `<time>` token value (`240ms`, `0.24s`) in milliseconds; 0 when absent or unreadable. */
