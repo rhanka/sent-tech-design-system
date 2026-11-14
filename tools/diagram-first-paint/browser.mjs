@@ -256,7 +256,9 @@ try {
           await settle(page);
           initial = await page.evaluate(measure);
           // Preserve the untouched state even if the later comparison fails.
-          await page.screenshot({ path: join(artifacts, `${name}-initial.png`), fullPage: true });
+          // Capturing beyond the viewport hides classic scrollbars in Chrome
+          // and changes the geometry before the Ajuster comparison.
+          await page.screenshot({ path: join(artifacts, `${name}-initial.png`), captureBeyondViewport: false });
           const fit = await page.$('button::-p-text(Ajuster)');
           assert.ok(fit, 'Ajuster button must exist');
           await fit.click();
@@ -274,7 +276,7 @@ try {
         } catch (error) {
           failures.push(name);
           console.error(`FAIL ${name}: ${error.stack}`);
-          await page.screenshot({ path: join(artifacts, `${name}-failure.png`), fullPage: true });
+          await page.screenshot({ path: join(artifacts, `${name}-failure.png`), captureBeyondViewport: false });
           await writeFile(join(artifacts, `${name}.json`), JSON.stringify({ error: String(error), errors, consoleMessages, initial, after }, null, 2));
         } finally {
           await page.close();
