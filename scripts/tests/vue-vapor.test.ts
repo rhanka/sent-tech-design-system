@@ -15,7 +15,7 @@ it.each(aliasFixtures)('should reject %s aliases in K25 and exclude them from th
   try {
     mkdirSync(join(root, 'scripts'));
     symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
-    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
+    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs', 'dataviz-vue-text.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
     for (const name of ['components-vue', 'dataviz-vue']) mkdirSync(join(root, 'packages', name, 'src'), { recursive: true });
     writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
     const pkg = join(root, 'packages/dataviz-vue');
@@ -128,7 +128,7 @@ it('should fail the build lint for a new module and require removal after conver
   try {
     mkdirSync(join(root, 'scripts'));
     symlinkSync(resolve('node_modules'), join(root, 'node_modules'), 'dir');
-    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
+    for (const name of ['vue-vapor-lint.mjs', 'vue-vapor-source.mjs', 'dataviz-vue-text.mjs']) cpSync(resolve('scripts', name), join(root, 'scripts', name));
     for (const name of ['components-vue', 'dataviz-vue']) mkdirSync(join(root, 'packages', name, 'src'), { recursive: true });
     const module = 'packages/dataviz-vue/src/Chart.ts';
     writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
@@ -139,5 +139,10 @@ it('should fail the build lint for a new module and require removal after conver
     expect(lint().status).toBe(0);
     writeFileSync(join(root, module), `export const value = 1;`);
     expect(lint().status).toBe(1); expect(lint().stderr).toContain('remove converted/deleted file');
+    writeFileSync(join(root, 'scripts/vue-vapor-legacy.json'), '[]');
+    writeFileSync(join(root, module), "export const key = '\u0000';");
+    expect(lint().status).toBe(1); expect(lint().stderr).toContain('control byte 0x00');
+    writeFileSync(join(root, module), "export const key = '\\u0000';");
+    expect(lint().status).toBe(0);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
