@@ -475,6 +475,7 @@ export interface SceneCameraInput {
   readonly bounds?: Rect;
   readonly viewWidth: number;
   readonly windowHeight: number;
+  readonly scrollbarHeight?: number;
   readonly maxDisplayScale?: number;
   readonly minReadableScale?: number;
 }
@@ -485,6 +486,7 @@ export function sceneFit(input: SceneCameraInput): CameraFit {
     ...(input.bounds === undefined ? {} : { bounds: input.bounds }),
     viewWidth: input.viewWidth,
     windowHeight: input.windowHeight,
+    ...(input.scrollbarHeight === undefined ? {} : { scrollbarHeight: input.scrollbarHeight }),
     ...(input.maxDisplayScale === undefined ? {} : { maxDisplayScale: input.maxDisplayScale }),
     ...(input.minReadableScale === undefined ? {} : { minReadableScale: input.minReadableScale }),
   });

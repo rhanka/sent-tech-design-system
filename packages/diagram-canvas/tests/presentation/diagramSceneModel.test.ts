@@ -20,6 +20,22 @@ const input: SceneLayoutInput = {
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe("shared scene presentation (DC-2b)", () => {
+  it.each([0, 15, 20])('should keep drawing content reachable with a %i px horizontal scrollbar', (scrollbarHeight) => {
+    for (const height of [200, 472.015625, 800]) {
+      const bounds = { x: -20, y: -26, width: 1500, height };
+      const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844, scrollbarHeight });
+      const placement = scenePlacement(bounds, fit.zoom, fit);
+      const viewportHeight = fit.fitHeight + scrollbarHeight;
+      expect(fit.zoom).toBe(.45);
+      expect(placement.overflowX).toBe(true);
+      expect(viewportHeight).toBeLessThanOrEqual(390 * 9 / 16);
+      expect(placement.overflowY).toBe(height === 800 || (height === 472.015625 && scrollbarHeight > 0));
+      if (!placement.overflowY) {
+        expect(placement.translateY + bounds.y * fit.zoom + bounds.height * fit.zoom)
+          .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
+      }
+    }
+  });
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
     const fit = sceneFit({ bounds, viewWidth: 660, windowHeight: 900 });

@@ -36,13 +36,15 @@ export interface CameraFitInput {
   readonly viewWidth: number;
   /** `window.innerHeight`, CSS px. */
   readonly windowHeight: number;
+  /** Measured horizontal scrollbar thickness (`offsetHeight - clientHeight`), CSS px. */
+  readonly scrollbarHeight?: number;
   readonly maxDisplayScale?: number;
   /** Optional higher readability floor; never lowers the absolute 0.45 floor. */
   readonly minReadableScale?: number;
 }
 
 export interface CameraFit {
-  /** The §5.1 fit box, CSS px. */
+  /** The usable §5.1 fit box, excluding scrollbars, CSS px. */
   readonly fitWidth: number;
   readonly fitHeight: number;
   /** Zoom framing the whole drawing on both axes, never above the maximum display scale. */
@@ -67,7 +69,10 @@ export function fitBox(viewWidth: number, windowHeight: number): { readonly widt
 export function cameraFit(input: CameraFitInput): CameraFit {
   const maxZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, input.maxDisplayScale ?? DEFAULT_MAX_DISPLAY_SCALE);
   const readableFloor = Math.min(maxZoom, Math.max(DEFAULT_MIN_READABLE_SCALE, input.minReadableScale ?? DEFAULT_MIN_READABLE_SCALE));
-  const box = fitBox(input.viewWidth, input.windowHeight);
+  const frame = fitBox(input.viewWidth, input.windowHeight);
+  // Hosts add the scrollbar back to the outer height; fit and placement use
+  // only the drawable area, keeping the combined height inside the fit box.
+  const box = { width: frame.width, height: Math.max(0, frame.height - (input.scrollbarHeight ?? 0)) };
   const bounds = input.bounds;
   if (bounds === undefined || !(bounds.width > 0) || !(bounds.height > 0)) {
     // Empty scene: readout 100 %.

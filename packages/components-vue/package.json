@@ -68,7 +68,8 @@
     "./rich-text-editor/styles.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/.srchash"
   ],
   "scripts": {
     "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/copy-styles.mjs && node scripts/check-published-types.mjs",
