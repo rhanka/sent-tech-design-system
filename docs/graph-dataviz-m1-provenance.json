@@ -3593,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "2079e390bbe9c99eaac98e447c755e07bd3163a37523747a8e4213e1b979a4cc",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions"
+      "destinationSha256": "cdf2463d419dbecf7d7e33fc8a3ff26915af6c2575a22adcfe26c215457c4571",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
     },
     {
       "repository": "dataviz",
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "b411f63fde7b515fb23e6af7917f6c8f83538165e6115157deeccf4f864229d2",
-      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained. PR 282: pin design-system-vue to main 0.41.0-next.2 and verify published declarations during build."
+      "destinationSha256": "e0a4c408182e00d6ce285eaedcf69d03923a8146e8560aba6300ab8a4e194b0e",
+      "note": "@sentropic/design-system-themes dependency bumped to 0.13.0 by the DC-2a wave 1 release (pin only); Vue devDependency pinned to 3.6.0-rc.15 and consumer peer range aligned to ^3.5 || ^3.6.0-0; explicit @vue/server-renderer devDependency pinned to the Vue runtime for test-utils resolution after npm ci; DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; dual classic/Vapor build scripts, exports and exact Vue toolchain pins aligned for the Vapor release; Vue Vapor SFC port: template rendering, scalar/slot contract and compatibility witnesses; upstream identity retained. PR 282: pin design-system-vue to main 0.41.0-next.2 and verify published declarations during build. ; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
     },
     {
       "repository": "dataviz",
@@ -6964,23 +6964,28 @@
     },
     {
       "destination": "packages/graph/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "cbaca5c325bceae3505a1bdce029967474bb083a599b7f5f1b548361e148c5b2"
     },
     {
       "destination": "packages/dataviz-core/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "12087bea880dbb261e9b89d437c314188a718d9abb67728bba31992fdd212f7d"
     },
     {
       "destination": "packages/dataviz-svelte/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "63dae099978f9e6cf25e942e3caeacaa339637f1e6419ad186afb14c2d784dc1"
     },
     {
       "destination": "packages/dataviz-react/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "5ae027756c64ae9c1f2edb3d08f8d30889036e7e759f31c2cd8333fb40bed848"
     },
     {
       "destination": "packages/dataviz-vue/LICENSE.THIRD-PARTY.md",
-      "status": "generated-notices"
+      "status": "generated-notices",
+      "sha256": "20c9426d7f9352e05ca88e65e84af138d55ca41bd05c7f78570d4c40efdd17fc"
     },
     {
       "destination": "packages/dataviz-vue/bench/build-sfc.sha256",

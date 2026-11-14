@@ -83,6 +83,8 @@ jobs:
         run: |
           npm ci
           npm --workspace packages/skills run build
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-skills
       - name: Publish skills
         run: npm publish --workspace @sentropic/design-system-skills --access public
 

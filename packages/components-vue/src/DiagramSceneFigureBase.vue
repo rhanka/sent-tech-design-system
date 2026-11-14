@@ -1,19 +1,18 @@
 <script setup lang="ts">
+import DiagramErdNode from "./DiagramErdNode.vue";
+import DiagramSceneFallback from "./DiagramSceneFallback.vue";
 defineOptions({ name: 'DiagramSceneFigureBase' });
+import { useDiagramSceneViewport } from './useDiagramSceneViewport.js';
 import { getDiagramGlyph } from './diagram-icons/registry.js';
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, useId, watch } from 'vue';
-import { renderErdCardSvg, renderErdTable, clampZoom, createLayoutCache, FIT_ASPECT, zoomReadout, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
-import { measureRenderedBounds } from './diagramRenderedBounds.js';
-import type { SceneModel } from './diagramSceneModel.js';
-import { measureRenderedSceneFont } from './diagramFontMeasure.js';
-import type { CardLineMeasure } from './diagramCardModel.js';
+import { createLayoutCache, type Rect, type LayoutResult } from '@sentropic/diagram-canvas';
 import { sceneContentSize, type DiagramSceneSize } from './diagramSceneModel.js';
 import { DEFAULT_FLOW_STRINGS } from '@sentropic/diagram-canvas/flowModel';
 import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
-import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, DEFAULT_SCENE_TARGET_WIDTH, displayedRects, layoutScene, parseDurationMs, parseEasing, parseScale, rectsOf, resolveScene, resolveZoom, sameRects, sceneFit, sceneTextRows, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
+import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -47,11 +46,11 @@ const defaults: DiagramSceneFigureLabels = {
 };
 const strings = computed(() => ({ ...defaults, ...props.labels }));
 const arrowId = 'diagram-arrow-' + useId();
-const browserMeasure = shallowRef<CardLineMeasure>();
-const measure = computed(() => sceneCardMeasure(props.measure ?? browserMeasure.value ?? defaultCardMeasure));
-const tokenMetrics = shallowRef<Record<string, number>>({});
-const effectiveMetrics = computed(() => ({ ...tokenMetrics.value, ...props.metrics }));
-const measureLines = computed(() => props.measureLines ?? cardLineMeasurer(measure.value));
+const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
+    fit, zoom, readout, placement, viewportStyle, holdZoom,
+    setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
+        props, () => scene.value, camera => emit('cameraChange', camera));
+defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
 let previousOrientation: SceneOrientations | undefined;
@@ -100,112 +99,6 @@ onMounted(() => {
         emit('update:contentSize', size);
     }, { immediate: true });
 });
-const frameEl = shallowRef<HTMLElement>();
-const viewportEl = shallowRef<HTMLElement>();
-const viewWidth = shallowRef<number>();
-const windowHeight = shallowRef<number>();
-const maxDisplayScale = shallowRef<number>();
-const minReadableScale = shallowRef<number>();
-const requestedZoom = shallowRef<number>();
-let atFit = true;
-const renderedBounds = shallowRef<{ scene: SceneModel; bounds: Rect }>();
-const cameraBounds = computed(() => renderedBounds.value?.scene === scene.value ? renderedBounds.value?.bounds : scene.value?.bounds);
-function readRenderedBounds() {
-    if (frameEl.value === undefined || scene.value === undefined) return;
-    const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
-    if (bounds !== undefined && bounds !== scene.value.bounds) {
-        if (atFit && (renderedBounds.value === undefined || renderedBounds.value.scene === scene.value)) requestedZoom.value = undefined;
-        renderedBounds.value = { scene: scene.value, bounds };
-    }
-}
-onMounted(() => { watch(scene, () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
-function token(name: string) {
-    return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
-}
-function readCameraTokens() {
-    const values: Record<string, number> = {};
-    for (const key of ["gapMin","gapMinBlock","gapBase","gapBaseBlock","trackSpacing","trackSpacingBlock","labelBand","gapMax","bundleLabelMaxWidth","containerPadding"]) {
-        const value = parseFloat(token('--st-component-diagramScene-' + key) ?? '');
-        if (Number.isFinite(value)) values[key] = value;
-    }
-    if (JSON.stringify(values) !== JSON.stringify(tokenMetrics.value)) tokenMetrics.value = values;
-    maxDisplayScale.value = parseScale(token('--st-component-diagramScene-maxDisplayScale'));
-    minReadableScale.value = parseScale(token('--st-component-diagramScene-minReadableScale'));
-}
-function measureFrame() {
-    if (frameEl.value === undefined)
-        return;
-    const width = viewportEl.value?.clientWidth || frameEl.value.clientWidth;
-    viewWidth.value = width > 0 ? width : undefined;
-    windowHeight.value = window.innerHeight > 0 ? window.innerHeight : undefined;
-    readCameraTokens();
-    if (atFit)
-        requestedZoom.value = undefined;
-}
-const measured = computed(() => viewWidth.value !== undefined && windowHeight.value !== undefined);
-const fit = computed(() => sceneFit({
-    ...(cameraBounds.value === undefined ? {} : { bounds: cameraBounds.value }),
-    viewWidth: viewWidth.value ?? props.targetWidth ?? DEFAULT_SCENE_TARGET_WIDTH,
-    windowHeight: windowHeight.value ?? Number.POSITIVE_INFINITY,
-    ...(maxDisplayScale.value === undefined ? {} : { maxDisplayScale: maxDisplayScale.value }),
-    ...(minReadableScale.value === undefined ? {} : { minReadableScale: minReadableScale.value }),
-}));
-const zoom = computed(() => resolveZoom(requestedZoom.value, fit.value));
-const readout = computed(() => zoomReadout(zoom.value, fit.value.maxZoom));
-const placement = computed(() => scenePlacement(cameraBounds.value, zoom.value, fit.value));
-const camera = computed<DiagramSceneCamera>(() => ({
-    zoom: zoom.value, readout: readout.value, minZoom: fit.value.minZoom,
-    maxZoom: fit.value.maxZoom, fitZoom: fit.value.zoom,
-    pans: placement.value.overflowX || placement.value.overflowY,
-}));
-watch(() => props.document.documentId, () => { atFit = true; requestedZoom.value = undefined; browserMeasure.value = undefined; renderedBounds.value = undefined; });
-watch([measured, zoom, fit], () => {
-    if (!measured.value)
-        return;
-    requestedZoom.value = zoom.value;
-    if (zoom.value !== fit.value.zoom)
-        atFit = false;
-});
-onMounted(() => {
-    watch(camera, value => emit('cameraChange', value), { immediate: true });
-});
-function setZoom(next: number) {
-    if (!Number.isFinite(next))
-        return;
-    readCameraTokens();
-    const before = zoom.value;
-    const target = clampZoom(next, fit.value);
-    atFit = target === fit.value.zoom;
-    if (target === before)
-        return;
-    const element = viewportEl.value;
-    const centre = element === undefined ? undefined : {
-        x: (element.scrollLeft + element.clientWidth / 2 - placement.value.translateX) / before,
-        y: (element.scrollTop + element.clientHeight / 2 - placement.value.translateY) / before,
-    };
-    requestedZoom.value = target;
-    if (element !== undefined && centre !== undefined)
-        void nextTick(() => {
-            element.scrollLeft = centre.x * zoom.value + placement.value.translateX - element.clientWidth / 2;
-            element.scrollTop = centre.y * zoom.value + placement.value.translateY - element.clientHeight / 2;
-        });
-}
-function zoomIn() { setZoom(zoom.value * ZOOM_STEP_RATIO); }
-function zoomOut() { setZoom(zoom.value / ZOOM_STEP_RATIO); }
-function fitToFrame() {
-    readCameraTokens();
-    readRenderedBounds();
-    atFit = true;
-    requestedZoom.value = fit.value.zoom;
-    void nextTick(() => {
-        if (viewportEl.value) {
-            viewportEl.value.scrollLeft = 0;
-            viewportEl.value.scrollTop = 0;
-        }
-    });
-}
-function getCamera() { return camera.value; }
-defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 function onKeydown(event: KeyboardEvent) {
     if (event.ctrlKey || event.metaKey || event.altKey)
         return;
@@ -222,12 +115,6 @@ function onKeydown(event: KeyboardEvent) {
     else
         return;
     event.preventDefault();
-}
-function onWheel(event: WheelEvent) {
-    if (!event.ctrlKey && !event.metaKey)
-        return;
-    event.preventDefault();
-    setZoom(zoom.value * Math.exp(-event.deltaY * WHEEL_ZOOM_RATE));
 }
 const touches = new Map<number, {
     x: number;
@@ -309,45 +196,14 @@ watch(sceneRects, next => {
     frameHandle = requestAnimationFrame(step);
 }, { flush: 'pre' });
 watch(displayed, value => { shown = value; }, { flush: 'post' });
-let observer: ResizeObserver | undefined;
-let mountedViewport: HTMLElement | undefined;
-let fontsActive = true;
-onMounted(() => {
-    measureFrame();
-    window.addEventListener('resize', measureFrame);
-    observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measureFrame);
-    if (frameEl.value)
-        observer?.observe(frameEl.value);
-    mountedViewport = viewportEl.value;
-    mountedViewport?.addEventListener('wheel', onWheel, { passive: false });
-    {
-        watch([scene, () => props.measure, () => props.measureLines], ([current], _previous, cleanup) => {
-            if (props.measure !== undefined || props.measureLines !== undefined) return;
-            if (current === undefined || browserMeasure.value !== undefined) return;
-            let active = true;
-            cleanup(() => { active = false; });
-            void document.fonts?.ready.then(() => {
-                if (active && fontsActive && frameEl.value !== undefined)
-                    browserMeasure.value = measureRenderedSceneFont(frameEl.value, current, measure.value);
-            });
-        }, { immediate: true, flush: 'post' });
-    }
-});
-onUnmounted(() => {
-    fontsActive = false;
-    ownedCache.dispose();
-    stopFrames();
-    observer?.disconnect();
-    window.removeEventListener('resize', measureFrame);
-    mountedViewport?.removeEventListener('wheel', onWheel);
-    mountedViewport = undefined;
-});
+onUnmounted(() => { ownedCache.dispose(); stopFrames(); });
 function rectOf(node: SceneNodeModel) { return displayed.value.get(node.occurrence) ?? node.rect; }
 function nodeStyle(node: SceneNodeModel) {
     const rect = rectOf(node);
     return `left:${rect.x}px;top:${rect.y}px;width:${rect.width}px;height:${rect.height}px${origin.value !== undefined && !origin.value.has(node.occurrence) ? `;opacity:${eased.value}` : ''}`;
 }
 function toggleFold(node: SceneNodeModel) {
+    holdZoom();
     pendingFocus = { occurrence: node.occurrence, collapsed: !node.collapsed };
     const next = node.collapsed ? collapsedNow.value.filter(id => id !== node.occurrence) : [...collapsedNow.value, node.occurrence];
     if (props.collapsed === undefined)
@@ -383,13 +239,10 @@ function zonePropsOf(node: SceneNodeModel) {
         resolveGlyph: props.resolveGlyph ?? getDiagramGlyph });
     return projected.kind === 'zone' ? { ...projected.props, autoSize: true, height: rect.height } : undefined;
 }
-const erdTable = computed(() => props.document.profileRefs.includes("erd@1") ? renderErdTable(props.document) : "");
 const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
-const edgeLabelLineHeight = computed(() => measureLines.value({ text: "Mg", role: "edge-label", availableWidth: 400, allocatedLines: 1, folded: false }).height);
-const viewportStyle = computed(() => `${measured.value ? `height:${fit.value.fitHeight}px` : `aspect-ratio:${FIT_ASPECT}`};--st-diagram-zoom:${zoom.value};--st-diagram-label-line-height:${edgeLabelLineHeight.value}px`);
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
@@ -424,10 +277,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
               </svg>
               <div v-for="{ node, cardProps, zoneProps } in projectedNodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
-                <template v-if="node.kind === 'erd' && node.erd">
-                  <button class="st-diagramErd-toggle" type="button" :aria-label="node.collapsed ? strings.expand(node.erd.title) : strings.collapse(node.erd.title)" :aria-expanded="!node.collapsed" :style="`--st-erd-header-height: ${node.erd.headerHeight}px`" @click="toggleFold(node)">{{ node.erd.title }}</button>
-                  <div class="st-diagramErd-svg" v-html="renderErdCardSvg(node.erd)" />
-                </template>
+                <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="strings.expand" :collapse="strings.collapse" :toggle="() => toggleFold(node)" />
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
                 </template>
@@ -451,20 +301,11 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         </div>
       </div>
     </div>
-  <div v-if="scene" class="st-diagramSceneFigure-fallback"><p v-for="(row, i) in sceneTextRows(scene, props.document)" :key="i">{{ row }}</p></div>
-  <div v-if="erdTable" class="st-diagramErd-fallback" v-html="erdTable" />
+  <DiagramSceneFallback :scene="scene" :document="props.document" />
   </figure>
 </template>
 
 <style>
-  .st-diagramSceneFigure-fallback { position: absolute; width: var(--st-component-diagramCard-ruleHeight, 1px); height: var(--st-component-diagramCard-ruleHeight, 1px); padding: 0; margin: calc(-1 * var(--st-component-diagramCard-ruleHeight, 1px)); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-  .st-diagramErd-toggle { position: absolute; inset: 0 0 auto; height: var(--st-erd-header-height); width: 100%; background: transparent; border: 0; color: transparent; cursor: pointer; }
-  .st-diagramErd-svg { height: 100%; width: 100%; }
-
-  .st-diagramSceneFigure-edgeLabel[data-erd-label] { background: var(--st-semantic-surface-default); }
-  .st-diagramErd-fallback { grid-column: 1 / -1; overflow: auto; color: var(--st-semantic-text-primary); }
-  .st-diagramErd-toggle:focus-visible { outline: var(--st-component-diagramErd-strokeWidth) solid var(--st-semantic-border-interactive); outline-offset: calc(-1 * var(--st-component-diagramErd-strokeWidth)); }
   .st-diagramSceneFigure {
     /* Title and camera controls share the first row; the frame spans both. */
     align-items: center;

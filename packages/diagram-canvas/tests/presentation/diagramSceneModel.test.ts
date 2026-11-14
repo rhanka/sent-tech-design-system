@@ -20,6 +20,37 @@ const input: SceneLayoutInput = {
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); });
 
 describe("shared scene presentation (DC-2b)", () => {
+  it.each([0, 15, 20])('should keep drawing content reachable with a %i px horizontal scrollbar', (scrollbarHeight) => {
+    for (const height of [200, 472.015625, 800]) {
+      const bounds = { x: -20, y: -26, width: 1500, height };
+      const fit = sceneFit({ bounds, viewWidth: 390, windowHeight: 844, scrollbarHeight });
+      const placement = scenePlacement(bounds, fit.zoom, fit);
+      const viewportHeight = fit.fitHeight + scrollbarHeight;
+      expect(fit.zoom).toBe(.45);
+      expect(placement.overflowX).toBe(true);
+      expect(viewportHeight).toBeLessThanOrEqual(390 * 9 / 16);
+      expect(placement.overflowY).toBe(height === 800 || (height === 472.015625 && scrollbarHeight > 0));
+      if (!placement.overflowY) {
+        expect(placement.translateY + bounds.y * fit.zoom + bounds.height * fit.zoom)
+          .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
+      }
+    }
+  });
+  it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
+    const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
+    const fit = sceneFit({ bounds, viewWidth: 660, windowHeight: 900 });
+    expect(fit.zoom).toBeGreaterThan(.45);
+    expect(fit.zoom).toBeLessThan(.62);
+    expect(fit.fitHeight).toBeGreaterThanOrEqual(bounds.height * fit.zoom + 2);
+    expect(fit.fitHeight).toBeLessThan(bounds.height * fit.zoom + 2 + 1 / 64);
+    expect(scenePlacement(bounds, fit.zoom, fit)).toMatchObject({ overflowX: false, overflowY: false });
+    const narrow = sceneFit({ bounds, viewWidth: 400, windowHeight: 900 });
+    expect(narrow.zoom).toBe(.45);
+    const placement = scenePlacement(bounds, narrow.zoom, narrow);
+    expect(placement).toMatchObject({ overflowX: true, overflowY: false });
+    expect(placement.translateX + bounds.x * narrow.zoom).toBe(1);
+    expect(placement.contentWidth - bounds.width * narrow.zoom).toBe(2);
+  });
   it("should use either cache entry point and preserve the uncached result", () => {
     const cache = createLayoutCache();
     const layout = vi.spyOn(cache, "layout");
@@ -35,7 +66,7 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(layout).toHaveBeenCalledTimes(2);
   });
 
-  it("should reuse emitted label boxes and lines without measurements or placement searches", () => {
+  it("should preserve measured label sizes and lines while clearing connector paint without remeasuring", () => {
     const measureLines = vi.fn(pinnedMeasurer);
     const cache = createLayoutCache();
     const result = layoutScene({ ...input, cache, measureLines });
@@ -46,7 +77,7 @@ describe("shared scene presentation (DC-2b)", () => {
     const scene = resolveScene(result, { ...input, measureLines });
     expect(scene.labels.length).toBe(Object.keys(result.labelBoxes!).length);
     for (const label of scene.labels) {
-      expect(label.box).toBe(result.labelBoxes![label.occurrence]);
+      expect(label.box).toMatchObject({ width: result.labelBoxes![label.occurrence]!.width, height: result.labelBoxes![label.occurrence]!.height });
       expect(label.lines).toBe(result.measurements!.slots.find((slot) => slot.occurrence === label.occurrence && slot.role === "edge-label")!.layout.lines);
     }
     expect(place).not.toHaveBeenCalled();

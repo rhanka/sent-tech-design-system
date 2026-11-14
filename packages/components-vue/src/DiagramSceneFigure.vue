@@ -33,7 +33,7 @@ const hostEvents = {
 };
 // Retain the SFC camera/transition host for existing diagrams, and the shared
 // flow binding for documents carrying flow definitions or explicit flow inputs.
-// The classic host also supports cache, font measurement and content-size inputs.
+// Both hosts share viewport measurement, ERD rendering and accessible text fallbacks.
 const sceneHost = computed(() => props.document.typeDefinitions['flow-step'] !== undefined
   || props.flows !== undefined
   ? NumberedScene : DiagramSceneFigureBase);
