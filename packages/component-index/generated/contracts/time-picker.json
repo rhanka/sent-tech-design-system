@@ -1,8 +1,8 @@
 {
   "componentId": "time-picker",
   "contractSource": "derived",
-  "digest": "sha256:4fa8d334b5bb0ca3837738dfc24f4e4119e674750b2fa91c3a143b0ee3226597",
-  "entryDigest": "sha256:da9a049dd6c5e7f86087e28373c7f72cfe814601f981b66ede3201e018713dfc",
+  "digest": "sha256:75d94e7d79812fea5f0f49d2966290dc32064b2f329ada905964daaf098e9bfc",
+  "entryDigest": "sha256:0b918315f00d67c54bf604123345ea785ebafd80d0f2421098b8dd8a23f39f8b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

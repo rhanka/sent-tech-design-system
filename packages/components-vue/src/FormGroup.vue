@@ -3,8 +3,8 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type FormGroupProps = {
-  legend?: unknown;
-  helperText?: unknown;
+  legend?: string | number;
+  helperText?: string | number;
   class?: string;
 };
 

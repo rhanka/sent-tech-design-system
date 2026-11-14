@@ -4,9 +4,9 @@ import { useSlots, useId, computed, useAttrs } from 'vue';
 import { classNames } from './classNames.js';
 
 export type TextareaProps = {
-  label?: unknown;
-  helperText?: unknown;
-  errorText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
+  errorText?: string | number;
   invalid?: boolean;
   modelValue?: string;
   placeholder?: string;

@@ -62,10 +62,10 @@
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
-    "@sentropic/design-system-rich-text": "0.1.0",
+    "@sentropic/design-system-rich-text": "0.1.1",
     "@sentropic/design-system-themes": "0.14.0",
     "@sentropic/diagram-canvas": "0.2.0",
-    "@sentropic/graph": "0.3.0"
+    "@sentropic/graph": "0.3.1"
   },
   "peerDependencies": {
     "svelte": "^5.53.2",

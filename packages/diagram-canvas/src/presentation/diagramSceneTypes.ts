@@ -60,6 +60,8 @@ import type { SceneDocument, SceneView, ScenePresentation, SceneOccurrenceRef, S
     targetWidth?: number;
     /** Card text measurer, shared by the cards, the zones and the layout. */
     measure?: CardLineMeasure;
+    iconBindings?: import("./diagramSceneModel.js").SceneIconBindings;
+    strictIcons?: boolean;
     /** Layout line measurer. Defaults to the bridge over `measure`. */
     measureLines?: LineMeasurer;
     /** Controlled fold state: collapsed occurrence ids. */

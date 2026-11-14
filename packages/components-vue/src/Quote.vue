@@ -3,8 +3,8 @@ import { scalarContent } from './slotContent.js';
 import { classNames } from './classNames.js';
 
 export type QuoteProps = {
-  author?: unknown;
-  source?: unknown;
+  author?: string | number;
+  source?: string | number;
   class?: string;
 };
 

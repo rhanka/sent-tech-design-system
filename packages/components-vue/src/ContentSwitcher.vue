@@ -10,7 +10,7 @@ export type ContentSwitcherItem = {
   value?: string;
 
   /** @slot item-label */
-  label?: unknown;
+  label?: string | number;
   disabled?: boolean;
 };
 

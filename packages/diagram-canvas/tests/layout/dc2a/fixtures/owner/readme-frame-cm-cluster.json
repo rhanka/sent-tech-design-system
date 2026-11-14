@@ -1,0 +1,65 @@
+{
+  "id": "readme-frame-cm-cluster",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "cm-cluster"
+  },
+  "cards": [
+    {
+      "id": "cm-cluster",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "6. Integration",
+      "purpose": "Sentropic instances · cloud and external registries",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 4110,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "cluster-instances",
+      "parentId": "cm-cluster",
+      "container": false,
+      "folded": false,
+      "kicker": "INTER-INSTANCE",
+      "title": "Sentropic instances",
+      "purpose": "Contracts & exchanges via API",
+      "detail": "API: exposure · Cluster: integration",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 4126,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cluster-infra",
+      "parentId": "cm-cluster",
+      "container": false,
+      "folded": false,
+      "kicker": "PROVIDERS",
+      "title": "Cloud & registries",
+      "purpose": "K8s · transactional email · cloud",
+      "detail": "App Store · agents · MCP · deployment",
+      "footer": "service: Sentropic",
+      "icon": "cloud",
+      "old": {
+        "x": 4126,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": []
+}

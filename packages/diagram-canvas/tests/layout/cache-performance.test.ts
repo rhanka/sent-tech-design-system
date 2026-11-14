@@ -37,7 +37,13 @@ afterAll(() => {
 describe("DC-2b measured performance", () => {
   it("should revisit the first fixed-point fold states within 5 ms p95", () => {
     const cache = createLayoutCache();
-    const first = cache.layout(input.document, options);
+    // Content growth changes the orientation's hysteresis boundary. Seed
+    // the two-state fixed point before measuring cache revisits.
+    const seed = layoutDocument(input.document, options);
+    const seedClosed = layoutDocument(input.document, { ...options, collapsed: folded,
+      ...(seed.status === "laid-out" && seed.orientations !== undefined ? { previousOrientation: seed.orientations } : {}) });
+    const first = cache.layout(input.document, { ...options,
+      ...(seedClosed.status === "laid-out" && seedClosed.orientations !== undefined ? { previousOrientation: seedClosed.orientations } : {}) });
     expect(first.status).toBe("laid-out");
     let previous = first.status === "laid-out" ? first.orientations : undefined;
     const coldStart = performance.now();

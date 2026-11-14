@@ -1,8 +1,8 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:0716152dac1010ca2c80a500c141d6521482fec5ae26da23a2e45e5aa15b1e42",
-  "entryDigest": "sha256:67e8c10335fc64a17f142299bfbe646db49cca85bdd06140c787744ddfb5b36b",
+  "digest": "sha256:8a5cafbba7f68980229c42b76dda416365093ccd7138dda05977750670ee064d",
+  "entryDigest": "sha256:c9bf0e584379ca695215e62c58588b05c5aedf4f03bcc458489a917cc23bfbd0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -682,15 +682,42 @@
           "disabled": {
             "type": "boolean"
           },
-          "errorText": {},
-          "helperText": {},
+          "errorText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "id": {
             "type": "string"
           },
           "invalid": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "locale": {
             "type": "string"
           },
@@ -768,24 +795,6 @@
           "sourceType": "Date"
         },
         {
-          "name": "errorText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
           "name": "max",
           "reason": "runtime value is an object; JSON form is a string",
           "replacement": "{\"type\":\"string\",\"format\":\"date-time\"}",
@@ -834,7 +843,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:125f281993c31145b5d64f5bf72b1e76b82e8ce11cdc0836f29e72545f27ea33",
+        "declarationDigest": "sha256:7bc213f7c080c9f7d2f1de480587c2734457af1a0b4b97aea2e89f2a551ec50a",
         "declarationPath": "packages/components-vue/dist/DatePicker.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DatePickerProps",

@@ -1,0 +1,65 @@
+{
+  "id": "readme-frame-engram",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "engram"
+  },
+  "cards": [
+    {
+      "id": "engram",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "ENGRAM",
+      "title": "Engram · Curated Knowledge",
+      "purpose": "Enriched by AI, validated by humans · ontologies · memory",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 620,
+        "y": 1879.1437500000002,
+        "width": 1112,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "eng-memory",
+      "parentId": "engram",
+      "container": false,
+      "folded": false,
+      "kicker": "KNOWLEDGE",
+      "title": "Live agent memory",
+      "purpose": "D3 trans. · D1=C analytics · Git/D10",
+      "detail": "Surfaces: no backend or native driver",
+      "footer": "service: Engram",
+      "icon": "db",
+      "old": {
+        "x": 636,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "eng-ontologies",
+      "parentId": "engram",
+      "container": false,
+      "folded": false,
+      "kicker": "KNOWLEDGE",
+      "title": "Ontologies · WP9",
+      "purpose": "dev · track · archi · D1=C time",
+      "detail": "Governed profiles · typed exports",
+      "footer": "service: Engram",
+      "icon": "db",
+      "old": {
+        "x": 1256,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": []
+}

@@ -8,7 +8,8 @@
   "files": [
     "dist",
     "!dist/**/*.map",
-    "!dist/.srchash"
+    "!dist/.srchash",
+    "contracts"
   ],
   "type": "module",
   "license": "MIT",
@@ -46,6 +47,7 @@
       "types": "./dist/presentation/index.d.ts",
       "import": "./dist/presentation/index.js"
     },
+    "./diagram-anatomy": "./contracts/diagram-anatomy.v1.json",
     "./flowModel": {
       "types": "./dist/presentation/flowModel.d.ts",
       "import": "./dist/presentation/flowModel.js"
@@ -58,7 +60,7 @@
     "@sentropic/diagram-core": "0.1.0"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node ../../scripts/sync-diagram-spacing.mjs && tsc -p tsconfig.json",
     "check": "tsc -p tsconfig.check.json",
     "test": "vitest run"
   }

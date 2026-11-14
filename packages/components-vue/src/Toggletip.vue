@@ -6,8 +6,8 @@ import { classNames } from './classNames.js';
 export type ToggletipPlacement = 'top' | 'bottom' | 'start' | 'end';
 
 export type ToggletipProps = {
-  label?: unknown;
-  content?: unknown;
+  label?: string | number;
+  content?: string | number;
   open?: boolean;
   placement?: ToggletipPlacement;
   class?: string;

@@ -9,7 +9,7 @@ export type DropdownOption = {
   value: string;
 
   /** @slot option-label */
-  label?: unknown;
+  label?: string | number;
   disabled?: boolean;
 };
 

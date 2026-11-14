@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/graph",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Fast WebGL-oriented graph rendering primitives for known-position graphs.",
   "license": "MIT",
   "repository": {
@@ -52,9 +52,9 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup --config tsup.config.ts",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsup --config tsup.config.ts",
     "test": "vitest run --config vitest.config.ts",
-    "golden:build": "tsup --config tsup.config.ts --no-dts",
+    "golden:build": "npm run build -- --no-dts",
     "test:golden": "npm run golden:build && vitest run --config vitest.config.ts tests/golden/golden-harness.test.ts",
     "golden:webgl:preflight": "node tests/golden/webgl-preflight.mjs",
     "test:golden:webgl": "npm run golden:build && npm run golden:webgl:preflight && vitest run --config vitest.config.ts tests/golden/",

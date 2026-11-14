@@ -1,8 +1,8 @@
 {
   "componentId": "filter-pill",
   "contractSource": "derived",
-  "digest": "sha256:55a2601f5d15380110bfcd15f8dfae78ad238be20ba17476cafdcface709b2a0",
-  "entryDigest": "sha256:0aa5fd9f2072c0e9bd4382c2fcd3002864a8e152b312ead20853a0acd8e7b2bc",
+  "digest": "sha256:9ddfb2f0c709bdc28b914a6bf8120e59f85e59c817070091b5c4feb695ca98fb",
+  "entryDigest": "sha256:cdf99d736def2bd61ab190630fa2e9d00eba3b7de7a958975e7a3555c11f9150",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {

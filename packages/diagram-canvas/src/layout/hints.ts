@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * Recursive authored layout hints (M3 §4.7).
  *
@@ -210,12 +211,12 @@ export interface ResolvedRowGaps {
  */
 export function resolveRowGaps(hints: LayoutHints | undefined, metrics: LayoutMetrics): ResolvedRowGaps {
   return {
-    cardX: hints?.cardGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
-    cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
-    zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? DEFAULT_ROW_GAP,
-    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? DEFAULT_ROW_GAP,
-    maxX: metrics.gapInlineMax ?? DEFAULT_ROW_GAP_MAX,
-    maxY: metrics.gapBlockMax ?? DEFAULT_ROW_GAP_MAX,
+    cardX: hints?.cardGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
+    cardY: hints?.cardGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
+    zoneX: hints?.zoneGapX ?? metrics.rowGapInline ?? metrics.gapMin ?? DEFAULT_ROW_GAP,
+    zoneY: hints?.zoneGapY ?? metrics.rowGapBlock ?? metrics.gapMinBlock ?? spacing.gapMinBlock,
+    maxX: metrics.gapInlineMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
+    maxY: metrics.gapBlockMax ?? metrics.gapMax ?? DEFAULT_ROW_GAP_MAX,
   };
 }
 

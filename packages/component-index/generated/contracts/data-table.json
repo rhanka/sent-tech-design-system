@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:071f4cf2d3e68137d98f18cd637881a55dd0e67b260d05d52467a1e6083a70af",
-  "entryDigest": "sha256:f920c0a08b252c72c9a1c3c337d17b2fcfbfadedf3dead37cb946197abcb1429",
+  "digest": "sha256:962c280ddebc1a79c97b1aab5c9af60ecb9c8520d59dc2e9577b15bb519d951e",
+  "entryDigest": "sha256:b1811363c716e96b3f384cf9da6714495528f405633611bfeff0b295cabb1e8e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -874,25 +874,13 @@
           "kind": "function",
           "name": "DataTableColumn.cell",
           "reason": "function surface has no JSON Schema form",
-          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => VNodeChild"
+          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => string | number"
         },
         {
           "kind": "function",
           "name": "DataTableColumn.cellDecoration",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(row: DataTableRow, value: unknown, colId: string) => CellDecoration | null"
-        },
-        {
-          "kind": "node",
-          "name": "DataTableColumn.label",
-          "reason": "renderable-node surface has no JSON Schema form",
-          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
-        },
-        {
-          "kind": "node",
-          "name": "caption",
-          "reason": "renderable-node surface has no JSON Schema form",
-          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
         },
         {
           "kind": "function",
@@ -1002,6 +990,16 @@
               "key": {
                 "type": "string"
               },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "sortable": {
                 "type": "boolean"
               },
@@ -1048,6 +1046,16 @@
         },
         "additionalProperties": false,
         "properties": {
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -1225,7 +1233,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:4b6227a6806be747ebd47b59164e92033cfbdbf86ebcc15348dcbfeab25de6e8",
+        "declarationDigest": "sha256:9579aca3550c6fc5feb7ad5ba9dbaeed0b2ed002de4801d0abbbc9f4fd38ee17",
         "declarationPath": "packages/components-vue/dist/DataTable.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",

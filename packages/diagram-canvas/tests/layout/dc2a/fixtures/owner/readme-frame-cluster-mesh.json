@@ -1,0 +1,510 @@
+{
+  "id": "readme-frame-cluster-mesh",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "cluster-mesh"
+  },
+  "cards": [
+    {
+      "id": "cluster-mesh",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "Sentropic · Agentic Platform",
+      "purpose": "API · workflows · catalogs · security and observability · storage · integration",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 246,
+        "y": 549.3875,
+        "width": 4372,
+        "height": 1169.7562500000001
+      }
+    },
+    {
+      "id": "cm-catalog",
+      "parentId": "cluster-mesh",
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "3. Catalogs",
+      "purpose": "MCP · AI · resources · UI, canvases and apps",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 882,
+        "y": 722.7750000000001,
+        "width": 1764,
+        "height": 980.3687500000001
+      }
+    },
+    {
+      "id": "cat-mcp",
+      "parentId": "cm-catalog",
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "MCP · Connectors",
+      "purpose": "Resources · connectors · synchronous registry",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 898,
+        "y": 937.7562500000001,
+        "width": 1732,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "cm-storage",
+      "parentId": "cluster-mesh",
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "4. Storage",
+      "purpose": "Neutral DB interface · SQLite / Postgres first",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 2806,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "cm-security",
+      "parentId": "cluster-mesh",
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "5. Security and observability",
+      "purpose": "Responsibilities separate from AI capabilities",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 3458,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "cm-cluster",
+      "parentId": "cluster-mesh",
+      "container": true,
+      "folded": false,
+      "kicker": "SENTROPIC",
+      "title": "6. Integration",
+      "purpose": "Sentropic instances · cloud and external registries",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 4110,
+        "y": 722.7750000000001,
+        "width": 492,
+        "height": 702.98125
+      }
+    },
+    {
+      "id": "cm-apis",
+      "parentId": "cluster-mesh",
+      "container": false,
+      "folded": false,
+      "kicker": "SERVICE",
+      "title": "1. Server API",
+      "purpose": "HTTP / SSE / MCP façades",
+      "detail": "Transport and service access contracts",
+      "footer": "service: Sentropic",
+      "icon": "server",
+      "old": {
+        "x": 262,
+        "y": 722.7750000000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cm-workflow",
+      "parentId": "cluster-mesh",
+      "container": false,
+      "folded": false,
+      "kicker": "SERVICE",
+      "title": "2. Agent workflows",
+      "purpose": "CLI, Cowork, ADK sessions, etc.",
+      "detail": "WorkspaceBindingStore · PTY/API",
+      "footer": "service: Sentropic",
+      "icon": "server",
+      "old": {
+        "x": 262,
+        "y": 994.7750000000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "mcp-comments",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Harness · h2a tools",
+      "purpose": "annotate, Track, Focus, sessions, etc.",
+      "detail": "h2a tools · annotation via comments",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 914,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "mcp-tools",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Memories/ontologies",
+      "purpose": "6 memory tools · ontology_call",
+      "detail": "Memory and ontology contracts",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 1534,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "mcp-connectors",
+      "parentId": "cat-mcp",
+      "container": false,
+      "folded": false,
+      "kicker": "MCP · TOOLS",
+      "title": "Connectors to broker",
+      "purpose": "Gmail · GChat · Atlassian · GitHub",
+      "detail": "Notion·Slack·OpenERP·WaveApps·Stripe",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 2154,
+        "y": 1111.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cat-ai",
+      "parentId": "cm-catalog",
+      "container": false,
+      "folded": false,
+      "kicker": "CATALOGUE",
+      "title": "AI catalog",
+      "purpose": "LLM, judge, vision/SAM-YOLO, TTS, STT",
+      "detail": "Mesh/gateway; JEV branch; validate AI",
+      "footer": "service: Sentropic",
+      "icon": "brain",
+      "old": {
+        "x": 914,
+        "y": 1487.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cat-resources",
+      "parentId": "cm-catalog",
+      "container": false,
+      "folded": false,
+      "kicker": "CATALOGUE",
+      "title": "Agent catalog",
+      "purpose": "Skills · tools · agents · workflows · apps",
+      "detail": "Artifacts · C08",
+      "footer": "service: Sentropic",
+      "icon": "robot",
+      "old": {
+        "x": 2154,
+        "y": 1487.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cat-ui",
+      "parentId": "cm-catalog",
+      "container": false,
+      "folded": false,
+      "kicker": "CATALOGUE",
+      "title": "UI · canvases/apps",
+      "purpose": "bpmn-canvas · Sentropic templater",
+      "detail": "Production UI · artifacts · MCP/ui://",
+      "footer": "service: Sentropic",
+      "icon": "window",
+      "old": {
+        "x": 1534,
+        "y": 1487.1437500000002,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "store-models",
+      "parentId": "cm-storage",
+      "container": false,
+      "folded": false,
+      "kicker": "STORAGE",
+      "title": "Model serialization",
+      "purpose": "Transactional · analytical · live graph",
+      "detail": "Live graph in DB · annotations",
+      "footer": "service: Sentropic",
+      "icon": "db",
+      "old": {
+        "x": 2822,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "store-artifacts",
+      "parentId": "cm-storage",
+      "container": false,
+      "folded": false,
+      "kicker": "STORAGE",
+      "title": "Artifacts",
+      "purpose": "@sentropic/artifacts · SHA-256",
+      "detail": "Blobs/canvas/UI · DL-8/13/17 lifecycle",
+      "footer": "service: Sentropic",
+      "icon": "db",
+      "old": {
+        "x": 2822,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sec-access",
+      "parentId": "cm-security",
+      "container": false,
+      "folded": false,
+      "kicker": "TRUST",
+      "title": "Access & seats",
+      "purpose": "IAM · NHI · 2FA · rights · consent",
+      "detail": "MFA #695 · central custody #596",
+      "footer": "service: Sentropic",
+      "icon": "shield",
+      "old": {
+        "x": 3474,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "sec-observe",
+      "parentId": "cm-security",
+      "container": false,
+      "folded": false,
+      "kicker": "TRUST",
+      "title": "Audit & observability",
+      "purpose": "Logs · metrics · traces · receipts",
+      "detail": "auditId · submitted/committed/accepted",
+      "footer": "service: Sentropic",
+      "icon": "shield",
+      "old": {
+        "x": 3474,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cluster-instances",
+      "parentId": "cm-cluster",
+      "container": false,
+      "folded": false,
+      "kicker": "INTER-INSTANCE",
+      "title": "Sentropic instances",
+      "purpose": "Contracts & exchanges via API",
+      "detail": "API: exposure · Cluster: integration",
+      "footer": "service: Sentropic",
+      "icon": "link",
+      "old": {
+        "x": 4126,
+        "y": 937.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "cluster-infra",
+      "parentId": "cm-cluster",
+      "container": false,
+      "folded": false,
+      "kicker": "PROVIDERS",
+      "title": "Cloud & registries",
+      "purpose": "K8s · transactional email · cloud",
+      "detail": "App Store · agents · MCP · deployment",
+      "footer": "service: Sentropic",
+      "icon": "cloud",
+      "old": {
+        "x": 4126,
+        "y": 1209.7562500000001,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-api-mcp",
+      "source": "cm-apis",
+      "target": "mcp-tools",
+      "label": "Exposes MCP tools"
+    },
+    {
+      "id": "e-api-comments",
+      "source": "cm-apis",
+      "target": "mcp-comments",
+      "label": "Exposes MCP harness"
+    },
+    {
+      "id": "e-api-connectors",
+      "source": "cm-apis",
+      "target": "mcp-connectors",
+      "label": "MCP broker"
+    },
+    {
+      "id": "e-api-ai",
+      "source": "cm-apis",
+      "target": "cat-ai",
+      "label": "Exposes AI"
+    },
+    {
+      "id": "e-api-catalog",
+      "source": "cm-apis",
+      "target": "cat-resources",
+      "label": "Exposes catalogue"
+    },
+    {
+      "id": "e-apis-wf",
+      "source": "cm-apis",
+      "target": "cm-workflow",
+      "label": "Calls"
+    },
+    {
+      "id": "e-api-sec",
+      "source": "cm-apis",
+      "target": "sec-access",
+      "label": "Authorisation"
+    },
+    {
+      "id": "e-api-cluster",
+      "source": "cm-apis",
+      "target": "cluster-instances",
+      "label": "Integration"
+    },
+    {
+      "id": "e-wf-ai",
+      "source": "cm-workflow",
+      "target": "cat-ai",
+      "label": "AI calls"
+    },
+    {
+      "id": "e-wf-store",
+      "source": "cm-workflow",
+      "target": "store-models",
+      "label": "Session states"
+    },
+    {
+      "id": "e-wf-observe",
+      "source": "cm-workflow",
+      "target": "sec-observe",
+      "label": "Traces and receipts"
+    },
+    {
+      "id": "e-ai-sec",
+      "source": "cat-ai",
+      "target": "sec-access",
+      "label": "Custody and rights"
+    },
+    {
+      "id": "e-comments-sec",
+      "source": "mcp-comments",
+      "target": "sec-access",
+      "label": "Authorisation"
+    },
+    {
+      "id": "e-comments-store",
+      "source": "mcp-comments",
+      "target": "store-models",
+      "label": "Persists annotation"
+    },
+    {
+      "id": "e-comments-inbox",
+      "source": "mcp-comments",
+      "target": "cm-workflow",
+      "label": "Authorised delivery"
+    },
+    {
+      "id": "e-sec-observe",
+      "source": "sec-access",
+      "target": "sec-observe",
+      "label": "Access audit"
+    },
+    {
+      "id": "e-catalog-artifacts",
+      "source": "cat-resources",
+      "target": "store-artifacts",
+      "label": "References / hosting"
+    },
+    {
+      "id": "e-artifacts-infra",
+      "source": "store-artifacts",
+      "target": "cluster-infra",
+      "label": "Release to deploy"
+    },
+    {
+      "id": "e-api-provider",
+      "source": "cm-apis",
+      "target": "cluster-infra",
+      "label": "Provider integrations"
+    },
+    {
+      "id": "e-infra-observe",
+      "source": "cluster-infra",
+      "target": "sec-observe",
+      "label": "Deployment receipts"
+    },
+    {
+      "id": "e-ui-resources",
+      "source": "cat-ui",
+      "target": "cat-resources",
+      "label": "Logical catalogue"
+    },
+    {
+      "id": "e-ui-artifacts",
+      "source": "cat-ui",
+      "target": "store-artifacts",
+      "label": "UI / app hosting"
+    },
+    {
+      "id": "e-canvas-mcp",
+      "source": "cat-ui",
+      "target": "mcp-tools",
+      "label": "MCP / ui:// connection"
+    }
+  ]
+}

@@ -8,14 +8,14 @@
  * `./diagramCardModel.js` (shared projection + line layout).
  *
  * Exactly one rule element, drawn non-scaling (§5.4, DIF-07, DH-04); fixed
- * 460 × 200 box; square corners; footer pinned at 9.25; no shortening —
- * over-long slots are reported through the returned diagnostics (DC-D4) and
- * the result is refused (no `svg`): overflow = refusal, never a truncation.
+ * 460 × 200 box; square corners; footer pinned at 9.25. Long slots use
+ * measured ellipses (owner A14); title/description retain the complete text
+ * and informational diagnostics report the hidden length.
  */
 import {
+  cardFullText,
   CARD_GEOMETRY,
   defaultCardMeasure,
-  firstOverflowDiagnostic,
   layoutCard,
   projectCardProps,
   type CardDiagnostic,
@@ -99,9 +99,9 @@ export function renderCardContent(
   props: DiagramCardProps,
   measure: CardLineMeasure = defaultCardMeasure,
 ): { readonly content: string; readonly layout: ReturnType<typeof layoutCard> } {
-  const g = CARD_GEOMETRY;
   const layout = layoutCard(props, measure);
-  const parts: string[] = [];
+  const g = { ...CARD_GEOMETRY, height: layout.box.height };
+  const parts: string[] = [`<title>${escapeXml(cardFullText(props))}</title><desc>${escapeXml(cardFullText(props))}</desc>`];
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
   // (owner criterion 5); the dash pattern is the kit's `4 5`.
@@ -109,11 +109,11 @@ export function renderCardContent(
     `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
   );
   parts.push(
-    `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-accent, var(--st-semantic-data-category1))"/>`,
+    `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))"/>`,
   );
-  if (layout.iconBox !== undefined && props.icon !== undefined) {
+  if (layout.iconBox !== undefined) {
     parts.push(
-      iconGroupFor(props.icon, props.iconGlyph, layout.iconBox.x, layout.iconBox.y, layout.iconBox.size),
+      iconGroupFor(layout.icon.name, layout.icon.glyph, layout.iconBox.x, layout.iconBox.y, layout.iconBox.size),
     );
   }
   if (layout.kicker.length > 0) {
@@ -194,16 +194,7 @@ export function toggleGlyph(
   return `<g class="st-diagramCard-toggle" data-toggle="true" data-collapsed="${toggle.collapsed ? "true" : "false"}" transform="translate(${box.x} ${box.y})" color="var(--st-semantic-text-primary)" aria-hidden="true"><title>${escapeXml(toggle.label)}</title><rect width="${box.size}" height="${box.size}" fill="transparent"/>${glyph}</g>`;
 }
 
-/**
- * The card render result. Overflow = refusal (owner criterion): when the
- * layout raises `card-overflow` — a too-wide line, a line-count overflow, or
- * a header+body height that does not fit above the pinned rule — the result
- * is `{ kind: "refused" }` with NO `svg`: no normal card is emitted until the
- * content fits. The diagnostics carry the original slot text so the host
- * knows what to shorten. The Svelte `DiagramCard` renders the matching
- * refusal state (`data-card-refused`) on the same predicate — one contract,
- * both renderers.
- */
+/** Content is always rendered (owner A11). The legacy refused variant remains for source compatibility. */
 export type CardSvgResult =
   | {
       readonly kind: "rendered";
@@ -220,19 +211,14 @@ export type CardSvgResult =
 /**
  * Render one atomic card as a standalone SVG string. `measure` defaults to
  * the deterministic greedy wrapper; production hosts pass their measured
- * `LineMeasurer` adapter. Returns a refused result (no `svg`) when the
- * content overflows its frozen allocation.
+ * `LineMeasurer` adapter. Returns all content and any hard-cap diagnostics (owner A11).
  */
 export function renderCardSvg(
   props: DiagramCardProps,
   measure: CardLineMeasure = defaultCardMeasure,
 ): CardSvgResult {
-  const g = CARD_GEOMETRY;
   const { content, layout } = renderCardContent(props, measure);
-  const refused = firstOverflowDiagnostic(layout.diagnostics);
-  if (refused !== undefined) {
-    return { kind: "refused", diagnostics: layout.diagnostics, layout };
-  }
+  const g = { ...CARD_GEOMETRY, height: layout.box.height };
   const overflowSlots = layout.diagnostics
     .filter((diagnostic) => diagnostic.code === "card-overflow")
     .map((diagnostic) => diagnostic.slot);
@@ -241,8 +227,7 @@ export function renderCardSvg(
   );
   const firstOverflow = overflowSlots.length === 0 ? undefined : overflowSlots[0];
   const svg =
-    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" style="font-family:${FONT_STACK}">` +
-    `<title>${escapeXml(props.title)}</title>` +
+    `<svg xmlns="http://www.w3.org/2000/svg" class="st-diagramCard" data-entity="${escapeXml(props.entityId)}"${props.tone === undefined ? "" : ` data-tone="${escapeXml(props.tone)}"`}${props.proposed === true ? ' data-proposed="true"' : ""}${firstOverflow === undefined ? "" : ` data-card-overflow="${firstOverflow}"`}${unknownIcon ? ` data-card-icon-unknown=""` : ""} width="${g.width}" height="${g.height}" viewBox="0 0 ${g.width} ${g.height}" role="img" aria-label="${escapeXml(props.title)}" aria-description="${escapeXml(cardFullText(props))}" style="font-family:${FONT_STACK}">` +
     content +
     `</svg>`;
   return {

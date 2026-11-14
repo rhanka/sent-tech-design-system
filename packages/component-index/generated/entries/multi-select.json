@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:9cde39190b451aefcb84ac5ba2a2bff05e789335ef14213b4de035622ff0fef1",
+      "digest": "sha256:78ed231877faa8cbee69734e178ad07034c01fdd095a75691a5ba8b875641ce0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MultiSelect.vue",
@@ -40,7 +40,7 @@
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:bd9e62f4674e7f6dc17c81c1e8f44f13e38531ad5da3099b3c1a9e197b81511f",
+  "digest": "sha256:51fbcc009bd63465732b125c7587fc3b31663e7b7aa5550311fc1e69a162f47b",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

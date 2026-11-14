@@ -13,7 +13,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ed526db4baaec40cf7353279893d0e857c7b86cad754cdd9b9b52981fcca090f",
+      "digest": "sha256:eaff22916582ce1716ab253d313d0ffd4b1e01101fd9d654f694938c3cd3634a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/rich-text-editor/RichTextEditor.vue",
@@ -24,7 +24,7 @@
     "en": "Structured document editor with capture, Markdown profiles, and collaboration.",
     "fr": "Éditeur de documents structurés, avec capture, profils Markdown et collaboration."
   },
-  "digest": "sha256:bd359c11e0398920b6a0b8ce1cc143baac3102617ca1f4eeda47cc74111441cf",
+  "digest": "sha256:5ef00d6c45da7f5ee81d1fef7bfb7dbb2bc0761f0be4e4f25937a74f9d8b0255",
   "displayName": "RichTextEditor",
   "format": "component-entry/v1",
   "frameworks": [

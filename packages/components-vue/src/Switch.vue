@@ -4,8 +4,8 @@ import { computed } from 'vue';
 import { classNames } from './classNames.js';
 
 export type SwitchProps = {
-  label?: unknown;
-  helperText?: unknown;
+  label?: string | number;
+  helperText?: string | number;
   modelValue?: boolean;
   checked?: boolean;
   disabled?: boolean;

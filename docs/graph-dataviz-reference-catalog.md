@@ -152,7 +152,7 @@ Toutes les lignes → **GD-M5-PROCESSING**, couverture **planned**. Aucun moteur
 
 ## 4. Sentropic : calcul réel, transmission et builders
 
-Base : inventaires fournis graphify HEAD `8f19554cea3a4397fd66a90c7e9fd5ea54c81626` et dataviz HEAD `0869ae5b59bb308be7d43fbe0de58c5487e11f25`. Les deux sources `ForceGraph.svelte` DS et `dataviz-core/forceGraph.ts` ont été relues directement pendant ce relevé ; les inventaires existants sont exploités pour les autres fichiers.
+Base : inventaires fournis graphify HEAD `58feb61e292776bfd07e19d7874eb4343bedf6a9` et dataviz HEAD `0869ae5b59bb308be7d43fbe0de58c5487e11f25`. Les deux sources `ForceGraph.svelte` DS et `dataviz-core/forceGraph.ts` ont été relues directement pendant ce relevé ; les inventaires existants sont exploités pour les autres fichiers.
 
 `force` du registre graph est un **passthrough**. Le vrai calcul Barnes–Hut FA2 est hors package, dans `graphify/src/graph-layout.ts`. Le builder dataviz ne calcule **aucune position**. Le nom `ForceGraph` ne permet donc pas à lui seul d’identifier le solveur. Le worker/client et le sélecteur build-time sont des modes d’exécution/assemblage, pas trois moteurs supplémentaires.
 
@@ -160,19 +160,19 @@ Chaque entrée ci-dessous → **GD-M5-PROCESSING** pour la qualification de couv
 
 | Entrée source | Symbole | Comportement réel |
 | --- | --- | --- |
-| [graph-registry-force](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-registry.ts) | forceLayout | Passthrough: copie positions précalculées, aucune simulation. |
-| [graph-static](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout.ts) | createStaticLayoutEngine | Frame statique. |
-| [graph-typed-layer](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-registry.ts) | computeTypedLayerPositions | Lanes par type déterministes; pas Sugiyama. |
-| [graph-time-oriented](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-registry.ts) | computeTimeOrientedPositions | Projection temporelle + lanes par type. |
-| [graph-git-flow](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-gitflow.ts) | computeGitFlowPositions | Placement commits/branches/lanes; producteur métier reste graphify. |
-| [graph-radial](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-radial.ts) | computeRadialPositions | Anneaux BFS depuis le plus haut degré. |
-| [graph-grid](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-grid.ts) | computeGridPositions | Grille déterministe. |
-| [graph-metro](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/packages/graph/src/layout-metro.ts) | computeMetroPositions | Lanes BFS sur grille; routage octilinéaire différé. |
-| [graphify-barnes-hut](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/src/graph-layout.ts) | computeLayout / attachLayoutPositions | Simulation Barnes–Hut FA2 déterministe; hors @sentropic/graph. |
-| [graphify-hierarchy](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/src/hierarchy-layout.ts) | computeHierarchyAwarePositions | Radial tidy-tree + phyllotaxis + shelf packing; hors @sentropic/graph. |
-| [graphify-layout-wiring](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/src/scene-layout.ts) | applySceneLayout | Sélecteur de moteurs, pas un solveur supplémentaire. |
-| [graphify-worker](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/studio/src/lib/layoutWorker.js) | computeLayout via @graphify/graph-layout | Exécution worker, pas un solveur supplémentaire. |
-| [graphify-worker-client](https://github.com/rhanka/graphify/blob/8f19554cea3a4397fd66a90c7e9fd5ea54c81626/studio/src/lib/forceLayoutClient.js) | solveForce | Client worker et repli synchrone; aucune garantie de révision déduite de cette présence. |
+| [graph-registry-force](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-registry.ts) | forceLayout | Passthrough: copie positions précalculées, aucune simulation. |
+| [graph-static](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout.ts) | createStaticLayoutEngine | Frame statique. |
+| [graph-typed-layer](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-registry.ts) | computeTypedLayerPositions | Lanes par type déterministes; pas Sugiyama. |
+| [graph-time-oriented](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-registry.ts) | computeTimeOrientedPositions | Projection temporelle + lanes par type. |
+| [graph-git-flow](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-gitflow.ts) | computeGitFlowPositions | Placement commits/branches/lanes; producteur métier reste graphify. |
+| [graph-radial](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-radial.ts) | computeRadialPositions | Anneaux BFS depuis le plus haut degré. |
+| [graph-grid](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-grid.ts) | computeGridPositions | Grille déterministe. |
+| [graph-metro](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/packages/graph/src/layout-metro.ts) | computeMetroPositions | Lanes BFS sur grille; routage octilinéaire différé. |
+| [graphify-barnes-hut](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/src/graph-layout.ts) | computeLayout / attachLayoutPositions | Simulation Barnes–Hut FA2 déterministe; hors @sentropic/graph. |
+| [graphify-hierarchy](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/src/hierarchy-layout.ts) | computeHierarchyAwarePositions | Radial tidy-tree + phyllotaxis + shelf packing; hors @sentropic/graph. |
+| [graphify-layout-wiring](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/src/scene-layout.ts) | applySceneLayout | Sélecteur de moteurs, pas un solveur supplémentaire. |
+| [graphify-worker](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/studio/src/lib/layoutWorker.js) | computeLayout via @graphify/graph-layout | Exécution worker, pas un solveur supplémentaire. |
+| [graphify-worker-client](https://github.com/rhanka/engram/blob/58feb61e292776bfd07e19d7874eb4343bedf6a9/studio/src/lib/forceLayoutClient.js) | solveForce | Client worker et repli synchrone; aucune garantie de révision déduite de cette présence. |
 | [ds-force-svelte](../packages/components-svelte/src/lib/ForceGraph.svelte) | ForceGraph.runSimulation | Simulation directe O(n²), répulsion Coulomb + attraction ressorts, seed; source relue, aucune nouvelle exécution de tests ici. |
 | [dataviz-force-builder](https://github.com/rhanka/dataviz/blob/0869ae5b59bb308be7d43fbe0de58c5487e11f25/packages/dataviz-core/src/forceGraph.ts) | buildForceGraphData | Builder nodes/edges/tons/poids: aucune position ni simulation. Source relue intégralement. |
 

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Icon from './Icon.vue';
 import { computed, ref, useId } from 'vue';
 import { classNames } from './classNames.js';
 
@@ -37,7 +38,7 @@ function onChange(event: Event) {
   <div v-if="props.variant === 'accordion'" v-bind="$attrs" :class="classNames('st-languageToggle', props.class)">
     <button type="button" class="st-languageToggle__accordionTrigger" :aria-expanded="open ? 'true' : 'false'" @click="open = !open">
       <span>{{ props.accordionLabel }}</span>
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" :class="`lucide ${classNames('st-languageToggle__chevron', open && 'st-languageToggle__chevron--open')} lucide-chevron-down-icon lucide-chevron-down`"><path d="m6 9 6 6 6-6" /></svg>
+      <Icon name="chevron-down" :size="16" :class="classNames('st-languageToggle__chevron', open && 'st-languageToggle__chevron--open')" />
     </button>
     <div v-if="open" class="st-languageToggle__accordionPanel">
       <button type="button" :class="classNames('st-languageToggle__option', props.locale === 'fr' && 'st-languageToggle__option--active')" :aria-current="props.locale === 'fr' ? 'true' : 'false'" @click="choose('fr')">{{ props.frLabel }}</button>

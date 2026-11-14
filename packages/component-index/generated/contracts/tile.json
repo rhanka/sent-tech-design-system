@@ -1,8 +1,8 @@
 {
   "componentId": "tile",
   "contractSource": "derived",
-  "digest": "sha256:bd4dc7fe675b759815a409e45c9f7b2148eeb8a6d59d58acc9f29026785fe027",
-  "entryDigest": "sha256:7cc929ba2e8d9e9a7b6baf4be6d865365ce9990eaf001c1aad32a4c686e8d920",
+  "digest": "sha256:3b743285d821d47339c38d3834e558eb8c8d287cb3dcb98909193b0b8ed07cc9",
+  "entryDigest": "sha256:42318e103b584df8a6b96492e55b625a63067352c0d634588d47a44f3cd60daa",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -267,7 +267,16 @@
           "class": {
             "type": "string"
           },
-          "description": {},
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "disabled": {
             "type": "boolean"
           },
@@ -279,7 +288,16 @@
             "description": "Pour `selectable` : état coché.",
             "type": "boolean"
           },
-          "title": {},
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "variant": {
             "enum": [
               "selectable",
@@ -290,20 +308,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "description",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -316,13 +321,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:770522f79049ca6b3761c25aa54319f490663f57b0ff18b656c95d72ea9fbb82",
+        "declarationDigest": "sha256:e5e8388c1acb4fe66cbea171600ae8bcf88a2084f56f227b11149d61021e77ff",
         "declarationPath": "packages/components-vue/dist/Tile.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TileProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"

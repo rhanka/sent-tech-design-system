@@ -41,6 +41,8 @@ Apply the class-wide rules from `packages/components-vue/bench/RECIPE.md`: expli
 
 `review-corrections.mjs` applies PR 280's bounded native-control wrapper correction to archived captures with those nested controls. Date-picker and range-slider destinations remain unchanged. The frozen fixture and golden files are never rewritten. Generated identity normalization also accepts identities already masked in archived captures and preserves their relationships.
 
+PR 286's nested Icon and DataTable attr corrections are also applied at comparison time, scoped to known control selectors. Glyph geometry, sizes, unrelated SVGs and nonduplicated attrs remain significant. `node scripts/dataviz-vue-registry-packed.mjs` separately installs the candidate tarball against public npm only; it fails if a pinned dependency is unpublished. The local packed-registry harness cannot substitute for this release proof.
+
 - `node packages/dataviz-vue/bench/check-all.mjs`: all six gates for every public converted component, four checks at a time; writes `results/integration.json`.
 - `DATAVIZ_MODE=classic node --test packages/dataviz-vue/bench/interactions.test.mjs` and the same command with `DATAVIZ_MODE=vapor`: native interaction, callback-count, scoped-slot, identity, SVG and cleanup regressions.
 - `node --test packages/dataviz-vue/bench/review-corrections.test.mjs`: correction boundaries and live-property/style serialization.

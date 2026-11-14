@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FieldId, FieldPaneNode } from '@sentropic/dataviz-core';
 
+/** @attrs none Internal recursive fragment; FieldPane owns the public container attrs. */
 defineOptions({ name: 'FieldPaneRows', inheritAttrs: false });
 const props = defineProps<{
   nodes: FieldPaneNode[];

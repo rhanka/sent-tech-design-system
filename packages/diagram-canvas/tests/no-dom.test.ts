@@ -182,7 +182,7 @@ describe("the manifest keeps the promises the repository's guards rely on", () =
     // `scripts/verify-publishable-licensing.test.mjs`, not restated here.
     expect(manifest.private).toBeUndefined();
     expect(manifest.publishConfig?.access).toBe("public");
-    expect(manifest.files).toEqual(["dist", "!dist/**/*.map", "!dist/.srchash"]);
+    expect(manifest.files).toEqual(["dist", "!dist/**/*.map", "!dist/.srchash", "contracts"]);
   });
 
   it("declares exactly one dependency, and no dependency of any other kind", () => {

@@ -1,8 +1,8 @@
 {
   "componentId": "inline-loading",
   "contractSource": "derived",
-  "digest": "sha256:15193ca148bba4c4892c6d27ffab26341823d1516dd2d52c5d01573bbc09706c",
-  "entryDigest": "sha256:f07030e63d55ce6cda281d5fc23f2d99b48b4bec90fc577a6c2b32f58540ab62",
+  "digest": "sha256:c84c354c81589024f626a3b58ebff687e81c0c1c40ebfd0b84c67c9ded2ff0d1",
+  "entryDigest": "sha256:60dc2fbf1ef8127cb08992b5003510d6a624afe0e3789155530fc5a046f7b570",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -163,7 +163,16 @@
           "class": {
             "type": "string"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "locale": {
             "type": "string"
           },
@@ -178,27 +187,20 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "label"
         }
       ],
       "source": {
-        "declarationDigest": "sha256:6d26c6bfd79e6327fcb0be2fbf24ece918d1c102aebd611aa5460347e1f2acf0",
+        "declarationDigest": "sha256:0ec0ea255260c46b6da57bfe395cad5c2b0f0e74565b96bee85a52ac3ae8e4f9",
         "declarationPath": "packages/components-vue/dist/InlineLoading.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "InlineLoadingProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

@@ -110,6 +110,11 @@ if (!stable) {
   for (const node of index.statements.filter(ts.isExportDeclaration)) {
     if (!node.moduleSpecifier) continue;
     const path = node.moduleSpecifier.text;
+    // Direct DS re-exports use its native Vapor entry, preserving identity.
+    if (path === '@sentropic/design-system-vue') {
+      entries.push(node.getText(index).replace(path, path + '/vapor'));
+      continue;
+    }
     const shared = path.startsWith('.') ? '../' + path.slice(2) : path;
     if (node.isTypeOnly) { entries.push(node.getText(index).replace(path, shared)); continue; }
     const component = resolve('src', path.replace(/\.(?:js|vue)$/, '.vue'));

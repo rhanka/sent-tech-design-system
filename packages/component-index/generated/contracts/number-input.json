@@ -1,8 +1,8 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:0ad6550ae1e02d00c8c9de4f21b611e4ad5074630a1beb1d2e7ee34e6f7c9c52",
-  "entryDigest": "sha256:fa9217e7d0479100cd73efe69b7fa2773548ebdd7eb9c23f765164212ee8be3a",
+  "digest": "sha256:bcb13577ebbb25d4eb69d19235e6cebdd53ada158c49bfccf8b6bef9977ca3f6",
+  "entryDigest": "sha256:f3b74e1d30ce6a12a4f8237a89f79dbfeedabd16e6b15b4e8693e3fc8dfc07dd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -372,12 +372,39 @@
           "disabled": {
             "type": "boolean"
           },
-          "errorText": {},
-          "helperText": {},
+          "errorText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "incrementLabel": {
             "type": "string"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "max": {
             "anyOf": [
               {
@@ -445,26 +472,7 @@
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "errorText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "error-text"
@@ -477,7 +485,7 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:cf38af8080ca6c8e402946c0032305c3af5f67c133e08ab658015fc67658914b",
+        "declarationDigest": "sha256:ebf38b98a1294c5cebd953c83f2aee9afeb29856d32954c74fdf425788ad6f9e",
         "declarationPath": "packages/components-vue/dist/NumberInput.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NumberInputProps",

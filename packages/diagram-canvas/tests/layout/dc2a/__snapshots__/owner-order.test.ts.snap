@@ -1,0 +1,539 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`should compare memory/false grouping, reading order and channel geometry against R14 (A6) 1`] = `
+[
+  {
+    "newColumns": [
+      [
+        "host-poste",
+        "sys-mesh",
+      ],
+      [
+        "st-events",
+      ],
+      [
+        "sys-h2a",
+      ],
+      [
+        "sys-engram",
+      ],
+      [
+        "sys-track",
+      ],
+      [
+        "act-memctl",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "sys-track",
+      ],
+      [
+        "host-poste",
+        "sys-engram",
+      ],
+      [
+        "sys-h2a",
+      ],
+      [
+        "sys-mesh",
+      ],
+      [
+        "st-events",
+        "act-memctl",
+      ],
+    ],
+    "parent": "root",
+  },
+  {
+    "newColumns": [
+      [
+        "rt-codex",
+        "rt-hermes",
+        "rt-vibe",
+      ],
+      [
+        "rt-gemini",
+        "rt-opencode",
+        "rt-claude",
+      ],
+      [
+        "rt-agy",
+        "rt-muse",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "rt-codex",
+        "rt-opencode",
+      ],
+      [
+        "rt-gemini",
+        "rt-muse",
+      ],
+      [
+        "rt-agy",
+        "rt-vibe",
+      ],
+      [
+        "rt-hermes",
+        "rt-claude",
+      ],
+    ],
+    "parent": "host-poste",
+  },
+  {
+    "newColumns": [
+      [
+        "api-h2a",
+        "rt-mandates",
+      ],
+      [
+        "rt-h2a",
+        "pkg-plugin",
+      ],
+      [
+        "pkg-h2a",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "api-h2a",
+        "rt-mandates",
+      ],
+      [
+        "rt-h2a",
+        "pkg-plugin",
+      ],
+      [
+        "pkg-h2a",
+      ],
+    ],
+    "parent": "sys-h2a",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-track",
+      ],
+      [
+        "rt-track",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-track",
+      ],
+      [
+        "rt-track",
+      ],
+    ],
+    "parent": "sys-track",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-control",
+        "art-branch",
+      ],
+      [
+        "art-track-op",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-control",
+      ],
+      [
+        "art-track-op",
+      ],
+      [
+        "art-branch",
+      ],
+    ],
+    "parent": "pkg-track",
+  },
+  {
+    "newColumns": [
+      [
+        "svc-live",
+        "st-mandates",
+        "st-blacklist",
+      ],
+      [
+        "api-memory",
+        "rt-dreaming",
+      ],
+      [
+        "st-record",
+        "cmp-guard",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "svc-live",
+        "rt-dreaming",
+      ],
+      [
+        "api-memory",
+        "cmp-guard",
+      ],
+      [
+        "st-record",
+        "st-blacklist",
+      ],
+      [
+        "st-mandates",
+      ],
+    ],
+    "parent": "sys-engram",
+  },
+  {
+    "newColumns": [
+      [
+        "api-mesh",
+        "svc-h2a-mcp",
+      ],
+      [
+        "api-mcp-registry",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "api-mesh",
+      ],
+      [
+        "api-mcp-registry",
+      ],
+      [
+        "svc-h2a-mcp",
+      ],
+    ],
+    "parent": "sys-mesh",
+  },
+]
+`;
+
+exports[`should compare memory/true grouping, reading order and channel geometry against R14 (A6) 1`] = `
+[
+  {
+    "newColumns": [
+      [
+        "host-poste",
+        "sys-mesh",
+        "act-memctl",
+      ],
+      [
+        "sys-h2a",
+        "st-events",
+      ],
+      [
+        "sys-track",
+        "sys-engram",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "host-poste",
+        "sys-h2a",
+        "sys-track",
+        "sys-mesh",
+        "st-events",
+        "sys-engram",
+        "act-memctl",
+      ],
+    ],
+    "parent": "root",
+  },
+]
+`;
+
+exports[`should compare vue-globale/false grouping, reading order and channel geometry against R14 (A6) 1`] = `
+[
+  {
+    "newColumns": [
+      [
+        "rt-claude",
+        "sys-sentropic",
+        "sys-ds",
+      ],
+      [
+        "rt-codex",
+      ],
+      [
+        "sys-h2a",
+      ],
+      [
+        "sys-engram",
+      ],
+      [
+        "sys-track",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "sys-h2a",
+      ],
+      [
+        "sys-engram",
+      ],
+      [
+        "sys-ds",
+      ],
+      [
+        "sys-sentropic",
+      ],
+      [
+        "sys-track",
+      ],
+      [
+        "rt-claude",
+        "rt-codex",
+      ],
+    ],
+    "parent": "root",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-h2a",
+        "rt-h2a",
+      ],
+      [
+        "svc-h2a-mcp",
+        "api-h2a",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-h2a",
+      ],
+      [
+        "rt-h2a",
+      ],
+      [
+        "svc-h2a-mcp",
+      ],
+      [
+        "api-h2a",
+      ],
+    ],
+    "parent": "sys-h2a",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-focus",
+      ],
+      [
+        "art-skill-archi",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-focus",
+      ],
+      [
+        "art-skill-archi",
+      ],
+    ],
+    "parent": "pkg-h2a",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-track",
+      ],
+      [
+        "rt-track",
+      ],
+      [
+        "st-events",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-track",
+      ],
+      [
+        "rt-track",
+      ],
+      [
+        "st-events",
+      ],
+    ],
+    "parent": "sys-track",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-control",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-control",
+      ],
+    ],
+    "parent": "pkg-track",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-mesh",
+        "pkg-artifacts",
+      ],
+      [
+        "svc-memory-access",
+        "svc-artifacts",
+      ],
+      [
+        "api-mcp-registry",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-mesh",
+        "svc-artifacts",
+      ],
+      [
+        "api-mcp-registry",
+      ],
+      [
+        "pkg-artifacts",
+      ],
+      [
+        "svc-memory-access",
+      ],
+    ],
+    "parent": "sys-sentropic",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-engram",
+        "api-memory",
+      ],
+      [
+        "rt-engram-cli",
+      ],
+      [
+        "svc-engram-live",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-engram",
+      ],
+      [
+        "rt-engram-cli",
+      ],
+      [
+        "svc-engram-live",
+      ],
+      [
+        "api-memory",
+      ],
+    ],
+    "parent": "sys-engram",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-archi-guardian",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-archi-guardian",
+      ],
+    ],
+    "parent": "pkg-engram",
+  },
+  {
+    "newColumns": [
+      [
+        "pkg-ds-core",
+      ],
+      [
+        "pkg-ds-canvas",
+      ],
+      [
+        "pkg-ds-svelte",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "pkg-ds-core",
+      ],
+      [
+        "pkg-ds-canvas",
+      ],
+      [
+        "pkg-ds-svelte",
+      ],
+    ],
+    "parent": "sys-ds",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-dc2a",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-dc2a",
+      ],
+    ],
+    "parent": "pkg-ds-canvas",
+  },
+  {
+    "newColumns": [
+      [
+        "cmp-card-render",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "cmp-card-render",
+      ],
+    ],
+    "parent": "pkg-ds-svelte",
+  },
+]
+`;
+
+exports[`should compare vue-globale/true grouping, reading order and channel geometry against R14 (A6) 1`] = `
+[
+  {
+    "newColumns": [
+      [
+        "rt-claude",
+        "sys-track",
+        "sys-ds",
+      ],
+      [
+        "rt-codex",
+        "sys-sentropic",
+      ],
+      [
+        "sys-h2a",
+        "sys-engram",
+      ],
+    ],
+    "oldColumns": [
+      [
+        "rt-claude",
+        "rt-codex",
+        "sys-h2a",
+        "sys-track",
+        "sys-sentropic",
+        "sys-engram",
+        "sys-ds",
+      ],
+    ],
+    "parent": "root",
+  },
+]
+`;

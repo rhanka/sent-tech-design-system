@@ -1,0 +1,120 @@
+{
+  "id": "readme-frame-design-system",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "design-system"
+  },
+  "cards": [
+    {
+      "id": "design-system",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "DESIGN SYSTEM",
+      "title": "Design System · Collaborative Views",
+      "purpose": "Annotations · Diagrams · Decision dossiers · AI-ready UI components",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 1892,
+        "y": 1879.1437500000002,
+        "width": 2352,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "ds-annotations",
+      "parentId": "design-system",
+      "container": false,
+      "folded": false,
+      "kicker": "DESIGN SYSTEM",
+      "title": "Annotation",
+      "purpose": "Presentation · opaque anchor",
+      "detail": "Proposals → Sentropic model · G3",
+      "footer": "service: Design System",
+      "icon": "window",
+      "old": {
+        "x": 1908,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "ds-diagram",
+      "parentId": "design-system",
+      "container": false,
+      "folded": false,
+      "kicker": "DESIGN SYSTEM",
+      "title": "Diagram",
+      "purpose": "Graph × layout × presentation",
+      "detail": "Nested views · atomic edits · JS",
+      "footer": "service: Design System",
+      "icon": "window",
+      "old": {
+        "x": 2528,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "ds-dossier",
+      "parentId": "design-system",
+      "container": false,
+      "folded": false,
+      "kicker": "DESIGN SYSTEM",
+      "title": "Decision dossier",
+      "purpose": "Rendering the Focus schema and skill",
+      "detail": "<st-decision-dossier> · C03/C09",
+      "footer": "service: Design System",
+      "icon": "window",
+      "old": {
+        "x": 3148,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "ds-components",
+      "parentId": "design-system",
+      "container": false,
+      "folded": false,
+      "kicker": "DESIGN SYSTEM",
+      "title": "200+ UI components",
+      "purpose": "221 Svelte exports · themes · <st-*>",
+      "detail": "Canvas · offline without a CDN · C09",
+      "footer": "service: Design System",
+      "icon": "window",
+      "old": {
+        "x": 3768,
+        "y": 2052.53125,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-dossier-diagram",
+      "source": "ds-dossier",
+      "target": "ds-diagram",
+      "label": "Central diagram"
+    },
+    {
+      "id": "e-dossier-annotations",
+      "source": "ds-dossier",
+      "target": "ds-annotations",
+      "label": "Feedback"
+    },
+    {
+      "id": "e-ds-components",
+      "source": "ds-diagram",
+      "target": "ds-components",
+      "label": "UI rendering"
+    }
+  ]
+}

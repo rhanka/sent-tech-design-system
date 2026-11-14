@@ -1,8 +1,8 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:110f88919ce16e456c82563922edf8c8e8ecc88fd331d69be5964cd16683c94c",
-  "entryDigest": "sha256:2dba750173fea85dfeaa4ba69d98b9cea3b46763ecb33d75b151bb5325bfff53",
+  "digest": "sha256:9f81a371d98488b84c75bedecfcdd70c8330019a8d1448397ffd093d81e0e0ed",
+  "entryDigest": "sha256:74a32f7b775a87b7daa08983fc8bb01fd28d644aea32ff4009a61797df9daf31",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -315,21 +315,23 @@
           "placeholder": {
             "type": "string"
           },
-          "submitLabel": {},
+          "submitLabel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "value": {
             "type": "string"
           }
         },
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "submitLabel",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "default"
@@ -339,13 +341,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:6606d9804af04e5010fa3488c18ca10180e78cf9d542e2055496a0931c08730e",
+        "declarationDigest": "sha256:528bf89e71f1bf3361f1a32106cdbcf6c6f3ce5df3a3113904278ed13c5c3907",
         "declarationPath": "packages/components-vue/dist/ChatComposer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatComposerProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"submit\" and prop \"onSubmit\" both listed verbatim"

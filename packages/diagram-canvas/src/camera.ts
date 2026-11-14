@@ -1,6 +1,6 @@
 /**
  * DC-2a camera contract, the pure half (SPEC_EVOL_DC2A §5): maximum display
- * scale, fit on both axes against a 16:9 fit box, readability floor, clamp and
+ * scale, fit on both axes against a 16:9 fit box, clamp and
  * readout. No DOM and no camera UI live here: a scene host passes its measured
  * figure width and window height in, and applies the returned zoom as a
  * transform. Zoom never changes geometry (Z-6).
@@ -12,8 +12,8 @@
 /** Display scale at readout 100 % (Z-5): a 460 × 200 card renders at ≈ 285 × 124 CSS px. */
 export const DEFAULT_MAX_DISPLAY_SCALE = 0.62;
 /**
- * Readability floor of the fit: below it a fit stops shrinking and the host
- * pans. 0.45 is the smallest two-decimal scale holding both the 18 px edge
+ * Hard display floor: fit scales down to it, then the viewport scrolls.
+ * 0.45 is the smallest two-decimal scale holding both the 18 px edge
  * label (BF-2, the binding constraint: 18 × 0.45 = 8.1 CSS px ≥ 8 CSS px
  * floor; 0.42 gives 7.56) and the 22 px kicker (22 × 0.45 = 9.9 CSS px).
  */
@@ -22,7 +22,7 @@ export const DEFAULT_MIN_READABLE_SCALE = 0.45;
 export const DEFAULT_EDGE_LABEL_FONT_SIZE = 18;
 /** World line box of an edge label, px (token `diagramScene.edgeLabelLineHeight`). */
 export const DEFAULT_EDGE_LABEL_LINE_HEIGHT = 22;
-/** §5.3: an edge label never renders below this height at a fit, CSS px. */
+/** Minimum rendered edge-label size, CSS px. */
 export const MIN_EDGE_LABEL_CSS_PX = 8;
 /** Share of the window height a figure may take (§5.1 fit box). */
 export const FIT_WINDOW_HEIGHT_SHARE = 0.85;
@@ -37,6 +37,7 @@ export interface CameraFitInput {
   /** `window.innerHeight`, CSS px. */
   readonly windowHeight: number;
   readonly maxDisplayScale?: number;
+  /** Optional higher readability floor; never lowers the absolute 0.45 floor. */
   readonly minReadableScale?: number;
 }
 
@@ -46,14 +47,17 @@ export interface CameraFit {
   readonly fitHeight: number;
   /** Zoom framing the whole drawing on both axes, never above the maximum display scale. */
   readonly zoomFit: number;
-  /** Zoom a fit or reset applies: `zoomFit`, held at the readability floor when the drawing is larger. */
+  /** Zoom a fit or reset applies: `zoomFit` clamped to the readability floor. */
   readonly zoom: number;
-  /** Interactive range: zoom-out reaches `zoomFit`, zoom-in stops at the maximum display scale (Z-1, Z-2). */
+  /** Interactive range: zoom-out stops at the readable fit, zoom-in at the display cap. */
   readonly minZoom: number;
   readonly maxZoom: number;
   /** True when the applied zoom shows only part of the drawing: the host pans. */
   readonly pans: boolean;
 }
+
+/** Screen-space inset for non-scaling strokes and CSS layout rounding. */
+export const FIT_PAINT_INSET = 1;
 
 /** §5.1: `fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`. */
 export function fitBox(viewWidth: number, windowHeight: number): { readonly width: number; readonly height: number } {
@@ -61,17 +65,20 @@ export function fitBox(viewWidth: number, windowHeight: number): { readonly widt
 }
 
 export function cameraFit(input: CameraFitInput): CameraFit {
-  const maxZoom = input.maxDisplayScale ?? DEFAULT_MAX_DISPLAY_SCALE;
-  const floor = Math.min(input.minReadableScale ?? DEFAULT_MIN_READABLE_SCALE, maxZoom);
+  const maxZoom = Math.max(DEFAULT_MIN_READABLE_SCALE, input.maxDisplayScale ?? DEFAULT_MAX_DISPLAY_SCALE);
+  const readableFloor = Math.min(maxZoom, Math.max(DEFAULT_MIN_READABLE_SCALE, input.minReadableScale ?? DEFAULT_MIN_READABLE_SCALE));
   const box = fitBox(input.viewWidth, input.windowHeight);
   const bounds = input.bounds;
   if (bounds === undefined || !(bounds.width > 0) || !(bounds.height > 0)) {
     // Empty scene: readout 100 %.
     return { fitWidth: box.width, fitHeight: box.height, zoomFit: maxZoom, zoom: maxZoom, minZoom: maxZoom, maxZoom, pans: false };
   }
-  const zoomFit = Math.min(box.width / bounds.width, box.height / bounds.height, maxZoom);
-  const zoom = Math.max(zoomFit, floor);
-  return { fitWidth: box.width, fitHeight: box.height, zoomFit, zoom, minZoom: zoomFit, maxZoom, pans: zoom > zoomFit };
+  const zoomFit = Math.min(Math.max(0, box.width - 2 * FIT_PAINT_INSET) / bounds.width, Math.max(0, box.height - 2 * FIT_PAINT_INSET) / bounds.height, maxZoom);
+  // All hosts and camera inputs share this range. A small frame or a large
+  // unfolded scene reaches the floor, then scrolls instead of shrinking text.
+  const zoom = Math.max(readableFloor, zoomFit);
+  const fitHeight = zoomFit === maxZoom ? Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64) : box.height;
+  return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoom, maxZoom, pans: zoom > zoomFit };
 }
 
 /** Z-1/Z-7: any requested zoom lands inside `[minZoom, maxZoom]` of the current fit. */

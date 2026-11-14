@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 
 // Check actual published entrypoints, including slots, exposed APIs and companion types.
-const program = ts.createProgram(['tests/types/consumer.ts', 'dist/index.d.ts', 'dist/vapor/index.d.ts'], {
+const program = ts.createProgram(['tests/types/consumer.ts', 'tests/types/review-contracts.ts', 'dist/index.d.ts', 'dist/vapor/index.d.ts'], {
   target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.NodeNext,
   moduleResolution: ts.ModuleResolutionKind.NodeNext, strict: true,
   skipLibCheck: false, noEmit: true, types: [],

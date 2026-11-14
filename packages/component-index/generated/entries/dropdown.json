@@ -21,7 +21,7 @@
     },
     {
       "channel": "source",
-      "digest": "sha256:ef859189fde52ede3b4b469244a32b57d31746fb374febcd0987500b0dc823e5",
+      "digest": "sha256:47d9ec56a70f4ca164688fb697e2557a177fdc00755a3010caccb997547a18c5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Dropdown.vue",
@@ -40,7 +40,7 @@
     "en": "Selection dropdown (listbox).",
     "fr": "Liste déroulante de sélection (listbox)."
   },
-  "digest": "sha256:163208708aec3295954d46c2b99adb3847a8aae75fd1b279ff570874ac96a31b",
+  "digest": "sha256:8bc6585fd65437aa1dbf2c1d4a59edc0ab7b747663a308208ed2706372dd141d",
   "displayName": "Dropdown",
   "format": "component-entry/v1",
   "frameworks": [

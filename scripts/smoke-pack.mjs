@@ -272,7 +272,8 @@ const packages = [
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles()]; },
     extraRequiredFiles: [
       "dist/vapor/sfc.d.ts",
-      ...["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn"]
+      "dist/rich-text-editor/rich-text-editor.css",
+      ...["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn", "rich-text-editor", "vapor/rich-text-editor", "presence-badge", "vapor/presence-badge"]
         .flatMap((subpath) => [`dist/${subpath}/index.js`, `dist/${subpath}/index.d.ts`]),
     ],
   },
@@ -440,7 +441,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text"],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
@@ -688,7 +689,8 @@ function writeVerifyScript(installDir, targetNames) {
     .replaceAll("__SMOKE_REQUIRED_EXPORTS_JSON__", JSON.stringify(Object.fromEntries(
       targetNames.filter(name => vueExportDirectories[name])
         .map(name => [name, vuePublicExports(vueExportDirectories[name])]),
-    )));
+    )))
+    .replaceAll("__SMOKE_RICH_TEXT_VERSION_JSON__", JSON.stringify(richTextManifest.version));
 
   const smokePath = join(installDir, "verify.mjs");
   writeFileSync(smokePath, content);

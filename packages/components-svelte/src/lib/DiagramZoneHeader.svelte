@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { lineBoxHeight } from "./diagramCardModel.js";
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
   import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
 
@@ -64,7 +65,7 @@
   {#if subtitle.length > 0}
     <div class="st-diagramZoneHeader-subtitle" style={`width:${subtitleWidth}px`}>
       {#each subtitle as line, subtitleIndex (subtitleIndex)}
-        <span class="st-diagramZone-subtitle">{line.text}</span>
+        <span class="st-diagramZone-subtitle" style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>
       {/each}
     </div>
   {/if}

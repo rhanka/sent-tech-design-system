@@ -70,3 +70,7 @@ Redraw: **no** (verbatim geometry — already on the canonical base).
 
 The kit `groupIcons` zone→glyph table is scene content of those diagrams,
 not part of the shipped set: the DS names the glyph per entity (§9.2, DH-11).
+
+## Component role default
+
+`base` is an original MIT component pictogram on the canonical diamond: a rectangular face and two horizontal lines. It supplies the closed `card` role introduced by the owner addendum.

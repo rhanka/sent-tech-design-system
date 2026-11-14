@@ -1,3 +1,4 @@
+import { withControlIconTokens } from './test-support/control-icon-contract.js';
 import SceneFigure from './DiagramSceneFigure.vue';
 import SvelteScene from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 import type { DiagramSceneFigureProps } from './DiagramSceneFigure.types.js';
@@ -33,12 +34,13 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); });
  * Only framework markers, comments and equivalent CSS serialization differ. */
 export function dom(node: Element): unknown {
   const attrs = [...node.attributes].filter(a => !/^data-v-/.test(a.name)).map(a => {
+    if (a.name === 'aria-describedby' || a.name === 'id' && node.hasAttribute('hidden')) return [a.name, 'description'];
     if (a.name === 'class') return [a.name, a.value.split(/\s+/).filter(c => c && !c.startsWith('svelte-')).sort().join(' ')];
     if (a.name === 'style') {
       const style = (node as HTMLElement).style;
       return [a.name, Array.from({ length: style.length }, (_, index) => style.item(index)).sort().map(key => [key, style.getPropertyValue(key).trim()])];
     }
-    return [a.name, a.value];
+    return [a.name, a.value.replace(/diagram-arrow-[^\s)]+/g, 'diagram-arrow-instance')];
   }).filter(([name, value]) => !(name === 'class' && value === '')).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
   return { tag: node.tagName, attrs, children: [...node.childNodes].flatMap(child => {
     if (child.nodeType === 1) return [dom(child as Element)];
@@ -49,10 +51,18 @@ export function dom(node: Element): unknown {
 
 describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   it('should emit each collapsed-zone diagnostic once', async () => {
-    const props = { entityId: 'unknown-zone', title: 'Unknown', collapsed: true, icon: 'unmapped' };
-    const vue = mount(DiagramZone, { props }); await nextTick();
-    expect(vue.emitted('diagnostic')?.flat()).toEqual(renderZoneSvg(props).diagnostics);
-    vue.unmount();
+    for (const props of [
+      { entityId: 'unknown-zone', title: 'Unknown', collapsed: true, icon: 'unmapped' },
+      { entityId: 'growing-zone', title: 'Grows', collapsed: true, autoSize: true, subtitle: 'word '.repeat(50) },
+    ]) {
+      const vue = mount(DiagramZone, { props }); await nextTick();
+      const diagnostics = vi.fn();
+      const svelte = render(SvelteZone, { ...props, onDiagnostic: diagnostics }); await tick();
+      const expected = renderZoneSvg(props).diagnostics;
+      expect(vue.emitted('diagnostic')?.flat()).toEqual(expected);
+      expect(diagnostics.mock.calls.map(call => call[0])).toEqual(expected);
+      vue.unmount(); svelte.unmount();
+    }
   });
   it('should invoke graph listeners once and restrict pointer activation to the dot', async () => {
     const onSelect = vi.fn(), onOpenEntity = vi.fn(), onNodeHover = vi.fn(), onEdgeHover = vi.fn();
@@ -97,7 +107,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       const vue = mount(DiagramCard, { props });
       const svelte = render(SvelteCard, { props });
       await nextTick(); await tick();
-      expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
       vue.unmount(); svelte.unmount();
     });
@@ -110,7 +120,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
         ...(collapsed ? {} : { width: 492, height: 975 }) };
       const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
       await nextTick(); await tick();
-      expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderZoneSvg(props).diagnostics);
       const button = vue.find('button');
       if (button.exists()) { await button.trigger('click'); expect(vue.emitted('toggle')).toEqual([[{ entityId: zone.id, collapsed }]]); }
@@ -124,7 +134,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   ] satisfies DiagramCardProps[]) {
     it(`should preserve ${props.entityId} state and diagnostics`, async () => {
       const vue = mount(DiagramCard, { props }); const svelte = render(SvelteCard, { props });
-      await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+      await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
       expect(vue.emitted('diagnostic')?.flat() ?? []).toEqual(renderCardSvg(props).diagnostics);
       await vue.trigger('click'); expect(vue.emitted('select')).toEqual([[{ entityId: props.entityId }]]);
       vue.unmount(); svelte.unmount();
@@ -132,7 +142,7 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   }
   for (const name of DIAGRAM_GLYPH_NAMES) it(`should match icon ${name}`, () => {
     const vue = mount(DiagramIcon, { props: { name } }); const svelte = render(SvelteIcon, { props: { name } });
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!)); vue.unmount(); svelte.unmount();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount(); svelte.unmount();
   });
   it('should render no unknown icon', () => {
     const vue = mount(DiagramIcon, { props: { name: 'unmapped-glyph' } }); expect(vue.find('svg').exists()).toBe(false); vue.unmount();
@@ -142,13 +152,13 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
   it('should match graph legend shapes and dash styles', () => {
     const props = { entries, title: 'Legend' };
     const vue = mount(GraphLegend, { props }); const svelte = render(SvelteLegend, { props });
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!)); vue.unmount();
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!))); vue.unmount();
   });
   it('should match force graph geometry and keyboard/hover intents', async () => {
     vi.stubGlobal('matchMedia', () => ({ matches: true }));
     const props = { nodes: [{ id: 'a', shape: 'star' as const }, { id: 'b', group: 'two' }], edges: [{ source: 'a', target: 'b', dash: 'dotted' as const }], label: 'Graph', legend: entries, selectedIds: ['a'], iterations: 5 };
     const vue = mount(ForceGraph, { props }); const svelte = render(SvelteForce, { props });
-    await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+    await nextTick(); await tick(); expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
     const button = vue.find('[role="button"]'); await button.trigger('keydown', { key: 'Enter' });
     expect(vue.emitted('select')).toEqual([['a']]); expect(vue.emitted('openEntity')).toEqual([['a']]);
     await button.trigger('focus'); expect(vue.emitted('nodeHover')?.[0]?.[0]).toEqual(props.nodes[0]);
@@ -325,7 +335,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     const props = { ...host, ...fixture, title: 'Dossier' };
     const vue = mount(SceneFigure, { props }); const svelte = render(SvelteScene, { props });
     await nextTick(); await tick(); await nextTick();
-    expect(dom(vue.element)).toEqual(dom(svelte.container.firstElementChild!));
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
     expect(vue.emitted('layout')).toHaveLength(1);
     const passCount = vue.emitted('layout')!.length;
     vue.vm.setZoom(Number.POSITIVE_INFINITY);
@@ -352,7 +362,7 @@ describe('scene host DOM and camera/fold behavior', () => {
     expect(vue.emitted('layout')).toHaveLength(2); vue.unmount(); vi.unstubAllGlobals();
   });
   it('should display a refused scene accessibly', async () => {
-    const vue = mount(SceneFigure, { props: { ...host, ...SINGLE, registry: new Map() as never } });
+    const vue = mount(SceneFigure, { props: { ...host, ...SINGLE, registry: { get: () => undefined, list: () => [] } as never } });
     expect(vue.find('[role="alert"]').text()).toContain('Diagram unavailable');
     expect(vue.attributes('data-scene-refused')).toBeTruthy(); vue.unmount();
   });

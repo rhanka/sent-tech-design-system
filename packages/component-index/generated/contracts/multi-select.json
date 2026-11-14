@@ -1,8 +1,8 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:f45d032beaec5868b8d549bd601f54e9a6670f75cae82c39358265c6cd77b57c",
-  "entryDigest": "sha256:bd9e62f4674e7f6dc17c81c1e8f44f13e38531ad5da3099b3c1a9e197b81511f",
+  "digest": "sha256:04c7369ac882c979a5d9dc12cf02ed2b973961f5015af375cb28605517966178",
+  "entryDigest": "sha256:51fbcc009bd63465732b125c7587fc3b31663e7b7aa5550311fc1e69a162f47b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -503,7 +503,16 @@
               "disabled": {
                 "type": "boolean"
               },
-              "label": {},
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "value": {
                 "type": "string"
               }
@@ -522,12 +531,39 @@
           "disabled": {
             "type": "boolean"
           },
-          "errorText": {},
-          "helperText": {},
+          "errorText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "helperText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "invalid": {
             "type": "boolean"
           },
-          "label": {},
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "listLabel": {
             "type": "string"
           },
@@ -590,32 +626,7 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "MultiSelectOption.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "errorText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "helperText",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        }
-      ],
+      "replaced": [],
       "slots": [
         {
           "name": "error-text"
@@ -643,13 +654,13 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:41bfa6958e6e94c7021a83fe6bb8df959fe273615931ed4de96684d8fc9fc00b",
+        "declarationDigest": "sha256:7924244d3daf121abd89d094ea71cae8793925ece42f0c2300101d84cfd72c2f",
         "declarationPath": "packages/components-vue/dist/MultiSelect.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MultiSelectProps",
         "version": "0.41.0-next.2"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim",

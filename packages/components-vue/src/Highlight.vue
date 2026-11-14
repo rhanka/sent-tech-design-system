@@ -6,7 +6,7 @@ export type HighlightTone = 'neutral' | 'info' | 'success' | 'warning' | 'error'
 
 export type HighlightProps = {
   tone?: HighlightTone;
-  title?: unknown;
+  title?: string | number;
   class?: string;
 };
 

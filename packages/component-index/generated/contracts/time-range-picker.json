@@ -1,8 +1,8 @@
 {
   "componentId": "time-range-picker",
   "contractSource": "derived",
-  "digest": "sha256:470933f09c6f347cdf530b3f0533d9e5c2aee10f22f12cf2d36d97a6f78bb1fc",
-  "entryDigest": "sha256:b5d2ecb45fb6f480814d78d9ce6e2a8f973a6dd5b964941b310b089a3ccdaae3",
+  "digest": "sha256:d756d50b352c4cb131b6ea9a68c70ef14a0473761e0a2c8f798397b813f3debc",
+  "entryDigest": "sha256:b00603e6a32539f6645d422417772b0f8e86056ec3bfde4ff79063c0c2fb444b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
