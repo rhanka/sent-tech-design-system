@@ -20,7 +20,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
-  import { measureRenderedBounds } from "./diagramRenderedBounds.js";
+  import { measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
@@ -47,7 +47,6 @@
     parseScale,
     rectsOf,
     resolveScene,
-    shouldRefitRenderedBounds,
     resolveZoom,
     sameRects,
     sceneFit,

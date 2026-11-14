@@ -1,8 +1,8 @@
 import { computed, nextTick, onMounted, onUnmounted, shallowRef, watch } from 'vue';
 import { clampZoom, FIT_ASPECT, zoomReadout, type Rect } from '@sentropic/diagram-canvas';
 import { sceneCardMeasure, cardLineMeasurer, defaultCardMeasure, type CardLineMeasure } from './diagramCardModel.js';
-import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, shouldRefitRenderedBounds, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
-import { measureRenderedBounds } from './diagramRenderedBounds.js';
+import { DEFAULT_SCENE_TARGET_WIDTH, parseScale, resolveZoom, sceneFit, scenePlacement, WHEEL_ZOOM_RATE, ZOOM_STEP_RATIO, type SceneModel } from './diagramSceneModel.js';
+import { measureRenderedBounds, shouldRefitRenderedBounds } from './diagramRenderedBounds.js';
 import { measureRenderedSceneFont } from './diagramFontMeasure.js';
 import type { DiagramSceneFigureProps, DiagramSceneCamera } from './DiagramSceneFigure.types.js';
 
