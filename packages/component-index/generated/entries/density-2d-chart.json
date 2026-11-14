@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Density2DChart.svelte",
-      "version": "0.41.0"
+      "version": "0.41.1"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Density2DChart.vue",
-      "version": "0.41.0-next.2"
+      "version": "0.41.0-next.3"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Binned 2D density on numeric axes: (x,y) points aggregated into cells whose color encodes density.",
     "fr": "Densité 2D binned sur axes numériques : points (x,y) agrégés en cellules dont la couleur encode la densité."
   },
-  "digest": "sha256:b417aacbe59a302966aa2bad168b9a44ab2d79f57aaa680ea4bcde424291d7b3",
+  "digest": "sha256:e8f1b0293f0979756d7cbbd84550546aae9fe9b2da01e0c256ade92319157b1f",
   "displayName": "Density2DChart",
   "format": "component-entry/v1",
   "frameworks": [

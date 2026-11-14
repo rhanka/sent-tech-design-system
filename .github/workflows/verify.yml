@@ -82,6 +82,9 @@ jobs:
       # Via the runner rather than `node --test scripts/*.test.mjs` because that
       # form exits 0 when the glob resolves to nothing; the runner asserts a floor
       # on the number of guard files first. See its header for the measurement.
+      - name: Dist import closure (all publishable packages)
+        run: npm run dist:import-closure
+
       - name: Repository guards (scripts/*.test.mjs)
         run: node scripts/run-script-guards.mjs
 

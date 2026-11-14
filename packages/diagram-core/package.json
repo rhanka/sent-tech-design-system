@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/diagram-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Typed semantic core for diagrams: versioned documents and profiles, views with occurrences, transactional commands with logical inverses. No runtime dependency, no DOM, no framework.",
   "publishConfig": {
     "access": "public"

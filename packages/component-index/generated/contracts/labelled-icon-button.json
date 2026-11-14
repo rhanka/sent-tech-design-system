@@ -1,8 +1,8 @@
 {
   "componentId": "labelled-icon-button",
   "contractSource": "derived",
-  "digest": "sha256:2f08804f4b935165ef81157cdb92d9c949a4a4952d49949f8c60cc6747d44f56",
-  "entryDigest": "sha256:15ea0d5a7cf71df5e3aeacb273f98c5fd44c964f9c026f46d3ffe9d0a3ebeb5a",
+  "digest": "sha256:2b0636905fff1efe5ccd9d9b0d103370dccd51e1d3ac25e0563239928b991642",
+  "entryDigest": "sha256:c84edb61638cf4c6c37247e4bb8ee5393afba26841fbf4d155d36ca5c9fdd57e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -141,7 +141,7 @@
         "declarationPath": "packages/components-svelte/dist/LabelledIconButton.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.41.0"
+        "version": "0.41.1"
       },
       "status": "partial",
       "unresolved": [
@@ -263,7 +263,7 @@
         "declarationPath": "packages/components-vue/dist/LabelledIconButton.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LabelledIconButtonProps",
-        "version": "0.41.0-next.2"
+        "version": "0.41.0-next.3"
       },
       "status": "partial",
       "unresolved": [

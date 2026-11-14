@@ -100,6 +100,13 @@ git status --short --branch
 ```
 
 `npm run pack:smoke` verifies seventeen package tarballs (the design-system ports including `rich-text` and `elements`, `graph`, `diagram-core`, `diagram-canvas` and the five `dataviz-*`) and installs them together in a clean temporary project.
+
+`npm run dist:import-closure` additionally packs **every publishable workspace** and installs each candidate in its own temporary consumer outside the repository. Dependencies come from npm, including already-published siblings. Only an exact sibling version missing from the registry may use a local tarball, reported as `UNPUBLISHED SIBLING`; authentication or network failures fail the gate. `--workspaces=<comma-separated package names>` selects release candidates. Every `*-publish.yml` runs this gate in the publish job before publication; CI verify runs it for all publishable packages.
+
+The gate imports every JavaScript public export and every concrete wildcard export, and resolves/reads public assets (JSON exports are imported as JSON). It runs Node with workspace resolution disabled. Svelte source is compiled to server JavaScript by the installed Svelte compiler, with extension resolution for component-source imports only; CSS is resolved/read with an empty Node module adapter. Published JavaScript retains Node's strict resolution. Angular partial output uses the registry compiler peer for JIT. Vue classic entries run against stable Vue in Node, then all entries, including `/vapor`, run against the registry Vue version matching the workspace's Vapor compiler, using its ESM runtime. Missing modules or named exports fail the process. No browser is involved.
+
+The diagram release repair publishes core **0.2.0**, canvas **0.2.1**, Svelte **0.41.1**, and Vue **0.41.0-next.3**, in that dependency order (Svelte and Vue can follow canvas independently). Core 0.1.0 on npm lacks `flowIndex`, `validateFlows`, `relationBaseType`, `erdEntityOccurrence`, and `erdPortOccurrence`, which canvas 0.2.0 imports. The regression test installs that published canvas against registry core 0.1.0 and requires the import to fail, then checks the repaired candidate. The existing registry-presence gates still require dependencies to be published before downstream releases; local sibling allowances are explicitly pre-release verification evidence.
+
 Release commits must include the current portable `.graphify` artifacts: `graph.json`, `graph.html`, `GRAPH_REPORT.md`, `manifest.json`, `cost.json`, and `.graphify_runtime.json`. Do not commit local lifecycle files such as `.graphify/cache/`, `.graphify/branch.json`, `.graphify/worktree.json`, or `.graphify/needs_update`.
 
 ## Licensing Gate

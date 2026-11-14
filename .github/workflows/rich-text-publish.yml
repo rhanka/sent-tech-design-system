@@ -107,6 +107,8 @@ jobs:
         run: |
           npm ci
           npm --workspace @sentropic/design-system-rich-text run build
+      - name: Dist import closure (packed package with registry dependencies)
+        run: npm run dist:import-closure -- --workspaces=@sentropic/design-system-rich-text
       - name: Bootstrap npm auth for first publish (inactive without secret)
         if: ${{ env.NPM_TOKEN != '' }}
         run: npm config set //registry.npmjs.org/:_authToken "${NPM_TOKEN}"
