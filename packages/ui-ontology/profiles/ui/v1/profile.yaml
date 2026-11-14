@@ -1,0 +1,1999 @@
+id: ui
+version: "1"
+default_language: en
+presentation_vocabulary: diagram-notation@1
+node_types:
+  Component:
+    aliases:
+      - ui component
+      - design-system component
+      - catalog component
+    registry: components
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: square
+      fill: solid
+      border: bold
+      color_hex: "#EA580C"
+    presentation:
+      role: card
+      nature: component
+      icon: component
+      kicker:
+        attribute: category
+        values:
+          action: ACTION
+          chat: CHAT
+          data: DATA
+          feedback: FEEDBACK
+          form: FORM
+          layout: LAYOUT
+          navigation: NAVIGATION
+          overlay: OVERLAY
+          other: OTHER
+        default: COMPONENT
+      holds:
+        - card
+  ComponentPort:
+    aliases:
+      - framework port
+      - implementation
+      - delivery
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: square
+      fill: hollow
+      border: normal
+      color_hex: "#F97316"
+    presentation:
+      role: card
+      nature: component
+      icon: code
+      kicker:
+        attribute: framework
+        values:
+          svelte: SVELTE
+          react: REACT
+          vue: VUE
+          angular: ANGULAR
+        default: ELEMENT
+  Framework:
+    aliases:
+      - framework
+      - build target
+    registry: frameworks
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: hexagon
+      fill: solid
+      border: bold
+      color_hex: "#7C3AED"
+    presentation:
+      role: card
+      nature: component
+      icon: layers
+      kicker: FRAMEWORK
+  Contract:
+    aliases:
+      - component contract
+      - derived contract
+      - contract cell
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: diamond
+      fill: solid
+      border: bold
+      color_hex: "#2563EB"
+    presentation:
+      role: flow-node
+      nature: data
+      variant: document
+  Prop:
+    aliases:
+      - property
+      - input
+      - attribute
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: diamond
+      fill: hollow
+      border: normal
+      color_hex: "#3B82F6"
+    presentation:
+      role: entity-table
+      nature: data
+      icon: sliders
+  Slot:
+    aliases:
+      - slot
+      - snippet
+      - children
+      - content projection
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: diamond
+      fill: hollow
+      border: bold
+      color_hex: "#1D4ED8"
+    presentation:
+      role: entity-table
+      nature: data
+      icon: square-dashed
+  Event:
+    aliases:
+      - event
+      - output
+      - emit
+      - action
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: triangle
+      fill: hollow
+      border: normal
+      color_hex: "#DC2626"
+    presentation:
+      role: entity-table
+      nature: data
+      icon: zap
+  TokenSet:
+    aliases:
+      - token layer
+      - token group
+      - token set
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: box
+      fill: solid
+      border: bold
+      color_hex: "#059669"
+    presentation:
+      role: entity-table
+      nature: data
+      icon: palette
+  Token:
+    aliases:
+      - design token
+      - css custom property
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: box
+      fill: hollow
+      border: normal
+      color_hex: "#10B981"
+    presentation:
+      role: entity-table
+      nature: data
+      icon: droplet
+  Theme:
+    aliases:
+      - theme
+      - brand theme
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: star
+      fill: solid
+      border: normal
+      color_hex: "#D97706"
+    presentation:
+      role: card
+      nature: component
+      icon: paintbrush
+      kicker: THEME
+  Icon:
+    aliases:
+      - icon
+      - glyph
+      - pictogram
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: dot
+      fill: solid
+      border: normal
+      color_hex: "#475569"
+    presentation:
+      role: card
+      nature: component
+      icon: image
+      kicker: ICON
+  ViewLayout:
+    aliases:
+      - view layout
+      - page pattern
+      - floorplan
+      - page shell
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: triangle
+      fill: solid
+      border: bold
+      color_hex: "#B45309"
+    presentation:
+      role: card
+      nature: component
+      icon: panels-top-left
+      kicker: LAYOUT
+  ComposedView:
+    aliases:
+      - composed view
+      - view type
+      - screen type
+      - page template
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: triangle
+      fill: solid
+      border: normal
+      color_hex: "#F59E0B"
+    presentation:
+      role: card
+      nature: component
+      icon: layout-template
+      kicker: VIEW
+  Package:
+    aliases:
+      - npm package
+      - workspace package
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: hexagon
+      fill: hollow
+      border: bold
+      color_hex: "#6D28D9"
+    presentation:
+      role: container
+      nature: component
+      icon: package
+      kicker: PACKAGE
+      holds:
+        - card
+  PackageRelease:
+    aliases:
+      - package version
+      - release
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: hexagon
+      fill: hollow
+      border: normal
+      color_hex: "#8B5CF6"
+    presentation:
+      role: card
+      nature: component
+      icon: tag
+      kicker: RELEASE
+  DocPage:
+    aliases:
+      - documentation page
+      - catalog page
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: dot
+      fill: hollow
+      border: normal
+      color_hex: "#94A3B8"
+    presentation:
+      role: flow-node
+      nature: data
+      variant: document
+  RenderCatalog:
+    aliases:
+      - a2ui catalog
+      - render catalog
+      - elements catalogue
+    source_backed: true
+    status_policy: hardenable
+    visual_encoding:
+      shape: star
+      fill: hollow
+      border: bold
+      color_hex: "#0E7490"
+    presentation:
+      role: flow-node
+      nature: data
+      variant: document
+  UiResource:
+    aliases:
+      - ui resource
+      - mcp app resource
+      - ui:// resource
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: star
+      fill: hollow
+      border: normal
+      color_hex: "#0891B2"
+    presentation:
+      role: card
+      nature: component
+      icon: app-window
+      kicker: UI RESOURCE
+  McpTool:
+    aliases:
+      - mcp tool
+      - render tool
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: dot
+      fill: hollow
+      border: bold
+      color_hex: "#155E75"
+    presentation:
+      role: card
+      nature: component
+      icon: wrench
+      kicker: MCP TOOL
+  PresentationForm:
+    aliases:
+      - presentation form
+      - diagram card form
+    source_backed: true
+    status_policy: reference
+    visual_encoding:
+      shape: box
+      fill: hollow
+      border: bold
+      color_hex: "#64748B"
+    presentation:
+      role: card
+      nature: component
+      icon: shapes
+      kicker: FORM
+relation_types:
+  portedTo:
+    source_types:
+      - Component
+    target_types:
+      - ComponentPort
+    requires_evidence: true
+    assertion_basis:
+      - index_declaration
+    derivation_methods:
+      - component_index_delivery
+      - barrel_export_resolution
+    cardinality:
+      source: "1"
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: containment
+      parent: source
+  targetsFramework:
+    source_types:
+      - ComponentPort
+    target_types:
+      - Framework
+    requires_evidence: true
+    assertion_basis:
+      - index_declaration
+    derivation_methods:
+      - component_index_delivery_framework
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: footer
+      on: source
+      label: framework
+  implementsContract:
+    source_types:
+      - ComponentPort
+    target_types:
+      - Contract
+    requires_evidence: true
+    assertion_basis:
+      - contract_declaration
+    derivation_methods:
+      - contract_index_framework_cell
+      - elements_schema_contract
+    cardinality:
+      source: "1"
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: contract
+  declaresMember:
+    source_types:
+      - Contract
+    target_types:
+      - Prop
+      - Slot
+      - Event
+    requires_evidence: true
+    assertion_basis:
+      - contract_declaration
+    derivation_methods:
+      - contract_props_schema
+      - contract_slots
+      - contract_events
+      - contract_bindable
+    cardinality:
+      source: 1..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: declares
+  importsPort:
+    source_types:
+      - ComponentPort
+    target_types:
+      - ComponentPort
+    requires_evidence: true
+    assertion_basis:
+      - ast_import
+      - ast_template_usage
+    derivation_methods:
+      - svelte_ast_component_import
+      - vue_ts_h_call
+      - tsx_ast_component_import
+      - angular_ts_ast_component_import
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  composes:
+    source_types:
+      - Component
+      - ViewLayout
+      - ComposedView
+    target_types:
+      - Component
+    requires_evidence: true
+    assertion_basis:
+      - ast_template_usage
+      - declarative_tree
+    derivation_methods:
+      - lift_port_imports
+      - nodespec_component_reference
+      - viewspec_region_tree
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  usesSlotOf:
+    source_types:
+      - ComponentPort
+      - ViewLayout
+      - ComposedView
+    target_types:
+      - Slot
+    requires_evidence: true
+    assertion_basis:
+      - ast_template_usage
+      - declarative_tree
+    derivation_methods:
+      - svelte_snippet_fill
+      - vue_ts_h_slot_object
+      - react_children_or_render_prop
+      - angular_content_projection
+      - nodespec_slot_fill
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  usesToken:
+    source_types:
+      - ComponentPort
+      - Component
+    target_types:
+      - Token
+    requires_evidence: true
+    assertion_basis:
+      - css_reference
+      - ast_reference
+    derivation_methods:
+      - css_var_reference
+      - ts_token_import
+      - lift_port_token_refs
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  overridesToken:
+    source_types:
+      - Theme
+    target_types:
+      - Token
+    requires_evidence: true
+    assertion_basis:
+      - css_declaration
+      - token_declaration
+    derivation_methods:
+      - theme_css_custom_property
+      - theme_ts_token_map
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  aliasOf:
+    source_types:
+      - Token
+    target_types:
+      - Token
+    requires_evidence: true
+    assertion_basis:
+      - token_declaration
+    derivation_methods:
+      - token_reference_resolution
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: arrow
+  inTokenSet:
+    source_types:
+      - Token
+    target_types:
+      - TokenSet
+    requires_evidence: true
+    assertion_basis:
+      - token_declaration
+    derivation_methods:
+      - token_module_layer
+      - component_token_group
+    cardinality:
+      source: 1..n
+      target: 1..n
+      status: declared
+    presentation:
+      encoding: arrow
+  extendsTheme:
+    source_types:
+      - Theme
+    target_types:
+      - Theme
+    requires_evidence: true
+    assertion_basis:
+      - token_declaration
+    derivation_methods:
+      - theme_manifest_base
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: arrow
+  usesIcon:
+    source_types:
+      - ComponentPort
+    target_types:
+      - Icon
+    requires_evidence: true
+    assertion_basis:
+      - ast_import
+    derivation_methods:
+      - icon_registry_import
+      - lucide_named_import
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: icon
+  variantOf:
+    source_types:
+      - Component
+    target_types:
+      - Component
+    requires_evidence: true
+    assertion_basis:
+      - explicit_declaration
+    derivation_methods:
+      - relations_overlay_declaration
+      - shared_props_type_candidate
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: arrow
+  replaces:
+    source_types:
+      - Component
+      - Prop
+      - Slot
+      - Event
+      - Token
+    target_types:
+      - Component
+      - Prop
+      - Slot
+      - Event
+      - Token
+    requires_evidence: true
+    assertion_basis:
+      - explicit_declaration
+    derivation_methods:
+      - jsdoc_deprecated_tag
+      - relations_overlay_declaration
+      - changelog_rename_entry
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  partOfPackage:
+    source_types:
+      - ComponentPort
+      - TokenSet
+      - Theme
+      - Icon
+      - RenderCatalog
+    target_types:
+      - Package
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+      - index_declaration
+    derivation_methods:
+      - workspace_path_resolution
+      - component_index_delivery_package
+    cardinality:
+      source: 0..n
+      target: "1"
+      status: declared
+    presentation:
+      encoding: footer
+      on: source
+      label: package
+  releaseOf:
+    source_types:
+      - PackageRelease
+    target_types:
+      - Package
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - package_manifest_version
+    cardinality:
+      source: 0..n
+      target: "1"
+      status: declared
+    presentation:
+      encoding: containment
+      parent: target
+  shippedIn:
+    source_types:
+      - ComponentPort
+      - RenderCatalog
+    target_types:
+      - PackageRelease
+    requires_evidence: true
+    assertion_basis:
+      - index_declaration
+      - manifest_declaration
+    derivation_methods:
+      - component_index_delivery_version
+      - package_manifest_version
+    cardinality:
+      source: 0..n
+      target: "1"
+      status: declared
+    presentation:
+      encoding: footer
+      on: source
+      label: release
+  dependsOn:
+    source_types:
+      - PackageRelease
+      - ComponentPort
+    target_types:
+      - Package
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+      - ast_import
+    derivation_methods:
+      - package_manifest_dependencies
+      - package_manifest_peer_dependencies
+      - ast_bare_import
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  documentedIn:
+    source_types:
+      - Component
+      - ComposedView
+      - ViewLayout
+      - Token
+      - Theme
+    target_types:
+      - DocPage
+    requires_evidence: true
+    assertion_basis:
+      - explicit_declaration
+    derivation_methods:
+      - docs_catalog_slug
+      - docs_catalog_group_slug
+      - docs_route_manifest
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: footer
+      on: source
+      label: doc
+  usesLayout:
+    source_types:
+      - ComposedView
+    target_types:
+      - ViewLayout
+    requires_evidence: true
+    assertion_basis:
+      - declarative_tree
+    derivation_methods:
+      - viewspec_layout_field
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: layout
+  realizedBy:
+    source_types:
+      - ViewLayout
+    target_types:
+      - Component
+    requires_evidence: true
+    assertion_basis:
+      - explicit_declaration
+      - declarative_tree
+    derivation_methods:
+      - relations_overlay_declaration
+    cardinality:
+      source: 0..1
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: arrow
+  listedIn:
+    source_types:
+      - Component
+    target_types:
+      - RenderCatalog
+    requires_evidence: true
+    assertion_basis:
+      - catalog_declaration
+    derivation_methods:
+      - a2ui_catalog_components_key
+      - x_sentropic_element
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: footer
+      on: source
+      label: A2UI catalogue
+  exposedAs:
+    source_types:
+      - Component
+      - ComposedView
+    target_types:
+      - UiResource
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - ui_manifest_exposes_component
+      - ui_manifest_exposes_view
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  supportsCatalog:
+    source_types:
+      - UiResource
+    target_types:
+      - RenderCatalog
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - ui_manifest_supported_catalog_ids
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  rendersWith:
+    source_types:
+      - McpTool
+    target_types:
+      - UiResource
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - mcp_tool_meta_ui_resource_uri
+    cardinality:
+      source: 0..n
+      target: 0..1
+      status: declared
+    presentation:
+      encoding: arrow
+  callsTool:
+    source_types:
+      - UiResource
+    target_types:
+      - McpTool
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - ui_manifest_called_by_declaration
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: arrow
+  builtFrom:
+    source_types:
+      - UiResource
+    target_types:
+      - PackageRelease
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - ui_manifest_pinned_package
+      - component_index_delivery_version
+    cardinality:
+      source: 0..n
+      target: 1..n
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: built from
+  rendersForm:
+    source_types:
+      - Component
+    target_types:
+      - PresentationForm
+    requires_evidence: true
+    assertion_basis:
+      - explicit_declaration
+    derivation_methods:
+      - presentation_catalog_form_binding
+    cardinality:
+      source: 0..n
+      target: 0..n
+      status: declared
+    presentation:
+      encoding: detail
+      on: source
+      label: form
+  servesCatalog:
+    source_types:
+      - McpTool
+    target_types:
+      - RenderCatalog
+    requires_evidence: true
+    assertion_basis:
+      - manifest_declaration
+    derivation_methods:
+      - mcp_tool_serves_catalog_manifest
+      - ui_manifest_served_catalog_ids
+    cardinality:
+      source: 0..n
+      target: 1..n
+      status: provisional
+    presentation:
+      encoding: arrow
+registries:
+  components:
+    source: ui_components
+    id_column: componentId
+    label_column: displayName
+    alias_columns:
+      - exportName
+      - elementName
+    node_type: Component
+  frameworks:
+    source: ui_frameworks
+    id_column: id
+    label_column: label
+    alias_columns:
+      - packageName
+    node_type: Framework
+class_hierarchies:
+  ui_artifacts:
+    classes:
+      UiArtifact:
+        label: UI artifact
+      Renderable:
+        parent: UiArtifact
+        label: Renderable catalog item
+        member_node_types:
+          - Component
+          - ViewLayout
+          - ComposedView
+      Implementation:
+        parent: UiArtifact
+        label: Framework implementation
+        member_node_types:
+          - ComponentPort
+          - Framework
+      ContractSurface:
+        parent: UiArtifact
+        label: Contract surface
+        member_node_types:
+          - Contract
+          - Prop
+          - Slot
+          - Event
+      Foundation:
+        parent: UiArtifact
+        label: Design foundation
+        member_node_types:
+          - TokenSet
+          - Token
+          - Theme
+          - Icon
+      Distribution:
+        parent: UiArtifact
+        label: Distribution
+        member_node_types:
+          - Package
+          - PackageRelease
+      Exposure:
+        parent: UiArtifact
+        label: Agent-facing exposure
+        member_node_types:
+          - RenderCatalog
+          - UiResource
+          - McpTool
+      Reference:
+        parent: UiArtifact
+        label: External reference
+        member_node_types:
+          - DocPage
+          - PresentationForm
+citation_policy:
+  minimum_granularity: file
+  require_source_file: true
+  allow_bbox: false
+hardening:
+  statuses:
+    - candidate
+    - needs_review
+    - validated
+    - deprecated
+    - superseded
+    - rejected
+    - reference
+  default_status: validated
+  promotion_requires:
+    - evidence_ref
+    - ds_review
+  status_transitions:
+    - from:
+        - candidate
+      to:
+        - validated
+        - rejected
+      requires:
+        - ds_review
+    - from:
+        - validated
+      to:
+        - deprecated
+        - needs_review
+      requires:
+        - evidence_ref
+    - from:
+        - deprecated
+      to:
+        - superseded
+      requires:
+        - evidence_ref
+    - from:
+        - needs_review
+      to:
+        - validated
+        - deprecated
+        - rejected
+      requires:
+        - ds_review
+inference_policy:
+  allow_inferred_relations: true
+  allowed_relation_types:
+    - variantOf
+    - usesSlotOf
+  require_evidence_refs: true
+evidence_policy:
+  require_evidence_refs: true
+  min_refs: 1
+  node_types:
+    - Component
+    - ComponentPort
+    - Framework
+    - Contract
+    - Prop
+    - Slot
+    - Event
+    - TokenSet
+    - Token
+    - Theme
+    - Icon
+    - ViewLayout
+    - ComposedView
+    - Package
+    - PackageRelease
+    - DocPage
+    - RenderCatalog
+    - UiResource
+    - McpTool
+    - PresentationForm
+  relation_types:
+    - portedTo
+    - targetsFramework
+    - implementsContract
+    - declaresMember
+    - importsPort
+    - composes
+    - usesSlotOf
+    - usesToken
+    - overridesToken
+    - aliasOf
+    - inTokenSet
+    - extendsTheme
+    - usesIcon
+    - variantOf
+    - replaces
+    - partOfPackage
+    - releaseOf
+    - shippedIn
+    - dependsOn
+    - documentedIn
+    - usesLayout
+    - realizedBy
+    - listedIn
+    - exposedAs
+    - supportsCatalog
+    - rendersWith
+    - callsTool
+    - builtFrom
+    - rendersForm
+    - servesCatalog
+outputs:
+  ontology:
+    enabled: true
+    canonical_node_types:
+      - Component
+      - ComponentPort
+      - Framework
+      - Contract
+      - Prop
+      - Slot
+      - Event
+      - TokenSet
+      - Token
+      - Theme
+      - Icon
+      - ViewLayout
+      - ComposedView
+      - Package
+      - PackageRelease
+      - DocPage
+      - RenderCatalog
+      - UiResource
+      - McpTool
+      - PresentationForm
+    source_node_types: []
+    occurrence_node_types: []
+    alias_fields:
+      - aliases
+    relation_exports:
+      - portedTo
+      - targetsFramework
+      - implementsContract
+      - declaresMember
+      - importsPort
+      - composes
+      - usesSlotOf
+      - usesToken
+      - overridesToken
+      - aliasOf
+      - inTokenSet
+      - extendsTheme
+      - usesIcon
+      - variantOf
+      - replaces
+      - partOfPackage
+      - releaseOf
+      - shippedIn
+      - dependsOn
+      - documentedIn
+      - usesLayout
+      - realizedBy
+      - listedIn
+      - exposedAs
+      - supportsCatalog
+      - rendersWith
+      - callsTool
+      - builtFrom
+      - rendersForm
+      - servesCatalog
+    wiki:
+      enabled: true
+      page_node_types:
+        - Component
+        - ViewLayout
+        - ComposedView
+      include_backlinks: true
+      include_source_snippets: false
+x_ui:
+  status: "draft r3; locally validated on engram 0.27.0 sources (profile_hash
+    90aa64383475611882a57ca6a739f418dc5a4e7fba2b56df541434b65ef442de; raw sha256,
+    hashOntologyProfile(parsed) and bundle digest in STUDY section 10.3, measured from the final
+    bytes); not registered in any catalog (owner decision: committed in the DS repo, no engram
+    registration before the third-party contract). Revision 3 applies engram r2 findings U1-U4,
+    owner r2 decisions (immo pilot, A2UI v1.0 before first projection)."
+  profile:
+    id: ui
+    version: "1"
+    canonicalRef: sentropic-ds:ui@1
+    renamedFrom: ds-ui@1
+    renameJustification: profile identity names the domain (an application's UI graph), not the
+      producer; the DS catalog is one producer among producers (owner D2). A producer-scoped id
+      (ds-ui) would brand every application's own graph as DS-owned and misstate authority. Same
+      node types, relation types and attributes for DS-catalog and application-local instances.
+    license: third-party profile, family EXT with family-corpus receipt (engram E2); licence closure
+      declared in the catalog record
+  format_note: "Engram E1 (format amendment, in progress): cardinality {source,target,status} and
+    presentation (node and relation) are declared here in the amendment shapes; the current
+    normalizer keeps node presentation inside profile_hash and drops relation
+    cardinality/presentation, so the digest is re-pinned once when the amendment lands. Validator
+    ignores the extra fields: zero errors regardless. Published only after the amendment."
+  cardinality_shape:
+    shape: "{ source, target, status }"
+    vocabulary:
+      - "1"
+      - 0..1
+      - 1..n
+      - 0..n
+    vocabulary_source: erd@1 ERD_CARDINALITIES (DS packages/diagram-core/src/profiles/erd.ts)
+    reading: "normative, end multiplicity (engram E1): `source` = how many source nodes one target node
+      may have; `target` = how many target nodes one source node may have"
+    example: 'engram archi2-erd-bridge@1 `storedIn 1..1 -> 0..n` rewrites in this reading as storedIn: {
+      source: "0..n", target: "1" } (one entity has exactly one store; a store holds 0..n entities)'
+    status: "`declared` | `provisional`; mirrors the erd@1 relationship attribute cardinalityStatus"
+  presentation_shape:
+    vocabulary: diagram-notation@1
+    status: proposed; DC-2d is a draft. Unknown glyphs are warning notation-icon-unknown, never errors
+      (DC-2d L63); the glyph inventory freeze is deferred.
+    containment:
+      shape: '{ encoding: "containment", parent: "source" | "target" }'
+      relations:
+        portedTo: source
+        releaseOf: target
+      note: single-parent only; inTokenSet is multi-parent, hence arrow (Carbon B6).
+    role_nature:
+      rule: card/container = nature component only (DC-2d K2)
+      flow_node_document:
+        - Contract
+        - DocPage
+        - RenderCatalog
+      entity_table_data:
+        - Prop
+        - Slot
+        - Event
+        - TokenSet
+        - Token
+      note: flow-node types carry no icon and no kicker; entity-table types carry no kicker (DC-2d S3.2
+        table)
+  producers:
+    model: "one profile, many producers. A producer is a repository that runs the index-ui skill and
+      emits ui@1 instances. Producers: `ds-catalog` (DS component index and generated sources) and
+      `app-<appId>` (any application's UI). Node ids include the producer repo key, so instance sets
+      are injective and mergeable."
+    producer_attribute: every produced Component, ComposedView, TokenSet, Theme, ViewLayout, Token,
+      Package, PackageRelease, Icon, DocPage carries producerId (and appId where relevant);
+      producerId is the OWNER of the node, not necessarily the producer that emitted the edge that
+      references it
+    mirror_rule: a producer mints only its own nodes, except for shared-vocabulary types (see
+      shared_vocabulary). DS-catalog components consumed by an app are linked through the bridge
+      usesDsComponent, never re-minted; mirrored nodes carry origin ds-catalog-mirror and lose on
+      merge
+    registry_binding: registries.ui_components / registries.ui_frameworks declare the registry SHAPE;
+      each producer binds it to its own source in project configuration (DS build, app build). The
+      binding is not part of the profile.
+    identity:
+      locator:
+        tuple: "{ repo, commit, source_file, export_symbol }"
+        on:
+          - Component
+          - ComposedView
+          - ViewLayout
+        attributes:
+          - locatorRepo
+          - locatorCommit
+          - locatorFile
+          - locatorSymbol
+        rule: an app-local code element carries the locator on the node itself, at the same grain
+          app-context@1 sees (the exported component, view or layout function).
+          ComponentPort.path/exportName stay port-level delivery facts and never serve as identity.
+          locatorCommit equals the enclosing extraction sourceCommit (manifest.json sourceCommit);
+          the bridge compares full locators, so the commit must match too.
+        extraction: P1 mints the locator for indexed components; P8 mints it for implemented views and
+          layouts from the defining export (file + exported symbol). A taxonomy-only screen (Astra
+          4) has no defining export and therefore no locator and no identity edge.
+      no_cross_emission: the ui skill never mints app-context@1 nodes (Spec, Route, CodeSymbol, File,
+        mcp_server, ...), and the app-context extractor never mints ui@1 nodes. The only meeting
+        point is the bridge profile ui-bridge@1 (usesDsComponent, implementsUiElement, servedBy).
+      non_code_no_identity: "non-code elements (Token, Theme, Icon, Package, PackageRelease, DocPage,
+        RenderCatalog, UiResource, McpTool, PresentationForm, Contract, Prop, Slot, Event,
+        Framework) have no identity bridge edge: implementsUiElement targets only Component,
+        ComposedView, ViewLayout."
+    shared_vocabulary:
+      rule: "Mend for engram U4: the id hash already contains repoKey (producer repo), so seeds without
+        producerId do not hash-collide across producers; the collision risk is LOGICAL (same seed
+        value, two nodes, ambiguous query grain). Each type below states which reading applies.
+        Gate: a fragment minting a shared-vocabulary node outside its owning producer is a finding;
+        a fragment minting a producer-scoped node with the wrong producerId is a finding."
+      Token: "PRODUCER-SCOPED (U4 decision). Seed becomes [producerId, cssCustomPropertyName] (see
+        node_id.seeds). Justification: CSS custom property names are short, un-namespaced
+        identifiers; application-local tokens exist in the pilot (--rail-fs-*, --signaux-fs-* in
+        immo, 9 distinct, beside 36 --st-* references). A single global Token node per css name
+        would conflate two producers' definitions. Ownership rule: ds-catalog owns --st-* tokens; an
+        app producer owns only its own local custom properties (never a --st-* name: that is a gate
+        finding) and references DS tokens through usesToken edges to the ds-catalog-owned Token ids
+        (cross-producer edge by exact id). TokenSet membership (inTokenSet) and aliasOf edges never
+        cross the ownership boundary except Theme overrides of DS tokens (the DS theme owns the
+        override edges)."
+      Package: "SHARED VOCABULARY (U4 decision). Seed stays [packageName] (see node_id.seeds).
+        Justification: npm package names are global identifiers; the same name in two producers
+        denotes the same package, so producerId in the seed would fragment one package into two
+        nodes and force a mirror dance for every dependency. Ownership rule: ds-catalog mints the DS
+        workspace packages; an app producer mints only packages whose name is absent from the DS set
+        (its own packages, e.g. radar-immobilier-ui) and never re-mints a DS package. partOfPackage,
+        shippedIn and dependsOn edges target exact owner-minted ids (DS package ids for DS
+        dependencies, app ids for app packages)."
+      PackageRelease: SHARED VOCABULARY, same rule as Package. Seed stays [packageName, version]. The
+        vocabulary owner mints the release node once; consumers link to it. Release identity is
+        (name, version), never producer-chosen.
+      Icon: "SHARED VOCABULARY (U4 decision). Seed stays [iconSet, name]. Justification: the icon set name
+        namespaces the icon (Lucide set + icon name is global); the DS icon registry and Lucide
+        share that namespace, and the pilot imports Lucide icons only (@lucide/svelte in 35 files).
+        ds-catalog mints icons of its registry and of the Lucide set; app producers never mint (a
+        custom app icon set would carry its own app-specific set name, hence owned by the app and
+        still seed-distinct). usesIcon edges target the owner-minted Icon id."
+      DocPage: "PRODUCER-SCOPED (U4 decision). Seed becomes [producerId, routePath] (see node_id.seeds).
+        Justification: route paths are producer-local (the same /components/button path denotes
+        different pages in different docs sites); documentedIn edges never cross producers. Each
+        producer documents its own routes; no shared DocPage exists."
+  node_id:
+    pattern: <prefix><first 32 hex of sha256(JCS(["ui@1", repoKey, nodeType, ...seed]))>, same
+      construction as engram src/app-context/node-id.ts
+    prefixes:
+      Component: "uc:"
+      ComponentPort: "uport:"
+      Framework: "ufw:"
+      Contract: "uct:"
+      Prop: "uprop:"
+      Slot: "uslot:"
+      Event: "uevt:"
+      TokenSet: "utset:"
+      Token: "utok:"
+      Theme: "uthm:"
+      Icon: "uico:"
+      ViewLayout: "ulay:"
+      ComposedView: "uview:"
+      Package: "upkg:"
+      PackageRelease: "urel:"
+      DocPage: "udoc:"
+      RenderCatalog: "ucat:"
+      UiResource: "uui:"
+      McpTool: "utool:"
+      PresentationForm: "uform:"
+    seeds:
+      Component:
+        - producerId
+        - componentId
+      ComponentPort:
+        - componentId
+        - channel
+        - framework-or-empty
+      Framework:
+        - id
+      Contract:
+        - componentId
+        - channel
+        - framework-or-empty
+      Prop:
+        - componentId
+        - name
+      Slot:
+        - componentId
+        - name
+      Event:
+        - componentId
+        - name
+      TokenSet:
+        - producerId
+        - layer
+        - group-or-empty
+      Token:
+        - producerId
+        - cssCustomPropertyName
+      Theme:
+        - producerId
+        - themeId
+      Icon:
+        - iconSet
+        - name
+      ViewLayout:
+        - producerId
+        - layoutId
+      ComposedView:
+        - producerId
+        - viewId
+      Package:
+        - packageName
+      PackageRelease:
+        - packageName
+        - version
+      DocPage:
+        - producerId
+        - routePath
+      RenderCatalog:
+        - catalogId
+      UiResource:
+        - uri
+      McpTool:
+        - serverId
+        - toolName
+      PresentationForm:
+        - presentationContractId
+        - version
+        - formId
+  node_attributes:
+    Component:
+      - componentId
+      - producerId
+      - origin(ds-catalog|app-local|ds-catalog-mirror)
+      - appId
+      - displayName
+      - category
+      - status
+      - scope
+      - visibility
+      - dataClass
+      - renderable
+      - entryDigest
+      - resourceAddress
+      - lifecycle
+      - rendersProfiles
+      - locatorRepo
+      - locatorCommit
+      - locatorFile
+      - locatorSymbol
+    ComponentPort:
+      - producerId
+      - channel(source|element)
+      - framework
+      - path
+      - digest
+      - parity(match|source-of-truth)
+      - exportName
+      - elementName
+      - engine(core|lazy:<chunk>)
+      - fallback(text|svg)
+      - runtimeBoundary
+    Framework:
+      - producerId
+      - id
+      - label
+      - packageName
+    Contract:
+      - producerId
+      - contractSource(derived|published)
+      - completeness(complete|partial|none)
+      - contractVersion
+      - contractDigest
+      - declarationPath
+      - declarationDigest
+      - propsType
+      - lossCounts
+      - a2uiSchemaId
+      - schemaRef
+      - semanticRuntimePackage
+      - examplePresent
+    Prop:
+      - producerId
+      - name
+      - requiredSummary(any)
+      - schemaDigestByFramework
+      - bindableIn
+      - a2uiValueType(literal|DynamicString|DynamicNumber|DynamicBoolean|DynamicStringList|DynamicValue)
+      - a2uiExcluded(none|function|snippet|children|style-hook)
+      - hostOnly
+      - lifecycle
+    Slot:
+      - producerId
+      - name
+      - a2uiRefType(none|ComponentId|ChildList)
+      - a2uiProperty
+    Event:
+      - producerId
+      - name
+      - callbackByFramework
+      - intent(select|open|choose-option|comment|none)
+      - a2uiAction(none|event)
+      - a2uiActionName
+    Token:
+      - producerId
+      - cssCustomPropertyName
+      - layer(foundation|semantic|component|anatomy)
+      - colorScheme(light|dark|both)
+    TokenSet:
+      - producerId
+      - layer
+      - group
+      - sourceModule
+    Theme:
+      - producerId
+      - themeId
+      - kind(native|measured-clone)
+      - cssEntry
+    Icon:
+      - producerId
+      - iconSet
+      - name
+    ViewLayout:
+      - producerId
+      - layoutId
+      - regions
+      - locatorRepo
+      - locatorCommit
+      - locatorFile
+      - locatorSymbol
+    ComposedView:
+      - producerId
+      - appId
+      - viewId
+      - domain
+      - reference
+      - routePath
+      - viewKind
+      - locatorRepo
+      - locatorCommit
+      - locatorFile
+      - locatorSymbol
+    Package:
+      - producerId
+      - packageName
+    PackageRelease:
+      - producerId
+      - packageName
+      - version
+    DocPage:
+      - producerId
+      - routePath
+    RenderCatalog:
+      - producerId
+      - catalogId
+      - $id
+      - $schema
+      - title
+      - description
+      - a2uiVersion
+      - commonTypesId
+      - commonTypesSha256
+      - functionCount
+      - sha256
+      - a2uiResourceUri
+    UiResource:
+      - producerId
+      - uri
+      - mimeType
+      - name
+      - csp.connectDomains
+      - csp.resourceDomains
+      - csp.frameDomains
+      - csp.baseUriDomains
+      - permissions
+      - domain
+      - prefersBorder
+      - listed
+      - serverId (serving binding, asserted by the serving side)
+      - servedState(unknown|declared|served)
+      - contentSha256
+    McpTool:
+      - producerId
+      - serverId
+      - toolName
+      - visibility(model|app)
+      - resourceUri
+      - inputSchemaRef
+    PresentationForm:
+      - producerId
+      - contractPin
+      - formId
+  edge_attributes:
+    declaresMember:
+      - nativeName
+      - requiredSelf
+      - bindableSelf
+      - schemaRef
+    aliasOf:
+      - appliesTo(light|dark|both)
+      - themeId
+    overridesToken:
+      - mode(direct|propagated)
+      - appliesTo(light|dark|both)
+      - themeId
+    listedIn:
+      - a2uiComponentName
+      - contractVersion
+      - schemaId
+    exposedAs: []
+    rendersWith:
+      - metaKey(_meta.ui.resourceUri)
+    builtFrom:
+      - vendoredBy(fingerprint)
+      - sri
+    composes:
+      - liftedFrom
+      - agreeingFrameworks
+    usesToken:
+      - liftedFrom
+    servesCatalog: []
+  query_aliases:
+    deprecatedBy: inverse of `replaces`; query alias, never asserted (engram E9)
+    composedBy: inverse of `composes`; query alias
+    portOf: inverse of `portedTo`; query aliases
+  derived_queries:
+    missing_ports: "never stored (engram D2). Derived at query time as a set difference: supported
+      Frameworks minus Frameworks with `portedTo`/`targetsFramework` at the pinned commit, split by
+      the parity map (missing vs no-counterpart) read from the committed index. Same rule for app
+      producers: frameworks the producer supports minus frameworks with ports."
+    consumed_by: derived projection of the bridge usesDsComponent (+ PackageRelease manifest
+      dependencies); never stored. Empty means uncovered, not unused.
+    port_completeness: ports with `implementsContract` whose Contract.completeness != complete; ports
+      with no contract edge answer unknown, never incomplete.
+  fragments:
+    frozen_path: generated/ui@1/<producerId>/fragments/<fragmentSlug>.json +
+      generated/ui@1/<producerId>/manifest.json + generated/ui@1/manifest.json (root). The skill
+      writes exactly this layout in every indexed repo (DS or app); h-cond architect skill reads the
+      manifest, never a guessed path. fragmentSlug is the componentId for component fragments and
+      _foundation/_views/_packages/_exposure for shared nodes. ui@1 carries the version inside the
+      path so a future ui@2 lands beside it.
+    rule: "generated/ui@1 fragments shards are Git/diff storage only. validateProfileExtraction and
+      graph assembly run over the MERGED commit extraction assembled from
+      generated/ui@1/manifest.json (all shards + registry seeds; nodes before edges). Engram caches
+      shard payloads by sha256 and validates/builds the union per commit (Carbon B1). Locator note
+      (U1): locatorCommit equals sourceCommit, so locator-bearing fragments rewrite their locator
+      lines every commit; engram caches locator-bearing shards on semantic content (nodes/edges
+      minus locatorCommit), not on raw sha. An unrelated commit still rewrites only the manifest
+      plus locatorCommit lines, never a semantic assertion."
+    citations: "every non-registry node and every edge carries citations: [{ source_file,
+      source_location }] (citation_policy requires source_file; source_location carries the old
+      source_line form)"
+    evidence: "every node and edge carries evidence_refs; every extraction carries evidence:
+      OntologyEvidenceRecord[]; registry-seeded nodes carry evidence_refs from the index entry
+      (evidence check runs before the registry exemption, Carbon B2)"
+    provenance_envelope: Extraction.provenance { source_owner, source_id, observed_at, source_hash,
+      adapter_version } (required strings)
+    registry_ids: P1 mints the u* ids directly with registry_id + registry_record_id; raw
+      registryRecordsToExtraction ids (registry_components_*) are never merged into the fragment
+      graph
+    dedup: forbid buildMerge/deduplicateByLabel on ui extractions (deterministic ids); member
+      labels/dedupKey are qualified by node_type (prop:navigationPanel vs slot:navigationPanel)
+    assertion_vs_snapshot: assertion content is byte-stable across commits EXCEPT locatorCommit
+      (locator-bearing code elements restate sourceCommit per commit by design, U1); the indexed
+      commit lives in manifest.json (sourceCommit + fragmentSetDigest) and in locatorCommit lines.
+      An unrelated commit rewrites only the manifest plus locatorCommit lines, never a semantic
+      assertion. Absence at the new commit is the retraction.
+  a2ui:
+    version: v1.0
+    status: "A2UI v1.0 is the current specification (Version: 1.0, Status: Current, Created: Nov 20
+      2025, Last Updated: Jun 8 2026; Google first-stable announcement Nov 11 2026). Owner r2: move
+      to v1.0 BEFORE the first projection. The DS JSON render standard / elements catalog migration
+      is prerequisite lot L5a; the v0.9.1 pin is retired by this revision."
+    sources:
+      - https://a2ui.org/specification/v1.0-a2ui/
+      - https://a2ui.org/specification/v1.0/schemas/
+      - https://a2ui.org/specification/v1.0-evolution-guide/
+      - https://a2ui.org/specification/v1.0-basic-catalog-implementation-guide/
+      - https://a2ui.org/specification/v1.0-a2ui-extension-specification/
+      - https://github.com/a2ui-project/a2ui/blob/main/specification/v1_0/json/common_types.json
+      - https://github.com/a2ui-project/a2ui/blob/main/specification/v1_0/json/catalog_definition.json
+      - https://github.com/a2ui-project/a2ui/blob/main/specification/v1_0/json/agent_to_renderer.json
+      - https://github.com/a2ui-project/a2ui/blob/main/specification/v1_0/json/renderer_to_agent.json
+      - https://a2ui.org/guides/mcp-overview/
+      - "v0.9.1 sources retired (kept for migration diff only):
+        https://a2ui.org/specification/v0.9.1-a2ui/, https://a2ui.org/specification/v0.9.1/schemas/"
+    reused_verbatim:
+      catalog_keys:
+        - $schema
+        - $id
+        - catalogId
+        - title
+        - description
+        - components
+        - functions
+        - $defs
+      catalog_defs:
+        - anyComponent
+        - theme
+        - CatalogComponentCommon
+      common_types:
+        - ComponentCommon (composed at envelope level; individual catalog definitions MUST NOT
+          redundantly wrap ComponentCommon/FunctionCommon via allOf)
+        - ComponentId
+        - ChildList
+        - DataBinding {@path} (v1.0 @-prefixed; plain objects with path/call keys are literals)
+        - DynamicString
+        - DynamicNumber
+        - DynamicBoolean
+        - DynamicStringList
+        - DynamicValue
+        - FunctionCall {@call, args} (v1.0 @-prefixed)
+        - Action
+        - Checkable
+        - CheckRule
+        - AccessibilityAttributes (v1.0 via @accessibility)
+      component_object:
+        - id (unprefixed, structural identity)
+        - component (unprefixed, discriminator)
+        - "envelope mixins (v1.0 @-prefixed): @catalogId, @accessibility, @metadata, @checks"
+      negotiation:
+        - supportedCatalogIds
+        - inlineCatalogs
+        - acceptsInlineCatalogs
+      messages_named_only:
+        - agent_to_renderer envelope (v1.0 wire rename; v0.9.1 bare message names retired)
+        - "createSurface (v1.0 single-message payloads: components + dataModel may ride inline)"
+        - updateComponents
+        - updateDataModel
+        - deleteSurface
+        - callRendererFunction
+        - agentFunctionResponse
+        - "renderer_to_agent envelope: action + callAgentFunction/rendererFunctionResponse"
+        - error
+    used_by_ds_catalogue_today:
+      - ComponentCommon
+      - CatalogComponentCommon
+      - anyComponent
+      - theme
+    reserved_not_used_today:
+      - ComponentId
+      - ChildList
+      - DataBinding
+      - Dynamic*
+      - FunctionCall
+      - Action
+      - Checkable
+    ds_catalog:
+      current: "https://design-system.sent-tech.ca/catalogs/elements/v1/catalog.json (A2UI v0.9.1, 3
+        components: BarChart, BpmnCanvas, DecisionDossier)"
+      v1_target: "https://design-system.sent-tech.ca/catalogs/elements/v2/catalog.json (A2UI v1.0; catalog
+        URL takes the new major per owner r2). $id = catalogId = v2 URL (v1.0 rule: both set to the
+        same URI, catalogId a string identifier conventionally URI-shaped). The v1 URL stays pinned
+        for v0.9.1 consumers; L5a migrates catalog.json, the 3 standalone schemas, the
+        render-envelope validator and the 7 h2a render tools, then re-pins
+        a2uiVersion/protocolVersion."
+    mapping:
+      RenderCatalog: "catalog document; catalogId = $id (v1.0: catalog definition per
+        catalog_definition.json; protocolVersion 1.0; catalogId a string identifier, not a
+        resolvable URI)"
+      Component + listedIn: components.<a2uiComponentName>; per-component @catalogId mixing supported
+        (explicit @catalogId else surface default catalogId else resolution error, no fallback to
+        capabilities)
+      ComponentPort(channel=element): x-sentropic.element, x-sentropic.engine, x-sentropic.fallback
+      Contract(channel=element): the component schema; x-sentropic.contract; x-sentropic.schema
+      Prop: one property of the component schema; value type per a2uiValueType; DataBinding positions use
+        {@path}, FunctionCall positions use {@call, args} (v1.0); the schema body lives in the
+        digest-addressed blob (contract), never retyped
+      Slot: one property typed ComponentId (single) or ChildList (list or template) in the catalog
+        definition; the property name is kept
+      Event: x-sentropic.events intent today; a property typed Action with event.name when a2uiAction =
+        event (v1.0 actions ride renderer_to_agent; bidirectional function RPC via
+        callRendererFunction/callAgentFunction)
+      ComposedView: "surface template: updateComponents adjacency list with one root (v1.0 createSurface
+        may carry components + dataModel inline)"
+      Theme: "$defs/theme { themeId } (v1.0: theme colours removed from the protocol; styling comes from
+        the target framework native theme)"
+      supportsCatalog: supportedCatalogIds advertised by a renderer (negotiation term unchanged in v1.0)
+    dedicated_resources: "PascalCase of the a2uiComponentName: ui://sentropic/<a2uiComponentName>/v1
+      with tool render_<a2uiComponentName> (live h2a spelling, Carbon M3)"
+  mcp_apps:
+    version: 2026-01-26 (Stable)
+    extension_id: io.modelcontextprotocol/ui
+    sources:
+      - https://github.com/modelcontextprotocol/ext-apps/blob/main/specification/2026-01-26/apps.mdx
+      - https://modelcontextprotocol.io/docs/extensions/apps
+    reused_verbatim:
+      resource:
+        - uri (ui://)
+        - name
+        - description
+        - mimeType = text/html;profile=mcp-app
+        - _meta.ui.csp.connectDomains
+        - _meta.ui.csp.resourceDomains
+        - _meta.ui.csp.frameDomains
+        - _meta.ui.csp.baseUriDomains
+        - _meta.ui.permissions.{camera,microphone,geolocation,clipboardWrite}
+        - _meta.ui.domain
+        - _meta.ui.prefersBorder
+      tool:
+        - _meta.ui.resourceUri
+        - _meta.ui.visibility = [model, app]
+    extended:
+      - builtFrom (pinned package releases)
+      - contentSha256
+      - servedState
+      - supportsCatalog
+      - exposedAs
+      - callsTool
+    mapping:
+      UiResource: one predeclared ui:// resource (definition); serving bindings (serverId, contentSha256,
+        servedState) asserted by the serving side
+      McpTool + rendersWith: tool definition with _meta.ui.resourceUri
+      UiResource + callsTool: tool the resource declares as called (calledBy); app visibility alone is
+        never evidence of a call (Astra 8)
+      McpTool + servesCatalog: list_components and get_schema are connected to their RenderCatalog (Carbon M3)
+      UiResource + builtFrom: no counterpart in the specification; ui provenance
+      Component + exposedAs: per-component resource ui://sentropic/<a2uiComponentName>/v1 (PascalCase, Carbon M3)
+      UiResource + supportsCatalog: shared renderer ui://sentropic/render/v1 for every component of the catalogue
+  exposure_outputs:
+    rule: "one extraction, three outputs at the same commit under the same profile pin: the engram
+      fragment set, the A2UI catalogue and the ui:// manifest are projections of the same ui@1
+      instances. The projector takes (committed fragments + digest-verified Elements contract/schema
+      blobs + DS producer inputs); no output contains a value that is not an attribute of an
+      instance or of a digest-verified blob. Whole-document canonical equality is required (not
+      intersection-only); all three Elements components are imported with explicit source coverage
+      (elements-metadata for index-excluded ones)."
+    a2ui_catalog:
+      path: generated/ui@1/<producerId>/a2ui/catalog.json
+      from:
+        - RenderCatalog
+        - Component+listedIn
+        - ComponentPort(element)
+        - Contract(element)
+        - Prop
+        - Slot
+        - Event
+    ui_manifest:
+      path: generated/ui@1/<producerId>/ui/manifest.json
+      format: ui-exposure/v1
+      from:
+        - UiResource
+        - McpTool
+        - exposedAs
+        - supportsCatalog
+        - rendersWith
+        - callsTool
+        - builtFrom
+        - servesCatalog
+    gate: generated/ui@1/<producerId>/a2ui/catalog.json equals the elements catalog at the v2 URL after
+      canonical sorting (whole document; v1.0 shape after L5a, v0.9.1 shape before)
+  a2ui_query:
+    rule: "the ontology is readable through an A2UI request (owner D3). Mend U2: ONE query
+      implementation, the frozen app-context envelope via engram_catalog_for_target. The DS adapter
+      receives the A2UI action ui.query, calls engram_catalog_for_target, then projects the frozen
+      response onto an A2UI surface. No parallel local-compute query path exists; local computation
+      is allowed ONLY for the static docs projection
+      (generated/ui@1/<producerId>/navigation/<componentId>.json, built at build time)."
+    request_frozen:
+      input: "{ repo, commit, target (TargetSelector), question (ui tool param), direction?, relations?,
+        depth? (impact only, capped), tokenBudget, cursor?, includeDiagnostics? }"
+      target_selector: "ui TargetSelector (kind-discriminated, never bare {id}|{slug}): { kind:
+        'ui-component', producerId, componentId } | { kind: 'ui-view', producerId, viewId } | {
+        kind: 'ui-layout', producerId, layoutId } | { kind: 'ui-token', producerId,
+        cssCustomPropertyName } | { kind: 'ui-theme', producerId, themeId }. Code targets resolve by
+        (node_type, producerId, seed); the locator form { repo, file, exportSymbol } addresses the
+        same node the identity bridge joins. The selector vocabulary is a ui-tool addition inside
+        the frozen envelope; repo/commit/tokenBudget/cursor keep their frozen names and meanings
+        (tokenBudget, not budget_tokens)."
+      question: ui tool parameter selecting the relation set (composes | composed_by | views_using |
+        missing_ports | impact | neighbours | ... per STUDY section 9.3 Q1-Q13); it restricts
+        traversal, never changes the envelope.
+      includeDiagnostics: "optional diagnostic request object. Coverage (which producers are indexed,
+        their commits and counts, freshness) is NOT an envelope field; if the tool needs it, it asks
+        for it here. OPEN QUESTION TO ENGRAM (U2): does engram accept includeDiagnostics coverage in
+        v1, and what is its shape? Until engram sizes it, answers state coverage via indexedCommit +
+        profileHash + graphId only (empty answer = uncovered, never unused)."
+    transports:
+      - "MCP tool engram_catalog_for_target (frozen app-context envelope: target -> items ordered,
+        token-budgeted, commit-pinned, freshness = indexedCommit + profileHash, nextCursor, 6 error
+        codes)"
+      - "A2UI action message renderer_to_agent event.name = ui.query whose context is the same
+        request object (v1.0 envelope: action rides renderer_to_agent.json)"
+    response_envelope_frozen:
+      success: "{ ok: true, tool: 'engram_catalog_for_target', repo, indexedCommit, graphId, profileHash,
+        budget: { limitTokens, usedTokens }, items: ContextRecord[], nextCursor }"
+      items: "ContextRecord[] as defined by the app-context contract: node identity + citations[]
+        (source_file, source_location, commit). Items carry NO relations[] array; traversal edges
+        are ContextRecord edge assertions with their own citations (the app-context relation-record
+        pattern), projected by the adapter into the surface data model. Removed non-envelope fields:
+        commit (renamed indexedCommit), source_hash (freshness is indexedCommit + profileHash),
+        echoed cursor (nextCursor only), { id, node_type, label, relations } items shape, coverage
+        (see includeDiagnostics)."
+      errors: "the 6 frozen error codes: commit-not-indexed | target-not-found | target-ambiguous |
+        cursor-invalid | profile-incompatible | budget-too-small. Errors use the same envelope (ok:
+        false + error code), never a bespoke ui error shape."
+    response_surface: "A2UI v1.0 surface projecting the frozen items: createSurface(surfaceId, catalogId
+      ui-navigation/v1, components + dataModel inline per v1.0 single-message payloads) +
+      updateDataModel(frozen response). ui-navigation/v1 is a RenderCatalog whose component types
+      are UiItem (one ContextRecord + its citations). The adapter McpTool ui_query rendersWith
+      UiResource ui://sentropic/ui-query/v1 (DS side, L11) is a THIN forwarder to
+      engram_catalog_for_target, not a local traversal."
+    tool: "McpTool ui_query rendersWith UiResource ui://sentropic/ui-query/v1; kind is a forwarder over
+      engram_catalog_for_target (the r2 local_compute kind is DELETED by U2: a second implementation
+      would drift from the graph tool)."
+  bridges:
+    pattern: a small bridge profile that requires both profiles, as engram's archi2-erd-bridge@1
+      (storedIn, realizes); relations are declared with their own evidence, never matched by name
+    proposed_profile: ui-bridge@1
+    requires:
+      - ui@1
+      - app-context@1
+    owner: engram authors ui-bridge@1, as for archi2-erd-bridge@1; the DS co-reviews; h2a signs at
+      admission (engram E3)
+    relation_types:
+      usesDsComponent:
+        source:
+          profile: app-context@1
+          type: Component
+        target:
+          profile: ui@1
+          type: Component
+        cardinality:
+          source: 0..n
+          target: 0..n
+          status: declared
+        presentation:
+          encoding: arrow
+        asserted_by: "consumer-side extraction: an import of a @sentropic/design-system-* export, resolved
+          through generated/ui@1/<producerId>/barrel-exports.json to a componentId"
+      implementsUiElement:
+        source:
+          profile: app-context@1
+          type: Component
+        target:
+          profile: ui@1
+          type: Component|ComposedView|ViewLayout
+        cardinality:
+          source: 0..1
+          target: 0..n
+          status: provisional
+        presentation:
+          encoding: arrow
+        asserted_by: "locator equality ONLY (U1-b): app-context Component locator { repo, commit,
+          source_file, export_symbol } equals the ui node locator (locatorRepo, locatorCommit,
+          locatorFile, locatorSymbol) field for field, at the same indexed commit. Never from a
+          name, never from a slug, never from an import. One ui code element has at most one
+          app-context Component (source: 0..1); one app-context Component may have several ui code
+          elements (target: 0..n), hence provisional. A ui node with no app-context counterpart
+          (matched by locator or by usesDsComponent) is still a first-class ui instance; absence of
+          the bridge never demotes it."
+        target_types_note: Component, ComposedView and ViewLayout are the three code grains the identity
+          covers. A view is a ComposedView when it composes other components, a ViewLayout when it
+          is a page shell; the bridge preserves whichever grain the ui extractor minted. Prop, Slot,
+          Event, Contract, Token, Theme, Icon, Package, PackageRelease, DocPage, RenderCatalog,
+          UiResource, McpTool, PresentationForm have NO identity edge (U1-d).
+      servedBy:
+        source:
+          profile: ui@1
+          type: McpTool
+        target:
+          profile: app-context@1
+          type: mcp_server
+        cardinality:
+          source: 0..n
+          target: 1..n
+          status: provisional
+        presentation:
+          encoding: footer
+          on: source
+          label: server
+        asserted_by: the serving side (h2a module) with its own extraction; never the DS build
+    non_relations:
+      rendersDiagramProfile: "NOT a relation: a profile pin is not a navigable node (engram D1b).
+        Component.rendersProfiles carries pins as an attribute."
+      presentsViewKind: "NOT a relation (engram D1b): ComposedView.viewKind carries the
+        diagram-view-schema@2 view-kind pin as an attribute; view-kind traversal is not a catalog
+        query"
+      ds_to_archi: "deferred: no direct DS-to-archi component bridge; archi links arrive via app-context
+        (Astra 6)"
+      no_cross_emission: "NOT a relation (U1-c): no bridge or in-profile relation links ui nodes to
+        app-context nodes except usesDsComponent / implementsUiElement / servedBy. The ui skill
+        never emits app-context node types; the app-context extractor never emits ui node types.
+        Conformance gate: any fragment whose node_type is outside its profile's closed list fails."
+      identity_via_name: "NOT a relation (U1-b): name, slug or import matching never asserts
+        implementsUiElement. Only full locator equality asserts it."
+  registration:
+    state: NO engram catalog registration before the third-party registration contract + cluster-mesh
+      discovery exist (owner D1). The ontology (profile + generator + fragments) is committed in the
+      DS repo now; engram ingests committed fragments pinned to the DS commit (E7/E8).
+    pattern: "engram app-context@1: profiles/app-context/v1/profile.yaml +
+      src/ontology-guardian/app-context-registry.ts; every pin is derived from the profile file and
+      checked for coherence before admission"
+    proposed_profile_path: packages/ui-ontology/profiles/ui/v1/profile.json
+    constants:
+      namespace: sentropic-ds
+      id: ui
+      version: "1"
+      canonicalRef: sentropic-ds:ui@1
+      owner: sentropic-ds
+      corpusRef: sentropic-ds:ui-conformance-corpus/1
+    derived_pins:
+      - rawSha256 (file bytes)
+      - sourceCommit (DS release commit SHA; never the file hash)
+      - contentDigest = hashOntologyProfile(normalized)
+      - "pinsDigest = pinsDigestOf({ layers: [profilePin] })"
+      - resultDigest = resultDigestOf(effective declarations)
+      - corpusDigest
+      - fragmentContractVersion (ui-fragments/1)
+    acceptance_states:
+      - draft-pinned (committed in the DS repo; this revision)
+      - qualified (engram-ingested at a pinned commit)
+      - discovered (cluster-mesh discovery)
+    family: EXT with family-corpus receipt (engram E2); licence closure declared in the record
+    versioning: additive change publishes 1.1 (non-breaking, checkProfileCompatibility); breaking change
+      takes 2; a published version is never edited (engram E5)
+    draft_content_digest: 90aa64383475611882a57ca6a739f418dc5a4e7fba2b56df541434b65ef442de
+    digest_provenance: Pinned to RELEASED engram 0.27.0 (tag v0.27.0 = 566cbbd4, rhanka/engram), never
+      to a feature-branch build (U3). Measured from scratchpad/ds-ui-ontology/ui.profile.draft.json
+      (final r3 bytes) with parseOntologyProfile + validateOntologyProfile (0 errors) +
+      normalizeOntologyProfile(...).profile_hash + hashOntologyProfile(parsed) +
+      bundleProfile(profile) with registriesMode bindings-only (no second arg). Revision 3 changes
+      only x_ui (locator, seeds, fragments path, a2ui v1.0 pin, frozen query envelope,
+      implementsUiElement), all outside profile_hash, so profile_hash is identical to the r2 value
+      on 0.27.0 (90aa6438...); raw sha256, hashOntologyProfile(parsed) and bundle digest are
+      re-measured from the final r3 bytes and stated in STUDY section 10.3 (they are not embedded
+      here because any x_ui edit would invalidate them). See STUDY section 10.3 for the command.
+    raw_sha256_note: computed on the final file bytes by the measuring command; stored in the
+      manifest/receipt, not in x_ui (x_ui is excluded from profile_hash but included in the raw
+      bytes)
