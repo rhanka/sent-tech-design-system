@@ -1,8 +1,8 @@
 {
   "componentId": "slide-indicator",
   "contractSource": "derived",
-  "digest": "sha256:938f9f919f5fdbafb69d7990aea81474e5c33e03aea13b9770e5601b47c6489c",
-  "entryDigest": "sha256:7c6c44214192b16fe74a2168e4065b9dbf490734f922af7789a880e2de8f1c3d",
+  "digest": "sha256:e74744aa26e2e60ae18cd9bae3a9ebfb35ad7aa90149e83d301ad72c17f0d8e0",
+  "entryDigest": "sha256:97ddbda8ac108cd26bcb9d0876c032a5104df42e08287e8ac304afc724426276",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -206,7 +206,7 @@
         "declarationPath": "packages/components-svelte/dist/SlideIndicator.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SlideIndicatorProps",
-        "version": "0.41.2"
+        "version": "0.41.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -296,7 +296,7 @@
         "declarationPath": "packages/components-vue/dist/SlideIndicator.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SlideIndicatorProps",
-        "version": "0.41.0-next.4"
+        "version": "0.41.0-next.5"
       },
       "status": "partial",
       "unresolved": [],
