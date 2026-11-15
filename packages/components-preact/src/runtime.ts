@@ -24,6 +24,9 @@ import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
 /** Anything renderable. `ComponentChildren` in Preact, `ReactNode` in React. */
 export type { ComponentChildren };
 
+/** What a component returns. `VNode` in Preact, `ReactElement` in React. */
+export type ComponentElement = VNode;
+
 /** Event types handed to DOM handlers (React twin: the synthetic event types). */
 export type { TargetedFocusEvent, TargetedKeyboardEvent, TargetedMouseEvent };
 
@@ -76,7 +79,8 @@ export const useInsertionEffect: typeof useLayoutEffect = useLayoutEffect;
 
 /**
  * External store subscription with React's contract (`subscribe`,
- * `getSnapshot`), structured like the one of `preact/compat`:
+ * `getSnapshot`, optional `getServerSnapshot`), structured like the one of
+ * `preact/compat`:
  *
  * - the subscription depends on `subscribe` only, so an inline `getSnapshot`
  *   or a new snapshot never tears it down and re-creates it;
@@ -85,9 +89,17 @@ export const useInsertionEffect: typeof useLayoutEffect = useLayoutEffect;
  * - the store is re-read in the layout phase of every render and once more
  *   when the subscription starts, so a change between render and subscription
  *   is not missed.
+ *
+ * `getServerSnapshot` is read instead of `getSnapshot` where there is no
+ * document (server render). Preact core has no hydration flag a hook can read,
+ * so unlike React the client's first render reads `getSnapshot` directly.
  */
-export function useSyncExternalStore<T>(subscribe: (onChange: () => void) => () => void, getSnapshot: () => T): T {
-  const value = getSnapshot();
+export function useSyncExternalStore<T>(
+  subscribe: (onChange: () => void) => () => void,
+  getSnapshot: () => T,
+  getServerSnapshot?: () => T,
+): T {
+  const value = (typeof document === "undefined" && getServerSnapshot ? getServerSnapshot : getSnapshot)();
   const [, forceRender] = useState(0);
   const rendered = useRef({ value, getSnapshot });
   const [recheck] = useState(() => () => {

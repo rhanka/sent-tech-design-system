@@ -1,3 +1,4 @@
+import { signal } from "@preact/signals";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { createRef } from "preact";
 import { useState } from "preact/hooks";
@@ -8,6 +9,15 @@ import type { SelectableListContextValue } from "./SelectableRow.js";
 afterEach(cleanup);
 
 describe("SelectableRow (Preact), standalone", () => {
+  it("accepts a signal for `className`, as the DOM attribute does", () => {
+    render(
+      <SelectableRow value="docs" className={signal("extra")}>
+        Documents
+      </SelectableRow>,
+    );
+    expect(screen.getByRole("button").className).toBe("st-selectableRow extra");
+  });
+
   it("renders with role=button, the row class and tabindex 0", () => {
     const { container } = render(<SelectableRow value="docs">Documents</SelectableRow>);
     const row = screen.getByRole("button");

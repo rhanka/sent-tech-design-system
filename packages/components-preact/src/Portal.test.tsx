@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render } from "@testing-library/preact";
+import { signal } from "@preact/signals";
+import { cleanup, fireEvent, render, waitFor } from "@testing-library/preact";
 import { createContext } from "preact";
 import { useContext, useState } from "preact/hooks";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -19,6 +20,15 @@ describe("Portal (Preact)", () => {
     const inline = container.querySelector('[data-st-portal="inline"]');
     expect(inline?.className).toBe("st-portal extra");
     expect(inline?.querySelector('[data-testid="portal-content"]')).toBeTruthy();
+  });
+
+  it("accepts a signal for `className` and follows it once @preact/signals is loaded", async () => {
+    const extra = signal("first");
+    const { container } = render(<Portal disabled className={extra} />);
+    const inline = container.querySelector('[data-st-portal="inline"]');
+    expect(inline?.className).toBe("st-portal first");
+    extra.value = "second";
+    await waitFor(() => expect(container.querySelector('[data-st-portal="inline"]')?.className).toBe("st-portal second"));
   });
 
   it("teleports content under document.body after mount", () => {

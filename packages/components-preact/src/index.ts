@@ -6,7 +6,7 @@ export { Modal } from "./Modal.js";
 export type { ModalProps } from "./Modal.js";
 export { Tabs } from "./Tabs.js";
 export type { TabsProps, TabItem } from "./Tabs.js";
-export { SelectableRow, SelectableListContext, SelectableListVersionContext } from "./SelectableRow.js";
+export { SelectableRow, SelectableListContext } from "./SelectableRow.js";
 export type { SelectableRowProps, SelectableListContextValue } from "./SelectableRow.js";
 export { ChatComposer } from "./ChatComposer.js";
 export type { ChatComposerProps } from "./ChatComposer.js";
