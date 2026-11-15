@@ -2,11 +2,11 @@ import { setTimeout as realDelay } from "node:timers/promises";
 import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-import { createLayoutCache, worldToView } from "../../src/index.js";
+import { cameraFit, createLayoutCache, floorToQuantum, worldToView } from "../../src/index.js";
 import * as sceneModule from "../../src/scene.js";
 import * as labelsModule from "../../src/layout/labels.js";
 import {
-  layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
+  FIT_QUANTUM, layoutScene, resolveScene, resolveZoom, sceneContentSize, sceneFit, scenePlacement,
   type SceneLayoutInput,
 } from "../../src/presentation/diagramSceneModel.js";
 import { pinnedMeasurer, sceneInput } from "../layout/dc2a/scenes.js";
@@ -34,6 +34,50 @@ describe("shared scene presentation (DC-2b)", () => {
         expect(placement.translateY + bounds.y * fit.zoom + bounds.height * fit.zoom)
           .toBeLessThanOrEqual(viewportHeight - scrollbarHeight);
       }
+    }
+  });
+  it('should floor an uncapped fit to the fit quantum, never above the fit, with the cap and the floor exact', () => {
+    // 1204 / 2405.5 = 0.500519…: the applied zoom is the quantum below it.
+    const bounds = { x: 0, y: 0, width: 2405.5, height: 500 };
+    const fit = sceneFit({ bounds, viewWidth: 1206, windowHeight: 900 });
+    expect(fit.zoomFit).toBe(1204 / 2405.5);
+    expect([fit.zoom, fit.minZoom, fit.pans]).toEqual([0.5, 0.5, false]);
+    expect(fit.fitHeight).toBeGreaterThanOrEqual(bounds.height * fit.zoom + 2);
+    expect(fit.fitHeight).toBeLessThan(bounds.height * fit.zoom + 2 + 1 / 64);
+    expect(scenePlacement(bounds, fit.zoom, fit)).toMatchObject({ overflowX: false, overflowY: false });
+    // 1204 / 2672 = 0.450599…: rounding to the nearest quantum (0.451) would
+    // paint 1 + 2672 × 0.451 = 1206.07 px wide in a 1206 px frame.
+    const tight = sceneFit({ bounds: { x: 0, y: 0, width: 2672, height: 400 }, viewWidth: 1206, windowHeight: 900 });
+    expect(tight.zoom).toBe(0.45);
+    expect(tight.pans).toBe(false);
+    expect(2672 * tight.zoom + 2).toBeLessThanOrEqual(1206);
+    // An exact multiple stays where it is: 501 / 1000 × 1000 is not 501 in
+    // floating point, and must not fall to the step below.
+    expect(sceneFit({ bounds: { x: 0, y: 0, width: 1000, height: 100 }, viewWidth: 503, windowHeight: 900 }).zoom).toBe(0.501);
+    for (let width = 1950; width < 2700; width += 7.3) {
+      const swept = sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 });
+      expect(swept.zoom, String(width)).toBeLessThanOrEqual(Math.max(0.45, swept.zoomFit));
+      expect(swept.zoomFit - swept.zoom, String(width)).toBeLessThan(FIT_QUANTUM);
+      // On the grid: the printed scale has three decimals at most.
+      expect(swept.zoom, String(width)).toBe(Number(swept.zoom.toFixed(3)));
+      expect(sceneFit({ bounds: { x: -3, y: -5, width, height: 300 }, viewWidth: 1206, windowHeight: 900 })).toEqual(swept);
+    }
+    // Token values are not quantised: an off-grid cap or floor applies as it is.
+    const capped = sceneFit({ bounds: { x: 0, y: 0, width: 460, height: 200 }, viewWidth: 1206, windowHeight: 900, maxDisplayScale: 0.6255 });
+    expect([capped.zoom, capped.maxZoom]).toEqual([0.6255, 0.6255]);
+    const floored = sceneFit({ bounds: { x: 0, y: 0, width: 1204 / 0.4557, height: 100 }, viewWidth: 1206, windowHeight: 900, minReadableScale: 0.4555 });
+    expect(floored.zoomFit).toBeGreaterThan(0.4555);
+    expect([floored.zoom, floored.pans]).toEqual([0.4555, false]);
+    // The camera contract itself keeps the exact fit unless a quantum is given.
+    expect(cameraFit({ bounds, viewWidth: 1206, windowHeight: 900 }).zoom).toBe(1204 / 2405.5);
+    expect(floorToQuantum(0.4999999, FIT_QUANTUM)).toBe(0.499);
+    expect(floorToQuantum(0.62, FIT_QUANTUM)).toBe(0.62);
+    // No grid, no quantisation: a quantum that is not a finite positive
+    // number hands the value back, never NaN.
+    for (const quantum of [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN, 0, -1e-3]) {
+      expect(floorToQuantum(0.5, quantum), String(quantum)).toBe(0.5);
+      const unquantised = cameraFit({ bounds, viewWidth: 1206, windowHeight: 900, zoomQuantum: quantum });
+      expect(unquantised, String(quantum)).toEqual(cameraFit({ bounds, viewWidth: 1206, windowHeight: 900 }));
     }
   });
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
