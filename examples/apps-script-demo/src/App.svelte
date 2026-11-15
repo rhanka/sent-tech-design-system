@@ -38,12 +38,12 @@
   const collapsed = $derived(manualFolds?.level === foldLevel ? manualFolds.collapsed : diagramFoldLevels[foldLevel]!);
 
   // Framing after a change of width (window resize, phone rotation, split
-  // screen). The figure follows its own size while its camera is at the fit;
-  // a camera the reader has zoomed is only clamped. A new width is a new
-  // frame, so the page asks the figure for its fit (`fitToFrame`, the action
-  // of the Fit button) when the figure width or the fold state it picks
-  // changes. A fold by hand is left to the figure: it reframes a camera that
-  // is at the fit and keeps a zoom the reader chose.
+  // screen) or a fold by hand. On its own the figure follows its size while
+  // its camera is at the fit, clamps a camera the reader has zoomed, and on a
+  // fold by hand keeps the current zoom, clamped into the new range: the
+  // drawing is then no longer framed until Fit. Here a new width or a new fold
+  // state is a new frame, so the page asks the figure for its fit
+  // (`fitToFrame`, the action of the Fit button) in both cases.
   let figure = $state<ReturnType<typeof DiagramSceneFigure>>();
   let framedFor: string | undefined;
   $effect(() => {
@@ -126,7 +126,12 @@
           registry={m3ProfileRegistry}
           bindings={shippedExecutorBindings}
           {collapsed}
-          onFoldChange={(next) => { manualFolds = { level: foldLevel, collapsed: next as Folds }; }}
+          onFoldChange={(next) => {
+            // Before the new state reaches the figure: its camera is back at
+            // the fit, and the fold transition then runs to the framed drawing.
+            figure?.fitToFrame();
+            manualFolds = { level: foldLevel, collapsed: next as Folds };
+          }}
           title="Sample platform — request path"
         />
       {/if}
