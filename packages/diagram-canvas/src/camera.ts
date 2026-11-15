@@ -68,9 +68,10 @@ export interface CameraFit {
 /** Screen-space inset for non-scaling strokes and CSS layout rounding. */
 export const FIT_PAINT_INSET = 1;
 
-/** Largest multiple of `quantum` that is not above `value`. */
+/** Largest multiple of `quantum` that is not above `value`. A quantum that
+ * is not a finite positive number defines no grid: the value is returned. */
 export function floorToQuantum(value: number, quantum: number): number {
-  if (!(quantum > 0) || !Number.isFinite(value)) return value;
+  if (!(quantum > 0) || !Number.isFinite(quantum) || !Number.isFinite(value)) return value;
   const perUnit = 1 / quantum;
   let steps = Math.floor(value * perUnit);
   // The product is rounded: it can land one ulp on either side of an exact
