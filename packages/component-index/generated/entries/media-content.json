@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MediaContent.svelte",
-      "version": "0.41.3"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/MediaContent.vue",
-      "version": "0.41.0-next.5"
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Media wrapper with caption, title, and related metadata.",
     "fr": "Conteneur de média avec légende, titre et métadonnées associées."
   },
-  "digest": "sha256:fd48395fff8bdf62fb4c5c1ff0cff52ab8abfd986485a84f1a0b0da1fa205244",
+  "digest": "sha256:190cd8c56a32ddb6dc1c6b207f6c620cf9ec7173e13bc2fe8a59c43c0935f850",
   "displayName": "MediaContent",
   "format": "component-entry/v1",
   "frameworks": [
