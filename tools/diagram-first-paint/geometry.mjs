@@ -43,3 +43,53 @@ export function exposedSegments(a, b, occluders, stroke) {
   return segments;
 }
 
+
+/** Distance from a point to the border of a box: 0 on the border, positive inside and outside alike. */
+export function borderDistance(point, box) {
+  const dx = Math.max(box.left - point.x, 0, point.x - box.right);
+  const dy = Math.max(box.top - point.y, 0, point.y - box.bottom);
+  if (dx > 0 || dy > 0) return Math.hypot(dx, dy);
+  return Math.min(point.x - box.left, box.right - point.x, point.y - box.top, box.bottom - point.y);
+}
+
+const lengthOf = (a, b) => Math.hypot(b.x - a.x, b.y - a.y);
+
+/**
+ * Every visible relation has a rendered connector that touches both boxes it
+ * joins and is actually painted. `occluders` are the opaque surfaces painted
+ * ABOVE the connector layer (and the cutouts of its mask): a connector drawn
+ * under a zone surface for its whole run counts as hidden, whatever its DOM
+ * says. `relations` (optional) names the exact boxes each connector joins.
+ * Returns the list of defects, empty when the scene is sound.
+ */
+export function connectorFindings({ paths, labels, nodes, occluders, relations, tolerance }) {
+  const findings = [];
+  const drawn = new Set(paths.map(path => path.id));
+  for (const id of labels) if (!drawn.has(id)) findings.push(`label ${id} has no connector`);
+  for (const relation of relations ?? []) if (!drawn.has(relation.occurrence)) findings.push(`relation ${relation.occurrence} has no connector`);
+  for (const path of paths) {
+    if (path.points.length < 2) { findings.push(`connector ${path.id} has no route`); continue; }
+    const touching = point => nodes.filter(node => borderDistance(point, node) <= tolerance).map(node => node.id);
+    const first = touching(path.points[0]), last = touching(path.points[path.points.length - 1]);
+    const expected = relations?.find(relation => relation.occurrence === path.id);
+    if (relations !== undefined && expected === undefined) findings.push(`connector ${path.id} joins no expected relation`);
+    if (expected !== undefined) {
+      const [a, b] = expected.ends;
+      if (!((first.includes(a) && last.includes(b)) || (first.includes(b) && last.includes(a)))) {
+        findings.push(`connector ${path.id} must touch ${a} and ${b}, touches [${first}] and [${last}]`);
+      }
+    } else if (first.length === 0 || last.length === 0) {
+      // A self-relation legitimately leaves and reaches the same box.
+      findings.push(`connector ${path.id} must touch two boxes, touches [${first}] and [${last}]`);
+    }
+    let total = 0, painted = 0;
+    for (let i = 1; i < path.points.length; i++) {
+      total += lengthOf(path.points[i - 1], path.points[i]);
+      for (const [a, b] of exposedSegments(path.points[i - 1], path.points[i], occluders, path.stroke)) painted += lengthOf(a, b);
+    }
+    if (!(total > 0) || painted < total / 2) {
+      findings.push(`connector ${path.id} is hidden: ${painted} of ${total} px painted`);
+    }
+  }
+  return findings;
+}
