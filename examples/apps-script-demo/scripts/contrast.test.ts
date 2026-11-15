@@ -64,7 +64,7 @@ for (const [mode, tokens] of Object.entries(modes)) {
   test(`witness: the pinned component pairing is below 4.5:1 in ${mode} mode`, () => {
     const success = token("--st-semantic-feedback-success");
     const ratio = contrast(success, mix(success, 14, WHITE));
-    console.log(`${mode}: component 0.41.2 pairing ${ratio.toFixed(2)}:1; feedback-success on surface-raised ${contrast(success, token("--st-semantic-surface-raised")).toFixed(2)}:1`);
+    console.log(`${mode}: component 0.41.3 pairing ${ratio.toFixed(2)}:1; feedback-success on surface-raised ${contrast(success, token("--st-semantic-surface-raised")).toFixed(2)}:1`);
     assert.ok(ratio < 4.5, `${mode}: the upstream pairing now reaches ${ratio.toFixed(2)}:1 — the override can be removed`);
   });
 }

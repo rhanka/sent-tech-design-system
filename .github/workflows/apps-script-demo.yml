@@ -9,9 +9,12 @@ name: Apps Script demo
 #     the committed gas/demo.html, notices and size report, and renders every tab
 #     on the server;
 #   - the freshly built dist/demo.html is opened in Chrome for Testing
-#     (scripts/browser-check.mjs, file://, 320 and 1280 px wide, light and dark):
-#     the diagram must be framed whole by its figure before and after "Fit", the
-#     page must not overflow, log nothing and request nothing but file:/data:;
+#     (scripts/browser-check.mjs, file://, 320, 768 and 1280 px wide, light and
+#     dark): the diagram must be framed whole by its figure before and after
+#     "Fit" (on a phone: open on its structure and scroll), every link must be
+#     painted above the container surfaces, the framing must follow a change of
+#     width and a fold by hand, the page must not overflow, log nothing and
+#     request nothing but file:/data:;
 #   - the build is then run in write mode and `git diff --exit-code` must be
 #     empty, so a stale committed output fails here a second, independent way.
 # No deployment: nothing here talks to Apps Script.
@@ -68,7 +71,7 @@ jobs:
       - name: Typecheck, negative fixtures, fresh build vs committed outputs, server render
         run: npm run ci
 
-      - name: Browser check of the built page (framing, Fit, overflow, console, requests)
+      - name: Browser check of the built page (framing, links, resize, Fit, overflow, console, requests)
         env:
           CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
           DEMO_ARTIFACTS: ${{ runner.temp }}/apps-script-demo-browser

@@ -14,7 +14,7 @@ import {
 // a folded container is drawn as a card while its members stay on the drawing.
 const PROFILE = "generic@2";
 
-/** [id, title, parent container id or null]. One root, so that the scene folds down to one card. */
+/** [id, title, parent container id or null]. One root: by hand the scene folds down to one card. */
 const containers = [
   ["path", "Request path", null],
   ["ingestion", "Ingestion", "path"],
@@ -92,17 +92,23 @@ export const diagramPresentation = {
 const folded = (...ids: (typeof containers)[number][0][]) => ids.map((id) => occurrenceRef(`e.${id}`));
 
 /**
- * Fold states of the diagram, from the most detailed to a single card. The
- * page opens the first one that the figure can frame at its width (see
- * src/diagram-fit.ts): the component never draws below its readable scale,
- * it scrolls instead, so a narrow page starts with more containers folded.
+ * Fold states the page opens the diagram in, from the most detailed to the
+ * three stages folded. The page opens the first one that the figure can frame
+ * at its width (see src/diagram-fit.ts): the component never draws below its
+ * readable scale, it scrolls instead, so a narrow page starts with more
+ * containers folded. The last state keeps the structure on the drawing (the
+ * client and the three stages, with their links): a phone is too narrow to
+ * frame it whole, so there it opens at the readable scale and scrolls. The
+ * page never folds `Request path` itself: one card would show no structure.
  */
 export const diagramFoldLevels = [
   folded(),
   folded("storage"),
   folded("ingestion", "processing", "storage"),
-  folded("path", "ingestion", "processing", "storage"),
 ] as const;
+
+/** Ids of the link relations: each one must be drawn as a connector (scripts/smoke-ssr.ts). */
+export const diagramLinkIds = links.map((_, index) => `link.${index + 1}`);
 
 export interface DecisionOption {
   id: string;

@@ -6,6 +6,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
 import { build } from "vite";
+import { diagramLinkIds } from "../src/data.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const result = await build({
@@ -69,6 +70,36 @@ for (const label of labels) {
   if (!ok) failed += 1;
   console.log(`${ok ? "PASS" : "FAIL"}  [dossier] link label "${label}"`);
 }
+
+// Every link relation is drawn as ONE connector path that has a length, and
+// the connector layer is painted where it can be seen: after every expanded
+// container frame (an opaque surface) and before every card. The figure lays
+// its layers out in document order, with no z-index.
+const report = (ok: boolean, name: string): void => {
+  if (!ok) failed += 1;
+  console.log(`${ok ? "PASS" : "FAIL"}  [dossier] ${name}`);
+};
+const connectors = new Map<string, string[]>();
+for (const tag of bodies.dossier.match(/<polyline\b[^>]*\bdata-scene-edge="[^"]*"[^>]*>/g) ?? []) {
+  const id = /\bdata-scene-edge="([^"]*)"/.exec(tag)![1]!;
+  connectors.set(id, [...(connectors.get(id) ?? []), /\bpoints="([^"]*)"/.exec(tag)?.[1] ?? ""]);
+}
+for (const link of diagramLinkIds) {
+  const paths = connectors.get(`occurrence:r.${link}`) ?? [];
+  const points = (paths[0] ?? "").trim().split(/\s+/).filter((point) => /^-?[\d.]+,-?[\d.]+$/.test(point));
+  report(paths.length === 1 && points.length >= 2 && new Set(points).size >= 2, `relation ${link} has one connector path (${paths.length} path(s), ${points.length} point(s))`);
+}
+report(connectors.size === diagramLinkIds.length, `no connector without a relation (${connectors.size} connectors, ${diagramLinkIds.length} relations)`);
+const layerAt = bodies.dossier.indexOf('class="st-diagramSceneFigure-edges');
+const nodeStarts = [...bodies.dossier.matchAll(/<div class="st-diagramSceneFigure-node[^>]*data-scene-kind="([^"]*)"/g)].map((match) => ({ at: match.index, kind: match[1]! }));
+const framesAfter = nodeStarts.filter((node, index) => {
+  const end = nodeStarts[index + 1]?.at ?? bodies.dossier.length;
+  return node.at > layerAt && bodies.dossier.slice(node.at, end).includes("st-diagramZone--expanded");
+}).length;
+const cardsBefore = nodeStarts.filter((node) => node.kind === "card" && node.at < layerAt).length;
+const cards = nodeStarts.filter((node) => node.kind === "card").length;
+report(layerAt >= 0 && nodeStarts.length === 11 && cards === 7 && framesAfter === 0 && cardsBefore === 0,
+  `connector layer painted above the container frames and below the cards (${framesAfter} frame(s) above it, ${cardsBefore} of ${cards} card(s) below it)`);
 if (failed > 0) {
   console.error(`${failed} smoke check(s) failed`);
   process.exit(1);
