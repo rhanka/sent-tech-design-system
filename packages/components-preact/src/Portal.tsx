@@ -1,7 +1,8 @@
 import { useEffect, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { createPortal } from "./compat.js";
-import type { ComponentChildren } from "./runtime.js";
+import type { ComponentChildren, ComponentElement } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type PortalProps = {
   /**
@@ -11,8 +12,8 @@ export type PortalProps = {
   target?: string | HTMLElement;
   /** When `true`, render inline in place (no teleportation). */
   disabled?: boolean;
-  /** Optional class applied to the portal container element. */
-  className?: string;
+  /** Optional class applied to the portal container element (a signal is accepted in the Preact build). */
+  className?: MaybeSignal<string>;
   children?: ComponentChildren;
 };
 
@@ -35,7 +36,7 @@ export function resolvePortalTarget(target: string | HTMLElement | undefined): H
  * portal is created only after the component has mounted on the client. When
  * `disabled` is set the children render inline in place.
  */
-export function Portal({ target = "body", disabled = false, className, children }: PortalProps) {
+export function Portal({ target = "body", disabled = false, className, children }: PortalProps): ComponentElement | null {
   // Only create the portal after mount so the server render and the first
   // client render agree (no DOM access during SSR).
   const [mounted, setMounted] = useState(false);
