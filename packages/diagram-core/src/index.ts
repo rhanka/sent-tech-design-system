@@ -2,7 +2,7 @@
  * `@sentropic/diagram-core` - the typed semantic core.
  *
  * No runtime dependency, no DOM, no framework, no renderer. The package is
- * PRIVATE: no npm name is committed without an owner's gesture.
+ * public as `@sentropic/diagram-core`.
  *
  * Read `README.md` for the model, its limits and what is not covered yet.
  */
@@ -34,3 +34,5 @@ export * from "./migrate.js";
 export { relationBaseType, relationSchema } from "./relation-types.js";
 export { withFlowTypes, validateFlows, flowIndex, type FlowStep, type FlowScenario, type FlowIndex } from "./flows.js";
 export * from "./erd.js";
+export * from "./layout-hints.js";
+export * from "./notation.js";

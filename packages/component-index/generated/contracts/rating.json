@@ -1,8 +1,8 @@
 {
   "componentId": "rating",
   "contractSource": "derived",
-  "digest": "sha256:0c3aaa4cb8363cc9665c90e153fb1d4e126fbb59f0d4d125ba7d6e114bb37ef3",
-  "entryDigest": "sha256:ff21565e95d5f2e1c413a451164c81f9328909c98187ea1cdfcc0e9a835b01db",
+  "digest": "sha256:daa01456c0aed0b767667a740dd9ffdccf7aa6d6310c954019eeb7775022e1b6",
+  "entryDigest": "sha256:813b7861bda20f4770204b554999dfcd02080ea926bef4af3503082768172141",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/Rating.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RatingProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -308,7 +308,7 @@
         "declarationPath": "packages/components-vue/dist/Rating.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RatingProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

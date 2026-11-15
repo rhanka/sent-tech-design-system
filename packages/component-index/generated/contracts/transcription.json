@@ -1,8 +1,8 @@
 {
   "componentId": "transcription",
   "contractSource": "derived",
-  "digest": "sha256:3695cf79da846306aef2d95c6edcad56cdf4c3deb1e627da3954df6d6a6bffb6",
-  "entryDigest": "sha256:c04212fd7f03e3762c7362358885b5cafaa1334408e49bdcecb188b0c51dbef3",
+  "digest": "sha256:73e32085afb10da10aa12c653478c5139afd37492c51d28f5dae381dda6a5551",
+  "entryDigest": "sha256:33b2e3e085712e144d0063e868a2178a918a10fcf067fc9647dcda5c186be476",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/Transcription.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TranscriptionProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -316,7 +316,7 @@
         "declarationPath": "packages/components-vue/dist/Transcription.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TranscriptionProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],
