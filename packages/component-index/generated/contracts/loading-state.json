@@ -1,8 +1,8 @@
 {
   "componentId": "loading-state",
   "contractSource": "derived",
-  "digest": "sha256:561df79dcf9ee56f6ff15874599f74365f0efd3cadc9fb4dd55973e6bf43124d",
-  "entryDigest": "sha256:f81881987a35c4827e70bd32db3ab1b98429f4e7caab9515bece654f829ce496",
+  "digest": "sha256:fe244091d4842e3ebaeb39d3050971fbb0da74409b5fa179da70ff0cbb8d2512",
+  "entryDigest": "sha256:6e22d9dd537ad7ab58d19abf5bb0a62e2ddbf89e88e1edcd2b2ee95e60b4f2bd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -130,7 +130,7 @@
         "declarationPath": "packages/components-svelte/dist/LoadingState.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LoadingStateProps",
-        "version": "0.41.2"
+        "version": "0.41.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-vue/dist/LoadingState.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LoadingStateProps",
-        "version": "0.41.0-next.4"
+        "version": "0.41.0-next.5"
       },
       "status": "complete",
       "unresolved": [],

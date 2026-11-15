@@ -12,7 +12,7 @@ import DiagramCard from './DiagramCard.vue';
 import DiagramZone from './DiagramZone.vue';
 import DiagramControlGlyph from './DiagramControlGlyph.vue';
 import { projectCardProps, projectZoneProps } from './diagramCardModel.js';
-import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
+import { collapsedOccurrencesOf, displayedRects, layoutScene, parseDurationMs, parseEasing, rectsOf, resolveScene, sameRects, sceneConnectorMask, scenePaintPlane, type SceneNodeModel, type SceneOccurrenceRef, type SceneOrientations, } from './diagramSceneModel.js';
 import type { DiagramSceneFigureProps as SceneFigureProps, DiagramSceneFigureLabels, DiagramSceneCamera, SceneCollapsedOccurrences } from './DiagramSceneFigure.types.js';
 export type DiagramSceneFigureProps = SceneFigureProps;
 const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { strictIcons: true });
@@ -45,7 +45,9 @@ const defaults: DiagramSceneFigureLabels = {
     expand: title => `Expand ${title}`, collapse: title => `Collapse ${title}`,
 };
 const strings = computed(() => ({ ...defaults, ...props.labels }));
-const arrowId = 'diagram-arrow-' + useId();
+const hostId = useId();
+const arrowId = 'diagram-arrow-' + hostId;
+const maskId = 'diagram-connector-mask-' + hostId;
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
     fit, zoom, readout, placement, viewportStyle, holdZoom,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
@@ -244,6 +246,16 @@ const projectedNodes = computed(() => scene.value?.nodes.map(node => ({ node,
     cardProps: node.kind === 'card' ? cardPropsOf(node) : undefined,
     zoneProps: node.kind === 'zone' ? zonePropsOf(node) : undefined,
 })) ?? []);
+// Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
+// connectors, then every box. A zone frame is opaque: painted after the
+// connectors it would hide every route that runs inside it.
+const paintLayers = computed(() => [
+    { plane: 'frame' as const, nodes: projectedNodes.value.filter(entry => scenePaintPlane(entry.node) === 'frame') },
+    { plane: 'connectors' as const, nodes: [] },
+    { plane: 'box' as const, nodes: projectedNodes.value.filter(entry => scenePaintPlane(entry.node) === 'box') },
+]);
+// The connector layer is masked over the footer text a frame paints itself.
+const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 const worldStyle = computed(() => `transform:translate(${placement.value.translateX}px,${placement.value.translateY}px) scale(${zoom.value})`);
 </script>
 
@@ -271,13 +283,17 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
         <div class="st-diagramSceneFigure-extent" :style="`width:${placement.contentWidth}px;height:${placement.contentHeight}px`">
           <div class="st-diagramSceneFigure-world" :style="worldStyle">
             <template v-if="scene !== undefined">
-              <svg class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
+              <template v-for="layer in paintLayers" :key="layer.plane">
+              <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true" :style="animating ? `opacity:${eased}` : undefined">
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+                <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <polyline :marker-end="edge.markers === undefined ? `url(#${arrowId})` : undefined" v-for="edge in scene.edges" :key="edge.occurrence" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :points="edge.points.map(point => `${point.x},${point.y}`).join(' ')" />
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
                 <polyline v-for="edgeLabel in scene.labels.filter(label => label.leader)" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edge" :points="edgeLabel.leader!.map(point => point.x + ',' + point.y).join(' ')" />
+                </g>
               </svg>
-              <div v-for="{ node, cardProps, zoneProps } in projectedNodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
+              <template v-else>
+              <div v-for="{ node, cardProps, zoneProps } in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :style="nodeStyle(node)">
                 <DiagramErdNode v-if="node.kind === 'erd' && node.erd" :node="node" :expand="strings.expand" :collapse="strings.collapse" :toggle="() => toggleFold(node)" />
                 <template v-else-if="node.kind === 'card'">
                   <DiagramCard v-if="cardProps !== undefined" v-bind="cardProps" :measure="measure" @select="emit('select', $event)" />
@@ -287,6 +303,8 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
                 </template>
                 <div v-else class="st-diagramSceneFigure-label" :data-entity="node.entity">{{ node.text }}</div>
               </div>
+              </template>
+              </template>
               <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <template v-if="edgeLabel.bundle !== undefined">
