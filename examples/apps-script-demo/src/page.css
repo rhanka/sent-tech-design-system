@@ -60,7 +60,23 @@ ul, ol { padding-left: 1.25rem; }
   color: var(--st-semantic-text-secondary);
 }
 
+.demo-footer p + p { margin-top: 0.25rem; }
+
+/* Success tag. In the pinned component (0.41.2) the tone is drawn as
+   feedback-success text on a 14% feedback-success tint mixed into a literal
+   white, in both colour modes: 2.8:1 in light, 2.2:1 in dark. Here the tint is
+   mixed into the surface the tag sits on and the label uses the primary text
+   colour, with semantic tokens only (measured by scripts/contrast.test.ts). */
+.demo-option__tags .st-tag.st-tag--success {
+  background: color-mix(in srgb, var(--st-semantic-feedback-success) 16%, var(--st-semantic-surface-raised));
+  color: var(--st-semantic-text-primary);
+}
+
 @media (max-width: 30rem) {
   .demo-band__inner { padding: 1rem 0.75rem; }
   .demo-main { padding: 0.5rem 0.75rem 1.5rem; }
+  /* Diagram figure: the caption gets the full width and the zoom controls go
+     under it, instead of squeezing the caption beside them. */
+  .demo-main .demo-figure .st-diagramSceneFigure { grid-template-columns: minmax(0, 1fr); }
+  .demo-main .demo-figure .st-diagramSceneFigure-controls { grid-column: 1; justify-self: start; }
 }

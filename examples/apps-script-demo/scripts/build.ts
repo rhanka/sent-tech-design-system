@@ -1,17 +1,27 @@
 // Builds ONE self-contained offline page: dist/demo.html (+ gas/demo.html).
-// Node/TypeScript only. Everything is inlined: script, styles, font, data.
+// Node/TypeScript only. Everything is inlined: script, styles, font, data and
+// the third-party notices of what is embedded.
+//
+//   tsx scripts/build.ts              writes dist/ and the committed outputs
+//                                     (gas/demo.html, gas/THIRD-PARTY-NOTICES.md, size-report.json)
+//   tsx scripts/build.ts --dist-only  writes dist/ only, so that the self-check can
+//                                     compare a fresh build with the committed outputs
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { svelte } from "@sveltejs/vite-plugin-svelte";
-import { compileTheme, sentTechTheme } from "@sentropic/design-system-themes";
 import { transform } from "lightningcss";
 import { build } from "vite";
+import { themeDeclarations } from "./theme.js";
+import { NOTICES_FILENAME, noticesComment, packageDirOf, packageRootFromEntry, renderNotices, type EmbeddedPackage } from "./notices.js";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const bytes = (value: string) => Buffer.byteLength(value, "utf8");
+// Same title as gas/Code.gs setTitle(): Apps Script shows that one, a browser this one.
+const PAGE_TITLE = "Design system demo — decision dossier";
+const distOnly = process.argv.includes("--dist-only");
 
 const result = await build({
   configFile: false,
@@ -50,21 +60,14 @@ const componentCss = styles.map((item) => String(item.source)).join("\n").trim()
 const fontFile = require.resolve("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2");
 const font = await readFile(fontFile);
 const fontCss =
-  "/* Inter variable font, latin subset. Copyright The Inter Project Authors. SIL Open Font License 1.1. */\n" +
+  "/* Inter variable font, latin subset. Copyright 2016 The Inter Project Authors. SIL Open Font License 1.1: full text in the notices comment at the top of this file. */\n" +
   `@font-face{font-family:Inter;font-style:normal;font-display:swap;font-weight:100 900;` +
   `src:url(data:font/woff2;base64,${font.toString("base64")}) format("woff2");}`;
 // Neutral default theme (sent-tech), compiled from the published tokens into three
 // well-formed blocks: light, automatic dark (prefers-color-scheme) and explicit
 // dark (data-color-mode="dark" on the root element, set by the toggle).
 // Dark blocks carry only the variables whose value differs from the light block.
-const declarations = (tokens: unknown): Map<string, string> => {
-  const block = compileTheme({ ...sentTechTheme, tokens }, { selector: ":root" });
-  return new Map([...block.matchAll(/^\s*(--[\w-]+):\s*(.+);\s*$/gm)].map((match) => [match[1]!, match[2]!]));
-};
-if (sentTechTheme.tokensDark === undefined) throw new Error("The neutral theme has no dark tokens");
-const light = declarations(sentTechTheme.tokens);
-const dark = declarations(sentTechTheme.tokensDark);
-if (light.size === 0 || dark.size === 0) throw new Error("The neutral theme compiled to no variable");
+const { light, dark } = themeDeclarations();
 const block = (selector: string, schemeValue: string, entries: Iterable<[string, string]>) =>
   `${selector} { color-scheme: ${schemeValue}; ${[...entries].map(([name, value]) => `${name}: ${value};`).join(" ")} }`;
 const darkOnly = [...dark].filter(([name, value]) => light.get(name) !== value);
@@ -76,14 +79,26 @@ const themeSource = [
 const themeCss = transform({ filename: "theme.css", code: Buffer.from(themeSource), minify: true }).code.toString();
 const css = `${fontCss}\n${themeCss}\n${componentCss}`;
 
+// Third-party notices: every package that owns rendered code in the script chunk
+// (measured from the bundle), plus the two build-time inputs embedded above.
+const embedded: EmbeddedPackage[] = [
+  { dir: packageRootFromEntry(fontFile), embeddedAs: "font file (latin subset, base64 data: URI)" },
+  { dir: packageRootFromEntry(fileURLToPath(import.meta.resolve("@sentropic/design-system-themes"))), embeddedAs: "theme variables compiled into the page styles" },
+];
+for (const [id, module] of Object.entries(chunks[0]!.modules)) {
+  const dir = packageDirOf(id);
+  if (dir !== null && module.renderedLength > 0) embedded.push({ dir, embeddedAs: "bundled script and styles (minified)" });
+}
+const notices = renderNotices(embedded);
+
 const html = `<!doctype html>
-<html lang="en" data-st-theme="sent-tech">
+${noticesComment(notices)}<html lang="en" data-st-theme="sent-tech">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light dark">
 <base target="_top">
-<title>Design system demo — decision dossier</title>
+<title>${PAGE_TITLE}</title>
 <style>
 ${css}
 </style>
@@ -98,8 +113,6 @@ ${js}
 `;
 
 await mkdir(resolve(root, "dist"), { recursive: true });
-await writeFile(resolve(root, "dist/demo.html"), html);
-await writeFile(resolve(root, "gas/demo.html"), html);
 
 const report = {
   file: "dist/demo.html (copied to gas/demo.html)",
@@ -107,7 +120,17 @@ const report = {
   jsBytes: bytes(js),
   cssBytes: bytes(css),
   cssBreakdown: { fontBytes: bytes(fontCss), themeBytes: bytes(themeCss), componentBytes: bytes(componentCss) },
+  noticesBytes: bytes(noticesComment(notices)),
 };
-await writeFile(resolve(root, "size-report.json"), `${JSON.stringify(report, null, 2)}\n`);
+const reportJson = `${JSON.stringify(report, null, 2)}\n`;
+await writeFile(resolve(root, "dist/demo.html"), html);
+await writeFile(resolve(root, "dist", NOTICES_FILENAME), notices);
+await writeFile(resolve(root, "dist/size-report.json"), reportJson);
+if (!distOnly) {
+  await writeFile(resolve(root, "gas/demo.html"), html);
+  await writeFile(resolve(root, "gas", NOTICES_FILENAME), notices);
+  await writeFile(resolve(root, "size-report.json"), reportJson);
+}
 console.log("Size report (bytes)");
-console.table({ html: report.htmlBytes, js: report.jsBytes, css: report.cssBytes, "css: font": report.cssBreakdown.fontBytes, "css: theme": report.cssBreakdown.themeBytes, "css: components + page": report.cssBreakdown.componentBytes });
+console.table({ html: report.htmlBytes, js: report.jsBytes, css: report.cssBytes, "css: font": report.cssBreakdown.fontBytes, "css: theme": report.cssBreakdown.themeBytes, "css: components + page": report.cssBreakdown.componentBytes, "notices comment": report.noticesBytes });
+console.log(distOnly ? "Wrote dist/ only (committed outputs untouched)" : "Wrote dist/, gas/demo.html, gas/THIRD-PARTY-NOTICES.md and size-report.json");

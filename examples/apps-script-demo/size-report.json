@@ -1,11 +1,12 @@
 {
   "file": "dist/demo.html (copied to gas/demo.html)",
-  "htmlBytes": 648641,
-  "jsBytes": 466662,
-  "cssBytes": 181607,
+  "htmlBytes": 678929,
+  "jsBytes": 467627,
+  "cssBytes": 182064,
   "cssBreakdown": {
-    "fontBytes": 64584,
+    "fontBytes": 64647,
     "themeBytes": 66119,
-    "componentBytes": 50902
-  }
+    "componentBytes": 51296
+  },
+  "noticesBytes": 28866
 }
