@@ -4,8 +4,9 @@
   } from "@sentropic/design-system-svelte";
   import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
   import {
-    criteria, criteriaScores, diagramDocument, diagramPresentation, options, weeklyVolume,
+    criteria, criteriaScores, diagramDocument, diagramFoldLevels, diagramPresentation, options, weeklyVolume,
   } from "./data.js";
+  import { pickFoldLevel } from "./diagram-fit.js";
 
   // The tab shown first. The server-render smoke check uses it to render each view.
   let { initialTab = "dossier" }: { initialTab?: "dossier" | "evaluation" } = $props();
@@ -19,6 +20,20 @@
   let volumeWidth = $state(480);
   const chartWidth = (measured: number): number =>
     measured > 0 ? Math.min(CHART_MAX, Math.max(CHART_MIN, Math.round(measured))) : 480;
+
+  // Diagram. The figure frames the drawing down to its readable scale and
+  // scrolls past it, so the page chooses the fold state from the room the
+  // figure has: the most detailed one it frames whole (src/diagram-fit.ts).
+  // Folding by hand is kept until the width moves the page to another state.
+  // In a browser the figure is created once its width is known, so it opens
+  // framed; the server render has no width and draws everything unfolded.
+  type Folds = (typeof diagramFoldLevels)[number];
+  const inBrowser = typeof window !== "undefined";
+  let figureWidth = $state(0);
+  let windowHeight = $state(inBrowser ? window.innerHeight : 0);
+  let manualFolds = $state.raw<{ level: number; collapsed: Folds }>();
+  const foldLevel = $derived(figureWidth > 0 ? pickFoldLevel(figureWidth, windowHeight) : 0);
+  const collapsed = $derived(manualFolds?.level === foldLevel ? manualFolds.collapsed : diagramFoldLevels[foldLevel]!);
 
   type Mode = "auto" | "light" | "dark";
   const order: Mode[] = ["auto", "light", "dark"];
@@ -79,17 +94,22 @@
   <section class="demo-section" aria-labelledby="architecture-title">
     <h2 id="architecture-title">4. Target architecture (option B)</h2>
     <p>
-      Containers can be folded and unfolded. Use the zoom controls or the Fit button to frame
-      the drawing.
+      The drawing opens at the most detailed level that fits the width of the page: on a narrow
+      screen its containers start folded. Unfold or fold a container with its button. Past what
+      fits, the drawing scrolls sideways; Fit goes back to the smallest readable scale.
     </p>
-    <div class="demo-figure">
-      <DiagramSceneFigure
-        document={diagramDocument}
-        presentation={diagramPresentation}
-        registry={m3ProfileRegistry}
-        bindings={shippedExecutorBindings}
-        title="Sample platform — request path"
-      />
+    <div class="demo-figure" bind:clientWidth={figureWidth}>
+      {#if figureWidth > 0 || !inBrowser}
+        <DiagramSceneFigure
+          document={diagramDocument}
+          presentation={diagramPresentation}
+          registry={m3ProfileRegistry}
+          bindings={shippedExecutorBindings}
+          {collapsed}
+          onFoldChange={(next) => { manualFolds = { level: foldLevel, collapsed: next as Folds }; }}
+          title="Sample platform — request path"
+        />
+      {/if}
     </div>
   </section>
 
@@ -137,6 +157,8 @@
     </ol>
   </section>
 {/snippet}
+
+<svelte:window bind:innerHeight={windowHeight} />
 
 <header class="demo-band">
   <div class="demo-band__inner">

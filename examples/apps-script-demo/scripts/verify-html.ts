@@ -66,6 +66,13 @@ export function verifyDemoHtml({ html, gasHtml, notices }: VerifyInput): Check[]
   none("resource attribute with a value other than a #fragment (src, href, srcset…)", doc, /(?:^|[\s"'`])(?:src|href|srcset|srcdoc|poster|formaction|ping|xlink:href)\s*=\s*(?!\\?["'`]?#)/gi);
   none("resource attribute set from script", doc, /setAttribute(?:NS)?\(\s*(?:null\s*,\s*)?["'`](?:src|href|srcset|srcdoc|poster|action|formaction|ping|xlink:href)["'`]/gi);
   none("resource property assigned from script", js, /\.(?:src|href|srcset|srcdoc|action|formAction|poster)\s*=(?!=)/g);
+  // Svelte 5 does not compile `<img src={value}>` to any of the three forms
+  // above: the attribute name becomes an ARGUMENT of a runtime helper
+  // (`set_attribute(node, "src", value)`, minified to `Z(e,\`src\`,v)`), and a
+  // spread or `Object.assign` carries it as an object KEY. Both are refused
+  // whatever the value: the page has no dynamic resource attribute at all.
+  none("resource attribute name passed to a helper call (compiled Svelte attribute)", js, /[(,]\s*["'`](?:src|href|srcset|srcdoc|poster|action|formaction|ping|xlink:href)["'`]\s*[,)]/gi);
+  none("resource attribute name used as an object key (spread attributes, Object.assign)", js, /[{,]\s*["'`]?(?:src|href|srcset|srcdoc|poster|formaction|formAction|xlink:href)["'`]?\s*:(?!:)/g);
   none("<link>/<iframe>/<object>/<embed>/<frame>/<portal>/<form> elements", doc, /<(?:link|iframe|object|embed|frame|frameset|portal|form)\b/gi);
   none("<meta http-equiv>", doc, /http-equiv/gi);
   none("src/href attributes in the static markup", markup, /\s(?:src|href)\s*=/gi);
