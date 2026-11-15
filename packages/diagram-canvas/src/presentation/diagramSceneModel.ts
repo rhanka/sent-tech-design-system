@@ -505,8 +505,11 @@ export function resolveScene(
   const placements = erd ? placeErdRoleLabels(entries, blockers, margin) : result.labelBoxes === undefined
     ? placeEdgeLabels(entries, blockers, margin)
     : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
+  // A label is the label of a drawn connector: a placement whose relation has
+  // no route in this scene is dropped, so a label never paints without a line.
+  const labelled = new Set(entries.map((entry) => entry.id));
   for (const [id, placement] of placements) {
-    if (placement === undefined) continue;
+    if (placement === undefined || !labelled.has(id)) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
       ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });

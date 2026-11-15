@@ -282,8 +282,14 @@ export async function runRenderedBoundsFoldCase(mount: HostMount, tick: () => Pr
         await fireEvent.click([...root.querySelectorAll("button")].find((button) => button.textContent?.trim() === "Fit")!);
         await flush();
       };
+      // The zone this host folds and unfolds. A fold moves its node from the
+      // frame plane to the box plane, so it is found by occurrence, never by
+      // its position in the document.
+      const zone = root.querySelector<HTMLElement>("button[aria-expanded]")!
+        .closest<HTMLElement>("[data-scene-occurrence]")!.dataset["sceneOccurrence"]!;
       const toggle = async (): Promise<void> => {
-        await fireEvent.click(root.querySelector<HTMLElement>("button[aria-expanded]")!);
+        await fireEvent.click([...root.querySelectorAll<HTMLElement>("[data-scene-occurrence]")]
+          .find((node) => node.dataset["sceneOccurrence"] === zone)!.querySelector<HTMLElement>("button[aria-expanded]")!);
         await flush();
       };
       const busy = () => viewport.getAttribute("aria-busy");
