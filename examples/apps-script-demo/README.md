@@ -170,15 +170,16 @@ then scrolls from its start, where the `Client app` card and the start of the
 first stage are in view. Folding `Request path` by hand gives the one-card view.
 
 **Change of width and fold by hand.** What the figure (0.41.3) does on its own:
-while its camera is at the fit it follows its own size and, after a fold, reads
-the drawing once the transition has ended and frames it; a camera the reader has
-zoomed is only clamped to the new range. What the page adds: when the width of
+while its camera is at the fit it follows its own size; a camera the reader has
+zoomed is only clamped to the new range; and a fold by hand keeps the current
+zoom, clamped to the new range (`toggleFold` takes the camera off the fit), so
+after it the drawing is no longer framed until Fit. What the page adds: it calls
+`fitToFrame()` on the figure, the action of the Fit button, when the width of
 the figure or the fold state it picks changes (window resize, phone rotation,
-split screen), it calls `fitToFrame()` on the figure, the action of the Fit
-button, so a new width is framed even after a zoom. A fold by hand is left to
-the figure, so it keeps a zoom the reader chose; Fit frames it again. Unfolding
-a container by hand beyond what fits is allowed: the drawing then scrolls and
-Fit returns to the readable scale. A manual fold state is kept until a change of
+split screen) and on each fold by hand (`onFoldChange`). So every new width and
+every new fold state is framed, at the cost of a zoom the reader had chosen.
+Unfolding a container by hand beyond what fits is allowed: the drawing then
+scrolls from its start, at the readable scale. A manual fold state is kept until a change of
 width moves the page to another state. A change of window height alone (the
 address bar of a mobile browser) can move the page to another state; it does not
 reset the camera otherwise.
@@ -212,10 +213,13 @@ locally. It requires:
 - links painted: one connector per link, with a length; at points sampled along
   each connector, outside the cards and labels, the top-most element is the
   connector itself (hit testing follows the paint order, so a container surface
-  drawn above a link fails here);
+  drawn above a link fails here); where the drawing is framed whole, all links
+  but one at most have such a tested part (a short link can be all under its
+  label);
 - one page through a change of width (1280 → 320 → 768 → 1280, after a zoom in):
-  at each width the fold state, zoom and scroll extent of a fresh load at that
-  width; then `Storage` folded by hand at 1280 px is framed whole.
+  at each width the fold state, zoom and scroll extent (within 10 %) of a fresh
+  load at that width; then `Storage` folded by hand at 1280 px is framed whole,
+  and unfolded by hand after a zoom in is framed whole again.
 
 ### Server render (`npm run smoke`)
 
@@ -231,8 +235,8 @@ for the import and removed afterwards.
 
 | Part | Bytes |
 | --- | ---: |
-| HTML page (total) | 687 079 |
-| JS bundle | 473 004 |
+| HTML page (total) | 687 098 |
+| JS bundle | 473 023 |
 | CSS (total) | 182 064 |
 | — inlined font | 64 647 |
 | — theme variables (light + dark) | 66 119 |
