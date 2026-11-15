@@ -1,8 +1,8 @@
 {
   "componentId": "highlight",
   "contractSource": "derived",
-  "digest": "sha256:69705dd93e45cf0608740532295e57ad44967bf9d21fb1796e6cc4354b666df5",
-  "entryDigest": "sha256:5c57f2bcfce247ea7ee74e5959ef58db69b4499dee54e9552a25b07c82b3a5a4",
+  "digest": "sha256:846bb68509f62c2b396f203ece2fa18f98b30baf9aa9e1b4364fed5655708d83",
+  "entryDigest": "sha256:d14e738fe9f06935e7a12878b9df457f97c74620d72d5c1505ed26bea4f43927",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-svelte/dist/Highlight.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HighlightProps",
-        "version": "0.41.2"
+        "version": "0.41.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -204,7 +204,7 @@
         "declarationPath": "packages/components-vue/dist/Highlight.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HighlightProps",
-        "version": "0.41.0-next.4"
+        "version": "0.41.0-next.5"
       },
       "status": "complete",
       "unresolved": [],

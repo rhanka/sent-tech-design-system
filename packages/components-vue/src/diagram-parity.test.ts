@@ -351,14 +351,16 @@ describe('scene host DOM and camera/fold behavior', () => {
   it('should emit folds, restore focus and honor controlled fold state', async () => {
     frame();
     const vue = mount(SceneFigure, { props: { ...host, ...WIDE, collapsed: [] }, attachTo: document.body });
-    const toggle = vue.find('[data-scene-kind="zone"] button');
+    // A fold moves the zone from the frame plane to the box plane: find it by occurrence.
+    const zone = `[data-scene-occurrence="${occurrence('a')}"] button`;
+    const toggle = vue.find(zone);
     await toggle.trigger('click');
     expect(vue.emitted('foldChange')?.[0]?.[0]).toEqual([occurrence('a')]);
-    expect(vue.find('[data-scene-kind="zone"] button').attributes('aria-expanded')).toBe('true');
+    expect(vue.find(zone).attributes('aria-expanded')).toBe('true');
     await vue.setProps({ collapsed: [occurrence('a')] });
     await nextTick();
-    expect(vue.find('[data-scene-kind="zone"] button').attributes('aria-expanded')).toBe('false');
-    expect(document.activeElement).toBe(vue.find('[data-scene-kind="zone"] button').element);
+    expect(vue.find(zone).attributes('aria-expanded')).toBe('false');
+    expect(document.activeElement).toBe(vue.find(zone).element);
     expect(vue.emitted('layout')).toHaveLength(2); vue.unmount(); vi.unstubAllGlobals();
   });
   it('should display a refused scene accessibly', async () => {
