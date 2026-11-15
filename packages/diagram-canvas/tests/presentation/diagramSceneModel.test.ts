@@ -72,6 +72,13 @@ describe("shared scene presentation (DC-2b)", () => {
     expect(cameraFit({ bounds, viewWidth: 1206, windowHeight: 900 }).zoom).toBe(1204 / 2405.5);
     expect(floorToQuantum(0.4999999, FIT_QUANTUM)).toBe(0.499);
     expect(floorToQuantum(0.62, FIT_QUANTUM)).toBe(0.62);
+    // No grid, no quantisation: a quantum that is not a finite positive
+    // number hands the value back, never NaN.
+    for (const quantum of [Number.POSITIVE_INFINITY, Number.NEGATIVE_INFINITY, Number.NaN, 0, -1e-3]) {
+      expect(floorToQuantum(0.5, quantum), String(quantum)).toBe(0.5);
+      const unquantised = cameraFit({ bounds, viewWidth: 1206, windowHeight: 900, zoomQuantum: quantum });
+      expect(unquantised, String(quantum)).toEqual(cameraFit({ bounds, viewWidth: 1206, windowHeight: 900 }));
+    }
   });
   it('should shrink a width-constrained frame to painted content and scroll only the overflowing axis at the floor', () => {
     const bounds = { x: -20.015625, y: -26, width: 1200, height: 200 };
