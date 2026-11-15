@@ -8,9 +8,13 @@ name: Apps Script demo
 #     that must fail, builds into dist/ ONLY, then compares that fresh build with
 #     the committed gas/demo.html, notices and size report, and renders every tab
 #     on the server;
+#   - the freshly built dist/demo.html is opened in Chrome for Testing
+#     (scripts/browser-check.mjs, file://, 320 and 1280 px wide, light and dark):
+#     the diagram must be framed whole by its figure before and after "Fit", the
+#     page must not overflow, log nothing and request nothing but file:/data:;
 #   - the build is then run in write mode and `git diff --exit-code` must be
 #     empty, so a stale committed output fails here a second, independent way.
-# No browser, no deployment: nothing here talks to Apps Script.
+# No deployment: nothing here talks to Apps Script.
 
 on:
   push:
@@ -50,11 +54,33 @@ jobs:
           cache: "npm"
           cache-dependency-path: examples/apps-script-demo/package-lock.json
 
+      # Same Chrome for Testing setup as the diagram first paint job of Verify.
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
       - name: Install (lockfile only, no install scripts)
         run: npm ci --ignore-scripts
 
       - name: Typecheck, negative fixtures, fresh build vs committed outputs, server render
         run: npm run ci
+
+      - name: Browser check of the built page (framing, Fit, overflow, console, requests)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          DEMO_ARTIFACTS: ${{ runner.temp }}/apps-script-demo-browser
+        run: npm run browser-check
+
+      - name: Upload browser check failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: apps-script-demo-browser-failures
+          path: ${{ runner.temp }}/apps-script-demo-browser
+          if-no-files-found: ignore
 
       - name: Rebuilding in place changes nothing that is committed
         run: |
