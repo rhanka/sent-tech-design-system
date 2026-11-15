@@ -1,0 +1,12 @@
+{
+  "file": "dist/demo.html (copied to gas/demo.html)",
+  "htmlBytes": 687098,
+  "jsBytes": 473023,
+  "cssBytes": 182064,
+  "cssBreakdown": {
+    "fontBytes": 64647,
+    "themeBytes": 66119,
+    "componentBytes": 51296
+  },
+  "noticesBytes": 31639
+}

@@ -1,0 +1,92 @@
+name: Apps Script demo
+
+# examples/apps-script-demo is a standalone project: it is outside the npm
+# workspaces and has its own lockfile, so the Verify shards never build it.
+# This workflow installs it from its lockfile and proves that the COMMITTED
+# page is what the sources build to:
+#   - `npm run ci` typechecks (tsc + svelte-check), runs the self-check fixtures
+#     that must fail, builds into dist/ ONLY, then compares that fresh build with
+#     the committed gas/demo.html, notices and size report, and renders every tab
+#     on the server;
+#   - the freshly built dist/demo.html is opened in Chrome for Testing
+#     (scripts/browser-check.mjs, file://, 320, 768 and 1280 px wide, light and
+#     dark): the diagram must be framed whole by its figure before and after
+#     "Fit" (on a phone: open on its structure and scroll), every link must be
+#     painted above the container surfaces, the framing must follow a change of
+#     width and a fold by hand, the page must not overflow, log nothing and
+#     request nothing but file:/data:;
+#   - the build is then run in write mode and `git diff --exit-code` must be
+#     empty, so a stale committed output fails here a second, independent way.
+# No deployment: nothing here talks to Apps Script.
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "examples/apps-script-demo/**"
+      - ".github/workflows/apps-script-demo.yml"
+  pull_request:
+    paths:
+      - "examples/apps-script-demo/**"
+      - ".github/workflows/apps-script-demo.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apps-script-demo-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-check:
+    name: build, check and compare with the committed page
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: examples/apps-script-demo
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+          cache-dependency-path: examples/apps-script-demo/package-lock.json
+
+      # Same Chrome for Testing setup as the diagram first paint job of Verify.
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+
+      - name: Install (lockfile only, no install scripts)
+        run: npm ci --ignore-scripts
+
+      - name: Typecheck, negative fixtures, fresh build vs committed outputs, server render
+        run: npm run ci
+
+      - name: Browser check of the built page (framing, links, resize, Fit, overflow, console, requests)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          DEMO_ARTIFACTS: ${{ runner.temp }}/apps-script-demo-browser
+        run: npm run browser-check
+
+      - name: Upload browser check failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: apps-script-demo-browser-failures
+          path: ${{ runner.temp }}/apps-script-demo-browser
+          if-no-files-found: ignore
+
+      - name: Rebuilding in place changes nothing that is committed
+        run: |
+          npm run build
+          git diff --exit-code -- gas/demo.html gas/THIRD-PARTY-NOTICES.md size-report.json
+          test -z "$(git status --porcelain -- .)"
