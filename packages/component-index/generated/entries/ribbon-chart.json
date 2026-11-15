@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/RibbonChart.svelte",
-      "version": "0.41.2"
+      "version": "0.41.3"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/RibbonChart.vue",
-      "version": "0.41.0-next.4"
+      "version": "0.41.0-next.5"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Stacked ribbon ranking over time: bars sorted by value with smoothed ribbons linking each category between periods.",
     "fr": "Rang empilé à rubans dans le temps : barres triées par valeur et rubans lissés reliant chaque catégorie d'une période à l'autre."
   },
-  "digest": "sha256:b7a9ccb3e17ada903d328682501ef6dfe869b2e4ea01de35cde8637bff499a8b",
+  "digest": "sha256:1f3f33f1fb0581793dd4a4144bb97a8676cc05df74cab28cf82933944ac1a2de",
   "displayName": "RibbonChart",
   "format": "component-entry/v1",
   "frameworks": [
