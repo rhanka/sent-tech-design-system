@@ -47,6 +47,40 @@ function hostLoop(shouldRefit: typeof vueHost.shouldRefitRenderedBounds, model: 
   };
 }
 
+/**
+ * A jsdom world painted through `translate(tx, ty) scale(zoom)`: every
+ * element listed in `paint` reports its world rect through that transform,
+ * on the 1/64 CSS px layout grid; a text node reports the rect listed for
+ * its parent in `ink`. Strokes are not in a client rect: they come from the
+ * computed style, as in a browser.
+ */
+function paintedWorld(html: string, paint: Record<string, Rect>, ink: Record<string, Rect> = {}) {
+  const snap = (px: number) => Math.round(px * 64) / 64;
+  const frame = document.createElement('div');
+  frame.innerHTML = `<div class="st-diagramSceneFigure-world">${html}</div>`;
+  document.body.append(frame);
+  const world = frame.firstElementChild!;
+  const camera = { tx: 100, ty: 200, zoom: 0.62 };
+  const screen = (rect: Rect) => {
+    const left = snap(camera.tx + rect.x * camera.zoom), top = snap(camera.ty + rect.y * camera.zoom);
+    return new DOMRect(left, top, snap(camera.tx + (rect.x + rect.width) * camera.zoom) - left, snap(camera.ty + (rect.y + rect.height) * camera.zoom) - top);
+  };
+  const rectOf = (element: Element, rects: Record<string, Rect>) => Object.entries(rects).find(([selector]) => element.matches(selector))?.[1];
+  vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function(this: Element) {
+    if (this === world) return new DOMRect(snap(camera.tx), snap(camera.ty), 0, 0);
+    const rect = rectOf(this, paint);
+    return rect === undefined ? new DOMRect() : screen(rect);
+  });
+  vi.spyOn(document, 'createRange').mockImplementation(() => {
+    let node: Node | undefined;
+    return { selectNodeContents(selected: Node) { node = selected; },
+      getClientRects() { const rect = node?.parentElement ? rectOf(node.parentElement, ink) : undefined; return rect === undefined ? [] : [screen(rect)]; } } as unknown as Range;
+  });
+  return { frame, world, camera, dispose: () => frame.remove() };
+}
+const within = (a: Rect, b: Rect) => Math.max(Math.abs(a.x - b.x), Math.abs(a.y - b.y),
+  Math.abs(a.x + a.width - b.x - b.width), Math.abs(a.y + a.height - b.y - b.height));
+
 for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const) {
   const { measureRenderedBounds: measure, shouldRefitRenderedBounds, RENDERED_BOUNDS_GRID_STEPS, RENDERED_BOUNDS_REFIT_TOLERANCE } = bounds;
   it(`should fit ${host} text, badges, toggles and non-scaling strokes, rounding outwards`, () => {
@@ -65,8 +99,10 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     const bounds = measure(frame, { x: 0, y: -26, width: 627, height: 230.001 }, .62)!;
     expect(bounds.x).toBe(-10.015625);
     expect(bounds.y).toBe(-32.015625);
-    expect(bounds.x + bounds.width).toBeGreaterThanOrEqual(627.001 + .75 / .62);
-    expect(bounds.y + bounds.height).toBeGreaterThanOrEqual(204.001 + .75 / .62);
+    // A screen-constant stroke is framed at the world width it has at the
+    // readability floor, whatever the painted scale (.62 here).
+    expect(bounds.x + bounds.width).toBe(Math.ceil((627.001 + .75 / .45) * 64) / 64);
+    expect(bounds.y + bounds.height).toBe(Math.ceil((204.001 + .75 / .45) * 64) / 64);
     expect(bounds.x * 64).toBe(Math.floor(bounds.x * 64));
     expect(bounds.y * 64).toBe(Math.floor(bounds.y * 64));
   });
@@ -154,5 +190,145 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] + 0.1 }), edge).toBe(true);
       expect(shouldRefitRenderedBounds(rect, { ...rect, [edge]: rect[edge] - 0.1 }), edge).toBe(true);
     }
+  });
+  it(`should read ${host} non-scaling strokes at one world width at every zoom, and keep Ajuster a fixed point after an interactive zoom`, () => {
+    // Connectors on the outer perimeter of the model bounds, as orthogonal
+    // routes and self-relations are: the half-stroke is the outermost ink.
+    const model = { x: 0, y: 0, width: 2398, height: 400 };
+    const edge = 'class="st-diagramSceneFigure-edge" data-scene-edge="e" data-flow-step="r" style="stroke:rgb(100, 116, 139);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
+    const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg><polyline ${edge}/></svg>`,
+      { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, 'polyline': model });
+    const pad = 0.75 / 0.45;
+    const reads = [0.45, 0.499, 0.5, 0.54, 0.62].map(zoom => {
+      Object.assign(view.camera, { zoom, tx: 12.3 + zoom, ty: 45.6 - zoom });
+      return measure(view.frame, model, zoom)!;
+    });
+    for (const read of reads) {
+      // The stroke was read: the bounds are wider than the model…
+      expect(read).not.toBe(model);
+      // …by the half-stroke at the readability floor, on each side.
+      expect(within(read, { x: -pad, y: -pad, width: model.width + 2 * pad, height: model.height + 2 * pad })).toBeLessThan(RENDERED_BOUNDS_REFIT_TOLERANCE);
+      // No zoom reads a narrower frame than the stroke needs on screen.
+      expect(-read.x).toBeGreaterThanOrEqual(pad);
+      for (const other of reads) expect(shouldRefitRenderedBounds(other, read)).toBe(false);
+    }
+    // The host loop over the real measurement: fit, zoom in, Ajuster.
+    const polyline = view.world.querySelector<SVGElement>('polyline')!;
+    for (const viewWidth of [1202, 1100, 1000, 900]) {
+      let read: Rect | undefined;
+      const state = () => {
+        const bounds = read ?? model;
+        const fit = sceneFit({ bounds, viewWidth, windowHeight: 900 });
+        return { bounds, zoom: fit.zoom, fitHeight: fit.fitHeight, placement: scenePlacement(bounds, fit.zoom, fit) };
+      };
+      const ajuster = (interactiveZoom?: number) => {
+        const { bounds, zoom: fitZoom } = state();
+        const zoom = interactiveZoom ?? fitZoom;
+        const placement = scenePlacement(bounds, zoom, sceneFit({ bounds, viewWidth, windowHeight: 900 }));
+        Object.assign(view.camera, { zoom, tx: placement.translateX, ty: placement.translateY });
+        const next = measure(view.frame, model, zoom)!;
+        if (next !== model && shouldRefitRenderedBounds(read, next)) read = next;
+      };
+      ajuster();
+      ajuster();
+      const settled = state();
+      expect(settled.bounds).not.toBe(model);
+      for (const zoom of [0.54, 0.62, settled.zoom * 1.2, 0.62, undefined, 0.45]) {
+        ajuster(zoom);
+        expect(state(), `${viewWidth}/${zoom}`).toEqual(settled);
+      }
+      // A selected or hovered flow step is drawn thicker: transient, the
+      // fit stays where it is, at the fit zoom and from an interactive one.
+      for (const [flowState, width] of [['primary', '2.5px'], ['related', '2px']] as const) {
+        polyline.setAttribute('data-flow-state', flowState);
+        polyline.style.strokeWidth = width;
+        for (const zoom of [undefined, 0.62, 0.45]) {
+          ajuster(zoom);
+          expect(state(), `${viewWidth}/${flowState}/${zoom}`).toEqual(settled);
+        }
+        polyline.removeAttribute('data-flow-state');
+        polyline.style.strokeWidth = '1.5px';
+      }
+      // A resting stroke that really is wider still refits.
+      polyline.style.strokeWidth = '6px';
+      ajuster();
+      expect(state().bounds.width).toBeGreaterThan(settled.bounds.width + 2 * (3 - 0.75) / 0.45 - 0.1);
+      polyline.style.strokeWidth = '1.5px';
+    }
+    // Highlighted, the read is the resting read itself.
+    Object.assign(view.camera, { zoom: 0.5, tx: 7, ty: 9 });
+    const resting = measure(view.frame, model, 0.5);
+    polyline.setAttribute('data-flow-state', 'primary');
+    polyline.style.strokeWidth = '2.5px';
+    expect(measure(view.frame, model, 0.5)).toEqual(resting);
+    view.dispose();
+  });
+  it(`should leave ${host} hit targets, hidden focus targets, clipped descriptions and transparent ink out of the painted bounds`, () => {
+    const model = { x: 10, y: 20, width: 640, height: 320 };
+    const far = { x: -400, y: -300, width: 1600, height: 1200 };
+    const html = (hit: string, node: string, description: string, toggle: string, extra = '') => `<div data-scene-occurrence="card"><button class="st-diagramErd-toggle" style="${toggle}">Entity</button></div>
+      <svg><polyline class="st-diagramSceneFigure-edge" data-scene-edge="e" style="stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/>
+      <polyline class="st-diagramSceneFigure-flowHit" ${hit}/></svg>
+      <button class="st-diagramSceneFigure-flowNode" ${node}></button>
+      <span class="st-diagramSceneFigure-flowDescription" style="${description}">Step 1 from control to server</span>${extra}`;
+    const paint = { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, '.st-diagramErd-toggle': { x: 40, y: 40, width: 460, height: 32 },
+      '[data-scene-edge]': { x: 60, y: 60, width: 300, height: 100 },
+      // The hit target follows the model perimeter: 8 world units of stroke would overflow it.
+      '.st-diagramSceneFigure-flowHit': model, '.st-diagramSceneFigure-flowNode': far, '.probe': far };
+    const ink = { '.st-diagramErd-toggle': far, '.st-diagramSceneFigure-flowDescription': far, '.probe': far, '.probe *': far };
+    const read = (markup: string, zoom = 0.62) => {
+      const view = paintedWorld(markup, paint, ink);
+      view.camera.zoom = zoom;
+      const bounds = measure(view.frame, model, zoom);
+      view.dispose();
+      vi.restoreAllMocks();
+      return bounds;
+    };
+    const hit = 'data-flow-hit="e" style="stroke:rgba(0, 0, 0, 0);stroke-width:16px"';
+    const node = 'data-flow-node="n" style="opacity:0"';
+    const clipped = 'position:absolute;clip-path:inset(50%);width:0;height:0;overflow:hidden';
+    const toggle = 'color:rgba(0, 0, 0, 0)';
+    // Nothing of the above paints: the model bounds come back, by identity,
+    // at every zoom.
+    for (const zoom of [0.45, 0.54, 0.62]) expect(read(html(hit, node, clipped, toggle), zoom), String(zoom)).toBe(model);
+    // Each exclusion on its own, through the computed style and not the
+    // flow attributes or class names.
+    const plain = html(hit, node, clipped, toggle);
+    for (const [name, extra] of [
+      ['transparent stroke', '<svg><path class="probe" style="fill:none;stroke:transparent;stroke-width:16px"/></svg>'],
+      ['zero stroke opacity', '<svg><path class="probe" style="fill:none;stroke:rgb(0, 0, 0);stroke-opacity:0;stroke-width:16px"/></svg>'],
+      ['slash alpha stroke', '<svg><path class="probe" style="fill:none;stroke:rgb(0 0 0 / 0);stroke-width:16px"/></svg>'],
+      ['transparent fill', '<svg><rect class="probe" style="fill:rgba(0, 0, 0, 0)"/></svg>'],
+      ['opacity 0', '<button class="probe" style="opacity:0">hidden</button>'],
+      ['opacity 0 ancestor', '<div style="opacity:0"><button class="probe">hidden</button></div>'],
+      ['display none', '<div style="display:none"><button class="probe">hidden</button></div>'],
+      ['visibility hidden', '<button class="probe" style="visibility:hidden">hidden</button>'],
+      ['clip-path', '<span class="probe" style="clip-path:inset(50%)">clipped</span>'],
+      ['clip-path ancestor', '<div style="clip-path:inset(50%)"><span class="probe">clipped</span></div>'],
+      ['legacy clip', '<span class="probe" style="position:absolute;clip:rect(0px, 0px, 0px, 0px)">clipped</span>'],
+      ['transparent text', '<span class="probe" style="color:transparent">unpainted</span>'],
+      ['hidden attribute', '<span class="probe" hidden>unpainted</span>'],
+    ] as const) {
+      expect(read(plain + extra), name).toBe(model);
+    }
+    // Discrimination: the same geometry, painted, is framed.
+    const grownBy = (markup: string) => {
+      const bounds = read(markup)!;
+      expect(bounds).not.toBe(model);
+      return { left: model.x - bounds.x, right: bounds.x + bounds.width - model.x - model.width };
+    };
+    // An opaque black stroke (three components, no alpha) is ink: 8 world units a side.
+    const stroked = grownBy(html('data-flow-step="r" style="stroke:rgb(0, 0, 0);stroke-width:16px"', node, clipped, toggle));
+    expect(stroked.left).toBe(8);
+    expect(stroked.right).toBe(8);
+    expect(grownBy(plain + '<svg><rect class="probe" style="fill:rgb(0, 0, 0)"/></svg>').left).toBeGreaterThanOrEqual(410);
+    expect(grownBy(plain + '<svg><path class="probe" style="fill:none;stroke:rgb(0, 0, 0);stroke-width:2px"/></svg>').left).toBeGreaterThanOrEqual(410);
+    expect(grownBy(plain + '<button class="probe" style="opacity:1">shown</button>').left).toBeGreaterThanOrEqual(410);
+    expect(grownBy(plain + '<span class="probe" style="color:rgb(0, 0, 0)">painted</span>').left).toBeGreaterThanOrEqual(410);
+    expect(grownBy(html(hit, node, 'position:absolute', toggle)).left).toBeGreaterThanOrEqual(410);
+    expect(grownBy(html(hit, node, clipped, 'color:rgb(0, 0, 0)')).left).toBeGreaterThanOrEqual(410);
+    // A focus target is sized in screen px (24 / zoom world units) and
+    // painted only while focused: it never moves the fit.
+    expect(read(html(hit, 'data-flow-node="n" style="opacity:1"', clipped, toggle))).toBe(model);
   });
 }
