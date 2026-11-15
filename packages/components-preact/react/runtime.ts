@@ -2,13 +2,16 @@
  * React twin of `src/runtime.ts`. The React emission copies this file over the
  * Preact adapter, so component modules keep importing `./runtime.js` unchanged.
  */
-import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent, ReactNode } from "react";
+import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent, ReactElement, ReactNode } from "react";
 
 export { forwardRef, useInsertionEffect, useSyncExternalStore } from "react";
 export type { ForwardedRef } from "react";
 
 /** Anything renderable. `ComponentChildren` in Preact, `ReactNode` in React. */
 export type ComponentChildren = ReactNode;
+
+/** What a component returns. `VNode` in Preact, `ReactElement` in React. */
+export type ComponentElement = ReactElement;
 
 /** Event types handed to DOM handlers. */
 export type TargetedFocusEvent<T extends EventTarget> = FocusEvent<T>;

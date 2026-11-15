@@ -28,9 +28,9 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json",
-    "check": "tsc -p tsconfig.json --noEmit && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json --noEmit && tsc -p react/tsconfig.json",
+    "check": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.test.json && node scripts/emit-react.mjs && tsc -p .react-emit/tsconfig.json --noEmit && tsc -p react/tsconfig.json",
     "test": "npm run test:emit && npm run test:preact && npm run test:react",
-    "test:emit": "node --test scripts/emit-react.test.mjs scripts/port-metrics.test.mjs",
+    "test:emit": "node --test scripts/emit-react.test.mjs scripts/port-metrics.test.mjs && npm run measure:port:check",
     "test:preact": "vitest run",
     "test:react": "node scripts/emit-react.mjs && cd ../components-react && vitest run --config ../components-preact/vitest.react.config.ts",
     "emit:react": "node scripts/emit-react.mjs",

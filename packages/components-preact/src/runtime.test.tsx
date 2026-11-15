@@ -129,11 +129,45 @@ describe("runtime adapter (Preact core, no preact/compat)", () => {
     await waitFor(() => expect(screen.getByRole("status").textContent).toBe("written before subscription"));
   });
 
+  it("useSyncExternalStore takes React's third argument: getServerSnapshot is read only where there is no document", () => {
+    const subscribe = () => () => {};
+    const getSnapshot = vi.fn(() => "client");
+    const getServerSnapshot = vi.fn(() => "server");
+    function Reader() {
+      return <output>{useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)}</output>;
+    }
+    const { unmount } = render(<Reader />);
+    expect(screen.getByRole("status").textContent).toBe("client");
+    expect(getServerSnapshot).not.toHaveBeenCalled();
+    unmount();
+
+    // Server render: no `document` while the hook takes its snapshot.
+    const seen: string[] = [];
+    function ServerReader({ withServerSnapshot }: { withServerSnapshot: boolean }) {
+      vi.stubGlobal("document", undefined);
+      try {
+        seen.push(useSyncExternalStore(subscribe, getSnapshot, withServerSnapshot ? getServerSnapshot : undefined));
+      } finally {
+        vi.unstubAllGlobals();
+      }
+      return null;
+    }
+    render(<ServerReader withServerSnapshot />);
+    expect(seen[0]).toBe("server");
+    cleanup();
+    // Without a server snapshot the client reader is the only one there is.
+    seen.length = 0;
+    render(<ServerReader withServerSnapshot={false} />);
+    expect(seen[0]).toBe("client");
+  });
+
   it("useSyncExternalStore re-subscribes when `subscribe` itself changes", async () => {
     const calls: string[] = [];
     const store = (name: string) => () => {
       calls.push(`+${name}`);
-      return () => calls.push(`-${name}`);
+      return () => {
+        calls.push(`-${name}`);
+      };
     };
     const first = store("first");
     const second = store("second");

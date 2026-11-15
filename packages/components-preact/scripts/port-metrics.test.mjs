@@ -1,6 +1,7 @@
 // Unit tests of the pure helpers behind `npm run measure:port`
 // (`node --test scripts/port-metrics.test.mjs`). The measurement itself reads
-// the base commit through git and is checked by `npm run measure:port:check`.
+// the base commit through git and is checked by `npm run measure:port:check`,
+// which `npm run test:emit` (hence `npm test` and CI) runs after these tests.
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import {
@@ -11,6 +12,7 @@ import {
   lcsLength,
   lineCount,
   portRate,
+  projectLot,
   reach,
   testCases,
   tokens,
@@ -170,4 +172,49 @@ test("hours converts lines at a rate and a factor", () => {
   assert.equal(hours(3600, 1), 1);
   assert.equal(hours(3600, 1, 2), 2);
   assert.equal(hours(1980, 0.968, 2), 1.1);
+});
+
+test("projectLot revises the sampled categories only and keeps the plan share of the others", () => {
+  const rates = { secondsPerLine: 1, reportedSecondsPerLine: 0.5, factors: { low: 1, central: 2, high: 3 } };
+  const lot = {
+    lot: "PX",
+    label: "x",
+    modules: 3,
+    lines: 7200,
+    planHours: 10,
+    byCategory: {
+      action: { modules: 1, lines: 1800, sampled: ["Button"] },
+      layout: { modules: 2, lines: 5400, sampled: [] },
+    },
+  };
+  const partly = projectLot(lot, [{ module: "Button", reactLines: 36 }], rates);
+  assert.equal(partly.status, "partly measured");
+  assert.deepEqual(partly.revisedCategories, ["action"]);
+  assert.deepEqual(partly.keptCategories, ["layout"]);
+  assert.equal(partly.keptPlanHours, 7.5);
+  assert.equal(partly.revisedPlanHours, 2.5);
+  assert.deepEqual(partly.revisedCategoryHours, { low: 0.5, central: 1, high: 1.5 });
+  // 7.5 h of plan kept for layout + the action lines at the rate.
+  assert.deepEqual(partly.revisedHours, { low: 8, central: 8.5, high: 9 });
+  assert.equal(partly.sampledShare, 0.5);
+
+  // The uncatalogued bucket is never revised, even with a ported module.
+  const bucket = projectLot(
+    { ...lot, byCategory: { chat: { modules: 1, lines: 1800, sampled: ["ChatComposer"] }, "(uncatalogued)": { modules: 2, lines: 5400, sampled: ["ThemeProvider"] } } },
+    [{ module: "ChatComposer", reactLines: 30 }, { module: "ThemeProvider", reactLines: 6 }],
+    rates,
+  );
+  assert.deepEqual(bucket.keptCategories, ["(uncatalogued)"]);
+  assert.deepEqual(bucket.revisedHours, { low: 8, central: 8.5, high: 9 });
+
+  const full = projectLot({ ...lot, byCategory: { action: { modules: 3, lines: 7200, sampled: ["Button"] } } }, [{ module: "Button", reactLines: 36 }], rates);
+  assert.equal(full.status, "measured");
+  assert.equal(full.keptPlanHours, 0);
+  assert.deepEqual(full.revisedHours, { low: 2, central: 4, high: 6 });
+
+  const none = projectLot({ ...lot, byCategory: { data: { modules: 3, lines: 7200, sampled: [] } } }, [], rates);
+  assert.equal(none.status, "not measured");
+  assert.equal(none.keptPlanHours, 10);
+  assert.equal(none.revisedHours, null);
+  assert.equal(none.revisedCategoryHours, null);
 });

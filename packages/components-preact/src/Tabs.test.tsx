@@ -2,6 +2,7 @@ import { signal } from "@preact/signals";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Tabs } from "./Tabs.js";
+import type { TabsProps } from "./Tabs.js";
 
 afterEach(cleanup);
 
@@ -85,7 +86,14 @@ describe("Tabs (Preact)", () => {
 
   it("accepts a signal for `activeValue` at the edge and follows it", async () => {
     const active = signal<string | undefined>("react");
-    render(<Tabs items={items} activeValue={active} onChange={(value) => (active.value = value)} />);
+    // `TabsProps["onChange"]` is the intersection of the DOM handler and the
+    // value callback (defect carried over from components-react, see
+    // docs/preact-s1-spike.md section 4): no plainly typed `(value: string) =>
+    // void` satisfies it, hence the cast.
+    const follow = ((value: string) => {
+      active.value = value;
+    }) as TabsProps["onChange"];
+    render(<Tabs items={items} activeValue={active} onChange={follow} />);
     expect(screen.getByRole("tabpanel").textContent).toBe("React content");
     fireEvent.click(screen.getByRole("tab", { name: "Preact" }));
     expect(active.value).toBe("preact");

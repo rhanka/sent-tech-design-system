@@ -17,13 +17,14 @@ committed input supports is marked `not measured`, `unverified` or
 and to a React tree by rewriting three import specifiers and swapping three
 adapter files. For the eight modules ported:
 
-- the React emission changes **17 lines out of 807** (import specifiers only);
+- the React emission changes **17 lines out of 818** (import specifiers only);
 - **13 unmodified test files of `components-react` (325 tests) pass** against
   the emitted modules, together with hand-written React components that depend
   on them;
-- the emitted React prop and component types are **type-identical** to the
-  ones `@sentropic/design-system-react` publishes (checked by the compiler);
-- the Preact build passes 56 tests on Preact core, with `preact/compat`
+- the emitted React prop types, component types (parameters, return type and
+  static members) and exported values are **type-identical** to the ones
+  `@sentropic/design-system-react` publishes (checked by the compiler);
+- the Preact build passes 59 tests on Preact core, with `preact/compat`
   reached by one module, for portals only.
 
 The opt-out budget of K2 (10 hand-kept twins) is untouched: 0 of 8 modules
@@ -36,14 +37,18 @@ line**, Preact tests included, review and CI excluded. The session's own step
 log gave 559 s (70 s per module, 0.89 s per line); that log was not retained
 (section 8.1).
 
-**Revised W3 estimate derivable from S1: about 121 h instead of 157 h (range
-117–125 h).** Only the four lots in which the spike ported a module are
-revised: P1, P2, P3 and P4c go from 44 h to 8.4 h (range 4.0–12.4 h). The
-data modules (P4a, P4b: 24 h), `dataviz-react` (P6: 20 h) and the hard set as a
-lot (P5: 10 h) are **not measured** and keep their plan hours, as do the lots
-S1 does not address (P0, P7–P12: 59 h). The first version of this document
-announced about 93 h by applying the leaf rate to the lots that were not
-sampled; that figure is withdrawn (section 8.3).
+**Revised W3 estimate derivable from S1: about 134 h instead of 157 h (range
+131–136 h).** Only the component-index categories in which the spike ported a
+module are revised: action (P1), form (P2), navigation and overlay (P3), chat
+and `other` (P4c) go from a 28.1 h plan share to 4.6 h (range 2.2–6.8 h). The
+categories of those lots with no ported module (layout and feedback in P1, the
+modules without a catalogue entry in P4c) keep their share of the plan hours
+(15.9 h). The data modules (P4a, P4b: 24 h), `dataviz-react` (P6: 20 h) and the
+hard set as a lot (P5: 10 h) are **not measured** and keep their plan hours, as
+do the lots S1 does not address (P0, P7–P12: 59 h). The first version of this
+document announced about 93 h by applying the leaf rate to the lots that were
+not sampled, and the second about 121 h by revising whole lots from one ported
+module; both figures are withdrawn (section 8.3).
 
 ## 2. What was built
 
@@ -128,13 +133,14 @@ tests reach the emission and not the hand-written twin.
 | Claim | Evidence |
 |---|---|
 | Same source, both runtimes | `npm run build`: `dist/` (Preact) and `.react-emit/dist/` (React), both with declarations |
-| Emission is a specifier rewrite | 17 rewritten lines over 807 emitted lines in 11 modules; 3 adapters swapped |
+| Emission is a specifier rewrite | 17 rewritten lines over 818 emitted lines in 11 modules; 3 adapters swapped |
 | Existing React tests pass on the emission | 13 files, 325 tests: `behavior`, `catalog`, `index`, `svelte-api-parity`, `SelectableRow`, `SelectableList`, `Positioning`, `GroupsIdentity`, `NavActionStack`, `NavItem`, `TimeRangePicker`, `TimeRangePicker.states`, `MenuPopover` |
 | The adapter paths no existing React test reaches are exercised on the emission | 3 files of this package, 14 tests: `react/provenance.test.ts` (9), `react/ChatComposer.react.test.tsx` (3: typing through the React `textInput` twin, submit enabled, `onSubmit({ value })`), `react/SelectableRow.react.test.tsx` (2: focus of a child moves the roving tab stop of the hand-written `SelectableList`) |
-| React public API unchanged | `react/api-parity.ts`: strict type equality of 10 prop types and 8 component signatures against `@sentropic/design-system-react`; the check fails when a type is swapped (verified) |
-| Preact build behaves | 56 tests: DS class contract, a11y attributes, keyboard, focus, scroll lock, refs, context, portal, signals, adapters, runtime probes |
+| React public API unchanged | `react/api-parity.ts`: strict type equality against `@sentropic/design-system-react` of the 13 exported types, of the 8 components as whole types (`typeof`: parameters, return type, static members) and of the 2 other exported values (`SelectableListContext`, `resolvePortalTarget`), plus a check that the emitted barrel exports no value the hand-written package does not. The check fails when a type is swapped (verified). The first version compared `Parameters<>` for five components; the whole-type comparison is what the return type of `Portal` needed: inferred, it was `React.JSX.Element \| null` (`ReactElement<any, any>`) against the published `React.ReactElement \| null`. `Portal` is now annotated `ComponentElement \| null`, an alias of the runtime adapter (`VNode` in Preact, `ReactElement` in React). `SelectableListVersionContext`, internal to `SelectableRow` in the React package, is no longer in the barrel |
+| Tests are type-checked | `npm run check` compiles the 10 test files of `src/` (`tsconfig.test.json`) and the 3 of `react/`; they were excluded from every `tsc` project before, which hid two errors (a `Tabs` test, below, and a store test whose cleanup returned a number) |
+| Preact build behaves | 59 tests: DS class contract, a11y attributes, keyboard, focus, scroll lock, refs, context, portal, signals, adapters, runtime probes |
 | Tarball holds the build only | `npm pack --dry-run`: 59 entries = `dist/` plus `LICENSE`, `README.md`, `package.json` (the package stays `private`) |
-| Source stays close to React | 172 of 3,521 code tokens of the React sources touched (4.9 %, comments excluded): `React.x` → named imports, `React.ReactNode` → `ComponentChildren`, event type names, three adapter calls |
+| Source stays close to React | 170 of 3,521 code tokens of the React sources touched (4.8 %, comments excluded): `React.x` → named imports, `React.ReactNode` → `ComponentChildren`, event type names, three adapter calls |
 
 **API parity.** Props, callbacks and a11y attributes are those of
 `components-react`. Against the Vue SFCs the mapping is the existing one
@@ -170,6 +176,20 @@ semantic-mapping manifest (PLAN 2.9):
 | `Button`, `Input`, `SelectableRow` | the ref is forwarded to the DOM element | a template ref gives the component instance |
 | `ChatComposer` | send icon drawn with stroke width 2 | `Icon` default stroke width 2.25 (rendering, relevant to the normalised-DOM comparison of W3) |
 
+**Defect carried over from `components-react`: `TabsProps["onChange"]`.**
+`TabsProps` is `HTMLAttributes<HTMLElement> & { onChange?: (value: string) =>
+void; … }` (`catalog.tsx` at `81083403`, kept as is in `src/Tabs.tsx`), without
+the `Omit<…, "onChange">` that `SelectableRowProps` and `ChatComposerProps`
+apply to `onSelect` and `onSubmit`. The property is therefore the intersection
+of the DOM handler and the value callback: a callback typed `(value: string)
+=> void` is rejected by `tsc` in both runtimes, and an untyped one receives
+`string | Event`. Runtime behaviour is unaffected (the value callback is the
+one called). It exists on `main`; it is not fixed here because the fix changes
+a published type of `@sentropic/design-system-react` and the type-parity check
+would then have to diverge from the published package. `src/Tabs.test.tsx`
+casts its callback, with a comment. The fix (`Omit` in both trees at once)
+is handed to P0 (section 9).
+
 `Button` has no other divergence. The two witnesses differ in behaviour, not
 in props: the Vue `Portal` is a `Teleport` (no in-place first render, no
 fallback to `<body>` when the selector matches nothing, events follow the DOM),
@@ -186,7 +206,7 @@ created.
 | **`forwardRef`** | works, on Preact core | Preact 10 strips `ref` from the props of a function component. `runtime.ts` restores it through the `options.__b` hook, the mechanism `preact/compat` uses and the hook `@preact/signals` already relies on. 29 files of `components-react` use `forwardRef`; with the adapter they are ordinary modules. Object and callback refs, a merged inner ref (`SelectableRow`) and release on unmount are tested |
 | **Portals** | work, need `preact/compat` | `createPortal` is built on Preact internals and is the one API kept in `compat.ts`. Context, state and unmount cleanup cross the portal. **Difference:** Preact events follow the DOM tree, so a click inside a portal does not reach a handler of the component-tree parent; React bubbles it. One module uses `createPortal` (`Portal.tsx`); its dependents must not rely on that bubbling |
 | **Context** | works unchanged | `createContext` / `useContext` have the same names in both runtimes. Constraint for a partial emission: a module that defines a context must be switched for all its dependents at once, which the module-level switch does (`SelectableList`, hand-written, drives the emitted `SelectableRow` through its two contexts in the React leg) |
-| **External stores** | adapter ready, no user today | `useSyncExternalStore` appears in 0 non-test file at `81083403` (the plan counted 1 at `a91b59de7`). `runtime.ts` carries a core-only implementation with React's signature and the structure of the `preact/compat` one: the subscription depends on `subscribe` only, the rendered value and the current `getSnapshot` live in a ref, and the store is re-read in the layout phase of every render and when the subscription starts. Tested: one subscription across four renders with an inline `getSnapshot`, no re-render on a notification without a change, a store written between render and subscription, a `subscribe` swap, unsubscription on unmount |
+| **External stores** | adapter ready, no user today | `useSyncExternalStore` appears in 0 non-test file at `81083403` (the plan counted 1 at `a91b59de7`). `runtime.ts` carries a core-only implementation with React's three-parameter signature (`subscribe`, `getSnapshot`, optional `getServerSnapshot`) and the structure of the `preact/compat` one: the subscription depends on `subscribe` only, the rendered value and the current `getSnapshot` live in a ref, and the store is re-read in the layout phase of every render and when the subscription starts. Tested: one subscription across four renders with an inline `getSnapshot`, no re-render on a notification without a change, a store written between render and subscription, a `subscribe` swap, unsubscription on unmount, and `getServerSnapshot` read only where there is no `document`. **Difference:** `getServerSnapshot` is read on the server render only; Preact core gives a hook no hydration flag, so the first client render reads `getSnapshot`, where React reads the server snapshot while hydrating |
 | **Insertion effects** | work, with a timing difference | 1 user (`ThemeProvider`). Preact has no insertion phase; the adapter maps it to the layout phase, as `preact/compat` does. **Difference:** a child layout effect runs before the provider's effect, so it does not see the injected stylesheet on first mount; in React it does. Recorded by a test; to be looked at in browser acceptance for components that measure layout on mount under a `ThemeProvider` |
 
 ### 5.2 Found on the way
@@ -204,7 +224,7 @@ component test) and a count over the 226 non-test modules of
 | **Focus events.** `onFocus` / `onBlur` on a container do not see a child's focus in Preact; React bubbles them | 10 files, 18 uses: 13 attributes on elements (8 files), 2 props of a component (1 file), 3 object keys handed to `createElement` or spread (`SelectableRow.tsx`, `catalog.tsx`) | **Needed by one of the eight modules.** `SelectableRow` hands `onFocus: handleFocus` to `createElement`: in React the focus of a focusable child placed in `leading` / `trailing` (consumer content, forwarded by `NavItem`) bubbles to the row, which calls `list.focusRow(row)` and becomes the roving tab stop. On Preact core the row did not hear it. `focusWithin(handler)` in the runtime adapter returns `{ onFocusIn }` for Preact and `{ onFocus }` for React; `SelectableRow` uses it. Tests on both legs focus a button inside `trailing` and expect the tab stop to move (`SelectableRow.test.tsx`, `react/SelectableRow.react.test.tsx`); the Preact test fails on the previous `onFocus` binding. The first version of this document counted 9 files with a search for `onFocus=`, which misses object keys, and stated that no ported module was concerned. Remaining difference: a consumer `onFocus` is replaced by the row's handler in React and stays attached beside `onFocusIn` in Preact. The other nine files are reviewed in their lot; a `blurWithin` twin (`onFocusOut`) is added with its first user |
 | **`React.` namespace.** Every module is written `React.useState`, `React.ReactNode` | 135 files, 1,234 uses | Mechanical: named imports. Candidate for a codemod in P0 |
 | **Type names.** `ReactNode`, event types, `ElementType` differ; `*HTMLAttributes`, `CSSProperties`, `Ref`, `Context` have the same name in both | `ReactNode` 226, `PointerEvent` 75, `KeyboardEvent` 30, `MouseEvent` 8, `ElementType` 8 | Aliases in `runtime.ts` (three event aliases today; about five more to add) |
-| **Signal-typed attributes.** Preact types every DOM attribute as "value or signal", so a destructured `className` is not a plain string | every module that reads `className` | `classNames` accepts and reads a `{ value }` holder; one neutral module, no adapter |
+| **Signal-typed attributes.** Preact types every DOM attribute as "value or signal", so a destructured `className` is not a plain string | every module that reads `className` | `classNames` accepts a `{ value }` holder and reads its current value during render; one neutral module, no adapter. The component follows a later change of the signal only when `@preact/signals` is loaded in the page (its import installs the render hook that subscribes a component to the signals it reads); `classNames` and the components without a `MaybeSignal` prop do not import it, the consumer that holds a signal does. Where a module declares `className` itself (`SelectableRow`, `Portal`) it is typed `MaybeSignal<string>`, so a signal is accepted there as on the other components (tested), and the React emission keeps `string` |
 | **`class`.** Preact consumers write `class`; the port keeps the React spelling `className`. A consumer `class` travels in the rest props and is replaced by the computed `className` (probe test) | every module that computes `className` | Open: accepting `class` is a semantic-mapping row for P0 |
 | **Signal bindings are asynchronous.** `@preact/signals` 2.x flushes DOM bindings and signal-driven re-renders after the write | tests only | Tests wait (`waitFor`); no component change |
 | **Two Preact majors.** The workspace already hoists `preact` 10.29.8 for `@bpmn-io/diagram-js-ui`. Preact 11 nested under the package while `@preact/signals`, `lucide-preact` and the testing library bound to the hoisted 10: two instances | workspace | Pinned to 10.29.8, the version already in the lockfile, paired with `lucide-preact` 0.562.0 = the `lucide-react` version, so both outputs draw the same glyphs |
@@ -264,7 +284,11 @@ and the reach counts of section 5.2, and writes them to
 `git show 81083403:<path>`, the Preact tree in the working directory and the
 raw timing log `measurements/port-timing.json`.
 `npm run measure:port:check` fails when the committed output differs from what
-the repository gives.
+the repository gives. It is part of `npm run test:emit`, hence of `npm test`
+and of the CI `test` task of this workspace. In a shallow clone the script
+fetches the base commit itself, one commit deep (only its tree is read); the
+CI job also fetches it in a dedicated step, so a fetch failure is reported
+under its own name.
 
 ### 8.1 Port
 
@@ -273,22 +297,23 @@ the repository gives.
 | `Button` | action (P1) | 26 | 27 | 6 / 163 (3.7 %) | 1 | 5 (69) |
 | `Input` | form (P2) | 55 | 58 | 19 / 289 (6.6 %) | 2 | 6 (92) |
 | `Modal` | overlay (P3) | 47 | 69 | 19 / 408 (4.7 %) | 3 | 6 (98) |
-| `Tabs` | navigation (P3) | 94 | 108 | 17 / 814 (2.1 %) | 2 | 5 (96) |
-| `SelectableRow` | form (P2) | 252 | 247 | 57 / 1,035 (5.5 %) | 3 | 8 (241) |
+| `Tabs` | navigation (P3) | 94 | 108 | 17 / 814 (2.1 %) | 2 | 5 (104) |
+| `SelectableRow` | form (P2) | 252 | 249 | 57 / 1,035 (5.5 %) | 3 | 9 (251) |
 | `ChatComposer` | chat (P4c) | 34 | 58 | 18 / 279 (6.5 %) | 3 | 4 (76) |
-| `Portal` | other (P4c) | 88 | 76 | 24 / 304 (7.9 %) | 1 | 5 (99) |
+| `Portal` | other (P4c) | 88 | 77 | 22 / 304 (7.2 %) | 1 | 6 (109) |
 | `ThemeProvider` | no entry (P4c) | 35 | 37 | 12 / 229 (5.2 %) | 1 | 3 (53) |
-| **Total** | | **631** | **680** | **172 / 3,521 (4.9 %)** | **16** | **42 (824)** |
+| **Total** | | **631** | **683** | **170 / 3,521 (4.8 %)** | **16** | **44 (852)** |
 
 React lines of a module taken out of `catalog.tsx` are the lines of the
 declarations its re-export module names (`Modal`, `Tabs`, `ChatComposer`). A
 token is a leaf of the TypeScript syntax tree, comments excluded; "touched" is
 what does not survive in the longest common subsequence with the Preact module.
-The figures include the corrections made after review (the `focusWithin` call
-and one more `SelectableRow` test).
+The figures include the corrections made after the two reviews (the
+`focusWithin` call, the return type of `Portal`, `className` typed
+`MaybeSignal<string>` on `SelectableRow` and `Portal`, and three more tests).
 
 Shared code: `internal.ts` 97 lines (helpers private to `catalog.tsx` in
-React), `classNames.ts` 14, adapters 192 (Preact) / 62 (React twins),
+React), `classNames.ts` 22, adapters 204 (Preact) / 65 (React twins),
 emission script 174, React-leg config 71. The three modules taken out of
 `catalog.tsx` gain lines because their one-line signatures were wrapped.
 
@@ -386,38 +411,52 @@ evenly over its re-export modules and left 161 lines unassigned.
 | P4c | no entry: shells, helpers, barrels, `catalog.tsx` residual | 22 | 5,143 | `ThemeProvider` (35) |
 | P6 | `dataviz-react` tree | 128 | 9,562 | none |
 
-**Rule of the estimate.** A lot is *measured* when the spike ported at least
-one of its modules. Its hours are lines × 0.968 s × a factor for what the
-sample did not exercise: modules larger than the 79-line mean, stateful
-modules, fast-gate integration, and the categories of the lot that have no
-sampled module. The factor is a judgment, not a measurement: **2** as the
-central value, **1 to 3** as the range. A lot with no ported module is
-**not measured**: no hours are derived for it and its plan hours stay.
+**Rule of the estimate.** Hours are revised **per component-index category**,
+not per lot. A category is *revised* when the spike ported at least one of its
+modules: its hours are lines × 0.968 s × a factor for what the sample did not
+exercise (modules larger than the 79-line mean, stateful modules, fast-gate
+integration). The factor is a judgment, not a measurement: **2** as the
+central value, **1 to 3** as the range. A category with no ported module is
+**not measured**: no hours are derived for it and it keeps its share of the
+lot's plan hours, in proportion to its lines. The modules without a catalogue
+entry (22 in P4c: shells, helpers, barrels, the `catalog.tsx` residual) are
+not a category: `ThemeProvider` is one of them, but one 35-line module says
+nothing about the other 5,108 lines, so that bucket keeps its plan share too.
+The second version of this document revised a whole lot as soon as one of its
+modules was ported, which revised 91 % of P1 and 84 % of P4c from categories
+that had no witness.
 
-| Lot | Status | Lines | Sampled lines | Plan (h) | At measured rate (h) | Revised (h) | Range (h) |
-|---|---|---|---|---|---|---|---|
-| P1 | measured, n = 1, action only | 1,980 | 26 (1.3 %) | 10 | 0.5 | 1.1 | 0.5–1.6 |
-| P2 | measured, n = 2 | 3,491 | 307 (8.8 %) | 12 | 0.9 | 1.9 | 0.9–2.8 |
-| P3 | measured, n = 2 | 3,904 | 141 (3.6 %) | 14 | 1.0 | 2.1 | 1.0–3.1 |
-| P4c | measured, n = 3 | 6,095 | 157 (2.6 %) | 8 | 1.6 | 3.3 | 1.6–4.9 |
-| **Measured lots** | | **15,470** | **631** | **44** | **4.0** | **8.4** | **4.0–12.4** |
-| P4a + P4b | **not measured** | 24,676 | 0 | 24 | — | 24, plan kept | — |
-| P6 | **not measured** | 9,562 | 0 | 20 | — | 20, plan kept | — |
-| P5 | **not measured** as a lot | in the lots above | — | 10 | — | 10, plan kept | — |
-| P0, P7–P12 | outside S1 | | | 59 | — | 59, plan kept | — |
-| **W3** | | | | **157** | | **≈ 121** | **117–125** |
+| Lot | Status | Lines | Revised categories (lines) | Plan kept (lines) | Plan (h) | Plan share kept (h) | Revised categories: plan share → revised (h) | Lot revised (h) | Range (h) |
+|---|---|---|---|---|---|---|---|---|---|
+| P1 | partly measured, n = 1 | 1,980 | action (179) | layout, feedback (1,801) | 10 | 9.1 | 0.9 → 0.1 | 9.2 | 9.1–9.2 |
+| P2 | measured, n = 2 | 3,491 | form (3,491) | — | 12 | 0 | 12 → 1.9 | 1.9 | 0.9–2.8 |
+| P3 | measured, n = 2 | 3,904 | navigation, overlay (3,904) | — | 14 | 0 | 14 → 2.1 | 2.1 | 1.0–3.1 |
+| P4c | partly measured, n = 2 (+ `ThemeProvider`) | 6,095 | chat, other (952) | no catalogue entry (5,143) | 8 | 6.8 | 1.2 → 0.5 | 7.3 | 7.0–7.5 |
+| **Sampled lots** | | **15,470** | **8,526** | **6,944** | **44** | **15.9** | **28.1 → 4.6** | **20.5** | **18.0–22.6** |
+| P4a + P4b | **not measured** | 24,676 | — | data (24,676) | 24 | 24 | — | 24, plan kept | — |
+| P6 | **not measured** | 9,562 | — | all (9,562) | 20 | 20 | — | 20, plan kept | — |
+| P5 | **not measured** as a lot | in the lots above | — | — | 10 | 10 | — | 10, plan kept | — |
+| P0, P7–P12 | outside S1 | | | | 59 | 59 | — | 59, plan kept | — |
+| **W3** | | | | | **157** | **128.9** | | **≈ 134** | **131–136** |
+
+Hours are rounded to 0.1 h per row and the totals add the rounded rows, as the
+script does (133.5 h, range 131.0–135.6 h).
 
 Reading the table:
 
-- **What S1 supports is 121 h** (117–125 h): 113 h of plan hours kept for
-  everything not measured, plus 8.4 h for the four measured lots. With the
-  reported rate instead of the file-time rate the four lots give 7.6 h; the
-  difference is inside the range.
-- **P1 rests on one 26-line module.** Its layout and feedback categories
-  (32 of its 37 modules, 91 % of its lines) have no ported module. They are
-  kept in the measured lot because the plan defines the lot as one module
-  class (leaf modules) and its grade rule works per class; the range, not the
-  central value, is what S1 supports for them.
+- **What S1 supports is 134 h** (131–136 h): 113 h of plan hours kept for the
+  lots not measured, 15.9 h of plan hours kept for the unsampled categories of
+  P1 and P4c, plus 4.6 h (2.2–6.8 h) for the six revised categories, whose
+  plan share was 28.1 h. With the reported rate instead of the file-time rate
+  the revised categories give 4.2 h; the difference is inside the range.
+- **P1 is revised for its action modules only** (5 modules, 179 lines, one
+  26-line witness). Its layout and feedback categories (32 of its 37 modules,
+  91 % of its lines) have no ported module and keep 9.1 h of the lot's 10 h.
+  They are leaf modules like `Button`, so the rate may well hold for them, but
+  S1 has no witness of it.
+- **P4c is revised for chat and `other` only** (17 modules, 952 lines). The
+  22 modules without a catalogue entry (84 % of the lot's lines) keep 6.8 h of
+  its 8 h.
 - **P5** is the hard set: `Portal`, `ThemeProvider`, the adapters, the 29
   `forwardRef` modules, and the external-store and insertion-effect users. At
   `81083403` that is 31 modules and 2,091 lines, all counted in their category
@@ -439,7 +478,7 @@ Reading the table:
 Plan rates versus measured: the plan counts 15–16 min per module for Preact
 from React; the spike measured 1.3 min per module of 79 lines, i.e. 2.9 min
 for the average module of 178 lines and 5.7–8.6 min with a factor of 2 to 3,
-in the four measured lots only. The plan's 9 min per `dataviz-react` file is
+in the six revised categories only. The plan's 9 min per `dataviz-react` file is
 neither confirmed nor contradicted.
 
 For L1.4:
@@ -452,9 +491,11 @@ For L1.4:
   only. It is **not** demonstrated for charts, for `dataviz-react` or for the
   largest stateful modules (`DataTable`, `TimeRangePicker`): P4a, P4b and P6
   stay H.
-- **Batching.** At 1.1–3.3 build hours (up to 4.9 at the top of the range),
-  P1, P2, P3 and P4c are close to or below the 2 h per-lot overhead of the
-  schedule model. Merging them is worth evaluating against the PR-size limit.
+- **Batching.** At 1.9 and 2.1 build hours (up to 2.8 and 3.1 at the top of
+  the range), P2 and P3 are close to the 2 h per-lot overhead of the schedule
+  model; the revised parts of P1 and P4c are below it (0.1 h and 0.5 h).
+  Merging them is worth evaluating against the PR-size limit once the
+  unsampled categories of P1 and P4c have a witness.
 - **Not in these hours:** review, CI and integration (the per-lot overhead of
   PLAN 5.3), the fast-gate harness itself (L1.2) and browser acceptance.
 
@@ -463,12 +504,15 @@ For L1.4:
 1. **Witnesses for the two classes S1 did not measure**: port one chart of the
    `data` category and one `dataviz-react` file, with the timing log kept, so
    P4a, P4b and P6 can be sized. The chart needs the **SVG casing** decision
-   first: the core-only hook or `preact/compat`.
+   first: the core-only hook or `preact/compat`. Likewise one layout module,
+   one feedback module and one shell without a catalogue entry, so the plan
+   share kept for the unsampled categories of P1 and P4c (15.9 h) can be
+   revised.
 2. **Preact major**: 10.29.8 (this package's tests, shared with the BPMN
    canvas) or 11 (49 of 56 tests on the same source in the recorded probe;
    numeric styles and passive-effect cleanup timing to convert). A second major
    cannot be hoisted beside the first in this workspace.
-3. **Codemod** for the `React.` namespace and type names (4.9 % of code
+3. **Codemod** for the `React.` namespace and type names (4.8 % of code
    tokens, mostly of that kind in the sample).
 4. **Runtime adapter**: remaining event-type aliases, `ElementType`, a
    `blurWithin` twin of `focusWithin`, a decision on `class`, and a review of
@@ -479,7 +523,7 @@ For L1.4:
 6. **Icons**: the `lucide-preact` ↔ `lucide-react` rewrite needs the two
    packages on the same version; decision K7 (one DS `Icon` on neutral `lucide`
    data) would remove the pair and the third specifier.
-7. **Preact-side verification**: the spike wrote unit tests (1.3 lines per
+7. **Preact-side verification**: the spike wrote unit tests (1.4 lines per
    source line). Whether W3 does the same or relies on the fast gates changes
    the rate and is not decided here.
 8. **Packaging**: remove `"private": true` and restore `publishConfig`
@@ -490,7 +534,11 @@ For L1.4:
    `preact` in the component index, contract extraction, peer ranges. The
    emitted tree currently lives in `.react-emit/`; moving it into
    `packages/components-react` is the switch of P8.
-9. **Not covered by S1**: any browser rendering, SSR and hydration, charts,
+9. **`TabsProps["onChange"]`** (section 4): `Omit<HTMLAttributes<HTMLElement>,
+   "onChange">` in `components-react` and in the Preact source at once, so the
+   two published types stay identical; then drop the cast of
+   `src/Tabs.test.tsx`.
+10. **Not covered by S1**: any browser rendering, SSR and hydration, charts,
    the largest stateful modules (`DataTable`, `TimeRangePicker`),
    `dataviz-react`, and the Vue side of the divergences of section 4.
 
@@ -498,11 +546,11 @@ For L1.4:
 
 ```bash
 cd packages/components-preact
-npm run check               # both type-checks + React props parity
-npm test                    # 21 script cases, 56 Preact tests, 339 on the React emission
+npm run check               # both type-checks, the test files, React API parity
+npm test                    # 22 script cases + the port-metrics staleness gate, 59 Preact tests, 339 on the React emission
 npm run build && npm run measure   # bundle sizes (sections 6 and 8.2)
 npm run measure:port        # sections 5.2, 8.1, 8.3 -> measurements/port-metrics.{txt,json}
-npm run measure:port:check  # fails when the committed output is stale
+npm run measure:port:check  # fails when the committed output is stale (run by npm test)
 npm run probe:preact        # Preact 11.2.0 in an isolated project (network) -> measurements/preact-major-probe.txt
 ```
 
@@ -512,5 +560,7 @@ npm run probe:preact        # Preact 11.2.0 in an isolated project (network) -> 
 | `port-metrics.txt`, `port-metrics.json` | raw output of `scripts/port-metrics.mjs`: trees, port table, rate, lines per lot and category, projection, reach counts |
 | `preact-major-probe.txt` | raw output of `scripts/probe-preact-major.mjs`: installed versions, failing tests, type errors |
 
-`measure:port` needs the base commit `81083403` in the clone
-(`git fetch origin 81083403e58dd1810bd1bd4f639882d226375d97` in a shallow one).
+`measure:port` reads the base commit `81083403`. When the clone does not hold
+it, the script runs `git fetch --no-tags origin
+81083403e58dd1810bd1bd4f639882d226375d97` itself (with `--depth=1` in a shallow
+clone, never in a full one) and fails with the git error when that fetch does.
