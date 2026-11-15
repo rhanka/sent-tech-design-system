@@ -23,6 +23,9 @@ const artifacts = process.env.DEMO_ARTIFACTS;
 
 const READABLE_SCALE = 0.45;
 const TOLERANCE = 1; // CSS px, for layout rounding
+// The figure re-measures its painted bounds after a camera move, which moves
+// the framing zoom by a few 1e-5 (measured in CI: 0.46886 -> 0.46886 - 3e-6).
+const SAME_ZOOM = 1e-3;
 const CASES = [
   // [width, height, boxes drawn when the page opens]
   { width: 320, height: 640, boxes: 1 },
@@ -165,7 +168,7 @@ try {
         await clickControl(page, FIT);
         const fitted = await settled(page);
         framed(expect, fitted, "after Fit");
-        expect(Math.abs(fitted.zoom - opened.zoom) < 1e-6, `Fit moved an untouched camera (${opened.zoom} -> ${fitted.zoom})`);
+        expect(Math.abs(fitted.zoom - opened.zoom) < SAME_ZOOM, `Fit moved an untouched camera (${opened.zoom} -> ${fitted.zoom})`);
 
         // Zoom in, then Fit must come back to the framing zoom.
         let last = fitted;
@@ -176,7 +179,7 @@ try {
           await clickControl(page, FIT);
           last = await settled(page);
           framed(expect, last, "after zoom in then Fit");
-          expect(Math.abs(last.zoom - fitted.zoom) < 1e-6, `Fit after a zoom in gives ${last.zoom}, expected ${fitted.zoom}`);
+          expect(Math.abs(last.zoom - fitted.zoom) < SAME_ZOOM, `Fit after a zoom in gives ${last.zoom}, expected ${fitted.zoom}`);
         }
 
         // Narrow page: unfolding past what fits scrolls from the start, the
