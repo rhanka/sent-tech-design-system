@@ -1,0 +1,289 @@
+{
+  "description": "Raw timing log of the port of spike S1: one builder agent session, 2026-11-14, in the worktree of branch feat/preact-s1-spike. Input of scripts/port-metrics.mjs.",
+  "sources": {
+    "fileTimes": "Creation time (birth) and last modification time of every file the session authored, in seconds since the Unix epoch, read in the builder worktree with `stat -c '%W %Y %n'` (ext4) after the session and before any later edit. A file is created by the first tool call that writes it, so a birth time is the moment a step produced its first version of that file.",
+    "reportedSeconds": "Step durations the builder session reported in docs/preact-s1-spike.md at commit bdead56b6 (section 8.1), from timestamps it read between tool calls. Those timestamps were not retained: missing source. Kept for comparison only.",
+    "commit": "Committer time of bdead56b6, from `git log -1 --format=%ct bdead56b6`."
+  },
+  "limits": [
+    "n = 1: one session, one builder, eight modules ported in six grouped steps.",
+    "A step is bounded by the first write of its files and the first write of the next step. What happened between two writes (reading the React source, running tests, fixing the harness, idle time) is not separated.",
+    "The last step has no following write: its duration is a lower bound.",
+    "src/Portal.tsx was modified once more 334 s after the last module test file was created; that correction is outside the eight-module span."
+  ],
+  "commit": {
+    "sha": "bdead56b6aa519c10d4f998f657389cab73e7140",
+    "committerTime": 1794679584
+  },
+  "steps": [
+    {
+      "step": "Adapters, emission script, both test harnesses",
+      "modules": [],
+      "files": [
+        "packages/components-preact/src/compat.ts",
+        "packages/components-preact/react/compat.ts",
+        "packages/components-preact/src/runtime.ts",
+        "packages/components-preact/react/runtime.ts",
+        "packages/components-preact/src/signals.ts",
+        "packages/components-preact/react/signals.ts",
+        "packages/components-preact/vite.config.ts",
+        "packages/components-preact/scripts/emit-react.mjs",
+        "packages/components-preact/vitest.react.config.ts"
+      ],
+      "reportedSeconds": 162
+    },
+    {
+      "step": "Button (first port, harness fixes included)",
+      "modules": [
+        "Button"
+      ],
+      "files": [
+        "packages/components-preact/src/Button.tsx",
+        "packages/components-preact/src/Button.test.tsx"
+      ],
+      "reportedSeconds": 209
+    },
+    {
+      "step": "Input + Modal + internal.ts",
+      "modules": [
+        "Input",
+        "Modal"
+      ],
+      "files": [
+        "packages/components-preact/src/Input.tsx",
+        "packages/components-preact/src/Input.test.tsx",
+        "packages/components-preact/src/Modal.tsx",
+        "packages/components-preact/src/Modal.test.tsx",
+        "packages/components-preact/src/internal.ts"
+      ],
+      "reportedSeconds": 100
+    },
+    {
+      "step": "Tabs",
+      "modules": [
+        "Tabs"
+      ],
+      "files": [
+        "packages/components-preact/src/Tabs.tsx",
+        "packages/components-preact/src/Tabs.test.tsx"
+      ],
+      "reportedSeconds": 62
+    },
+    {
+      "step": "SelectableRow + ChatComposer + Portal",
+      "modules": [
+        "SelectableRow",
+        "ChatComposer",
+        "Portal"
+      ],
+      "files": [
+        "packages/components-preact/src/SelectableRow.tsx",
+        "packages/components-preact/src/SelectableRow.test.tsx",
+        "packages/components-preact/src/ChatComposer.tsx",
+        "packages/components-preact/src/ChatComposer.test.tsx",
+        "packages/components-preact/src/Portal.tsx",
+        "packages/components-preact/src/Portal.test.tsx"
+      ],
+      "reportedSeconds": 139
+    },
+    {
+      "step": "ThemeProvider + adapter tests",
+      "modules": [
+        "ThemeProvider"
+      ],
+      "files": [
+        "packages/components-preact/src/ThemeProvider.tsx",
+        "packages/components-preact/src/ThemeProvider.test.tsx",
+        "packages/components-preact/src/runtime.test.tsx"
+      ],
+      "reportedSeconds": 49
+    }
+  ],
+  "fileTimes": [
+    {
+      "file": "packages/components-preact/src/compat.ts",
+      "birth": 1794677811,
+      "modified": 1794677811
+    },
+    {
+      "file": "packages/components-preact/react/compat.ts",
+      "birth": 1794677813,
+      "modified": 1794677813
+    },
+    {
+      "file": "packages/components-preact/src/runtime.ts",
+      "birth": 1794677828,
+      "modified": 1794678024
+    },
+    {
+      "file": "packages/components-preact/react/runtime.ts",
+      "birth": 1794677832,
+      "modified": 1794677832
+    },
+    {
+      "file": "packages/components-preact/src/signals.ts",
+      "birth": 1794677837,
+      "modified": 1794677837
+    },
+    {
+      "file": "packages/components-preact/react/signals.ts",
+      "birth": 1794677840,
+      "modified": 1794677840
+    },
+    {
+      "file": "packages/components-preact/vite.config.ts",
+      "birth": 1794677849,
+      "modified": 1794677850
+    },
+    {
+      "file": "packages/components-preact/scripts/emit-react.mjs",
+      "birth": 1794677943,
+      "modified": 1794678038
+    },
+    {
+      "file": "packages/components-preact/src/classNames.ts",
+      "birth": 1794677963,
+      "modified": 1794678015
+    },
+    {
+      "file": "packages/components-preact/vitest.react.config.ts",
+      "birth": 1794677963,
+      "modified": 1794678137
+    },
+    {
+      "file": "packages/components-preact/src/Button.tsx",
+      "birth": 1794678015,
+      "modified": 1794678015
+    },
+    {
+      "file": "packages/components-preact/src/Button.test.tsx",
+      "birth": 1794678015,
+      "modified": 1794678108
+    },
+    {
+      "file": "packages/components-preact/src/index.ts",
+      "birth": 1794678015,
+      "modified": 1794678611
+    },
+    {
+      "file": "packages/components-preact/react/provenance.test.ts",
+      "birth": 1794678109,
+      "modified": 1794678611
+    },
+    {
+      "file": "packages/components-preact/package.json",
+      "birth": 1794678172,
+      "modified": 1794679503
+    },
+    {
+      "file": "packages/components-preact/src/Input.test.tsx",
+      "birth": 1794678204,
+      "modified": 1794678204
+    },
+    {
+      "file": "packages/components-preact/src/Input.tsx",
+      "birth": 1794678204,
+      "modified": 1794678204
+    },
+    {
+      "file": "packages/components-preact/src/Modal.tsx",
+      "birth": 1794678250,
+      "modified": 1794678250
+    },
+    {
+      "file": "packages/components-preact/src/internal.ts",
+      "birth": 1794678250,
+      "modified": 1794678250
+    },
+    {
+      "file": "packages/components-preact/src/Modal.test.tsx",
+      "birth": 1794678250,
+      "modified": 1794678264
+    },
+    {
+      "file": "packages/components-preact/src/Tabs.test.tsx",
+      "birth": 1794678304,
+      "modified": 1794678304
+    },
+    {
+      "file": "packages/components-preact/src/Tabs.tsx",
+      "birth": 1794678304,
+      "modified": 1794678304
+    },
+    {
+      "file": "packages/components-preact/src/SelectableRow.tsx",
+      "birth": 1794678364,
+      "modified": 1794678364
+    },
+    {
+      "file": "packages/components-preact/src/SelectableRow.test.tsx",
+      "birth": 1794678393,
+      "modified": 1794678393
+    },
+    {
+      "file": "packages/components-preact/src/ChatComposer.test.tsx",
+      "birth": 1794678427,
+      "modified": 1794678427
+    },
+    {
+      "file": "packages/components-preact/src/ChatComposer.tsx",
+      "birth": 1794678427,
+      "modified": 1794678427
+    },
+    {
+      "file": "packages/components-preact/src/Portal.test.tsx",
+      "birth": 1794678457,
+      "modified": 1794678457
+    },
+    {
+      "file": "packages/components-preact/src/Portal.tsx",
+      "birth": 1794678457,
+      "modified": 1794678960
+    },
+    {
+      "file": "packages/components-preact/src/ThemeProvider.tsx",
+      "birth": 1794678611,
+      "modified": 1794678611
+    },
+    {
+      "file": "packages/components-preact/src/runtime.test.tsx",
+      "birth": 1794678611,
+      "modified": 1794678611
+    },
+    {
+      "file": "packages/components-preact/src/ThemeProvider.test.tsx",
+      "birth": 1794678626,
+      "modified": 1794678626
+    },
+    {
+      "file": "packages/components-preact/scripts/measure.mjs",
+      "birth": 1794678737,
+      "modified": 1794678737
+    },
+    {
+      "file": "packages/components-preact/react/api-parity.ts",
+      "birth": 1794678828,
+      "modified": 1794678828
+    },
+    {
+      "file": "packages/components-preact/src/runtime-gaps.probe.test.tsx",
+      "birth": 1794678828,
+      "modified": 1794678828
+    },
+    {
+      "file": "packages/components-preact/react/tsconfig.json",
+      "birth": 1794678843,
+      "modified": 1794678843
+    },
+    {
+      "file": "packages/components-preact/scripts/emit-react.test.mjs",
+      "birth": 1794679489,
+      "modified": 1794679489
+    },
+    {
+      "file": "docs/preact-s1-spike.md",
+      "birth": 1794679276,
+      "modified": 1794679503
+    }
+  ]
+}

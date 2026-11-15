@@ -280,6 +280,10 @@ try {
           check(initial, scene);
           check(after, scene);
           assert.deepEqual(after.camera, initial.camera, 'initial camera must equal state after Ajuster');
+          for (let i = 0; i < initial.transform.length; i++) {
+            assert.ok(Math.abs(after.transform[i] - initial.transform[i]) <= 1e-3,
+              `initial transform must equal state after Ajuster within 1e-3: ${initial.transform} vs ${after.transform}`);
+          }
           assert.deepEqual(after.scroll, initial.scroll, 'initial scrolling must equal state after Ajuster');
           assert.deepEqual(after.outerScroll, initial.outerScroll, 'initial outer scrolling must equal state after Ajuster');
           equalGeometry(after, initial);
