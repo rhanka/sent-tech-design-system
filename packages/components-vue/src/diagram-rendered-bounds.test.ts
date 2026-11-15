@@ -331,4 +331,72 @@ for (const [host, bounds] of [['Svelte', svelteHost], ['Vue', vueHost]] as const
     // painted only while focused: it never moves the fit.
     expect(read(html(hit, 'data-flow-node="n" style="opacity:1"', clipped, toggle))).toBe(model);
   });
+  it(`should keep in the ${host} painted bounds what a fold transition is fading in: connectors, edge labels and entering nodes`, () => {
+    const model = { x: 10, y: 20, width: 640, height: 320 };
+    const far = { x: -400, y: -300, width: 1600, height: 1200 };
+    const card = '<div class="st-diagramSceneFigure-node" data-scene-occurrence="card"></div>';
+    const stroke = 'style="fill:none;stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"';
+    const paint = { '[data-scene-occurrence="card"]': { x: 40, y: 40, width: 460, height: 200 }, '.probe': far };
+    const read = (markup: string) => {
+      const view = paintedWorld(card + markup, paint, { '.probe': far });
+      const bounds = measure(view.frame, model, 0.62);
+      view.dispose();
+      vi.restoreAllMocks();
+      return bounds!;
+    };
+    const pad = 1.5 / 2 / 0.45;
+    // The first frame of a transition: the eased opacity is exactly 0.
+    for (const [name, markup, stroked] of [
+      ['connector layer', `<svg class="st-diagramSceneFigure-edges" style="opacity:0"><polyline class="probe st-diagramSceneFigure-edge" data-scene-edge="e" ${stroke}/></svg>`, true],
+      ['edge label', '<div class="probe st-diagramSceneFigure-edgeLabel" data-scene-label="l" style="opacity:0"><span>label</span></div>', false],
+      ['entering node', '<div class="probe st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"></div>', false],
+      ['card of an entering node', '<div class="st-diagramSceneFigure-node" data-scene-occurrence="entering" style="opacity:0"><div class="probe st-diagramCard"></div></div>', false],
+    ] as const) {
+      const bounds = read(markup);
+      expect(bounds, name).not.toBe(model);
+      expect(far.x - bounds.x, name).toBeGreaterThanOrEqual(stroked ? pad : 0);
+      expect(far.x - bounds.x, name).toBeLessThan((stroked ? pad : 0) + RENDERED_BOUNDS_REFIT_TOLERANCE);
+      expect(bounds.width, name).toBeGreaterThanOrEqual(far.width);
+      // Mid-fade and settled, the same element reads the same bounds.
+      expect(read(markup.replace('opacity:0', 'opacity:0.5')), name).toEqual(bounds);
+      expect(read(markup.replace('opacity:0', 'opacity:1')), name).toEqual(bounds);
+    }
+    // Zero opacity anywhere else is still a hidden element, at rest.
+    expect(read('<div class="probe" data-scene-label="l" style="opacity:0"><span>label</span></div>')).toBe(model);
+    expect(read('<div style="opacity:0"><div class="probe st-diagramSceneFigure-edgeLabel" data-scene-label="l"></div></div>')).toBe(model);
+    expect(read('<div class="st-diagramSceneFigure-node" data-scene-occurrence="n"><button class="probe" style="opacity:0">hidden</button></div>')).toBe(model);
+  });
+  it(`should divide ${host} painted rects by the scale committed on the world, not by a zoom the DOM has not caught up with`, () => {
+    const model = { x: 10, y: 20, width: 640, height: 320 };
+    const html = '<div data-scene-occurrence="card"></div><svg><polyline class="st-diagramSceneFigure-edge" data-scene-edge="e" style="fill:none;stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/></svg>';
+    const view = paintedWorld(html, { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, '[data-scene-edge]': { x: 0, y: 0, width: 700, height: 400 } });
+    const reference = measure(view.frame, model, 0.62)!;
+    expect(reference).not.toBe(model);
+    // The host has the DOM's scale: the committed transform says the same.
+    (view.world as HTMLElement).style.transform = 'translate(100px,200px) scale(0.62)';
+    expect(measure(view.frame, model, 0.62)).toEqual(reference);
+    // A camera input moved the host's zoom; the world still paints 0.62.
+    for (const stale of [0.45, 0.5, 1, 1.4]) expect(measure(view.frame, model, stale), String(stale)).toEqual(reference);
+    // The DOM follows: the read is the same bounds through the new scale.
+    view.camera.zoom = 0.5;
+    (view.world as HTMLElement).style.transform = 'translate(100px,200px) scale(0.5)';
+    expect(within(measure(view.frame, model, 0.62)!, reference)).toBeLessThanOrEqual(RENDERED_BOUNDS_REFIT_TOLERANCE);
+    view.dispose();
+  });
+  it(`should frame ${host} circles, the optional ERD cardinality markers`, () => {
+    const model = { x: 10, y: 20, width: 640, height: 320 };
+    const far = { x: -400, y: -300, width: 1600, height: 1200 };
+    const read = (shape: string) => {
+      const view = paintedWorld(`<div data-scene-occurrence="card"></div><svg>${shape}</svg>`, { '[data-scene-occurrence]': { x: 40, y: 40, width: 460, height: 200 }, '.probe': far });
+      const bounds = measure(view.frame, model, 0.62);
+      view.dispose();
+      vi.restoreAllMocks();
+      return bounds!;
+    };
+    const circle = read('<circle class="probe" style="fill:rgb(255, 255, 255);stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/>');
+    expect(circle).toEqual(read('<rect class="probe" style="fill:rgb(255, 255, 255);stroke:rgb(0, 0, 0);stroke-width:1.5px;vector-effect:non-scaling-stroke"/>'));
+    expect(far.x - circle.x).toBeGreaterThanOrEqual(1.5 / 2 / 0.45);
+    // Unpainted, it is geometry only.
+    expect(read('<circle class="probe" style="fill:none"/>')).toBe(model);
+  });
 }

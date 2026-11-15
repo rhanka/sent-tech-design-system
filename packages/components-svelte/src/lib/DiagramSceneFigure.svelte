@@ -505,20 +505,22 @@
   // `zoom` is the scale the world is painted at: the fit is quantised once,
   // in `sceneFit`, and printed as it is, so painted rects divide back by it.
   // The first read of a scene fits; a later one refits only when it differs
-  // from that read by more than the measurement granularity.
+  // from that read by more than the measurement granularity. A read that
+  // comes back as the model bounds is a read like any other: it replaces an
+  // earlier, larger one, and the next one is compared to it.
+  // A fold transition paints interpolated rectangles and fading layers: no
+  // read happens while it runs, one happens when it settles.
   function readRenderedBounds(): void {
-    if (frameEl === undefined || scene === undefined) return;
+    if (frameEl === undefined || scene === undefined || animating) return;
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
     const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
-    if (bounds !== undefined && bounds !== scene.bounds
-      && shouldRefitRenderedBounds(previous, bounds)) {
-      if (atFit) requestedZoom = undefined;
-      renderedBounds = { scene, bounds };
-    }
+    if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
+    if (atFit) requestedZoom = undefined;
+    renderedBounds = { scene, bounds };
   }
   $effect(() => {
     const current = scene;
-    if (current === undefined) return;
+    if (current === undefined || animating) return;
     let active = true;
     void tick().then(() => { if (active && scene === current) readRenderedBounds(); });
     return () => { active = false; };
@@ -688,8 +690,13 @@
 
   /** Z-3/Z-4: fit and reset are one action. An overflowing axis scrolls from its start. */
   export function fitToFrame(): void {
+    // The DOM still shows the scene as it was before this call: a running
+    // transition is ended here and read once its end state is patched in,
+    // as is a scene the tokens read below have just replaced.
+    const painted = animating ? undefined : scene;
+    if (animating) settle();
     readCameraTokens();
-    readRenderedBounds();
+    if (scene === painted) readRenderedBounds();
     atFit = true;
     requestedZoom = undefined;
     const element = viewportEl;
