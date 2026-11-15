@@ -570,7 +570,16 @@ export interface SceneCameraInput {
   readonly minReadableScale?: number;
 }
 
-/** §5.1 / BF-2 fit of the scene bounds, as `cameraFit` computes it. */
+/**
+ * Quantum of the applied fit zoom, scale units. `sceneFit` floors every fit
+ * to it, so a fit does not follow sub-quantum changes of its bounds. The
+ * hosts print the resulting zoom as it is: one value for the world
+ * transform, the camera state, `data-zoom`, `--st-diagram-zoom`, the flow
+ * hit size and the painted-bounds read. Nothing is rounded again downstream.
+ */
+export const FIT_QUANTUM = 1e-3;
+
+/** §5.1 / BF-2 fit of the scene bounds, as `cameraFit` computes it on the `FIT_QUANTUM` grid. */
 export function sceneFit(input: SceneCameraInput): CameraFit {
   return cameraFit({
     ...(input.bounds === undefined ? {} : { bounds: input.bounds }),
@@ -579,6 +588,7 @@ export function sceneFit(input: SceneCameraInput): CameraFit {
     ...(input.scrollbarHeight === undefined ? {} : { scrollbarHeight: input.scrollbarHeight }),
     ...(input.maxDisplayScale === undefined ? {} : { maxDisplayScale: input.maxDisplayScale }),
     ...(input.minReadableScale === undefined ? {} : { minReadableScale: input.minReadableScale }),
+    zoomQuantum: FIT_QUANTUM,
   });
 }
 
