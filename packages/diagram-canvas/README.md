@@ -348,8 +348,12 @@ empty penalty, hysteresis); absent or empty, the DS defaults apply.
 maximum display scale (0.62: readout 100 %, a card renders at about
 285 × 124 CSS px) and holds a fit at the readability floor (0.45: an 18 px
 edge label renders at 8.1 CSS px) when the drawing is larger, reporting
-`pans`; `clampZoom` and `zoomReadout` complete it. No DOM lives here: a scene
-host passes its measured sizes in.
+`pans`; `clampZoom` and `zoomReadout` complete it. Given a `zoomQuantum`, the
+applied fit is floored to that grid, never rounded up past the fit box;
+`sceneFit` passes `FIT_QUANTUM` (1e-3), and a scene host prints that one zoom
+everywhere: world transform, camera state, `data-zoom`, `--st-diagram-zoom`,
+flow hit size and painted-bounds read. No DOM lives here: a scene host passes
+its measured sizes in.
 
 The acceptance scenes, the §7 metrics helper, the column baseline as recorded
 before the placement changed (`baseline.json`), the numbers of the shipped

@@ -41,6 +41,13 @@ export interface CameraFitInput {
   readonly maxDisplayScale?: number;
   /** Optional higher readability floor; never lowers the absolute 0.45 floor. */
   readonly minReadableScale?: number;
+  /**
+   * Grid the applied fit zoom lands on, scale units. The fit is floored to
+   * it, never rounded: an applied zoom above `zoomFit` would paint past the
+   * fit box. The display cap and the readability floor are token values and
+   * stay exact. Absent: the applied zoom is the exact fit.
+   */
+  readonly zoomQuantum?: number;
 }
 
 export interface CameraFit {
@@ -49,7 +56,7 @@ export interface CameraFit {
   readonly fitHeight: number;
   /** Zoom framing the whole drawing on both axes, never above the maximum display scale. */
   readonly zoomFit: number;
-  /** Zoom a fit or reset applies: `zoomFit` clamped to the readability floor. */
+  /** Zoom a fit or reset applies: `zoomFit`, floored to `zoomQuantum` when one is given, clamped to the readability floor. */
   readonly zoom: number;
   /** Interactive range: zoom-out stops at the readable fit, zoom-in at the display cap. */
   readonly minZoom: number;
@@ -60,6 +67,20 @@ export interface CameraFit {
 
 /** Screen-space inset for non-scaling strokes and CSS layout rounding. */
 export const FIT_PAINT_INSET = 1;
+
+/** Largest multiple of `quantum` that is not above `value`. A quantum that
+ * is not a finite positive number defines no grid: the value is returned. */
+export function floorToQuantum(value: number, quantum: number): number {
+  if (!(quantum > 0) || !Number.isFinite(quantum) || !Number.isFinite(value)) return value;
+  const perUnit = 1 / quantum;
+  let steps = Math.floor(value * perUnit);
+  // The product is rounded: it can land one ulp on either side of an exact
+  // multiple (0.501 × 1000 = 500.99999999999994). Settle on the largest
+  // step that is not above the value, so the result never exceeds it.
+  if (steps / perUnit > value) steps -= 1;
+  else if ((steps + 1) / perUnit <= value) steps += 1;
+  return steps / perUnit;
+}
 
 /** §5.1: `fitW = viewW`, `fitH = min(viewW × 9/16, 0.85 × windowH)`. */
 export function fitBox(viewWidth: number, windowHeight: number): { readonly width: number; readonly height: number } {
@@ -79,9 +100,13 @@ export function cameraFit(input: CameraFitInput): CameraFit {
     return { fitWidth: box.width, fitHeight: box.height, zoomFit: maxZoom, zoom: maxZoom, minZoom: maxZoom, maxZoom, pans: false };
   }
   const zoomFit = Math.min(Math.max(0, box.width - 2 * FIT_PAINT_INSET) / bounds.width, Math.max(0, box.height - 2 * FIT_PAINT_INSET) / bounds.height, maxZoom);
+  // The applied zoom is quantised here, once, and downward: every consumer
+  // (transform, camera state, painted-bounds read) gets this single value,
+  // and the fit height below is the one of the drawing at that same zoom.
+  const applied = input.zoomQuantum === undefined || zoomFit >= maxZoom ? zoomFit : floorToQuantum(zoomFit, input.zoomQuantum);
   // All hosts and camera inputs share this range. A small frame or a large
   // unfolded scene reaches the floor, then scrolls instead of shrinking text.
-  const zoom = Math.max(readableFloor, zoomFit);
+  const zoom = Math.max(readableFloor, applied);
   const fitHeight = Math.min(box.height, Math.ceil((bounds.height * zoom + 2 * FIT_PAINT_INSET) * 64) / 64);
   return { fitWidth: box.width, fitHeight, zoomFit, zoom, minZoom: zoom, maxZoom, pans: zoom > zoomFit };
 }

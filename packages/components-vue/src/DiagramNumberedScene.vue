@@ -11,7 +11,7 @@ import {
 } from "@sentropic/diagram-canvas/flowModel";
 import {
   collapsedOccurrencesOf, sceneContentSize, layoutScene, resolveScene,
-  parseScale,
+  parseScale, sceneConnectorMask, sceneNodesOnPlane,
   type SceneModel, type SceneNodeModel, type SceneOrientations, type SceneOccurrenceRef,
 } from "@sentropic/diagram-canvas/diagramSceneModel";
 import DiagramSceneFallback from "./DiagramSceneFallback.vue";
@@ -30,6 +30,7 @@ const props = withDefaults(defineProps<DiagramSceneFigureProps>(), { compact: fa
 const emit = defineEmits<{ "update:contentSize": [size: { width: number; height: number }] }>();
 const ownedCache = createLayoutCache(), hostId = useId();
 const arrowId = 'diagram-arrow-' + hostId;
+const maskId = 'diagram-connector-mask-' + hostId;
 const strings = computed(() => ({ ...DEFAULT_LABELS, ...props.labels }));
 const flowOptions = computed(() => ({ ...props.flows, countTemplate: strings.value.count }));
 const tokens = shallowRef<FlowTokens>(DEFAULT_FLOW_TOKENS);
@@ -61,6 +62,16 @@ const scene = computed<SceneModel | undefined>(() => layout.value.status !== "la
   ...(props.iconBindings === undefined ? {} : { iconBindings: props.iconBindings }),
   strictIcons: props.strictIcons ?? true, resolveGlyph: (props.resolveGlyph ?? getDiagramGlyph) as typeof getDiagramGlyph,
 }));
+// Paint order (diagram-canvas `scenePaintPlane`): expanded zone frames, the
+// connectors, then every box. A zone frame is opaque: painted after the
+// connectors it would hide every route that runs inside it.
+const paintLayers = computed(() => [
+  { plane: "frame" as const, nodes: sceneNodesOnPlane(scene.value?.nodes ?? [], "frame") },
+  { plane: "connectors" as const, nodes: [] },
+  { plane: "box" as const, nodes: sceneNodesOnPlane(scene.value?.nodes ?? [], "box") },
+]);
+// The connector layer is masked over the footer text a frame paints itself.
+const connectorMask = computed(() => scene.value === undefined ? undefined : sceneConnectorMask(scene.value));
 watch(layout, (result) => props.onLayout?.(result), { immediate: true });
 watch(() => sceneContentSize(layout.value), (size) => { props.onSizeChange?.(size); emit("update:contentSize", size); }, { immediate: true });
 
@@ -248,8 +259,10 @@ const scenarioId = useId();
         <div class="st-diagramSceneFigure-extent" :style="`width:${placement.contentWidth}px;height:${placement.contentHeight}px`">
           <div class="st-diagramSceneFigure-world" :style="`transform:translate(${placement.translateX}px,${placement.translateY}px) scale(${zoom})`" :data-flow-active="highlight !== undefined && (highlight.primary.size > 0 || highlight.dimmed.size > 0) ? 'true' : undefined">
             <template v-if="scene !== undefined">
-              <svg class="st-diagramSceneFigure-edges" aria-hidden="true">
-                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
+              <template v-for="layer in paintLayers" :key="layer.plane">
+              <svg v-if="layer.plane === 'connectors'" class="st-diagramSceneFigure-edges" aria-hidden="true">
+                <defs><marker :id="arrowId" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker><mask v-if="connectorMask !== undefined" :id="maskId" maskUnits="userSpaceOnUse" :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height"><rect :x="connectorMask.region.x" :y="connectorMask.region.y" :width="connectorMask.region.width" :height="connectorMask.region.height" fill="#fff" /><rect v-for="(cutout, index) in connectorMask.cutouts" :key="index" :data-scene-cutout="index" :x="cutout.x" :y="cutout.y" :width="cutout.width" :height="cutout.height" fill="#000" /></mask></defs>
+                <g data-scene-connectors="" :mask="connectorMask === undefined ? undefined : `url(#${maskId})`">
                 <template v-for="edge in scene.edges" :key="edge.occurrence">
                   <polyline :marker-end="edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined" class="st-diagramSceneFigure-edge" :data-scene-edge="edge.occurrence" :data-flow-step="edge.flow?.relation" :data-flow-bundle="edge.bundle?.id" :data-flow-state="stateOf(edge.occurrence)" :points="points(edge.points)" />
                   <template v-if="edge.directed">
@@ -259,10 +272,14 @@ const scenarioId = useId();
                 </template>
                 <g v-for="edge in scene.edges.filter(edge => edge.markers)" :key="edge.occurrence" v-html="edge.markers" />
                 <polyline v-for="label in scene.labels.filter(label => label.leader)" :key="label.occurrence" class="st-diagramSceneFigure-edge" :points="points(label.leader!)" />
+                </g>
               </svg>
-              <div v-for="node in scene.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
+              <template v-else>
+              <div v-for="node in layer.nodes" :key="node.occurrence" class="st-diagramSceneFigure-node" :data-scene-occurrence="node.occurrence" :data-scene-kind="node.kind" :data-flow-state="stateOf(node.occurrence)" :style="boxStyle(node.rect)">
                 <SceneNode :node="node" :measure="measure" :container-padding="effectiveMetrics.containerPadding" :expand="strings.expand" :collapse="strings.collapse" :resolve-glyph="props.resolveGlyph ?? getDiagramGlyph" :select="() => selectNode(node)" :toggle="() => toggle(node)" />
               </div>
+              </template>
+              </template>
               <template v-for="badge in scene.badges" :key="badge.id">
                 <button type="button" class="st-diagramSceneFigure-flowBadge" :data-flow-badge="badge.id" :data-flow-state="stateOf(badge.occurrence)" :aria-pressed="same(selected, badge.target)" :aria-describedby="descriptionId('badge', badge.id)" :tabindex="badgeTab === badge.id ? 0 : -1" :style="boxStyle(badge.box)">{{ badge.text }}</button>
                 <span class="st-diagramSceneFigure-flowDescription" :id="descriptionId('badge', badge.id)">{{ description(badge.target) }}</span>
@@ -273,8 +290,7 @@ const scenarioId = useId();
               </template>
               <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
                 <template v-if="label.bundle !== undefined">
-                  <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>
-                  <div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
+                  <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>
                   </div>
                 </template>
