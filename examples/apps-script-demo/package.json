@@ -1,0 +1,29 @@
+{
+  "name": "apps-script-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Generic Google Apps Script demo of the Sentropic design system (neutral theme, single offline HTML page).",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "check": "tsx scripts/self-check.ts",
+    "smoke": "tsx scripts/smoke-ssr.ts",
+    "demo": "npm run build && npm run check && npm run smoke"
+  },
+  "dependencies": {
+    "@sentropic/design-system-svelte": "0.41.2",
+    "@sentropic/diagram-canvas": "0.2.2",
+    "@sentropic/diagram-core": "0.2.0"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@sveltejs/vite-plugin-svelte": "^7.1.2",
+    "@types/node": "^25.3.0",
+    "lightningcss": "^1.33.0",
+    "svelte": "^5.53.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.16"
+  }
+}
