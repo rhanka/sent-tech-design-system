@@ -1,8 +1,8 @@
 {
   "componentId": "marimekko-chart",
   "contractSource": "derived",
-  "digest": "sha256:17678c977c642ebadf063ccb38447d6cc19a03b832188cb5f5f20af10aa45ada",
-  "entryDigest": "sha256:cb3fe889a0d41e522c7ba582daf2529be3d1c6f9e649c1fbde5b1bd5ebf5bd8a",
+  "digest": "sha256:2891fb591ebbc59d5ce52c5b3ffd3c5f15b51c625b451b932d2375a1a09ce593",
+  "entryDigest": "sha256:c6eba0260307668c3276fac2689e00bf9a24946dfa3f9c770d0f985d0360d028",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -304,7 +304,7 @@
         "declarationPath": "packages/components-svelte/dist/MarimekkoChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MarimekkoChartProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -406,7 +406,7 @@
         "declarationPath": "packages/components-vue/dist/MarimekkoChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MarimekkoChartProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],
