@@ -47,7 +47,11 @@ export const EXAMPLES = [
     artifact: "gas/demo.html",
     notices: "gas/THIRD-PARTY-NOTICES.md",
     // First-party scope and the minimum the page is known to embed.
-    requiredPackages: ["@fontsource-variable/inter", "svelte", "@sentropic/design-system-svelte"],
+    requiredPackages: [
+      "@fontsource-variable/inter", "svelte", "@sentropic/design-system-svelte",
+      // The compiled theme: the themes package and the tokens package its values come from.
+      "@sentropic/design-system-themes", "@sentropic/design-system-tokens",
+    ],
   },
 ];
 

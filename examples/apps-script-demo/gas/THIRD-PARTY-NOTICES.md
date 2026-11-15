@@ -16,7 +16,8 @@ with the page wherever it is copied.
 | `@fontsource-variable/inter` | 5.3.0 | OFL-1.1 | font file (latin subset, base64 data: URI) |
 | `@lucide/svelte` | 0.562.0 | ISC | bundled script and styles (minified) |
 | `@sentropic/design-system-svelte` | 0.41.2 | MIT | bundled script and styles (minified) |
-| `@sentropic/design-system-themes` | 0.14.0 | MIT | theme variables compiled into the page styles |
+| `@sentropic/design-system-themes` | 0.14.0 | MIT | theme definition compiled into the page styles |
+| `@sentropic/design-system-tokens` | 0.14.0 | MIT | theme token values compiled into the page styles |
 | `@sentropic/diagram-canvas` | 0.2.2 | MIT | bundled script and styles (minified) |
 | `@sentropic/diagram-core` | 0.2.0 | MIT | bundled script and styles (minified) |
 | `clsx` | 2.1.1 | MIT | bundled script and styles (minified) |
@@ -369,6 +370,63 @@ From `@sentropic/design-system-themes/LICENSE.THIRD-PARTY.md`:
     <!-- Régénérer : `npm run notices:generate`. La dérive fait échouer `npm run licensing:check`. -->
 
     # Notices de tiers — `@sentropic/design-system-themes`
+
+    Licence de ce paquet : **MIT** — voir `LICENSE`.
+    Ce fichier couvre le code **tiers**, et lui seul.
+
+    Périmètre, littéralement : le code tiers recopié dans ce paquet (§1) et la
+    fermeture transitive de ses dépendances d'exécution (§2). Hors périmètre, et
+    c'est délibéré : les `peerDependencies`, fournies par le consommateur, et les
+    `devDependencies`, qui n'entrent dans aucun tarball.
+
+    ## 1. Code tiers recopié dans ce paquet
+
+    **Rien de mesuré.** Ce qui a été cherché, littéralement : les données de
+    tracé publiées par `lucide`, comparées octet pour octet aux sources de ce
+    paquet. Aucune n'y figure.
+
+    Ce qui n'a **pas** été cherché : tout amont non déclaré dans
+    `scripts/third-party-sources.json`. L'absence ci-dessus est donc l'absence
+    de ces données-là, et non un constat d'absence générale de code tiers dans
+    ce paquet.
+
+    ## 2. Dépendances installées avec ce paquet
+
+    Aucune. Ce paquet ne déclare aucune dépendance tierce : installer ce paquet
+    n'installe aucun code tiers de notre fait.
+
+### @sentropic/design-system-tokens 0.14.0 — MIT
+
+From `@sentropic/design-system-tokens/LICENSE`:
+
+    MIT License
+
+    Copyright (c) 2026 Sentropic
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+
+From `@sentropic/design-system-tokens/LICENSE.THIRD-PARTY.md`:
+
+    <!-- GÉNÉRÉ par scripts/generate-third-party-notices.mjs — ne pas éditer à la main. -->
+    <!-- Régénérer : `npm run notices:generate`. La dérive fait échouer `npm run licensing:check`. -->
+
+    # Notices de tiers — `@sentropic/design-system-tokens`
 
     Licence de ce paquet : **MIT** — voir `LICENSE`.
     Ce fichier couvre le code **tiers**, et lui seul.
