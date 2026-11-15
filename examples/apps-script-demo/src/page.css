@@ -62,7 +62,7 @@ ul, ol { padding-left: 1.25rem; }
 
 .demo-footer p + p { margin-top: 0.25rem; }
 
-/* Success tag. In the pinned component (0.41.2) the tone is drawn as
+/* Success tag. In the pinned component (0.41.3) the tone is drawn as
    feedback-success text on a 14% feedback-success tint mixed into a literal
    white, in both colour modes: 2.8:1 in light, 2.2:1 in dark. Here the tint is
    mixed into the surface the tag sits on and the label uses the primary text
