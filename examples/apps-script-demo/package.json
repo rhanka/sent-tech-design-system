@@ -17,9 +17,9 @@
     "ci": "npm run typecheck && npm test && npm run build:fresh && npm run check && npm run smoke"
   },
   "dependencies": {
-    "@sentropic/design-system-svelte": "0.41.2",
+    "@sentropic/design-system-svelte": "0.41.3",
     "@sentropic/design-system-themes": "0.14.0",
-    "@sentropic/diagram-canvas": "0.2.2",
+    "@sentropic/diagram-canvas": "0.2.3",
     "@sentropic/diagram-core": "0.2.0"
   },
   "devDependencies": {

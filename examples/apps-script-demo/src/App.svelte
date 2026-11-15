@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { tick } from "svelte";
   import {
     Alert, BarChart, Button, Card, DiagramSceneFigure, LineChart, Tabs, Tag,
   } from "@sentropic/design-system-svelte";
@@ -23,7 +24,8 @@
 
   // Diagram. The figure frames the drawing down to its readable scale and
   // scrolls past it, so the page chooses the fold state from the room the
-  // figure has: the most detailed one it frames whole (src/diagram-fit.ts).
+  // figure has: the most detailed one it frames whole, and on a phone, where
+  // none is, the three stages folded, which scrolls (src/diagram-fit.ts).
   // Folding by hand is kept until the width moves the page to another state.
   // In a browser the figure is created once its width is known, so it opens
   // framed; the server render has no width and draws everything unfolded.
@@ -34,6 +36,22 @@
   let manualFolds = $state.raw<{ level: number; collapsed: Folds }>();
   const foldLevel = $derived(figureWidth > 0 ? pickFoldLevel(figureWidth, windowHeight) : 0);
   const collapsed = $derived(manualFolds?.level === foldLevel ? manualFolds.collapsed : diagramFoldLevels[foldLevel]!);
+
+  // Framing after a change of width (window resize, phone rotation, split
+  // screen). The figure follows its own size while its camera is at the fit;
+  // a camera the reader has zoomed is only clamped. A new width is a new
+  // frame, so the page asks the figure for its fit (`fitToFrame`, the action
+  // of the Fit button) when the figure width or the fold state it picks
+  // changes. A fold by hand is left to the figure: it reframes a camera that
+  // is at the fit and keeps a zoom the reader chose.
+  let figure = $state<ReturnType<typeof DiagramSceneFigure>>();
+  let framedFor: string | undefined;
+  $effect(() => {
+    const key = `${figureWidth}:${foldLevel}`;
+    if (figure === undefined || figureWidth === 0) return;
+    if (framedFor !== undefined && framedFor !== key) void tick().then(() => figure?.fitToFrame());
+    framedFor = key;
+  });
 
   type Mode = "auto" | "light" | "dark";
   const order: Mode[] = ["auto", "light", "dark"];
@@ -95,12 +113,14 @@
     <h2 id="architecture-title">4. Target architecture (option B)</h2>
     <p>
       The drawing opens at the most detailed level that fits the width of the page: on a narrow
-      screen its containers start folded. Unfold or fold a container with its button. Past what
-      fits, the drawing scrolls sideways; Fit goes back to the smallest readable scale.
+      screen the stages start folded. Unfold or fold a container with its button. Past what
+      fits (on a phone, from the start), the drawing scrolls in its frame; Fit goes back to
+      the smallest readable scale.
     </p>
     <div class="demo-figure" bind:clientWidth={figureWidth}>
       {#if figureWidth > 0 || !inBrowser}
         <DiagramSceneFigure
+          bind:this={figure}
           document={diagramDocument}
           presentation={diagramPresentation}
           registry={m3ProfileRegistry}
