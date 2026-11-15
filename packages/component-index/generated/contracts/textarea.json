@@ -1,8 +1,8 @@
 {
   "componentId": "textarea",
   "contractSource": "derived",
-  "digest": "sha256:bf18d23108ac9601ad8bfafa039cff2d6ead70fb7864ca4b74bfb09a377acc24",
-  "entryDigest": "sha256:af30dfbbcaa978a452f8a6fcd3002c94c3aca0c663938066b1581d865dc337f1",
+  "digest": "sha256:644f4fad1888f801eb8e87f5574201e3f1c4eb01454414d238af57d2ca1dc15c",
+  "entryDigest": "sha256:f81fb311a6d90f8cd81efe9f6e55bffba753c894f4b1c8899e60e68fb8865154",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-svelte/dist/Textarea.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TextareaProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -334,7 +334,7 @@
         "declarationPath": "packages/components-vue/dist/Textarea.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TextareaProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [
