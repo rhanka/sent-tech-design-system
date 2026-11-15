@@ -11,6 +11,7 @@ export function useDiagramSceneViewport(
     props: Readonly<DiagramSceneFigureProps>, getScene: () => SceneModel | undefined,
     onCameraChange: (camera: DiagramSceneCamera) => void,
     readExtraTokens?: (token: (name: string) => string | undefined) => void,
+    transition?: { animating: () => boolean; settle: () => void },
 ) {
     const scene = computed(getScene);
     const browserMeasure = shallowRef<CardLineMeasure>();
@@ -33,18 +34,21 @@ export function useDiagramSceneViewport(
     // `zoom` is the scale the world is painted at: the fit is quantised once,
     // in `sceneFit`, and printed as it is, so painted rects divide back by it.
     // The first read of a scene fits; a later one refits only when it differs
-    // from that read by more than the measurement granularity.
+    // from that read by more than the measurement granularity. A read that
+    // comes back as the model bounds is a read like any other: it replaces an
+    // earlier, larger one, and the next one is compared to it.
+    // A fold transition paints interpolated rectangles and fading layers: no
+    // read happens while it runs, one happens when it settles.
+    const animating = () => transition?.animating() ?? false;
     function readRenderedBounds() {
-        if (frameEl.value === undefined || scene.value === undefined) return;
+        if (frameEl.value === undefined || scene.value === undefined || animating()) return;
         const bounds = measureRenderedBounds(frameEl.value, scene.value.bounds, zoom.value);
         const previous = renderedBounds.value?.scene === scene.value ? renderedBounds.value.bounds : undefined;
-        if (bounds !== undefined && bounds !== scene.value.bounds
-            && shouldRefitRenderedBounds(previous, bounds)) {
-            if (atFit) requestedZoom.value = undefined;
-            renderedBounds.value = { scene: scene.value, bounds };
-        }
+        if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
+        if (atFit) requestedZoom.value = undefined;
+        renderedBounds.value = { scene: scene.value, bounds };
     }
-    onMounted(() => { watch(scene, () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
+    onMounted(() => { watch([scene, animating], () => readRenderedBounds(), { immediate: true, flush: 'post' }); });
     function token(name: string) {
         return frameEl.value === undefined ? undefined : getComputedStyle(frameEl.value).getPropertyValue(name).trim();
     }
@@ -121,8 +125,13 @@ export function useDiagramSceneViewport(
     function zoomIn() { setZoom(zoom.value * ZOOM_STEP_RATIO); }
     function zoomOut() { setZoom(zoom.value / ZOOM_STEP_RATIO); }
     function fitToFrame() {
+        // The DOM still shows the scene as it was before this call: a running
+        // transition is ended here and read once its end state is patched in,
+        // as is a scene the tokens read below have just replaced.
+        const painted = animating() ? undefined : scene.value;
+        if (animating()) transition?.settle();
         readCameraTokens();
-        readRenderedBounds();
+        if (scene.value === painted) readRenderedBounds();
         atFit = true;
         requestedZoom.value = undefined;
         void nextTick(() => {

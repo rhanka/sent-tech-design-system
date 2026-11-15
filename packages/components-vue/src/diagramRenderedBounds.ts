@@ -67,12 +67,22 @@ function isTransparent(color: string): boolean {
   return alpha !== undefined && parseFloat(alpha) === 0;
 }
 
-/** Whether an element removes itself and its subtree from the paint: not
- * rendered, fully transparent, or clipped to nothing (the screen-reader-only
- * idioms: `clip-path: inset(50%)`, `clip: rect(0 0 0 0)`, or an empty box
- * that clips its overflow). A client rect ignores all of these. */
+/**
+ * What the scene hosts fade during a fold transition: the connector layer,
+ * the edge labels and the entering nodes. A zero opacity on one of these is
+ * a frame of that fade, not a hidden element: it is painted once the
+ * transition settles, and the fit has to frame it.
+ */
+const TRANSITION_FADED = '.st-diagramSceneFigure-edges,.st-diagramSceneFigure-edgeLabel,.st-diagramSceneFigure-node';
+
+/** Whether an element removes itself and its subtree from the paint for
+ * good: not rendered, fully transparent at rest, or clipped to nothing (the
+ * screen-reader-only idioms: `clip-path: inset(50%)`, `clip: rect(0 0 0 0)`,
+ * or an empty box that clips its overflow). A client rect ignores all of
+ * these. An element the host is fading in is not hidden. */
 function hidesSubtree(element: Element, style: CSSStyleDeclaration): boolean {
-  if (style.display === 'none' || parseFloat(style.opacity) === 0) return true;
+  if (style.display === 'none') return true;
+  if (parseFloat(style.opacity) === 0 && !element.matches(TRANSITION_FADED)) return true;
   if (style.clipPath === 'inset(50%)' || /^rect\((?:\s*0(?:px)?\s*,?){4}\)$/.test(style.clip ?? '')) return true;
   const overflow = style.overflowX || style.overflow;
   if (!overflow || overflow === 'visible') return false;
@@ -101,7 +111,9 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
  * Painted bounds in world units, after font/layout settling. DOM-free scene
  * geometry remains the SSR fallback. Include text ink and SVG strokes:
  * getBoundingClientRect alone excludes both text overshoot and stroke width.
- * `zoom` is the scale the world is painted at.
+ * `zoom` is the scale the world is painted at; the scale committed on the
+ * world element takes precedence, since a camera input changes the host's
+ * zoom one flush before the DOM follows.
  *
  * The result does not depend on that scale, nor on a transient interaction
  * state, beyond the read granularity `RENDERED_BOUNDS_REFIT_TOLERANCE` covers:
@@ -115,11 +127,14 @@ function restingStrokeWidth(element: Element, style: CSSStyleDeclaration): numbe
  *   (`[data-flow-hit]`, a transparent 16 px stroke), flow focus targets
  *   (`[data-flow-node]`, hidden at rest and sized in screen px), transparent
  *   strokes and text, shapes with neither stroke nor fill, and hidden or
- *   clipped subtrees.
+ *   clipped subtrees. What a fold transition is fading in stays in.
  */
-export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undefined, zoom: number): Rect | undefined {
+export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undefined, hostZoom: number): Rect | undefined {
   const world = frame.querySelector<HTMLElement>('.st-diagramSceneFigure-world');
-  if (!world || !(zoom > 0)) return fallback;
+  if (!world) return fallback;
+  const committed = Number(/\bscale\(\s*([+-]?(?:\d+\.?\d*|\.\d+)(?:e[+-]?\d+)?)\s*\)/i.exec(world.style.transform)?.[1]);
+  const zoom = committed > 0 ? committed : hostZoom;
+  if (!(zoom > 0)) return fallback;
   const first = world.querySelector('[data-scene-occurrence],[data-scene-label]')?.getBoundingClientRect();
   if (!first || first.width === 0 && first.height === 0) return fallback;
   const origin = world.getBoundingClientRect();
@@ -154,7 +169,7 @@ export function measureRenderedBounds(frame: HTMLElement, fallback: Rect | undef
   // computed value of the painting element itself counts.
   const paints = (element: Element) => !element.closest('defs,[hidden],[data-flow-hit],[data-flow-node]')
     && styleOf(element).visibility !== 'hidden' && styleOf(element).visibility !== 'collapse' && inPaintedSubtree(element);
-  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg text')) {
+  for (const element of world.querySelectorAll('[data-scene-occurrence],.st-diagramCard,.st-diagramZone,[data-scene-label],[data-diagram-icon],.st-badge,[data-badge],.st-diagramCard-rule,.st-diagramZone-rule,.st-diagramZone-footerRule,button,svg polyline,svg path,svg line,svg rect,svg circle,svg text')) {
     if (!paints(element)) continue;
     const style = styleOf(element);
     let pad = 0;
