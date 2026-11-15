@@ -49,7 +49,9 @@
     resolveScene,
     resolveZoom,
     sameRects,
+    sceneConnectorMask,
     sceneFit,
+    sceneNodesOnPlane,
     sceneTextRows,
     scenePlacement,
     WHEEL_ZOOM_RATE,
@@ -254,6 +256,7 @@
   const collapsedNow = $derived(collapsed ?? foldState);
   const arrowInstance = $props.id();
   const arrowId = "diagram-arrow-" + arrowInstance;
+  const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
@@ -984,31 +987,7 @@
       >
         <div class="st-diagramSceneFigure-world" style={worldStyle} data-flow-active={flowHighlight !== undefined && (flowHighlight.primary.size > 0 || flowHighlight.dimmed.size > 0) ? "true" : undefined}>
           {#if scene !== undefined}
-            <!-- m4: edges paint before nodes, labels last; edges and labels
-                 fade in with the transition (T-1) while the boxes move. -->
-            <svg
-              class="st-diagramSceneFigure-edges"
-              aria-hidden="true"
-              style={animating ? `opacity:${eased}` : undefined}
-            >
-              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
-              {#each scene.edges as edge (edge.occurrence)}
-                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
-                {#if edge.directed}
-                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
-                  {#each edge.arrows as arrow, index (index)}
-                    <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
-                  {/each}
-                {/if}
-              {/each}
-              {#each scene.edges as edge (edge.occurrence)}
-                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
-              {/each}
-              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
-                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
-              {/each}
-            </svg>
-            {#each scene.nodes as node (node.occurrence)}
+            {#snippet sceneNode(node: SceneNodeModel)}
               {@const rect = rectOf(node)}
               <div
                 class="st-diagramSceneFigure-node"
@@ -1034,7 +1013,41 @@
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
                 {/if}
               </div>
-            {/each}
+            {/snippet}
+            {@const connectorMask = sceneConnectorMask(scene)}
+            <!-- Paint order (diagram-canvas `scenePaintPlane`): expanded zone
+                 frames, connectors, boxes, labels last. A zone frame is opaque:
+                 painted after the connectors it would hide every route that
+                 runs inside it. The connector layer is masked over the footer
+                 text a frame paints itself, so a route leaving a zone passes
+                 behind it. Edges and labels fade in with the transition (T-1)
+                 while the boxes move. -->
+            {#each sceneNodesOnPlane(scene.nodes, "frame") as node (node.occurrence)}{@render sceneNode(node)}{/each}
+            <svg
+              class="st-diagramSceneFigure-edges"
+              aria-hidden="true"
+              style={animating ? `opacity:${eased}` : undefined}
+            >
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
+              <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
+              {#each scene.edges as edge (edge.occurrence)}
+                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {#if edge.directed}
+                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
+                  {#each edge.arrows as arrow, index (index)}
+                    <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
+                  {/each}
+                {/if}
+              {/each}
+              {#each scene.edges as edge (edge.occurrence)}
+                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
+              {/each}
+              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
+                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+              {/each}
+              </g>
+            </svg>
+            {#each sceneNodesOnPlane(scene.nodes, "box") as node (node.occurrence)}{@render sceneNode(node)}{/each}
             {#each scene.badges as badge (badge.id)}
               <button type="button" class="st-diagramSceneFigure-flowBadge" data-flow-badge={badge.id} data-flow-state={stateOf(badge.occurrence)} aria-pressed={JSON.stringify(selectedVisible) === JSON.stringify(badge.target)} aria-describedby={descriptionId("badge", badge.id)} tabindex={badgeTab === badge.id ? 0 : -1} style={`left:${badge.box.x}px;top:${badge.box.y}px;width:${badge.box.width}px;height:${badge.box.height}px`}>{badge.text}</button>
               <span class="st-diagramSceneFigure-flowDescription" id={descriptionId("badge", badge.id)}>{flowDescription(badge.target)}</span>
