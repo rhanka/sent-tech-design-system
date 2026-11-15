@@ -5,6 +5,7 @@ import ontologyView from '../../packages/diagram-canvas/tests/layout/dc2a/fixtur
 import { CURRENT_SCHEMA_VERSION, DIAGRAM_PRESENTATION_CONTRACT_PIN,
   m3ProfileRegistry, shippedExecutorBindings } from '@sentropic/diagram-core';
 import { flowFixture } from '../../packages/diagram-canvas/test-support/flowFixture.ts';
+import { nestedZoneFixture } from '../../packages/diagram-canvas/test-support/nestedZoneFixture.ts';
 
 import { cases } from './scenes.js';
 export { cases } from './scenes.js';
@@ -16,6 +17,12 @@ export function fixture(name) {
   if (name.startsWith('numbered-flows')) {
     const source = flowFixture(name.endsWith('-bundled') ? 6 : 3, { labels: true, folded: true, reverse: true });
     return { ...common, document: source.document, presentation: source.presentation, flows: { fanOutMax: 4 } };
+  }
+  if (name.startsWith('nested-zones')) {
+    // Classes nested in an ontology zone inside a system zone: every relation
+    // runs inside both zone surfaces (the consumer-reported ERD view shape).
+    const source = nestedZoneFixture({ outside: name.endsWith('-outside') });
+    return { ...common, document: source.document, view: source.view, presentation: source.presentation, collapsed: [] };
   }
   if (name !== 'three-cards') {
     const document = name.startsWith('architecture') ? architecture : ontology;
@@ -33,4 +40,11 @@ export function fixture(name) {
     presentation: { contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN }, legends: {}, categoryTokens: [],
       entities: Object.fromEntries(ids.map(id => [`occurrence:e.${id}`, { form: 'card', text: { title: `Card ${id}`, body: 'First paint' } }])) },
   };
+}
+
+/** The exact boxes each connector of a scene joins, when the fixture states them; `null` otherwise. */
+export function expectedRelations(name) {
+  if (!name.startsWith('nested-zones')) return null;
+  return nestedZoneFixture({ outside: name.endsWith('-outside') }).relations
+    .map(relation => ({ occurrence: relation.occurrence, ends: [...relation.ends] }));
 }
