@@ -1,8 +1,8 @@
 {
   "componentId": "embed",
   "contractSource": "derived",
-  "digest": "sha256:01c9596510db27afff6c4d6f12d10f5c945daf455b5cfb077029a2c14b4fd50f",
-  "entryDigest": "sha256:850d7ac2769bcbd465db04d17d121d627384e7d80775e0be100ff9f4448267be",
+  "digest": "sha256:789bd14d4c28564d20b05c6d756196574361ca2a86dc73b8ddd37a3c38d1040d",
+  "entryDigest": "sha256:94dd475a70e7cc4ee74f21abe11bbbb30347dd5f428dbbce87520a0c7d7274b1",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -183,7 +183,7 @@
         "declarationPath": "packages/components-svelte/dist/Embed.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EmbedProps",
-        "version": "0.41.2"
+        "version": "0.41.3"
       },
       "status": "complete",
       "unresolved": [],
@@ -244,7 +244,7 @@
         "declarationPath": "packages/components-vue/dist/Embed.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EmbedProps",
-        "version": "0.41.0-next.4"
+        "version": "0.41.0-next.5"
       },
       "status": "complete",
       "unresolved": [],
