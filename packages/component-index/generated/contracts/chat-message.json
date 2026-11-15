@@ -1,8 +1,8 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:743d45d5a57bf424abcea62b68d5533cede804e9b8f295e432310e96d769812f",
-  "entryDigest": "sha256:8808dfb0de848d824699bb7f986d6dbf34d59edf4cc70f82e5526aa6665578fa",
+  "digest": "sha256:07172ebeb51590f8e3cc2b71711466961b3b3db3e2b32a2b000e4ef7a9300479",
+  "entryDigest": "sha256:4fdc652ef96ec967ba8f2be07bbeb232ba0642bd3b0dd44ad82ea63e28cea085",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -245,7 +245,7 @@
         "declarationPath": "packages/components-svelte/dist/ChatMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChatMessageProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -363,7 +363,7 @@
         "declarationPath": "packages/components-vue/dist/ChatMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChatMessageProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

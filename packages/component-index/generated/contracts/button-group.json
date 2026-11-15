@@ -1,8 +1,8 @@
 {
   "componentId": "button-group",
   "contractSource": "derived",
-  "digest": "sha256:03b1ef75b1c4aaace6bafc8bb909e60dee764a845a99f3c6cc2e86b2f991e9c3",
-  "entryDigest": "sha256:d14a187293d0b6e234f575a242db53815d79f0434f5707dc54f9ade92d8e5a79",
+  "digest": "sha256:353d67b53d6daff46798fcdb312936f82ba0090841953adfc044e270c88fb80e",
+  "entryDigest": "sha256:040083b3ab2c8566d169e0f4bbaeaa9dcc29788abaf13af951b159fd7c227df3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ButtonGroup.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ButtonGroupProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-vue/dist/ButtonGroup.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ButtonGroupProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],
