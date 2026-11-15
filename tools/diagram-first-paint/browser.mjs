@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases } = await import('./scenes.js');
-const { segmentInterval, exposedSegments } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, connectorFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -73,10 +73,25 @@ function measure() {
     });
     return { id: element.dataset.sceneEdge, stroke, points };
   });
-  // The connector SVG is behind the node and numbered-badge surfaces. Keep a conservative
-  // opaque interior (excluding rounded corners), so hidden route portions
-  // cannot cause a clearance failure against the text painted over them.
-  const occluders = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge')].flatMap(element => {
+  // Only a surface painted AFTER the connector layer hides a connector: no
+  // layer of the scene sets a z-index, so document order is paint order.
+  // Cards, collapsed zones and numbered badges follow the layer; an expanded
+  // zone frame precedes it. A frame that followed it would hide every route
+  // inside the zone, which the connector check below reports. Keep a
+  // conservative opaque interior (excluding rounded corners), so hidden route
+  // portions cannot cause a clearance failure against the text painted over them.
+  const layer = world.querySelector('.st-diagramSceneFigure-edges');
+  const above = element => layer !== null
+    && (layer.compareDocumentPosition(element) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0;
+  // The connector layer is masked over the footer text of the expanded zones.
+  const group = layer?.querySelector('[data-scene-connectors]');
+  const groupMatrix = group?.getScreenCTM();
+  const cutouts = groupMatrix == null ? [] : [...layer.querySelectorAll('mask rect[data-scene-cutout]')].map(rect => {
+    const [x, y, width, height] = ['x', 'y', 'width', 'height'].map(name => Number(rect.getAttribute(name)));
+    const a = new DOMPoint(x, y).matrixTransform(groupMatrix), b = new DOMPoint(x + width, y + height).matrixTransform(groupMatrix);
+    return { left: Math.min(a.x, b.x), top: Math.min(a.y, b.y), right: Math.max(a.x, b.x), bottom: Math.max(a.y, b.y) };
+  });
+  const surfaces = [...world.querySelectorAll('.st-diagramCard,.st-diagramZone,.st-diagramSceneFigure-flowBadge')].filter(above).flatMap(element => {
     const style = getComputedStyle(element);
     if (!/^rgb\([^/]+\)$/.test(style.backgroundColor) || style.opacity !== '1') return [];
     const r = box(element);
@@ -96,6 +111,7 @@ function measure() {
     }
     return [{ left: r.left + inset, top: r.top + inset, right: r.right - inset, bottom: r.bottom - inset }];
   });
+  const occluders = [...surfaces, ...cutouts];
   const frameBox = box(frame);
   const scrollbars = [frame.offsetWidth - frame.clientWidth, frame.offsetHeight - frame.clientHeight];
   return { camera: window.__camera, scale, transform, world: box(world), frame: frameBox, scrollbars,
@@ -111,6 +127,8 @@ function measure() {
     outerScroll: (() => { const el = figure.querySelector('.st-diagramSceneFigure-frame');
       return [el.scrollWidth, el.clientWidth, el.scrollHeight, el.clientHeight]; })(),
     nodes: [...figure.querySelectorAll('[data-scene-occurrence]')].map(element => ({ id: element.dataset.sceneOccurrence, ...box(element) })),
+    connectorLabels: [...figure.querySelectorAll('[data-scene-label]')].map(element => element.dataset.sceneLabel),
+    relations: window.__relations ?? null,
     labels, paths, occluders };
 }
 
@@ -224,6 +242,10 @@ function check(state, scene) {
     return { ...path, segments: path.points.slice(1).flatMap((point, i) =>
       exposedSegments(path.points[i], point, state.occluders, path.stroke)) };
   });
+  // Every visible relation has a painted connector touching both boxes it
+  // joins: a label never floats between two cards without its line.
+  assert.deepEqual(connectorFindings({ paths: state.paths, labels: state.connectorLabels, nodes: state.nodes,
+    occluders: state.occluders, relations: state.relations ?? undefined, tolerance: 1 }), [], 'connectors');
   for (const label of state.labels) {
     assert.ok(label.left >= state.frame.left - epsilon && label.top >= state.frame.top - epsilon
       && label.right <= state.frame.left + state.scroll[0] + epsilon
