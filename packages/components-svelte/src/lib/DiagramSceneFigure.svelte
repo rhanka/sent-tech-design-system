@@ -20,7 +20,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZone from "./DiagramZone.svelte";
   import IconButton from "./IconButton.svelte";
-  import { measureRenderedBounds } from "./diagramRenderedBounds.js";
+  import { measureRenderedBounds, shouldRefitRenderedBounds } from "./diagramRenderedBounds.js";
   import { measureRenderedSceneFont } from "./diagramFontMeasure.js";
   import Select from "./Select.svelte";
   import { DEFAULT_FLOW_TOKENS, type FlowTokens } from "@sentropic/diagram-canvas";
@@ -49,7 +49,9 @@
     resolveScene,
     resolveZoom,
     sameRects,
+    sceneConnectorMask,
     sceneFit,
+    sceneNodesOnPlane,
     sceneTextRows,
     scenePlacement,
     WHEEL_ZOOM_RATE,
@@ -254,6 +256,7 @@
   const collapsedNow = $derived(collapsed ?? foldState);
   const arrowInstance = $props.id();
   const arrowId = "diagram-arrow-" + arrowInstance;
+  const maskId = "diagram-connector-mask-" + arrowInstance;
   let browserMeasure = $state.raw<CardLineMeasure>();
   const effectiveMeasure = $derived(sceneCardMeasure(measure === defaultCardMeasure ? browserMeasure ?? measure : measure));
   let tokenMetrics = $state.raw<Partial<LayoutMetrics>>({});
@@ -502,17 +505,25 @@
   let minReadableScale = $state<number>();
   let renderedBounds = $state.raw<{ scene: SceneModel; bounds: Rect }>();
   const cameraBounds = $derived(renderedBounds?.scene === scene ? renderedBounds?.bounds : scene?.bounds);
+  // `zoom` is the scale the world is painted at: the fit is quantised once,
+  // in `sceneFit`, and printed as it is, so painted rects divide back by it.
+  // The first read of a scene fits; a later one refits only when it differs
+  // from that read by more than the measurement granularity. A read that
+  // comes back as the model bounds is a read like any other: it replaces an
+  // earlier, larger one, and the next one is compared to it.
+  // A fold transition paints interpolated rectangles and fading layers: no
+  // read happens while it runs, one happens when it settles.
   function readRenderedBounds(): void {
-    if (frameEl === undefined || scene === undefined) return;
+    if (frameEl === undefined || scene === undefined || animating) return;
     const bounds = measureRenderedBounds(frameEl, scene.bounds, zoom);
-    if (bounds !== undefined && bounds !== scene.bounds) {
-      if (atFit) requestedZoom = undefined;
-      renderedBounds = { scene, bounds };
-    }
+    const previous = renderedBounds?.scene === scene ? renderedBounds.bounds : undefined;
+    if (bounds === undefined || !shouldRefitRenderedBounds(previous, bounds)) return;
+    if (atFit) requestedZoom = undefined;
+    renderedBounds = { scene, bounds };
   }
   $effect(() => {
     const current = scene;
-    if (current === undefined) return;
+    if (current === undefined || animating) return;
     let active = true;
     void tick().then(() => { if (active && scene === current) readRenderedBounds(); });
     return () => { active = false; };
@@ -682,8 +693,13 @@
 
   /** Z-3/Z-4: fit and reset are one action. An overflowing axis scrolls from its start. */
   export function fitToFrame(): void {
+    // The DOM still shows the scene as it was before this call: a running
+    // transition is ended here and read once its end state is patched in,
+    // as is a scene the tokens read below have just replaced.
+    const painted = animating ? undefined : scene;
+    if (animating) settle();
     readCameraTokens();
-    readRenderedBounds();
+    if (scene === painted) readRenderedBounds();
     atFit = true;
     requestedZoom = undefined;
     const element = viewportEl;
@@ -984,31 +1000,7 @@
       >
         <div class="st-diagramSceneFigure-world" style={worldStyle} data-flow-active={flowHighlight !== undefined && (flowHighlight.primary.size > 0 || flowHighlight.dimmed.size > 0) ? "true" : undefined}>
           {#if scene !== undefined}
-            <!-- m4: edges paint before nodes, labels last; edges and labels
-                 fade in with the transition (T-1) while the boxes move. -->
-            <svg
-              class="st-diagramSceneFigure-edges"
-              aria-hidden="true"
-              style={animating ? `opacity:${eased}` : undefined}
-            >
-              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker></defs>
-              {#each scene.edges as edge (edge.occurrence)}
-                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
-                {#if edge.directed}
-                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
-                  {#each edge.arrows as arrow, index (index)}
-                    <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
-                  {/each}
-                {/if}
-              {/each}
-              {#each scene.edges as edge (edge.occurrence)}
-                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
-              {/each}
-              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
-                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
-              {/each}
-            </svg>
-            {#each scene.nodes as node (node.occurrence)}
+            {#snippet sceneNode(node: SceneNodeModel)}
               {@const rect = rectOf(node)}
               <div
                 class="st-diagramSceneFigure-node"
@@ -1034,7 +1026,41 @@
                   <div class="st-diagramSceneFigure-label" data-entity={node.entity}>{node.text}</div>
                 {/if}
               </div>
-            {/each}
+            {/snippet}
+            {@const connectorMask = sceneConnectorMask(scene)}
+            <!-- Paint order (diagram-canvas `scenePaintPlane`): expanded zone
+                 frames, connectors, boxes, labels last. A zone frame is opaque:
+                 painted after the connectors it would hide every route that
+                 runs inside it. The connector layer is masked over the footer
+                 text a frame paints itself, so a route leaving a zone passes
+                 behind it. Edges and labels fade in with the transition (T-1)
+                 while the boxes move. -->
+            {#each sceneNodesOnPlane(scene.nodes, "frame") as node (node.occurrence)}{@render sceneNode(node)}{/each}
+            <svg
+              class="st-diagramSceneFigure-edges"
+              aria-hidden="true"
+              style={animating ? `opacity:${eased}` : undefined}
+            >
+              <defs><marker id={arrowId} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10Z" fill="var(--st-component-diagramScene-edgeStroke, #64748b)" /></marker>{#if connectorMask !== undefined}<mask id={maskId} maskUnits="userSpaceOnUse" x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height}><rect x={connectorMask.region.x} y={connectorMask.region.y} width={connectorMask.region.width} height={connectorMask.region.height} fill="#fff" />{#each connectorMask.cutouts as cutout, index (index)}<rect data-scene-cutout={index} x={cutout.x} y={cutout.y} width={cutout.width} height={cutout.height} fill="#000" />{/each}</mask>{/if}</defs>
+              <g data-scene-connectors="" mask={connectorMask === undefined ? undefined : `url(#${maskId})`}>
+              {#each scene.edges as edge (edge.occurrence)}
+                <polyline marker-end={edge.markers === undefined && !edge.directed ? `url(#${arrowId})` : undefined} class="st-diagramSceneFigure-edge" data-scene-edge={edge.occurrence} data-flow-step={edge.flow?.relation} data-flow-bundle={edge.bundle?.id} data-flow-state={stateOf(edge.occurrence)} points={pointsOf(edge.points)} />
+                {#if edge.directed}
+                  <polyline class="st-diagramSceneFigure-flowHit" data-flow-hit={edge.occurrence} points={pointsOf(edge.points)} />
+                  {#each edge.arrows as arrow, index (index)}
+                    <path class="st-diagramSceneFigure-flowArrow" data-flow-arrow={edge.occurrence} data-flow-state={stateOf(edge.occurrence)} d={flowTokens.flowArrowPath} transform={`translate(${arrow.tip.x} ${arrow.tip.y}) rotate(${arrow.angle}) translate(${-flowTokens.flowArrowLength} ${-flowTokens.flowArrowWidth / 2})`} />
+                  {/each}
+                {/if}
+              {/each}
+              {#each scene.edges as edge (edge.occurrence)}
+                {#if edge.markers}<g>{@html edge.markers}</g>{/if}
+              {/each}
+              {#each scene.labels as edgeLabel (edgeLabel.occurrence)}
+                {#if edgeLabel.leader}<polyline class="st-diagramSceneFigure-edge" points={pointsOf(edgeLabel.leader)} />{/if}
+              {/each}
+              </g>
+            </svg>
+            {#each sceneNodesOnPlane(scene.nodes, "box") as node (node.occurrence)}{@render sceneNode(node)}{/each}
             {#each scene.badges as badge (badge.id)}
               <button type="button" class="st-diagramSceneFigure-flowBadge" data-flow-badge={badge.id} data-flow-state={stateOf(badge.occurrence)} aria-pressed={JSON.stringify(selectedVisible) === JSON.stringify(badge.target)} aria-describedby={descriptionId("badge", badge.id)} tabindex={badgeTab === badge.id ? 0 : -1} style={`left:${badge.box.x}px;top:${badge.box.y}px;width:${badge.box.width}px;height:${badge.box.height}px`}>{badge.text}</button>
               <span class="st-diagramSceneFigure-flowDescription" id={descriptionId("badge", badge.id)}>{flowDescription(badge.target)}</span>

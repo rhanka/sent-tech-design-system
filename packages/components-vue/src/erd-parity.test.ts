@@ -6,6 +6,7 @@ import { render, cleanup, fireEvent } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { afterEach, describe, it, expect } from 'vitest';
 import { convertEngramErdScene, m3ProfileRegistry, shippedExecutorBindings, type EngramErdScene } from '../../diagram-core/dist/index.js';
+import { flowFixture } from '../../diagram-canvas/test-support/flowFixture.js';
 import VueFigure from './DiagramSceneFigure.vue';
 import SvelteFigure from '../../components-svelte/src/lib/DiagramSceneFigure.svelte';
 const scenes = JSON.parse(readFileSync('../diagram-core/tests/fixtures/erd/ERD-SCENES.json', 'utf8')).ontologies as EngramErdScene[];
@@ -29,9 +30,9 @@ describe('ERD Vue/Svelte DOM and ARIA parity', () => {
     const rules = (css: string) => css.replace(/\/\*[\s\S]*?\*\//g, '').split('}')
       .map(rule => rule.replace(/\s+/g, ' ').trim()).filter(Boolean).sort();
     const svelte = styles('../components-svelte/src/lib/DiagramSceneFigure.svelte');
-    const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramSceneFallback.vue')
-      .replace(/\.st-diagramSceneFigure-fallback\s*\{[^}]*\}/, '');
-    expect(rules(svelte.slice(svelte.indexOf('  .st-diagramErd-toggle')))).toEqual(
+    const fallback = svelte.match(/\.st-diagramSceneFigure-fallback\s*\{[^}]*\}/)?.[0] ?? '';
+    const shared = styles('src/DiagramErdNode.vue') + styles('src/DiagramSceneFallback.vue');
+    expect(rules(fallback + svelte.slice(svelte.indexOf('  .st-diagramErd-toggle')))).toEqual(
       rules(shared + styles('src/DiagramSceneFigureBase.vue')));
   });
   for (const source of scenes)
@@ -85,6 +86,12 @@ for (const source of scenes) it('should retain ERD overlays and accessible text 
       expect([...vue.element.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
       expect([...svelte.container.querySelectorAll(selector)].map(dom), selector).toEqual(expected);
     }
+    expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.querySelector('figure')!)));
+    for (const host of [vue.element, svelte.container]) {
+      const edges = [...host.querySelectorAll('[data-scene-edge]')];
+      expect(edges).toHaveLength(source.relations.length);
+      for (const edge of edges) expect(edge.getAttribute('marker-end')).toBeNull();
+    }
     expect(vue.find('.st-diagramSceneFigure-fallback').text()).not.toBe('');
     expect(vue.findAll('[data-erd-marker]')).toHaveLength(2 * source.relations.length);
     expect(vue.findAll('[data-erd-field]')).toHaveLength(source.classes.reduce((n, c) => n + c.fields.length, 0));
@@ -103,4 +110,34 @@ for (const source of scenes) it('should retain ERD overlays and accessible text 
     }
     expect(vue.find('.st-diagramErd-toggle').attributes('aria-expanded')).toBe('false');
   } finally { base.unmount(); vue.unmount(); }
+});
+
+it('should fold a container through captureClick with active flow-steps and suppress flow marker-ends', async () => {
+  // An erd@1 document cannot also carry a flow-step relation (profile
+  // validation refuses it), so the captureClick fold path is covered on
+  // the generic flow host where steps exist.
+  const fixture = flowFixture(3, { labels: true, folded: true, reverse: true });
+  const props = { document: fixture.document, registry: fixture.options.registry, bindings: fixture.options.bindings,
+    presentation: fixture.presentation, flows: { fanOutMax: 4 } };
+  const vue = mount(VueFigure, { props });
+  const svelte = render(SvelteFigure, props);
+  const domFlow = (node: Element) => JSON.parse(JSON.stringify(dom(node)).replace(/"(?:c\d+|v-\d+)(?=["-])/g, '"host'));
+  try {
+    await nextTick(); await tick();
+    expect(vue.findAll('[data-flow-step]')).toHaveLength(3);
+    expect(domFlow(vue.element)).toEqual(domFlow(withControlIconTokens(svelte.container.querySelector('figure')!)));
+    for (const host of [vue.element, svelte.container]) {
+      for (const edge of host.querySelectorAll('[data-scene-edge]')) expect(edge.getAttribute('marker-end')).toBeNull();
+    }
+    const vtoggle = vue.find('[data-scene-occurrence] [aria-expanded]');
+    const stoggle = svelte.container.querySelector<HTMLElement>('[data-scene-occurrence] [aria-expanded]')!;
+    await vtoggle.trigger('click');
+    await fireEvent.click(stoggle);
+    await nextTick(); await tick();
+    expect(vue.find('[data-scene-occurrence] [aria-expanded]').attributes('aria-expanded')).toBe('false');
+    expect(svelte.container.querySelector('[data-scene-occurrence] [aria-expanded]')!.getAttribute('aria-expanded')).toBe('false');
+    expect(vue.findAll('[data-flow-step]').length).toBeLessThan(3);
+    const labelTexts = (host: Element) => [...host.querySelectorAll('[data-scene-label]')].map(node => node.textContent);
+    expect(labelTexts(vue.element)).toEqual(labelTexts(svelte.container));
+  } finally { vue.unmount(); }
 });

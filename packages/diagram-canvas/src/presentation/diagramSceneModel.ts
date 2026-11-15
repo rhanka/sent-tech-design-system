@@ -214,6 +214,67 @@ export interface SceneNodeModel {
   readonly erd?: ErdCard;
 }
 
+/**
+ * Paint plane of a node, relative to the connectors. A scene paints, bottom
+ * to top: every `frame`, the connectors, every `box`, then badges and labels.
+ *
+ * A `frame` is the surface of an expanded zone: it carries an opaque fill and
+ * holds the boxes its relations join, so a connector painted under it is
+ * hidden along its whole run inside the zone while its label, painted last,
+ * stays visible. The frame also paints its own footer text where routes run:
+ * the connector layer is masked over it (`sceneConnectorMask`), so a route
+ * leaving a zone passes behind its footer text. A `box` is atomic (card, collapsed zone, ERD card, legend
+ * key, label node): a route ends on its border and stays under it.
+ *
+ * The order matches the scene frame (`scene.ts`): a container sits on a
+ * negative plane, a connector between two cards on plane 0, under the cards.
+ */
+export type ScenePaintPlane = "frame" | "box";
+
+export function scenePaintPlane(node: Pick<SceneNodeModel, "kind" | "collapsed">): ScenePaintPlane {
+  return node.kind === "zone" && !node.collapsed ? "frame" : "box";
+}
+
+/** The nodes of one paint plane, in the scene's own bottom-to-top order. */
+export function sceneNodesOnPlane<T extends Pick<SceneNodeModel, "kind" | "collapsed">>(
+  nodes: readonly T[],
+  plane: ScenePaintPlane,
+): readonly T[] {
+  return nodes.filter((node) => scenePaintPlane(node) === plane);
+}
+
+/** World margin of the connector mask around the scene bounds: stroke, arrow heads and markers stay inside. */
+export const CONNECTOR_MASK_MARGIN = 64;
+/**
+ * World slack of a connector cutout beyond the label clearance. The cutout is
+ * derived from the measured footer width and the frozen line box; the slack
+ * absorbs the difference between that measure and the rendered ink: measured
+ * in a browser at the readability floor, the ink reaches half a world unit
+ * past the measured box, and a connector end is painted one stroke further.
+ */
+export const CONNECTOR_CUTOUT_SLACK = 3;
+
+export interface SceneConnectorMask {
+  /** The painted region: the scene bounds grown by `CONNECTOR_MASK_MARGIN`. */
+  readonly region: Rect;
+  /** The boxes cut out of it (`SceneModel.connectorCutouts`). */
+  readonly cutouts: readonly Rect[];
+}
+
+/**
+ * The mask of the connector layer: everything is painted but the footer text
+ * of the expanded zones. `undefined` when there is nothing to cut out (no
+ * expanded zone with a footer): the layer then needs no mask at all.
+ */
+export function sceneConnectorMask(scene: Pick<SceneModel, "bounds" | "connectorCutouts">): SceneConnectorMask | undefined {
+  if (scene.bounds === undefined || scene.connectorCutouts.length === 0) return undefined;
+  const { x, y, width, height } = scene.bounds;
+  return {
+    region: { x: x - CONNECTOR_MASK_MARGIN, y: y - CONNECTOR_MASK_MARGIN, width: width + 2 * CONNECTOR_MASK_MARGIN, height: height + 2 * CONNECTOR_MASK_MARGIN },
+    cutouts: scene.connectorCutouts,
+  };
+}
+
 export interface SceneEdgeModel {
   readonly directed: boolean;
   readonly arrows: readonly FlowArrow[];
@@ -249,6 +310,15 @@ export interface SceneModel {
   readonly nodes: readonly SceneNodeModel[];
   readonly edges: readonly SceneEdgeModel[];
   readonly labels: readonly SceneLabelModel[];
+  /**
+   * Footer text box of every expanded zone, grown by the label clearance: the
+   * one text a frame paints where routes run. A route may cross a zone footer
+   * or follow it on its way out (the router keeps every route out of a title
+   * band, not out of a footer band), so the connector layer is masked over
+   * these boxes: a connector is painted above the frame surface and passes
+   * behind the footer text, never through it.
+   */
+  readonly connectorCutouts: readonly Rect[];
   /**
    * Fit bbox (BF-7): `rectUnion(scene.bounds, placed label boxes)`.
    * `undefined` for an empty scene.
@@ -322,6 +392,15 @@ export function resolveScene(
     (result.measurements?.headers ?? []).map((header) => [header.occurrence as string, header.height] as const),
   );
   const blockers: Rect[] = [];
+  const connectorCutouts: Rect[] = [];
+  const footerWidths = new Map<string, number>(
+    (result.measurements?.slots ?? []).filter((slot) => slot.role === "footer").map((slot) => [slot.occurrence as string, slot.layout.width] as const),
+  );
+  const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
+  // Non-scaling connector paint is widest in world units at the readability
+  // floor. Reserve it as well as the label-padding token supplied by hosts.
+  const paintClearance = margin + ZONE_GEOMETRY.borderWidth / (2 * DEFAULT_MIN_READABLE_SCALE);
+  const zoneInset = input.metrics?.containerPadding ?? ZONE_GEOMETRY.contentInsetInline;
   for (const node of nodes) {
     if (node.kind !== "zone" || node.collapsed) {
       blockers.push(node.rect);
@@ -340,8 +419,23 @@ export function resolveScene(
     // the presentation instead of measuring the scene again during replay.
     const reserve = node.presentation?.text.footer?.trim()
       ? lineBoxHeight(ZONE_GEOMETRY.footer.size) + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset : 0;
-    if (reserve > 0) blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
-      width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
+    if (reserve > 0) {
+      blockers.push({ x: node.rect.x, y: node.rect.y + node.rect.height - reserve - ZONE_GEOMETRY.borderWidth - ruleClearance,
+        width: node.rect.width, height: reserve + ZONE_GEOMETRY.borderWidth + ruleClearance });
+      // The footer line as `layoutZone` seats it: one line box pinned above
+      // the bottom border, from the content inset, as wide as its measured
+      // text (the whole inner width when the result carries no measurement).
+      const inner = Math.max(0, node.rect.width - 2 * zoneInset);
+      const lineHeight = lineBoxHeight(ZONE_GEOMETRY.footer.size);
+      const bottom = node.rect.y + node.rect.height - ZONE_GEOMETRY.borderWidth - ZONE_GEOMETRY.footerBottomInset;
+      const pad = paintClearance + CONNECTOR_CUTOUT_SLACK;
+      connectorCutouts.push({
+        x: node.rect.x + zoneInset - pad,
+        y: bottom - lineHeight - pad,
+        width: Math.min(footerWidths.get(node.occurrence) ?? inner, inner) + 2 * pad,
+        height: lineHeight + 2 * pad,
+      });
+    }
   }
 
   const allFlows = flowIndex(input.document);
@@ -403,7 +497,6 @@ export function resolveScene(
     labelLines.set(id, lines);
     entries.push({ id, route: points, size: semantic?.profile === 'erd@1' ? { width: ERD_GEOMETRY.labelWidth, height: lines.length * ERD_GEOMETRY.lineHeight } : { width: layout.width, height: layout.height } });
   }
-  const margin = input.metrics?.labelMargin ?? DEFAULT_LAYOUT_METRICS.labelMargin;
   const labels: SceneLabelModel[] = [];
   let bounds: Rect | undefined;
   for (const item of items) {
@@ -414,8 +507,11 @@ export function resolveScene(
   const placements = erd ? placeErdRoleLabels(entries, blockers, margin) : result.labelBoxes === undefined
     ? placeEdgeLabels(entries, blockers, margin)
     : new Map(Object.entries(result.labelBoxes).map(([id, box]) => [id, { box }]));
+  // A label is the label of a drawn connector: a placement whose relation has
+  // no route in this scene is dropped, so a label never paints without a line.
+  const labelled = new Set(entries.map((entry) => entry.id));
   for (const [id, placement] of placements) {
-    if (placement === undefined) continue;
+    if (placement === undefined || !labelled.has(id)) continue;
     labels.push({ occurrence: id as SceneOccurrenceRef, lines: labelLines.get(id) ?? [], box: placement.box, ...(erd ? { erd: true } : {}), ...("leader" in placement ? { leader: placement.leader as readonly Vec2[] } : {}),
       ...(result.edgeBundles?.[id] === undefined ? {} : { title: result.edgeBundles[id]!.title }),
       ...(result.edgeBundles?.[id]?.relations === undefined ? {} : { bundle: result.edgeBundles[id]!.chip ?? measureBundleLabel(result.edgeBundles[id]!.relations!, input.measureLines, input.metrics?.bundleLabelMaxWidth) }) });
@@ -433,11 +529,9 @@ export function resolveScene(
     bounds = bounds === undefined ? box : rectUnion(bounds,box);
   }
   for (const arrows of Object.values(result.arrowBoxes ?? {})) for (const arrow of arrows) bounds = bounds === undefined ? arrow.box : rectUnion(bounds,arrow.box);
-  // Non-scaling connector paint is widest in world units at the readability
-  // floor. Reserve it as well as the label-padding token supplied by hosts.
   const clearedLabels = clearSceneLabels(labels, edges.map(edge => edge.points),
     [...blockers, ...badges.map(badge => badge.box), ...edges.flatMap(edge => edge.arrows.map(arrow => arrow.box))],
-    margin + ZONE_GEOMETRY.borderWidth / (2 * DEFAULT_MIN_READABLE_SCALE));
+    paintClearance);
   for (const { box } of clearedLabels) {
     const padded = { x: box.x - margin, y: box.y - margin, width: box.width + 2 * margin, height: box.height + 2 * margin };
     bounds = bounds === undefined ? padded : rectUnion(bounds, padded);
@@ -454,6 +548,7 @@ export function resolveScene(
     nodes,
     edges,
     labels: clearedLabels,
+    connectorCutouts,
     ...(bounds === undefined ? {} : { bounds }),
     orientations: result.orientations ?? {},
   };
@@ -480,7 +575,16 @@ export interface SceneCameraInput {
   readonly minReadableScale?: number;
 }
 
-/** §5.1 / BF-2 fit of the scene bounds, as `cameraFit` computes it. */
+/**
+ * Quantum of the applied fit zoom, scale units. `sceneFit` floors every fit
+ * to it, so a fit does not follow sub-quantum changes of its bounds. The
+ * hosts print the resulting zoom as it is: one value for the world
+ * transform, the camera state, `data-zoom`, `--st-diagram-zoom`, the flow
+ * hit size and the painted-bounds read. Nothing is rounded again downstream.
+ */
+export const FIT_QUANTUM = 1e-3;
+
+/** §5.1 / BF-2 fit of the scene bounds, as `cameraFit` computes it on the `FIT_QUANTUM` grid. */
 export function sceneFit(input: SceneCameraInput): CameraFit {
   return cameraFit({
     ...(input.bounds === undefined ? {} : { bounds: input.bounds }),
@@ -489,6 +593,7 @@ export function sceneFit(input: SceneCameraInput): CameraFit {
     ...(input.scrollbarHeight === undefined ? {} : { scrollbarHeight: input.scrollbarHeight }),
     ...(input.maxDisplayScale === undefined ? {} : { maxDisplayScale: input.maxDisplayScale }),
     ...(input.minReadableScale === undefined ? {} : { minReadableScale: input.minReadableScale }),
+    zoomQuantum: FIT_QUANTUM,
   });
 }
 
