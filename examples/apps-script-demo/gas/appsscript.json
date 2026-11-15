@@ -2,6 +2,7 @@
   "timeZone": "Etc/UTC",
   "dependencies": {},
   "exceptionLogging": "STACKDRIVER",
+  "oauthScopes": [],
   "runtimeVersion": "V8",
   "webapp": {
     "executeAs": "USER_ACCESSING",

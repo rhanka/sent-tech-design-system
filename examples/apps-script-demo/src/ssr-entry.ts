@@ -2,4 +2,5 @@
 import { render } from "svelte/server";
 import App from "./App.svelte";
 
-export const renderApp = (): string => render(App).body;
+export type InitialTab = "dossier" | "evaluation";
+export const renderApp = (initialTab: InitialTab): string => render(App, { props: { initialTab } }).body;

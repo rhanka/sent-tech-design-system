@@ -7,6 +7,19 @@
     criteria, criteriaScores, diagramDocument, diagramPresentation, options, weeklyVolume,
   } from "./data.js";
 
+  // The tab shown first. The server-render smoke check uses it to render each view.
+  let { initialTab = "dossier" }: { initialTab?: "dossier" | "evaluation" } = $props();
+
+  // Charts draw in the coordinate space given by `width`. It follows the width of
+  // the container (bounded), so text keeps its size on a phone instead of being
+  // scaled down with a fixed 480-unit drawing.
+  const CHART_MIN = 280;
+  const CHART_MAX = 640;
+  let scoresWidth = $state(480);
+  let volumeWidth = $state(480);
+  const chartWidth = (measured: number): number =>
+    measured > 0 ? Math.min(CHART_MAX, Math.max(CHART_MIN, Math.round(measured))) : 480;
+
   type Mode = "auto" | "light" | "dark";
   const order: Mode[] = ["auto", "light", "dark"];
   const modeLabels: Record<Mode, string> = { auto: "Auto", light: "Light", dark: "Dark" };
@@ -83,8 +96,8 @@
   <section class="demo-section" aria-labelledby="scores-title">
     <h2 id="scores-title">5. Overall score</h2>
     <p>Weighted score of each option, out of 10 (sample data).</p>
-    <div class="demo-chart">
-      <BarChart data={criteriaScores} label="Overall score per option, out of 10" domain={[0, 10]} height={260} dataLabels />
+    <div class="demo-chart" bind:clientWidth={scoresWidth}>
+      <BarChart data={criteriaScores} label="Overall score per option, out of 10" domain={[0, 10]} width={chartWidth(scoresWidth)} height={260} dataLabels />
     </div>
   </section>
 {/snippet}
@@ -110,8 +123,8 @@
   <section class="demo-section" aria-labelledby="volume-title">
     <h2 id="volume-title">Weekly volume</h2>
     <p>Requests received per week, in thousands (sample data).</p>
-    <div class="demo-chart">
-      <LineChart data={weeklyVolume} label="Requests per week, in thousands" height={260} />
+    <div class="demo-chart" bind:clientWidth={volumeWidth}>
+      <LineChart data={weeklyVolume} label="Requests per week, in thousands" width={chartWidth(volumeWidth)} height={260} />
     </div>
   </section>
 
@@ -141,6 +154,7 @@
 <main class="demo-main">
   <Tabs
     label="Views"
+    activeValue={initialTab}
     items={[
       { value: "dossier", label: "Dossier", content: dossierView },
       { value: "evaluation", label: "Evaluation", content: evaluationView },
@@ -150,4 +164,8 @@
 
 <footer class="demo-footer">
   <p>Self-contained page: scripts, styles, font and data are inlined. It makes no network request.</p>
+  <p>
+    Embeds open-source software and the Inter font (SIL Open Font License 1.1). Their notices
+    are at the top of the source of this page.
+  </p>
 </footer>
