@@ -74,7 +74,7 @@ export const diagramDocument = {
       }] as const;
     }),
   ]),
-} as unknown as SemanticDocument;
+} satisfies SemanticDocument;
 
 export const diagramPresentation = {
   contractPin: { ...DIAGRAM_PRESENTATION_CONTRACT_PIN },

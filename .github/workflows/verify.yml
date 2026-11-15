@@ -15,6 +15,9 @@ on:
       - "apps/docs/**"
       - "scripts/**"
       - "tools/**"
+      # Read by the example licensing gate (scripts/verify-example-licensing.mjs).
+      # The example's own build and checks run in apps-script-demo.yml.
+      - "examples/**"
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
@@ -29,6 +32,9 @@ on:
       - "apps/docs/**"
       - "scripts/**"
       - "tools/**"
+      # Read by the example licensing gate (scripts/verify-example-licensing.mjs).
+      # The example's own build and checks run in apps-script-demo.yml.
+      - "examples/**"
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
