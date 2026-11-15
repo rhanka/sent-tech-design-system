@@ -218,6 +218,24 @@ jobs:
         if: matrix.task == 'check'
         run: node scripts/run-workspaces.mjs check --workspaces="${{ matrix.workspaces }}"
 
+      # The Preact workspace's `npm test` runs `measure:port:check`, which
+      # recomputes measurements/port-metrics.{txt,json} from the React trees at
+      # the commit the S1 spike branched from (BASE_REF in
+      # packages/components-preact/scripts/port-metrics.mjs) and fails when the
+      # committed files differ. This job's checkout is one commit deep, so that
+      # commit is absent: fetch it, one commit deep too — only its tree is read.
+      # The script would fetch it itself; the step is here so a fetch failure is
+      # reported under its own name and not as a failing test. The SHA is read
+      # from the script, so the two cannot drift. Guarded on the `test` task
+      # and on the Preact workspace — `@sentropic/design-system-preact` is the
+      # only workspace name holding that substring (measured).
+      - name: Fetch the base commit of the Preact port metrics
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-preact')
+        run: |
+          BASE_REF=$(node --input-type=module -e "import('./packages/components-preact/scripts/port-metrics.mjs').then((m) => console.log(m.BASE_REF))")
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          git cat-file -e "$BASE_REF^{commit}"
+
       - name: test
         if: matrix.task == 'test'
         run: node scripts/run-workspaces.mjs test --workspaces="${{ matrix.workspaces }}"
