@@ -4,7 +4,8 @@
 // edge label is then about 8 CSS px) and scrolls past it. Whether a state can be
 // framed therefore depends on the size of the figure. The page asks the layout
 // engine the figure uses for the extent of each fold state, and opens the most
-// detailed one that the figure frames whole. No DOM here: the size comes in.
+// detailed one that the figure frames whole. When none is (a phone), it opens
+// the last one, which the figure then scrolls. No DOM here: the size comes in.
 import { cardLineMeasurer, defaultCardMeasure, sceneCardMeasure } from "@sentropic/diagram-canvas/diagramCardModel";
 import { layoutScene, resolveScene, sceneFit } from "@sentropic/diagram-canvas/diagramSceneModel";
 import { m3ProfileRegistry, shippedExecutorBindings } from "@sentropic/diagram-core";
@@ -47,7 +48,7 @@ export function framesWhole(level: number, viewWidth: number, windowHeight: numb
   return !sceneFit({ bounds, viewWidth: viewWidth / margin, windowHeight: windowHeight / margin }).pans;
 }
 
-/** The most detailed fold state framed whole; the last one (a single card) when none is. */
+/** The most detailed fold state framed whole; the last one (the stages folded), which then scrolls, when none is. */
 export function pickFoldLevel(viewWidth: number, windowHeight: number): number {
   const last = diagramFoldLevels.length - 1;
   for (let level = 0; level < last; level += 1) {

@@ -18,17 +18,18 @@ All content is made up for the demo (generic names and sample figures only).
 - Fluid layout down to phone width: under 30rem the diagram caption sits above its
   zoom controls, and the charts draw at the width of their container so that
   their text is not scaled down.
-- The diagram is framed whole at every page width (see "Diagram framing" below):
-  it opens at the most detailed fold state that fits, down to a single card on a
-  phone.
+- The diagram opens at the most detailed fold state that its figure frames whole
+  (see "Diagram framing" below). On a phone no state fits: it opens with the
+  three stages folded, so the structure and its links are there, and scrolls in
+  its frame. The framing follows a change of width.
 
 ## Packages (published on npm, pinned)
 
 | Package | Version |
 | --- | --- |
-| `@sentropic/design-system-svelte` | 0.41.2 |
+| `@sentropic/design-system-svelte` | 0.41.3 |
 | `@sentropic/design-system-themes` | 0.14.0 |
-| `@sentropic/diagram-canvas` | 0.2.2 |
+| `@sentropic/diagram-canvas` | 0.2.3 |
 | `@sentropic/diagram-core` | 0.2.0 |
 
 Every direct dependency, build tools included, is declared with an exact version
@@ -147,7 +148,7 @@ which refuses any request that is not `file:` or `data:`.
 `DiagramSceneFigure` frames a drawing down to its readable scale (0.45, where an
 edge label is about 8 CSS px) and scrolls past it; it has no smaller zoom. The
 unfolded sample scene is 2248 × 1110 scene units, which a figure narrower than
-about 1045 px cannot frame. The page therefore declares four fold states
+about 1045 px cannot frame. The page therefore declares three fold states
 (`diagramFoldLevels` in `src/data.ts`) and opens the most detailed one that the
 figure frames whole, computed with the layout engine the figure uses
 (`src/diagram-fit.ts`):
@@ -156,47 +157,82 @@ figure frames whole, computed with the layout engine the figure uses
 | --- | --- | ---: |
 | everything unfolded | 2248 × 1110 | 1045 px |
 | Storage folded | 1688 × 838 | 785 px |
-| Ingestion, Processing and Storage folded | 1060 × 624 | 518 px |
-| one card (Request path folded) | 460 × 200 | any |
+| Ingestion, Processing and Storage folded | 1060 × 624 | 518 px, and below it (scrolls) |
 
 (In a window too short for a state — under about 610 px for the first one — the
-next state is used.) Unfolding a container by hand beyond what fits is allowed:
-the drawing then scrolls sideways and Fit returns to the readable scale. A manual
-fold state is kept until a change of width moves the page to another state.
+next state is used.)
+
+**Phone.** A card is 460 × 200 scene units and the frame of the figure is 16:9,
+so under 518 px the figure frames one card and nothing more. The page does not
+open on one folded card: it opens the last state, which keeps the client, the
+three stages and their links on the drawing, at the readable scale. The figure
+then scrolls from its start, where the `Client app` card and the start of the
+first stage are in view. Folding `Request path` by hand gives the one-card view.
+
+**Change of width and fold by hand.** What the figure (0.41.3) does on its own:
+while its camera is at the fit it follows its own size and, after a fold, reads
+the drawing once the transition has ended and frames it; a camera the reader has
+zoomed is only clamped to the new range. What the page adds: when the width of
+the figure or the fold state it picks changes (window resize, phone rotation,
+split screen), it calls `fitToFrame()` on the figure, the action of the Fit
+button, so a new width is framed even after a zoom. A fold by hand is left to
+the figure, so it keeps a zoom the reader chose; Fit frames it again. Unfolding
+a container by hand beyond what fits is allowed: the drawing then scrolls and
+Fit returns to the readable scale. A manual fold state is kept until a change of
+width moves the page to another state. A change of window height alone (the
+address bar of a mobile browser) can move the page to another state; it does not
+reset the camera otherwise.
 
 The scene uses the `generic@2` profile: under `generic@1` a container has no
 fold group, so folding it draws a card while its members stay on the drawing.
 
 `scripts/diagram-fit.test.ts` runs the real layout engine without a browser: at
 every figure width from 240 to 1600 px and five window heights, the state picked
-must be framed without panning, with the margin kept for font metrics; folding
-must hide the members; and two negative witnesses (the unfolded scene on a phone
-width, the `generic@1` profile) must fail to frame or fold.
+must be framed without panning, with the margin kept for font metrics, or be the
+last state where none can be framed; every state must keep the client, the three
+stages and at least three links; folding must hide the members; and two negative
+witnesses (the unfolded scene on a phone width, the `generic@1` profile) must
+fail to frame or fold.
 
 ### Browser check (GitHub CI only)
 
 `scripts/browser-check.mjs` opens the built `dist/demo.html` in Chrome for
-Testing with `puppeteer-core`, at 320 × 640 and 1280 × 900, in light and in
-dark. It refuses to run outside GitHub Actions; never run it locally. Before and
-after a click on "Fit" it requires: every box and every edge label of the diagram
-inside the figure viewport, no scroll overflow in that viewport, no horizontal
-overflow of the page, the expected fold state (one card at 320 px, eleven boxes
-at 1280 px), no console error or warning, and no request other than `file:` or
-`data:`. It then unfolds the card at 320 px and checks that the drawing scrolls
-from its start and that "Fit" keeps the readable scale.
+Testing with `puppeteer-core`, at 320 × 640, 768 × 1024 and 1280 × 900, in
+light and in dark. It refuses to run outside GitHub Actions; never run it
+locally. It requires:
+
+- the expected fold state when the page opens (five boxes at 320 and 768 px,
+  eleven at 1280 px), no horizontal overflow of the page, no console error or
+  warning, and no request other than `file:` or `data:`;
+- at 768 and 1280 px, before and after a click on "Fit": every box and every
+  edge label inside the figure viewport and no scroll overflow in it;
+- at 320 px: the readable scale, the drawing scrolled to its start, the
+  `Client app` card in view with a stage beside it; then `Request path` folded
+  by hand is framed whole, and unfolding it gives back the opening extent;
+- links painted: one connector per link, with a length; at points sampled along
+  each connector, outside the cards and labels, the top-most element is the
+  connector itself (hit testing follows the paint order, so a container surface
+  drawn above a link fails here);
+- one page through a change of width (1280 → 320 → 768 → 1280, after a zoom in):
+  at each width the fold state, zoom and scroll extent of a fresh load at that
+  width; then `Storage` folded by hand at 1280 px is framed whole.
 
 ### Server render (`npm run smoke`)
 
 Renders the page once per tab (`Dossier`, `Evaluation`) and counts what each view
-must contain and must not contain. The server bundle is written under `dist/ssr`
+must contain and must not contain. For the diagram it also requires one
+connector path, with at least two distinct points, for every link relation of
+the document, no connector without a relation, and the connector layer placed
+in the markup after every expanded container frame and before every card (the
+figure paints in document order). The server bundle is written under `dist/ssr`
 for the import and removed afterwards.
 
 ### Size report (last build, bytes)
 
 | Part | Bytes |
 | --- | ---: |
-| HTML page (total) | 683 021 |
-| JS bundle | 468 946 |
+| HTML page (total) | 687 079 |
+| JS bundle | 473 004 |
 | CSS (total) | 182 064 |
 | — inlined font | 64 647 |
 | — theme variables (light + dark) | 66 119 |
@@ -291,7 +327,7 @@ project; keep that change local and do not commit it.
 - The page title is the same in `Code.gs` (`setTitle`, the one Apps Script shows)
   and in the `<title>` of the page.
 - The colour mode is kept in memory only; the page uses no storage.
-- Success tag: in `@sentropic/design-system-svelte` 0.41.2 the success tone is
+- Success tag: in `@sentropic/design-system-svelte` 0.41.3 the success tone is
   drawn as `feedback-success` text on a 14 % tint mixed into a literal `white`
   (2.82:1 in light, 2.20:1 in dark, computed from the theme tokens). `src/page.css`
   redraws it with semantic tokens only — `text-primary` on a tint mixed into
@@ -302,6 +338,13 @@ project; keep that change local and do not commit it.
   propagation) and the clasp commands against a real project are unverified.
   The page is opened in a browser by the CI browser check only, which asserts
   geometry, console and requests; nobody compared screenshots.
+- Links and container surfaces: up to `@sentropic/design-system-svelte` 0.41.2 the
+  figure painted the links before every box, so the opaque surface of an
+  expanded container hid each link routed inside it. 0.41.3 (with
+  `@sentropic/diagram-canvas` 0.2.3) paints the expanded container frames first,
+  then the links, then the cards. The example pins those versions and carries no
+  override; the server render check and the browser check both fail if a link is
+  missing or covered.
 - Diagram edge labels in dark mode: `@sentropic/design-system-tokens` 0.14.0
   (compiled through `@sentropic/design-system-themes` 0.14.0) defines
   `diagramScene.labelSurface` (`#ffffff`), `labelBorder` (`#cbd5e1`),

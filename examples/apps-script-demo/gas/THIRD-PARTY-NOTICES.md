@@ -15,10 +15,10 @@ with the page wherever it is copied.
 | --- | --- | --- | --- |
 | `@fontsource-variable/inter` | 5.3.0 | OFL-1.1 | font file (latin subset, base64 data: URI) |
 | `@lucide/svelte` | 0.562.0 | ISC | bundled script and styles (minified) |
-| `@sentropic/design-system-svelte` | 0.41.2 | MIT | bundled script and styles (minified) |
+| `@sentropic/design-system-svelte` | 0.41.3 | MIT | bundled script and styles (minified) |
 | `@sentropic/design-system-themes` | 0.14.0 | MIT | theme definition compiled into the page styles |
 | `@sentropic/design-system-tokens` | 0.14.0 | MIT | theme token values compiled into the page styles |
-| `@sentropic/diagram-canvas` | 0.2.2 | MIT | bundled script and styles (minified) |
+| `@sentropic/diagram-canvas` | 0.2.3 | MIT | bundled script and styles (minified) |
 | `@sentropic/diagram-core` | 0.2.0 | MIT | bundled script and styles (minified) |
 | `clsx` | 2.1.1 | MIT | bundled script and styles (minified) |
 | `svelte` | 5.57.3 | MIT | bundled script and styles (minified) |
@@ -167,7 +167,7 @@ From `@lucide/svelte/LICENSE`:
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
 
-### @sentropic/design-system-svelte 0.41.2 — MIT
+### @sentropic/design-system-svelte 0.41.3 — MIT
 
 From `@sentropic/design-system-svelte/LICENSE`:
 
@@ -452,7 +452,7 @@ From `@sentropic/design-system-tokens/LICENSE.THIRD-PARTY.md`:
     Aucune. Ce paquet ne déclare aucune dépendance tierce : installer ce paquet
     n'installe aucun code tiers de notre fait.
 
-### @sentropic/diagram-canvas 0.2.2 — MIT
+### @sentropic/diagram-canvas 0.2.3 — MIT
 
 From `@sentropic/diagram-canvas/LICENSE`:
 
