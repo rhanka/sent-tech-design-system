@@ -1,0 +1,759 @@
+{
+  "baseRef": "81083403e58dd1810bd1bd4f639882d226375d97",
+  "trees": {
+    "componentsReact": {
+      "files": 226,
+      "lines": 40146,
+      "catalogLines": 8451,
+      "catalogReexportModules": 80,
+      "catalogLinesAttributed": 6895,
+      "catalogResidualLines": 1556,
+      "indexEntriesWithReactModule": 207,
+      "modulesSharedByTwoEntries": 3,
+      "uncataloguedModules": 22
+    },
+    "datavizReact": {
+      "files": 128,
+      "lines": 9562
+    }
+  },
+  "port": {
+    "modules": [
+      {
+        "module": "Button",
+        "category": "action",
+        "lot": "P1",
+        "reactSource": "Button.tsx",
+        "reactLines": 26,
+        "preactLines": 27,
+        "total": 163,
+        "touched": 6,
+        "emissionRewrites": 1,
+        "tests": 5,
+        "testLines": 69
+      },
+      {
+        "module": "Input",
+        "category": "form",
+        "lot": "P2",
+        "reactSource": "Input.tsx",
+        "reactLines": 55,
+        "preactLines": 58,
+        "total": 289,
+        "touched": 19,
+        "emissionRewrites": 2,
+        "tests": 6,
+        "testLines": 92
+      },
+      {
+        "module": "Modal",
+        "category": "overlay",
+        "lot": "P3",
+        "reactSource": "catalog.tsx (declarations re-exported by Modal.tsx)",
+        "reactLines": 47,
+        "preactLines": 69,
+        "total": 408,
+        "touched": 19,
+        "emissionRewrites": 3,
+        "tests": 6,
+        "testLines": 98
+      },
+      {
+        "module": "Tabs",
+        "category": "navigation",
+        "lot": "P3",
+        "reactSource": "catalog.tsx (declarations re-exported by Tabs.tsx)",
+        "reactLines": 94,
+        "preactLines": 108,
+        "total": 814,
+        "touched": 17,
+        "emissionRewrites": 2,
+        "tests": 5,
+        "testLines": 104
+      },
+      {
+        "module": "SelectableRow",
+        "category": "form",
+        "lot": "P2",
+        "reactSource": "SelectableRow.tsx",
+        "reactLines": 252,
+        "preactLines": 249,
+        "total": 1035,
+        "touched": 57,
+        "emissionRewrites": 3,
+        "tests": 9,
+        "testLines": 251
+      },
+      {
+        "module": "ChatComposer",
+        "category": "chat",
+        "lot": "P4c",
+        "reactSource": "catalog.tsx (declarations re-exported by ChatComposer.tsx)",
+        "reactLines": 34,
+        "preactLines": 58,
+        "total": 279,
+        "touched": 18,
+        "emissionRewrites": 3,
+        "tests": 4,
+        "testLines": 76
+      },
+      {
+        "module": "Portal",
+        "category": "other",
+        "lot": "P4c",
+        "reactSource": "Portal.tsx",
+        "reactLines": 88,
+        "preactLines": 77,
+        "total": 304,
+        "touched": 22,
+        "emissionRewrites": 1,
+        "tests": 6,
+        "testLines": 109
+      },
+      {
+        "module": "ThemeProvider",
+        "category": "(uncatalogued)",
+        "lot": "P4c",
+        "reactSource": "ThemeProvider.tsx",
+        "reactLines": 35,
+        "preactLines": 37,
+        "total": 229,
+        "touched": 12,
+        "emissionRewrites": 1,
+        "tests": 3,
+        "testLines": 53
+      }
+    ],
+    "totals": {
+      "reactLines": 631,
+      "preactLines": 683,
+      "total": 3521,
+      "touched": 170,
+      "emissionRewrites": 16,
+      "tests": 44,
+      "testLines": 852
+    },
+    "shared": {
+      "src/internal.ts": 97,
+      "src/classNames.ts": 22,
+      "src/index.ts": 16,
+      "preactAdapters": 204,
+      "reactTwins": 65,
+      "scripts/emit-react.mjs": 174,
+      "vitest.react.config.ts": 71
+    }
+  },
+  "rate": {
+    "steps": [
+      {
+        "step": "Adapters, emission script, both test harnesses",
+        "modules": [],
+        "lines": 0,
+        "fileTimeSeconds": 204,
+        "lowerBound": false,
+        "reportedSeconds": 162,
+        "secondsPerModule": null,
+        "secondsPerLine": null,
+        "reportedSecondsPerModule": null
+      },
+      {
+        "step": "Button (first port, harness fixes included)",
+        "modules": [
+          "Button"
+        ],
+        "lines": 26,
+        "fileTimeSeconds": 189,
+        "lowerBound": false,
+        "reportedSeconds": 209,
+        "secondsPerModule": 189,
+        "secondsPerLine": 7.27,
+        "reportedSecondsPerModule": 209
+      },
+      {
+        "step": "Input + Modal + internal.ts",
+        "modules": [
+          "Input",
+          "Modal"
+        ],
+        "lines": 102,
+        "fileTimeSeconds": 100,
+        "lowerBound": false,
+        "reportedSeconds": 100,
+        "secondsPerModule": 50,
+        "secondsPerLine": 0.98,
+        "reportedSecondsPerModule": 50
+      },
+      {
+        "step": "Tabs",
+        "modules": [
+          "Tabs"
+        ],
+        "lines": 94,
+        "fileTimeSeconds": 60,
+        "lowerBound": false,
+        "reportedSeconds": 62,
+        "secondsPerModule": 60,
+        "secondsPerLine": 0.64,
+        "reportedSecondsPerModule": 62
+      },
+      {
+        "step": "SelectableRow + ChatComposer + Portal",
+        "modules": [
+          "SelectableRow",
+          "ChatComposer",
+          "Portal"
+        ],
+        "lines": 374,
+        "fileTimeSeconds": 247,
+        "lowerBound": false,
+        "reportedSeconds": 139,
+        "secondsPerModule": 82.3,
+        "secondsPerLine": 0.66,
+        "reportedSecondsPerModule": 46.3
+      },
+      {
+        "step": "ThemeProvider + adapter tests",
+        "modules": [
+          "ThemeProvider"
+        ],
+        "lines": 35,
+        "fileTimeSeconds": 15,
+        "lowerBound": true,
+        "reportedSeconds": 49,
+        "secondsPerModule": 15,
+        "secondsPerLine": 0.43,
+        "reportedSecondsPerModule": 49
+      }
+    ],
+    "modules": 8,
+    "lines": 631,
+    "fileTimes": {
+      "seconds": 611,
+      "secondsPerModule": 76.4,
+      "secondsPerLine": 0.968
+    },
+    "reported": {
+      "seconds": 559,
+      "secondsPerModule": 69.9,
+      "secondsPerLine": 0.886
+    },
+    "afterFirstPort": {
+      "modules": 7,
+      "fileTimeSecondsPerModule": 60.3,
+      "reportedSecondsPerModule": 50
+    },
+    "setupFileTimeSeconds": 204,
+    "setupReportedSeconds": 162
+  },
+  "lots": [
+    {
+      "lot": "P1",
+      "label": "layout + action + feedback",
+      "modules": 37,
+      "lines": 1980,
+      "byCategory": {
+        "layout": {
+          "modules": 18,
+          "lines": 961,
+          "sampled": []
+        },
+        "feedback": {
+          "modules": 14,
+          "lines": 840,
+          "sampled": []
+        },
+        "action": {
+          "modules": 5,
+          "lines": 179,
+          "sampled": [
+            "Button"
+          ]
+        }
+      }
+    },
+    {
+      "lot": "P2",
+      "label": "form",
+      "modules": 27,
+      "lines": 3491,
+      "byCategory": {
+        "form": {
+          "modules": 27,
+          "lines": 3491,
+          "sampled": [
+            "Input",
+            "SelectableRow"
+          ]
+        }
+      }
+    },
+    {
+      "lot": "P3",
+      "label": "navigation + overlay",
+      "modules": 31,
+      "lines": 3904,
+      "byCategory": {
+        "navigation": {
+          "modules": 24,
+          "lines": 3007,
+          "sampled": [
+            "Tabs"
+          ]
+        },
+        "overlay": {
+          "modules": 7,
+          "lines": 897,
+          "sampled": [
+            "Modal"
+          ]
+        }
+      }
+    },
+    {
+      "lot": "P4a+P4b",
+      "label": "data",
+      "modules": 92,
+      "lines": 24676,
+      "byCategory": {
+        "data": {
+          "modules": 92,
+          "lines": 24676,
+          "sampled": []
+        }
+      }
+    },
+    {
+      "lot": "P4c",
+      "label": "chat + other + uncatalogued",
+      "modules": 39,
+      "lines": 6095,
+      "byCategory": {
+        "(uncatalogued)": {
+          "modules": 22,
+          "lines": 5143,
+          "sampled": [
+            "ThemeProvider"
+          ]
+        },
+        "other": {
+          "modules": 11,
+          "lines": 757,
+          "sampled": [
+            "Portal"
+          ]
+        },
+        "chat": {
+          "modules": 6,
+          "lines": 195,
+          "sampled": [
+            "ChatComposer"
+          ]
+        }
+      }
+    },
+    {
+      "lot": "P6",
+      "label": "dataviz-react",
+      "modules": 128,
+      "lines": 9562,
+      "byCategory": {
+        "(dataviz-react tree)": {
+          "modules": 128,
+          "lines": 9562,
+          "sampled": []
+        }
+      }
+    }
+  ],
+  "projection": [
+    {
+      "lot": "P1",
+      "label": "layout + action + feedback",
+      "modules": 37,
+      "lines": 1980,
+      "planHours": 10,
+      "status": "partly measured",
+      "sampledModules": [
+        "Button"
+      ],
+      "sampledLines": 26,
+      "sampledShare": 1.3,
+      "revisedCategories": [
+        "action"
+      ],
+      "revisedLines": 179,
+      "revisedPlanHours": 0.9,
+      "keptCategories": [
+        "layout",
+        "feedback"
+      ],
+      "keptLines": 1801,
+      "keptPlanHours": 9.1,
+      "atRateHours": 0,
+      "atReportedRateHours": 0,
+      "revisedCategoryHours": {
+        "low": 0,
+        "central": 0.1,
+        "high": 0.1
+      },
+      "revisedHours": {
+        "low": 9.1,
+        "central": 9.2,
+        "high": 9.2
+      }
+    },
+    {
+      "lot": "P2",
+      "label": "form",
+      "modules": 27,
+      "lines": 3491,
+      "planHours": 12,
+      "status": "measured",
+      "sampledModules": [
+        "Input",
+        "SelectableRow"
+      ],
+      "sampledLines": 307,
+      "sampledShare": 8.8,
+      "revisedCategories": [
+        "form"
+      ],
+      "revisedLines": 3491,
+      "revisedPlanHours": 12,
+      "keptCategories": [],
+      "keptLines": 0,
+      "keptPlanHours": 0,
+      "atRateHours": 0.9,
+      "atReportedRateHours": 0.9,
+      "revisedCategoryHours": {
+        "low": 0.9,
+        "central": 1.9,
+        "high": 2.8
+      },
+      "revisedHours": {
+        "low": 0.9,
+        "central": 1.9,
+        "high": 2.8
+      }
+    },
+    {
+      "lot": "P3",
+      "label": "navigation + overlay",
+      "modules": 31,
+      "lines": 3904,
+      "planHours": 14,
+      "status": "measured",
+      "sampledModules": [
+        "Modal",
+        "Tabs"
+      ],
+      "sampledLines": 141,
+      "sampledShare": 3.6,
+      "revisedCategories": [
+        "navigation",
+        "overlay"
+      ],
+      "revisedLines": 3904,
+      "revisedPlanHours": 14,
+      "keptCategories": [],
+      "keptLines": 0,
+      "keptPlanHours": 0,
+      "atRateHours": 1,
+      "atReportedRateHours": 1,
+      "revisedCategoryHours": {
+        "low": 1,
+        "central": 2.1,
+        "high": 3.1
+      },
+      "revisedHours": {
+        "low": 1,
+        "central": 2.1,
+        "high": 3.1
+      }
+    },
+    {
+      "lot": "P4a+P4b",
+      "label": "data",
+      "modules": 92,
+      "lines": 24676,
+      "planHours": 24,
+      "status": "not measured",
+      "sampledModules": [],
+      "sampledLines": 0,
+      "sampledShare": 0,
+      "revisedCategories": [],
+      "revisedLines": 0,
+      "revisedPlanHours": 0,
+      "keptCategories": [
+        "data"
+      ],
+      "keptLines": 24676,
+      "keptPlanHours": 24,
+      "atRateHours": 0,
+      "atReportedRateHours": 0,
+      "revisedCategoryHours": null,
+      "revisedHours": null
+    },
+    {
+      "lot": "P4c",
+      "label": "chat + other + uncatalogued",
+      "modules": 39,
+      "lines": 6095,
+      "planHours": 8,
+      "status": "partly measured",
+      "sampledModules": [
+        "ChatComposer",
+        "Portal",
+        "ThemeProvider"
+      ],
+      "sampledLines": 157,
+      "sampledShare": 2.6,
+      "revisedCategories": [
+        "other",
+        "chat"
+      ],
+      "revisedLines": 952,
+      "revisedPlanHours": 1.2,
+      "keptCategories": [
+        "(uncatalogued)"
+      ],
+      "keptLines": 5143,
+      "keptPlanHours": 6.8,
+      "atRateHours": 0.3,
+      "atReportedRateHours": 0.2,
+      "revisedCategoryHours": {
+        "low": 0.3,
+        "central": 0.5,
+        "high": 0.8
+      },
+      "revisedHours": {
+        "low": 7,
+        "central": 7.3,
+        "high": 7.5
+      }
+    },
+    {
+      "lot": "P6",
+      "label": "dataviz-react",
+      "modules": 128,
+      "lines": 9562,
+      "planHours": 20,
+      "status": "not measured",
+      "sampledModules": [],
+      "sampledLines": 0,
+      "sampledShare": 0,
+      "revisedCategories": [],
+      "revisedLines": 0,
+      "revisedPlanHours": 0,
+      "keptCategories": [
+        "(dataviz-react tree)"
+      ],
+      "keptLines": 9562,
+      "keptPlanHours": 20,
+      "atRateHours": 0,
+      "atReportedRateHours": 0,
+      "revisedCategoryHours": null,
+      "revisedHours": null
+    }
+  ],
+  "otherLots": [
+    {
+      "lot": "P5",
+      "label": "hard set (overlaps the category lots)",
+      "planHours": 10
+    },
+    {
+      "lot": "P0",
+      "label": "scaffold, build, adapters, test infrastructure",
+      "planHours": 12
+    },
+    {
+      "lot": "P7",
+      "label": "missing ports",
+      "planHours": 12
+    },
+    {
+      "lot": "P8",
+      "label": "full React emission, release candidate",
+      "planHours": 10
+    },
+    {
+      "lot": "P9",
+      "label": "elements Preact entry",
+      "planHours": 12
+    },
+    {
+      "lot": "P10",
+      "label": "Preact island",
+      "planHours": 6
+    },
+    {
+      "lot": "P11",
+      "label": "bundle and licence report",
+      "planHours": 4
+    },
+    {
+      "lot": "P12",
+      "label": "autolayout twin",
+      "planHours": 3
+    }
+  ],
+  "factors": {
+    "low": 1,
+    "central": 2,
+    "high": 3
+  },
+  "w3": {
+    "planHours": 157,
+    "measuredLotsPlanHours": 44,
+    "measuredLotsRevised": {
+      "low": 18,
+      "central": 20.5,
+      "high": 22.6
+    },
+    "revisedCategories": {
+      "lines": 8526,
+      "planHours": 28.1,
+      "atReportedRateCentral": 4.2,
+      "low": 2.2,
+      "central": 4.6,
+      "high": 6.8
+    },
+    "unsampledCategoriesPlanHours": 15.9,
+    "unsampledCategories": [
+      "P1 layout",
+      "P1 feedback",
+      "P4c (uncatalogued)"
+    ],
+    "notMeasuredPlanHours": 113,
+    "notMeasuredLots": [
+      "P4a+P4b",
+      "P6",
+      "P5",
+      "P0",
+      "P7",
+      "P8",
+      "P9",
+      "P10",
+      "P11",
+      "P12"
+    ],
+    "derivable": {
+      "low": 131,
+      "central": 133.5,
+      "high": 135.6
+    },
+    "ifRateHeldEverywhere": {
+      "conversionLines": 49708,
+      "low": 82.4,
+      "central": 95.7,
+      "high": 109.1
+    }
+  },
+  "reach": {
+    "svgCasing": {
+      "onElements": {
+        "files": 78,
+        "uses": 396
+      },
+      "onComponentProps": {
+        "files": 5,
+        "uses": 45
+      },
+      "all": {
+        "files": 81,
+        "uses": 441
+      },
+      "dataModules": 92,
+      "dataModulesWithElementUse": 75,
+      "dataLinesWithElementUse": 23038,
+      "datavizFilesWithElementUse": 2
+    },
+    "focusEvents": {
+      "onElements": {
+        "files": 8,
+        "uses": 13
+      },
+      "onComponentProps": {
+        "files": 1,
+        "uses": 2
+      },
+      "asObjectKeys": {
+        "files": 2,
+        "uses": 3
+      },
+      "all": {
+        "files": 10,
+        "uses": 18
+      },
+      "objectKeyFiles": [
+        "SelectableRow.tsx",
+        "catalog.tsx"
+      ]
+    },
+    "onChange": {
+      "onTextControls": {
+        "files": 3,
+        "uses": 12
+      },
+      "onOtherElements": {
+        "files": 2,
+        "uses": 4
+      },
+      "onComponentProps": {
+        "files": 3,
+        "uses": 9
+      },
+      "all": {
+        "files": 6,
+        "uses": 25
+      }
+    },
+    "reactNamespace": {
+      "files": 135,
+      "uses": 1234
+    },
+    "inlineStyle": {
+      "objectLiteralOnElements": {
+        "files": 67,
+        "uses": 86
+      },
+      "all": {
+        "files": 86,
+        "uses": 114
+      }
+    },
+    "apis": {
+      "forwardRef": {
+        "files": 29,
+        "uses": 29
+      },
+      "useSyncExternalStore": {
+        "files": 0,
+        "uses": 0
+      },
+      "useInsertionEffect": {
+        "files": 1,
+        "uses": 1
+      },
+      "createPortal": {
+        "files": 1,
+        "uses": 1
+      }
+    },
+    "typeNames": {
+      "ReactNode": 226,
+      "PointerEvent": 75,
+      "KeyboardEvent": 30,
+      "MouseEvent": 8,
+      "FocusEvent": 0,
+      "ChangeEvent": 0,
+      "ElementType": 8,
+      "CSSProperties": 24
+    },
+    "hardSet": {
+      "modules": 31,
+      "lines": 2091
+    }
+  }
+}
