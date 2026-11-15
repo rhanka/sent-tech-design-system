@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { focusWithin, forwardRef } from "./runtime.js";
 import type { ComponentChildren, TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 /**
  * Shared context between `SelectableList` and its {@link SelectableRow}
@@ -84,7 +85,8 @@ export type SelectableRowProps = Omit<HTMLAttributes<HTMLElement>, "onSelect"> &
    * stop.
    */
   caption?: ComponentChildren;
-  className?: string;
+  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
+  className?: MaybeSignal<string>;
 };
 
 /**

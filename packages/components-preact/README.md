@@ -64,12 +64,12 @@ bound to the DOM without a re-render. In the React emission `MaybeSignal<T>` is
 
 ```bash
 npm run build        # dist/ (Preact) + .react-emit/ (React source and build)
-npm run check        # type-check both trees + React props parity
-npm test             # emitter cases, Preact leg, then the React leg
+npm run check        # type-check both trees and every test file + React API parity
+npm test             # emitter cases, port-metrics staleness gate, Preact leg, then the React leg
 npm run test:react   # existing components-react tests on the emitted modules
 npm run measure      # bundle sizes (after build)
 npm run measure:port        # port metrics -> measurements/port-metrics.{txt,json}
-npm run measure:port:check  # fails when that committed output is stale
+npm run measure:port:check  # fails when that committed output is stale (part of npm test, hence of CI)
 npm run probe:preact        # Preact 11.2.0 probe (network) -> measurements/preact-major-probe.txt
 ```
 
