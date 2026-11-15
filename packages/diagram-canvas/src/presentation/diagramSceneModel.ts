@@ -248,9 +248,11 @@ export const CONNECTOR_MASK_MARGIN = 64;
 /**
  * World slack of a connector cutout beyond the label clearance. The cutout is
  * derived from the measured footer width and the frozen line box; the slack
- * absorbs the sub-pixel difference between that measure and the rendered ink.
+ * absorbs the difference between that measure and the rendered ink: measured
+ * in a browser at the readability floor, the ink reaches half a world unit
+ * past the measured box, and a connector end is painted one stroke further.
  */
-export const CONNECTOR_CUTOUT_SLACK = 2;
+export const CONNECTOR_CUTOUT_SLACK = 3;
 
 export interface SceneConnectorMask {
   /** The painted region: the scene bounds grown by `CONNECTOR_MASK_MARGIN`. */
