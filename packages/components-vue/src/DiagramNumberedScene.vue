@@ -273,8 +273,7 @@ const scenarioId = useId();
               </template>
               <div v-for="label in scene.labels" :key="label.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="label.occurrence" :title="label.title" :data-erd-label="label.erd || undefined" :style="boxStyle(label.box)">
                 <template v-if="label.bundle !== undefined">
-                  <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>
-                  <div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
+                  <strong class="st-diagramSceneFigure-bundleHeader">{{ label.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in label.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>
                   </div>
                 </template>

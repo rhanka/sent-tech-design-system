@@ -22,8 +22,8 @@ excluding scrollbar thickness. Chrome's default `--hide-scrollbars` is removed;
 horizontal overflow must display a classic scrollbar. The outer frame must never overflow.
 Labels must clear every painted connector segment; portions hidden behind
 opaque card and zone surfaces are excluded. Initial camera and scroll
-state must equal those after Ajuster exactly; numeric geometry and transform
-components may differ by at most 1/64 CSS px. No case skips or falls back to a
+state must equal those after Ajuster exactly; transform components may
+differ by at most 1e-3 and other numeric geometry by at most 1/64 CSS px. No case skips or falls back to a
 synthetic DOM. Failure artifacts include untouched initial screenshots, failure
 screenshots and measured JSON with browser errors.
 

@@ -49,7 +49,8 @@ const arrowId = 'diagram-arrow-' + useId();
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
     fit, zoom, readout, placement, viewportStyle, holdZoom,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
-        props, () => scene.value, camera => emit('cameraChange', camera));
+        props, () => scene.value, camera => emit('cameraChange', camera), undefined,
+        { animating: () => animating.value, settle: () => settle() });
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
@@ -289,8 +290,7 @@ const worldStyle = computed(() => `transform:translate(${placement.value.transla
               <div v-for="edgeLabel in scene.labels" :key="edgeLabel.occurrence" class="st-diagramSceneFigure-edgeLabel" :data-scene-label="edgeLabel.occurrence" :title="edgeLabel.title" :data-erd-label="edgeLabel.erd || undefined"
                 :style="`left:${edgeLabel.box.x}px;top:${edgeLabel.box.y}px;width:${edgeLabel.box.width}px;height:${edgeLabel.box.height}px${animating ? `;opacity:${eased}` : ''}`">
                 <template v-if="edgeLabel.bundle !== undefined">
-                  <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>
-                  <div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
+                  <strong class="st-diagramSceneFigure-bundleHeader">{{ edgeLabel.bundle.header }}</strong>{{ ' ' }}<div v-for="(group, index) in edgeLabel.bundle.groups" :key="index" class="st-diagramSceneFigure-bundleRelation" :data-bundle-relation="index">
                     <span aria-hidden="true">•</span><div><span v-for="(line, i) in group.lines" :key="i">{{ line }}</span></div>
                   </div>
                 </template>
