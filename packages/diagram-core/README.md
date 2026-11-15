@@ -4,7 +4,7 @@ The typed semantic core of the diagram programme: versioned documents and
 profiles, views with occurrences, and transactional commands that return their
 logical inverse. No runtime dependency, no DOM, no framework, no renderer.
 
-This package is public as `@sentropic/diagram-core` (0.1.0, first publication).
+This package is public as `@sentropic/diagram-core`, at version `0.3.0`.
 Pin the exact version — never a range, never `latest`. Publication is CI-only
 through `.github/workflows/diagram-core-publish.yml` on tags `diagram-core-v<version>`.
 
@@ -131,10 +131,8 @@ changing the presentation pin. The package includes
 [`schemas/diagram-view-schema-3.json`](schemas/diagram-view-schema-3.json) and its
 [canonical SHA-256](schemas/diagram-view-schema-3.sha256):
 `b415c05197692baa5f74ab35e3150ce58079cf9f06201df5e581d222a8d2c0df`.
-This branch includes the successor `@3` schema lot but defers the specification's
-`0.2.0` release lot: the current package version and downstream dependency pins
-remain `0.1.0`. The release conductor owns that version/pin/lockfile update and
-the owner-confirmed tag; schema inclusion does not certify downstream adoption.
+The `@3` schema shipped with `0.2.0`. `@sentropic/diagram-canvas` pins this
+package by exact version; schema inclusion does not certify downstream adoption.
 
 ### Commands are transactions
 
@@ -188,6 +186,98 @@ so a migrated document may still be unwritable — for instance when a value tha
 failed to convert was a **required** attribute. The report names the element; the
 decision is the host's.
 
+## Layout-hint vocabulary (`ds-layout-hints@1`)
+
+A view declaration names its layout through one closed vocabulary, authored,
+versioned and pinned here. A consumer (engram's view mechanism) references the
+pin and calls the validator; it never keeps a mode table of its own.
+
+```ts
+import { DS_LAYOUT_VOCABULARY_PIN, validateLayoutHints, lowerLayoutHints } from "@sentropic/diagram-core";
+
+const layout = { vocabulary: "ds-layout-hints@1", mode: "auto-pack", grouping_axis: "rows" };
+const diagnostics = validateLayoutHints(layout); // [] means valid
+```
+
+| Export | What it is |
+|---|---|
+| `DS_LAYOUT_HINTS_SCHEMA` | JSON Schema 2020-12, closed, deeply frozen. Also shipped as [`schemas/ds-layout-hints-1.json`](schemas/ds-layout-hints-1.json) (canonical bytes) with its [SHA-256](schemas/ds-layout-hints-1.sha256). |
+| `DS_LAYOUT_HINTS_RULES` | The semantic rules as frozen data. Every list equals an enum of the schema's `$defs`. |
+| `validateLayoutHints(value, context?)` | Pure, never throws. Structure and semantics in one pass; diagnostics sorted by (path, code). |
+| `DS_LAYOUT_VOCABULARY_PIN` | `PresentationPin` `{ id, version, contentDigest }`. |
+| `lowerLayoutHints(hints, roots?)` | A valid payload lowered to the hints the layout engine takes. |
+
+The pin:
+
+```
+id             https://sentropic.dev/schemas/diagram/layout-hints/v1
+version        ds-layout-hints@1
+contentDigest  e72fd3f3446e19585b2992071f57c3777685f27087165c932806e12354ced42c
+```
+
+`contentDigest` is the SHA-256 (bare 64 lowercase hex) of the RFC 8785 bytes of
+the schema: `sha256Hex(canonicalBytes(DS_LAYOUT_HINTS_SCHEMA))`. The refusal
+classification lives in the schema's `$defs`, so the digest covers it. Any
+change to the schema is `ds-layout-hints@2`; `tests/layout-hints.test.ts`
+recomputes the digest and fails on an edit in place.
+
+**Scope rule of `@1`: a payload that validates must render.** The vocabulary
+admits only what the layout engine of `@sentropic/diagram-canvas` executes at
+this version.
+
+| `mode` | Engine entry | Admitted on |
+|---|---|---|
+| `auto-pack` | `layoutMeasured` | every view |
+| `layered-flow` | `layoutDocument` | `generic@1` views without a typed presentation, stated through `context` |
+
+Hints, read by `auto-pack` only: `ordering`, `rootOrder`, `grouping`
+(recursive groups `{ id, direction, items, stretch? }`), `grouping_axis`
+(`"rows" | "columns"`, a shorthand for one group over the root level, exclusive
+with `grouping`) and `stretch`. `mode` is required: an absent mode is never
+read as `auto-pack`.
+
+Refusals are typed, and nothing is coerced to another mode:
+
+| Code | Raised when |
+|---|---|
+| `layout-vocabulary-unknown` | `vocabulary` is absent or is not `ds-layout-hints@1`. Nothing else is read. |
+| `layout-hints-invalid` | Structural failure: wrong type, malformed entity reference, missing member. |
+| `layout-mode-not-implemented` | `lane-stack`, `matrix-grid`, `tree`: specified, not executed yet. `details.vocabulary` names `ds-layout-hints@2`. |
+| `layout-mode-unknown` | Any other mode. |
+| `layout-mode-out-of-scope` | `layered-flow` on a view that is not `generic@1`, that carries a typed presentation, that declares a presentation vocabulary, or whose `context` is not stated. |
+| `layout-hint-forbidden` | A spacing override or a coordinate: `density`, `cardGapX`, `cardGapY`, `zoneGapX`, `zoneGapY`, `rankGap`, `gapAfter`, `x`, `y`, `width`, `height`, `edge_label_orientation`. |
+| `layout-hint-not-implemented` | `direction`, `rotate_labels`: specified, not executed yet. |
+| `layout-hint-out-of-scope` | A hint under `layered-flow`, which takes none. |
+| `layout-hint-unknown` | Any other property. |
+| `layout-hint-conflict` | `grouping` with `grouping_axis`; a group id used twice; a leaf placed twice; a member listed twice, ordered under two parents or under itself. |
+
+What the validator cannot see: whether a reference exists in the document and
+whether the members of a group are siblings. Both need the document and stay
+with the layout engine (`validateHints` in `@sentropic/diagram-canvas`).
+Whether a view kind takes a layout at all is the declaring grammar's rule.
+
+## Notation pin (`diagram-notation@1`)
+
+`DIAGRAM_NOTATION_PIN` is exported beside the layout pin:
+
+```
+id             diagram-notation
+version        1
+contentDigest  b4bfa7174a7a53ec23b8a8d7580d6bdfc3bab7f29deb1204aa2e4ce12424909f
+```
+
+`contentDigest` is the SHA-256 of the RFC 8785 bytes of
+`{ schema: DIAGRAM_NOTATION_SCHEMA, rules: DIAGRAM_NOTATION_RULES }`. The schema
+(`$id` `engram:diagram-notation-schema/1`) is structural only: closed objects,
+enums, string bounds, required `role`, `nature` and `encoding`, slot shape. The
+rules are frozen data: the role table (nature, `icon`, `kicker`, `variant`,
+`holds`), the variants of each nature, the property list of each encoding,
+slot ownership. Any change to either is `diagram-notation@2`.
+
+Not covered: `validateNotation`, `validateViewNotation` and `resolveNotation`.
+This version freezes the vocabulary a consumer pins and ships no executor for
+it; `Profile` has no `notation` member yet.
+
 ## What this package does not import
 
 Nothing. Not one specifier that is not a relative module of its own source, which
@@ -221,6 +311,10 @@ a test asserts by scanning every file. In particular:
 - **Codecs, source text, AST/CST and conversion reports**: GD-M4. Nothing here
   parses, fetches or executes imported content, a URI or markup.
 - **Native BPMN / ArchiMate / UML profiles**: GD-M3. See the skeletons' `notes`.
+- **The notation executor**: `diagram-notation@1` is pinned as data only.
+- **Layout modes `lane-stack`, `matrix-grid`, `tree` and the hints `direction`,
+  `rotate_labels`**: refused by `ds-layout-hints@1` until the layout engine
+  executes them.
 - **A reference disposition in the delete policy.** The policy governs
   occurrences, relations and ports. An entity a typed reference attribute still
   points at cannot be deleted: the transaction refuses itself on the final state
@@ -253,6 +347,8 @@ src/hash.ts          fnv1a64, dependency-free, non-cryptographic
 src/validate.ts      every refusal, including the nine named rejected cases
 src/commands.ts      18 commands, transactions, effects, inverses
 src/migrate.ts       registered migrations and their reports
+src/layout-hints.ts  ds-layout-hints@1: schema, rules, validator, pin, lowering
+src/notation.ts      diagram-notation@1: schema, rules, pin (no executor)
 fixtures/            valid documents, a divergent-revision state, a command
                      sequence, the nine rejected cases, a 1.0 stored document
 tests/               10 suites; `refs-nominal.test.ts` is a COMPILER test
