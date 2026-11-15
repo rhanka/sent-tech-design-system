@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-scene-figure",
   "contractSource": "derived",
-  "digest": "sha256:7ebe15ffaa56107fdcf9589f0871850b0ca4cd9c5878bfd20b465420a45e6ca7",
-  "entryDigest": "sha256:0fabb0d2fb5c60f0351e35a2be43bda39f83addece647062f961c343b8690f05",
+  "digest": "sha256:aa5e7b660d08eb5862b3901be915bc2aca2e8c9aa7ce3f4a56faf6e59104ef65",
+  "entryDigest": "sha256:2425c9df96c70b9643ba0e6364b2c0771d404879602de9ac6cf672e35ea85137",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -647,7 +647,17 @@
                   "inverse-budget-exceeded",
                   "extension-hash-mismatch",
                   "extension-source-not-retained",
-                  "view-already-exists"
+                  "view-already-exists",
+                  "layout-vocabulary-unknown",
+                  "layout-hints-invalid",
+                  "layout-mode-unknown",
+                  "layout-mode-not-implemented",
+                  "layout-mode-out-of-scope",
+                  "layout-hint-unknown",
+                  "layout-hint-forbidden",
+                  "layout-hint-not-implemented",
+                  "layout-hint-out-of-scope",
+                  "layout-hint-conflict"
                 ]
               },
               "details": {
@@ -4199,7 +4209,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramSceneFigure.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -5367,7 +5377,17 @@
                   "inverse-budget-exceeded",
                   "extension-hash-mismatch",
                   "extension-source-not-retained",
-                  "view-already-exists"
+                  "view-already-exists",
+                  "layout-vocabulary-unknown",
+                  "layout-hints-invalid",
+                  "layout-mode-unknown",
+                  "layout-mode-not-implemented",
+                  "layout-mode-out-of-scope",
+                  "layout-hint-unknown",
+                  "layout-hint-forbidden",
+                  "layout-hint-not-implemented",
+                  "layout-hint-out-of-scope",
+                  "layout-hint-conflict"
                 ]
               },
               "details": {
@@ -8974,7 +8994,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramSceneFigure.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramSceneFigureProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

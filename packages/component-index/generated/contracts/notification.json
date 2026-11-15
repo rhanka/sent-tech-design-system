@@ -1,8 +1,8 @@
 {
   "componentId": "notification",
   "contractSource": "derived",
-  "digest": "sha256:4747ec9228c6599167a6bf7cc4167dbed0df87e41ec7a6626481b92753603260",
-  "entryDigest": "sha256:1aaeb6567522e6974c2286bfaf83064821feb14d0066f9b16279512aace72b54",
+  "digest": "sha256:cead8473f0cd31e88a08877313ce97835548d361a419b2998c1bcb0689fe2415",
+  "entryDigest": "sha256:c93137d7fc58824e46ace1e5efe4d76e6b84a1cda784207409c8abe38170225b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -211,7 +211,7 @@
         "declarationPath": "packages/components-svelte/dist/Notification.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "NotificationProps",
-        "version": "0.41.3"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -280,7 +280,7 @@
         "declarationPath": "packages/components-vue/dist/Notification.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "NotificationProps",
-        "version": "0.41.0-next.5"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],
