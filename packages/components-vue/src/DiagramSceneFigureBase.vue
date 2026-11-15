@@ -49,7 +49,8 @@ const arrowId = 'diagram-arrow-' + useId();
 const { frameEl, viewportEl, measure, measureLines, effectiveMetrics, token,
     fit, zoom, readout, placement, viewportStyle, holdZoom,
     setZoom, zoomIn, zoomOut, fitToFrame, getCamera } = useDiagramSceneViewport(
-        props, () => scene.value, camera => emit('cameraChange', camera));
+        props, () => scene.value, camera => emit('cameraChange', camera), undefined,
+        { animating: () => animating.value, settle: () => settle() });
 defineExpose({ setZoom, zoomIn, zoomOut, fitToFrame, getCamera });
 const folds = shallowRef<readonly SceneOccurrenceRef[]>(props.defaultFolds ?? collapsedOccurrencesOf(props.view));
 const collapsedNow = computed(() => props.collapsed ?? folds.value);
