@@ -5,6 +5,7 @@ import * as model from "@sentropic/diagram-canvas/diagramSceneModel";
 import { createLayoutCache,DEFAULT_FLOW_TOKENS } from "@sentropic/diagram-canvas";
 import { flowHitSize,type StepChange } from "@sentropic/diagram-canvas/flowModel";
 import { runFlowHostCase } from "../../../diagram-canvas/tests/host-support/flowHostContract.js";
+import { runRenderedBoundsHostCase } from "../../../diagram-canvas/tests/host-support/renderedBoundsHostContract.js";
 import { flowHostCases } from "../../../diagram-canvas/test-support/flowHostCases.js";
 import { flowFixture,flowMeasure } from "../../../diagram-canvas/test-support/flowFixture.js";
 import DiagramSceneFigure,{type DiagramSceneFigureProps} from "./DiagramSceneFigure.svelte";
@@ -32,6 +33,9 @@ describe("DC-2c A12 shared host cases — Svelte",()=>{
  });
  for(const test of flowHostCases)it(test.id+": "+test.note,async()=>{
   await runFlowHostCase(test,(props)=>render(DiagramSceneFigure,props),tick);
+ });
+ it("keeps the fit across an interactive zoom, a highlighted flow step and unpainted flow geometry",async()=>{
+  await runRenderedBoundsHostCase((props)=>render(DiagramSceneFigure,props),tick);
  });
  it("keeps stable descriptions under selection/filter and repairs a removed selected relation once",async()=>{
   const props=propsFor(3,{scenarios:true}),step=vi.fn(),view=render(DiagramSceneFigure,{...props,onStepChange:step});await tick();

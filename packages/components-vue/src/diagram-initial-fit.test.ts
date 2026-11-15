@@ -65,7 +65,8 @@ function geometry(element: Element) {
   const right = Math.max(...all.map(box => box.x + box.width)), bottom = Math.max(...all.map(box => box.y + box.height));
   return { viewport, extent, world, zoom, tx, ty, boxes, paths, left, top, right, bottom, height: parseFloat(viewport.style.height) };
 }
-afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; });
+const undo: (() => void)[] = [];
+afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete (document as Partial<Document>).fonts; for (const step of undo.splice(0)) step(); });
 
 /**
  * Painted rects for the jsdom hosts, derived from the rendered world
@@ -74,16 +75,56 @@ afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); delete
  * Edges land on the 1/64 CSS px layout grid, labels carry ink the model
  * geometry lacks, and the world origin moves by one LayoutUnit on every
  * other read: two consecutive reads of the same paint never agree.
+ *
+ * Connectors run on the outer perimeter of the boxes, as orthogonal routes
+ * and self-relations do, with the stroke the scene stylesheet gives them
+ * (jsdom resolves no custom property: the token values are inlined). Once
+ * `ghosts` is on, the geometry that paints nothing (flow hit targets,
+ * hidden focus targets, clipped descriptions) reports rects far outside.
  */
 function paintOnLayoutGrid() {
   const original = Element.prototype.getBoundingClientRect;
   const snap = (px: number) => Math.round(px * 64) / 64;
   let reads = 0;
+  let ghosts = false;
+  const sheet = document.createElement('style');
+  sheet.textContent = `
+    .st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+    .st-diagramSceneFigure-edge[data-flow-state="primary"] { stroke-width: 2.5px !important; }
+    .st-diagramSceneFigure-edge[data-flow-state="related"] { stroke-width: 2px !important; }
+    .st-diagramSceneFigure-flowHit { fill: none; stroke: rgba(0, 0, 0, 0); stroke-width: 16px; }
+    .st-diagramSceneFigure-flowNode { opacity: 0; }
+    .st-diagramSceneFigure-flowDescription { position: absolute; clip-path: inset(50%); width: 0; height: 0; overflow: hidden; }`;
+  document.head.append(sheet);
+  undo.push(() => sheet.remove());
+  const perimeter = (world: HTMLElement, margin: number) => {
+    const boxes = [...world.querySelectorAll<HTMLElement>('[data-scene-occurrence],[data-scene-label]')].map(rect);
+    const x = Math.min(...boxes.map(box => box.x)) - margin, y = Math.min(...boxes.map(box => box.y)) - margin;
+    return { x, y, width: Math.max(...boxes.map(box => box.x + box.width)) + margin - x, height: Math.max(...boxes.map(box => box.y + box.height)) + margin - y };
+  };
+  const GHOST = '[data-flow-hit],.st-diagramSceneFigure-flowNode,.st-diagramSceneFigure-flowDescription';
+  const transformOf = (world: HTMLElement) => /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number);
+  const screen = (world: HTMLElement, box: { x: number; y: number; width: number; height: number }) => {
+    const [tx, ty, scale] = transformOf(world);
+    const left = snap(tx + box.x * scale), top = snap(ty + box.y * scale);
+    return new DOMRect(left, top, snap(tx + (box.x + box.width) * scale) - left, snap(ty + (box.y + box.height) * scale) - top);
+  };
+  // jsdom has no Range#getClientRects: text ink is the ghosts' only.
+  const range = Range.prototype as unknown as { getClientRects?: () => DOMRect[] };
+  const hadClientRects = Object.getOwnPropertyDescriptor(range, 'getClientRects');
+  range.getClientRects = function(this: Range) {
+    const parent = this.startContainer instanceof Element ? this.startContainer : this.startContainer.parentElement;
+    const world = parent?.closest<HTMLElement>('.st-diagramSceneFigure-world');
+    return ghosts && world && parent?.closest(GHOST) ? [screen(world, perimeter(world, 200))] : [];
+  };
+  undo.push(() => { if (hadClientRects) Object.defineProperty(range, 'getClientRects', hadClientRects); else delete range.getClientRects; });
   vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function(this: Element) {
     const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
     if (!world) return original.call(this);
     const [tx, ty, scale] = /translate\(([-\d.e+]+)px,\s*([-\d.e+]+)px\)\s*scale\(([-\d.e+]+)\)/.exec(world.style.transform)!.slice(1).map(Number);
     if (this === world) { reads++; return new DOMRect(snap(tx) - (reads % 2) / 64, snap(ty) - (reads % 2) / 64, 0, 0); }
+    if (this.matches('[data-scene-edge]')) return screen(world, perimeter(world, 0));
+    if (this.matches(GHOST)) return ghosts ? screen(world, perimeter(world, 200)) : new DOMRect();
     if (!(this instanceof HTMLElement) || !this.matches('[data-scene-occurrence],[data-scene-label]')) return new DOMRect();
     const box = rect(this);
     // Independently supplied painted overshoot, absent from model geometry.
@@ -91,7 +132,10 @@ function paintOnLayoutGrid() {
     const left = snap(tx + box.x * scale), topPx = snap(ty + top * scale);
     return new DOMRect(left, topPx, snap(tx + (box.x + box.width) * scale) - left, snap(ty + (box.y + box.height) * scale) - topPx);
   });
-  return { reads: () => reads };
+  return { reads: () => reads, ghosts(on: boolean) { ghosts = on; },
+    // jsdom caches computed styles per document and drops them on a change
+    // of the document only; the Vue host renders detached from it.
+    restyle() { document.head.append(sheet); } };
 }
 /** A frame width whose painted fit is neither capped at 0.62 nor floored at 0.45, for both scenes below. */
 const UNCAPPED_WIDTH = 550;
@@ -297,6 +341,31 @@ for (const host of hosts) describe(`${host.name} load without interaction`, () =
         expect(Number(/scale\(([-\d.e+]+)\)/.exec(geometry(view.element).world.style.transform)![1])).toBe(geometry(view.element).zoom);
         await ajuster();
         expect(state(), 'Ajuster after zoom').toEqual(settled);
+      }
+      // The connector stroke is read, with the width the stylesheet gives it.
+      const edges = [...view.element.querySelectorAll('[data-scene-edge]')];
+      expect(edges.length).toBeGreaterThan(0);
+      expect(getComputedStyle(edges[0]).vectorEffect).toBe('non-scaling-stroke');
+      // Geometry that paints nothing does not move the fit, wherever it is.
+      painted.ghosts(true);
+      await ajuster();
+      expect(state(), 'Ajuster over unpainted geometry').toEqual(settled);
+      if (name === 'numbered flows') {
+        expect(view.element.querySelectorAll('[data-flow-hit]').length).toBeGreaterThan(0);
+        expect(view.element.querySelectorAll('.st-diagramSceneFigure-flowNode').length).toBeGreaterThan(0);
+        expect(view.element.querySelectorAll('.st-diagramSceneFigure-flowDescription').length).toBeGreaterThan(0);
+        // A selected flow step is drawn thicker: the highlight is transient
+        // and « Ajuster » keeps the fit.
+        view.element.querySelector<HTMLElement>('[data-flow-badge]')!.click();
+        await view.flush();
+        painted.restyle();
+        const primary = view.element.querySelector('[data-scene-edge][data-flow-state="primary"]')!;
+        expect(getComputedStyle(primary).strokeWidth).toBe('2.5px');
+        const highlighted = state();
+        expect([highlighted.zoom, highlighted.transform, highlighted.extent]).toEqual([settled.zoom, settled.transform, settled.extent]);
+        await ajuster();
+        expect(state(), 'Ajuster with a highlighted flow step').toEqual(highlighted);
+        expect([state().zoom, state().transform, state().extent]).toEqual([settled.zoom, settled.transform, settled.extent]);
       }
       view.dispose();
     });
