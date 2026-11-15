@@ -6,6 +6,7 @@
 //                                     (gas/demo.html, gas/THIRD-PARTY-NOTICES.md, size-report.json)
 //   tsx scripts/build.ts --dist-only  writes dist/ only, so that the self-check can
 //                                     compare a fresh build with the committed outputs
+import { existsSync } from "node:fs";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import { dirname, resolve } from "node:path";
@@ -80,10 +81,22 @@ const themeCss = transform({ filename: "theme.css", code: Buffer.from(themeSourc
 const css = `${fontCss}\n${themeCss}\n${componentCss}`;
 
 // Third-party notices: every package that owns rendered code in the script chunk
-// (measured from the bundle), plus the two build-time inputs embedded above.
+// (measured from the bundle), plus the build-time inputs embedded above. The
+// theme is two packages: the themes package only assembles the token VALUES,
+// which come from the tokens package it depends on (resolved from the themes
+// package, the way Node resolves that import).
+const themesDir = packageRootFromEntry(fileURLToPath(import.meta.resolve("@sentropic/design-system-themes")));
+const dependencyDirOf = (fromDir: string, name: string): string => {
+  for (let dir = fromDir; ; dir = dirname(dir)) {
+    const candidate = resolve(dir, "node_modules", name);
+    if (existsSync(resolve(candidate, "package.json"))) return candidate.replaceAll("\\", "/");
+    if (dirname(dir) === dir) throw new Error(`${name} is not installed for ${fromDir}`);
+  }
+};
 const embedded: EmbeddedPackage[] = [
   { dir: packageRootFromEntry(fontFile), embeddedAs: "font file (latin subset, base64 data: URI)" },
-  { dir: packageRootFromEntry(fileURLToPath(import.meta.resolve("@sentropic/design-system-themes"))), embeddedAs: "theme variables compiled into the page styles" },
+  { dir: themesDir, embeddedAs: "theme definition compiled into the page styles" },
+  { dir: dependencyDirOf(themesDir, "@sentropic/design-system-tokens"), embeddedAs: "theme token values compiled into the page styles" },
 ];
 for (const [id, module] of Object.entries(chunks[0]!.modules)) {
   const dir = packageDirOf(id);

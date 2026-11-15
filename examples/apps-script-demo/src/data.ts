@@ -10,18 +10,21 @@ import {
   type SemanticDocument,
 } from "@sentropic/diagram-core";
 
-const PROFILE = "generic@1";
+// generic@2 is the profile whose containers bind a fold group: under generic@1
+// a folded container is drawn as a card while its members stay on the drawing.
+const PROFILE = "generic@2";
 
-/** [id, title, body, parent container id or null] */
+/** [id, title, parent container id or null]. One root, so that the scene folds down to one card. */
 const containers = [
-  ["platform", "Sample platform", null],
-  ["ingestion", "Ingestion", "platform"],
-  ["processing", "Processing", "platform"],
-  ["storage", "Storage", "platform"],
+  ["path", "Request path", null],
+  ["ingestion", "Ingestion", "path"],
+  ["processing", "Processing", "path"],
+  ["storage", "Storage", "path"],
 ] as const;
 
+/** [id, title, body, parent container id] */
 const nodes = [
-  ["client", "Client app", "Sends requests", null],
+  ["client", "Client app", "Sends requests", "path"],
   ["gateway", "Gateway", "Receives requests", "ingestion"],
   ["validator", "Validator", "Checks the payload", "ingestion"],
   ["queue", "Queue", "Buffers the work", "processing"],
@@ -65,7 +68,7 @@ export const diagramDocument = {
   ]),
   relations: Object.fromEntries([
     ...containers.flatMap(([id, , parent]) => (parent === null ? [] : [contains(parent, id)])),
-    ...nodes.flatMap(([id, , , parent]) => (parent === null ? [] : [contains(parent, id)])),
+    ...nodes.map(([id, , , parent]) => contains(parent, id)),
     ...links.map(([source, target, label], index) => {
       const id = relationRef(`link.${index + 1}`);
       return [id, {
@@ -85,6 +88,21 @@ export const diagramPresentation = {
     ...nodes.map(([id, name, body]) => [occurrenceRef(`e.${id}`), { form: "card" as const, text: { title: name, body } }]),
   ]),
 };
+
+const folded = (...ids: (typeof containers)[number][0][]) => ids.map((id) => occurrenceRef(`e.${id}`));
+
+/**
+ * Fold states of the diagram, from the most detailed to a single card. The
+ * page opens the first one that the figure can frame at its width (see
+ * src/diagram-fit.ts): the component never draws below its readable scale,
+ * it scrolls instead, so a narrow page starts with more containers folded.
+ */
+export const diagramFoldLevels = [
+  folded(),
+  folded("storage"),
+  folded("ingestion", "processing", "storage"),
+  folded("path", "ingestion", "processing", "storage"),
+] as const;
 
 export interface DecisionOption {
   id: string;

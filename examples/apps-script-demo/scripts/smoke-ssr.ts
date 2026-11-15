@@ -40,7 +40,7 @@ const checks: [Tab, string, RegExp, number, number][] = [
   ["dossier", "option cards", /class="st-card[ "]/g, 3, 3],
   ["dossier", "success tag", /st-tag--success/g, 1, 1],
   ["dossier", "diagram scene figure", /st-diagramSceneFigure-viewport/g, 1, 1],
-  ["dossier", "diagram nodes (4 containers + 7 cards)", /data-scene-occurrence=/g, 11, Infinity],
+  ["dossier", "diagram nodes, server render unfolded (4 containers + 7 cards)", /data-scene-occurrence=/g, 11, Infinity],
   ["dossier", "diagram links", /data-scene-edge=/g, 6, Infinity],
   ["dossier", "bar chart", /class="st-barChart[ "]/g, 1, 1],
   ["dossier", "bars", /class="st-barChart__bar[ "]/g, 3, 3],

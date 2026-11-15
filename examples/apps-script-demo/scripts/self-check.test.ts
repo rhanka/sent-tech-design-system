@@ -50,6 +50,10 @@ const cases: [what: string, html: string, expected: string][] = [
   ["srcset in a script template", js("var t2=`<img srcset=\"a.png 2x\">`;"), "resource attribute with a value other than a #fragment (src, href, srcset…)"],
   ["setAttribute(\"src\", …)", js("el.setAttribute(\"src\",u);"), "resource attribute set from script"],
   ["el.src = …", js("el.src=u;"), "resource property assigned from script"],
+  ["compiled Svelte attribute: Z(e,`src`,value)", js("Z(q,`src`,`img/a.png`);"), "resource attribute name passed to a helper call (compiled Svelte attribute)"],
+  ["compiled Svelte attribute, unminified: $.set_attribute(a, \"href\", u)", js("$.set_attribute(a, \"href\", u);"), "resource attribute name passed to a helper call (compiled Svelte attribute)"],
+  ["Object.assign(img,{src:u})", js("Object.assign(img,{src:u});"), "resource attribute name used as an object key (spread attributes, Object.assign)"],
+  ["spread attributes: attribute_effect(img,()=>({alt:``,\"srcset\":u}))", js("Bi(img,()=>({alt:``,\"srcset\":u}));"), "resource attribute name used as an object key (spread attributes, Object.assign)"],
   ["src attribute in the static markup", page({ body: "<img src=\"a.png\">\n" }), "src/href attributes in the static markup"],
   ["<meta http-equiv=refresh>", page({ head: "<meta http-equiv=\"refresh\" content=\"0\">\n" }), "<meta http-equiv>"],
   ["second <script src>", page({ body: "<script src=\"a.js\"></script>\n" }), "<script src> element"],
@@ -78,6 +82,13 @@ for (const [what, html, expected] of cases) {
     assert.ok(names.includes(expected), `expected "${expected}" to fail, got: ${JSON.stringify(names)}`);
   });
 }
+
+test("the compiled-attribute rules are the only ones that see the Svelte helper forms", () => {
+  // Witness that the gap was real: without the two rules these plants pass.
+  const others = (html: string) => failing(html).filter((name) => !/helper call|object key/.test(name));
+  assert.deepEqual(others(js("Z(q,`src`,`img/a.png`);")), []);
+  assert.deepEqual(others(js("Object.assign(img,{src:u});")), []);
+});
 
 test("fails when the built page differs from the committed copy", () => {
   assert.ok(failing(page(), page({ script: `${SCRIPT}var stale=1;` })).includes("built page differs from the committed gas/demo.html"));
