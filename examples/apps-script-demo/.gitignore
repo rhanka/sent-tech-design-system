@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# Created by `clasp create` / `clasp login`: specific to one Apps Script project or account.
+.clasp.json
+gas/.clasp.json
+.clasprc.json
