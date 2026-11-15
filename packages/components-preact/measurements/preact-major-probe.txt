@@ -1,0 +1,38 @@
+Probe of preact 11.2.0 on the source of packages/components-preact/src
+Isolated project outside the repository; recipe: scripts/probe-preact-major.mjs
+
+== Installed ==
+preact 11.2.0
+@babel/core 7.29.7
+@preact/preset-vite 2.10.6
+@preact/signals 2.11.4
+@testing-library/preact 3.2.6
+jsdom 27.4.0
+typescript 5.9.3
+vite 8.3.4
+vitest 4.1.11
+@sentropic/design-system-themes 0.14.0
+lucide-preact 0.562.0
+preact instances in node_modules: 1
+
+== Preact tests (vitest run) ==
+test files: 6 passed, 4 failed, 10 total
+tests: 49 passed, 7 failed, 56 total
+FAILED src/Modal.test.tsx > Modal (Preact) focuses the close button, locks body scroll and restores it on unmount
+       AssertionError: expected 'hidden' to be '' // Object.is equality
+FAILED src/SelectableRow.test.tsx > SelectableRow (Preact), managed through context takes role, selection and tab stop from the list and re-renders on a version bump
+       AssertionError: expected "vi.fn()" to be called 2 times, but got 0 times
+FAILED src/runtime-gaps.probe.test.tsx > Preact core vs React: runtime gaps measured by S1 has run the layout and the passive effect cleanups when `unmount()` returns
+       AssertionError: expected [ 'layout' ] to deeply equal [ 'effect', 'layout' ]
+FAILED src/runtime-gaps.probe.test.tsx > Preact core vs React: runtime gaps measured by S1 appends px to unitless numeric styles like React
+       AssertionError: expected 'opacity: 0.5; line-height: 2;' to be 'width: 10px; opacity: 0.5; line-heigh…' // Object.is equality
+FAILED src/runtime.test.tsx > runtime adapter (Preact core, no preact/compat) useSyncExternalStore follows an external store and unsubscribes on unmount
+       AssertionError: expected 1 to be +0 // Object.is equality
+FAILED src/runtime.test.tsx > runtime adapter (Preact core, no preact/compat) useSyncExternalStore subscribes once, whatever the snapshot does and with an inline getSnapshot
+       AssertionError: expected +0 to be 1 // Object.is equality
+FAILED src/runtime.test.tsx > runtime adapter (Preact core, no preact/compat) useSyncExternalStore re-subscribes when `subscribe` itself changes
+       AssertionError: expected [ '+first', '-first', '+second' ] to deeply equal [ '+first', '-first', '+second', …(1) ]
+
+== Type-check (tsc --noEmit) ==
+exit code 2, 1 error(s)
+src/Input.tsx(40,12): error TS2322: Type '{ ref: ForwardedRef<HTMLInputElement>; id: string | SignalLike<string | undefined>; className: string; "aria-invalid": Signalish<Booleanish | "grammar" | "spelling" | undefined>; ... 344 more ...; required?: Signalish<...

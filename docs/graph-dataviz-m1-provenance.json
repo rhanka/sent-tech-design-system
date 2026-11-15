@@ -3593,7 +3593,7 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "cdf2463d419dbecf7d7e33fc8a3ff26915af6c2575a22adcfe26c215457c4571",
+      "destinationSha256": "737b5d258279cd611d01864475a289f93ce62b23bcf9c448fd92723f45ee0e3c",
       "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
     },
     {
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "a633762c0bcc04d0d28b590abb966a7255bcd66c3e3954f626b4539d7ce0c310",
-      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.4, whose diagram-canvas 0.2.2 -> diagram-core 0.2.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Upstream identity retained."
+      "destinationSha256": "f5815ebf6cfe2c31b40fe312cdc63f3631d5b9a857928326483e684178a6acce",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.5, whose diagram-canvas 0.2.3 -> diagram-core 0.2.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Upstream identity retained."
     },
     {
       "repository": "dataviz",
