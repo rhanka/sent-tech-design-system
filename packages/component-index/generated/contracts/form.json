@@ -1,7 +1,7 @@
 {
   "componentId": "form",
   "contractSource": "derived",
-  "digest": "sha256:74148ac8467e261b385d1d3b7f23da6661487cabd15c34b054be49e90f3bf5a5",
+  "digest": "sha256:230fabfc688cd2e987331ad8326bd3ed8d28f37c6118abbc8b4d1ecc7bf141eb",
   "entryDigest": "sha256:d1ab36cfd2a8fac1ea288f4836701fd569b7f3a2a5077b1781e31970bf72e7bf",
   "format": "component-contract/v1",
   "frameworks": {
@@ -75,20 +75,13 @@
           "sourceType": "ReactNode"
         }
       ],
-      "events": [
-        {
-          "name": "onSubmit",
-          "payload": {}
-        }
-      ],
+      "events": [],
       "limitations": [
         "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "passthrough": {
         "base": "React.FormHTMLAttributes<HTMLFormElement>",
-        "omitted": [
-          "onSubmit"
-        ]
+        "omitted": []
       },
       "props": {
         "additionalProperties": false,
@@ -107,21 +100,14 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FormProps",
         "version": "0.40.0"
       },
       "status": "partial",
-      "unresolved": [
-        {
-          "kind": "other",
-          "name": "onSubmit.event",
-          "reason": "library type has no JSON Schema form",
-          "sourceType": "FormEvent<HTMLFormElement>"
-        }
-      ],
+      "unresolved": [],
       "warnings": []
     },
     "svelte": {

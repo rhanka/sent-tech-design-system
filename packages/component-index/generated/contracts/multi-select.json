@@ -1,7 +1,7 @@
 {
   "componentId": "multi-select",
   "contractSource": "derived",
-  "digest": "sha256:a5901fe4d91f0f543ba54fd1817912e91b46756e4c55ab8918c84940a561a785",
+  "digest": "sha256:860c47e94cc0e657aba0472fa279b3b5dd9ca89d56bd09ff7ea76279c105b32c",
   "entryDigest": "sha256:13703a7e362861ee705b1851afa186beac850fa31965deb3167fdce6d170a2f9",
   "format": "component-contract/v1",
   "frameworks": {
@@ -300,7 +300,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MultiSelectProps",

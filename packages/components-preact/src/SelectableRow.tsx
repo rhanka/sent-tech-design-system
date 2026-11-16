@@ -4,6 +4,7 @@ import { useCallback, useContext, useEffect, useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { focusWithin, forwardRef } from "./runtime.js";
 import type { ComponentChildren, TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 /**
@@ -48,12 +49,16 @@ export type SelectableRowProps = Omit<HTMLAttributes<HTMLElement>, "onSelect"> &
    * Selected state. Honoured when the row is used STANDALONE; inside a
    * `SelectableList` the list is the source of truth and drives the selected
    * styling, so this prop is ignored for managed rows.
+   * Plain value, or a signal in the Preact build (read at the edge).
    */
-  selected?: boolean;
+  selected?: MaybeSignal<boolean>;
   /** Notified on every toggle with the new selected state (standalone rows). */
   onSelect?: (selected: boolean) => void;
-  /** Non-interactive when true. */
-  disabled?: boolean;
+  /**
+   * Non-interactive when true.
+   * Plain value, or a signal in the Preact build (read at the edge).
+   */
+  disabled?: MaybeSignal<boolean>;
   /** Stable value, surfaced as `data-value` and used by the list for `value`. */
   value?: string;
   /** Native link target. When set on a standalone row, the row renders as an anchor. */
@@ -67,8 +72,9 @@ export type SelectableRowProps = Omit<HTMLAttributes<HTMLElement>, "onSelect"> &
   /**
    * Opt-in left accent bar on the selected state. Off by default so the
    * selected item is a calm tinted surface + accented text (two signals only).
+   * Plain value, or a signal in the Preact build (read at the edge).
    */
-  accentBar?: boolean;
+  accentBar?: MaybeSignal<boolean>;
   /** Leading content (icon / avatar). */
   leading?: ComponentChildren;
   /** Trailing content (meta / icon). */
@@ -100,13 +106,13 @@ export type SelectableRowProps = Omit<HTMLAttributes<HTMLElement>, "onSelect"> &
 export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
   (
     {
-      selected = false,
+      selected: selectedInput = false,
       onSelect,
-      disabled = false,
+      disabled: disabledInput = false,
       value,
       href,
       role = "button",
-      accentBar = false,
+      accentBar: accentBarInput = false,
       leading,
       trailing,
       children,
@@ -116,6 +122,9 @@ export const SelectableRow = forwardRef<HTMLElement, SelectableRowProps>(
     },
     ref,
   ) => {
+    const selected = useValue(selectedInput) ?? false;
+    const disabled = useValue(disabledInput) ?? false;
+    const accentBar = useValue(accentBarInput) ?? false;
     const list = useContext(SelectableListContext);
     // Subscribe to the list's version so this row re-renders (and recomputes
     // role / tabindex / aria-selected) on every selection / focus / registry
