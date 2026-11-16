@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:7e664ffac705373f5b7d73d61f6c0660d66f54419a5db966bdea245f7777ead4",
-  "entryDigest": "sha256:544543e53ef3ab4829c811e9e9046e5a97932bdfe52fb4ef11ec75297ef8f4e0",
+  "digest": "sha256:7dfa5f2cc55521a4848a90a656d3c2dc151f7653a3aa708aafaa29367aea8bcd",
+  "entryDigest": "sha256:0505762daef14e4cea82934d1db44040f5099bf63b450025ba5c6c352ce8424f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DisplaySettingsProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "partial",
       "unresolved": [],
@@ -401,7 +401,7 @@
         "declarationPath": "packages/components-vue/dist/DisplaySettings.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DisplaySettingsProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],

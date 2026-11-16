@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:b712bf5440d1893370f888c8c1e46a2bb382e5281ff15a87b8945493b85cc3c8",
-  "entryDigest": "sha256:77c5e7b419acc389dd1240a965b33187c2b950c4434db836dace62580df4a4ef",
+  "digest": "sha256:ec4a742fc857259a55ddd18b26c7f61a885a31061cbd463bbfe484e5346e2b49",
+  "entryDigest": "sha256:8f24648695043d26ec1465529a7cb2f7131bea5f58b55cb6923ed80318d21a2e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -191,7 +191,7 @@
         "additionalProperties": false,
         "properties": {
           "align": {
-            "description": "Owner variant: `\"center\"` centres every text slot horizontally inside its\nfrozen allocation (same 460 × 200 box). Default `\"left\"`.",
+            "description": "Owner variant: `\"center\"` centres the kicker/title/footer text slots\nhorizontally inside their frozen allocations (same 460 × 200 box). The\nbody block is always centred — horizontally and vertically — inside\nthe remaining body box. Default `\"left\"`.",
             "enum": [
               "center",
               "left"
@@ -209,7 +209,7 @@
             "type": "array"
           },
           "bodyMode": {
-            "description": "Body rendering mode. `\"leaf\"` (default): left/top-aligned function/detail\nlines at the body inset. `\"subtitle\"`: the collapsed-zone subtitle —\nwrapped at the frozen 396 px measure and centred horizontally and\nvertically inside the card body area (§6.2.1).",
+            "description": "Body rendering mode. `\"leaf\"` (default): function/detail lines at the\nbody inset, centred horizontally and vertically inside the remaining\nbody box. `\"subtitle\"`: the collapsed-zone subtitle — wrapped at the\nfrozen 396 px measure and centred the same way inside the card body\narea (§6.2.1).",
             "enum": [
               "leaf",
               "subtitle"
@@ -264,7 +264,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "partial",
       "unresolved": [],
@@ -444,7 +444,7 @@
         "additionalProperties": false,
         "properties": {
           "align": {
-            "description": "Owner variant: `\"center\"` centres every text slot horizontally inside its\nfrozen allocation (same 460 × 200 box). Default `\"left\"`.",
+            "description": "Owner variant: `\"center\"` centres the kicker/title/footer text slots\nhorizontally inside their frozen allocations (same 460 × 200 box). The\nbody block is always centred — horizontally and vertically — inside\nthe remaining body box. Default `\"left\"`.",
             "enum": [
               "center",
               "left"
@@ -462,7 +462,7 @@
             "type": "array"
           },
           "bodyMode": {
-            "description": "Body rendering mode. `\"leaf\"` (default): left/top-aligned function/detail\nlines at the body inset. `\"subtitle\"`: the collapsed-zone subtitle —\nwrapped at the frozen 396 px measure and centred horizontally and\nvertically inside the card body area (§6.2.1).",
+            "description": "Body rendering mode. `\"leaf\"` (default): function/detail lines at the\nbody inset, centred horizontally and vertically inside the remaining\nbody box. `\"subtitle\"`: the collapsed-zone subtitle — wrapped at the\nfrozen 396 px measure and centred the same way inside the card body\narea (§6.2.1).",
             "enum": [
               "leaf",
               "subtitle"
@@ -517,7 +517,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Form.svelte",
-      "version": "0.41.4"
+      "version": "0.41.5"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Form.vue",
-      "version": "0.41.0-next.6"
+      "version": "0.41.0-next.7"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Form wrapper with submitting/error/success status.",
     "fr": "Wrapper formulaire avec statut submitting/error/success."
   },
-  "digest": "sha256:c3aae463316ddab3a0e0ddf0b62ed7c228f05b91e9a3a1972985cc4868c00b19",
+  "digest": "sha256:d1ab36cfd2a8fac1ea288f4836701fd569b7f3a2a5077b1781e31970bf72e7bf",
   "displayName": "Form",
   "format": "component-entry/v1",
   "frameworks": [

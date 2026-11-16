@@ -25,7 +25,10 @@ Every visible relation must have a rendered connector that touches both boxes
 it joins and is painted for at least half its length: opaque surfaces count as
 hiding it only when they follow the connector layer in document order, so a
 zone frame painted over its own relations fails the gate, as does a label
-without a connector. Labels must clear every painted connector segment; portions hidden behind
+without a connector. On three-cards, every card must centre its single-line
+`First paint` body ink horizontally in the frozen body box (centre-x 232 card
+px) and drop the block by half the spare space (ink top at or below 104 card
+px — never top-aligned). Labels must clear every painted connector segment; portions hidden behind
 opaque card and zone surfaces are excluded. Initial camera and scroll
 state must equal those after Ajuster exactly; transform components may
 differ by at most 1e-3 and other numeric geometry by at most 1/64 CSS px. No case skips or falls back to a
