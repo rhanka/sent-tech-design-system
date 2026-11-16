@@ -62,6 +62,9 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
         <Search data-testid="e-search" className={signal("x-search")} />
         <Select data-testid="e-select" className={signal("x-select")} />
         <SelectableList data-testid="e-selectablelist" className={signal("x-selectablelist")} />
+        <SelectableRow data-testid="e-selectablerow" value="s" className={signal("x-selectablerow")}>
+          S
+        </SelectableRow>
         <Slider data-testid="e-slider" className={signal("x-slider")} />
         <Switch data-testid="e-switch" label="S" className={signal("x-switch")} />
         <Textarea data-testid="e-textarea" className={signal("x-textarea")} />
@@ -94,6 +97,7 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
       ["e-search", "x-search"],
       ["e-select", "x-select"],
       ["e-selectablelist", "x-selectablelist"],
+      ["e-selectablerow", "x-selectablerow"],
       ["e-slider", "x-slider"],
       ["e-switch", "x-switch"],
       ["e-textarea", "x-textarea"],
@@ -551,6 +555,79 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
     await waitFor(() => expect(document.activeElement?.getAttribute("data-value")).toBe("b"));
   });
 
+  it("SelectableRow follows selected, accentBar and className signals mutated after mount", async () => {
+    const selected = signal(false);
+    const accentBar = signal(false);
+    const cls = signal("before");
+    const onSelect = vi.fn();
+    render(
+      <SelectableRow value="a" selected={selected} accentBar={accentBar} className={cls} onSelect={onSelect}>
+        A
+      </SelectableRow>,
+    );
+    const row = screen.getByRole("button");
+    expect(row.getAttribute("aria-pressed")).toBe("false");
+    expect(row.className).not.toContain("st-selectableRow--selected");
+    expect(row.className).not.toContain("st-selectableRow--accentBar");
+    expect(row.className).toContain("before");
+    // A raw Signal object is truthy: without the edge unwrap this click would
+    // emit `false` and the row would already render selected.
+    fireEvent.click(row);
+    expect(onSelect).toHaveBeenLastCalledWith(true);
+    selected.value = true;
+    accentBar.value = true;
+    cls.value = "after";
+    await waitFor(() => expect(screen.getByRole("button").getAttribute("aria-pressed")).toBe("true"));
+    await waitFor(() => expect(screen.getByRole("button").className).toContain("st-selectableRow--selected"));
+    await waitFor(() => expect(screen.getByRole("button").className).toContain("st-selectableRow--accentBar"));
+    await waitFor(() => expect(screen.getByRole("button").className).toContain("after"));
+  });
+
+  it("SelectableRow follows a standalone disabled signal mutated after mount", async () => {
+    const disabled = signal(false);
+    const onSelect = vi.fn();
+    render(
+      <SelectableRow value="a" disabled={disabled} onSelect={onSelect}>
+        A
+      </SelectableRow>,
+    );
+    const row = screen.getByRole("button");
+    expect(row.getAttribute("tabindex")).toBe("0");
+    expect(row.getAttribute("aria-disabled")).toBeNull();
+    fireEvent.click(row);
+    expect(onSelect).toHaveBeenLastCalledWith(true);
+    disabled.value = true;
+    await waitFor(() => expect(screen.getByRole("button").getAttribute("tabindex")).toBe("-1"));
+    await waitFor(() => expect(screen.getByRole("button").getAttribute("aria-disabled")).toBe("true"));
+    await waitFor(() => expect(screen.getByRole("button").className).toContain("st-selectableRow--disabled"));
+    fireEvent.click(screen.getByRole("button"));
+    fireEvent.keyDown(screen.getByRole("button"), { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it("SelectableRow follows a list-managed disabled signal mutated after mount", async () => {
+    const disabled = signal(false);
+    const { container } = render(
+      <SelectableList label="L">
+        <SelectableRow value="a" disabled={disabled}>
+          A
+        </SelectableRow>
+        <SelectableRow value="b">B</SelectableRow>
+      </SelectableList>,
+    );
+    const rows = () => Array.from(container.querySelectorAll('[role="option"]')) as HTMLElement[];
+    expect(rows()[0].getAttribute("tabindex")).toBe("0");
+    expect(rows()[1].getAttribute("tabindex")).toBe("-1");
+    disabled.value = true;
+    await waitFor(() => expect(container.querySelectorAll('[role="option"]')[0].getAttribute("tabindex")).toBe("-1"));
+    await waitFor(() => expect(container.querySelectorAll('[role="option"]')[1].getAttribute("tabindex")).toBe("0"));
+    // The newly disabled row is skipped by arrow navigation.
+    rows()[1].focus();
+    fireEvent.keyDown(rows()[1], { key: "ArrowUp" });
+    await waitFor(() => expect(document.activeElement?.getAttribute("data-value")).toBe("b"));
+    expect(document.activeElement?.getAttribute("data-value")).not.toBe("a");
+  });
+
   it("TileGroup follows a value signal mutated after mount", async () => {
     const value = signal("a");
     const onChange = vi.fn();
@@ -603,13 +680,19 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
     );
   });
 
-  it("Combobox treats allowCustomValue as enabled for free text", () => {
+  it("Combobox ignores free text unless allowCustomValue is enabled", () => {
     const onChange = vi.fn();
+    const allowCustomValue = signal(false);
     const { container } = render(
-      <Combobox label="C" options={[{ value: "a", label: "Alpha" }]} allowCustomValue={signal(true)} onChange={onChange} />,
+      <Combobox label="C" options={[{ value: "a", label: "Alpha" }]} allowCustomValue={allowCustomValue} onChange={onChange} />,
     );
     fireEvent.input(container.querySelector(".st-combobox__control") as HTMLInputElement, { target: { value: "zzz" } });
-    expect(onChange).toHaveBeenLastCalledWith("zzz");
+    expect(onChange).not.toHaveBeenCalled();
+    act(() => {
+      allowCustomValue.value = true;
+    });
+    fireEvent.input(container.querySelector(".st-combobox__control") as HTMLInputElement, { target: { value: "yyy" } });
+    expect(onChange).toHaveBeenLastCalledWith("yyy");
   });
 
   it("DatePicker follows a disabled signal mutated after mount", async () => {
@@ -771,17 +854,17 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
     );
   });
 
-  it("Switch and Toggle follow defaultChecked signals", () => {
-    const switchDefault = signal(true);
-    const toggleDefault = signal(true);
+  it("Switch and Toggle render defaultChecked signals as unchecked when false", () => {
+    const switchDefault = signal(false);
+    const toggleDefault = signal(false);
     const { container } = render(
       <>
         <Switch label="S" defaultChecked={switchDefault} />
         <Toggle label="T" defaultChecked={toggleDefault} />
       </>,
     );
-    expect(container.querySelector(".st-switch__input")?.getAttribute("aria-checked")).toBe("true");
-    expect(container.querySelector(".st-toggle__state")?.textContent).toBe("On");
+    expect(container.querySelector(".st-switch__input")?.getAttribute("aria-checked")).toBe("false");
+    expect(container.querySelector(".st-toggle__state")?.textContent).toBe("Off");
   });
 
   it("a signal holding undefined counts as absent for id and controlled value", async () => {
