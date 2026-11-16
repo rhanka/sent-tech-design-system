@@ -1,7 +1,7 @@
 {
   "componentId": "modal",
   "contractSource": "derived",
-  "digest": "sha256:0dff1c91c7b8bee99636ea264d0cca428f0072b667a4e4847b962a0766b83bd8",
+  "digest": "sha256:7743945a846bd5c900f17f4393c785cbc44bd90f7d584102925875cb9925f651",
   "entryDigest": "sha256:af90ec3b65e4001e207756211e415ab6231872113d1aa418c175883dfc551022",
   "format": "component-contract/v1",
   "frameworks": {
@@ -120,7 +120,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ModalProps",
