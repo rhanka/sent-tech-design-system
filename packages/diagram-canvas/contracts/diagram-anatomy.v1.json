@@ -168,21 +168,21 @@
     "body": [
       {
         "text": "Body",
-        "x": 14,
+        "x": 232,
         "baseline": 108.1875,
         "size": 24,
         "weight": 400,
         "secondary": false,
-        "anchor": "start"
+        "anchor": "middle"
       },
       {
         "text": "Detail",
-        "x": 14,
+        "x": 232,
         "baseline": 139.375,
         "size": 24,
         "weight": 400,
         "secondary": true,
-        "anchor": "start"
+        "anchor": "middle"
       }
     ],
     "bodyBottom": 148.5625,
@@ -589,11 +589,11 @@
     }
   },
   "hostStyles": {
-    "packages/components-svelte/src/lib/DiagramCard.svelte": "a3726e27b2c36a0e841da0e3a6d8a2ec40641f7702564ec276387daf671b119c",
+    "packages/components-svelte/src/lib/DiagramCard.svelte": "9a5ba42f489d62df63f68050559e1bcf5297af92e30afd9df9e1cacd02abe0d1",
     "packages/components-svelte/src/lib/DiagramZone.svelte": "73d2d2b2d04d00744447f760adec3209a083a44ca3ec37d0afdeca6b01d9a14d",
     "packages/components-svelte/src/lib/DiagramCardHeader.svelte": "0495fec195f2ad5c44b154fb5de41b307eeccbfd594d21c17c8d257f5c2cf36e",
     "packages/components-svelte/src/lib/DiagramZoneHeader.svelte": "a7b16b82699981e16191af4736d86d3f6a6ef341fad5e2f13306d2cebd687bd8",
-    "packages/components-vue/src/DiagramCard.vue": "8a9820d30d7ca7769149450838c7d0833a88d9d237b9565b75848e28725cafbe",
+    "packages/components-vue/src/DiagramCard.vue": "3f98c68f5931a2b43d19943f3230875c390048557dd00631186258c4f163fe31",
     "packages/components-vue/src/DiagramZone.vue": "abedd7be2f9a1d84b5451119fb536dd88215eb5a7541346301a0a7b0d7aea08b",
     "packages/components-vue/src/DiagramCardHeader.vue": "6c78015c3d3f5dd458513ae0acff9cb8b079171f8e36ab32eacf4e9cf56ed9f4",
     "packages/components-vue/src/DiagramZoneHeader.vue": "81c5fe3eab9ec65707303ecc7fa7892ce0adddbbc317947e1e3a11cdd0d117f7",

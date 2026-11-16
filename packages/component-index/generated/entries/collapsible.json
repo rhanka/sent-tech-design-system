@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Collapsible.svelte",
-      "version": "0.41.4"
+      "version": "0.41.5"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Collapsible.vue",
-      "version": "0.41.0-next.6"
+      "version": "0.41.0-next.7"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Clickable header revealing a collapsible content region.",
     "fr": "En-tête cliquable révélant une région de contenu repliable."
   },
-  "digest": "sha256:fa2375337c0d4dc206eda79cb2037c1f53d7000cc573ac3621d6af79455e0e77",
+  "digest": "sha256:37e37c8433a31d3a5a398e1b2ec0dae392122fa2b666e5983b905765401c76c1",
   "displayName": "Collapsible",
   "format": "component-entry/v1",
   "frameworks": [

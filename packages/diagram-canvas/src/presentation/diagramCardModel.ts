@@ -164,15 +164,18 @@ export interface DiagramCardProps {
   readonly proposed?: boolean;
   readonly toggle?: DiagramCardToggle;
   /**
-   * Owner variant: `"center"` centres every text slot horizontally inside its
-   * frozen allocation (same 460 × 200 box). Default `"left"`.
+   * Owner variant: `"center"` centres the kicker/title/footer text slots
+   * horizontally inside their frozen allocations (same 460 × 200 box). The
+   * body block is always centred — horizontally and vertically — inside
+   * the remaining body box. Default `"left"`.
    */
   readonly align?: "left" | "center";
   /**
-   * Body rendering mode. `"leaf"` (default): left/top-aligned function/detail
-   * lines at the body inset. `"subtitle"`: the collapsed-zone subtitle —
-   * wrapped at the frozen 396 px measure and centred horizontally and
-   * vertically inside the card body area (§6.2.1).
+   * Body rendering mode. `"leaf"` (default): function/detail lines at the
+   * body inset, centred horizontally and vertically inside the remaining
+   * body box. `"subtitle"`: the collapsed-zone subtitle — wrapped at the
+   * frozen 396 px measure and centred the same way inside the card body
+   * area (§6.2.1).
    */
   readonly bodyMode?: "leaf" | "subtitle";
 }
@@ -899,9 +902,10 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     g.width - 2 * (ZONE_GEOMETRY.collapsedInset + ZONE_GEOMETRY.collapsedSubtitleMarginInline);
   const bodyTextX = subtitleMode ? (g.width - subtitleMeasure) / 2 : g.bodyInsetFromBar;
   const bodyWidth = subtitleMode ? subtitleMeasure : contentRight - bodyTextX;
-  const bodyAnchor: "start" | "middle" =
-    subtitleMode || align === "center" ? "middle" : "start";
-  const bodyLineX = bodyAnchor === "middle" ? bodyTextX + bodyWidth / 2 : bodyTextX;
+  // The body block is centred horizontally inside its box on every card
+  // (owner card-body-centring): each line anchors middle at the box centre.
+  const bodyAnchor: "start" | "middle" = "middle";
+  const bodyLineX = bodyTextX + bodyWidth / 2;
   const wrappedBody: string[] = [];
   let detailLines = 0;
   for (const [bodyIndex, line] of props.body.entries()) {
@@ -939,11 +943,12 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     ruleY === undefined ? g.height - g.borderWidth - g.padding : ruleY - g.ruleMargin;
   const bodyBudget = Math.max(0, Math.floor((bodyAreaBottom - bodyY) / bodyHeight));
   const bodyTexts = fitSlot(bodySourceText, "body", bodyWidth, bodyBudget, bodySlot);
-  // Subtitle mode centres the line block vertically inside the body area
-  // (§6.2.1); leaf lines stay top-aligned (§5.2).
-  const bodyBlockTop = subtitleMode
-    ? bodyY + Math.max(0, (bodyAreaBottom - bodyY - bodyTexts.length * bodyHeight) / 2)
-    : bodyY;
+  // The line block is centred vertically inside the remaining body area on
+  // every card (owner card-body-centring) — leaf lines exactly like the
+  // collapsed-zone subtitle (§6.2.1). A block that fills the area keeps the
+  // top-aligned baselines; a shorter block drops by half the spare space.
+  const bodyBlockTop =
+    bodyY + Math.max(0, (bodyAreaBottom - bodyY - bodyTexts.length * bodyHeight) / 2);
   const detailStart = wrappedBody.length - detailLines;
   const body: LaidOutLine[] = bodyTexts.map((text, index) => ({
     text,

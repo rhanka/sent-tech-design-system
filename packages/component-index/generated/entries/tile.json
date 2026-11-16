@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tile.svelte",
-      "version": "0.41.4"
+      "version": "0.41.5"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tile.vue",
-      "version": "0.41.0-next.6"
+      "version": "0.41.0-next.7"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Single tile: static, clickable (link/button) or selectable (checkbox).",
     "fr": "Tuile unitaire : présentation, cliquable (lien/bouton) ou sélectionnable (case)."
   },
-  "digest": "sha256:2d28fef41fdc4161aa9cb27b098d44d5c2e638755d69694f525d0506cf8b5811",
+  "digest": "sha256:debd27619be6dd3b5f5aafd61f12211adcd8390b778b4119c11e3e85eaaa139a",
   "displayName": "Tile",
   "format": "component-entry/v1",
   "frameworks": [

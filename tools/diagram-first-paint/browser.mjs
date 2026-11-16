@@ -9,7 +9,7 @@ const { tmpdir } = await import('node:os');
 const { join } = await import('node:path');
 const { buildHarness, root } = await import('./build.mjs');
 const { cases } = await import('./scenes.js');
-const { segmentInterval, exposedSegments, connectorFindings } = await import('./geometry.mjs');
+const { segmentInterval, exposedSegments, centredBodyFindings, connectorFindings } = await import('./geometry.mjs');
 const { preview } = await import('vite');
 const { default: puppeteer } = await import('puppeteer-core');
 const assert = (await import('node:assert/strict')).default;
@@ -203,6 +203,13 @@ function check(state, scene) {
   assert.ok(Number.isFinite(state.clearance) && state.clearance > 0, 'clearance token must resolve');
   if (scene !== 'three-cards') {
     assert.ok(state.paths.length > 0 && state.labels.length > 0, 'golden must have connectors and labels');
+  } else {
+    // Owner card-body-centring: every card centres its single-line
+    // `First paint` body ink horizontally in the frozen body box
+    // (centre-x 232 card px) and drops the block by half the spare space
+    // (ink top at or below 104 card px — never top-aligned).
+    assert.deepEqual(centredBodyFindings({ nodes: state.nodes, labels: state.labels,
+      text: 'First paint', bodyCx: 232, minTop: 104, scale: state.scale, tolerance: 2 }), [], 'body centring');
   }
   const worldWidth = (state.content.width - 2) / state.scale;
   const worldHeight = (state.content.height - 2) / state.scale;

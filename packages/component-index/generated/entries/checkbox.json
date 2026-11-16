@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Checkbox.svelte",
-      "version": "0.41.4"
+      "version": "0.41.5"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Checkbox.vue",
-      "version": "0.41.0-next.6"
+      "version": "0.41.0-next.7"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Checkbox with error/disabled states and helper text.",
     "fr": "Case à cocher avec états error/disabled et helper text."
   },
-  "digest": "sha256:a46a3805d5d4ad90fe62600819be89bf65b414140272f25d4b59b17847aa9e37",
+  "digest": "sha256:f4fc58c34876a189dea4ec27856cafa4ee0bcd0093504bf6d24adcb5abce5df5",
   "displayName": "Checkbox",
   "format": "component-entry/v1",
   "frameworks": [
