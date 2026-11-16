@@ -1,6 +1,8 @@
 import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-preact";
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type AutosaveStatus = "idle" | "saving" | "saved" | "error";
 export type AutosaveLabels = {
@@ -10,9 +12,9 @@ export type AutosaveLabels = {
   error?: string;
 };
 export type AutosaveProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & {
-  status?: AutosaveStatus;
+  status?: MaybeSignal<AutosaveStatus>;
   /** Horodatage de la dernière sauvegarde réussie. */
-  lastSaved?: string | Date;
+  lastSaved?: MaybeSignal<string | Date>;
   /** Affiche un bouton « Réessayer » sur le statut `error`. */
   onRetry?: () => void;
   /** Surcharge des libellés par statut. */
@@ -20,11 +22,11 @@ export type AutosaveProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & 
   /** Étiquette du bouton de relance. */
   retryLabel?: string;
   locale?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 export function Autosave({
-  status = "idle",
-  lastSaved,
+  status: statusInput = "idle",
+  lastSaved: lastSavedInput,
   onRetry,
   labels,
   retryLabel,
@@ -32,6 +34,8 @@ export function Autosave({
   className,
   ...rest
 }: AutosaveProps) {
+  const status = useValue(statusInput);
+  const lastSaved = useValue(lastSavedInput);
   const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
   const DEFAULT_LABELS: Required<AutosaveLabels> = isFr
     ? {

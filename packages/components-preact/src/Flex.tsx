@@ -1,6 +1,8 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type FlexDirection = "row" | "column" | "row-reverse" | "column-reverse";
 export type FlexAlign = "start" | "center" | "end" | "stretch" | "baseline";
@@ -15,7 +17,7 @@ export type FlexProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   wrap?: boolean;
   inline?: boolean;
   as?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /** rem fallbacks for the Sent Tech spacing scale (steps 5/7/9/10/11 are
@@ -87,17 +89,19 @@ export const Flex = forwardRef<HTMLElement, FlexProps>(
     ref,
   ) => {
     const Tag: any = as;
-    const mergedStyle: CSSProperties = {
-      display: inline ? "inline-flex" : "flex",
-      flexDirection: direction,
-      flexWrap: wrap ? "wrap" : "nowrap",
-      alignItems: alignValue(align),
-      justifyContent: justifyValue(justify),
-      gap: spacingToken(gap),
-      ...(style as CSSProperties | undefined),
-    };
+    const mergedStyle = mergeStyle(
+      {
+        display: inline ? "inline-flex" : "flex",
+        flexDirection: direction,
+        flexWrap: wrap ? "wrap" : "nowrap",
+        alignItems: alignValue(align),
+        justifyContent: justifyValue(justify),
+        gap: spacingToken(gap),
+      } as CSSProperties,
+      style,
+    );
     return (
-      <Tag {...rest} ref={ref} className={classNames("st-flex", className)} style={mergedStyle}>
+      <Tag {...rest} ref={ref} className={classNames("st-flex", className)} style={mergedStyle as CSSProperties | undefined}>
         {children}
       </Tag>
     );
