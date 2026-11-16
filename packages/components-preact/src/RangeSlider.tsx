@@ -15,7 +15,7 @@ export type RangeSliderProps = {
   max?: number;
   step?: number;
   size?: RangeSliderSize;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   label?: ComponentChildren;
   helperText?: ComponentChildren;
   errorText?: ComponentChildren;
@@ -38,7 +38,7 @@ export function RangeSlider({
   max = 100,
   step = 1,
   size = "md",
-  disabled = false,
+  disabled: disabledInput = false,
   label,
   helperText,
   errorText,
@@ -52,6 +52,7 @@ export function RangeSlider({
 }: RangeSliderProps) {
   const value = useValue(valueInput);
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput) ?? false;
   const clampStep = useCallback(
     (n: number): number => {
       if (!Number.isFinite(n)) return min;
@@ -79,7 +80,7 @@ export function RangeSlider({
     [clampStep]
   );
 
-  const isControlled = valueInput !== undefined;
+  const isControlled = Array.isArray(value);
   const [internal, setInternal] = useState<[number, number]>(() =>
     normalizePair(defaultValue ?? [min, max])
   );

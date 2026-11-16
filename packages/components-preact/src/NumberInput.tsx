@@ -4,6 +4,7 @@ import { classNames } from "./classNames.js";
 import { textChange } from "./runtime.js";
 import type { ComponentChildren, TargetedEvent } from "./runtime.js";
 import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type NumberInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "type"> & {
   label?: ComponentChildren;
@@ -27,19 +28,21 @@ export function NumberInput({
   step = 1,
   value: valueInput,
   defaultValue,
-  disabled,
+  disabled: disabledInput,
   onChange,
+  onInput: onInputProp,
   ...rest
 }: NumberInputProps) {
   const numMin = min !== undefined && min !== "" ? Number(min) : undefined;
   const numMax = max !== undefined && max !== "" ? Number(max) : undefined;
   const numStep = step !== undefined && step !== "" ? Number(step) : 1;
   const value = useValue(valueInput);
+  const disabled = useValue(disabledInput as MaybeSignal<boolean | undefined>);
   const initial = value ?? defaultValue;
   const [current, setCurrent] = useState<number | null>(
     initial !== undefined && initial !== null && initial !== "" ? Number(initial) : null,
   );
-  const controlled = valueInput !== undefined;
+  const controlled = value !== undefined;
   const numValue = controlled
     ? value === null || (value as unknown) === "" ? null : Number(value)
     : current;
@@ -73,7 +76,7 @@ export function NumberInput({
         <span className={classNames("st-numberInput", `st-numberInput--${size}`)}>
           <input
             {...rest}
-            {...textChange<HTMLInputElement>(handleChange)}
+            {...textChange<HTMLInputElement>(handleChange, onInputProp)}
             id={inputId}
             className="st-numberInput__control"
             type="number"

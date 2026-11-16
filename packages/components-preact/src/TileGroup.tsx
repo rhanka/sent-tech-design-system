@@ -17,18 +17,20 @@ export interface TileGroupItem {
 
 export type TileGroupProps = Omit<HTMLAttributes<HTMLFieldSetElement>, "onChange"> & {
   legend?: ComponentChildren;
-  legendHidden?: boolean;
+  legendHidden?: MaybeSignal<boolean>;
   items: TileGroupItem[];
   /** Plain value, or a signal in the Preact build (read at the edge). */
   value?: MaybeSignal<string>;
   name?: string;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   onChange?: (value: string) => void;
 };
 
-export function TileGroup({ legend, legendHidden = false, items, value: valueInput, name, disabled = false, onChange, className, ...rest }: TileGroupProps) {
+export function TileGroup({ legend, legendHidden: legendHiddenInput = false, items, value: valueInput, name, disabled: disabledInput = false, onChange, className, ...rest }: TileGroupProps) {
   const reactId = useId();
   const value = useValue(valueInput);
+  const disabled = useValue(disabledInput) ?? false;
+  const legendHidden = useValue(legendHiddenInput) ?? false;
   const groupName = name ?? `st-tileGroup-${reactId}`;
   return (
     <fieldset {...rest} className={classNames("st-tileGroup", disabled && "st-tileGroup--disabled", className)}>

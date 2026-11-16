@@ -5,7 +5,7 @@ import { useControlled } from "./internal.js";
 import { Menu, treeHasCascade, type MenuActionItem, type MenuItem, type MenuSubmenuSide } from "./Menu.js";
 import { MenuHostContext, type MenuHostCloseOptions, type MenuHostContextValue } from "./menu-cascade.js";
 import type { ComponentChildren } from "./runtime.js";
-import { useValue } from "./signals.js";
+import { unwrap, useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 export type MenuPopoverPlacement = "top-start" | "top-end" | "bottom-start" | "bottom-end";
@@ -33,7 +33,7 @@ function menuPopoverIsWithin(event: Event, node: Element | null | undefined): bo
 export type MenuPopoverProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "onSelect"> & {
   /** Bindable in Svelte; controlled here via `open`+`onOpenChange`, uncontrolled via `defaultOpen`. */
   open?: MaybeSignal<boolean>;
-  defaultOpen?: boolean;
+  defaultOpen?: MaybeSignal<boolean>;
   onOpenChange?: (open: boolean) => void;
   /** Anchor element used for position computation and outside-click exclusion (Svelte-canonical). */
   trigger?: HTMLElement | null;
@@ -43,8 +43,8 @@ export type MenuPopoverProps = Omit<HTMLAttributes<HTMLDivElement>, "className" 
   label?: string;
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
-  closeOnOutside?: boolean;
-  closeOnEscape?: boolean;
+  closeOnOutside?: MaybeSignal<boolean>;
+  closeOnEscape?: MaybeSignal<boolean>;
   /** Convenience (not in the Svelte contract): renders a <Menu> from `items` instead of `children`. */
   items?: MenuItem[];
   /** Leaf relay for the `items` mode (host relay, §2.3): first argument
@@ -69,21 +69,24 @@ let menuPopoverInstanceCounter = 0;
 
 export function MenuPopover({
   open: openInput,
-  defaultOpen = false,
+  defaultOpen: defaultOpenInput = false,
   onOpenChange,
   trigger = null,
   placement = "bottom-start",
   align,
   label,
   className,
-  closeOnOutside = true,
-  closeOnEscape = true,
+  closeOnOutside: closeOnOutsideInput = true,
+  closeOnEscape: closeOnEscapeInput = true,
   items = [],
   onSelect,
   submenuSide,
   children,
   ...rest
 }: MenuPopoverProps) {
+  const defaultOpen = unwrap(defaultOpenInput) ?? false;
+  const closeOnOutside = useValue(closeOnOutsideInput) ?? true;
+  const closeOnEscape = useValue(closeOnEscapeInput) ?? true;
   const [open, setOpen] = useControlled(useValue(openInput), defaultOpen, onOpenChange);
   const rootMenuIdRef = useRef("");
   if (rootMenuIdRef.current === "") {
