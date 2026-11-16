@@ -63,12 +63,14 @@ test('should keep a connector that only passes behind a footer cutout', () => {
 });
 
 // Owner card-body-centring: the three-cards gate pins the single-line
-// `First paint` ink in the frozen body box (centre-x 232, centred block
-// top at or below 104 card px). Screen px below, card px in the call.
+// `First paint` ink in the frozen body box (centre-x 232, ink inside
+// [104, 172] card px vertically — never top- or bottom-aligned).
+// Screen px below, card px in the call.
 const paintCard = { id: 'occurrence:e.a', left: 100, top: 50, right: 560, bottom: 250 };
-const paintArgs = { nodes: [paintCard], text: 'First paint', bodyCx: 232, minTop: 104, tolerance: 2 };
+const paintArgs = { nodes: [paintCard], text: 'First paint', bodyCx: 232, minTop: 104, maxBottom: 172, tolerance: 2 };
 const centredInk = { id: 'First paint', left: 262, top: 176, right: 402, bottom: 202 };
 const legacyInk = { id: 'First paint', left: 114, top: 140, right: 254, bottom: 166 };
+const bottomInk = { id: 'First paint', left: 262, top: 214, right: 402, bottom: 234 };
 
 test('should accept body ink centred in the body box, at scale 1 and at the readability floor', () => {
   assert.deepEqual(centredBodyFindings({ ...paintArgs, labels: [centredInk], scale: 1 }), []);
@@ -84,6 +86,12 @@ test('should fail legacy top-left body ink on both axes', () => {
   assert.deepEqual(centredBodyFindings({ ...paintArgs, labels: [legacyInk], scale: 1 }), [
     'card occurrence:e.a body ink off-centre: 184 != 332',
     'card occurrence:e.a body ink above the centred block top: 140 < 154',
+  ]);
+});
+
+test('should fail bottom-aligned body ink on the upper bound (card offsets top 164 bottom 184)', () => {
+  assert.deepEqual(centredBodyFindings({ ...paintArgs, labels: [bottomInk], scale: 1 }), [
+    'card occurrence:e.a body ink below the centred block bottom: 234 > 222',
   ]);
 });
 

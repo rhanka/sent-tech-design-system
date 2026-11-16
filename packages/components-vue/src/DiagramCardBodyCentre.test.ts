@@ -25,18 +25,24 @@ describe("DiagramCard — body block centring (owner card-body-centring)", () =>
     const source = readFileSync(resolve(HERE, "DiagramCard.vue"), "utf8");
     const body = cssBlock(source, ".st-diagramCard-body {");
     expect(body).toContain("flex: 1 1 auto");
+    expect(body).toContain("display: flex");
     expect(body).toContain("justify-content: center");
     expect(body).toContain("text-align: center");
     expect(body).toContain("flex-direction: column");
+    expect(source).not.toContain(".st-diagramCard--subtitle .st-diagramCard-body");
   });
 
   it("keeps the committed styles.css mirror in sync with the SFC (first-paint paints styles.css)", () => {
     const mirror = readFileSync(resolve(HERE, "styles.css"), "utf8");
+    const sfc = readFileSync(resolve(HERE, "DiagramCard.vue"), "utf8");
     const body = cssBlock(mirror, ".st-diagramCard-body {");
     expect(body).toContain("flex: 1 1 auto");
+    expect(body).toContain("display: flex");
     expect(body).toContain("justify-content: center");
     expect(body).toContain("text-align: center");
     expect(body).toContain("flex-direction: column");
+    expect(mirror).not.toContain(".st-diagramCard--subtitle .st-diagramCard-body");
+    expect(cssBlock(mirror, ".st-diagramCard-body {")).toBe(cssBlock(sfc, ".st-diagramCard-body {"));
   });
 
   it("renders the llm-gateway body centred with the complete accessible text", () => {

@@ -49,12 +49,13 @@ export function exposedSegments(a, b, occluders, stroke) {
  * the frozen body box and drops a short block by half the spare space. The
  * three-cards scene carries the same single-line `First paint` body on
  * every card, so the gate pins both axes from DOM ink: the ink centre-x
- * must sit at the body-box centre and the ink top must sit at or below the
- * centred single-line top (never top-aligned). `bodyCx`/`minTop` are card
- * px scaled by `scale`; `tolerance` is screen px. Returns the defects,
- * empty when the scene is sound.
+ * must sit at the body-box centre and the ink block must sit inside the
+ * centred single-line band (never top-aligned, never bottom-aligned).
+ * `bodyCx`/`minTop`/`maxBottom` are card px scaled by `scale`; `tolerance`
+ * is screen px. `maxBottom` is optional so older callers keep working.
+ * Returns the defects, empty when the scene is sound.
  */
-export function centredBodyFindings({ nodes, labels, text, bodyCx, minTop, scale, tolerance }) {
+export function centredBodyFindings({ nodes, labels, text, bodyCx, minTop, maxBottom, scale, tolerance }) {
   const findings = [];
   for (const node of nodes) {
     const ink = labels.filter(label => label.id === text
@@ -70,6 +71,12 @@ export function centredBodyFindings({ nodes, labels, text, bodyCx, minTop, scale
       const floor = node.top + minTop * scale;
       if (label.top < floor - tolerance) {
         findings.push(`card ${node.id} body ink above the centred block top: ${label.top} < ${floor}`);
+      }
+      if (maxBottom !== undefined) {
+        const ceiling = node.top + maxBottom * scale;
+        if (label.bottom > ceiling + tolerance) {
+          findings.push(`card ${node.id} body ink below the centred block bottom: ${label.bottom} > ${ceiling}`);
+        }
       }
     }
   }
