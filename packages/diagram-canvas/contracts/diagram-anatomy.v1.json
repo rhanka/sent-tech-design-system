@@ -168,21 +168,21 @@
     "body": [
       {
         "text": "Body",
-        "x": 14,
+        "x": 232,
         "baseline": 108.1875,
         "size": 24,
         "weight": 400,
         "secondary": false,
-        "anchor": "start"
+        "anchor": "middle"
       },
       {
         "text": "Detail",
-        "x": 14,
+        "x": 232,
         "baseline": 139.375,
         "size": 24,
         "weight": 400,
         "secondary": true,
-        "anchor": "start"
+        "anchor": "middle"
       }
     ],
     "bodyBottom": 148.5625,
@@ -287,7 +287,7 @@
             "anchor": "middle"
           }
         ],
-        "bodyBottom": 117.375,
+        "bodyBottom": 132.96875,
         "ruleY": 152.5625,
         "ruleX1": 16,
         "ruleX2": 450,
@@ -589,11 +589,11 @@
     }
   },
   "hostStyles": {
-    "packages/components-svelte/src/lib/DiagramCard.svelte": "a3726e27b2c36a0e841da0e3a6d8a2ec40641f7702564ec276387daf671b119c",
+    "packages/components-svelte/src/lib/DiagramCard.svelte": "9a5ba42f489d62df63f68050559e1bcf5297af92e30afd9df9e1cacd02abe0d1",
     "packages/components-svelte/src/lib/DiagramZone.svelte": "73d2d2b2d04d00744447f760adec3209a083a44ca3ec37d0afdeca6b01d9a14d",
     "packages/components-svelte/src/lib/DiagramCardHeader.svelte": "0495fec195f2ad5c44b154fb5de41b307eeccbfd594d21c17c8d257f5c2cf36e",
     "packages/components-svelte/src/lib/DiagramZoneHeader.svelte": "a7b16b82699981e16191af4736d86d3f6a6ef341fad5e2f13306d2cebd687bd8",
-    "packages/components-vue/src/DiagramCard.vue": "8a9820d30d7ca7769149450838c7d0833a88d9d237b9565b75848e28725cafbe",
+    "packages/components-vue/src/DiagramCard.vue": "3f98c68f5931a2b43d19943f3230875c390048557dd00631186258c4f163fe31",
     "packages/components-vue/src/DiagramZone.vue": "abedd7be2f9a1d84b5451119fb536dd88215eb5a7541346301a0a7b0d7aea08b",
     "packages/components-vue/src/DiagramCardHeader.vue": "6c78015c3d3f5dd458513ae0acff9cb8b079171f8e36ab32eacf4e9cf56ed9f4",
     "packages/components-vue/src/DiagramZoneHeader.vue": "81c5fe3eab9ec65707303ecc7fa7892ce0adddbbc317947e1e3a11cdd0d117f7",
@@ -617,6 +617,25 @@
     ".st-iconButton--secondary:hover:not(:disabled) {\n    border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));\n  }",
     ".st-iconButton:focus-visible {\n    border-color: var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));\n    box-shadow: 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));\n    outline: none;\n  }",
     ".st-iconButton:disabled {\n    color: var(--st-component-control-disabledText, var(--st-semantic-text-muted));\n    cursor: not-allowed;\n  }"
+  ],
+  "diagramCardCss": [
+    ".st-diagramCard {\n    width: var(--st-component-diagramCard-width, 460px);\n    height: var(--st-component-diagramCard-height, 200px);\n    box-sizing: border-box;\n    border: var(--st-component-diagramCard-borderWidth, 2px) solid\n      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));\n    border-left: var(--st-component-diagramCard-accentWidth, 8px) solid\n      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));\n    border-radius: var(--st-component-diagramCard-radius, 0);\n    background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));\n    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));\n    padding: var(--st-component-diagramCard-padding, 8px);\n    display: flex;\n    flex-direction: column;\n    text-align: left;\n    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));\n  }",
+    ".st-diagramCard--center {\n    \n    text-align: center;\n  }",
+    ".st-diagramCard--proposed {\n    border-style: dashed;\n  }",
+    ".st-diagramCard-gap {\n    display: block;\n    height: var(--st-component-diagramCard-gap, 6px);\n    flex: 0 0 var(--st-component-diagramCard-gap, 6px);\n  }",
+    ".st-diagramCard-body {\n    \n    min-width: 0;\n    flex: 1 1 auto;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    text-align: center;\n    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);\n    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);\n    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);\n  }",
+    ".st-diagramCard-line,\n  .st-diagramCard-detail {\n    display: block;\n    min-width: 0;\n    \n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-detail {\n    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));\n  }",
+    ".st-diagramCard-foot {\n    margin-top: auto;\n    flex: 0 0 auto;\n  }",
+    ".st-diagramCard-rule {\n    display: block;\n    flex: 0 0 auto;\n    \n    height: var(--st-component-diagramCard-ruleHeight, 1px);\n    margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;\n    background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));\n    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));\n    transform-origin: center;\n  }",
+    ".st-diagramCard-footer {\n    \n    margin-bottom: calc(\n      var(--st-component-diagramCard-footerBottomInset, 9.25px) -\n        var(--st-component-diagramCard-padding, 8px)\n    );\n    font-size: var(--st-component-diagramCard-footerFontSize, 24px);\n    font-weight: var(--st-component-diagramCard-footerFontWeight, 700);\n    line-height: var(--st-component-diagramCard-footerLineHeight, 1.3);\n  }",
+    ".st-diagramCard-footerLine {\n    display: block;\n    min-width: 0;\n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCardHeader {\n    display: flex;\n    align-items: center;\n    gap: var(--st-component-diagramCard-iconTextGap, 6px);\n    min-width: 0;\n    flex: 0 0 auto;\n  }",
+    ".st-diagramCardHeader-icon {\n    flex: 0 0 var(--st-component-diagramCard-iconSize, 70px);\n    width: var(--st-component-diagramCard-iconSize, 70px);\n    height: var(--st-component-diagramCard-iconSize, 70px);\n  }",
+    ".st-diagramCardHeader-text {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    min-width: 0;\n    flex: 0 1 auto;\n  }",
+    ".st-diagramCard-kicker {\n    display: block;\n    min-width: 0;\n    font-size: var(--st-component-diagramCard-kickerFontSize, 22px);\n    font-weight: var(--st-component-diagramCard-kickerFontWeight, 400);\n    line-height: var(--st-component-diagramCard-kickerLineHeight, 1.3);\n    letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing, 0.04em);\n    text-transform: var(--st-component-diagramCard-kickerTextTransform, uppercase);\n    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));\n    \n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-title {\n    display: block;\n    min-width: 0;\n    font-size: var(--st-component-diagramCard-titleFontSize, 32px);\n    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);\n    line-height: var(--st-component-diagramCard-titleLineHeight, 1.3);\n    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));\n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-toggle {\n    flex: 0 0 auto;\n    margin-left: auto;\n    \n    align-self: flex-start;\n  }"
   ],
   "renderedAnatomy": {
     "svelte/card": {

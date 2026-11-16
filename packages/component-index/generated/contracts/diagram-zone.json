@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:0c8972796bd62d76f7bf65666f76f21b2262c0b5213ff4926368e74ad51d192e",
-  "entryDigest": "sha256:32a2f39ee89e6b5f467c7da3ea0da6d19d5380b8260635fde5f4413daf364a3f",
+  "digest": "sha256:c5c7b1ef4ccfdaedd7d7770b66ecd6933a4ac64bc3efec0abaf3172207042377",
+  "entryDigest": "sha256:effe6ba1fa0b419216575def6a743c169fd8d8812b4734f922d60e56b14f7eb9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -271,7 +271,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "partial",
       "unresolved": [],
@@ -555,7 +555,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],
