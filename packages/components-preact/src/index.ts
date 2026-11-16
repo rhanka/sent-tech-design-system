@@ -1,3 +1,8 @@
+// Belt-and-suspenders: guarantees runtime.ts (options.vnode SVG normalisation)
+// is evaluated even when a bundler resolves the barrel without any
+// forwardRef component in the import closure. Emitted to react/runtime.ts,
+// which is side-effect-free, so the React leg is unaffected.
+import "./runtime.js";
 export { Button } from "./Button.js";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./Button.js";
 export { Input } from "./Input.js";

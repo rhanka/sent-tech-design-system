@@ -229,6 +229,34 @@ export function PanelStack({
 
   const controlled = expandedInput !== undefined;
 
+  // Render-time epoch: PanelSection children hold no signal subscription of
+  // their own — they read the already-unwrapped `expanded`/`primary` through
+  // `latestRef` and only subscribe to `PanelStackVersionContext`. When a
+  // consumer mutates `expanded.value`/`primary.value` after mount, this
+  // component re-renders with identical `children` VNodes, so Preact skips the
+  // children unless the version context value changes. Bumping this epoch
+  // whenever the externally-driven tuple changes guarantees the notification.
+  const propEpochRef = useRef(0);
+  const prevPropsRef = useRef<{
+    shape: PanelStackShape;
+    controlled: boolean;
+    expanded: string | null | undefined;
+    primary: string | undefined;
+  } | null>(null);
+  {
+    const prev = prevPropsRef.current;
+    if (
+      prev === null ||
+      prev.shape !== shape ||
+      prev.controlled !== controlled ||
+      prev.expanded !== expanded ||
+      prev.primary !== primary
+    ) {
+      propEpochRef.current += 1;
+      prevPropsRef.current = { shape, controlled, expanded, primary };
+    }
+  }
+
   function getOrderedEntries(): Entry[] {
     return sortByDom(entriesRef.current);
   }
@@ -534,7 +562,11 @@ export function PanelStack({
   // resolved primary actually changed. Depends ONLY on external props, never
   // on state this module writes itself, so it cannot loop.
   useEffect(() => {
-    if (syncPrimary()) runDecision();
+    const prevAutoCollapsed = autoCollapsedRef.current;
+    if (syncPrimary()) {
+      runDecision();
+      if (autoCollapsedRef.current !== prevAutoCollapsed) forceRender();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [primary, shape]);
 
@@ -552,7 +584,9 @@ export function PanelStack({
   return (
     <div className={classes} role="group" aria-label={label} ref={stackElRef} style={stackStyle}>
       <PanelStackContext.Provider value={contextObjRef.current}>
-        <PanelStackVersionContext.Provider value={version}>{children}</PanelStackVersionContext.Provider>
+        <PanelStackVersionContext.Provider value={version + propEpochRef.current}>
+          {children}
+        </PanelStackVersionContext.Provider>
       </PanelStackContext.Provider>
     </div>
   );

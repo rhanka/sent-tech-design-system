@@ -2,6 +2,13 @@ import type { HTMLAttributes } from "preact";
 import { useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { useControlled } from "./internal.js";
+// Side-effect: installs the options.vnode SVG presentation-attribute
+// normalisation in runtime.ts. Rating renders intrinsic camelCase SVG
+// attributes but otherwise references runtime only via `import type`, which
+// TypeScript erases — without this import a bundler applying `sideEffects`
+// barrel optimisation (or a direct deep import) would never evaluate
+// runtime.js and strokeWidth would revert to broken camelCase attributes.
+import "./runtime.js";
 import type { TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
