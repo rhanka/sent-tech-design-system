@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:1fa504fd523cdbc1a200480b81134f5fe23af902ff4b95b09baae3d7628982d0",
-  "entryDigest": "sha256:b63089aa7d099020af908b3fe5d26ce67b822579c0fc30da3064d4d62ee3dc8a",
+  "digest": "sha256:d62b07b7da04a1e1c66af54897ef9b3f72b85150c989d00b19d7b86fdb0fe7c3",
+  "entryDigest": "sha256:567afd2cf8c9657d3dc68ea1979741d0c32b83faad446a9f5504d3e64bd75cd5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/TreemapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreemapChartProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -382,7 +382,7 @@
         "declarationPath": "packages/components-vue/dist/TreemapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreemapChartProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "complete",
       "unresolved": [],
