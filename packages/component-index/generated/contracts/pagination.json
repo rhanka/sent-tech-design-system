@@ -1,7 +1,7 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:41446d04d6aa284b5172d5b669a511f29ef95fa0b6b7051c8b5a31e67ec0395a",
+  "digest": "sha256:4a163553e5d9039ea700ac53c525731e4a9df1a9d1ed659b45baea43cdc7e04c",
   "entryDigest": "sha256:b985a9fe6828dec03a29cc5bef3d5fdfafdae5df4d691c0773fe6d8acf884d21",
   "format": "component-contract/v1",
   "frameworks": {
@@ -117,7 +117,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PaginationProps",

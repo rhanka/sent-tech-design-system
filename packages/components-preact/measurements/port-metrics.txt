@@ -17,7 +17,7 @@ ChatComposer             chat  P4c           34            58              18   
 Portal                  other  P4c           88            77              22   304  7.2         1      6         109
 ThemeProvider  (uncatalogued)  P4c           35            37              12   229  5.2         1      3          53
 total                                       631           683             170  3521  4.8        16     44         852
-shared code (lines): src/internal.ts 97, src/classNames.ts 22, src/index.ts 16, preactAdapters 204, reactTwins 65, scripts/emit-react.mjs 174, vitest.react.config.ts 71
+shared code (lines): src/internal.ts 147, src/classNames.ts 22, src/index.ts 95, preactAdapters 229, reactTwins 65, scripts/emit-react.mjs 174, vitest.react.config.ts 80
 Preact test lines per React source line: 1.4
 
 == Port rate (measurements/port-timing.json) ==

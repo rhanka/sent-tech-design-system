@@ -51,6 +51,15 @@ const reactTests = [
   "TimeRangePicker", // hand-written dependent of Button, Input, SelectableRow
   "TimeRangePicker.states",
   "MenuPopover", // hand-written menus on the emitted Portal
+  "Layout", // Flex, Stack, Inline, Container, Row, Col, Grid, Hidden, Divider
+  "ErrorSummary", // emitted P1 feedback module
+  "FieldCard", // emitted P1 layout module
+  "StatusDot", // emitted P1 feedback module
+  "Timeline", // emitted P1 feedback module
+  "PanelStack", // emitted PanelStack + PanelSection pair (P4c dependency of P1)
+  "Specialized", // emitted Rating + Autosave (sole components-react suite for both)
+  "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
+  "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
 ];
 
 export default defineConfig({

@@ -1,7 +1,7 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:9332bc5e1f1397a74cffacf1d79d9318d91e1a050618eaae8a5cfe8974de0983",
+  "digest": "sha256:7f009f82f113f5dfea11731b3221907904ebeafa2a836ba74f06c18dbeffa829",
   "entryDigest": "sha256:e92d43d9dcff8cad4d5d280452800f30432daa0ae0b2921b7dd24fe00206744e",
   "format": "component-contract/v1",
   "frameworks": {
@@ -234,7 +234,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FooterProps",
