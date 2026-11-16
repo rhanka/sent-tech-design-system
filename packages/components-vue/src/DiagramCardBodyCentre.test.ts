@@ -30,6 +30,15 @@ describe("DiagramCard — body block centring (owner card-body-centring)", () =>
     expect(body).toContain("flex-direction: column");
   });
 
+  it("keeps the committed styles.css mirror in sync with the SFC (first-paint paints styles.css)", () => {
+    const mirror = readFileSync(resolve(HERE, "styles.css"), "utf8");
+    const body = cssBlock(mirror, ".st-diagramCard-body {");
+    expect(body).toContain("flex: 1 1 auto");
+    expect(body).toContain("justify-content: center");
+    expect(body).toContain("text-align: center");
+    expect(body).toContain("flex-direction: column");
+  });
+
   it("renders the llm-gateway body centred with the complete accessible text", () => {
     const props = {
       entityId: "entity:llm-gateway",
