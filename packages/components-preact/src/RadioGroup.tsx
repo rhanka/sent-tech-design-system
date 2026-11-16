@@ -26,7 +26,7 @@ export type RadioGroupProps = Omit<
   options?: RadioGroupOption[];
   helperText?: string;
   /** Disables the whole group. */
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
 }
@@ -41,7 +41,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
       name,
       options = [],
       helperText,
-      disabled = false,
+      disabled: disabledInput = false,
       className,
       children,
       ...rest
@@ -49,6 +49,7 @@ export const RadioGroup = forwardRef<HTMLFieldSetElement, RadioGroupProps>(
     ref,
   ) => {
     const value = useValue(valueInput);
+    const disabled = useValue(disabledInput) ?? false;
     const classes = classNames("st-radioGroup", `st-radioGroup--${orientation}`, className);
 
     function select(optionValue: string) {

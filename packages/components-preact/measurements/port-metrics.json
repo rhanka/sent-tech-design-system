@@ -38,9 +38,9 @@
         "lot": "P2",
         "reactSource": "Input.tsx",
         "reactLines": 55,
-        "preactLines": 63,
+        "preactLines": 69,
         "total": 289,
-        "touched": 19,
+        "touched": 20,
         "emissionRewrites": 2,
         "tests": 6,
         "testLines": 92
@@ -126,9 +126,9 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 688,
+      "preactLines": 694,
       "total": 3521,
-      "touched": 170,
+      "touched": 171,
       "emissionRewrites": 16,
       "tests": 44,
       "testLines": 852
@@ -137,10 +137,10 @@
       "src/internal.ts": 171,
       "src/classNames.ts": 22,
       "src/index.ts": 174,
-      "preactAdapters": 253,
-      "reactTwins": 78,
+      "preactAdapters": 263,
+      "reactTwins": 82,
       "scripts/emit-react.mjs": 174,
-      "vitest.react.config.ts": 89
+      "vitest.react.config.ts": 90
     }
   },
   "rate": {

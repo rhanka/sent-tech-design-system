@@ -13,7 +13,7 @@ export type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
   invalid?: MaybeSignal<boolean>;
 };
 
-export function Textarea({ label, helperText, errorText, invalid: invalidInput, className, onChange: onChangeProp, ...rest }: TextareaProps) {
+export function Textarea({ label, helperText, errorText, invalid: invalidInput, className, onChange: onChangeProp, onInput: onInputProp, ...rest }: TextareaProps) {
   const invalid = useValue(invalidInput);
   const reactId = useId();
   const inputId = `st-field-${reactId}`;
@@ -22,7 +22,7 @@ export function Textarea({ label, helperText, errorText, invalid: invalidInput, 
     <div className={classNames("st-field", className)}>
       <label className="st-field__control" htmlFor={inputId}>
         {label ? <span className="st-field__label">{label}</span> : null}
-        <textarea {...rest} {...(onChangeProp ? textChange<HTMLTextAreaElement>(onChangeProp) : {})} id={inputId} className="st-textarea st-control" aria-invalid={isInvalid ? "true" : undefined} />
+        <textarea {...rest} {...(onChangeProp ? textChange<HTMLTextAreaElement>(onChangeProp, onInputProp) : onInputProp ? { onInput: onInputProp } : {})} id={inputId} className="st-textarea st-control" aria-invalid={isInvalid ? "true" : undefined} />
       </label>
       {errorText ? (
         <span className="st-field__error">{errorText}</span>

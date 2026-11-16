@@ -30,18 +30,20 @@ export function Slider({
   invalid: invalidInput = false,
   showValue = true,
   valueFormatter,
-  disabled,
+  disabled: disabledInput,
   className,
   onChange,
+  onInput: onInputProp,
   ...rest
 }: SliderProps) {
   const value = useValue(valueInput);
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput as MaybeSignal<boolean | undefined>);
   const numMin = Number(min);
   const numMax = Number(max);
   const initial = Number(value ?? defaultValue ?? numMin);
   const [current, setCurrent] = useState(Number.isFinite(initial) ? initial : numMin);
-  const controlled = valueInput !== undefined;
+  const controlled = value !== undefined;
   const raw = controlled ? Number(value) : current;
   const safe = !Number.isFinite(raw) ? numMin : raw < numMin ? numMin : raw > numMax ? numMax : raw;
   const percent = numMax === numMin ? 0 : ((safe - numMin) / (numMax - numMin)) * 100;
@@ -72,7 +74,7 @@ export function Slider({
           </span>
           <input
             {...rest}
-            {...textChange<HTMLInputElement>(handleChange)}
+            {...textChange<HTMLInputElement>(handleChange, onInputProp)}
             className="st-slider__input"
             type="range"
             aria-label={labelText}

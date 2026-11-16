@@ -25,7 +25,7 @@ export type CalendarProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "
   /** Maximum bound "YYYY-MM-DD" (inclusive). */
   max?: string;
   /** Selection of a range of two dates. */
-  range?: boolean;
+  range?: MaybeSignal<boolean>;
   /** First day of the week: 0 = Sunday, 1 = Monday. */
   weekStartsOn?: 0 | 1;
   locale?: string;
@@ -75,7 +75,7 @@ export function Calendar({
   onChange,
   min,
   max,
-  range = false,
+  range: rangeInput = false,
   weekStartsOn = 1,
   locale = "fr-FR",
   month: monthInput,
@@ -87,6 +87,7 @@ export function Calendar({
 }: CalendarProps) {
   const value = useValue(valueInput);
   const month = useValue(monthInput);
+  const range = useValue(rangeInput) ?? false;
   const [activeValue, setCurrent] = useControlled<CalendarValue>(value, value ?? null, onChange);
 
   const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");

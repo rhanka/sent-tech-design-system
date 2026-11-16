@@ -23,7 +23,7 @@ export type TimePickerProps = Omit<HTMLAttributes<HTMLDivElement>, "className" |
   /** 24h display (default) or 12h (AM/PM). The emitted value stays "HH:mm". */
   format?: TimePickerFormat;
   size?: "sm" | "md" | "lg";
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   label?: string;
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
@@ -54,7 +54,7 @@ export function TimePicker({
   max,
   format = "24",
   size = "md",
-  disabled = false,
+  disabled: disabledInput = false,
   label,
   className,
   id,
@@ -67,6 +67,7 @@ export function TimePicker({
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const [open, setOpen] = useState(false);
+  const disabled = useValue(disabledInput) ?? false;
   const value = useValue(valueInput);
   const [current, setCurrent] = useControlled(value, value ?? "", onChange);
   /** Index of the highlighted option in the listbox (-1 = none). */

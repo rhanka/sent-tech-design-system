@@ -51,7 +51,7 @@ const reactTests = [
   "NavItem", // hand-written dependent of SelectableRow
   "TimeRangePicker", // hand-written dependent of Button, Input, SelectableRow
   "TimeRangePicker.states",
-  "MenuPopover", // hand-written menus on the emitted Portal
+  "MenuPopover", // hand-written menus on the emitted Portal + emitted P3 host (children mode) of the emitted TimeRangePicker
   "Layout", // Flex, Stack, Inline, Container, Row, Col, Grid, Hidden, Divider
   "ErrorSummary", // emitted P1 feedback module
   "FieldCard", // emitted P1 layout module
@@ -62,7 +62,8 @@ const reactTests = [
   "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
   "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
   "RangeSlider", // emitted P2 form module
-  "MenuPopover", // emitted P3 host (children mode) of the emitted TimeRangePicker
+  "MenuCascade", // emitted Menu cascade, hover-intent and safe-triangle behaviour
+  "Shell", // emitted Menu exercised through the Shell suite
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */

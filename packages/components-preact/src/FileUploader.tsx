@@ -31,7 +31,7 @@ export type FileUploaderProps = HTMLAttributes<HTMLDivElement> & {
   invalid?: MaybeSignal<boolean>;
   accept?: string;
   multiple?: boolean;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /** Plain value, or a signal in the Preact build (read at the edge). */
   items?: MaybeSignal<FileUploadItem[]>;
   /** Trigger button text. Defaults to "Choose file(s)" based on `multiple`. */
@@ -72,7 +72,7 @@ export function FileUploader({
   invalid: invalidInput = false,
   accept,
   multiple = false,
-  disabled = false,
+  disabled: disabledInput = false,
   items: itemsInput = [],
   triggerLabel,
   dropzoneLabel = "Drag and drop files here",
@@ -84,6 +84,7 @@ export function FileUploader({
   const reactId = useId();
   const inputId = id ?? reactId;
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput) ?? false;
   const items = useValue(itemsInput);
   const isInvalid = invalid || Boolean(errorText);
   const effectiveTriggerLabel = triggerLabel ?? (multiple ? "Choose files" : "Choose file");
