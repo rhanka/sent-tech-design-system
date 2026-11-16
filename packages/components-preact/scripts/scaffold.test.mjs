@@ -8,17 +8,54 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the eight modules of the spike, no more", () => {
+test("coverage manifest owns the spike modules plus lot P1, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
+    "Accordion",
+    "Alert",
+    "AspectRatio",
+    "Autosave",
     "Button",
+    "ButtonGroup",
+    "Card",
     "ChatComposer",
+    "Col",
+    "Collapsible",
+    "Container",
+    "CopyButton",
+    "Divider",
+    "EmptyState",
+    "ErrorSummary",
+    "FieldCard",
+    "Flex",
+    "Grid",
+    "Hidden",
+    "Highlight",
+    "IconButton",
+    "Inline",
+    "InlineLoading",
     "Input",
+    "Link",
+    "LoadingState",
     "Modal",
+    "Notification",
+    "PanelSection",
+    "PanelStack",
     "Portal",
+    "ProgressBar",
+    "ProgressIndicator",
+    "Quote",
+    "Rating",
+    "Row",
     "SelectableRow",
+    "SkeletonText",
+    "Stack",
+    "StatusDot",
     "Tabs",
     "ThemeProvider",
+    "Tile",
+    "Timeline",
+    "Toast",
   ]);
   assert.deepEqual(sourceModules().map((file) => file.replace(/\.tsx$/, "")).sort(), manifest.modules.map((row) => row.module).sort());
 });
@@ -34,6 +71,47 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("ChatComposer"), "P4c");
   assert.deepEqual(lots.get("Portal"), "P4c");
   assert.deepEqual(lots.get("ThemeProvider"), "P4c");
+  assert.deepEqual(lots.get("PanelStack"), "P4c");
+  for (const name of [
+    "Accordion",
+    "Alert",
+    "AspectRatio",
+    "Autosave",
+    "ButtonGroup",
+    "Card",
+    "Col",
+    "Collapsible",
+    "Container",
+    "CopyButton",
+    "Divider",
+    "EmptyState",
+    "ErrorSummary",
+    "FieldCard",
+    "Flex",
+    "Grid",
+    "Hidden",
+    "Highlight",
+    "IconButton",
+    "Inline",
+    "InlineLoading",
+    "Link",
+    "LoadingState",
+    "Notification",
+    "PanelSection",
+    "ProgressBar",
+    "ProgressIndicator",
+    "Quote",
+    "Rating",
+    "Row",
+    "SkeletonText",
+    "Stack",
+    "StatusDot",
+    "Tile",
+    "Timeline",
+    "Toast",
+  ]) {
+    assert.deepEqual(lots.get(name), "P1");
+  }
   const hardSet = manifest.modules.filter((row) => row.hardSet).map((row) => row.module);
   assert.deepEqual(hardSet.sort(), ["Portal", "ThemeProvider"]);
 });

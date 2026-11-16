@@ -1,7 +1,7 @@
 {
   "componentId": "ordered-list",
   "contractSource": "derived",
-  "digest": "sha256:920baa4b9ddb6ca4dc4e2f793365e9e24f3f37d388077c3a6c1741e120ba78ca",
+  "digest": "sha256:36b9c0a2ec1d283cb3b331a56f449ab94953d7c4601a0ee0d2d47ee12c159f7c",
   "entryDigest": "sha256:129fc61e20d0fcd7fb362b9f80e6bf6f7aeaa0f47732a253f513861577ea96ef",
   "format": "component-contract/v1",
   "frameworks": {
@@ -117,7 +117,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OrderedListProps",

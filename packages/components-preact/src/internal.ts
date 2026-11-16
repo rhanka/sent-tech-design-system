@@ -3,7 +3,57 @@
  * functions of `catalog.tsx`; here they are one runtime-neutral module (hooks
  * only), emitted to React unchanged apart from its specifiers.
  */
+import type { CSSProperties } from "preact";
 import { useEffect, useState } from "preact/hooks";
+
+function toKebab(prop: string): string {
+  if (prop.startsWith("--")) return prop;
+  return prop.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+}
+
+function serializeStyle(base: CSSProperties | undefined): string {
+  if (!base) return "";
+  let text = "";
+  for (const [key, value] of Object.entries(base)) {
+    if (value == null || value === "") continue;
+    text += `${toKebab(key)}:${String(value)};`;
+  }
+  return text;
+}
+
+/**
+ * Merges a computed base style with a consumer `style` that may be an object,
+ * a CSS string, or a signal holding either. A signal-like holder (`"peek"`
+ * in the value, the `@preact/signals` read shape) is unwrapped without
+ * importing signals, so this module stays runtime-neutral; the `.value` read
+ * in render subscribes the component when signals are loaded. A string
+ * consumer style is appended to the serialised base declarations; an object
+ * wins over the base on conflict; nullish passes the base through.
+ */
+export function mergeStyle(
+  base: CSSProperties | undefined,
+  incoming: unknown,
+): CSSProperties | string | undefined {
+  let value: unknown = incoming;
+  if (typeof value === "object" && value !== null && "peek" in value) {
+    try {
+      value = (value as unknown as { value: unknown }).value;
+    } catch {
+      value = undefined;
+    }
+  }
+  if (value == null) return base;
+  if (typeof value === "string") {
+    if (value === "") return base;
+    const baseText = serializeStyle(base);
+    if (!baseText) return value;
+    return `${baseText}${value.endsWith(";") ? value : `${value};`}`;
+  }
+  if (typeof value === "object") {
+    return { ...(base as Record<string, unknown>), ...(value as Record<string, unknown>) } as CSSProperties;
+  }
+  return base;
+}
 
 export function text(value: unknown): string {
   if (value === null || value === undefined) return "";

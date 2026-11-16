@@ -1,7 +1,7 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:56922d94b7e6654e57f5d0e97c3860ffcabcab7c8cf6705f35635272656d278e",
+  "digest": "sha256:e535ddfa2e1c4e4bb7073ef3f672bdc9ba8d478ea3ecb78e591f70c83e3a524c",
   "entryDigest": "sha256:a617a212b3efd0b1c74c0f8662cd8adbd4a6d97d370e805bbddc302848e239cc",
   "format": "component-contract/v1",
   "frameworks": {
@@ -118,7 +118,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageStatusBadgeProps",

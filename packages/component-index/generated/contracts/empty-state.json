@@ -1,7 +1,7 @@
 {
   "componentId": "empty-state",
   "contractSource": "derived",
-  "digest": "sha256:3edd0b677ece33a17d2029d140e55db37909e14c2e29f68433115cd900cd9471",
+  "digest": "sha256:d0c2909605b7c0dd864b8e89930c5f1615ff56aafacdebf04b816a0b316fd4d9",
   "entryDigest": "sha256:f6038876af8de3f12fb2b6af79894833952c9d492d04e15c18c604f8a9a6d970",
   "format": "component-contract/v1",
   "frameworks": {
@@ -98,7 +98,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EmptyStateProps",

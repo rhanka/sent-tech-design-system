@@ -235,7 +235,7 @@ function pct(value: number, min = 0, max = 100): number {
 }
 
 export type AccordionItem = { id?: string; title: React.ReactNode; content: React.ReactNode; disabled?: boolean };
-export type AccordionProps = React.HTMLAttributes<HTMLDivElement> & {
+export type AccordionProps = Omit<React.HTMLAttributes<HTMLDivElement>, "onChange"> & {
   items: AccordionItem[];
   openIds?: string[];
   defaultOpenIds?: string[];
