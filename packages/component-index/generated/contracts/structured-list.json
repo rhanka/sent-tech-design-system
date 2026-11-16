@@ -1,7 +1,7 @@
 {
   "componentId": "structured-list",
   "contractSource": "derived",
-  "digest": "sha256:66e30b8705cd3b911e3d21e84a38535677b885fcff8e6aca167d55dc48bf9fe5",
+  "digest": "sha256:25cd94dd2eabe61368dd10a2efd89f84ece3d72823c1bfb64dbf9992f0c5456f",
   "entryDigest": "sha256:43c40465d804db48d0599a555ba5ee2fe2ea48c21a412161e5e8ddae154c0156",
   "format": "component-contract/v1",
   "frameworks": {
@@ -148,7 +148,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StructuredListProps",

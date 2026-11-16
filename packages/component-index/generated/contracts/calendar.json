@@ -1,7 +1,7 @@
 {
   "componentId": "calendar",
   "contractSource": "derived",
-  "digest": "sha256:cb852031d9142a72db461e3d9e0b59f3414ec77fda2cb345be0af1c6c4cd1e25",
+  "digest": "sha256:ed72feaf4c545fd89d403bd7ba99b6e585c624870e2951442819d283b9fae1fd",
   "entryDigest": "sha256:ee8ea5624d5b6747fba0280d7ad6b5d0f276820c0b93941c280934b93ea2c530",
   "format": "component-contract/v1",
   "frameworks": {
@@ -265,7 +265,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CalendarProps",
