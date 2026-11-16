@@ -1,5 +1,6 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type StatusDotTone = "neutral" | "info" | "success" | "warning" | "error";
 
@@ -14,7 +15,7 @@ export type StatusDotProps = Omit<HTMLAttributes<HTMLSpanElement>, "className" |
   pulse?: boolean;
   /** Si fourni, rend le point + ce texte inline (un StatusIndicator). */
   label?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /**

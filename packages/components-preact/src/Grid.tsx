@@ -1,7 +1,9 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { spacingToken } from "./Flex.js";
+import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type GridProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   /** Number of equal columns: `repeat(columns, minmax(0, 1fr))`. */
@@ -14,7 +16,7 @@ export type GridProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   /** Spacing scale step (0..12) mapped to `--st-spacing-*`. */
   gap?: number;
   as?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /** Resolve the `grid-template-columns` value. `minItemWidth` (responsive
@@ -36,14 +38,16 @@ export function gridTemplateColumns(
 export const Grid = forwardRef<HTMLElement, GridProps>(
   ({ columns, minItemWidth, gap, as = "div", className, style, children, ...rest }, ref) => {
     const Tag: any = as;
-    const mergedStyle: CSSProperties = {
-      display: "grid",
-      gridTemplateColumns: gridTemplateColumns(columns, minItemWidth),
-      gap: spacingToken(gap),
-      ...(style as CSSProperties | undefined),
-    };
+    const mergedStyle = mergeStyle(
+      {
+        display: "grid",
+        gridTemplateColumns: gridTemplateColumns(columns, minItemWidth),
+        gap: spacingToken(gap),
+      } as CSSProperties,
+      style,
+    );
     return (
-      <Tag {...rest} ref={ref} className={classNames("st-grid", className)} style={mergedStyle}>
+      <Tag {...rest} ref={ref} className={classNames("st-grid", className)} style={mergedStyle as CSSProperties | undefined}>
         {children}
       </Tag>
     );

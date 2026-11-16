@@ -3,6 +3,8 @@ import type { CSSProperties } from "preact";
 import { useEffect, useRef, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type PanelStackShape = "split-primary" | "sticky-item";
 
@@ -25,7 +27,7 @@ export type PanelStackProps = {
   /** Accessible name for the stack region. */
   label?: string;
   /** sticky-item, controlled: id of the expanded section. */
-  expanded?: string | null;
+  expanded?: MaybeSignal<string | null>;
   /** sticky-item, uncontrolled seed. */
   defaultExpanded?: string | null;
   onExpandedChange?: (id: string | null) => void;
@@ -35,7 +37,7 @@ export type PanelStackProps = {
    * is expanded either — to the first registered section, so the stack still
    * never degrades to zero scroll owners.
    */
-  primary?: string;
+  primary?: MaybeSignal<string>;
   /** Usable floor for the primary section, in px. While the primary sits above it the
       primary absorbs overflow; once it would drop below, a secondary auto-collapses
       instead of compressing the primary further. Default 160. */
@@ -45,7 +47,7 @@ export type PanelStackProps = {
    * supported — see that constant's doc comment for why.
    */
   children?: ComponentChildren;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /**
@@ -145,14 +147,16 @@ const PRIMARY_MIN_BLOCK_SIZE_PX = 160;
 export function PanelStack({
   shape = "sticky-item",
   label,
-  expanded,
+  expanded: expandedInput,
   defaultExpanded = null,
   onExpandedChange,
-  primary,
+  primary: primaryInput,
   primaryMinHeight = PRIMARY_MIN_BLOCK_SIZE_PX,
   children,
   className,
 }: PanelStackProps) {
+  const expanded = useValue(expandedInput);
+  const primary = useValue(primaryInput);
   const stackElRef = useRef<HTMLDivElement | null>(null);
 
   // --- Mount-order registry --------------------------------------------
@@ -223,7 +227,7 @@ export function PanelStack({
   const [version, setVersion] = useState(0);
   const forceRender = () => setVersion((n) => n + 1);
 
-  const controlled = expanded !== undefined;
+  const controlled = expandedInput !== undefined;
 
   function getOrderedEntries(): Entry[] {
     return sortByDom(entriesRef.current);

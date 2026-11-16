@@ -1,6 +1,8 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 type Tone = "neutral" | "info" | "success" | "warning" | "error";
 type Size = "sm" | "md" | "lg";
@@ -8,7 +10,7 @@ type Size = "sm" | "md" | "lg";
 export type ProgressBarProps = HTMLAttributes<HTMLDivElement> & {
   label?: ComponentChildren;
   helperText?: ComponentChildren;
-  value?: number;
+  value?: MaybeSignal<number>;
   max?: number;
   tone?: Tone;
   size?: Size;
@@ -16,7 +18,8 @@ export type ProgressBarProps = HTMLAttributes<HTMLDivElement> & {
   showValue?: boolean;
   valueText?: string;
 };
-export function ProgressBar({ label, helperText, value = 0, max = 100, tone = "neutral", size = "md", indeterminate = false, showValue = false, valueText, className, ...rest }: ProgressBarProps) {
+export function ProgressBar({ label, helperText, value: valueInput = 0, max = 100, tone = "neutral", size = "md", indeterminate = false, showValue = false, valueText, className, ...rest }: ProgressBarProps) {
+  const value = useValue(valueInput);
   const clamped = max <= 0 ? 0 : Math.min(Math.max(value, 0), max);
   const percent = indeterminate ? 0 : (clamped / max) * 100;
   const displayValue = valueText ? valueText : indeterminate ? "" : `${Math.round(percent)}%`;

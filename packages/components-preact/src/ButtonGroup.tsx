@@ -1,6 +1,8 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type ButtonGroupOrientation = "horizontal" | "vertical";
 export type ButtonGroupSize = "sm" | "md" | "lg";
@@ -15,7 +17,7 @@ export type ButtonGroupProps = Omit<HTMLAttributes<HTMLDivElement>, "className">
   size?: ButtonGroupSize;
   /** Étiquette a11y du groupe. */
   label?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
@@ -30,7 +32,13 @@ export const ButtonGroup = forwardRef<HTMLDivElement, ButtonGroupProps>(
       className,
     );
     const gapValue = attached || gap == null ? undefined : `var(--st-spacing-${gap}, ${gap * 0.25}rem)`;
-    const mergedStyle = (gapValue != null ? { ...(style as CSSProperties | undefined), gap: gapValue } : style) as CSSProperties | undefined;
+    const normalized = mergeStyle(undefined, style);
+    const mergedStyle =
+      gapValue != null
+        ? typeof normalized === "string"
+          ? (`${normalized}${normalized.endsWith(";") ? "" : ";"}gap:${gapValue};` as unknown as CSSProperties)
+          : ({ ...(normalized as CSSProperties | undefined), gap: gapValue } as CSSProperties)
+        : (normalized as CSSProperties | undefined);
     return (
       <div
         {...rest}
