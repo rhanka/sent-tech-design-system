@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 
 // The provenance verifier compares each recorded entry against the file ON DISK,
@@ -12,22 +13,39 @@ const ledger = JSON.parse(
   readFileSync(new URL("../docs/graph-dataviz-m1-provenance.json", import.meta.url), "utf8"),
 );
 
+function localGitBlob(destination) {
+  try {
+    const buf = readFileSync(new URL(`../${destination}`, import.meta.url));
+    return createHash("sha1").update(`blob ${buf.length}\0`).update(buf).digest("hex");
+  } catch {
+    return null;
+  }
+}
+
 test("no adapted entry records the local hash as its upstream hash", () => {
-  const offenders = ledger.files
+  const shaOffenders = ledger.files
     .filter((f) => f.status?.startsWith("adapted-"))
     .filter((f) => f.sha256 && f.destinationSha256 && f.sha256 === f.destinationSha256)
     .map((f) => f.destination);
+  const blobOffenders = ledger.files
+    .filter((f) => f.status?.startsWith("adapted-"))
+    .filter((f) => {
+      if (!f.gitBlob) return false;
+      const localBlob = localGitBlob(f.destination);
+      return localBlob !== null && f.gitBlob === localBlob;
+    })
+    .map((f) => f.destination);
   assert.deepEqual(
-    offenders,
+    [...shaOffenders, ...blobOffenders],
     [],
-    `an adapted entry must keep the upstream source hash in sha256 and the local state in destinationSha256:\n  ${offenders.join("\n  ")}`,
+    `an adapted entry must keep the upstream source hash in sha256/gitBlob and the local state in destinationSha256:\n  ${[...shaOffenders, ...blobOffenders].join("\n  ")}`,
   );
 });
 
 test("every adapted entry carries both hashes and an upstream commit", () => {
   const offenders = ledger.files
     .filter((f) => f.status?.startsWith("adapted-"))
-    .filter((f) => !f.sha256 || !f.destinationSha256 || !f.commit || !f.repository)
+    .filter((f) => !f.sha256 || !f.destinationSha256 || !f.commit || !f.repository || (f.source && !f.gitBlob))
     .map((f) => f.destination);
   assert.deepEqual(offenders, [], `incomplete adapted entries:\n  ${offenders.join("\n  ")}`);
 });
