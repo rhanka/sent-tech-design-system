@@ -1,5 +1,12 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+// Side-effect: installs the options.vnode SVG presentation-attribute
+// normalisation in runtime.ts. FieldCard renders intrinsic camelCase SVG
+// attributes but otherwise references runtime only via `import type`, which
+// TypeScript erases — without this import a bundler applying `sideEffects`
+// barrel optimisation (or a direct deep import) would never evaluate
+// runtime.js and strokeWidth would revert to broken camelCase attributes.
+import "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
 import type { MaybeSignal } from "./signals.js";
 

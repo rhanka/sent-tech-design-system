@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { cleanup, render, screen } from "@testing-library/preact";
+import { cleanup, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, describe, expect, it } from "vitest";
 import { Accordion } from "./Accordion.js";
 import { AspectRatio } from "./AspectRatio.js";
@@ -162,6 +162,151 @@ describe("P1 edges (Carbon findings 2-4)", () => {
     expect(screen.getByRole("button", { name: "B" }).getAttribute("aria-expanded")).toBe("false");
     expect(screen.getByText("body-a")).toBeTruthy();
     expect(screen.getByText("body-b")).toBeTruthy();
+  });
+
+  it("PanelStack re-renders PanelSection children when an expanded signal mutates after mount", async () => {
+    const expanded = signal<string | null>("a");
+    const { container } = render(
+      <PanelStack shape="sticky-item" expanded={expanded}>
+        <PanelSection id="a" label="A">body-a</PanelSection>
+        <PanelSection id="b" label="B">body-b</PanelSection>
+      </PanelStack>,
+    );
+    expect(screen.getByRole("button", { name: "A" }).getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getByRole("button", { name: "B" }).getAttribute("aria-expanded")).toBe("false");
+    expanded.value = "b";
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "B" }).getAttribute("aria-expanded")).toBe("true"),
+    );
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: "A" }).getAttribute("aria-expanded")).toBe("false"),
+    );
+    await waitFor(() =>
+      expect(container.querySelector('[data-panel-section-id="b"]')?.className).toContain(
+        "st-panelSection--scrollOwner",
+      ),
+    );
+  });
+
+  it("PanelStack re-renders PanelSection children when a primary signal mutates after mount", async () => {
+    const primary = signal("a");
+    const { container } = render(
+      <PanelStack shape="split-primary" primary={primary}>
+        <PanelSection id="a" label="A">body-a</PanelSection>
+        <PanelSection id="b" label="B">body-b</PanelSection>
+      </PanelStack>,
+    );
+    expect(
+      container.querySelector('[data-panel-section-id="a"] .st-panelSection__title--primary'),
+    ).toBeTruthy();
+    expect(screen.getByRole("button", { name: "B" })).toBeTruthy();
+    primary.value = "b";
+    await waitFor(() =>
+      expect(
+        container.querySelector('[data-panel-section-id="b"] .st-panelSection__title--primary'),
+      ).toBeTruthy(),
+    );
+    await waitFor(() => expect(screen.getByRole("button", { name: "A" })).toBeTruthy());
+  });
+
+  it("Accordion follows an openIds signal mutated after mount", async () => {
+    const openIds = signal(["accordion-0"]);
+    render(
+      <Accordion
+        items={[
+          { title: "A", content: "content-a" },
+          { title: "B", content: "content-b" },
+        ]}
+        openIds={openIds}
+      />,
+    );
+    expect(screen.getByText("content-a")).toBeTruthy();
+    expect(screen.queryByText("content-b")).toBeNull();
+    openIds.value = ["accordion-1"];
+    await waitFor(() => expect(screen.queryByText("content-a")).toBeNull());
+    await waitFor(() => expect(screen.getByText("content-b")).toBeTruthy());
+  });
+
+  it("Collapsible follows an open signal mutated after mount", async () => {
+    const open = signal(false);
+    const { container } = render(
+      <Collapsible title="T" open={open}>
+        body
+      </Collapsible>,
+    );
+    expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("false");
+    expect(container.querySelector(".st-collapsible__region")).toBeNull();
+    open.value = true;
+    await waitFor(() => expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("true"));
+    await waitFor(() => expect(container.querySelector(".st-collapsible__region")?.textContent).toBe("body"));
+  });
+
+  it("Rating follows a value signal mutated after mount", async () => {
+    const value = signal(2);
+    render(<Rating value={value} label="Note" onChange={() => {}} />);
+    const stars = screen.getAllByRole("radio");
+    expect(stars[1].getAttribute("aria-checked")).toBe("true");
+    value.value = 4;
+    await waitFor(() => expect(screen.getAllByRole("radio")[3].getAttribute("aria-checked")).toBe("true"));
+    await waitFor(() => expect(screen.getAllByRole("radio")[1].getAttribute("aria-checked")).toBe("false"));
+  });
+
+  it("Tile follows a selected signal mutated after mount", async () => {
+    const selected = signal(false);
+    const { container } = render(<Tile variant="selectable" selected={selected} title="T" />);
+    expect((container.querySelector('input[type="checkbox"]') as HTMLInputElement).checked).toBe(false);
+    selected.value = true;
+    await waitFor(() =>
+      expect((container.querySelector('input[type="checkbox"]') as HTMLInputElement).checked).toBe(true),
+    );
+    await waitFor(() => expect(container.querySelector(".st-tile")?.className).toContain("st-tile--selected"));
+  });
+
+  it("ProgressBar follows a value signal mutated after mount", async () => {
+    const value = signal(10);
+    render(<ProgressBar value={value} label="L" />);
+    expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("10");
+    value.value = 70;
+    await waitFor(() => expect(screen.getByRole("progressbar").getAttribute("aria-valuenow")).toBe("70"));
+  });
+
+  it("Autosave follows status and lastSaved signals mutated after mount", async () => {
+    const status = signal<"saving" | "saved" | "error">("saving");
+    const lastSaved = signal("2026-01-01T00:00:00Z");
+    const { container } = render(<Autosave status={status} lastSaved={lastSaved} onRetry={() => {}} />);
+    expect(container.querySelector('[role="status"]')).toBeTruthy();
+    expect(container.querySelector(".st-autosave__time")).toBeNull();
+    status.value = "saved";
+    await waitFor(() => expect(container.querySelector(".st-autosave__time")).toBeTruthy());
+    status.value = "error";
+    await waitFor(() => expect(container.querySelector('[role="alert"]')).toBeTruthy());
+    await waitFor(() => expect(screen.getByRole("button", { name: "Réessayer" })).toBeTruthy());
+  });
+
+  it("InlineLoading follows a status signal mutated after mount", async () => {
+    const status = signal<"active" | "success">("active");
+    const { container } = render(<InlineLoading status={status} />);
+    expect((container.firstChild as HTMLElement).className).toContain("st-inlineLoading--active");
+    status.value = "success";
+    await waitFor(() =>
+      expect((container.firstChild as HTMLElement).className).toContain("st-inlineLoading--success"),
+    );
+  });
+
+  it("Flex follows className and style signals mutated after mount", async () => {
+    const cls = signal("x-before");
+    const style = signal({ color: "red" });
+    const { container } = render(
+      <Flex data-testid="e-flex-mut" className={cls} style={style}>
+        x
+      </Flex>,
+    );
+    expect((container.firstChild as HTMLElement).className).toContain("x-before");
+    expect((container.firstChild as HTMLElement).style.color).toBe("red");
+    cls.value = "x-after";
+    style.value = { color: "blue" };
+    await waitFor(() => expect((container.firstChild as HTMLElement).className).toContain("x-after"));
+    await waitFor(() => expect((container.firstChild as HTMLElement).style.color).toBe("blue"));
   });
 
   it("mergeStyle keeps the base for nullish, merges objects, concatenates strings and unwraps signals", () => {
