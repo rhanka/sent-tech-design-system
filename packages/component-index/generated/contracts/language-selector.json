@@ -1,7 +1,7 @@
 {
   "componentId": "language-selector",
   "contractSource": "derived",
-  "digest": "sha256:75c491017f9cbf0e2e5cccf4f02f2ea941b68f7849fad77e91684bd445e7bdd6",
+  "digest": "sha256:ab263b167e935f398198e0d4cf951e3f5ac2bb836825a6ad23d75e21e72d2c06",
   "entryDigest": "sha256:104610ab80206b25b183d8d58d2f041a59b1d07955cbcc4a12a5ca1a8512e612",
   "format": "component-contract/v1",
   "frameworks": {
@@ -148,7 +148,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LanguageSelectorProps",

@@ -28,10 +28,19 @@ const chart = () => (
 
 describe("Preact core vs React: runtime gaps measured by S1", () => {
   it("leaves camelCase SVG presentation attributes of an element untranslated", () => {
-    const { container } = render(chart());
-    expect(container.querySelector("line")?.getAttributeNames()).toEqual(["strokeWidth", "strokeDasharray", "strokeLinecap"]);
-    expect(container.querySelector("text")?.getAttribute("text-anchor")).toBeNull();
-    expect(container.querySelector("g")?.getAttribute("clip-path")).toBeNull();
+    // Raw Preact core, without the package runtime: `src/runtime.ts` installs
+    // the vnode normalisation on import, so suspend it here to keep measuring
+    // the underlying gap this probe records.
+    const previous = options.vnode;
+    options.vnode = undefined;
+    try {
+      const { container } = render(chart());
+      expect(container.querySelector("line")?.getAttributeNames()).toEqual(["strokeWidth", "strokeDasharray", "strokeLinecap"]);
+      expect(container.querySelector("text")?.getAttribute("text-anchor")).toBeNull();
+      expect(container.querySelector("g")?.getAttribute("clip-path")).toBeNull();
+    } finally {
+      options.vnode = previous;
+    }
   });
 
   it("a core-only vnode hook translates them, keeping the genuine camelCase attributes (candidate for P0)", () => {
