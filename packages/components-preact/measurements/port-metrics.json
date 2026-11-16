@@ -38,7 +38,7 @@
         "lot": "P2",
         "reactSource": "Input.tsx",
         "reactLines": 55,
-        "preactLines": 62,
+        "preactLines": 63,
         "total": 289,
         "touched": 19,
         "emissionRewrites": 2,
@@ -126,7 +126,7 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 687,
+      "preactLines": 688,
       "total": 3521,
       "touched": 170,
       "emissionRewrites": 16,
