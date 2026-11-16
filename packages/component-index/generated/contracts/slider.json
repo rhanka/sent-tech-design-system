@@ -1,7 +1,7 @@
 {
   "componentId": "slider",
   "contractSource": "derived",
-  "digest": "sha256:91a1dc84fffc4bb38adcbd955d54623d0bcd2bd7cd9c3fe785b7c1ceab73c92a",
+  "digest": "sha256:bc123f581c0def70fffb457bace9d62611ab0c4d6512b9af4c0c559ddc94b753",
   "entryDigest": "sha256:75f9edad57c63046ded1efe4a1f239d7e258eee245c603307af7267f5ba8cedc",
   "format": "component-contract/v1",
   "frameworks": {
@@ -166,7 +166,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SliderProps",

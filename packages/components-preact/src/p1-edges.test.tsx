@@ -1,6 +1,6 @@
 import { signal } from "@preact/signals";
-import { cleanup, render, screen, waitFor } from "@testing-library/preact";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Accordion } from "./Accordion.js";
 import { AspectRatio } from "./AspectRatio.js";
 import { Autosave } from "./Autosave.js";
@@ -383,5 +383,78 @@ describe("P1 edges (Carbon findings 2-4)", () => {
     expect(el2.style.color).toBe("red");
     expect(el2.style.gap).toContain("var(--st-spacing-4");
     fromString.unmount();
+  });
+
+  it("auto-collapses a secondary on a primary signal change without a new measurement (forceRender branch)", async () => {
+    type FakeResizeEntry = { target: Element; contentRect: { height: number } };
+    class FakeResizeObserver {
+      static instances: FakeResizeObserver[] = [];
+      private observed = new Set<Element>();
+      constructor(private callback: (entries: FakeResizeEntry[]) => void) {
+        FakeResizeObserver.instances.push(this);
+      }
+      observe(target: Element) {
+        this.observed.add(target);
+      }
+      unobserve(target: Element) {
+        this.observed.delete(target);
+      }
+      disconnect() {
+        this.observed.clear();
+      }
+      deliver(target: Element, height: number) {
+        if (this.observed.has(target)) this.callback([{ target, contentRect: { height } }]);
+      }
+    }
+    const deliver = (target: Element | null, height: number) => {
+      if (!target) throw new Error("missing observed target for the fake measurement");
+      for (const instance of FakeResizeObserver.instances) instance.deliver(target, height);
+    };
+    vi.stubGlobal("ResizeObserver", FakeResizeObserver);
+    try {
+      FakeResizeObserver.instances.length = 0;
+      const primary = signal("a");
+      const { container } = render(
+        <PanelStack shape="split-primary" primary={primary}>
+          <PanelSection id="a" label="A">body-a</PanelSection>
+          <PanelSection id="b" label="B">body-b</PanelSection>
+          <PanelSection id="c" label="C">body-c</PanelSection>
+        </PanelStack>,
+      );
+      // Expand secondary "c" so the decision has something to collapse later.
+      fireEvent.click(screen.getByRole("button", { name: "C" }));
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: "C" }).getAttribute("aria-expanded")).toBe("true"),
+      );
+      // Seed tight measurements: with primary "a", 310px remain for the
+      // primary floor of 160px, so nothing collapses yet.
+      const root = container.querySelector(".st-panelStack") as HTMLElement;
+      const sectionEl = (id: string) =>
+        container.querySelector(`[data-panel-section-id="${id}"]`) as HTMLElement;
+      const headerEl = (id: string) =>
+        sectionEl(id).querySelector(".st-panelSection__header") as HTMLElement;
+      deliver(root, 500);
+      deliver(headerEl("a"), 40);
+      deliver(sectionEl("a"), 300);
+      deliver(sectionEl("b"), 50);
+      deliver(sectionEl("c"), 100);
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: "C" }).getAttribute("aria-expanded")).toBe("true"),
+      );
+      // Switch the primary to "b": only 60px remain (500 - 40 - 300 - 100),
+      // so the [primary, shape] effect must collapse "c" and force a render
+      // with NO new measurement delivered afterwards.
+      primary.value = "b";
+      await waitFor(() =>
+        expect(screen.getByRole("button", { name: "C" }).getAttribute("aria-expanded")).toBe("false"),
+      );
+      await waitFor(() =>
+        expect(
+          container.querySelector('[data-panel-section-id="c"] .st-panelSection__title--primary'),
+        ).toBeNull(),
+      );
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });
