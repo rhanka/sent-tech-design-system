@@ -1,8 +1,3 @@
-// Belt-and-suspenders: guarantees runtime.ts (options.vnode SVG normalisation)
-// is evaluated even when a bundler resolves the barrel without any
-// forwardRef component in the import closure. Emitted to react/runtime.ts,
-// which is side-effect-free, so the React leg is unaffected.
-import "./runtime.js";
 export { Button } from "./Button.js";
 export type { ButtonProps, ButtonSize, ButtonVariant } from "./Button.js";
 export { Input } from "./Input.js";
@@ -93,3 +88,87 @@ export { Timeline } from "./Timeline.js";
 export type { TimelineProps, TimelineItem, TimelineTone, TimelineOrientation } from "./Timeline.js";
 export { Toast } from "./Toast.js";
 export type { ToastProps } from "./Toast.js";
+export { Calendar } from "./Calendar.js";
+export type { CalendarProps, CalendarValue } from "./Calendar.js";
+export { Checkbox } from "./Checkbox.js";
+export type { CheckboxProps } from "./Checkbox.js";
+export { CheckboxGroup } from "./CheckboxGroup.js";
+export type { CheckboxGroupProps, CheckboxGroupOption } from "./CheckboxGroup.js";
+export { Combobox } from "./Combobox.js";
+export type { ComboboxProps, ComboboxOption } from "./Combobox.js";
+export { ContentSwitcher } from "./ContentSwitcher.js";
+export type { ContentSwitcherProps } from "./ContentSwitcher.js";
+export { DatePicker } from "./DatePicker.js";
+export type { DatePickerProps, DatePickerRange, DatePickerValue } from "./DatePicker.js";
+export { Dropdown } from "./Dropdown.js";
+export type { DropdownProps, DropdownOption } from "./Dropdown.js";
+export { FileUploader } from "./FileUploader.js";
+export type { FileUploaderProps, FileUploadItem, FileUploadStatus } from "./FileUploader.js";
+export { Form } from "./Form.js";
+export type { FormProps } from "./Form.js";
+export { FormGroup } from "./FormGroup.js";
+export type { FormGroupProps } from "./FormGroup.js";
+export { Menu } from "./Menu.js";
+export type { MenuProps, MenuItem, MenuActionItem, MenuSubmenuSide } from "./Menu.js";
+export { MenuPopover } from "./MenuPopover.js";
+export type { MenuPopoverProps, MenuPopoverPlacement, MenuPopoverAlign } from "./MenuPopover.js";
+export { MultiSelect } from "./MultiSelect.js";
+export type { MultiSelectProps, MultiSelectOption } from "./MultiSelect.js";
+export { NumberInput } from "./NumberInput.js";
+export type { NumberInputProps } from "./NumberInput.js";
+export { PasswordInput } from "./PasswordInput.js";
+export type { PasswordInputProps } from "./PasswordInput.js";
+export { Radio } from "./Radio.js";
+export type { RadioProps } from "./Radio.js";
+export { RadioGroup } from "./RadioGroup.js";
+export type { RadioGroupProps, RadioGroupOption } from "./RadioGroup.js";
+export { RangeSlider } from "./RangeSlider.js";
+export type { RangeSliderProps, RangeSliderSize } from "./RangeSlider.js";
+export { Search } from "./Search.js";
+export type { SearchProps } from "./Search.js";
+export { Select } from "./Select.js";
+export type { SelectProps } from "./Select.js";
+export { SelectableList } from "./SelectableList.js";
+export type { SelectableListProps } from "./SelectableList.js";
+export { Slider } from "./Slider.js";
+export type { SliderProps } from "./Slider.js";
+export { Switch } from "./Switch.js";
+export type { SwitchProps } from "./Switch.js";
+export { Textarea } from "./Textarea.js";
+export type { TextareaProps } from "./Textarea.js";
+export { TileGroup } from "./TileGroup.js";
+export type { TileGroupProps, TileGroupItem } from "./TileGroup.js";
+export { TimePicker } from "./TimePicker.js";
+export type { TimePickerProps, TimePickerFormat } from "./TimePicker.js";
+export { TimeRangePicker } from "./TimeRangePicker.js";
+export type { TimeRangePickerProps } from "./TimeRangePicker.js";
+export { Toggle } from "./Toggle.js";
+export type { ToggleProps } from "./Toggle.js";
+export {
+  computeSubMenuPosition,
+  pointInSafeTriangle,
+  toContainingBlockPosition,
+} from "./menu-cascade.js";
+export type {
+  CascadePoint,
+  CascadeRect,
+  ComputeSubMenuPositionInput,
+  ResolvedSubMenuSide,
+  SubMenuPosition,
+  SubMenuSide,
+} from "./menu-cascade.js";
+export {
+  composeAbsolute,
+  formatPresetLabel,
+  formatTriggerLabel,
+  parsePresetMs,
+  resolveRelative,
+  splitAbsolute,
+} from "./timeRange.js";
+export type {
+  AbsoluteDraft,
+  AbsoluteSplit,
+  TimeRange,
+  TimeRangeMode,
+  TimeRangePreset,
+} from "./timeRange.js";

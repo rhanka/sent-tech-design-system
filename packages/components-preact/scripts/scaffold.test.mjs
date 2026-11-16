@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lot P1, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -17,17 +17,27 @@ test("coverage manifest owns the spike modules plus lot P1, no more", () => {
     "Autosave",
     "Button",
     "ButtonGroup",
+    "Calendar",
     "Card",
     "ChatComposer",
+    "Checkbox",
+    "CheckboxGroup",
     "Col",
     "Collapsible",
+    "Combobox",
     "Container",
+    "ContentSwitcher",
     "CopyButton",
+    "DatePicker",
     "Divider",
+    "Dropdown",
     "EmptyState",
     "ErrorSummary",
     "FieldCard",
+    "FileUploader",
     "Flex",
+    "Form",
+    "FormGroup",
     "Grid",
     "Hidden",
     "Highlight",
@@ -37,25 +47,43 @@ test("coverage manifest owns the spike modules plus lot P1, no more", () => {
     "Input",
     "Link",
     "LoadingState",
+    "Menu",
+    "MenuPopover",
     "Modal",
+    "MultiSelect",
     "Notification",
+    "NumberInput",
     "PanelSection",
     "PanelStack",
+    "PasswordInput",
     "Portal",
     "ProgressBar",
     "ProgressIndicator",
     "Quote",
+    "Radio",
+    "RadioGroup",
+    "RangeSlider",
     "Rating",
     "Row",
+    "Search",
+    "Select",
+    "SelectableList",
     "SelectableRow",
     "SkeletonText",
+    "Slider",
     "Stack",
     "StatusDot",
+    "Switch",
     "Tabs",
+    "Textarea",
     "ThemeProvider",
     "Tile",
+    "TileGroup",
+    "TimePicker",
+    "TimeRangePicker",
     "Timeline",
     "Toast",
+    "Toggle",
   ]);
   assert.deepEqual(sourceModules().map((file) => file.replace(/\.tsx$/, "")).sort(), manifest.modules.map((row) => row.module).sort());
 });
@@ -68,6 +96,38 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("SelectableRow"), "P2");
   assert.deepEqual(lots.get("Modal"), "P3");
   assert.deepEqual(lots.get("Tabs"), "P3");
+  assert.deepEqual(lots.get("Menu"), "P3");
+  assert.deepEqual(lots.get("MenuPopover"), "P3");
+  assert.deepEqual(lots.get("ContentSwitcher"), "P3");
+  for (const name of [
+    "Calendar",
+    "Checkbox",
+    "CheckboxGroup",
+    "Combobox",
+    "DatePicker",
+    "Dropdown",
+    "FileUploader",
+    "Form",
+    "FormGroup",
+    "MultiSelect",
+    "NumberInput",
+    "PasswordInput",
+    "Radio",
+    "RadioGroup",
+    "RangeSlider",
+    "Search",
+    "Select",
+    "SelectableList",
+    "Slider",
+    "Switch",
+    "Textarea",
+    "TileGroup",
+    "TimePicker",
+    "TimeRangePicker",
+    "Toggle",
+  ]) {
+    assert.deepEqual(lots.get(name), "P2");
+  }
   assert.deepEqual(lots.get("ChatComposer"), "P4c");
   assert.deepEqual(lots.get("Portal"), "P4c");
   assert.deepEqual(lots.get("ThemeProvider"), "P4c");

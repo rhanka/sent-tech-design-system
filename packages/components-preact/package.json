@@ -12,10 +12,7 @@
   },
   "sideEffects": [
     "./dist/runtime.js",
-    "./dist/signals.js",
-    "./dist/index.js",
-    "./dist/FieldCard.js",
-    "./dist/Rating.js"
+    "./dist/signals.js"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

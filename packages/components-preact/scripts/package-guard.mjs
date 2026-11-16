@@ -67,18 +67,14 @@ export function checkPackaging(dir = packageDir) {
 
   // Bundler contract (spike section 2): both files install Preact hooks on
   // load and must survive tree-shaking even when none of their exports is used.
-  // FieldCard/Rating render intrinsic camelCase SVG attributes but reference
-  // runtime only via `import type` (erased); their explicit `import
-  // "./runtime.js"` side-effect import (plus the barrel belt-and-suspenders in
-  // index.js) guarantees the options.vnode normalisation is installed under
-  // sideEffects barrel optimisation or direct deep imports — so those modules
-  // are listed here as well.
+  // Modules that render intrinsic camelCase SVG attributes but reference
+  // runtime only via `import type` (erased) carry an explicit `import
+  // "./runtime.js"` side-effect import of their own (FieldCard, Rating), so no
+  // barrel entry is needed: the bundler retains `./dist/runtime.js` whenever
+  // it retains such a module.
   for (const entry of [
     "./dist/runtime.js",
     "./dist/signals.js",
-    "./dist/index.js",
-    "./dist/FieldCard.js",
-    "./dist/Rating.js",
   ]) {
     if (!manifest.sideEffects?.includes(entry)) {
       violations.push(`package.json: sideEffects must list ${entry}.`);

@@ -1,7 +1,7 @@
 {
   "componentId": "overflow-menu",
   "contractSource": "derived",
-  "digest": "sha256:e88204398119ff86b779924cbfec6e32274dd69b7d1400c7968bec748310a2e5",
+  "digest": "sha256:fefadb8f448007d7072e3a646e208b91970a740795917333d5dfe34ecfc00be9",
   "entryDigest": "sha256:2a0d9f073ab3032eb64a2251d11336b8a5ed3762ab1114aa281f05d9803fec5b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -434,7 +434,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OverflowMenuProps",

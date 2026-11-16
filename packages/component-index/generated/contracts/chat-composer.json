@@ -1,7 +1,7 @@
 {
   "componentId": "chat-composer",
   "contractSource": "derived",
-  "digest": "sha256:89d3893822e5725aa96ff4858c83e5b5bb16d31615ef02c06f0eaee7c69f68aa",
+  "digest": "sha256:04c34665bef5224b46eff9c3552c45fb51898e6e719596613c0dbbd62ec2994c",
   "entryDigest": "sha256:1a80cd184d940dafce82c9313f47790e25c1350fa8766d53dfe9b5525778c5cc",
   "format": "component-contract/v1",
   "frameworks": {
@@ -128,7 +128,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatComposerProps",
