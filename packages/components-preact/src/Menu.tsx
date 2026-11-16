@@ -17,6 +17,8 @@ import {
   type SubMenuSide,
 } from "./menu-cascade.js";
 import type { ComponentChildren, TargetedKeyboardEvent, TargetedPointerEvent } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 type ActionItem = { id?: string; value?: string; label: ComponentChildren; disabled?: boolean; variant?: "default" | "danger"; danger?: boolean; icon?: ComponentChildren; onClick?: () => void }
 
@@ -118,7 +120,8 @@ export function Menu({ items, dense = false, submenuSide = "auto", onSelect, cla
     menuInstanceCounter += 1;
     fallbackIdRef.current = `st-menu-${menuInstanceCounter}`;
   }
-  const rootId = hostContext?.rootMenuId ?? id ?? fallbackIdRef.current;
+  const resolvedId = useValue(id as MaybeSignal<string | undefined>);
+  const rootId = hostContext?.rootMenuId ?? resolvedId ?? fallbackIdRef.current;
 
   // Internal open state is an index path (never keys), so duplicate sibling
   // keys cannot open or close together (§2.3, D7).

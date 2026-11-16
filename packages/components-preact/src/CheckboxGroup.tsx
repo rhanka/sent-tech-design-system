@@ -49,7 +49,7 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>
     },
     ref,
   ) => {
-    const value = useValue(valueInput);
+    const value = useValue(valueInput) ?? [];
     const disabled = useValue(disabledInput) ?? false;
     const classes = classNames("st-checkboxGroup", `st-checkboxGroup--${orientation}`, className);
 

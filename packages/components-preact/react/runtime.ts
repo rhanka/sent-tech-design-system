@@ -16,6 +16,7 @@ export type ComponentElement = ReactElement;
 /** Event types handed to DOM handlers. */
 export type TargetedEvent<T extends EventTarget> = ChangeEvent<T & Element>;
 export type TargetedFocusEvent<T extends EventTarget> = FocusEvent<T>;
+export type TargetedInputEvent<T extends EventTarget> = InputEvent<T>;
 export type TargetedKeyboardEvent<T extends EventTarget> = KeyboardEvent<T>;
 export type TargetedMouseEvent<T extends EventTarget> = MouseEvent<T>;
 export type TargetedPointerEvent<T extends EventTarget> = PointerEvent<T>;

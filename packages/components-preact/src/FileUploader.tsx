@@ -85,7 +85,7 @@ export function FileUploader({
   const inputId = id ?? reactId;
   const invalid = useValue(invalidInput);
   const disabled = useValue(disabledInput) ?? false;
-  const items = useValue(itemsInput);
+  const items = useValue(itemsInput) ?? [];
   const isInvalid = invalid || Boolean(errorText);
   const effectiveTriggerLabel = triggerLabel ?? (multiple ? "Choose files" : "Choose file");
   const inputRef = useRef<HTMLInputElement>(null);

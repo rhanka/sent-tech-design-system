@@ -64,7 +64,7 @@ function compatRuntimeVariant() {
     [
       `export { forwardRef, useInsertionEffect, useSyncExternalStore } from "preact/compat";`,
       `export function textInput(handler) { return { onInput: (event) => handler(event.currentTarget.value) }; }`,
-      `export function textChange(handler) { return { onInput: handler }; }`,
+      `export function textChange(handler, onInput) { return { onInput: onInput ? (e) => { onInput(e); handler(e); } : handler }; }`,
       `export function focusWithin(handler) { return { onFocusIn: handler }; }`,
       "",
     ].join("\n"),
