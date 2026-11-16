@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type FieldCardVariant = "plain" | "bordered" | "accent";
 export type FieldCardTone =
@@ -29,7 +30,7 @@ export type FieldCardProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   commentCount?: number;
   /** Ouvre le fil de commentaires ; rend la pastille interactive. */
   onOpenComments?: () => void;
-  className?: string;
+  className?: MaybeSignal<string>;
   /** Corps de la carte. */
   children?: ComponentChildren;
 };

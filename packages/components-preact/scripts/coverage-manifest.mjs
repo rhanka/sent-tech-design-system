@@ -1,11 +1,11 @@
-// Coverage-manifest hook of lot P0 (PLAN section 2.9, workstream W3).
+// Coverage-manifest hook of lots P0/P1 (PLAN section 2.9, workstream W3).
 //
 // `coverage-manifest.json` is the fragment lot L1.5 reconciles into the
 // programme coverage manifest: one row per ported module with its owning W3
 // conversion lot, the three P5 adapters, and the semantic-mapping rows of the
 // port. This script is its check: it fails when the fragment drifts from the
 // tree it describes (unowned module, doubly-owned module, new module beyond
-// the eight of the spike, adapter set differing from the emission).
+// the spike plus lot P1, adapter set differing from the emission).
 //
 // Usage: `node scripts/coverage-manifest.mjs --check`
 import { existsSync, readFileSync, readdirSync } from "node:fs";
@@ -68,7 +68,7 @@ export function checkManifest(dir = packageDir, { adapters, baseRef } = {}) {
 
   // The manifest owns every component module of the source and nothing else:
   // a ported module with no row fails here, and so does a row with no module.
-  // This also freezes the lot scope: no component beyond the eight of S1.
+  // This also freezes the lot scope: no component beyond the spike plus lot P1.
   const onDisk = sourceModules(dir).map((file) => file.replace(/\.tsx$/, ""));
   for (const name of onDisk) {
     if (!seen.has(name)) violations.push(`${MANIFEST_FILENAME}: src/${name}.tsx has no owning row.`);

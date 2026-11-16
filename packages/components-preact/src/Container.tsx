@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type ContainerSize = "sm" | "md" | "lg" | "xl" | "full";
 
@@ -9,7 +10,7 @@ export type ContainerProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   /** Apply horizontal padding using the spacing scale. */
   padding?: boolean;
   as?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 export const Container = forwardRef<HTMLElement, ContainerProps>(

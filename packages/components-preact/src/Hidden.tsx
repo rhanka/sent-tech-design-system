@@ -1,6 +1,7 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type HiddenBreakpoint = "sm" | "md" | "lg" | "xl";
 
@@ -10,7 +11,7 @@ export type HiddenProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   /** Hide when viewport is at or wider than this breakpoint. */
   above?: HiddenBreakpoint;
   as?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 export const Hidden = forwardRef<HTMLElement, HiddenProps>(

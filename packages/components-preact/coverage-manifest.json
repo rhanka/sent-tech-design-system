@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "programmeLot": "P0",
+  "programmeLot": "P1",
   "workstream": "W3",
   "source": "src",
   "reactEmission": ".react-emit/src",
   "reference": {
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
-    "note": "React sources ported by spike S1 and measured in docs/preact-s1-spike.md. Same commit as scripts/port-metrics.mjs BASE_REF."
+    "note": "React sources ported by spike S1 and lot P1 and measured in docs/preact-s1-spike.md. Same commit as scripts/port-metrics.mjs BASE_REF; verified no P1 source drift to origin/main."
   },
-  "ownershipNote": "Lot P0 scaffolds the package and owns no conversion. Each module below names the W3 conversion lot of PLAN section 4.4 that will delete the hand-written twin: P1 (action), P2 (form), P3 (navigation, overlay), P4c (chat, other). Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9). Lot L1.5 reconciles this fragment into the programme coverage manifest.",
+  "ownershipNote": "Lot P0 scaffolded the package and owns no conversion; lot P1 ports layout, action and feedback (37 modules) plus the PanelStack/PanelSection shell pair (P4c dependency of P1). Each module below names the W3 conversion lot of PLAN section 4.4 that will delete the hand-written twin: P1 (layout, action, feedback), P2 (form), P3 (navigation, overlay), P4c (chat, other, uncatalogued shells). Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); the P1 forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them from P1. PanelStack and ThemeProvider are uncatalogued shells (no component-index entry). Lot L1.5 reconciles this fragment into the programme coverage manifest.",
   "modules": [
     { "module": "Button", "file": "src/Button.tsx", "reactSource": "components-react/src/Button.tsx", "category": "action", "lot": "P1", "hardSet": false, "renderable": true },
     { "module": "Accordion", "file": "src/Accordion.tsx", "reactSource": "components-react/src/catalog.tsx", "category": "layout", "lot": "P1", "hardSet": false, "renderable": true },
@@ -53,13 +53,13 @@
     { "module": "Tabs", "file": "src/Tabs.tsx", "reactSource": "components-react/src/catalog.tsx", "category": "navigation", "lot": "P3", "hardSet": false, "renderable": true },
     { "module": "ChatComposer", "file": "src/ChatComposer.tsx", "reactSource": "components-react/src/catalog.tsx", "category": "chat", "lot": "P4c", "hardSet": false, "renderable": true },
     { "module": "Portal", "file": "src/Portal.tsx", "reactSource": "components-react/src/Portal.tsx", "category": "other", "lot": "P4c", "hardSet": true, "renderable": true },
-    { "module": "ThemeProvider", "file": "src/ThemeProvider.tsx", "reactSource": "components-react/src/ThemeProvider.tsx", "category": "other", "lot": "P4c", "hardSet": true, "renderable": true },
-    { "module": "PanelStack", "file": "src/PanelStack.tsx", "reactSource": "components-react/src/PanelStack.tsx", "category": "other", "lot": "P4c", "hardSet": false, "renderable": true }
+    { "module": "ThemeProvider", "file": "src/ThemeProvider.tsx", "reactSource": "components-react/src/ThemeProvider.tsx", "category": "uncatalogued", "lot": "P4c", "hardSet": true, "renderable": true },
+    { "module": "PanelStack", "file": "src/PanelStack.tsx", "reactSource": "components-react/src/PanelStack.tsx", "category": "uncatalogued", "lot": "P4c", "hardSet": false, "renderable": true }
   ],
   "adaptersNote": "The three adapters are owned by lot P5 (hard set) and reused by every conversion lot. Their file set must stay identical to the ADAPTERS map of scripts/emit-react.mjs: the emission is the lint of the single-source rule.",
   "adapters": [
     { "module": "compat.ts", "file": "src/compat.ts", "twin": "react/compat.ts", "lot": "P5", "note": "K3: the only module importing preact/compat (createPortal only)" },
-    { "module": "runtime.ts", "file": "src/runtime.ts", "twin": "react/runtime.ts", "lot": "P5", "note": "Core-only adapter: forwardRef, insertion and external-store effects, textInput, focusWithin, type aliases" },
+    { "module": "runtime.ts", "file": "src/runtime.ts", "twin": "react/runtime.ts", "lot": "P5", "note": "Core-only adapter: forwardRef, SVG presentation-attribute normalisation (options.vnode), insertion and external-store effects, textInput, focusWithin, type aliases" },
     { "module": "signals.ts", "file": "src/signals.ts", "twin": "react/signals.ts", "lot": "P5", "note": "K4: the only module importing @preact/signals (MaybeSignal, useValue, unwrap)" }
   ],
   "semanticMappingNote": "Framework-specific props, events and slots of the port (PLAN section 2.9). Every row is a recorded difference with a test on both legs, not a divergence to fix here. The Vue side of the spike divergences (docs/preact-s1-spike.md section 4) is not covered: it belongs to the L1.5 manifest rows.",
@@ -71,6 +71,8 @@
     { "key": "portal-events", "preact": "Events inside a portal follow the DOM tree and never reach a handler of the component-tree parent", "react": "Clicks inside a portal bubble to the component-tree parent", "decision": "recorded" },
     { "key": "insertion-effect", "preact": "useInsertionEffect runs in the layout phase (as preact/compat aliases it): a child layout effect runs before the provider effect", "react": "Dedicated insertion phase: child layout effects see the injected stylesheet on first mount", "decision": "recorded" },
     { "key": "forward-ref", "preact": "forwardRef restored through the options.__b hook on Preact core (no preact/compat)", "react": "react forwardRef", "decision": "recorded" },
+    { "key": "svg-presentation-attributes", "preact": "Intrinsic SVG presentation attributes are normalised to kebab-case by the options.vnode hook in runtime.ts (strokeWidth to stroke-width; viewBox, clipPathUnits and textLength preserved)", "react": "React camelCase SVG props", "decision": "recorded" },
+    { "key": "style-merging", "preact": "mergeStyle(base, style) in internal.ts merges computed declarations with a consumer string, object or signal style (signal unwrapped via peek, string concatenated, object spread with consumer winning; ButtonGroup gap wins)", "react": "Object style spread", "decision": "recorded" },
     { "key": "class-spelling", "preact": "React spelling className kept; a consumer class travels in the rest props and is replaced by the computed className", "react": "className", "decision": "recorded" },
     { "key": "component-children", "preact": "Renderable nodes typed ComponentChildren (preact)", "react": "ReactNode; emitted props stay type-identical (react/api-parity.ts)", "decision": "recorded" }
   ]

@@ -3,11 +3,13 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { idFrom, useControlled } from "./internal.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type AccordionItem = { id?: string; title: ComponentChildren; content: ComponentChildren; disabled?: boolean };
-export type AccordionProps = HTMLAttributes<HTMLDivElement> & {
+export type AccordionProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
   items: AccordionItem[];
-  openIds?: string[];
+  openIds?: MaybeSignal<string[]>;
   defaultOpenIds?: string[];
   allowMultiple?: boolean;
   /** Svelte-canonical alias for `defaultOpenIds` (initially open item ids). */
@@ -23,10 +25,10 @@ function node(value: ComponentChildren | (() => ComponentChildren)): ComponentCh
   return typeof value === "function" ? (value as () => ComponentChildren)() : value;
 }
 
-export function Accordion({ items, openIds, defaultOpenIds, open: openAlias, allowMultiple, multiple, align = "end", size = "md", onChange, className, ...rest }: AccordionProps) {
+export function Accordion({ items, openIds: openIdsInput, defaultOpenIds, open: openAlias, allowMultiple, multiple, align = "end", size = "md", onChange, className, ...rest }: AccordionProps) {
   const initialOpen = defaultOpenIds ?? openAlias ?? [];
   const resolvedAllowMultiple = allowMultiple ?? multiple ?? false;
-  const [open, setOpen] = useControlled(openIds, initialOpen, onChange);
+  const [open, setOpen] = useControlled(useValue(openIdsInput), initialOpen, onChange);
   const toggle = (id: string) => {
     const next = open.includes(id) ? open.filter((value) => value !== id) : resolvedAllowMultiple ? [...open, id] : [id];
     setOpen(next);
