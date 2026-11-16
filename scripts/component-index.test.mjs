@@ -380,7 +380,8 @@ test("K1b: every contract and the contract index validate their v1 schemas", () 
   const validateContract = ajv.compile(contractSchema);
   const validateIndex = ajv.compile(indexSchema);
   const paths = contractPaths();
-  assert.equal(paths.length, 212, `the reviewed population is 212 contracts, found ${paths.length}`);
+  // V8 adds the two editors and LockPresenceBadge to the reviewed population.
+  assert.equal(paths.length, 216, `the reviewed population is 216 contracts, found ${paths.length}`);
   for (const path of paths) {
     const document = JSON.parse(readFileSync(path, "utf8"));
     assert.equal(
@@ -529,6 +530,7 @@ const TREE_SUBTREES = [
   "packages/elements/catalog.json",
   "packages/tokens/src",
   "packages/themes/css",
+  "packages/diagram-canvas/contracts",
 ];
 const TREE_FILES = ["packages/component-index/contract-baseline.json", "packages/component-index/parity-baseline.json", "packages/component-index/catalog-overlay.json"];
 const TREE_PACKAGES = [

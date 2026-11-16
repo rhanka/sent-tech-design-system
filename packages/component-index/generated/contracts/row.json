@@ -1,8 +1,8 @@
 {
   "componentId": "row",
   "contractSource": "derived",
-  "digest": "sha256:658613cdb77ca8c1655723043e04cb39c5c514fb17d96f3ebf12f66d9d0148a8",
-  "entryDigest": "sha256:532947033d480172fcc2ba501a09f8c6ce4a428545b57ae493c8f126fa102daa",
+  "digest": "sha256:5211de688e5a6a90065b1602f78cc8081058aaedb59502fd947755c7aaa31982",
+  "entryDigest": "sha256:d68f31f239068fd2dbd43604e522295be59d8911eeafd1b417b88bc213fd1937",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Row.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RowProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -124,7 +124,7 @@
         "declarationPath": "packages/components-react/dist/Row.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RowProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -192,7 +192,7 @@
         "declarationPath": "packages/components-svelte/dist/Row.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RowProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -203,8 +203,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -245,13 +244,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:c486bc068646252119daf169e94b14dc0cf9e3862d49dfb147cb42c3fe51503d",
-        "declarationPath": "packages/components-vue/dist/Row.d.ts",
+        "declarationDigest": "sha256:757f4a11f7884e9744f1980bc453a6ba4eff1f4fe7413af316eef9d8103ebe25",
+        "declarationPath": "packages/components-vue/dist/Row.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RowProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

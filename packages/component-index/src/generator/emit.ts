@@ -20,6 +20,7 @@ import Ajv2020, { type AnySchema } from "ajv/dist/2020.js";
 import {
   assertNoEditorialMetadata,
   parseBarrelFile,
+  parseComponentBarrels,
   resolveSourceFile,
   type ParsedBarrel,
 } from "./barrels.js";
@@ -112,6 +113,7 @@ export interface Delivery {
 }
 
 export interface Entry {
+  anatomy?: { contractId: string; path: string; digest: string };
   format: typeof FORMAT_ENTRY;
   producerId: string;
   componentId: string;
@@ -498,8 +500,9 @@ function catalogueEntry(
 ): Entry {
   const identifier = stripDatavizMarker(row.name);
   const deliveries: Delivery[] = [];
-  if (presence.dataviz && presence.component.every((seen) => !seen)) {
+  if (presence.dataviz) {
     for (const framework of FRAMEWORK_ORDER) {
+      if (presence.component[FRAMEWORK_ORDER.indexOf(framework)]) continue;
       const barrel = barrels.get(`dataviz-${framework}`);
       if (barrel === undefined || !barrel.values.has(identifier)) continue;
       const manifest = manifests.get(`dataviz-${framework}`);
@@ -515,10 +518,11 @@ function catalogueEntry(
         ),
       );
     }
-    if (deliveries.length === 0) {
+    if (deliveries.length === 0 && presence.component.every((seen) => !seen)) {
       throw new Error(`emit: "${row.slug}" parity dataviz but no dataviz source resolved`);
     }
-  } else {
+  }
+  {
     for (const framework of FRAMEWORK_ORDER) {
       if (!presence.component[FRAMEWORK_ORDER.indexOf(framework)]) continue;
       const barrel = barrels.get(framework);
@@ -561,6 +565,10 @@ function catalogueEntry(
     delivery: orderDeliveries(deliveries),
   };
   if (row.groupSlug !== undefined) digestless.groupSlug = row.groupSlug;
+  if (["diagram-card", "diagram-zone", "diagram-scene-figure"].includes(row.slug)) {
+    const path = "packages/diagram-canvas/contracts/diagram-anatomy.v1.json";
+    digestless.anatomy = { contractId: "diagram-anatomy/v1", path, digest: digestFile(repoRoot, path) };
+  }
   const contract = elements.get(identifier);
   if (contract !== undefined) {
     const schemaPath = `packages/elements/schemas/${contract.component}.v1.json`;
@@ -667,7 +675,7 @@ export function buildArtifacts(
   const manifests = new Map<string, Manifest>();
   for (const framework of FRAMEWORK_ORDER) {
     const barrelPath = COMPONENT_BARREL_PATHS[framework];
-    const parsed = parseBarrelFile(join(repoRoot, barrelPath));
+    const parsed = parseComponentBarrels(join(repoRoot, `packages/components-${framework}`));
     assertNoEditorialMetadata(parsed, barrelPath);
     barrels.set(framework, parsed);
     manifests.set(framework, readManifest(join(repoRoot, `packages/components-${framework}/package.json`)));

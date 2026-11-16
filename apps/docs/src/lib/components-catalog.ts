@@ -60,7 +60,7 @@ export const CATEGORY_ORDER: ComponentCategory[] = [
 
 /**
  * Canonical catalog of components exported by `@sentropic/design-system-svelte`.
- * Kept in sync manually with `packages/components-svelte/src/lib/index.ts`.
+ * Kept in sync manually with its root and public component subpath barrels.
  * `ThemeProvider` is intentionally excluded (infra primitive, not a UI brick).
  */
 export const COMPONENTS: ComponentEntry[] = [
@@ -310,6 +310,27 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Champ texte multi-ligne.",
       en: "Multi-line text field."
+    }
+  },
+  {
+    name: "RichTextEditor",
+    slug: "rich-text-editor",
+    status: "documented",
+    category: "form",
+    description: {
+      fr: "Éditeur de documents structurés, avec capture, profils Markdown et collaboration.",
+      en: "Structured document editor with capture, Markdown profiles, and collaboration."
+    }
+  },
+  {
+    name: "ComposerEditor",
+    slug: "composer-editor",
+    status: "documented",
+    category: "chat",
+    groupSlug: "rich-text-editor",
+    description: {
+      fr: "Surface de rédaction à valeur texte contrôlée et capture compatible avec la composition IME.",
+      en: "Controlled text composer with capture that waits for IME composition."
     }
   },
   {
@@ -613,6 +634,17 @@ export const COMPONENTS: ComponentEntry[] = [
 
   // Feedback
   {
+    name: "LockPresenceBadge",
+    slug: "lock-presence-badge",
+    status: "documented",
+    category: "feedback",
+    groupSlug: "presence-badge",
+    description: {
+      fr: "Présence des collaborateurs et état du verrou, avec actions de déverrouillage autorisées.",
+      en: "Collaborator presence and lock state with capability-controlled unlock actions."
+    }
+  },
+  {
     name: "Alert",
     slug: "alert",
     status: "documented",
@@ -900,6 +932,16 @@ export const COMPONENTS: ComponentEntry[] = [
     description: {
       fr: "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn.",
       en: "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit."
+    }
+  },
+  {
+    name: "DiagramSceneFigure",
+    slug: "diagram-scene-figure",
+    status: "documented",
+    category: "layout",
+    description: {
+      fr: "Scène de diagramme : vue mesurée avec disposition automatique en rangées au format 16:9, zoom plafonné à la taille maximale d’affichage, ajustement au cadre et transition de repli.",
+      en: "Diagram scene: measured diagram view with 16:9 row-pack autolayout, zoom capped at the maximum display size, fit to frame and fold transition."
     }
   },
   {

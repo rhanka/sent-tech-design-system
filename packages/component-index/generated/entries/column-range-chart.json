@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/ColumnRangeChart.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/ColumnRangeChart.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e75ede05145e99fd0d4892f0f9f67fc981febea72e703d87a593ab2797d0311e",
+      "digest": "sha256:8687221d1d3810a3a81f2cedccbbc545a4143455c607ddd75ba9e2ac4ccaa594",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/ColumnRangeChart.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/ColumnRangeChart.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/ColumnRangeChart.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Low/high range bars per category (e.g. min/max temperatures, price ranges).",
     "fr": "Barres d'intervalle bas/haut par catégorie (ex. températures min/max, fourchettes de prix)."
   },
-  "digest": "sha256:c4bce1c4b877bca597f468cb1410f366f0300a38a1a0ab61d68f0e0de6c70b0e",
+  "digest": "sha256:00c2aab7fea3777c971586049b76e53e69ff706055a99e32c72eb2c345a4bbd9",
   "displayName": "ColumnRangeChart",
   "format": "component-entry/v1",
   "frameworks": [

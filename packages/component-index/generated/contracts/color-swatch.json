@@ -1,8 +1,8 @@
 {
   "componentId": "color-swatch",
   "contractSource": "derived",
-  "digest": "sha256:2c13aa6740662ecf628ae8b1e2966d67a5da442512053a362ef87c5ea73e8a01",
-  "entryDigest": "sha256:39f3e0f9ebfe9eb7c0548ecfe2785f49338005f431a3e3997503dab315de59ce",
+  "digest": "sha256:240da0e11db229c122efebd9890f3f3c538b74ce093f63f08909c11abb10cd5f",
+  "entryDigest": "sha256:0608b6f33f708ffc42a1dae08b35620970752354e7f0861f945d7f7cbcc21e22",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -44,7 +44,7 @@
         "declarationPath": "packages/components-angular/dist/ColorSwatch.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColorSwatchProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -103,7 +103,7 @@
         "declarationPath": "packages/components-react/dist/ColorSwatch.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColorSwatchProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -158,7 +158,7 @@
         "declarationPath": "packages/components-svelte/dist/ColorSwatch.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColorSwatchProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -203,11 +203,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:ee35c1cb649fc38456a28f0a48e2b73eb7733071c1502d4c5f85b546af0ccb02",
-        "declarationPath": "packages/components-vue/dist/ColorSwatch.d.ts",
+        "declarationDigest": "sha256:3e3bdec0fb2fff45475cb3c294a1e23b69f13cb717e00352e1f290e11c2cbb08",
+        "declarationPath": "packages/components-vue/dist/ColorSwatch.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColorSwatchProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

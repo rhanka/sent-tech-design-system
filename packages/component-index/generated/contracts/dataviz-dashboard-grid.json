@@ -1,8 +1,8 @@
 {
   "componentId": "dataviz-dashboard-grid",
   "contractSource": "derived",
-  "digest": "sha256:8c5815fba82247e601cc61fa9a6f2f436c0149e0bcd04eac8d36ef4480aeb4de",
-  "entryDigest": "sha256:ea282d10321509e6fe461b671f70e651f8e313ec4f4f1ece252f7f5cba51d1b5",
+  "digest": "sha256:7c5ea23549cedae2a901f1d793542aea739da0c14341b1a1193c57571334b2d3",
+  "entryDigest": "sha256:b2decf256db000bdc742a945016b43e04271e72b3ca943fd8310a0397b21efa7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DashboardGridProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -213,7 +213,7 @@
         "declarationPath": "packages/components-react/dist/DashboardGrid.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DashboardGridProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -315,7 +315,7 @@
         "declarationPath": "packages/components-svelte/dist/DashboardGrid.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DashboardGridProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -332,6 +332,15 @@
         }
       ],
       "events": [
+        {
+          "name": "layout",
+          "payload": {
+            "items": {
+              "$ref": "#/$defs/DashboardGridTile"
+            },
+            "type": "array"
+          }
+        },
         {
           "name": "onLayout",
           "payload": {
@@ -421,15 +430,17 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b7169050c8d6979851ea5522bc9a4f35030415a37ba7e4cdc6cc04c9db546db3",
-        "declarationPath": "packages/components-vue/dist/DashboardGrid.d.ts",
+        "declarationDigest": "sha256:dc0e31254b1409ba97bd9e5c85666c29ef518bcbe1a6e35490aa5acd193ae7bb",
+        "declarationPath": "packages/components-vue/dist/DashboardGrid.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DashboardGridProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "event pair: emits \"layout\" and prop \"onLayout\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

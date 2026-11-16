@@ -1,8 +1,8 @@
 {
   "componentId": "treemap-chart",
   "contractSource": "derived",
-  "digest": "sha256:bfdc450f3614ba44800236018cd45de1e3359e318f060d0d43c028b47c6668c7",
-  "entryDigest": "sha256:737ba674f7ccf4457323558fb68a54082fceb06eefdc59eb150f770f3bd25f1a",
+  "digest": "sha256:1fa504fd523cdbc1a200480b81134f5fe23af902ff4b95b09baae3d7628982d0",
+  "entryDigest": "sha256:b63089aa7d099020af908b3fe5d26ce67b822579c0fc30da3064d4d62ee3dc8a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -88,7 +88,7 @@
         "declarationPath": "packages/components-angular/dist/TreemapChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TreemapChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -191,7 +191,7 @@
         "declarationPath": "packages/components-react/dist/TreemapChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TreemapChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/TreemapChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreemapChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -378,11 +378,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:bb3891192ef5fcae03a64ad92417fc0cb35e5076eb134b85c77281bdac9a3cc8",
-        "declarationPath": "packages/components-vue/dist/TreemapChart.d.ts",
+        "declarationDigest": "sha256:7682d3c06b2da183816b623b049320ac13c6c72a375a9170f7ec0d3d975d760a",
+        "declarationPath": "packages/components-vue/dist/TreemapChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreemapChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

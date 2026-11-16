@@ -1,8 +1,8 @@
 {
   "componentId": "hlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:0663b1a52e502f492298229d5b02bed174175766e1379ca98b0c0dc9a1cb3b0e",
-  "entryDigest": "sha256:6e31760c6f0241f09ed83f2b13002f64533fffe7a8156acc14cfb6ef0e777ee6",
+  "digest": "sha256:d1184dafc54483a9209545de4bf3e5d8d14e54fe9622a9bfb2394be3fa0ba91f",
+  "entryDigest": "sha256:3ba74528210836d569760c827659c15908a3404a324fac31d83c47458dde8f39",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -69,7 +69,7 @@
         "declarationPath": "packages/components-angular/dist/HLCChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HLCChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -149,7 +149,7 @@
         "declarationPath": "packages/components-react/dist/HLCChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HLCChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -223,7 +223,7 @@
         "declarationPath": "packages/components-svelte/dist/HLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HLCChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -294,11 +294,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b16ce527ad30d2bb9408f48fa94dbe7559895d1b67e009580676ee45cfc97e87",
-        "declarationPath": "packages/components-vue/dist/HLCChart.d.ts",
+        "declarationDigest": "sha256:295a212a6f88119c67cc85cf7d9723d0ce78f7adc1aef9b475d75ec6a28e4d67",
+        "declarationPath": "packages/components-vue/dist/HLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HLCChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

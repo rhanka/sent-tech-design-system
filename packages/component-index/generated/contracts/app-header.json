@@ -1,8 +1,8 @@
 {
   "componentId": "app-header",
   "contractSource": "derived",
-  "digest": "sha256:a54a439216a7a3a4be83daf2131fa2281c81dbb57681e1f40ead44dc78d483c4",
-  "entryDigest": "sha256:ed7a3353dc833877a15f152c665a61e4c5fd827eae1f99b67bc4725c48dfa430",
+  "digest": "sha256:60d36b63430fe40844df5cfd5ccc3c63526e84fb7a0ed8e559ea7fca7f452f21",
+  "entryDigest": "sha256:633ddfd2f290de74e5118c7e8160017d17d0cc85743aea57d1e62251e00ec395",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -71,7 +71,7 @@
         "declarationPath": "packages/components-angular/dist/AppHeader.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AppHeaderProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -170,11 +170,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppHeaderProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -274,7 +274,7 @@
         "declarationPath": "packages/components-svelte/dist/AppHeader.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppHeaderProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -288,16 +288,11 @@
           "name": "menuToggle"
         },
         {
-          "name": "onMenuToggle",
-          "payload": {
-            "items": {},
-            "type": "array"
-          }
+          "name": "onMenuToggle"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -345,26 +340,31 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "onMenuToggle.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "actions"
+        },
+        {
+          "name": "drawer"
+        },
+        {
+          "name": "logo"
+        },
+        {
+          "name": "nav"
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:249ebd653fd129c11d9356778dafb2b02c857dae5c6f3ca687c78e44b0175801",
-        "declarationPath": "packages/components-vue/dist/AppHeader.d.ts",
+        "declarationDigest": "sha256:324f74398b60ab2a4304cbd5d0e4b85c1b7dc60e58748d9828717849cca93e1b",
+        "declarationPath": "packages/components-vue/dist/AppHeader.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppHeaderProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"menuToggle\": payload not in declaration",
         "event pair: emits \"menuToggle\" and prop \"onMenuToggle\" both listed verbatim"
       ]
     }

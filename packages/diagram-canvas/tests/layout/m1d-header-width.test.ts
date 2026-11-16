@@ -24,10 +24,12 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
   it("sizes an expanded container to unwrapped header + 2 × CONTENT_INSET + TOGGLE_ALLOCATION", () => {
     expect(TOGGLE_ALLOCATION).toBe(66);
     const document = asGeneric2Document(buildMeasuredDocument());
-    // 59 characters at 8 px/char = 472 px unwrapped; with the insets and
-    // the toggle reservation the header-driven width (570) beats the
-    // child-driven one (460 + 2 × 16 = 492), so the width is header-driven.
-    const title = Array.from({ length: 12 }, () => "word").join(" ");
+    // DC-2a re-pin (AC-2): the two children pack on one row, so the
+    // child-driven width is 460 + 24 + 460 + 2 × 16 = 976, no longer 492.
+    // The title is lengthened to stay header-driven: 119 characters at
+    // 8 px/char = 952 px unwrapped; with the insets and the toggle
+    // reservation the header-driven width (1050) beats 976.
+    const title = Array.from({ length: 24 }, () => "word").join(" ");
     const presentation = makePresentation({
       forms: { C: "container", a: "card", b: "card", lone: "card" },
       texts: {
@@ -42,7 +44,7 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
     const unwrapped = title.length * 8;
     const width = geometryOf(measured.view, "C").width;
     expect(width).toBeGreaterThan(FIXED_CARD_WIDTH);
-    expect(width).toBe(unwrapped + 2 * CONTENT_INSET + TOGGLE_ALLOCATION);
+    expect(width).toBe(unwrapped + 2 * CONTENT_INSET + TOGGLE_ALLOCATION + 76 + 4);
     // Step 3 measures the header at inner − TOGGLE_ALLOCATION, i.e. exactly
     // the unwrapped width: one line, no overflow, no zone-overflow warning.
     const header = measured.headers.find((entry) => entry.occurrence === occurrenceOfEntity("C"));
@@ -54,7 +56,7 @@ describe("header-driven container width reserves TOGGLE_ALLOCATION", () => {
       .filter((call) => call.role === "title" && call.availableWidth < 10000)
       .find((call) => call.text === title);
     expect(titleCall).toBeDefined();
-    expect(titleCall?.availableWidth).toBe(width - 2 * CONTENT_INSET - TOGGLE_ALLOCATION);
+    expect(titleCall?.availableWidth).toBe(width - 178);
     expect(titleCall?.availableWidth).toBe(unwrapped);
   });
 });

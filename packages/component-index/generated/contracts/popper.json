@@ -1,8 +1,8 @@
 {
   "componentId": "popper",
   "contractSource": "derived",
-  "digest": "sha256:cef721a5d39714a81bebbe9c2a94d057e81558e12af1d9850a921642f4a7c40f",
-  "entryDigest": "sha256:e2470f3afda61d7ebfa0e11169f74ca507cd68cb376dca48b5bda3707f7fa719",
+  "digest": "sha256:aa8a661d7f5f71443ede9b1a4fa626e23ab1fbf1e4060d076438a302d5d18653",
+  "entryDigest": "sha256:b385f05811d7063a750c7d8c01e83bc35403fc6d5f28595e85ffc30386c1f23c",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -106,7 +106,7 @@
         "declarationPath": "packages/components-angular/dist/Popper.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PopperProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -238,7 +238,7 @@
         "declarationPath": "packages/components-react/dist/Popper.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PopperProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-svelte/dist/Popper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PopperProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -414,11 +414,29 @@
               "right-end"
             ]
           }
+        },
+        {
+          "name": "placementChange",
+          "payload": {
+            "enum": [
+              "top",
+              "left",
+              "right",
+              "bottom",
+              "top-start",
+              "top-end",
+              "bottom-start",
+              "bottom-end",
+              "left-start",
+              "left-end",
+              "right-start",
+              "right-end"
+            ]
+          }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -506,17 +524,23 @@
           "sourceType": "HTMLElement"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:2033b3e8da066e9ca9c9f9dbef303f07af0d8e88061af790faae5822ba73867e",
-        "declarationPath": "packages/components-vue/dist/Popper.d.ts",
+        "declarationDigest": "sha256:25eacea8e0d11a0fef3f3bbd9f5cbc4e6a5a31b661fe50e9f46a7247ac083316",
+        "declarationPath": "packages/components-vue/dist/Popper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PopperProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "event pair: emits \"placementChange\" and prop \"onPlacementChange\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

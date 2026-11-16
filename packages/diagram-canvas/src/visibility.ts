@@ -169,10 +169,10 @@ export function entityVerdict(view: ViewDocument, entity: Entity): Verdict {
   ]);
 }
 
-export function relationVerdict(view: ViewDocument, relation: Relation): Verdict {
+export function relationVerdict(view: ViewDocument, relation: Relation, document?: SemanticDocument): Verdict {
   return combine([
     verdictFor(filtersOfKind(view, "relation-type"), (filter) =>
-      filter.kind === "relation-type" ? filter.types.includes(relation.type) : false,
+      filter.kind === "relation-type" ? filter.types.includes(relation.type) || (document?.typeDefinitions[relation.type]?.profile === relation.profile && filter.types.includes(document.typeDefinitions[relation.type]!.baseType)) : false,
     ),
     verdictFor(filtersOfKind(view, "attribute-equals"), (filter) =>
       filter.kind === "attribute-equals"
@@ -245,7 +245,8 @@ export function evaluateVisibility({ document, view }: VisibilityInput): Visibil
       });
       continue;
     }
-    if (!visible.has(occurrence.ownerOccurrence)) {
+    const foldedErd = document.ports[occurrence.port]?.profile === 'erd@1' && Object.values(view.groups).some(group => group.occurrence === occurrence.ownerOccurrence && group.collapsed);
+    if (foldedErd || !visible.has(occurrence.ownerOccurrence)) {
       exclusions.push({
         occurrence: occurrence.id,
         kind: "port",
@@ -269,7 +270,7 @@ export function evaluateVisibility({ document, view }: VisibilityInput): Visibil
       });
       continue;
     }
-    const verdict = relationVerdict(view, relation);
+    const verdict = relationVerdict(view, relation, document);
     if (!verdict.visible) {
       exclusions.push({
         occurrence: occurrence.id,

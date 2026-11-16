@@ -1,8 +1,8 @@
 {
   "componentId": "error-summary",
   "contractSource": "derived",
-  "digest": "sha256:52214b1da43b5503743cefcda1b2ebc8529db6262160861077a96dce2c84bbb7",
-  "entryDigest": "sha256:f532702356ebac8bb23b25dc4549cd9c2cc05de11c14449fb85c7e604f7c26c5",
+  "digest": "sha256:98d16bb018842b70cf91bff16bc24b221c55ed49e01f430eaaea05ec6ac13fc6",
+  "entryDigest": "sha256:9162b837c2d5526c4b8a774e2022637812c31ff439302cc9ceec7f968b0089ac",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -59,7 +59,7 @@
         "declarationPath": "packages/components-angular/dist/ErrorSummary.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ErrorSummaryProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -112,11 +112,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorSummaryProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -180,7 +180,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorSummary.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorSummaryProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -233,11 +233,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:25741b9c9daf8d4dfc00d908c92c8d9f61ff815d53595b7dc9f32fd5bc23cc40",
-        "declarationPath": "packages/components-vue/dist/ErrorSummary.d.ts",
+        "declarationDigest": "sha256:85de4129b99c761c769e07ff92e21e271cef99ab76fa0d04834a22f17718ce37",
+        "declarationPath": "packages/components-vue/dist/ErrorSummary.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorSummaryProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

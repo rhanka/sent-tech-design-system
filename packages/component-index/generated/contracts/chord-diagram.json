@@ -1,8 +1,8 @@
 {
   "componentId": "chord-diagram",
   "contractSource": "derived",
-  "digest": "sha256:e56fb145b8e83c7899d8d5f9642a34282cc31c111d305685856614da08f404ff",
-  "entryDigest": "sha256:93a6768206daeba0449993313f9353aa692ffe56fc8cad497d8549aa82c9b0c8",
+  "digest": "sha256:7b56ca1205c07704d3dee1c76e060e003da71c8159bd2b88d9f31543e982e392",
+  "entryDigest": "sha256:da3f71f96a7300b198d0bcad0567f8bc335864bc5f581e2654377c38dabb8375",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -79,7 +79,7 @@
         "declarationPath": "packages/components-angular/dist/ChordDiagram.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ChordDiagramProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -172,7 +172,7 @@
         "declarationPath": "packages/components-react/dist/ChordDiagram.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChordDiagramProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ChordDiagram.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ChordDiagramProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -337,11 +337,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b4f84c14f54cb586df337a1ea1f277c5bb555f35d4ba521588e607e750576e64",
-        "declarationPath": "packages/components-vue/dist/ChordDiagram.d.ts",
+        "declarationDigest": "sha256:fe38b29f4058511efa26dbc87de84ed440ca69a04e2bfcc331ff9c5ad3f581d7",
+        "declarationPath": "packages/components-vue/dist/ChordDiagram.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ChordDiagramProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

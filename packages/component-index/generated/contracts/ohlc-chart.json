@@ -1,8 +1,8 @@
 {
   "componentId": "ohlc-chart",
   "contractSource": "derived",
-  "digest": "sha256:0c476ba80fdef7abd0af94dd9fb00ba357cab52298c73f0ff18200bfbf28cc2b",
-  "entryDigest": "sha256:7461fafb91b0ca0fa1abf8ecc134a6877c3d91d1d1465f848e57ad8ecc9d7db8",
+  "digest": "sha256:c1bd6236c643d51aeb89c969924505906bc4e14aab9807d755afee7164b14ec2",
+  "entryDigest": "sha256:8e78702fb4c05c1b8e57a35cab4e16b24cd5cdb2d5c1e490e794af93a53221c3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -307,7 +307,7 @@
         "declarationPath": "packages/components-angular/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "OHLCChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -636,7 +636,7 @@
         "declarationPath": "packages/components-react/dist/OHLCChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "OHLCChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -955,7 +955,7 @@
         "declarationPath": "packages/components-svelte/dist/OHLCChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "OHLCChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -1283,11 +1283,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:010932e9ec6a27ff6bd5514ce2b44df57418666f562d1d88ed94c46bda664963",
-        "declarationPath": "packages/components-vue/dist/OHLCChart.d.ts",
+        "declarationDigest": "sha256:0fbd76ceaa82f2f099d605e03755afc0d7388c34b553d39b70f07c050122008e",
+        "declarationPath": "packages/components-vue/dist/OHLCChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "OHLCChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

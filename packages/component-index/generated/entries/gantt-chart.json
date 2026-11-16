@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/GanttChart.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/GanttChart.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:8d2926cc14433211a2e9758ed6f84138516ed73e714d1abaae0beb09e1a5b0bf",
+      "digest": "sha256:6d68470c2be3a8fa6797f394f172899ee26a28b964cc1d0adef1dd6636605293",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/GanttChart.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/GanttChart.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/GanttChart.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Gantt chart: one row per task, a horizontal start→end bar on a time axis, colour by category.",
     "fr": "Diagramme de Gantt : une ligne par tâche, barre horizontale start→end sur un axe temporel, couleur par catégorie."
   },
-  "digest": "sha256:7c9636c693b28aa24bfb68aa96f06e6cfdf19a32548dcee84574e8f5fb67cc2c",
+  "digest": "sha256:1d41d904170568360d6e410c27d73940a60c907248dfb6e0d4a7fdc86d363abd",
   "displayName": "GanttChart",
   "format": "component-entry/v1",
   "frameworks": [

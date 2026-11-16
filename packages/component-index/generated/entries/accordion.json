@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Accordion.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Accordion.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:0eb81b0adccd1c42ef8a70bb269fd5fa8b052b786584d449ad0af775c0f339c0",
+      "digest": "sha256:030b12f11a8902d995c51390bd99dbd4909ba550dcd9e9bb7b0a6691b555a727",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Accordion.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Accordion.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Accordion.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "List of collapsible panels.",
     "fr": "Liste de panneaux pliables."
   },
-  "digest": "sha256:495300b3e2511427d248c09159f135831a008823733638fc81d3c850be22c90c",
+  "digest": "sha256:b9674933641c66cef6bc87e6e86fe8fbd3f9be27fde086f9a4b674675f08e00a",
   "displayName": "Accordion",
   "format": "component-entry/v1",
   "frameworks": [

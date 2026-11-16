@@ -1,3 +1,4 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 /**
  * The layout engine's contract: what it takes, what it returns, and the few
  * numbers it is tuned by. No diagram model is declared here. The input is a
@@ -36,7 +37,8 @@ export type TextRole =
   | "footer"
   | "subtitle"
   | "legend-label"
-  | "edge-label";
+  | "edge-label"
+  | "flow-badge";
 
 /** Role names of the pre-M1-d compatibility measurer, kept verbatim. */
 export type LegacyTextRole = "node" | "container-title" | "edge-label";
@@ -55,10 +57,19 @@ export interface TextSize {
  * Kept only as the compatibility path for views with no
  * `presentation.diagram` (§4.8). Measured diagram views use `LineMeasurer`.
  */
-export type TextMeasurer = (text: string, role: TextRole | LegacyTextRole) => TextSize;
+export type TextMeasurer = ((text: string, role: TextRole | LegacyTextRole) => TextSize) & { readonly version?: string };
 
 /** World units (CSS px at zoom 1). Every field has a default; see {@link DEFAULT_LAYOUT_METRICS}. */
 export interface LayoutMetrics {
+  readonly gapMin?: number;
+  readonly gapMinBlock?: number;
+  readonly gapBase?: number;
+  readonly gapBaseBlock?: number;
+  readonly trackSpacing?: number;
+  readonly trackSpacingBlock?: number;
+  readonly labelBand?: number;
+  readonly gapMax?: number;
+  readonly bundleLabelMaxWidth?: number;
   readonly nodePaddingX: number;
   readonly nodePaddingY: number;
   readonly nodeMinWidth: number;
@@ -77,6 +88,75 @@ export interface LayoutMetrics {
   readonly clearance: number;
   /** Free space kept around an edge label (L-R10). */
   readonly labelMargin: number;
+  /**
+   * DC-2a row-pack base sibling gaps (tokens `diagramZone.childGapInline` /
+   * `childGapBlock`, root aliases `diagramCard.rootGapInline` / `rootGapBlock`)
+   * and their hard caps (`diagramZone.gapInlineMax` / `gapBlockMax`). Read by
+   * the row-pack path only; token values arrive here as numbers.
+   */
+  readonly rowGapInline?: number;
+  readonly rowGapBlock?: number;
+  readonly gapInlineMax?: number;
+  readonly gapBlockMax?: number;
+}
+
+/**
+ * DC-2a row-pack objective (SPEC_EVOL_DC2A §6.1). Every field is optional;
+ * {@link DEFAULT_ROW_PACK} mirrors the DS tokens and retained defaults.
+ */
+export interface RowPackOptions {
+  /** Target outer aspect of every packed level, chrome included (token `diagramZone.rowPackTargetAspect`). */
+  readonly targetAspect?: number;
+  readonly tallBias?: number;
+  readonly emptyPenaltyWeight?: number;
+  /** O-4 band, in total-score units. */
+  readonly orientationHysteresis?: number;
+}
+
+export type ResolvedRowPack = Required<RowPackOptions>;
+
+export const DEFAULT_ROW_PACK: ResolvedRowPack = {
+  targetAspect: 1.78,
+  tallBias: 1.6,
+  emptyPenaltyWeight: 0.4,
+  orientationHysteresis: 0.08,
+};
+
+/** Row-pack spacing defaults, mirroring the DS tokens (asserted by tests/layout/dc2a/tokens.test.ts). */
+export const DEFAULT_ROW_GAP = spacing.gapMin;
+export const DEFAULT_ROW_GAP_MAX = spacing.gapMax;
+
+/** Orientation of one packed level (§4.1): shelves run as rows or as columns. */
+export type LevelOrientation = "rows" | "columns";
+
+/** Level key of the root level in orientation records (§4.1). */
+export const ROOT_LEVEL_KEY = "root";
+
+/** One place where row-pack defaults resolve (§6.1), so cache keys see numbers only. */
+export function resolveRowPack(options: RowPackOptions | undefined): ResolvedRowPack {
+  return {
+    targetAspect: options?.targetAspect ?? DEFAULT_ROW_PACK.targetAspect,
+    tallBias: options?.tallBias ?? DEFAULT_ROW_PACK.tallBias,
+    emptyPenaltyWeight: options?.emptyPenaltyWeight ?? DEFAULT_ROW_PACK.emptyPenaltyWeight,
+    orientationHysteresis: options?.orientationHysteresis ?? DEFAULT_ROW_PACK.orientationHysteresis,
+  };
+}
+
+/** `row-pack-invalid` when an objective number is non-finite, non-positive (aspect) or negative. */
+export function validateRowPack(resolved: ResolvedRowPack): LayoutRefusal[] {
+  const refusals: LayoutRefusal[] = [];
+  const refuse = (field: keyof ResolvedRowPack, rule: string): void => {
+    refusals.push({
+      code: "row-pack-invalid",
+      path: "rowPack",
+      message: `rowPack.${field} ${rule}, got ${String(resolved[field])}`,
+    });
+  };
+  if (!Number.isFinite(resolved.targetAspect) || resolved.targetAspect <= 0) refuse("targetAspect", "is a positive finite number");
+  for (const field of ["tallBias", "emptyPenaltyWeight", "orientationHysteresis"] as const) {
+    if (!Number.isFinite(resolved[field]) || resolved[field] < 0) refuse(field, "is a non-negative finite number");
+  }
+  return refusals;
 }
 
 export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
@@ -84,7 +164,7 @@ export const DEFAULT_LAYOUT_METRICS: LayoutMetrics = {
   nodePaddingY: 8,
   nodeMinWidth: 64,
   nodeMinHeight: 32,
-  containerPadding: 16,
+  containerPadding: spacing.containerPadding,
   titlePaddingY: 6,
   rankGap: 56,
   nodeGap: 24,
@@ -129,6 +209,23 @@ export interface LayoutOptions {
   /** The view reference of the produced view. Defaults to `view:layout`. */
   readonly viewId?: ViewRef;
   readonly metrics?: Partial<LayoutMetrics>;
+  /**
+   * DC-2a row-pack objective for measured views (SPEC_EVOL_DC2A §3–§4, §6.1).
+   * Every measured view is row-packed (AC-1): every level — the root and each
+   * expanded zone — is shelf-packed toward the target aspect, with a per-level
+   * orientation derived from the fold state and token gaps capped on both
+   * axes. Absent or empty selects the DS defaults (16:9). Ignored by the
+   * compatibility path.
+   */
+  readonly flows?: { readonly fanOutMax?: number; readonly countTemplate?: string };
+  readonly flowTokens?: Partial<import("./flows.js").FlowTokens>;
+  readonly rowPack?: RowPackOptions;
+  /**
+   * Orientation last emitted per level key (`"root"` or the placement-parent
+   * representative occurrence id, §4.1). Host-held; inside the hysteresis band
+   * the previous orientation of a level is kept (O-4).
+   */
+  readonly previousOrientation?: Readonly<Record<string, LevelOrientation>>;
 }
 
 /** The outcome of the L-R5 / L-R7 decision for one call. Derived, never persisted. */
@@ -147,15 +244,22 @@ export interface LayoutFit {
 
 /** A rule the engine could not fully satisfy on this input, reported instead of dropped. */
 export type LayoutWarningCode =
+  | "channel-unresolved"
+  | "card-icon-missing"
+  | "flow-bundled"
+  | "badge-unplaced"
+  | "flow-layout-unsupported"
   | "label-unplaced"
   | "label-budget-exhausted"
   | "route-obstructed"
   | "row-fill-partial"
   | "card-overflow"
+  | "card-grown"
   | "zone-overflow"
   | "docking-overflow";
 
 export interface LayoutWarning {
+  readonly severity?: "info";
   readonly code: LayoutWarningCode;
   readonly refs: readonly string[];
   readonly message: string;
@@ -172,7 +276,8 @@ export type LayoutRefusalCode =
   | "relation-type-unsupported"
   | "layout-hint-invalid"
   | "measure-lines-missing"
-  | "stretch-unstable";
+  | "stretch-unstable"
+  | "row-pack-invalid";
 
 export interface LayoutRefusal {
   readonly code: LayoutRefusalCode;
@@ -191,7 +296,28 @@ export type LayoutResult =
        * Shared line-layout output (M3 §4.6.3/§5.6). Present on measured
        * views only; the compatibility path carries no `measurements` key.
        */
+      readonly badgeBoxes?: Readonly<Record<string, import("../transform.js").Rect>>;
+      readonly arrowBoxes?: Readonly<Record<string, readonly import("./flows.js").FlowArrow[]>>;
+      readonly flowBundles?: readonly import("./flows.js").FlowBundle[];
+      readonly flowTargets?: Readonly<Record<string, import("./flows.js").FlowVisibleTarget>>;
+      readonly flowRepairPasses?: 0 | 1;
       readonly measurements?: import("./measure.js").LayoutMeasurements;
+      /**
+       * Orientation chosen per packed level (§4.1, §6.1). Present on measured
+       * views only; the host feeds it back as `previousOrientation`.
+       */
+      readonly orientations?: Readonly<Record<string, LevelOrientation>>;
+      /**
+       * Box of every placed edge label, keyed by relation occurrence id, in
+       * world units. Present on measured views only. A label the capped
+       * gutters cannot hold has no box and one `label-unplaced` warning. A
+       * host draws labels from these boxes and unions them into its fit
+       * bounds (DEC-5, BF-7).
+       */
+      readonly channels?: readonly import("./channels.js").LayoutChannel[];
+      readonly labelBoxes?: Readonly<Record<string, { readonly x: number; readonly y: number; readonly width: number; readonly height: number }>>;
+      /** Lifted parallel relations share a route; semantic occurrences remain intact. */
+      readonly edgeBundles?: Readonly<Record<string, { readonly members: readonly string[]; readonly label: string; readonly title: string; readonly relations?: readonly string[]; chip?: ReturnType<typeof import("./bundleLabel.js").measureBundleLabel> }>>;
     }
   | {
       readonly status: "refused";

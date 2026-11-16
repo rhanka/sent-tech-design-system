@@ -1,8 +1,8 @@
 {
   "componentId": "ribbon-chart",
   "contractSource": "derived",
-  "digest": "sha256:2532a6e4b81a105cfa678522604db00069360a04b33b686e86f4c320eb30dc59",
-  "entryDigest": "sha256:72016724f40934eaba6f41161e1b538e12b460d00b602288a38d669c481dc074",
+  "digest": "sha256:7f56be886d6786520f8d1a7102768e7cafddb9d6dd0c71d31fe4a77cadca5dc0",
+  "entryDigest": "sha256:a02dc334a93b64bf49e54da0fd6e96a769f3a25b24ebc7127d38d3a85efefc11",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -87,7 +87,7 @@
         "declarationPath": "packages/components-angular/dist/RibbonChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "RibbonChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-react/dist/RibbonChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "RibbonChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -275,7 +275,7 @@
         "declarationPath": "packages/components-svelte/dist/RibbonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "RibbonChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -363,11 +363,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:25ebc15a9683234b45c919b328f7b00d73eb6d3e5bf4bc5b0d09912c457438e1",
-        "declarationPath": "packages/components-vue/dist/RibbonChart.d.ts",
+        "declarationDigest": "sha256:ed9abe683eab8ab4a79061d9e3acc0b337ce39d0299ec311dfdb66501c62e3a7",
+        "declarationPath": "packages/components-vue/dist/RibbonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "RibbonChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

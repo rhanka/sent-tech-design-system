@@ -11,6 +11,8 @@
 
 /** Stable, machine-readable refusal codes. Additive; never renamed in place. */
 export type DiagnosticCode =
+  | "erd-missing-pk" | "erd-multiple-pk" | "erd-dangling-fk" | "erd-missing-end"
+  | "erd-duplicate-field" | "erd-invalid-fk-target"
   // --- The nine named rejected cases of SPEC 3.7 -------------------------
   /** A reference resolves to nothing in its namespace. */
   | "dangling-reference"
@@ -43,7 +45,18 @@ export type DiagnosticCode =
   | "unknown-entity-type"
   | "unknown-relation-type"
   | "unknown-port-type"
+  | "flow-types-conflict"
+  | "flow-step-missing"
+  | "flow-step-duplicate"
+  | "flow-branch-overflow"
+  | "flow-scenario-unknown"
+  | "flow-scenario-misused"
+  | "flow-step-end-invalid"
+  | "flow-branch-without-sibling"
+  | "flow-step-gap"
   | "type-definition-conflict"
+  | "type-definition-reserved"
+  | "type-definition-ambiguous"
   // --- Attributes --------------------------------------------------------
   | "attribute-type-mismatch"
   | "attribute-required-missing"
@@ -97,7 +110,26 @@ export type DiagnosticCode =
   | "inverse-budget-exceeded"
   | "extension-hash-mismatch"
   | "extension-source-not-retained"
-  | "view-already-exists";
+  | "view-already-exists"
+  // --- Layout hints (ds-layout-hints@1) ----------------------------------
+  /** `vocabulary` absent or not the pinned one: nothing else is read. */
+  | "layout-vocabulary-unknown"
+  /** Structural failure: wrong type, malformed reference, missing required member. */
+  | "layout-hints-invalid"
+  | "layout-mode-unknown"
+  /** A mode specified for a later vocabulary: refused, never coerced. */
+  | "layout-mode-not-implemented"
+  /** A mode outside the views it is admitted on. */
+  | "layout-mode-out-of-scope"
+  | "layout-hint-unknown"
+  /** A spacing override or a coordinate. */
+  | "layout-hint-forbidden"
+  /** A hint specified for a later vocabulary. */
+  | "layout-hint-not-implemented"
+  /** A hint the selected mode does not read. */
+  | "layout-hint-out-of-scope"
+  /** Two authored statements that cannot both hold. */
+  | "layout-hint-conflict";
 
 export type DiagnosticSeverity = "error" | "warning";
 

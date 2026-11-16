@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tag.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Tag.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e150ce2a6413970e191eaa0320cf57a2e83ecc61d020647ebe7640b8e87412ce",
+      "digest": "sha256:1b23c9c6f373bb37f4a489b141d3078d47f5aaa1f933f5c4d4451873b3a9b7fb",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Tag.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Tag.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Tag.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Short-label tag/chip.",
     "fr": "Tag/chip à libellé court."
   },
-  "digest": "sha256:d38ef9bb80ce6ead624370bae087936ddca66ad8cc0b3ce7af5d467c9d80961e",
+  "digest": "sha256:3fe6ab78e65f19ca3f95f005b21e60234829872e2d8b7d4b3f9ee85ffe4d0f3f",
   "displayName": "Tag",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,8 +1,8 @@
 {
   "componentId": "bump-chart",
   "contractSource": "derived",
-  "digest": "sha256:28dfbee883e4a4529642194bbac26b4b938cb91189e064358c35ac400f326aec",
-  "entryDigest": "sha256:d247731aab44bf3ced22f6d9c9713f62f718b1dfacbd45957b0b66cb10f9bc49",
+  "digest": "sha256:1ce88f3b5613210916bb920cdd5f400b1c1aa6d8d49e76afdf6d0458d4d43922",
+  "entryDigest": "sha256:1523e9c3d5351d2d0db90b431993b5336083600fa75b525f4431f613fb164a60",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/BumpChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BumpChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-react/dist/BumpChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BumpChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/BumpChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BumpChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -361,11 +361,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:67c3b19276207d6d3afb53cd37807a39e5cc7d8442e08d2731075f14b68769b6",
-        "declarationPath": "packages/components-vue/dist/BumpChart.d.ts",
+        "declarationDigest": "sha256:6938dab72fb59f07ba137ec4684252f1527ee2d3508ab61e4a3c578a33387b66",
+        "declarationPath": "packages/components-vue/dist/BumpChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BumpChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

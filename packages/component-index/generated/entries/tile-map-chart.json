@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/TileMapChart.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/TileMapChart.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:9f1b59f387f3818dfb37c4873044bf8fa8ac594a41952319b88a63ac4d265f8d",
+      "digest": "sha256:f1d5f1a57768de543315afe4c9fc2542bac778e3a8fca64d49e1cad44c83db29",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/TileMapChart.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/TileMapChart.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/TileMapChart.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Tile map (\"tilemap\" cartogram): grid of square cells placed at explicit (col, row) coordinates, colored by value on a sequential scale.",
     "fr": "Carte en tuiles (cartogramme « tilemap ») : grille de cellules carrées posées à des coordonnées (col, row) explicites, colorées par valeur sur une échelle séquentielle."
   },
-  "digest": "sha256:505cb11646c017cc30ca1e4dad4f7e17755fbedd5b1a3291c268c54b02e2d3ed",
+  "digest": "sha256:0b426c4af05e7ad5841ad10945b806ee36b850fd0d624cb495868d70f7892459",
   "displayName": "TileMapChart",
   "format": "component-entry/v1",
   "frameworks": [

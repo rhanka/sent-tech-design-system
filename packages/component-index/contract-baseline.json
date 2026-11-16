@@ -23,7 +23,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -65,7 +65,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -247,7 +247,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -317,7 +317,9 @@
      "type",
      "variant"
     ],
-    "slots": [],
+    "slots": [
+     "default"
+    ],
     "events": [],
     "bindable": []
    },
@@ -418,12 +420,27 @@
     "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial"
    },
    "angular": {
     "status": "none",
     "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
+   }
+  },
+  "diagram-scene-figure": {
+   "svelte": {
+    "status": "partial"
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"DiagramSceneFigure\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
+   },
+   "vue": {
+    "status": "partial"
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"DiagramSceneFigure\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)"
    }
   },
   "diagram-zone": {
@@ -435,8 +452,7 @@
     "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial"
    },
    "angular": {
     "status": "none",
@@ -451,7 +467,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -465,7 +481,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -479,7 +495,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -647,7 +663,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -825,6 +841,7 @@
    "vue": {
     "status": "partial",
     "props": [
+     "caption",
      "class",
      "columns",
      "decorations",
@@ -847,7 +864,11 @@
      "sortNoneLabel",
      "sortable"
     ],
-    "slots": [],
+    "slots": [
+     "caption",
+     "cell",
+     "column-label"
+    ],
     "events": [
      "onPageChange",
      "onRowClick",
@@ -1053,7 +1074,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1109,7 +1130,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1249,7 +1270,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1291,7 +1312,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1375,7 +1396,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1431,7 +1452,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1481,16 +1502,16 @@
   },
   "icon": {
    "svelte": {
-    "status": "complete"
+    "status": "partial"
    },
    "react": {
-    "status": "complete"
+    "status": "partial"
    },
    "vue": {
-    "status": "complete"
+    "status": "partial"
    },
    "angular": {
-    "status": "complete"
+    "status": "partial"
    }
   },
   "icon-button": {
@@ -1529,7 +1550,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1586,8 +1607,25 @@
     "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)"
    },
    "vue": {
-    "status": "none",
-    "reason": "absent: \"LabelledIconButton\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)"
+    "status": "partial",
+    "props": [
+     "ariaKeyshortcuts",
+     "class",
+     "disabled",
+     "icon",
+     "label",
+     "pressed",
+     "size",
+     "tooltipContent",
+     "tooltipPlacement",
+     "variant"
+    ],
+    "slots": [],
+    "events": [
+     "click",
+     "onClick"
+    ],
+    "bindable": []
    },
    "angular": {
     "status": "none",
@@ -1602,7 +1640,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1616,7 +1654,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -1658,7 +1696,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -1810,7 +1848,7 @@
     "bindable": []
    },
    "vue": {
-    "status": "partial",
+    "status": "complete",
     "props": [
      "class",
      "closeLabel",
@@ -1818,7 +1856,10 @@
      "open",
      "title"
     ],
-    "slots": [],
+    "slots": [
+     "default",
+     "footer"
+    ],
     "events": [
      "close",
      "onClose"
@@ -1855,7 +1896,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -1911,7 +1952,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -1953,7 +1994,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2023,7 +2064,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2037,7 +2078,7 @@
     "status": "complete"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2135,7 +2176,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "complete"
@@ -2191,7 +2232,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2205,7 +2246,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2219,7 +2260,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2471,7 +2512,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2695,7 +2736,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2807,7 +2848,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2950,7 +2991,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -2964,7 +3005,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -3062,7 +3103,7 @@
     "status": "partial"
    },
    "vue": {
-    "status": "partial"
+    "status": "complete"
    },
    "angular": {
     "status": "partial"
@@ -3210,6 +3251,211 @@
    },
    "angular": {
     "status": "complete"
+   }
+  },
+  "composer-editor": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "class",
+     "disabled",
+     "editable",
+     "messages",
+     "placeholder",
+     "profile",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "onChange",
+     "onKeyDown",
+     "onReadinessChange"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"ComposerEditor\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "class",
+     "disabled",
+     "editable",
+     "messages",
+     "placeholder",
+     "profile",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "change",
+     "keyDown",
+     "keydown",
+     "onChange",
+     "onKeyDown",
+     "onKeydown",
+     "onReadinessChange",
+     "readinessChange"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"ComposerEditor\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   }
+  },
+  "lock-presence-badge": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "binding",
+     "capabilities",
+     "lock",
+     "messages",
+     "nowIso",
+     "presence",
+     "readOnly"
+    ],
+    "slots": [],
+    "events": [
+     "onAcceptUnlock",
+     "onForceUnlock",
+     "onReleaseLock",
+     "onRequestUnlock"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "binding",
+     "capabilities",
+     "class",
+     "lock",
+     "messages",
+     "nowIso",
+     "presence",
+     "readOnly"
+    ],
+    "slots": [],
+    "events": [
+     "acceptUnlock",
+     "forceUnlock",
+     "onAcceptUnlock",
+     "onForceUnlock",
+     "onReleaseLock",
+     "onRequestUnlock",
+     "releaseLock",
+     "requestUnlock"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"LockPresenceBadge\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   }
+  },
+  "rich-text-editor": {
+   "svelte": {
+    "status": "partial",
+    "props": [
+     "actor",
+     "binding",
+     "capabilities",
+     "class",
+     "disabled",
+     "editable",
+     "lock",
+     "messages",
+     "presence",
+     "profile",
+     "provider",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "onChange",
+     "onExternalConflict",
+     "onLockChange",
+     "onPresenceChange",
+     "onReadinessChange",
+     "onRequestUnlock",
+     "onUnsupportedPaste"
+    ],
+    "bindable": []
+   },
+   "react": {
+    "status": "none",
+    "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-react (packages/components-react/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
+   },
+   "vue": {
+    "status": "partial",
+    "props": [
+     "actor",
+     "binding",
+     "capabilities",
+     "class",
+     "disabled",
+     "editable",
+     "lock",
+     "messages",
+     "presence",
+     "profile",
+     "provider",
+     "value"
+    ],
+    "slots": [],
+    "events": [
+     "change",
+     "externalConflict",
+     "lockChange",
+     "onChange",
+     "onExternalConflict",
+     "onLockChange",
+     "onPresenceChange",
+     "onReadinessChange",
+     "onRequestUnlock",
+     "onUnsupportedPaste",
+     "presenceChange",
+     "readinessChange",
+     "requestUnlock",
+     "unsupportedPaste"
+    ],
+    "bindable": []
+   },
+   "angular": {
+    "status": "none",
+    "reason": "absent: \"RichTextEditor\" is not exported from @sentropic/design-system-angular (packages/components-angular/src/index.ts)",
+    "props": [],
+    "slots": [],
+    "events": [],
+    "bindable": []
    }
   }
  }

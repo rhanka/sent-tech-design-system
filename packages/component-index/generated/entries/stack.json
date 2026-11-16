@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Stack.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Stack.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:975a508a50801d5187f66e4b8e5e9b6e2ed673de126e9996ab6a3e74ccfcc361",
+      "digest": "sha256:e3a635eacbcefc22f184f33c1b790935af6eec3f7d4aa4aebfc3eeb1f7696ea5",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Stack.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Stack.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Stack.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Vertical stack with uniform gap (Flex column shorthand).",
     "fr": "Empilement vertical avec gap homogène (raccourci Flex column)."
   },
-  "digest": "sha256:ad54c8bc8f487b8de58a0491e67eaef91396506da423c0fd03c159f634a3d883",
+  "digest": "sha256:3a1a66e034c027db30628d0c6e9bc321b59b1c2e1deab479546926e55bd1fee0",
   "displayName": "Stack",
   "format": "component-entry/v1",
   "frameworks": [

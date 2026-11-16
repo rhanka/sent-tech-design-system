@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/EmptyState.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/EmptyState.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:e18f6c6db289b8551085a08d5e63f28bb4785171eee93577c2d298233cdb2755",
+      "digest": "sha256:936435b4b95cb7ccd4b1fbb50fe811be1e0da4c936861dd6272cd530d2d1db0e",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/EmptyState.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/EmptyState.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/EmptyState.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Empty state with a primary action.",
     "fr": "État vide avec action principale."
   },
-  "digest": "sha256:cba3af6fa1f7bc0e0e34d6b07698af0fba5d5ba7237371cb3eeea7459c303c2d",
+  "digest": "sha256:2e06abe67a57094e6d51450398084ac308f89d6dfba2b33134e7063d779bce2c",
   "displayName": "EmptyState",
   "format": "component-entry/v1",
   "frameworks": [

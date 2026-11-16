@@ -1,8 +1,8 @@
 {
   "componentId": "flamegraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:68880a1dadcf4646caf714c35c096817162ccf3381dc183d7ac24f0d39dcfa2c",
-  "entryDigest": "sha256:49ef90dc7c27a2dbf41fe6732262985e503bdbed89d4b9f7ba4db04954a3f461",
+  "digest": "sha256:29d7d617d9382d2d9bc6824ececa31508306d4a794fe80de38ecdd09697e21c2",
+  "entryDigest": "sha256:f3bb1b950c8b284e3bb48b59d0f992aff0b94e0426c4c0b7852d34133a09d591",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -67,7 +67,7 @@
         "declarationPath": "packages/components-angular/dist/FlamegraphChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FlamegraphChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -144,7 +144,7 @@
         "declarationPath": "packages/components-react/dist/FlamegraphChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FlamegraphChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -215,7 +215,7 @@
         "declarationPath": "packages/components-svelte/dist/FlamegraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FlamegraphChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -283,11 +283,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:2a6cbcd3ac4fb30fb042e1c54173bab3ff2ef143fa782c6c7b2a8dcf0e53568c",
-        "declarationPath": "packages/components-vue/dist/FlamegraphChart.d.ts",
+        "declarationDigest": "sha256:6d4270f6e6eb4e5eb3121757c197d4eb1fcadf22e7154f75fbb2e4350d88aae4",
+        "declarationPath": "packages/components-vue/dist/FlamegraphChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FlamegraphChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

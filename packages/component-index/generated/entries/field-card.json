@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FieldCard.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FieldCard.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:1a6ae39866bffe002051c7ebdf6b8006b69ed78dc1e57033931687e87466f261",
+      "digest": "sha256:780486d968b32b685e6b834b5d01d425a25562c4aa0753a8071d579fcbf9072b",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FieldCard.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/FieldCard.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FieldCard.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Field group card: titled header, optional comment pill, bordered / plain / accent variants.",
     "fr": "Carte de groupe de champs : en-tête titré, pastille de commentaires optionnelle, variantes bordered / plain / accent."
   },
-  "digest": "sha256:b8a11eac5f13aaab5407f46e83cbf763b419bd1535509d2932424b52b7f9c8ef",
+  "digest": "sha256:713c8a3043b19afb1cadd0ff322a43aac36cfa11db28b8a5be65ece426de7de1",
   "displayName": "FieldCard",
   "format": "component-entry/v1",
   "frameworks": [

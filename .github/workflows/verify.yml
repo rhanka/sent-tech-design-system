@@ -15,6 +15,9 @@ on:
       - "apps/docs/**"
       - "scripts/**"
       - "tools/**"
+      # Read by the example licensing gate (scripts/verify-example-licensing.mjs).
+      # The example's own build and checks run in apps-script-demo.yml.
+      - "examples/**"
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
@@ -29,6 +32,9 @@ on:
       - "apps/docs/**"
       - "scripts/**"
       - "tools/**"
+      # Read by the example licensing gate (scripts/verify-example-licensing.mjs).
+      # The example's own build and checks run in apps-script-demo.yml.
+      - "examples/**"
       - "docs/graph-dataviz-*"
       - "package.json"
       - "package-lock.json"
@@ -43,6 +49,41 @@ permissions:
   contents: read
 
 jobs:
+  # Required by the verify shards below. Always run so changes to shared tokens,
+  # themes, fonts or build tooling cannot bypass the diagram browser gate.
+  diagram-first-paint:
+    name: diagram first paint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+      # Same Chrome for Testing setup as graph-golden/golden-webgl.
+      - name: Set up Chrome
+        id: setup-chrome
+        uses: browser-actions/setup-chrome@48ad923757ca74d66703209fe939badbdf80f2f4 # v2.2.0
+        with:
+          chrome-version: stable
+          install-dependencies: true
+      - run: npm ci
+      - name: Build diagram dependencies
+        run: node scripts/ensure-theme-dists.mjs --workspaces="@sentropic/design-system-svelte,@sentropic/design-system-vue"
+      - name: Diagram first paint (36 real DOM cases, no skips)
+        env:
+          CHROME_BIN: ${{ steps.setup-chrome.outputs.chrome-path }}
+          DIAGRAM_ARTIFACTS: ${{ runner.temp }}/diagram-first-paint
+        run: node tools/diagram-first-paint/browser.mjs
+      - name: Upload first paint failures
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: diagram-first-paint-failures
+          path: ${{ runner.temp }}/diagram-first-paint
+          if-no-files-found: warn
+
   # Deliberately NOT sharded and NOT gated on the affected-workspace plan: the
   # package this catches is the one nobody thought to select. It needs no build
   # (it reads manifests, the lockfile and `npm pack --dry-run`), so it is the
@@ -82,6 +123,9 @@ jobs:
       # Via the runner rather than `node --test scripts/*.test.mjs` because that
       # form exits 0 when the glob resolves to nothing; the runner asserts a floor
       # on the number of guard files first. See its header for the measurement.
+      - name: Dist import closure (all publishable packages)
+        run: npm run dist:import-closure
+
       - name: Repository guards (scripts/*.test.mjs)
         run: node scripts/run-script-guards.mjs
 
@@ -128,7 +172,7 @@ jobs:
           echo "$MATRIX"
 
   verify:
-    needs: plan
+    needs: [plan, diagram-first-paint]
     if: ${{ needs.plan.outputs.matrix != '{"include":[]}' }}
     name: verify (${{ matrix.task }} / shard ${{ matrix.shard }})
     runs-on: ubuntu-latest
@@ -179,6 +223,24 @@ jobs:
       - name: check
         if: matrix.task == 'check'
         run: node scripts/run-workspaces.mjs check --workspaces="${{ matrix.workspaces }}"
+
+      # The Preact workspace's `npm test` runs `measure:port:check`, which
+      # recomputes measurements/port-metrics.{txt,json} from the React trees at
+      # the commit the S1 spike branched from (BASE_REF in
+      # packages/components-preact/scripts/port-metrics.mjs) and fails when the
+      # committed files differ. This job's checkout is one commit deep, so that
+      # commit is absent: fetch it, one commit deep too — only its tree is read.
+      # The script would fetch it itself; the step is here so a fetch failure is
+      # reported under its own name and not as a failing test. The SHA is read
+      # from the script, so the two cannot drift. Guarded on the `test` task
+      # and on the Preact workspace — `@sentropic/design-system-preact` is the
+      # only workspace name holding that substring (measured).
+      - name: Fetch the base commit of the Preact port metrics
+        if: matrix.task == 'test' && contains(matrix.workspaces, '@sentropic/design-system-preact')
+        run: |
+          BASE_REF=$(node --input-type=module -e "import('./packages/components-preact/scripts/port-metrics.mjs').then((m) => console.log(m.BASE_REF))")
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          git cat-file -e "$BASE_REF^{commit}"
 
       - name: test
         if: matrix.task == 'test'

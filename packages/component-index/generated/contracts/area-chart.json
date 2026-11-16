@@ -1,8 +1,8 @@
 {
   "componentId": "area-chart",
   "contractSource": "derived",
-  "digest": "sha256:88bbe91c694eb412a2c527b0325f6591d358bc5efeb051656d15fcc680316b21",
-  "entryDigest": "sha256:71be791abe14689c4b3a3aaffde8594e5264250a069709c81fc0a5266fb6aeae",
+  "digest": "sha256:75afdbe20ae78a4f74c3fa8f32775f187ce06c500f3503b70f6ca61946abf2d6",
+  "entryDigest": "sha256:750cbba50b389e015fee31e1b220241d38121c919c45abda897f167bdecb73c6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -324,7 +324,7 @@
         "declarationPath": "packages/components-angular/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -670,7 +670,7 @@
         "declarationPath": "packages/components-react/dist/AreaChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1010,7 +1010,7 @@
         "declarationPath": "packages/components-svelte/dist/AreaChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AreaChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -1359,11 +1359,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:53a77d1531ee57241080c8208b6a97d425e8a1b75938ec6d8fa30e2811653894",
-        "declarationPath": "packages/components-vue/dist/AreaChart.d.ts",
+        "declarationDigest": "sha256:3817281e583fafdef30c57bdb56c6a8206e6be44797e1e00a4b04f774279e75e",
+        "declarationPath": "packages/components-vue/dist/AreaChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AreaChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

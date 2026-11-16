@@ -1,8 +1,8 @@
 {
   "componentId": "typography",
   "contractSource": "derived",
-  "digest": "sha256:df3ebb0238d986660fc39eed8811aeb5b148b75c06d687170d50a98cb0fd818f",
-  "entryDigest": "sha256:c9ab99f67585cd219fa6becb6bd61f25750c2841e02a1a903dc3acb3f5df7d38",
+  "digest": "sha256:a99608c07f054d9d3310694736a0cbba507e71a4d8f7543dc74deff3f94b50c2",
+  "entryDigest": "sha256:26ec00375f2a536d8fc507ac1fc14cf8d79b58fbaa8688b8081b1955eebbb2fd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/Typography.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TypographyProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -122,8 +122,8 @@
             "enum": [
               "primary",
               "secondary",
-              "muted",
               "link",
+              "muted",
               "inverse"
             ]
           },
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/Typography.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TypographyProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -223,6 +223,7 @@
           },
           "variant": {
             "enum": [
+              "body",
               "display",
               "h2",
               "h3",
@@ -230,7 +231,6 @@
               "h4",
               "h5",
               "h6",
-              "body",
               "body-sm",
               "caption",
               "overline"
@@ -258,7 +258,7 @@
         "declarationPath": "packages/components-svelte/dist/Typography.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TypographyProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -269,8 +269,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -306,6 +305,7 @@
           "variant": {
             "enum": [
               "caption",
+              "body",
               "h2",
               "h3",
               "display",
@@ -313,7 +313,6 @@
               "h4",
               "h5",
               "h6",
-              "body",
               "body-sm",
               "overline"
             ]
@@ -330,13 +329,17 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:ad586ac76fc538946db0360a77d681f0a882949487b93abfbceb95b21844e426",
-        "declarationPath": "packages/components-vue/dist/Typography.d.ts",
+        "declarationDigest": "sha256:f0161e102d37d3369a74ec865b8acc27a8ccc464be3e665009e575546c7ac216",
+        "declarationPath": "packages/components-vue/dist/Typography.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TypographyProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

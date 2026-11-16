@@ -1,8 +1,8 @@
 {
   "componentId": "density-2d-chart",
   "contractSource": "derived",
-  "digest": "sha256:06d0844d48aebfd2cf5edc069273b7fbd0ea7abc971b20ec63c80904e494d6ac",
-  "entryDigest": "sha256:266f4f162fc33c4606f1166e538af90c3c21feea367848422f1966eb842ba053",
+  "digest": "sha256:aad0851e58ebf3fe22fc1b5d6d259c0f35f22e791f09f9ea31de6b13413712e5",
+  "entryDigest": "sha256:a01a18a3cadfd3c702de50c55087b3b1ed4665204db15f2fc2e869c4f8b7db2e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -76,7 +76,7 @@
         "declarationPath": "packages/components-angular/dist/Density2DChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "Density2DChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -162,7 +162,7 @@
         "declarationPath": "packages/components-react/dist/Density2DChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "Density2DChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -242,7 +242,7 @@
         "declarationPath": "packages/components-svelte/dist/Density2DChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "Density2DChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -319,11 +319,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:0e3dae34eff4699b0321e648d613235c3a4fde0073fa43f209307ab5bde89f69",
-        "declarationPath": "packages/components-vue/dist/Density2DChart.d.ts",
+        "declarationDigest": "sha256:6936ba897c32b2dcb54c6792490239b5fce0226df52cd541b5dc4dfa4daa762f",
+        "declarationPath": "packages/components-vue/dist/Density2DChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "Density2DChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

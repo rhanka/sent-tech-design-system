@@ -1,0 +1,1 @@
+export const cases = ['architecture-folded', 'architecture-unfolded', 'ontology-folded', 'ontology-unfolded', 'nested-zones', 'nested-zones-outside', 'three-cards', 'numbered-flows', 'numbered-flows-bundled'];

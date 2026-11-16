@@ -1,8 +1,8 @@
 {
   "componentId": "funnel-chart",
   "contractSource": "derived",
-  "digest": "sha256:f4fd066d148ef7db5539f2d78d2c532203a4f8ca690070e44987911746742f66",
-  "entryDigest": "sha256:8a0dfd26d3ecc242af96d44b7fae43a98aa5fdce9c718bd4cba663db6caf9558",
+  "digest": "sha256:0fb876b5a72b0b6d58ecf3ed9057a3e6c4ee92e32daad4676b4a49a9153ade3d",
+  "entryDigest": "sha256:dd8361869ac9002440a6482ad30a8fa072cc9417094e74fc10c32ab75b83d982",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -193,7 +193,7 @@
         "declarationPath": "packages/components-react/dist/FunnelChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -289,7 +289,7 @@
         "declarationPath": "packages/components-svelte/dist/FunnelChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FunnelChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -382,11 +382,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:550d6c37466916d007d9c1c5fca2fdba83cc21eaa1dcae1fe66989e3913276a9",
-        "declarationPath": "packages/components-vue/dist/FunnelChart.d.ts",
+        "declarationDigest": "sha256:00870d493dc9761c9dab2a47f869105ef8e76ccae29b77d2f010da3e8dfd0bdc",
+        "declarationPath": "packages/components-vue/dist/FunnelChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FunnelChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

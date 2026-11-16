@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FormGroup.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FormGroup.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:250c3853c81bed8c6b26318e7dec9936e163d7c1cb81777c7fecbaf0730c506a",
+      "digest": "sha256:f5475e9c7c9a39579549f20e1710833e223f2b1a48e18204a552fa13e8fb3f44",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FormGroup.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/FormGroup.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FormGroup.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Fieldset/legend grouping controls with helper text.",
     "fr": "Fieldset/legend groupant des contrôles avec helper text."
   },
-  "digest": "sha256:660566da0a05a7201331523351edc24f3d2fdf8ac45f87b1238a7a89b8fb2101",
+  "digest": "sha256:096a7a3c1e18a449db304f5c5f4ac28782759e0f57668894da2ac3675879306b",
   "displayName": "FormGroup",
   "format": "component-entry/v1",
   "frameworks": [

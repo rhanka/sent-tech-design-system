@@ -1,8 +1,8 @@
 {
   "componentId": "anomaly-swim-lane-chart",
   "contractSource": "derived",
-  "digest": "sha256:6f5c00212d6aed88b3dc75d0231d1faf60e639563bb03add2f53f74ac1180872",
-  "entryDigest": "sha256:198a1234e7bc1f1365c447b8270ebc0cefc17ebaa2cde95696fb35ba33c44c5c",
+  "digest": "sha256:893b2dc1f8133cb42054b5bdc7b6ab0c72948ec8b1fb5fb6bde391c080bb8226",
+  "entryDigest": "sha256:9d1476b80e2b65ab3d0de3ab0da89a8fcbbc83beab5ccec9b8cc0c4eea98b2ab",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -92,7 +92,7 @@
         "declarationPath": "packages/components-angular/dist/AnomalySwimLaneChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -194,7 +194,7 @@
         "declarationPath": "packages/components-react/dist/AnomalySwimLaneChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -290,7 +290,7 @@
         "declarationPath": "packages/components-svelte/dist/AnomalySwimLaneChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -383,11 +383,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f9317b63842536a18eef453611d81a5c19550dc9a4f1b4cb72c68436b9d82af6",
-        "declarationPath": "packages/components-vue/dist/AnomalySwimLaneChart.d.ts",
+        "declarationDigest": "sha256:b1664859c8bcab33e5ae278834fd75c457b16f00d3ace430b0b093013b436589",
+        "declarationPath": "packages/components-vue/dist/AnomalySwimLaneChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AnomalySwimLaneChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

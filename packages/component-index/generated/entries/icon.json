@@ -5,42 +5,42 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:bc0293589f3ee45cfb629be573c86a09c0b0b45b770816c64d0b791e1fb4e2c2",
+      "digest": "sha256:c04a70db43011208012121647dc4903fe0138fcddb86ad77d5d91088334d44a2",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Icon.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
-      "digest": "sha256:0adc6ae30d5a9486c5c0fadb2aad9aa77f65b3d37437c90c3fd3119a00f522cf",
+      "digest": "sha256:10d82832dd2afd195a53f2084b12b6bd2b80261b698ecfef4b31214e8897ea52",
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Icon.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:8a2c10a61076d775e7021fc4407dfd97d4ac0b4f0772ec6b18df9203c9456a44",
+      "digest": "sha256:5acafb5194da45f9491379ad8662f0855d27168f3b97b79cf3020efbfc2bb7ca",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Icon.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Icon.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
-      "digest": "sha256:9550adc4b7f73d4512c52a61433f9c3e2c6bc5fc9a1066e54d0117954eca1884",
+      "digest": "sha256:532ba61a1d81bef2dc4318e2c77dc4989cffdf9fcceb793eb3ba1f87525ee833",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Icon.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "DS-prescribed icon set, addressed by frozen names (IconName).",
     "fr": "Jeu d'icônes prescrit par le DS, adressé par noms gelés (IconName)."
   },
-  "digest": "sha256:76c5674ec72faff7c78ce795f8bd8add1fba4d93399c1742e54be9f3c49138ad",
+  "digest": "sha256:1bb63cdb42a0a360b2f9a7f44896127d7a30f542a6ce3971e8e284cf7102dd2c",
   "displayName": "Icon",
   "format": "component-entry/v1",
   "frameworks": [

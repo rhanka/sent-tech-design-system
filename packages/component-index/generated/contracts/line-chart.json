@@ -1,8 +1,8 @@
 {
   "componentId": "line-chart",
   "contractSource": "derived",
-  "digest": "sha256:09f82dade28bb9614a4ef884f2b292c32ebaa3d1e3cff82ddb6801e3aeb10cd5",
-  "entryDigest": "sha256:e81daf4eb944faf84c4783162d3c48272c9d00c0526acd86f3d6109a61d520f4",
+  "digest": "sha256:5f3bea2eaa2c2ead3403ca0baca0366f7faacc44685e28935f6d2d607e71ad9f",
+  "entryDigest": "sha256:589a0e31d51be203082743f3d1d2438fd0648fa92d0b9461da132c1e65d1a205",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -439,7 +439,7 @@
         "declarationPath": "packages/components-angular/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -864,8 +864,8 @@
           "scale": {
             "description": "Value-axis scale. `\"linear\"` (default) is unchanged. `\"log\"` switches the\ny axis to base-10 logarithmic — values `<= 0` are ignored for domain/ticks\nand clamped to the lowest tick when positioned.",
             "enum": [
-              "linear",
-              "log"
+              "log",
+              "linear"
             ]
           },
           "showLegend": {
@@ -908,7 +908,7 @@
         "declarationPath": "packages/components-react/dist/LineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1371,7 +1371,7 @@
         "declarationPath": "packages/components-svelte/dist/LineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LineChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -1843,11 +1843,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d81ed9b512e6e2818e4ed222f598ae800e77dd52c3b1942e1ff7f6711e6d7631",
-        "declarationPath": "packages/components-vue/dist/LineChart.d.ts",
+        "declarationDigest": "sha256:6980bf42b17726ec506ff160780a028cdfd2a0ef99d9c8e8bb186ea7f65612c2",
+        "declarationPath": "packages/components-vue/dist/LineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LineChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

@@ -1,6 +1,6 @@
 {
   "name": "@sentropic/design-system-svelte",
-  "version": "0.37.0",
+  "version": "0.41.4",
   "license": "MIT",
   "type": "module",
   "publishConfig": {
@@ -50,19 +50,23 @@
     "!dist/**/*.test.d.ts",
     "!dist/**/*.test.d.ts.map",
     "!dist/**/*Fixture.svelte",
+    "!dist/**/*Fixture.svelte.d.ts*",
     "!dist/**/*Fixture.d.ts",
     "!dist/**/diagram-card-corpus.js",
     "!dist/**/diagram-card-corpus.d.ts",
     "!dist/**/diagram-card-corpus.d.ts.map",
     "!dist/**/diagram-zone-corpus.js",
     "!dist/**/diagram-zone-corpus.d.ts",
-    "!dist/**/diagram-zone-corpus.d.ts.map"
+    "!dist/**/diagram-zone-corpus.d.ts.map",
+    "!dist/**/DiagramSceneFigure.test-support.*",
+    "!dist/flow-fixtures/**"
   ],
   "dependencies": {
     "@lucide/svelte": "^0.562.0",
-    "@sentropic/design-system-rich-text": "0.1.0",
-    "@sentropic/design-system-themes": "0.12.0",
-    "@sentropic/graph": "0.3.0"
+    "@sentropic/design-system-rich-text": "0.1.1",
+    "@sentropic/design-system-themes": "0.14.0",
+    "@sentropic/diagram-canvas": "0.2.4",
+    "@sentropic/graph": "0.3.1"
   },
   "peerDependencies": {
     "svelte": "^5.53.2",
@@ -93,10 +97,11 @@
   },
   "devDependencies": {
     "@sentropic/design-system-theme-dsfr": "0.2.2",
-    "@sentropic/design-system-themes": "0.12.0",
+    "@sentropic/design-system-themes": "0.14.0",
     "@sveltejs/package": "^2.5.0",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "@testing-library/svelte": "^5.2.8",
+    "@vitejs/plugin-vue": "6.0.11",
     "svelte": "^5.53.2",
     "vite": "^8.0.16",
     "vitest": "^4.1.11"

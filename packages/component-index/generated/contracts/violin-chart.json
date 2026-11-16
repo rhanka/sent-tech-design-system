@@ -1,8 +1,8 @@
 {
   "componentId": "violin-chart",
   "contractSource": "derived",
-  "digest": "sha256:6cd900285c8fa32b8c84595b6b2e3a0c2f68eb21ac2aa9c6fc6ea7d5a3533fc6",
-  "entryDigest": "sha256:8dbdb0e6a1b23414cbbf5b4952e48c2e5a632a264de6ddad0c69528ebad2cf4e",
+  "digest": "sha256:ddc94867fa05f5f5a98fa4d97f7236375904ceba3caa682c113b356f9a929960",
+  "entryDigest": "sha256:4934ffecf616247cd96e19499b273808b4faef6233f49d0eb1ef820956b71f0b",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -82,7 +82,7 @@
         "declarationPath": "packages/components-angular/dist/ViolinChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ViolinChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -175,7 +175,7 @@
         "declarationPath": "packages/components-react/dist/ViolinChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ViolinChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -262,7 +262,7 @@
         "declarationPath": "packages/components-svelte/dist/ViolinChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ViolinChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -346,11 +346,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b21913c3b412dcc7eaa31777beba451c79f95e5b9b6cdcfed1d98f46c298e861",
-        "declarationPath": "packages/components-vue/dist/ViolinChart.d.ts",
+        "declarationDigest": "sha256:7f6089eb7047982e89dd8b632230430a19f5f013aae16afafd3a67f9e4ccd685",
+        "declarationPath": "packages/components-vue/dist/ViolinChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ViolinChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

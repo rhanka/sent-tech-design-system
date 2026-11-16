@@ -1,8 +1,8 @@
 {
   "componentId": "display-settings",
   "contractSource": "derived",
-  "digest": "sha256:6cda9a3a0585d4cda53438c3c2c21694e302d21005601417c96567ae5cfc671a",
-  "entryDigest": "sha256:b9982ebc2defc81cfd8759a61ab745e4906dc4bca4d7309805991632f22945c7",
+  "digest": "sha256:7e664ffac705373f5b7d73d61f6c0660d66f54419a5db966bdea245f7777ead4",
+  "entryDigest": "sha256:544543e53ef3ab4829c811e9e9046e5a97932bdfe52fb4ef11ec75297ef8f4e0",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -197,7 +197,7 @@
         "declarationPath": "packages/components-react/dist/DisplaySettings.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-svelte/dist/DisplaySettings.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DisplaySettingsProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -310,13 +310,15 @@
       "dropped": [],
       "events": [
         {
-          "name": "change"
+          "name": "change",
+          "payload": {
+            "$ref": "#/$defs/DisplaySettingsState"
+          }
         },
         {
           "name": "onChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "$ref": "#/$defs/DisplaySettingsState"
           }
         }
       ],
@@ -325,6 +327,42 @@
         "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
       ],
       "props": {
+        "$defs": {
+          "DisplaySettingsState": {
+            "additionalProperties": false,
+            "properties": {
+              "contrast": {
+                "enum": [
+                  "default",
+                  "high"
+                ]
+              },
+              "fontScale": {
+                "enum": [
+                  "normal",
+                  "large",
+                  "extra-large"
+                ]
+              },
+              "lineSpacing": {
+                "enum": [
+                  "normal",
+                  "comfortable"
+                ]
+              },
+              "reducedMotion": {
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "contrast",
+              "fontScale",
+              "lineSpacing",
+              "reducedMotion"
+            ],
+            "type": "object"
+          }
+        },
         "additionalProperties": false,
         "properties": {
           "class": {
@@ -351,12 +389,6 @@
       },
       "replaced": [
         {
-          "name": "onChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
           "name": "values",
           "reason": "library type not expanded",
           "replacement": "{}",
@@ -365,16 +397,15 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:d00fd788c74b4b3fc93d52f8aadb8562f6a6cdb5f8c1d2e89c036371932dd7f3",
-        "declarationPath": "packages/components-vue/dist/DisplaySettings.d.ts",
+        "declarationDigest": "sha256:435420b4dbf43050955c97a0585844eeb8c33017dd11022841b17392a1d6ccb1",
+        "declarationPath": "packages/components-vue/dist/DisplaySettings.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DisplaySettingsProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"change\": payload not in declaration",
         "event pair: emits \"change\" and prop \"onChange\" both listed verbatim"
       ]
     }

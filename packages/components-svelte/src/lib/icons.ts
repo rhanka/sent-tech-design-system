@@ -8,6 +8,7 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  CircleDashed,
 } from "@lucide/svelte";
 import type { Component } from "svelte";
 
@@ -45,6 +46,7 @@ const GLYPHS = {
   // CA-L1 fold-in (AS-1): the one CA table row AS-1 needs on day one. The
   // other seven CA names land with their own CA lots.
   comment: MessageSquare,
+  "circle-dashed": CircleDashed,
 };
 
 /** A canonical DS icon name accepted by {@link Icon}. */
@@ -55,3 +57,9 @@ export const ICONS = GLYPHS as Record<IconName, Component<IconGlyphProps>>;
 
 /** All canonical icon names, ordered — useful for docs/catalogs. */
 export const ICON_NAMES = Object.keys(ICONS) as IconName[];
+
+/**
+ * An arbitrary lucide glyph component accepted by {@link Icon} via `glyph`.
+ * The app imports the icon itself, so only icons actually used are bundled.
+ */
+export type IconGlyph = Component<IconGlyphProps>;

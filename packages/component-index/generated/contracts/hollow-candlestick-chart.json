@@ -1,8 +1,8 @@
 {
   "componentId": "hollow-candlestick-chart",
   "contractSource": "derived",
-  "digest": "sha256:7686ef4703df876fa5bc46784582e92db9c83b238c93a32b4e41f2ca92d01bdd",
-  "entryDigest": "sha256:21d0e6d0b82fab98600d0d7edaa591849058f06daf4c33825549354d99d6ce25",
+  "digest": "sha256:60773f491acddee0c58d43274e0c443676464221d40790c25985d088bf84f50e",
+  "entryDigest": "sha256:19d0d984d179bc33ba487d6ad7146d9d5c4d82db83ebad192c3b61cc946e150e",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/HollowCandlestickChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/HollowCandlestickChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/HollowCandlestickChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:50af3e2aa222b85ffc796a236d42fbbd0b87427e519d9c4d8a4348e21645d5d2",
-        "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.d.ts",
+        "declarationDigest": "sha256:bfa3c33c030f0bb25b2f4e77e71e7c0456b88ef979623ec5d0719af2f47bcf68",
+        "declarationPath": "packages/components-vue/dist/HollowCandlestickChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "HollowCandlestickChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

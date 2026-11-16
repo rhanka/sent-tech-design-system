@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Slider.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Slider.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:14bbd66b6e1e93de74170cd0971d506ae68fe30d826eef3d1b75f94ffeb5fa1a",
+      "digest": "sha256:7d4380f7e1d1f284adeaee993d070999037ed120c7f26d25f9fcd337bb0e7b35",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Slider.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Slider.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Slider.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Continuous value slider.",
     "fr": "Curseur de valeur continue."
   },
-  "digest": "sha256:aef4a27d9fc011e09442002beab5d29644ea1571192a68c37ed2176bb354c6d0",
+  "digest": "sha256:c0fc2aa2fd2dbd4b1ca7d9db11e414ac57aed9dbc5e08ba19fbb24ac947f7df7",
   "displayName": "Slider",
   "format": "component-entry/v1",
   "frameworks": [

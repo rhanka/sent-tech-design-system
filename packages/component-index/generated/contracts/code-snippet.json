@@ -1,8 +1,8 @@
 {
   "componentId": "code-snippet",
   "contractSource": "derived",
-  "digest": "sha256:cc5c7f889490bcad7c9a17d7de13a85e293c77261eca5b83dbbdb8fd2db598ea",
-  "entryDigest": "sha256:89205fae33ef456dd3d270b4f0260a3d01a8c28ad972140ab9f5ad999c840c03",
+  "digest": "sha256:c9612de852745457a8dfa3039f7202e3ca652e04d4184627544be6ad14fbd27a",
+  "entryDigest": "sha256:44678458044ebb8a9a205c58cbcf3ea2ac500541726f40c7dbb1122aaabc11dd",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -50,7 +50,7 @@
         "declarationPath": "packages/components-angular/dist/CodeSnippet.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "CodeSnippetProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -97,11 +97,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "CodeSnippetProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -151,7 +151,7 @@
         "declarationPath": "packages/components-svelte/dist/CodeSnippet.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "CodeSnippetProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -198,11 +198,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:43b430d5bba566f1ea267b9b5be31a9017008f89196278e27e9789327cbd703c",
-        "declarationPath": "packages/components-vue/dist/CodeSnippet.d.ts",
+        "declarationDigest": "sha256:50499b9f6cf197690000c96b1a461a68eac7001afaf5cbb9cec147010d0a7e29",
+        "declarationPath": "packages/components-vue/dist/CodeSnippet.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "CodeSnippetProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

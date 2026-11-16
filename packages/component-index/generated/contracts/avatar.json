@@ -1,8 +1,8 @@
 {
   "componentId": "avatar",
   "contractSource": "derived",
-  "digest": "sha256:23f4ff9f6c20c53a14bd77c96e48907a8e447bb2677e01ec2875e0596d069803",
-  "entryDigest": "sha256:9baec034d6e596f3cb7b4a133fd392bfe95732a0b95f1262194ad0a86b75125d",
+  "digest": "sha256:18a7ba9c941457e2bd48a27183951df9d4d0b845ecc66730853cbc75ce4f7461",
+  "entryDigest": "sha256:bd6d2ee48b3fa111bebc21c0651c5d10bb8c0306833bfd51570d2c3a5516b206",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -63,7 +63,7 @@
         "declarationPath": "packages/components-angular/dist/Avatar.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AvatarProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -140,7 +140,7 @@
         "declarationPath": "packages/components-react/dist/Avatar.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AvatarProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -217,7 +217,7 @@
         "declarationPath": "packages/components-svelte/dist/Avatar.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AvatarProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -285,11 +285,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:487627c0b045246f4a2b741f7018778eef93919481df4289133d412b36b01137",
-        "declarationPath": "packages/components-vue/dist/Avatar.d.ts",
+        "declarationDigest": "sha256:19b0972e4bb9a9acae0d7d11db5eb810109ce332999cd2eb2aa6da59d857b5c1",
+        "declarationPath": "packages/components-vue/dist/Avatar.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AvatarProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

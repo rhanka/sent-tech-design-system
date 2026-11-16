@@ -1,8 +1,8 @@
 {
   "componentId": "word-cloud-chart",
   "contractSource": "derived",
-  "digest": "sha256:95808520620fc109bf6094d176021bfe8909d958c36aec89e362f5b6615a5758",
-  "entryDigest": "sha256:8e1725c287a3b2b301e6d03fc6130b505fa0b0297a03f8791f23a71e87b9a5ad",
+  "digest": "sha256:b3803869e5fb42e206aed6d119898c0d245791b8733c7f2629ea927f93350fdf",
+  "entryDigest": "sha256:7baba92d8735d027547acc4c60f55df714e234d999c74992774b2af77f66fb31",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/WordCloudChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WordCloudChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -158,7 +158,7 @@
         "declarationPath": "packages/components-react/dist/WordCloudChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "WordCloudChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -237,7 +237,7 @@
         "declarationPath": "packages/components-svelte/dist/WordCloudChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WordCloudChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -312,11 +312,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:c6fb1c21063c0bc31d175cdd3339002b814bfba4fb7aa775f4e716bcb669af5d",
-        "declarationPath": "packages/components-vue/dist/WordCloudChart.d.ts",
+        "declarationDigest": "sha256:6f6c93092229bb1a95f9cc6ea5c4ff8d630e7a63326c121fbed7ded919942bf7",
+        "declarationPath": "packages/components-vue/dist/WordCloudChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WordCloudChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

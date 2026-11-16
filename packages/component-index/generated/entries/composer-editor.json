@@ -1,0 +1,46 @@
+{
+  "category": "chat",
+  "componentId": "composer-editor",
+  "dataClass": "public-safe",
+  "delivery": [
+    {
+      "channel": "source",
+      "digest": "sha256:8de3e41d3fa1b95d6ceb3b4f67fd360df390787735f47344925cc79c9a460268",
+      "framework": "svelte",
+      "package": "@sentropic/design-system-svelte",
+      "path": "packages/components-svelte/src/lib/rich-text-editor/ComposerEditor.svelte",
+      "version": "0.41.4"
+    },
+    {
+      "channel": "source",
+      "digest": "sha256:8f39a47b76e9fd3924e6566df4bf7bda8438b2ee0e28e6e0f30a33ff18abeab2",
+      "framework": "vue",
+      "package": "@sentropic/design-system-vue",
+      "path": "packages/components-vue/src/rich-text-editor/ComposerEditor.vue",
+      "version": "0.41.0-next.6"
+    }
+  ],
+  "description": {
+    "en": "Controlled text composer with capture that waits for IME composition.",
+    "fr": "Surface de rédaction à valeur texte contrôlée et capture compatible avec la composition IME."
+  },
+  "digest": "sha256:56ea0afba2737f2632585f17fd123f532f26be92972f644fe7a8547dc89f0bf6",
+  "displayName": "ComposerEditor",
+  "format": "component-entry/v1",
+  "frameworks": [
+    "svelte",
+    "vue"
+  ],
+  "groupSlug": "rich-text-editor",
+  "parity": {
+    "angular": "missing",
+    "react": "missing",
+    "svelte": "source-of-truth",
+    "vue": "match"
+  },
+  "producerId": "sentropic-ds",
+  "renderable": "doc-only",
+  "scope": "generic",
+  "status": "documented",
+  "visibility": "public"
+}

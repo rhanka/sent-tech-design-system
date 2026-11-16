@@ -111,6 +111,15 @@ describe("K1b conversion table (spec 6.2)", () => {
     expect(state.defs.get("TreeNode")).toMatchObject({ type: "object" });
   });
 
+  it("keeps different concrete generic specializations in separate definitions", () => {
+    const { state, typeOf } = setup();
+    const out = convertObjectMembers(typeOf("TwoBoxes"), state, "TwoBoxes");
+    expect(out.properties["text"]).toEqual({ $ref: "#/$defs/GenericBox" });
+    expect(out.properties["count"]).toEqual({ $ref: "#/$defs/GenericBox%3Cnumber%3E" });
+    expect(state.defs.get("GenericBox")).toMatchObject({ properties: { value: { type: "string" } } });
+    expect(state.defs.get("GenericBox<number>")).toMatchObject({ properties: { value: { type: "number" } } });
+  });
+
   it("unknown becomes replaced {}, Date becomes replaced date-time", () => {
     const { state, typeOf } = setup();
     const out = convertObjectMembers(typeOf("Props"), state, "Props");

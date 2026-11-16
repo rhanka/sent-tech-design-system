@@ -1,7 +1,7 @@
 {
   "componentId": "time-series-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:fa112305be96a1b6752b5afa2fcae81d316dcc4fdf1a144d66d762d140ecbbc7",
+  "digest": "sha256:5cb2f84ccd7f445efcee5a5217ddb38d3ad07b7f41aedd510bff4ae79befb4e4",
   "entryDigest": "sha256:e3b66d8a12c3b4ddbfec853a5c31a21834485859a9032cc61c9af4dbaa6224a4",
   "format": "component-contract/v1",
   "frameworks": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/TimeSeriesLineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -410,11 +410,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:831b805243355b5286a2a460fc7e4a1e4628b5744907ec018c19916bc694f1c7",
+        "declarationDigest": "sha256:c244b150de9d36fa210715039fee5bf57ca03cab1909b646a01c3093daefd50a",
         "declarationPath": "packages/components-svelte/dist/TimeSeriesLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "none",
       "unresolved": [],
@@ -433,11 +433,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
+        "declarationDigest": "sha256:fda74744820cd3be6a0fa3e9324b0e3eb635c6568297ce34f7e904474f3f75d2",
         "declarationPath": "packages/components-vue/dist/TimeSeriesLineChart.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimeSeriesLineChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "none",
       "unresolved": [],

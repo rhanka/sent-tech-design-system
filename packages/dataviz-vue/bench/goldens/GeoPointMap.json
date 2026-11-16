@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "component": "GeoPointMap",
+  "sourceRevision": "564bda53b1a5c11800b0eda9bc205237648ce18b",
+  "source": "src/lib/GeoPointMap.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-geoMap st-geoPointMap\"><div aria-label=\"Point map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category2\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category4\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"14\"></circle></g></svg></div><ul aria-label=\"Data values for Point map\" class=\"st-chartDataList\"><li>Point map: 4</li><li>0</li><li>1</li><li>2</li><li>3</li></ul></div>"
+    },
+    {
+      "id": "id-labelfield",
+      "html": "<div class=\"st-geoMap st-geoPointMap\"><div aria-label=\"Point map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"9.09090909090909\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category2\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"11.136363636363637\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"8.272727272727273\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category4\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"14\"></circle></g></svg></div><ul aria-label=\"Data values for Point map\" class=\"st-chartDataList\"><li>Point map: 4</li><li>2.35: 10</li><li>4.83: 15</li><li>5.37: 8</li><li>-1.55: 22</li></ul></div>"
+    },
+    {
+      "id": "sized",
+      "html": "<div class=\"st-geoMap st-geoPointMap\"><div aria-label=\"Point map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 600 400\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"399\" rx=\"4\" width=\"599\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"327.22869955156955\" cy=\"70.62251655629137\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category2\" cx=\"480.6995515695067\" cy=\"214.68609271523184\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category3\" cx=\"514.1165919282512\" cy=\"329.3774834437086\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category4\" cx=\"85.88340807174887\" cy=\"147.08344370860922\" r=\"14\"></circle></g></svg></div><ul aria-label=\"Data values for Point map\" class=\"st-chartDataList\"><li>Point map: 4</li><li>0</li><li>1</li><li>2</li><li>3</li></ul></div>"
+    },
+    {
+      "id": "class-attrs",
+      "html": "<div class=\"st-geoMap st-geoPointMap consumer\" data-bench=\"points\"><div aria-label=\"Point map\" class=\"st-geoMap__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 520 320\" width=\"100%\"><rect class=\"st-geoMap__frame\" height=\"319\" rx=\"4\" width=\"519\" x=\"0.5\" y=\"0.5\"></rect><g class=\"st-geoMap__layer st-geoMap__layer--points\"><circle class=\"st-geoMap__point st-geoMap__point--category1\" cx=\"283.2825112107623\" cy=\"60.02649006622514\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category2\" cx=\"414.5112107623318\" cy=\"171.34834437086099\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category3\" cx=\"443.085201793722\" cy=\"259.97350993377484\" r=\"14\"></circle><circle class=\"st-geoMap__point st-geoMap__point--category4\" cx=\"76.91479820627802\" cy=\"119.1099337748344\" r=\"14\"></circle></g></svg></div><ul aria-label=\"Data values for Point map\" class=\"st-chartDataList\"><li>Point map: 4</li><li>0</li><li>1</li><li>2</li><li>3</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "c2608ba1a2dd832492051f88a66670f36150e0b46ce612ecb2152de8e1a8d947",
+  "fixtureSha256": "fa6a56332260e2bd3f2947e6db0dba14431d9e6e98187f55808985760bc8c0d5",
+  "publicExports": [
+    {
+      "name": "GeoPointMap",
+      "typeOnly": false
+    },
+    {
+      "name": "GeoPointMapProps",
+      "typeOnly": true
+    }
+  ]
+}

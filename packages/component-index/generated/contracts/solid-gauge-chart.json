@@ -1,8 +1,8 @@
 {
   "componentId": "solid-gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:874228ddf4d6acd7d5a0bd5ce2ccd131db3ef500f77ddf79b2a4d3759375f297",
-  "entryDigest": "sha256:2773e0048f38904f9006902adc6feb0cc8e11e18761d93a54ce032c6ece3b9a8",
+  "digest": "sha256:aa911a1d707188a3a52796435bfcdde29a9d62c7e577f5f888d848f72d99ee0a",
+  "entryDigest": "sha256:a51ddcf5641e3fba1f9aca32ac2a6c55fa387c1c57df80544f4aff34b1f7bec3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -99,7 +99,7 @@
         "declarationPath": "packages/components-angular/dist/SolidGaugeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-react/dist/SolidGaugeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/SolidGaugeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -427,11 +427,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:8e167b52b00fcd1fad04426351e9ecbefff951e162fac1e700ae2d6c9b21c8a3",
-        "declarationPath": "packages/components-vue/dist/SolidGaugeChart.d.ts",
+        "declarationDigest": "sha256:d002a257f61224734b76a13f70baee5bd50d3c2c4e348aa27bd1f5f8f4cb16d1",
+        "declarationPath": "packages/components-vue/dist/SolidGaugeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SolidGaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "pagination",
   "contractSource": "derived",
-  "digest": "sha256:5681226397dbd6c68c04a5783b2cc07c210655191015ade4cd43609d00f9b22f",
-  "entryDigest": "sha256:60f77c1ea4020b180e1543b0d21777130cc570fa998b28a64ca8b4b887463a54",
+  "digest": "sha256:36914c832f58cb5d993aba7511fd13d540c6b4f50c95e42a0908bbdb4b822ded",
+  "entryDigest": "sha256:fe5dce26825cd0b75b8d480571329956dbc8485dae5eed2b9544e3329047e533",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/Pagination.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PaginationProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -117,11 +117,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PaginationProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-svelte/dist/Pagination.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PaginationProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -195,12 +195,14 @@
         {
           "name": "onPageChange",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "number"
           }
         },
         {
-          "name": "pageChange"
+          "name": "pageChange",
+          "payload": {
+            "type": "number"
+          }
         }
       ],
       "limitations": [
@@ -240,26 +242,18 @@
         ],
         "type": "object"
       },
-      "replaced": [
-        {
-          "name": "onPageChange.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        }
-      ],
+      "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:dd1054c0ae59dc25498fc511b3b0be0e3e34fd6162d3415c550a966cf2130d48",
-        "declarationPath": "packages/components-vue/dist/Pagination.d.ts",
+        "declarationDigest": "sha256:32b72f21f21089d05e957bc0420ac8da79f2c09c69d297ae1ae3604a9928d04c",
+        "declarationPath": "packages/components-vue/dist/Pagination.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PaginationProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": [
-        "emit \"pageChange\": payload not in declaration",
         "event pair: emits \"pageChange\" and prop \"onPageChange\" both listed verbatim"
       ]
     }

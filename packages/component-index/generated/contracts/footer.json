@@ -1,8 +1,8 @@
 {
   "componentId": "footer",
   "contractSource": "derived",
-  "digest": "sha256:7e2ddc23068d9663e1ad4910391ac756d23ccc1e05eec592079c7800398fb0c3",
-  "entryDigest": "sha256:cb9f4246b0c16032e45a4c006cb2d15c3904df03214a002534515c16da11a93b",
+  "digest": "sha256:5d18fefabdec269132dff2cbbba4ebb71a96b0bd6e85f40bf70b0822f1a503b9",
+  "entryDigest": "sha256:500d3a3d9d79964434f268291fe8d5a81bf523387f2701708aa489f58761bca5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/Footer.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "FooterProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -234,11 +234,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "FooterProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -329,7 +329,7 @@
         "declarationPath": "packages/components-svelte/dist/Footer.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "FooterProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -340,8 +340,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -354,7 +353,16 @@
                 },
                 "type": "array"
               },
-              "title": {}
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
               "links"
@@ -367,18 +375,35 @@
               "href": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
-              "href",
-              "label"
+              "href"
             ],
             "type": "object"
           }
         },
         "additionalProperties": false,
         "properties": {
-          "brand": {},
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -388,7 +413,16 @@
             },
             "type": "array"
           },
-          "copyright": {},
+          "copyright": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "legalLinks": {
             "items": {
               "$ref": "#/$defs/FooterLink"
@@ -404,41 +438,57 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "FooterColumn.title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "brand"
         },
         {
-          "name": "FooterLink.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "column-title",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/FooterColumn"
+              },
+              "index": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "index"
+            ],
+            "type": "object"
+          }
         },
         {
-          "name": "brand",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "copyright"
         },
         {
-          "name": "copyright",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "link-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "link": {
+                "$ref": "#/$defs/FooterLink"
+              }
+            },
+            "required": [
+              "link"
+            ],
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:3927c47c642b82b42bf5b7ee1e844506859db852771cf99ac2edb8849423ef4f",
-        "declarationPath": "packages/components-vue/dist/Footer.d.ts",
+        "declarationDigest": "sha256:90e7a1c7f2420f81c921c1438076fd4e640a5d4dfe890622f0921017dc8f008f",
+        "declarationPath": "packages/components-vue/dist/Footer.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "FooterProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
-      "status": "partial",
+      "status": "complete",
       "unresolved": [],
       "warnings": []
     }

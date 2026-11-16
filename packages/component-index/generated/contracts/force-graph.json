@@ -1,8 +1,8 @@
 {
   "componentId": "force-graph",
   "contractSource": "derived",
-  "digest": "sha256:6b61a168bcc5712d049c755a70c3dd18754141e80b5bf71bd25e1ca24ff0b941",
-  "entryDigest": "sha256:9a1a864b5b8cd8d6719e5da5fd28f915bec9fc056b9dff7362ab5b7beebc9857",
+  "digest": "sha256:0c8007af73faa2b3e9ab6a29c13503713bf8ef27020c686bc0fb9c0b93c2e26f",
+  "entryDigest": "sha256:490a4bbf4be1511ae0df2444846b3da853f676d38740da36628527dc26286677",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -303,7 +303,7 @@
         "declarationPath": "packages/components-angular/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ForceGraphProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -648,11 +648,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ForceGraphProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -787,10 +787,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -853,10 +853,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1000,7 +1000,7 @@
         "declarationPath": "packages/components-svelte/dist/ForceGraph.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ForceGraphProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -1041,6 +1041,48 @@
         }
       ],
       "events": [
+        {
+          "name": "edgeHover",
+          "payload": {
+            "$ref": "#/$defs/ForceGraphEdge"
+          }
+        },
+        {
+          "name": "mergeComplete",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "from": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "into": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "from",
+              "id",
+              "into"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "nodeHover",
+          "payload": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/ForceGraphNode"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
         {
           "name": "onEdgeHover",
           "payload": {
@@ -1091,6 +1133,18 @@
         },
         {
           "name": "onSelect",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "openEntity",
+          "payload": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "select",
           "payload": {
             "type": "string"
           }
@@ -1167,10 +1221,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1233,10 +1287,10 @@
                   "circle",
                   "square",
                   "diamond",
+                  "box",
                   "dot",
                   "star",
                   "hexagon",
-                  "box",
                   "roundedbox",
                   "triangle"
                 ]
@@ -1300,6 +1354,9 @@
             },
             "type": "array"
           },
+          "legendLabel": {
+            "type": "string"
+          },
           "mergePair": {
             "additionalProperties": false,
             "description": "Reconciliation merge animation (CLIENT-ONLY — driven by a `watch`, which\nnever runs during SSR, so no merge is animated or resolved server-side).\n\nPass a `{ id, from, into }` where both `from` and `into` exist in `nodes`:\nthe `from` node animates toward the position of `into` while fading out (the\nnode and its incident edges), then `onMergeComplete(pair)` fires exactly\nONCE for that `id`. Purely visual — the component never mutates the data;\nthe consumer removes `from` from `nodes` after the callback.\n\nIdempotent on `id`: re-passing the SAME `id` (even with a new identity for\nthe object) is a no-op — the animation/callback are not replayed. Passing a\nNEW `id` (re)plays the merge, even for the same `from`/`into` pair. After\ncompletion the `from` node stays MASKED (hidden) until the consumer removes\nit or a new `mergePair` is supplied, so it does not flash back when the prop\nreturns to null. Pass null (the default) for no merge in flight.",
@@ -1356,6 +1413,7 @@
         },
         "required": [
           "edges",
+          "label",
           "nodes"
         ],
         "type": "object"
@@ -1363,15 +1421,21 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4fe13417fdc41bb12f5ed7239d805563f3bee45d82e59910150b125fc7302de4",
+        "declarationDigest": "sha256:c1c5b40381c0d164f90bb683ea5a0eda38acdf12baaa6f30409fa146c1cfd1b3",
         "declarationPath": "packages/components-vue/dist/ForceGraph.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ForceGraphProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": []
+      "warnings": [
+        "event pair: emits \"edgeHover\" and prop \"onEdgeHover\" both listed verbatim",
+        "event pair: emits \"mergeComplete\" and prop \"onMergeComplete\" both listed verbatim",
+        "event pair: emits \"nodeHover\" and prop \"onNodeHover\" both listed verbatim",
+        "event pair: emits \"openEntity\" and prop \"onOpenEntity\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
+      ]
     }
   },
   "producerId": "sentropic-ds"

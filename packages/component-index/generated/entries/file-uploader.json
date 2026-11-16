@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/FileUploader.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/FileUploader.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:51276297f20576c54c094833f8676305ca90ad3bcc5f5a0f8c94c8a5db107c5d",
+      "digest": "sha256:0eefbfd71fd6a7351d3c2b78cf7ca20a3134655d7573e8269c6711f5d3676a60",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/FileUploader.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/FileUploader.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/FileUploader.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "File upload with progress states.",
     "fr": "Téléversement de fichiers avec états de progression."
   },
-  "digest": "sha256:680381f864ae960f909a4d009a480fb71d47dc2ed04c4082fbce8ec863c8786c",
+  "digest": "sha256:7fe5f853c32140b89537afc6341cd9e25bf7a42b0ee1a5393bf2e7242d58c88b",
   "displayName": "FileUploader",
   "format": "component-entry/v1",
   "frameworks": [

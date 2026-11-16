@@ -5,42 +5,42 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:24d1a1d6a549c97038fb303c255772b22abcd6edf38070aa9b4406535203b405",
+      "digest": "sha256:df48e888a67688f9d6fc2183f724b57ba3e182653565320d71d8520b4eb58354",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Menu.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
-      "digest": "sha256:fb75b0f5f8a42283bb4c59045b435b84ab57417d02bcda5cb67412e53036a018",
+      "digest": "sha256:a781843404cfec83598a727e6449cdd16927e23c51aee9e0c489cbe63ba97159",
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Menu.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:d5917d133fb2ebc8d0e5fdd4d8a68abe5dcb620f0a57ab75c73f296c5a024772",
+      "digest": "sha256:76035df5d9d7b81ab0f7a7ec42f2eda74205d2894ec113cc939fe00c63ae70e3",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Menu.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Menu.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
-      "digest": "sha256:c91b69e629abccf227b4a19924e3778397ba62f2bf6e90dc67ca1b5eb92fd37e",
+      "digest": "sha256:b78564e76d93d43f6572a282e2f872274b4e5efb93c50c9b2dbe01cb448366f7",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Menu.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Contextual actions menu.",
     "fr": "Menu d’actions contextuel."
   },
-  "digest": "sha256:10815a821603ac5c6b936736a14762f62033362c491fde4951b95afa5e9f7150",
+  "digest": "sha256:ebedf7622f92c2a1611621566dcd75662cd8d2303c2a5bb93dbddc3aac112e83",
   "displayName": "Menu",
   "format": "component-entry/v1",
   "frameworks": [

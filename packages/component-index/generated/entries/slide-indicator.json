@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SlideIndicator.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SlideIndicator.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:a7d72a035a5fae12f619eeaf61ea4a86b4dd9b46449371dd4990b5171eeab2ba",
+      "digest": "sha256:de1c1d3268d589212a64d5ad9ba42717b0b3cc92f2124b2e6bae5c5117fdfd8a",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SlideIndicator.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/SlideIndicator.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SlideIndicator.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Dots or bars marking the current slide of a carousel.",
     "fr": "Points ou barres signalant la diapositive courante d'un carrousel."
   },
-  "digest": "sha256:11931eeb77988263d2e398532a2314a0b6475621c15d9f64e1f8d62d331ab8aa",
+  "digest": "sha256:d9710714eeef5b0c7760b37006d2c5291d559df64b8a02ac45ae1c605b211a77",
   "displayName": "SlideIndicator",
   "format": "component-entry/v1",
   "frameworks": [

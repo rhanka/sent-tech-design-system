@@ -1,3 +1,4 @@
+import { relationSchema } from "./relation-types.js";
 /**
  * Fold binding, folded-edge projection and authored summary labels (M3 §4).
  *
@@ -77,6 +78,7 @@ export function portRepresentativeOf(
   const port = view.portOccurrences[id];
   if (port === undefined) return id;
   const ownerRep = representativeOf(view, collapsed, port.ownerOccurrence);
+  if (port.ownerOccurrence === ownerRep && collapsed.has(ownerRep) && document.ports[port.port]?.profile === "erd@1") return ownerRep;
   const ownerEntity = view.entityOccurrences[ownerRep]?.entity;
   const original = document.ports[port.port];
   const candidates = Object.values(view.portOccurrences).filter((candidate) => {
@@ -234,10 +236,11 @@ export function projectRelationOccurrences(
       relationOccurrences[key] = {
         id: occurrence.id,
         relation: occurrence.relation,
-        endpoints: occurrence.endpoints.map((endpoint) => ({
-          role: endpoint.role,
-          occurrence: endpoint.occurrence,
-        })),
+        endpoints: occurrence.endpoints.map((endpoint) =>
+          endpoint.chainProvenance !== undefined
+            ? endpoint
+            : { role: endpoint.role, occurrence: endpoint.occurrence },
+        ),
         ...(occurrence.waypoints === undefined
           ? {}
           : { waypoints: occurrence.waypoints.map((point) => ({ ...point })) }),
@@ -246,6 +249,7 @@ export function projectRelationOccurrences(
       continue;
     }
     const endpoints: RelationOccurrenceEndpoint[] = occurrence.endpoints.map((endpoint) => {
+      if (endpoint.chainProvenance !== undefined) return endpoint;
       const original = endpoint.occurrence;
       const isRelation = sourceView.relationOccurrences[original] !== undefined;
       const hidden = isRelation ? internal.has(original) : hiddenByFold(sourceView, collapsed, original);
@@ -286,7 +290,9 @@ export function projectView(
 ): ViewDocument {
   for (const key of Object.keys(sourceView.relationOccurrences).sort()) {
     const occurrence = sourceView.relationOccurrences[key] as RelationOccurrence;
-    const index = occurrence.endpoints.findIndex((endpoint) => endpoint.semanticTarget !== undefined);
+    const index = occurrence.endpoints.findIndex(
+      (endpoint) => endpoint.semanticTarget !== undefined && endpoint.chainProvenance === undefined,
+    );
     if (index !== -1) {
       const endpoint = occurrence.endpoints[index] as RelationOccurrenceEndpoint;
       const refusal: Diagnostic = {
@@ -361,9 +367,11 @@ export function reprojectRetained(view: ViewDocument, document: SemanticDocument
     stripped[key] = {
       ...occurrence,
       endpoints: occurrence.endpoints.map((endpoint) =>
-        endpoint.sourceOccurrence === undefined
-          ? { role: endpoint.role, occurrence: endpoint.occurrence }
-          : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
+        endpoint.chainProvenance !== undefined
+          ? endpoint
+          : endpoint.sourceOccurrence === undefined
+            ? { role: endpoint.role, occurrence: endpoint.occurrence }
+            : { role: endpoint.role, occurrence: endpoint.sourceOccurrence },
       ),
     };
   }
@@ -529,7 +537,7 @@ function isUndirectedRelation(
   const relation = document.relations[relationId];
   if (relation === undefined) return false;
   const profile = registry.get(relation.profile);
-  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  const declared = profile === undefined ? undefined : relationSchema(document, profile, relation);
   if (declared === undefined) return false;
   return declared.direction === "undirected";
 }
@@ -543,7 +551,7 @@ function declaredRoleOrder(
   const relation = document.relations[relationId];
   if (relation === undefined) return undefined;
   const profile = registry.get(relation.profile);
-  const declared = profile === undefined ? undefined : relationTypeOf(profile, relation.type);
+  const declared = profile === undefined ? undefined : relationSchema(document, profile, relation);
   if (declared === undefined) return undefined;
   return declared.roles.map((role) => role.role);
 }

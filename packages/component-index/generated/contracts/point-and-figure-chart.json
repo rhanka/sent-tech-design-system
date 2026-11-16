@@ -1,8 +1,8 @@
 {
   "componentId": "point-and-figure-chart",
   "contractSource": "derived",
-  "digest": "sha256:dec294f7311f5d8436e876daae5c07b3df1b4e5ebee2e113f33821d3c8cecaeb",
-  "entryDigest": "sha256:9e89618cd9d5cca1ff37360f5ccc40acd246c4ee3ba279949917f17957a7c41a",
+  "digest": "sha256:fdc5a8ae99bc218e15089d58d73caf3e78634e860e53f656f2c1c8a04e989e06",
+  "entryDigest": "sha256:ec9d36999f3ffb0e1eabf2c25446745721f66c60717090f9bab95f7132734e7a",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -70,7 +70,7 @@
         "declarationPath": "packages/components-angular/dist/PointAndFigureChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -152,7 +152,7 @@
         "declarationPath": "packages/components-react/dist/PointAndFigureChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -228,7 +228,7 @@
         "declarationPath": "packages/components-svelte/dist/PointAndFigureChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -301,11 +301,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:70c840d93311c16911647f6022a764913a0948d22c74faf585dd6d85fa11416a",
-        "declarationPath": "packages/components-vue/dist/PointAndFigureChart.d.ts",
+        "declarationDigest": "sha256:6d9dcaa152a592fb538d55f268f14c6ff325896cbf4b4cf6c962c7da3ba93a88",
+        "declarationPath": "packages/components-vue/dist/PointAndFigureChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PointAndFigureChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

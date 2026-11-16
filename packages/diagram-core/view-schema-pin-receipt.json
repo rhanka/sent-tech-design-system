@@ -4,7 +4,7 @@
   "dsCommit": "unknown-before-commit; to be recorded in the PR",
   "engramSource": {
     "repo": "rhanka/engram (local clone /home/antoinefa/src/graphify)",
-    "commit": "310a9270",
+    "commit": "46f93dbe",
     "spec": "SPEC_ONTOLOGY_DIAGRAM_VIEW_SCHEMA_V2.md",
     "sourceFiles": [
       "src/ontology-guardian/diagram-schemas.ts",
@@ -30,15 +30,15 @@
       "fixture": "packages/diagram-core/tests/fixtures/diagram-view-schema-2-50c97fc8.json"
     },
     "record": "packages/diagram-core/src/view-schema-pin.ts",
-    "recordSha256": "ae163797f25e84b975c7df701173f9135a044d294173a7fa3ed68c4551e34aa6",
+    "recordSha256": "771dc975652e01a3cec8b97ecfc1a136f2fa4d5b6d5e5da98b24d393697a69e1",
     "lifecycle": "@1 exact-pin-only, no latest, no fallback, no reverse migration"
   },
   "dsRevision": {
-    "note": "Files that implement validation of summaryLabels, with sha256 of their bytes at receipt time.",
+    "note": "Current implementation file hashes after endpoint provenance; @1/@2 canonical schemas and presentation pin remain unchanged.",
     "files": {
-      "packages/diagram-core/src/view.ts": "c1270cbcb4b8cc87e5511d67165ad66636a3ac56173a56537949ab9d8787af32",
-      "packages/diagram-core/src/fold.ts": "143c0be91a4cf1ad2263b5f0df729e6014462ee2a4a405999ff215a1282c1272",
-      "packages/diagram-core/src/validate.ts": "0cdbd62ab1ae65a2fc4f876f25f38df4435d4a2a08ea3574265c2679238b2a46"
+      "packages/diagram-core/src/view.ts": "4115f3f9c16cb7d734fcb0103610e3c8921d143d65c68f1af81738c68ac3edb5",
+      "packages/diagram-core/src/fold.ts": "44ba83fd5257d98d489220e27f9ee24a54c410440b456ce0ddb87441f229a60f",
+      "packages/diagram-core/src/validate.ts": "eb8ed08d8af1beab4ea098fe6609b78c0fa6eff3811b96821d4c41c96ce45442"
     }
   },
   "presentation": {

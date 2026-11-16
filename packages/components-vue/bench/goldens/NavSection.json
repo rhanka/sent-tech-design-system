@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "component": "NavSection",
+  "sourceRevision": "8806ab87aab097cde3028245726fd4e35c790b33",
+  "source": "src/NavSection.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section aria-labelledby=\"generated-1-label\" class=\"st-navSection st-navSection--static\" role=\"group\"><div class=\"st-navSection__header\"><h3 class=\"st-overline st-navSection__label\" id=\"generated-1-label\">Section</h3></div><div class=\"st-navSection__body\"><p>Body</p></div></section>"
+    },
+    {
+      "id": "static-count",
+      "html": "<section aria-labelledby=\"generated-1-label\" class=\"st-navSection st-navSection--static consumer\" data-bench=\"section\" role=\"group\"><div class=\"st-navSection__header\"><h2 class=\"st-overline st-navSection__label\" id=\"generated-1-label\">Section<span aria-label=\"0 éléments\" class=\"st-badge st-badge--neutral st-badge--circle st-badge--sm st-navSection__count\">0</span></h2><span class=\"st-navSection__action\"><button>Add</button></span></div><div class=\"st-navSection__body\">Body</div></section>"
+    },
+    {
+      "id": "open",
+      "html": "<div aria-label=\"Section, 3\" class=\"st-collapsible st-collapsible--open st-navSection st-navSection--collapsible\"><button aria-controls=\"generated-1-region\" aria-expanded=\"true\" class=\"st-collapsible__trigger\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Section</span><span class=\"st-collapsible__trailing\"><span aria-label=\"3 éléments\" class=\"st-badge st-badge--neutral st-badge--circle st-badge--sm\">3</span></span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button><div aria-labelledby=\"generated-1-trigger\" class=\"st-collapsible__region\" id=\"generated-1-region\" role=\"region\"><p>Open</p></div></div>"
+    },
+    {
+      "id": "closed",
+      "html": "<div aria-label=\"Section\" class=\"st-collapsible st-navSection st-navSection--collapsible\"><button aria-controls=\"generated-1-region\" aria-expanded=\"false\" class=\"st-collapsible__trigger\" id=\"generated-1-trigger\" type=\"button\"><span class=\"st-collapsible__title\">Section</span><span aria-hidden=\"true\" class=\"st-collapsible__icon\"><svg aria-hidden=\"true\" class=\"lucide lucide-chevron-down-icon lucide-chevron-down\" fill=\"none\" height=\"18\" stroke=\"currentColor\" stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.25\" viewBox=\"0 0 24 24\" width=\"18\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"m6 9 6 6 6-6\"></path></svg></span></button></div>"
+    }
+  ],
+  "sourceSha256": "28f36b970631a4eb8380660deade7661024e1d5b951a1785d9fe1361bd9b4fe9",
+  "fixtureSha256": "fa152cab1583cfbbfc5b9455a50c2095a007c6240b48c7d493109a12f7410b57",
+  "publicExports": [
+    {
+      "name": "NavSection",
+      "typeOnly": false
+    },
+    {
+      "name": "NavSectionProps",
+      "typeOnly": true
+    },
+    {
+      "name": "NavSectionHeadingLevel",
+      "typeOnly": true
+    }
+  ]
+}

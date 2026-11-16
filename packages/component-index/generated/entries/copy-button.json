@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/CopyButton.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/CopyButton.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:1965c156f4843b74732260621a03b4e287c78497ad038b48b31b044a939e1f27",
+      "digest": "sha256:35e1ca0144c89476f27b195b3e2d9a7ef51fc4eec3b07a1334c4ed8ab886ea80",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/CopyButton.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/CopyButton.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/CopyButton.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Button dedicated to copying a value to the clipboard.",
     "fr": "Bouton dédié à la copie d’une valeur dans le presse-papier."
   },
-  "digest": "sha256:604c5278eaa259dd14d38ba66c967f0819561f234de90f405e02c101d2370488",
+  "digest": "sha256:6e0c2bc541f40ae0cb847a9b4625f8fff54a36f4492456b5873ff7c017044380",
   "displayName": "CopyButton",
   "format": "component-entry/v1",
   "frameworks": [

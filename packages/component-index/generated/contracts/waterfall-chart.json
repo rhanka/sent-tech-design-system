@@ -1,8 +1,8 @@
 {
   "componentId": "waterfall-chart",
   "contractSource": "derived",
-  "digest": "sha256:8b52e5680ab7130a647d2baba569312c9206cf0a0e80d2b866942a1e0c785d50",
-  "entryDigest": "sha256:710b05340eac4932a74059a7c64e0905d4c64b9f67087682be5a306fae006363",
+  "digest": "sha256:aab97da9e8afce6a8bdb609a5111da0bbba4a7d23eccad716e6d9c05a050a23a",
+  "entryDigest": "sha256:0e0d6d7836dd52b26288a4b35c743f59fdad4328546cc9a1c19eca49d22474fc",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -78,7 +78,7 @@
         "declarationPath": "packages/components-angular/dist/WaterfallChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -167,7 +167,7 @@
         "declarationPath": "packages/components-react/dist/WaterfallChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "WaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -250,7 +250,7 @@
         "declarationPath": "packages/components-svelte/dist/WaterfallChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "WaterfallChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -330,11 +330,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:927d564a1c7b402acc73c0ef6fcd1977ab99a0623229a13612a0bd25295b90b8",
-        "declarationPath": "packages/components-vue/dist/WaterfallChart.d.ts",
+        "declarationDigest": "sha256:75e2fbf66302c61244921803e97188ec74f4741e56ff7aadf7d15c5eed445bf2",
+        "declarationPath": "packages/components-vue/dist/WaterfallChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "WaterfallChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

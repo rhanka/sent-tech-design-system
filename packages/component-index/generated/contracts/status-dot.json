@@ -1,8 +1,8 @@
 {
   "componentId": "status-dot",
   "contractSource": "derived",
-  "digest": "sha256:06d2682fa4d7f4789cc3227b489e53c960388ed86be774a73002cdd819a4d8df",
-  "entryDigest": "sha256:1e05cb1de9db08cb7ca0fde2baca7ea31c2bd2f1b4ceabfa2648a1631d2b136f",
+  "digest": "sha256:ffe997859c40f768a72d27ca8880c04a74ade78e6921ffcadb3e2d55459fb5f7",
+  "entryDigest": "sha256:27258ced2e90f443fdc36e77a8025941dd5678d186ddb86d5728ebbcb2a4a803",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -49,7 +49,7 @@
         "declarationPath": "packages/components-angular/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StatusDotProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-react/dist/StatusDot.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StatusDotProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -173,7 +173,7 @@
         "declarationPath": "packages/components-svelte/dist/StatusDot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StatusDotProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -225,11 +225,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:345b64d772c0f3e554bb8de07132cca431d2080e91bd2d996180a041863cc0d2",
-        "declarationPath": "packages/components-vue/dist/StatusDot.d.ts",
+        "declarationDigest": "sha256:e18452948d3bcf74574d9cf4c50dee177efe73d72e2b1c688f4862eb449acada",
+        "declarationPath": "packages/components-vue/dist/StatusDot.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StatusDotProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

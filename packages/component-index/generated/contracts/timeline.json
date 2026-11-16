@@ -1,8 +1,8 @@
 {
   "componentId": "timeline",
   "contractSource": "derived",
-  "digest": "sha256:4da7157658e11a9f0fce4ea9542242c6f8c6f5405b19d191872bd4c49f16bd50",
-  "entryDigest": "sha256:5f49135577226fc42163a634b555cf9b5dc78870d13f375d5edbffff33c4bf0d",
+  "digest": "sha256:c107160db5d7c845c596244efc2b73d04616890c6dadcc07da53605641044735",
+  "entryDigest": "sha256:1c55eeddb4a22e9094cde114528243ce57952534366f39e047ae217d3c70de1d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TimelineProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/Timeline.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TimelineProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -239,7 +239,7 @@
         "declarationPath": "packages/components-svelte/dist/Timeline.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -309,11 +309,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:dda24a15203b2bfe3a00b81c7d98be4de4572a552edb75b4d693de3031bade67",
-        "declarationPath": "packages/components-vue/dist/Timeline.d.ts",
+        "declarationDigest": "sha256:4e5f76d37d8b6b37263216a713a2eec7fea624195a432cd01284cd0b3a5865b5",
+        "declarationPath": "packages/components-vue/dist/Timeline.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimelineProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

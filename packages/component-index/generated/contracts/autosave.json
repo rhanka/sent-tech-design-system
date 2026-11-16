@@ -1,8 +1,8 @@
 {
   "componentId": "autosave",
   "contractSource": "derived",
-  "digest": "sha256:22a88c99f3ebe2bd235aee57c0793d697ca7687d4d7e1619ef7c48ec63f6935e",
-  "entryDigest": "sha256:656b90d344dfb28f635684027c8ba1c8bc14f31c7778eaa612f871faedf58664",
+  "digest": "sha256:7bbabeb67cc5b7fd250da98b4ad89bab4d9bc6f5dda969729155044564e376b1",
+  "entryDigest": "sha256:35675b952333730274fceae2c1c61af488caf4f12432189ebb173bd99d70f571",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -94,7 +94,7 @@
         "declarationPath": "packages/components-angular/dist/Autosave.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -187,11 +187,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -288,7 +288,7 @@
         "declarationPath": "packages/components-svelte/dist/Autosave.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AutosaveProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -386,16 +386,15 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:53978f73f86e3b60f33676555a954468cc4458c7130531a3a5697278d030d046",
-        "declarationPath": "packages/components-vue/dist/Autosave.d.ts",
+        "declarationDigest": "sha256:d5b10afe7bd53fee085ea4c41021bd344f4e7e0c3f7de5a673971a0b5c1972e9",
+        "declarationPath": "packages/components-vue/dist/Autosave.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AutosaveProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"retry\": payload not in declaration",
         "event pair: emits \"retry\" and prop \"onRetry\" both listed verbatim"
       ]
     }

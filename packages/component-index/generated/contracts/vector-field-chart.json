@@ -1,8 +1,8 @@
 {
   "componentId": "vector-field-chart",
   "contractSource": "derived",
-  "digest": "sha256:c60762d0165c604563e07015c1c39b4701daac54ba20ac3478781dab8d11b859",
-  "entryDigest": "sha256:8b15bab81869cd396e3479524a46a3429b3c78391eee7e44617a4c8495e1d1f2",
+  "digest": "sha256:5595882969e089c1367eca6c9bda5c880fd84ee06d66e7e70cadf4d6dbf9d401",
+  "entryDigest": "sha256:5b5a63159d7c6e8c66d13e46e21177c1159495f887e3812d31e6588cc3dcafc9",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -72,7 +72,7 @@
         "declarationPath": "packages/components-angular/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -156,7 +156,7 @@
         "declarationPath": "packages/components-react/dist/VectorFieldChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-svelte/dist/VectorFieldChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "VectorFieldChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -309,11 +309,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:fd38dea36fe0565ceb4e7ee0030ccc0d53701db75f12ff4eacc5f7392327e1ba",
-        "declarationPath": "packages/components-vue/dist/VectorFieldChart.d.ts",
+        "declarationDigest": "sha256:2496d818123b80174f69f4841c8d2b19265fce695393f00542e23ed3661a040c",
+        "declarationPath": "packages/components-vue/dist/VectorFieldChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "VectorFieldChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Card.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Card.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:1f689504bb5200e1993cffe2073f26c3194351e91eedf58ddf9294e3b3e2dfc8",
+      "digest": "sha256:8083cea70a028641d5f330a36475ab9f5b9c0dde0b3bc7e0580199bebba97553",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Card.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Card.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Card.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Surface container with border and padding.",
     "fr": "Conteneur surface avec bordure et padding."
   },
-  "digest": "sha256:2ac45f804a7efb776371bea7bfa3254e061973c7c7c7aaa9e4cebae004f88f80",
+  "digest": "sha256:79ca51d9d1416c8fe75ac1d30e0024af85d956115c4bb0b160b1f9cdc9646b8e",
   "displayName": "Card",
   "format": "component-entry/v1",
   "frameworks": [

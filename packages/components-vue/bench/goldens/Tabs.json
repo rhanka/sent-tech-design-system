@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Tabs",
+  "sourceRevision": "213a81f8326cb481508190991d02dc763f123955",
+  "source": "src/Tabs.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-one\" aria-selected=\"true\" class=\"st-tabs__tab st-tabs__tab--active\" id=\"generated-1-tab-one\" role=\"tab\" tabindex=\"0\" type=\"button\">One</button><button aria-controls=\"generated-1-panel-two\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-two\" role=\"tab\" tabindex=\"-1\" type=\"button\">Two</button><button aria-controls=\"generated-1-panel-three\" aria-selected=\"false\" class=\"st-tabs__tab\" disabled=\"\" id=\"generated-1-tab-three\" role=\"tab\" tabindex=\"-1\" type=\"button\">Three</button></div><div aria-labelledby=\"generated-1-tab-one\" class=\"st-tabs__panel\" id=\"generated-1-panel-one\" role=\"tabpanel\">First panel</div></section>"
+    },
+    {
+      "id": "active-value",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Sections\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-one\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-one\" role=\"tab\" tabindex=\"-1\" type=\"button\">One</button><button aria-controls=\"generated-1-panel-two\" aria-selected=\"true\" class=\"st-tabs__tab st-tabs__tab--active\" id=\"generated-1-tab-two\" role=\"tab\" tabindex=\"0\" type=\"button\">Two</button><button aria-controls=\"generated-1-panel-three\" aria-selected=\"false\" class=\"st-tabs__tab\" disabled=\"\" id=\"generated-1-tab-three\" role=\"tab\" tabindex=\"-1\" type=\"button\">Three</button></div><div aria-labelledby=\"generated-1-tab-two\" class=\"st-tabs__panel\" id=\"generated-1-panel-two\" role=\"tabpanel\">Second panel</div></section>"
+    },
+    {
+      "id": "active-id",
+      "html": "<section class=\"st-tabs consumer\" data-bench=\"tabs\" style=\"color:red;\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-one\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-one\" role=\"tab\" tabindex=\"-1\" type=\"button\">One</button><button aria-controls=\"generated-1-panel-two\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-two\" role=\"tab\" tabindex=\"-1\" type=\"button\">Two</button><button aria-controls=\"generated-1-panel-three\" aria-selected=\"true\" class=\"st-tabs__tab st-tabs__tab--active\" disabled=\"\" id=\"generated-1-tab-three\" role=\"tab\" tabindex=\"0\" type=\"button\">Three</button></div><div aria-labelledby=\"generated-1-tab-three\" class=\"st-tabs__panel\" id=\"generated-1-panel-three\" role=\"tabpanel\">Third panel</div></section>"
+    },
+    {
+      "id": "fallback-ids-disabled-first",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-tab-0\" aria-selected=\"false\" class=\"st-tabs__tab\" disabled=\"\" id=\"generated-1-tab-tab-0\" role=\"tab\" tabindex=\"-1\" type=\"button\">Disabled</button><button aria-controls=\"generated-1-panel-tab-1\" aria-selected=\"true\" class=\"st-tabs__tab st-tabs__tab--active\" id=\"generated-1-tab-tab-1\" role=\"tab\" tabindex=\"0\" type=\"button\">Enabled</button></div><div aria-labelledby=\"generated-1-tab-tab-1\" class=\"st-tabs__panel\" id=\"generated-1-panel-tab-1\" role=\"tabpanel\">Automatic ID</div></section>"
+    },
+    {
+      "id": "unknown-active",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-one\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-one\" role=\"tab\" tabindex=\"-1\" type=\"button\">One</button><button aria-controls=\"generated-1-panel-two\" aria-selected=\"false\" class=\"st-tabs__tab\" id=\"generated-1-tab-two\" role=\"tab\" tabindex=\"-1\" type=\"button\">Two</button><button aria-controls=\"generated-1-panel-three\" aria-selected=\"false\" class=\"st-tabs__tab\" disabled=\"\" id=\"generated-1-tab-three\" role=\"tab\" tabindex=\"-1\" type=\"button\">Three</button></div><div aria-labelledby=\"generated-1-tab-one\" class=\"st-tabs__panel\" id=\"generated-1-panel-one\" role=\"tabpanel\">First panel</div></section>"
+    },
+    {
+      "id": "empty",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"></div><div aria-labelledby=\"generated-1-tab-undefined\" class=\"st-tabs__panel\" id=\"generated-1-panel-undefined\" role=\"tabpanel\"></div></section>"
+    },
+    {
+      "id": "rich-item-slots",
+      "html": "<section class=\"st-tabs\"><div aria-label=\"Tabs\" class=\"st-tabs__list\" role=\"tablist\"><button aria-controls=\"generated-1-panel-rich\" aria-selected=\"true\" class=\"st-tabs__tab st-tabs__tab--active\" id=\"generated-1-tab-rich\" role=\"tab\" tabindex=\"0\" type=\"button\"><strong>Rich</strong></button></div><div aria-labelledby=\"generated-1-tab-rich\" class=\"st-tabs__panel\" id=\"generated-1-panel-rich\" role=\"tabpanel\"><em>Panel</em></div></section>"
+    }
+  ],
+  "sourceSha256": "2b3e051123bb9926e90c70dd820bc81994f2c59b592805ae7181176ebc20daf8",
+  "fixtureSha256": "e418b99481aeed5e16ee698026d7b55d984b781e21ce5e7fade751eff09edac9",
+  "publicExports": [
+    {
+      "name": "Tabs",
+      "typeOnly": false
+    },
+    {
+      "name": "TabsProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TabItem",
+      "typeOnly": true
+    }
+  ]
+}

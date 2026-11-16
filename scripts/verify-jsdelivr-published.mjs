@@ -16,6 +16,11 @@
 // if the package ever ships an sri.json, extend this leg with the
 // elements-style pin validation above.
 //
+// @sentropic/diagram-canvas takes the same leg (DIST_ONLY_PACKAGES): it has
+// the same tarball shape — `dist/index.js` + `dist/index.d.ts`, no browser
+// bundle, no sri.json — so the elements leg would fail it on a file it never
+// ships.
+//
 // A mismatch is reported, never repaired: exit 1 with one line per failure
 // (URL, expected, observed). Republishing the same version cannot fix served
 // bytes; the correction is a new patch version.
@@ -32,6 +37,9 @@ const DEFAULT_BASE_URL = "https://cdn.jsdelivr.net/npm";
 const DEFAULT_ATTEMPTS = 20;
 const DEFAULT_DELAY_MS = 15000;
 const FETCH_TIMEOUT_MS = 15000;
+// Packages verified by the dist-only leg (package.json version + dist entry
+// points + npm view); every other package takes the elements leg.
+const DIST_ONLY_PACKAGES = new Set(["@sentropic/diagram-core", "@sentropic/diagram-canvas"]);
 
 function usage() {
   return [
@@ -238,7 +246,7 @@ async function main(argv = process.argv.slice(2)) {
   }
   const base = `${args.baseUrl}/${args.package}@${args.version}`;
   const failures = [];
-  if (args.package === "@sentropic/diagram-core") {
+  if (DIST_ONLY_PACKAGES.has(args.package)) {
     // Test-only bypass for the registry leg (see the header): the CDN legs
     // still run against --base-url in full.
     const npmView =

@@ -1,0 +1,120 @@
+{
+  "id": "readme-frame-h2a",
+  "source": {
+    "kind": "README frame",
+    "path": "/home/antoinefa/src/sentropic/tmp/worktrees/ecosystem-ds/docs/governance/kit/src/presentation-scenes.json",
+    "frame": "h2a"
+  },
+  "cards": [
+    {
+      "id": "h2a",
+      "parentId": null,
+      "container": true,
+      "folded": false,
+      "kicker": "H2A",
+      "title": "h2a · Responsible AI Organization",
+      "purpose": "Workspace · humans and agents · Track · Focus",
+      "detail": null,
+      "footer": null,
+      "icon": "cluster",
+      "old": {
+        "x": 0,
+        "y": 0,
+        "width": 2352,
+        "height": 389.3875
+      }
+    },
+    {
+      "id": "h2a-roles",
+      "parentId": "h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "ORGANISATION",
+      "title": "Roles and mandates",
+      "purpose": "Human–agent organisation · C01",
+      "detail": "RACI · verified actors · scope-guard",
+      "footer": "service: h2a",
+      "icon": "people",
+      "old": {
+        "x": 16,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "h2a-focus",
+      "parentId": "h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "ORGANISATION",
+      "title": "Decision → Focus",
+      "purpose": "Dossier schema and skill · C03",
+      "detail": "DecisionDossierDocument: owner choice",
+      "footer": "service: h2a",
+      "icon": "people",
+      "old": {
+        "x": 636,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "h2a-track",
+      "parentId": "h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "ORGANISATION",
+      "title": "Requests → Track",
+      "purpose": "WPs · items · acceptance · C02/C04",
+      "detail": "Append-only log · request → prod",
+      "footer": "service: h2a",
+      "icon": "people",
+      "old": {
+        "x": 1256,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    },
+    {
+      "id": "h2a-agent",
+      "parentId": "h2a",
+      "container": false,
+      "folded": false,
+      "kicker": "ORGANISATION",
+      "title": "Agents, session, inbox",
+      "purpose": "PTY · harness · MCP ui://",
+      "detail": "Coordination · feedback · tooling",
+      "footer": "service: h2a",
+      "icon": "people",
+      "old": {
+        "x": 1876,
+        "y": 173.3875,
+        "width": 460,
+        "height": 200
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-roles-track",
+      "source": "h2a-roles",
+      "target": "h2a-track",
+      "label": "Mandates and WPs"
+    },
+    {
+      "id": "e-track-agent",
+      "source": "h2a-track",
+      "target": "h2a-agent",
+      "label": "Items"
+    },
+    {
+      "id": "e-focus-agent",
+      "source": "h2a-focus",
+      "target": "h2a-agent",
+      "label": "Focus dossiers"
+    }
+  ]
+}

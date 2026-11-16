@@ -1,8 +1,8 @@
 {
   "componentId": "web-frame",
   "contractSource": "derived",
-  "digest": "sha256:bd5d333bbd6ae5a8253b7476c356c62a15d27c77d33ceaeef7d76acb0e4d94b4",
-  "entryDigest": "sha256:b22cad50cc2a4f9dbb19766589b57228d2b652a981b3039b4b80697b7a71752f",
+  "digest": "sha256:e244e2cbce38e68128edd161c1129c29f502169c9932ad19af98973bdddcbd34",
+  "entryDigest": "sha256:82be9b26d14e3820400b90339a92065a36b0c648c23a38cb0bc77d530f066633",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/WebFrame.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "WebFrameProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -327,11 +327,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b34a3ecd77ebb188368ffdb60fb579963c662d593efe4e6ff28850a382f7a4f6",
-        "declarationPath": "packages/dataviz-vue/dist/lib/ObjectLayers.d.ts",
-        "package": "@sentropic/dataviz-vue",
+        "declarationDigest": "sha256:6637e819947d08936c34f7f07bfcf812b726ae8023a141cf7f6d8c5ad63bc214",
+        "declarationPath": "packages/components-vue/dist/WebFrame.vue.d.ts",
+        "package": "@sentropic/design-system-vue",
         "propsType": "WebFrameProps",
-        "version": "0.5.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

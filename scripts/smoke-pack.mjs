@@ -41,11 +41,11 @@
 //   export shapes are real and resolvable, but does not exercise the actual
 //   linker step a consumer's build performs.
 // - No bundler build (Vite/webpack/Rollup) is run against any package.
-// - Only the 16 packages listed below are covered by the tarball-shape and
+// - Only the 17 packages listed below are covered by the tarball-shape and
 //   deep-import checks. The other 5 publishable packages - theme-dsfr,
 //   theme-canada, theme-quebec, theme-latex, codemirror - and apps/* are
 //   untested by those.
-//   THE ONE EXCEPTION is the licensing gate below: it runs over all 21
+//   THE ONE EXCEPTION is the licensing gate below: it runs over all 22
 //   publishable packages on every invocation, whatever --workspaces selects,
 //   precisely because the package nobody selected is the one that ships
 //   unlicensed.
@@ -54,13 +54,14 @@ import { cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, 
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import ts from "typescript";
 
 import { collectViolations as collectLicensingViolations } from "./verify-publishable-licensing.mjs";
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)));
 const tmp = mkdtempSync(join(tmpdir(), "sent-tech-pack-"));
-const npmCache = join(tmp, "npm-cache");
-mkdirSync(npmCache);
+const npmCache = process.env.npm_config_cache ?? join(tmp, "npm-cache");
+mkdirSync(npmCache, { recursive: true });
 
 function readJson(relPath) {
   return JSON.parse(readFileSync(join(root, relPath), "utf8"));
@@ -269,6 +270,12 @@ const packages = [
   {
     name: "@sentropic/design-system-vue",
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", "dist/styles.css", ...vueComponentFiles()]; },
+    extraRequiredFiles: [
+      "dist/vapor/sfc.d.ts",
+      "dist/rich-text-editor/rich-text-editor.css",
+      ...["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn", "rich-text-editor", "vapor/rich-text-editor", "presence-badge", "vapor/presence-badge"]
+        .flatMap((subpath) => [`dist/${subpath}/index.js`, `dist/${subpath}/index.d.ts`]),
+    ],
   },
   {
     name: "@sentropic/design-system-angular",
@@ -282,6 +289,14 @@ const packages = [
     // The manifest ships maps only when the build emits them, and never the
     // ensure-theme-dists stamp; the files field negates both, so the tarball
     // half of that promise is checked here alongside the entry points.
+    absentPatterns: ["\\.map$", "\\.srchash$"],
+  },
+  {
+    name: "@sentropic/diagram-canvas",
+    // DC-2a BF-5: the headless scene, camera and layout engine, publishable
+    // because design-system-svelte depends on it. Same tarball promise as
+    // diagram-core: entry points present, no maps, no build stamp.
+    requiredFiles: ["dist/index.js", "dist/index.d.ts", "dist/camera.js", "dist/layout/index.js"],
     absentPatterns: ["\\.map$", "\\.srchash$"],
   },
   {
@@ -326,6 +341,7 @@ const packages = [
   },
   {
     name: "@sentropic/dataviz-vue",
+    absentPatterns: ["\\.srchash$", "\\.map$"],
     get requiredFiles() { return ["dist/index.js", "dist/index.d.ts", ...datavizVueLibFiles()]; },
   },
   {
@@ -379,7 +395,16 @@ const deepVerify = {
     // unpublished), so the install must resolve it to the local tarball -
     // the registry has no such version yet (ETARGET otherwise). themes'
     // own closure pulls tokens in the same walk.
-    closure: ["@sentropic/graph", "@sentropic/design-system-rich-text", "@sentropic/design-system-themes"],
+    //
+    // DC-2a BF-5: @sentropic/diagram-canvas (the scene host's layout engine and
+    // camera) joins for the same reason at an as-yet unpublished 0.1.0; its
+    // own closure pulls diagram-core in the same walk.
+    closure: [
+      "@sentropic/graph",
+      "@sentropic/design-system-rich-text",
+      "@sentropic/design-system-themes",
+      "@sentropic/diagram-canvas",
+    ],
     peers: [
       ["svelte", rootManifest.devDependencies.svelte],
       ["vite", rootManifest.devDependencies.vite],
@@ -417,7 +442,7 @@ const deepVerify = {
     ],
   },
   "@sentropic/design-system-vue": {
-    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens"],
+    closure: ["@sentropic/design-system-themes", "@sentropic/design-system-tokens", "@sentropic/diagram-canvas", "@sentropic/graph", "@sentropic/design-system-rich-text"],
     peers: [["vue", vueManifest.devDependencies.vue]],
   },
   "@sentropic/design-system-angular": {
@@ -455,6 +480,8 @@ const deepVerify = {
   // a single-package shard still deep-verifies against real code.
   "@sentropic/graph": { closure: [], peers: [] },
   "@sentropic/diagram-core": { closure: [], peers: [] },
+  // DC-2a BF-5: one local dependency, resolved from the workspace tarball.
+  "@sentropic/diagram-canvas": { closure: ["@sentropic/diagram-core"], peers: [] },
   "@sentropic/dataviz-core": { closure: [], peers: [] },
   "@sentropic/dataviz-svelte": {
     // Compiling .svelte source never resolves the component's own imports
@@ -509,12 +536,27 @@ const deepVerify = {
   },
 };
 
+function vuePublicExports(packageDirectory) {
+  // Internal SFCs and their emitted helpers are tarball files, not public
+  // exports. Keep the file-membership check above, and measure the public
+  // runtime contract independently from the source barrel.
+  const source = ts.createSourceFile("index.ts", readFileSync(join(root, "packages", packageDirectory, "src/index.ts"), "utf8"), ts.ScriptTarget.Latest, true);
+  return source.statements.filter(ts.isExportDeclaration).filter(node => !node.isTypeOnly)
+    .flatMap(node => node.exportClause && ts.isNamedExports(node.exportClause)
+      ? node.exportClause.elements.filter(entry => !entry.isTypeOnly).map(entry => entry.name.text) : []);
+}
+
+const vueExportDirectories = {
+  "@sentropic/design-system-vue": "components-vue",
+  "@sentropic/dataviz-vue": "dataviz-vue",
+};
+
 const minExportCounts = {
   "@sentropic/design-system-react": () => reactComponentFiles().length,
-  "@sentropic/design-system-vue": () => vueComponentFiles().length,
+  "@sentropic/design-system-vue": () => vuePublicExports("components-vue").length,
   "@sentropic/design-system-angular": () => angularComponentFiles().length,
   "@sentropic/dataviz-react": () => datavizReactLibFiles().length,
-  "@sentropic/dataviz-vue": () => datavizVueLibFiles().length,
+  "@sentropic/dataviz-vue": () => vuePublicExports("dataviz-vue").length,
   "@sentropic/dataviz-angular": () => datavizAngularLibFiles().length,
 };
 
@@ -644,7 +686,12 @@ function writeVerifyScript(installDir, targetNames) {
   );
   const content = template
     .replaceAll("__SMOKE_TARGETS_JSON__", JSON.stringify(targetNames))
-    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts));
+    .replaceAll("__SMOKE_MIN_EXPORT_COUNTS_JSON__", JSON.stringify(resolvedCounts))
+    .replaceAll("__SMOKE_REQUIRED_EXPORTS_JSON__", JSON.stringify(Object.fromEntries(
+      targetNames.filter(name => vueExportDirectories[name])
+        .map(name => [name, vuePublicExports(vueExportDirectories[name])]),
+    )))
+    .replaceAll("__SMOKE_RICH_TEXT_VERSION_JSON__", JSON.stringify(richTextManifest.version));
 
   const smokePath = join(installDir, "verify.mjs");
   writeFileSync(smokePath, content);
@@ -741,6 +788,31 @@ try {
       deepTargets.map((pkg) => pkg.name),
     );
     run("node", [verifyPath], { cwd: installDir });
+
+    // The primary Vue surface must install with its pinned prerelease peer and
+    // type-check the packed declarations, without workspace resolution or casts.
+    if (deepTargets.some((pkg) => pkg.name === "@sentropic/design-system-vue")) {
+      // Include the optional elements peer because the fixture checks BPMN too.
+      // Keep this consumer independent of other shards selected in a full run.
+      const consumerNames = new Set(["@sentropic/design-system-vue", "@sentropic/design-system-elements"]);
+      for (const name of consumerNames) {
+        for (const dependency of deepVerify[name]?.closure ?? []) consumerNames.add(dependency);
+      }
+      const consumerTarballs = [...consumerNames].map((name) => {
+        const pkg = packages.find((candidate) => candidate.name === name);
+        assert(pkg, `Vue consumer dependency ${name} is not a smoke-pack package`);
+        return ensureTarball(pkg);
+      });
+      const strictDir = installProject(
+        consumerTarballs,
+        new Map([["vue", vueManifest.devDependencies.vue], ["typescript", rootManifest.devDependencies.typescript]]),
+        { strict: true, dirName: "install-vue-strict" },
+      );
+      cpSync(join(root, "packages/components-vue/tests/types/consumer.ts"), join(strictDir, "consumer.ts"));
+      cpSync(join(root, "scripts/smoke-pack-vue-consumer.mjs"), join(strictDir, "check.mjs"));
+      run("node", ["check.mjs"], { cwd: strictDir });
+      console.log("OK Vue strict peer install and packed Vapor consumer types");
+    }
   }
 
   // RT-1 strict consumer: when this run installed BOTH editor tarballs (full

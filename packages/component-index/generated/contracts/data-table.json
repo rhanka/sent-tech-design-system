@@ -1,8 +1,8 @@
 {
   "componentId": "data-table",
   "contractSource": "derived",
-  "digest": "sha256:aec76a38363da774b4d45332cd91bc01abb1884496e0761c08d694abe56c1d02",
-  "entryDigest": "sha256:f955ffb6f6776dbfc01cc9692aa879b786005029a1fc87461e72f46c75ada926",
+  "digest": "sha256:955b47ec9730561ddbbe09c7b9d203a3ad10a7985aefe5c7102a42f71d64514b",
+  "entryDigest": "sha256:f51d157541d9d4452b55335f38e63d886e8fc300c6a1f01335f8d243ecec97d5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -299,7 +299,7 @@
         "declarationPath": "packages/components-angular/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DataTableProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -593,11 +593,12 @@
         "declarationPath": "packages/components-react/dist/DataTable.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DataTableProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
+        "generic type parameter \"R\" of \"DataTableColumn\" instantiated with its default (DataTableRow)",
         "generic type parameter \"R\" of \"DataTableProps\" instantiated with its default (DataTableRow)"
       ]
     },
@@ -858,7 +859,7 @@
         "declarationPath": "packages/components-svelte/dist/DataTable.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataTableProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -873,25 +874,13 @@
           "kind": "function",
           "name": "DataTableColumn.cell",
           "reason": "function surface has no JSON Schema form",
-          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => VNodeChild"
+          "sourceType": "(row: DataTableRow, column: DataTableColumn<DataTableRow>) => string | number"
         },
         {
           "kind": "function",
           "name": "DataTableColumn.cellDecoration",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(row: DataTableRow, value: unknown, colId: string) => CellDecoration | null"
-        },
-        {
-          "kind": "node",
-          "name": "DataTableColumn.label",
-          "reason": "renderable-node surface has no JSON Schema form",
-          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
-        },
-        {
-          "kind": "node",
-          "name": "caption",
-          "reason": "renderable-node surface has no JSON Schema form",
-          "sourceType": "VNode<RendererNode, RendererElement, { [key: string]: any; }>"
         },
         {
           "kind": "function",
@@ -961,8 +950,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -1001,6 +989,16 @@
               },
               "key": {
                 "type": "string"
+              },
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
               },
               "sortable": {
                 "type": "boolean"
@@ -1048,6 +1046,16 @@
         },
         "additionalProperties": false,
         "properties": {
+          "caption": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "class": {
             "type": "string"
           },
@@ -1163,15 +1171,73 @@
           "reason": "index-signature: open-ended map loses key discipline",
           "replacement": "{\"type\":\"object\",\"properties\":{},\"additionalProperties\":{\"$ref\":\"#/$defs/CellDecoration\"}}",
           "sourceType": "Record<string, Record<string, CellDecoration>>"
+        },
+        {
+          "name": "scope.value",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "caption"
+        },
+        {
+          "name": "cell",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              },
+              "row": {
+                "$ref": "#/$defs/DataTableRow"
+              },
+              "rowIndex": {
+                "type": "number"
+              },
+              "value": {}
+            },
+            "required": [
+              "column",
+              "columnIndex",
+              "row",
+              "rowIndex",
+              "value"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "column-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "column": {
+                "$ref": "#/$defs/DataTableColumn"
+              },
+              "columnIndex": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "column",
+              "columnIndex"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:8df205db886904d362671b83d839839bc688a6200520ee8314981a6f950a5adb",
-        "declarationPath": "packages/components-vue/dist/DataTable.d.ts",
+        "declarationDigest": "sha256:9579aca3550c6fc5feb7ad5ba9dbaeed0b2ed002de4801d0abbbc9f4fd38ee17",
+        "declarationPath": "packages/components-vue/dist/DataTable.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataTableProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

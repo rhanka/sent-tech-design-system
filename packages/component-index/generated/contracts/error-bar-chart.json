@@ -1,8 +1,8 @@
 {
   "componentId": "error-bar-chart",
   "contractSource": "derived",
-  "digest": "sha256:329a84ab8915870a3d3889bac9676926c27605b9b8c66e928c1e004797cc932e",
-  "entryDigest": "sha256:0ad9c5a89585718210551fe00a28009403129688c028c2432462f3b7b4a25b75",
+  "digest": "sha256:37858aee16029ad0e8aaf585fbcff0f9d053b06e65976d2bcc0f0779cb9fe99b",
+  "entryDigest": "sha256:d00a374d5f616846f4f524162db905941d1f92b700d92a125531a8e6f954ca15",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -81,7 +81,7 @@
         "declarationPath": "packages/components-angular/dist/ErrorBarChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ErrorBarChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -173,7 +173,7 @@
         "declarationPath": "packages/components-react/dist/ErrorBarChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ErrorBarChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -259,7 +259,7 @@
         "declarationPath": "packages/components-svelte/dist/ErrorBarChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ErrorBarChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -342,11 +342,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:e6307d5a2e7e2592e2561fe21ed246f7e867d782c5d0169d6d340de50f0548fe",
-        "declarationPath": "packages/components-vue/dist/ErrorBarChart.d.ts",
+        "declarationDigest": "sha256:5a5a7efe02c0822da76d7574029db24dbcca057fbff5e9722a55035222616266",
+        "declarationPath": "packages/components-vue/dist/ErrorBarChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ErrorBarChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

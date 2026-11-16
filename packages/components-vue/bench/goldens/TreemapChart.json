@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "TreemapChart",
+  "sourceRevision": "1c998cfe4d554acf43c56dbbe8921f0fca0993cf",
+  "source": "src/TreemapChart.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-treemapChart\"><div aria-label=\"Market\" class=\"st-treemapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><defs><clipPath id=\"generated-1-0\"><rect height=\"298\" rx=\"2\" width=\"318\" x=\"1\" y=\"1\"></rect></clipPath><clipPath id=\"generated-1-1\"><rect height=\"298\" rx=\"2\" width=\"158\" x=\"321\" y=\"1\"></rect></clipPath></defs><g class=\"st-treemapChart__cell\" data-chart-index=\"0\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category1\" data-chart-index=\"0\" height=\"298\" rx=\"2\" width=\"318\" x=\"1\" y=\"1\"></rect><g clip-path=\"url(#generated-1-0)\"><text class=\"st-treemapChart__label\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"16\">A</text><text class=\"st-treemapChart__value\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"31\">20</text></g></g><g class=\"st-treemapChart__cell\" data-chart-index=\"1\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category2\" data-chart-index=\"1\" height=\"298\" rx=\"2\" width=\"158\" x=\"321\" y=\"1\"></rect><g clip-path=\"url(#generated-1-1)\"><text class=\"st-treemapChart__label\" data-chart-index=\"1\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"327\" y=\"16\">B</text><text class=\"st-treemapChart__value\" data-chart-index=\"1\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"327\" y=\"31\">10</text></g></g></svg></div><ul aria-label=\"Data values for Market\" class=\"st-chartDataList\"><li>A: 20</li><li>B: 10</li></ul></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div class=\"st-treemapChart\"><div aria-label=\"Empty\" class=\"st-treemapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><defs></defs></svg></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-treemapChart consumer\" data-bench=\"treemap\" style=\"color:red;\"><div aria-label=\"Regions\" class=\"st-treemapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 480 300\" width=\"100%\"><defs><clipPath id=\"generated-1-0\"><rect height=\"298\" rx=\"2\" width=\"478\" x=\"1\" y=\"1\"></rect></clipPath></defs><g class=\"st-treemapChart__cell\" data-chart-index=\"0\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category1\" data-chart-index=\"0\" height=\"298\" rx=\"2\" width=\"478\" x=\"1\" y=\"1\"></rect><g clip-path=\"url(#generated-1-0)\"><text class=\"st-treemapChart__label\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"16\">North</text><text class=\"st-treemapChart__value\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"31\">5</text></g></g></svg></div><ul aria-label=\"Data values for Regions\" class=\"st-chartDataList\"><li>North: 5</li></ul></div>"
+    },
+    {
+      "id": "many",
+      "html": "<div class=\"st-treemapChart\"><div aria-label=\"Parts\" class=\"st-treemapChart__visual\" role=\"img\"><svg aria-hidden=\"true\" focusable=\"false\" height=\"100%\" preserveAspectRatio=\"xMidYMid meet\" viewBox=\"0 0 640 320\" width=\"100%\"><defs><clipPath id=\"generated-1-0\"><rect height=\"318\" rx=\"2\" width=\"318\" x=\"1\" y=\"1\"></rect></clipPath><clipPath id=\"generated-1-1\"><rect height=\"318\" rx=\"2\" width=\"211.33333333333334\" x=\"321\" y=\"1\"></rect></clipPath><clipPath id=\"generated-1-2\"><rect height=\"318.00000000000006\" rx=\"2\" width=\"104.66666666666666\" x=\"534.3333333333334\" y=\"1\"></rect></clipPath></defs><g class=\"st-treemapChart__cell\" data-chart-index=\"0\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category1\" data-chart-index=\"0\" height=\"318\" rx=\"2\" width=\"318\" x=\"1\" y=\"1\"></rect><g clip-path=\"url(#generated-1-0)\"><text class=\"st-treemapChart__label\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"16\">Alpha</text><text class=\"st-treemapChart__value\" data-chart-index=\"0\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"7\" y=\"31\">30</text></g></g><g class=\"st-treemapChart__cell\" data-chart-index=\"1\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category2\" data-chart-index=\"1\" height=\"318\" rx=\"2\" width=\"211.33333333333334\" x=\"321\" y=\"1\"></rect><g clip-path=\"url(#generated-1-1)\"><text class=\"st-treemapChart__label\" data-chart-index=\"1\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"327\" y=\"16\">Beta</text><text class=\"st-treemapChart__value\" data-chart-index=\"1\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"327\" y=\"31\">20</text></g></g><g class=\"st-treemapChart__cell\" data-chart-index=\"2\"><rect class=\"st-treemapChart__rect st-treemapChart__rect--category3\" data-chart-index=\"2\" height=\"318.00000000000006\" rx=\"2\" width=\"104.66666666666666\" x=\"534.3333333333334\" y=\"1\"></rect><g clip-path=\"url(#generated-1-2)\"><text class=\"st-treemapChart__label\" data-chart-index=\"2\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"540.3333333333334\" y=\"16\">Gamma</text><text class=\"st-treemapChart__value\" data-chart-index=\"2\" style=\"fill: var(--st-semantic-text-inverse, #fff)\" x=\"540.3333333333334\" y=\"31\">10</text></g></g></svg></div><ul aria-label=\"Data values for Parts\" class=\"st-chartDataList\"><li>Alpha: 30</li><li>Beta: 20</li><li>Gamma: 10</li></ul></div>"
+    }
+  ],
+  "sourceSha256": "0a02cc994713f08ac2995a09d19ab77c7f0aa4715178b0f8755f8ed885db9ff2",
+  "fixtureSha256": "a3ed8dc135360a9a6cc65721a467b4bdef3fbc7da2190ea3c483e37f92da20f4",
+  "publicExports": [
+    {
+      "name": "TreemapChart",
+      "typeOnly": false
+    },
+    {
+      "name": "TreemapChartProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TreemapChartTone",
+      "typeOnly": true
+    },
+    {
+      "name": "TreemapChartDatum",
+      "typeOnly": true
+    },
+    {
+      "name": "TreemapTiling",
+      "typeOnly": true
+    }
+  ]
+}

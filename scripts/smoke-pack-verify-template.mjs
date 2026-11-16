@@ -2,30 +2,35 @@
 // the throwaway install project and runs there with `node`.
 //
 // This file is never executed from the repo directly. smoke-pack.mjs reads
-// it as text and replaces the two placeholder tokens below with real JSON
+// it as text and replaces the placeholder tokens below with real JSON
 // before writing it into the throwaway project, so it is kept here as a real
 // syntactically-valid module (readable, lintable) instead of being built as
 // an escaped string literal inside smoke-pack.mjs.
 //
 // SMOKE_TARGETS placeholder -> JSON array of package names to deep-verify in
-//                                 this run (a subset of the 16 packages
+//                                 this run (a subset of the 17 packages
 //                                 below, depending on which the CI shard, or
 //                                 a local --workspaces= selection, packed).
 // SMOKE_MIN_EXPORT_COUNTS placeholder -> JSON object mapping the react/vue/
 //                                 angular (design-system and dataviz)
 //                                 package names to the minimum number of
-//                                 named exports their locally built dist/
-//                                 had at pack time. Ties the runtime import
-//                                 check to the same ground truth as the
-//                                 tarball file-list check, so neither can
-//                                 silently drift stale as components are
-//                                 added.
+//                                 named exports required at pack time. Vue
+//                                 uses its public source barrel; other
+//                                 frameworks use their built module lists.
+// SMOKE_REQUIRED_EXPORTS placeholder -> public Vue names from source barrels,
+//                                 each required in the installed package.
+// SMOKE_RICH_TEXT_VERSION placeholder -> candidate neutral package version
+//                                 read from its workspace manifest.
 import { lstatSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const targets = new Set(__SMOKE_TARGETS_JSON__);
 const minExportCounts = __SMOKE_MIN_EXPORT_COUNTS_JSON__;
+// Vue's public runtime names come from source barrels, independently of how
+// many Classic, stable-compiler or Vapor files happen to be in dist/.
+const requiredExports = __SMOKE_REQUIRED_EXPORTS_JSON__;
+const richTextVersion = __SMOKE_RICH_TEXT_VERSION_JSON__;
 const failures = [];
 
 function fail(label, message) {
@@ -144,7 +149,7 @@ async function verifySvelte() {
       return;
     }
     const manifest = JSON.parse(readFileSync(join(packageDir, "package.json"), "utf8"));
-    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== "0.1.0") {
+    if (manifest.name !== "@sentropic/design-system-rich-text" || manifest.version !== richTextVersion) {
       fail("@sentropic/design-system-svelte", "rich-text resolved to an unexpected package: " + manifest.name + "@" + manifest.version);
       return;
     }
@@ -187,6 +192,11 @@ async function verifySvelte() {
 // that resolves but is undefined, null, or an implausible type.
 function assertModuleExports(label, mod, minCount) {
   const keys = Object.keys(mod);
+  const missing = (requiredExports[label] ?? []).filter(name => !Object.hasOwn(mod, name));
+  if (missing.length) {
+    fail(label, "missing public exports: " + missing.join(", "));
+    return;
+  }
   if (keys.length < minCount) {
     fail(label, "expected at least " + minCount + " named exports, got " + keys.length);
     return;
@@ -230,6 +240,11 @@ async function verifyReact() {
 async function verifyVue() {
   const mod = await import("@sentropic/design-system-vue");
   assertModuleExports("@sentropic/design-system-vue", mod, minExportCounts["@sentropic/design-system-vue"] ?? 0);
+  for (const subpath of ["vapor", "vapor/diagram-icons", "vapor/bpmn", "diagram-icons", "diagram-render", "bpmn"]) {
+    if (!import.meta.resolve(`@sentropic/design-system-vue/${subpath}`).endsWith("/index.js")) {
+      throw new Error(`Vue subpath must resolve: ${subpath}`);
+    }
+  }
 }
 
 // Angular ships "partial" (linked) compilation output (compilationMode:
@@ -565,6 +580,33 @@ async function verifyDatavizAngular() {
   assertModuleExports("@sentropic/dataviz-angular", mod, minExportCounts["@sentropic/dataviz-angular"] ?? 0);
 }
 
+// DC-2a BF-5: the headless scene/camera/layout package. The public entry loads
+// from the installed tarball (its one dependency resolved beside it) and the
+// camera contract answers: a 460 x 200 card in a 1280 px figure caps at the
+// maximum display scale, readout 100 %.
+async function verifyDiagramCanvas() {
+  const mod = await import("@sentropic/diagram-canvas");
+  for (const name of ["cameraFit", "zoomReadout", "layoutMeasured", "buildScene"]) {
+    if (typeof mod[name] !== "function") {
+      fail("@sentropic/diagram-canvas", "missing " + name + " export (or not a function)");
+      return;
+    }
+  }
+  let readout;
+  try {
+    const fit = mod.cameraFit({ bounds: { width: 460, height: 200 }, viewWidth: 1280, windowHeight: 720 });
+    readout = mod.zoomReadout(fit.zoom, fit.maxZoom);
+  } catch (error) {
+    fail("@sentropic/diagram-canvas", "cameraFit threw: " + String(error && error.message ? error.message : error));
+    return;
+  }
+  if (readout !== 100) {
+    fail("@sentropic/diagram-canvas", "a single card did not fit at readout 100: " + String(readout));
+    return;
+  }
+  console.log("OK @sentropic/diagram-canvas: camera + layout + scene import verified");
+}
+
 const verifiers = {
   "@sentropic/design-system-tokens": verifyTokens,
   "@sentropic/design-system-themes": verifyThemes,
@@ -575,6 +617,7 @@ const verifiers = {
   "@sentropic/design-system-angular": verifyAngular,
   "@sentropic/graph": verifyGraph,
   "@sentropic/diagram-core": verifyDiagramCore,
+  "@sentropic/diagram-canvas": verifyDiagramCanvas,
   "@sentropic/design-system-rich-text": verifyRichText,
   "@sentropic/design-system-elements": verifyElements,
   "@sentropic/dataviz-core": verifyDatavizCore,

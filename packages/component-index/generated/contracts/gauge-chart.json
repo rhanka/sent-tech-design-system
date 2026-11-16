@@ -1,8 +1,8 @@
 {
   "componentId": "gauge-chart",
   "contractSource": "derived",
-  "digest": "sha256:9de8101449dede51392e223882a1ef03cbcb4c1525d2af5c02bc09639962ae9d",
-  "entryDigest": "sha256:b658f4c4d2ffbea17c1f79a66148c751ea8f379a2471c500df2a7d3f05eca710",
+  "digest": "sha256:5b510a1ae347318b4bb5eea3a967507e174cafd6dd1f9dd8af7b6f3239524316",
+  "entryDigest": "sha256:60f7aee8d8d193df6ef5949a3cc8c50e8187ddf5d80a41944b917e41c1e850b7",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -99,7 +99,7 @@
         "declarationPath": "packages/components-angular/dist/GaugeChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "GaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,7 +216,7 @@
         "declarationPath": "packages/components-react/dist/GaugeChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "GaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -327,7 +327,7 @@
         "declarationPath": "packages/components-svelte/dist/GaugeChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GaugeChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -427,11 +427,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:4277708698be410e5debe1a32d291927049daa21684f78c6fb075f68c90ccc2b",
-        "declarationPath": "packages/components-vue/dist/GaugeChart.d.ts",
+        "declarationDigest": "sha256:73f757ce869f80627b84c12186c738508dced8011c71637e9c077a85421911b2",
+        "declarationPath": "packages/components-vue/dist/GaugeChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GaugeChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

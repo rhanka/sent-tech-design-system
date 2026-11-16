@@ -1,8 +1,8 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:427332ab03520ff37724090d722a42803d8b650a8e7b1d8a8967bd05ccb5fd3d",
-  "entryDigest": "sha256:11f1e131237ec4b714574e44697c37b453308380f0491614dd056df017ce9111",
+  "digest": "sha256:409eb8984016aa0a8bb5c87c6982b78384b6cb86045c1883b3987b64c36816ae",
+  "entryDigest": "sha256:d45855729ac01899c86b9fc1e398923a458d93afedca455f5220457b7f336789",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -105,7 +105,7 @@
         "declarationPath": "packages/components-angular/dist/TreeView.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "TreeViewProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -216,11 +216,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TreeViewProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -308,7 +308,7 @@
         "declarationPath": "packages/components-svelte/dist/TreeView.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TreeViewProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -318,32 +318,48 @@
       "bindable": [
         "selectedId"
       ],
-      "dropped": [],
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelectOnce",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUpdate:selectedId",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onUpdate:selectedIdOnce",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        }
+      ],
       "events": [
         {
-          "name": "onSelect",
+          "name": "select",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         },
         {
-          "name": "onUpdate:selectedId",
+          "name": "update:selectedId",
           "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
-        },
-        {
-          "name": "select"
-        },
-        {
-          "name": "update:selectedId"
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -362,11 +378,19 @@
               "id": {
                 "type": "string"
               },
-              "label": {}
+              "label": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              }
             },
             "required": [
-              "id",
-              "label"
+              "id"
             ],
             "type": "object"
           }
@@ -418,41 +442,42 @@
         ],
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "TreeNode.label",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "onSelect.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onUpdate:selectedId.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "name": "node-label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "level": {
+                "type": "number"
+              },
+              "node": {
+                "$ref": "#/$defs/TreeNode"
+              }
+            },
+            "required": [
+              "index",
+              "level",
+              "node"
+            ],
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:95d986f3d7aee90287a5f86fb5233216fcd3f0c9c252b52a8eeff2ffeb62f02f",
-        "declarationPath": "packages/components-vue/dist/TreeView.d.ts",
+        "declarationDigest": "sha256:c4e582e905c57267fd0272eb15e4aeda8424ccb7423e5e8c7c6648b0c5136f78",
+        "declarationPath": "packages/components-vue/dist/TreeView.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TreeViewProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"select\": payload not in declaration",
-        "emit \"update:selectedId\": payload not in declaration",
-        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
-        "event pair: emits \"update:selectedId\" and prop \"onUpdate:selectedId\" both listed verbatim",
         "two-way binding: prop \"selectedId\" paired with emit \"update:selectedId\""
       ]
     }

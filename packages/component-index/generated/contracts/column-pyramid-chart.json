@@ -1,8 +1,8 @@
 {
   "componentId": "column-pyramid-chart",
   "contractSource": "derived",
-  "digest": "sha256:a44a774902d7eb0947c35e933fdf5602c54a8c0d1bbaa1f7fd60574be7faee20",
-  "entryDigest": "sha256:fb101dd4f7d32bc578b601695ec4828bf06fd2c5c2ff6970ccedbcdf7c998c40",
+  "digest": "sha256:786c7b2c708a9fb7674936a3e5659a9c1a7e75895cc3241f5ac574319c5967e1",
+  "entryDigest": "sha256:ab27f850228710a992a99e1abb52be71598824139fbcf49c1ada7d39a8273989",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/ColumnPyramidChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -182,7 +182,7 @@
         "declarationPath": "packages/components-react/dist/ColumnPyramidChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -273,7 +273,7 @@
         "declarationPath": "packages/components-svelte/dist/ColumnPyramidChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -361,11 +361,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:59fc91c8fc93b9a155dad84fb83ee90cc6d8adac4a9e6fa072f3e509281a6061",
-        "declarationPath": "packages/components-vue/dist/ColumnPyramidChart.d.ts",
+        "declarationDigest": "sha256:f177f71e5fa0eea9c6d65d7a5273f0f6a025c5c5ca73aaa0075e8ac7a3ff37c8",
+        "declarationPath": "packages/components-vue/dist/ColumnPyramidChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ColumnPyramidChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

@@ -1,8 +1,8 @@
 {
   "componentId": "step-line-chart",
   "contractSource": "derived",
-  "digest": "sha256:2b3ef6fbfdfbef74a8b8b7bea26574a6c1651e82388e3316c95b83cb5a3ec6dd",
-  "entryDigest": "sha256:0b8e68e61a1e9c52eb00594d9120973afde92828bdd68d2eef4b95570461a5dc",
+  "digest": "sha256:13c56f815e8edb4cb3b6fdf2afdc40267e0842f1f35d3dcbc8ee1bf4442c3627",
+  "entryDigest": "sha256:99709e3eb504cb53af89a3b7b09191c4e0f90382434763b4333fc1d4dcf26641",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -80,7 +80,7 @@
         "declarationPath": "packages/components-angular/dist/StepLineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StepLineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -171,7 +171,7 @@
         "declarationPath": "packages/components-react/dist/StepLineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StepLineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/StepLineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepLineChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -338,11 +338,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:e8715efee1fd3c0a213d664247cb877d1c7b454cce4e0b18434458a4c2338cc7",
-        "declarationPath": "packages/components-vue/dist/StepLineChart.d.ts",
+        "declarationDigest": "sha256:0cd24d2748ad2500c202064d01a9ddbe8a734ea3d6e5fea805512f35ec5e6058",
+        "declarationPath": "packages/components-vue/dist/StepLineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepLineChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

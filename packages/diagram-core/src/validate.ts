@@ -1,3 +1,4 @@
+import { relationBaseType, relationSchema } from "./relation-types.js";
 /**
  * Validation: the only place that decides whether a document or a view is
  * writable, and the only producer of the nine named rejected cases.
@@ -12,6 +13,7 @@
  *      refused transaction can be explained in one pass.
  */
 
+import { validateErdKeys } from "./erd-validate.js";
 import {
   referencesOf,
   validateAttributeValue,
@@ -32,6 +34,7 @@ import {
 } from "./bindings.js";
 import { retainedExecutorBindings } from "./profiles/index.js";
 import { tryCanonicalise } from "./canonical.js";
+import { createChainValidator } from "./chain.js";
 import { type Diagnostic, diagnostic } from "./diagnostics.js";
 import {
   CURRENT_SCHEMA_VERSION,
@@ -70,7 +73,7 @@ import {
 } from "./refs.js";
 import { createTypeResolver, type TypeResolver } from "./resolver.js";
 import { DIAGRAM_PRESENTATION_PROFILE_ID } from "./presentation.js";
-import { validateDiagramPresentation } from "./presentation-validate.js";
+import { validateDiagramPresentation } from "./presentation-relations.js";
 import {
   analyzeSummaries,
   classifyInternalRelations,
@@ -486,7 +489,7 @@ function validateRelation(
   const profile = declaredProfile(document, relation.profile, options, path);
   if ("diagnostic" in profile) return [...diagnostics, profile.diagnostic];
 
-  const declared = relationTypeOf(profile.profile, relation.type);
+  const declared = relationSchema(document, profile.profile, relation);
   if (declared === undefined) {
     diagnostics.push(
       diagnostic({
@@ -668,7 +671,7 @@ function validateHierarchies(
     const children = new Map<string, string[]>();
 
     for (const relation of Object.values(document.relations)) {
-      if (relation.profile !== profile || relation.type !== declaration.id) continue;
+      if (relation.profile !== profile || (document.typeDefinitions[relation.type]?.baseType ?? relation.type) !== declaration.id) continue;
       const parents = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.parentRole);
       const kids = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.childRole);
       for (const parent of parents) {
@@ -743,6 +746,10 @@ function validateConstraints(
   const entities = Object.values(document.entities).filter((entity) => entity.profile === profile.id);
 
   for (const constraint of profile.constraints) {
+    if (constraint.kind === "erd-keys") {
+      diagnostics.push(...validateErdKeys(document, profile, constraint.maxFields));
+      continue;
+    }
     if (constraint.kind === "acyclic-hierarchy") continue; // handled by validateHierarchies
     if (adapter !== LEGACY_CONSTRAINTS_ADAPTER && resolver !== undefined && isAddedConstraint(constraint)) {
       diagnostics.push(
@@ -877,7 +884,7 @@ function indexHierarchy(
   for (const declaration of declarations) {
     const hierarchy = declaration.hierarchy as NonNullable<RelationTypeDeclaration["hierarchy"]>;
     for (const relation of Object.values(document.relations)) {
-      if (relation.profile !== profile.id || relation.type !== declaration.id) continue;
+      if (relation.profile !== profile.id || (document.typeDefinitions[relation.type]?.baseType ?? relation.type) !== declaration.id) continue;
       const parents = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.parentRole);
       const kids = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.childRole);
       for (const parent of parents) {
@@ -941,7 +948,7 @@ function checkParentFamily(
     if (declaration.hierarchy?.id !== constraint.hierarchyId) continue;
     const hierarchy = declaration.hierarchy;
     const relations = Object.values(document.relations)
-      .filter((relation) => relation.profile === profile.id && relation.type === declaration.id)
+      .filter((relation) => relation.profile === profile.id && relationBaseType(document, profile, relation) === declaration.id)
       .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
     for (const relation of relations) {
       relation.endpoints.forEach((endpoint, index) => {
@@ -978,7 +985,7 @@ function checkChildrenRestricted(
     if (declaration.hierarchy?.id !== constraint.hierarchyId) continue;
     const hierarchy = declaration.hierarchy;
     const relations = Object.values(document.relations)
-      .filter((relation) => relation.profile === profile.id && relation.type === declaration.id)
+      .filter((relation) => relation.profile === profile.id && relationBaseType(document, profile, relation) === declaration.id)
       .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
     for (const relation of relations) {
       const parents = relation.endpoints.filter((endpoint) => endpoint.role === hierarchy.parentRole);
@@ -1087,7 +1094,7 @@ function checkRelationshipMatrix(
     // prerequisites take precedence. A relation failing any of them already
     // carries its own refusal from endpoint validation; comparing it against
     // the matrix would add a secondary relationship-matrix-violation.
-    const declared = relationTypeOf(profile, relation.type);
+    const declared = relationSchema(document, profile, relation);
     if (declared === undefined) continue;
     const sourceRole = roleOf(declared, constraint.sourceRole);
     const targetRole = roleOf(declared, constraint.targetRole);
@@ -1144,7 +1151,7 @@ function checkRelationshipMatrix(
     } else {
       targetType = "@relation";
     }
-    if (tuples.has(`${relation.type}\n${sourceType}\n${targetType}`)) continue;
+    if (tuples.has(`${relationBaseType(document, profile, relation)}\n${sourceType}\n${targetType}`)) continue;
     diagnostics.push(
       diagnostic({
         code: "relationship-matrix-violation",
@@ -1241,7 +1248,7 @@ function checkBoundPair(
   for (const relation of Object.values(document.relations)
     .filter((candidate) => candidate.profile === profile.id)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0))) {
-    if (relationTypeOf(profile, relation.type) === undefined) continue;
+    if (relationSchema(document, profile, relation) === undefined) continue;
     checkRecord(`relations.${relation.id}`, relation.attributes);
   }
   // Ports carry structured attributes too: a bound pair on a port attribute
@@ -1338,14 +1345,14 @@ function checkIncidentTypeUniformity(
   const diagnostics: Diagnostic[] = [];
   const ordered = [...entities].sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
   const relations = Object.values(document.relations)
-    .filter((relation) => relation.profile === profile.id && constraint.relationTypes.includes(relation.type))
+    .filter((relation) => relation.profile === profile.id && constraint.relationTypes.includes(relationBaseType(document, profile, relation)))
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
   for (const entity of ordered) {
     if (!entityAncestry(registry, resolver, entity).includes(constraint.entityType)) continue;
     const incident = relations.filter((relation) =>
       relation.endpoints.some((endpoint) => endpoint.target === entity.id),
     );
-    const distinct = [...new Set(incident.map((relation) => relation.type))].sort();
+    const distinct = [...new Set(incident.map((relation) => relationBaseType(document, profile, relation)))].sort();
     if (distinct.length <= 1) continue;
     diagnostics.push(
       diagnostic({
@@ -1371,7 +1378,7 @@ function checkAtMostValue(
 ): readonly Diagnostic[] {
   const diagnostics: Diagnostic[] = [];
   const relations = Object.values(document.relations)
-    .filter((relation) => relation.profile === profile.id && relation.type === constraint.relationType)
+    .filter((relation) => relation.profile === profile.id && relationBaseType(document, profile, relation) === constraint.relationType)
     .sort((left, right) => (left.id < right.id ? -1 : left.id > right.id ? 1 : 0));
   for (const relation of relations) {
     const count = constraint.attributes.filter((attribute) => {
@@ -1786,8 +1793,18 @@ export function validateDocument(document: SemanticDocument, options: Validation
       diagnostics.push(profile.diagnostic);
       continue;
     }
-    if (adapterOf(definition.profile) === LEGACY_CONSTRAINTS_ADAPTER) {
-      const base = entityTypeOf(profile.profile, definition.baseType);
+    const entityBase = entityTypeOf(profile.profile, definition.baseType);
+    const relationBase = relationTypeOf(profile.profile, definition.baseType);
+    if (entityTypeOf(profile.profile, key) !== undefined || relationTypeOf(profile.profile, key) !== undefined) {
+      diagnostics.push(diagnostic({ code: "type-definition-reserved", path, message: `definition ${key} shadows a profile type` }));
+      continue;
+    }
+    if (entityBase !== undefined && relationBase !== undefined) {
+      diagnostics.push(diagnostic({ code: "type-definition-ambiguous", path: `${path}.baseType`, message: `base ${definition.baseType} exists in both namespaces` }));
+      continue;
+    }
+    if (adapterOf(definition.profile) === LEGACY_CONSTRAINTS_ADAPTER || relationBase !== undefined) {
+      const base = entityBase ?? relationBase;
       if (base === undefined) {
         diagnostics.push(
           diagnostic({
@@ -1798,8 +1815,10 @@ export function validateDocument(document: SemanticDocument, options: Validation
         );
         continue;
       }
-      const baseNames = new Set(base.attributes.map((attribute) => attribute.name));
+      const baseNames = new Set((base.attributes ?? []).map((attribute) => attribute.name));
       for (const attribute of definition.attributes) {
+        diagnostics.push(...qualifyAttributeSchema(attribute, `${path}.attributes.${attribute.name}`));
+        if (relationBase !== undefined && attribute.required === true) diagnostics.push(diagnostic({ code: "type-definition-conflict", path: `${path}.attributes.${attribute.name}`, message: "refinements add optional attributes only" }));
         if (baseNames.has(attribute.name)) {
           diagnostics.push(
             diagnostic({
@@ -1810,6 +1829,7 @@ export function validateDocument(document: SemanticDocument, options: Validation
             }),
           );
         }
+        baseNames.add(attribute.name);
       }
       continue;
     }
@@ -2002,7 +2022,7 @@ function projectedEndpointDiagnostic(
     const profile = options.registry.get(entity.profile);
     if (profile === undefined) return undefined;
     const resolution = resolver.resolve(profile, entity.type);
-    return resolution.ok ? resolution.resolved.container : undefined;
+    return resolution.ok ? resolution.resolved.container || entityTypeOf(profile, entity.type)?.foldable === true : undefined;
   };
   if (refKindOf(semantic) === "relation") {
     if (internal.get(sourceId) !== endpoint.occurrence) return projected("projection-not-folded");
@@ -2050,6 +2070,7 @@ export function validateView(
   const hiddenMask = new Set<string>(hidden?.projectedHiddenRelationOccurrences ?? []);
   const resolver = createTypeResolver(document);
   const collapsed = collapsedOf(view);
+  let chainDiagnostic: ReturnType<typeof createChainValidator> | undefined;
   const internal = classifyInternalRelations(view, document, collapsed);
   const admittedBindings =
     options.bindings !== undefined && verifyExecutorBindings(options.bindings, options.registry).length === 0
@@ -2196,8 +2217,29 @@ export function validateView(
       const endpointPath = `${path}.endpoints[${index}]`;
       // Provenance-carrying endpoints validate provenance first, even when
       // the drawn occurrence is missing (C.4 priority).
-      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined) {
+      if (endpoint.semanticTarget !== undefined || endpoint.sourceOccurrence !== undefined || endpoint.chainProvenance !== undefined) {
         if (relation === undefined) return;
+        if (endpoint.chainProvenance !== undefined) {
+          if (endpoint.semanticTarget === undefined || endpoint.sourceOccurrence !== undefined) {
+            diagnostics.push(diagnostic({
+              code: "occurrence-endpoint-mismatch", path: `${endpointPath}.occurrence`,
+              message: `projected endpoint for role ${endpoint.role} fails check provenance-missing`,
+              refs: [occurrence.id, endpoint.occurrence], details: { role: endpoint.role, check: "provenance-missing" },
+            }));
+          } else {
+            if (chainDiagnostic === undefined) {
+              const drawnTargets = new Map<OccurrenceRef, EntityRef | PortRef | RelationRef>([
+                ...Object.values(view.entityOccurrences).map((o) => [o.id, o.entity] as const),
+                ...Object.values(view.portOccurrences).map((o) => [o.id, o.port] as const),
+                ...Object.values(view.relationOccurrences).map((o) => [o.id, o.relation] as const),
+              ]);
+              chainDiagnostic = createChainValidator(document, options.registry, resolver, drawnTargets);
+            }
+            const failure = chainDiagnostic(relation, occurrence.id, endpoint, endpointPath, scopedTargets);
+            if (failure !== undefined) diagnostics.push(failure);
+          }
+          return;
+        }
         const failure = projectedEndpointDiagnostic(
           view,
           document,
@@ -2345,7 +2387,7 @@ export function validateView(
           entity === undefined || profile === undefined
             ? undefined
             : resolver.resolve(profile, entity.type);
-        if (resolution !== undefined && resolution.ok && !resolution.resolved.container) {
+        if (resolution !== undefined && resolution.ok && !resolution.resolved.container && entityTypeOf(profile!, entity!.type)?.foldable !== true) {
           diagnostics.push(
             diagnostic({
               code: "occurrence-endpoint-mismatch",

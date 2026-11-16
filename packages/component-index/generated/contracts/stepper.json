@@ -1,8 +1,8 @@
 {
   "componentId": "stepper",
   "contractSource": "derived",
-  "digest": "sha256:888ff0dfa34707cdf9b97bfda7cd1df3b8d9662d34d9d2117f483617df9ace93",
-  "entryDigest": "sha256:682542ad5e32cd088db3b43def6138a0f8abe603dd489e50a3a8518613cde445",
+  "digest": "sha256:0271b5dea6072ee8835e42367117dc066888906d1761d008b2234f3c85420862",
+  "entryDigest": "sha256:f58f7e6e689394f4645a424a06ea97559b7bd4fbbed98e5e2d0e11dd24bd897d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -80,7 +80,7 @@
         "declarationPath": "packages/components-angular/dist/Stepper.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StepperProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -166,7 +166,7 @@
         "declarationPath": "packages/components-react/dist/Stepper.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StepperProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Stepper.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StepperProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -276,7 +276,10 @@
           }
         },
         {
-          "name": "stepClick"
+          "name": "stepClick",
+          "payload": {
+            "type": "number"
+          }
         }
       ],
       "limitations": [
@@ -339,16 +342,15 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:21247175993fd054a0a94c48da6f374f2b48f9a1cced6cccc46473c0d4326626",
-        "declarationPath": "packages/components-vue/dist/Stepper.d.ts",
+        "declarationDigest": "sha256:aceeffbe71d89765855972b01c0bec0a0ca65ecd9b570fed9663c2a32f9f8c10",
+        "declarationPath": "packages/components-vue/dist/Stepper.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StepperProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
       "warnings": [
-        "emit \"stepClick\": payload not in declaration",
         "event pair: emits \"stepClick\" and prop \"onStepClick\" both listed verbatim"
       ]
     }

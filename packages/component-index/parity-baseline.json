@@ -25,7 +25,7 @@
     "labelled-icon-button": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "link": {
@@ -427,7 +427,7 @@
     "web-frame": {
       "svelte": "missing",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "time-series-line-chart": {
@@ -469,13 +469,19 @@
     "diagram-card": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
+    "diagram-scene-figure": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "diagram-zone": {
       "svelte": "source-of-truth",
       "react": "missing",
-      "vue": "missing",
+      "vue": "match",
       "angular": "missing"
     },
     "config-item-card": {
@@ -1281,6 +1287,24 @@
       "react": "match",
       "vue": "match",
       "angular": "match"
+    },
+    "rich-text-editor": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
+    "composer-editor": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
+    },
+    "lock-presence-badge": {
+      "svelte": "source-of-truth",
+      "react": "missing",
+      "vue": "match",
+      "angular": "missing"
     }
   },
   "gaps": [
@@ -1299,10 +1323,10 @@
       "parity": {
         "svelte": "missing",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "Documented embed frame; value-exported from dataviz svelte/react/vue (lib/ObjectLayers); absent from dataviz-angular and from all component packages."
+      "reason": "Vue component-package port is present; Svelte and React retain dataviz deliveries. Native component-package parity remains missing for Svelte, React and Angular."
     },
     {
       "componentId": "time-series-line-chart",
@@ -1319,30 +1343,70 @@
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC-1 atomic diagram card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "diagram-scene-figure",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "DC-2c.1 exports Svelte and Vue scene hosts with shared behavioral and normalized DOM parity tests; React and Angular remain outside this lot."
     },
     {
       "componentId": "diagram-zone",
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "DC-2 static half, folded wrapping card (lot feat/dc1-diagram-card): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
     },
     {
       "componentId": "labelled-icon-button",
       "parity": {
         "svelte": "source-of-truth",
         "react": "missing",
-        "vue": "missing",
+        "vue": "match",
         "angular": "missing"
       },
-      "reason": "CA-L1 labelled icon button (lot feat/as1-comment-mode): value-exported only from @sentropic/design-system-svelte (packages/components-svelte/src/lib/index.ts); react/vue/angular counterparts are out of this lot's scope."
+      "reason": "Svelte and Vue implementations are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "rich-text-editor",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "composer-editor",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
+    },
+    {
+      "componentId": "lock-presence-badge",
+      "parity": {
+        "svelte": "source-of-truth",
+        "react": "missing",
+        "vue": "match",
+        "angular": "missing"
+      },
+      "reason": "Svelte and Vue public component subpath exports are available; React and Angular counterparts remain outside this port."
     }
   ],
   "barrelOnly": {
@@ -1371,6 +1435,8 @@
       "UtilityPanel",
       "Wizard",
       "composeAbsolute",
+      "computeSubMenuPosition",
+      "createLayoutCache",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1378,8 +1444,10 @@
       "identityInitial",
       "nodeShapePath",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolveRelative",
-      "splitAbsolute"
+      "splitAbsolute",
+      "toContainingBlockPosition"
     ],
     "react": [
       "AppShell",
@@ -1400,6 +1468,7 @@
       "alignValue",
       "composeAbsolute",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1411,18 +1480,22 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "vue": [
       "AppShell",
+      "CellDecorationIcon",
       "ContextPanel",
       "DEFAULT_TIME_RANGE_PRESETS",
       "Dashboard",
+      "GraphCanvas",
       "GraphLegend",
       "ICONS",
       "ICON_NAMES",
@@ -1443,6 +1516,7 @@
       "alignValue",
       "composeAbsolute",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1454,11 +1528,14 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition",
+      "useGraphEngine"
     ],
     "angular": [
       "AppShell",
@@ -1484,6 +1561,7 @@
       "composeAbsolute",
       "computePanelStackAutoCollapse",
       "computePosition",
+      "computeSubMenuPosition",
       "deriveInitials",
       "edgeDashArray",
       "formatPresetLabel",
@@ -1495,13 +1573,15 @@
       "nodeShapePath",
       "offsetMargin",
       "parsePresetMs",
+      "pointInSafeTriangle",
       "resolvePanelStackPrimary",
       "resolvePortalTarget",
       "resolveRelative",
       "spacingToken",
       "spanBasis",
       "splitAbsolute",
-      "splitPlacement"
+      "splitPlacement",
+      "toContainingBlockPosition"
     ],
     "dataviz-svelte": [
       "AdvancedPivotDataTable",

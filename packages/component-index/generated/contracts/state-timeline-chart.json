@@ -1,8 +1,8 @@
 {
   "componentId": "state-timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:af28ee0854a533f37ea07fc006b89aa6e0c6d948d9872a6894b788eec6c6f669",
-  "entryDigest": "sha256:b7d86fb701531d5cd54f4e55c78189073a61bf551680dd1750b205f7dfd2083f",
+  "digest": "sha256:df129843a767484da7c55dd21afc1819095378b0d65a3a1fe23084cdb3876766",
+  "entryDigest": "sha256:ebf168f8d7c562162d31b81d7f9677206cb87fe218892e33aefd01c69dd12278",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -108,7 +108,7 @@
         "declarationPath": "packages/components-angular/dist/StateTimelineChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "StateTimelineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -226,7 +226,7 @@
         "declarationPath": "packages/components-react/dist/StateTimelineChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "StateTimelineChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -338,7 +338,7 @@
         "declarationPath": "packages/components-svelte/dist/StateTimelineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StateTimelineChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -447,11 +447,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:6aa4c36e69494a3d2b5add9a4c5efcb7768ae83a133b5cee46e59dce2781c6cc",
-        "declarationPath": "packages/components-vue/dist/StateTimelineChart.d.ts",
+        "declarationDigest": "sha256:983fd7b88cfea6dd2716638d6e1dc164ad9e73ace262529660e5b9bb41c5738f",
+        "declarationPath": "packages/components-vue/dist/StateTimelineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StateTimelineChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

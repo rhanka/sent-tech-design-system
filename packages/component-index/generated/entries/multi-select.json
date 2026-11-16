@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MultiSelect.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MultiSelect.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:65d86ef8c0c775f83a44a0047a00b5b00f7658163c6bfa6b0ecc03d3960c2099",
+      "digest": "sha256:78ed231877faa8cbee69734e178ad07034c01fdd095a75691a5ba8b875641ce0",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MultiSelect.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/MultiSelect.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MultiSelect.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Multi-select with filterable tags.",
     "fr": "Sélection multiple avec tags filtrables."
   },
-  "digest": "sha256:be42e2861da66eeaafc95014762c5308b7a465621108bf1f3bbc6c5df9becc82",
+  "digest": "sha256:0a45ae8299742135016cab0b7ecd5e2c1f7dc0ec1cd1e594f7fb9e68931dce3c",
   "displayName": "MultiSelect",
   "format": "component-entry/v1",
   "frameworks": [

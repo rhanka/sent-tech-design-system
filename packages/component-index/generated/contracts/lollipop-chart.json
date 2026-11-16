@@ -1,8 +1,8 @@
 {
   "componentId": "lollipop-chart",
   "contractSource": "derived",
-  "digest": "sha256:d89f3431f8b537549058730abd90b24e3a2b4424196cad6b156ec634f3711f3b",
-  "entryDigest": "sha256:4c6be5e89fd099d6a58c9c6a30997012018ec5628c3e3174bb25677b8ac4c729",
+  "digest": "sha256:d490388f22cf1efbea636d6323861a9198131135d1caedc0cabfee457a0834a1",
+  "entryDigest": "sha256:3f23c36a8c8c35ccf217adc7946eba15acd44554d8dd29ed83002656f5b7b819",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -91,7 +91,7 @@
         "declarationPath": "packages/components-angular/dist/LollipopChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "LollipopChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -194,7 +194,7 @@
         "declarationPath": "packages/components-react/dist/LollipopChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "LollipopChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -291,7 +291,7 @@
         "declarationPath": "packages/components-svelte/dist/LollipopChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "LollipopChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -385,11 +385,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7ef37b13588fb4c7a87cb9bd1c5205ea285f12bb70f78693fd331dcf17d5cbbe",
-        "declarationPath": "packages/components-vue/dist/LollipopChart.d.ts",
+        "declarationDigest": "sha256:48c422be38c47ea7a774dcd60c89e2e38cd57db88d2c8c7386613475b6474d94",
+        "declarationPath": "packages/components-vue/dist/LollipopChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "LollipopChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

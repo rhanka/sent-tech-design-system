@@ -5,11 +5,11 @@
   "delivery": [
     {
       "channel": "source",
-      "digest": "sha256:9f691ed8189373812993ed5ef62b5d6e03715cdb2dca34cec928da9612dd6efd",
+      "digest": "sha256:1f2d677ae1ae2d74c0f69abe3a4566d8cf944e3824d5e8976462c8335f60fa86",
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/MenuPopover.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,30 +17,30 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/MenuPopover.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:514310aba735abdb8927d78715b607b1f0f97f4ac47eddeaf2378b0e801c7b47",
+      "digest": "sha256:ec9782e28be5a9ff10118ccd3d00beeb46364327b5a37883d51340da42a26d55",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/MenuPopover.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/MenuPopover.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
-      "digest": "sha256:834bcd8150bad440b9e5cb667a60fea162836d430c36d863adf9c72e378a21c0",
+      "digest": "sha256:6fb7e2766972acc6e33dae0cbc9578b4c046508e2d12947ca97797cc8ab93c3e",
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/MenuPopover.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Floating panel anchored to an external trigger, with placement, outside-click, and Escape close.",
     "fr": "Panneau flottant ancré à un déclencheur externe, avec placement, fermeture extérieure et Escape."
   },
-  "digest": "sha256:bc9a4c3af8cba0758ae2c06d77544a164cee98882578825a785d8c1c3158a83a",
+  "digest": "sha256:3d235548ab4c7f9393c890973626bf4591e2ac70f90b8de415afe4df1696974d",
   "displayName": "MenuPopover",
   "format": "component-entry/v1",
   "frameworks": [

@@ -1,0 +1,12 @@
+12:08:48 AM [vite-plugin-svelte] no Svelte config found at /home/antoinefa/src/sent-tech-design-system/.vapor-hard-wt/packages/components-vue - using default configuration.
+12:08:48 AM [vite-plugin-svelte] no Svelte config found at /home/antoinefa/src/sent-tech-design-system/.vapor-hard-wt/packages/components-vue - using default configuration.
+12:08:48 AM [vite-plugin-svelte] no Svelte config found at /home/antoinefa/src/sent-tech-design-system/.vapor-hard-wt/packages/components-vue - using default configuration.
+
+ RUN  v4.1.11 /home/antoinefa/src/sent-tech-design-system/.vapor-hard-wt/packages/components-vue
+
+
+ Test Files  2 passed (2)
+      Tests  489 passed (489)
+   Start at  00:08:48
+   Duration  10.32s (transform 6.53s, setup 3.09s, import 5.08s, tests 4.20s, environment 928ms)
+

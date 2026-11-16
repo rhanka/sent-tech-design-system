@@ -1,8 +1,8 @@
 {
   "componentId": "event-feed-panel",
   "contractSource": "derived",
-  "digest": "sha256:9bef3e4d67e59d810daf9d7894eed8a217f7e6b9058ff729adebba1778bf2615",
-  "entryDigest": "sha256:0292ce59e11b2faa31e4642c8da495dbb5f4828da3a795fdc366e3c34fa4b4b0",
+  "digest": "sha256:db89ed0b2a979e1dfb2a3d0b21b01ee77b9d73dd279ed4db48725f804910f280",
+  "entryDigest": "sha256:f03a6ab088343a2d6ed5d19455794f71e6814fdfa92f9972573b827fcb037e18",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -85,7 +85,7 @@
         "declarationPath": "packages/components-angular/dist/EventFeedPanel.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "EventFeedPanelProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -184,7 +184,7 @@
         "declarationPath": "packages/components-react/dist/EventFeedPanel.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "EventFeedPanelProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -277,7 +277,7 @@
         "declarationPath": "packages/components-svelte/dist/EventFeedPanel.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "EventFeedPanelProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -367,11 +367,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:99364d7ce5bf5efeeb3edaeb37fcb9e60b841f5d896c6988556890c7bfd0b89d",
-        "declarationPath": "packages/components-vue/dist/EventFeedPanel.d.ts",
+        "declarationDigest": "sha256:a93959f38a301f1cb041602d19ff5d063b65e2ef9487f14032793fa88822dfb6",
+        "declarationPath": "packages/components-vue/dist/EventFeedPanel.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "EventFeedPanelProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

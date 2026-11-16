@@ -1,8 +1,8 @@
 {
   "componentId": "polygon-chart",
   "contractSource": "derived",
-  "digest": "sha256:bbba7a4951a842e4cf839210f519d630ca8afed634b4135a3bc5b98c3a5c17cb",
-  "entryDigest": "sha256:1faf9b4842df1ccef61a9cdc978b772d3f79f3b9d98646b4c09c0505e648c955",
+  "digest": "sha256:94b60cdb022df6d144c6f3c5d1bcc2aa621245a05476ac2a0abdfd6dad40d0ba",
+  "entryDigest": "sha256:68c1f1632815b7289b85824bcf0360577d5232fbb1ac677c64ac2a2b73ed36c8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -73,7 +73,7 @@
         "declarationPath": "packages/components-angular/dist/PolygonChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PolygonChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -157,7 +157,7 @@
         "declarationPath": "packages/components-react/dist/PolygonChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PolygonChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/PolygonChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PolygonChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -310,11 +310,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:cb71f6835f29c0f5e3ebab68ae6058feb122ba24c68ab952af1986bb967251e7",
-        "declarationPath": "packages/components-vue/dist/PolygonChart.d.ts",
+        "declarationDigest": "sha256:bd88a7264b9688b79c47cbe9fcd6108ba47a6a88b6b9ebfe1f898f8098b8cbc7",
+        "declarationPath": "packages/components-vue/dist/PolygonChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PolygonChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

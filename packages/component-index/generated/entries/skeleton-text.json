@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/SkeletonText.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/SkeletonText.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:56e157663b557dfcf04b8a2c4bfdec6744d46c7b5a1d3bfbc9117f70df58c375",
+      "digest": "sha256:b02a58f52dc9e4bdd6fea65c720111d1245af589e49baac3c72af8160e3c8e5d",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/SkeletonText.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/SkeletonText.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/SkeletonText.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Placeholder text lines while loading.",
     "fr": "Placeholder lignes de texte en chargement."
   },
-  "digest": "sha256:842815e719150b9e1a739f8062a5e8c4b5905aa590ef5a976fcc9090ce13a459",
+  "digest": "sha256:033f29ccb197512089db4cf041a7772be5096615670dbdfec820f7c126b3e866",
   "displayName": "SkeletonText",
   "format": "component-entry/v1",
   "frameworks": [

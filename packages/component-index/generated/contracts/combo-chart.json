@@ -1,8 +1,8 @@
 {
   "componentId": "combo-chart",
   "contractSource": "derived",
-  "digest": "sha256:fecc505f23a3dce59e868b494f58d4a41c0a84b26ece7e3254112ee3217c4f01",
-  "entryDigest": "sha256:76994f8be39e4dd14b29fd9fd921fb916044ba2e2cc8342ad70e1772360e0457",
+  "digest": "sha256:68c0d4f425eb66594c00dc3463722c9566f7fe911166d6efcae6304644f128f9",
+  "entryDigest": "sha256:0e2c6241f41a4cac6b37a73281867835070b0e0ae268404b712750751eb593d6",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -377,7 +377,7 @@
         "declarationPath": "packages/components-angular/dist/ComboChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ComboChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -777,7 +777,7 @@
         "declarationPath": "packages/components-react/dist/ComboChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ComboChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1171,7 +1171,7 @@
         "declarationPath": "packages/components-svelte/dist/ComboChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ComboChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -1580,11 +1580,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:e1cad8d92ef1324c4554c144c96fab5033466ad0a0d69773e9a893d4932b9d66",
-        "declarationPath": "packages/components-vue/dist/ComboChart.d.ts",
+        "declarationDigest": "sha256:50de7d68c1991f18d48bf26cf747ca57e68d1b31369a27318214b19f42b527b0",
+        "declarationPath": "packages/components-vue/dist/ComboChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ComboChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

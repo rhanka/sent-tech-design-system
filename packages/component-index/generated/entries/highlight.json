@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Highlight.svelte",
-      "version": "0.37.0"
+      "version": "0.41.4"
     },
     {
       "channel": "source",
@@ -17,15 +17,15 @@
       "framework": "react",
       "package": "@sentropic/design-system-react",
       "path": "packages/components-react/src/Highlight.tsx",
-      "version": "0.38.0"
+      "version": "0.40.0"
     },
     {
       "channel": "source",
-      "digest": "sha256:4fb4385c659d08fad5ff1ed3bf3822442c94f24af63584bcc25f4eaf4df21fbb",
+      "digest": "sha256:0e5d1a49f0c2775f807d56756a98dcc5507159835abb7e28dd479453e05217d6",
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
-      "path": "packages/components-vue/src/Highlight.ts",
-      "version": "0.38.0"
+      "path": "packages/components-vue/src/Highlight.vue",
+      "version": "0.41.0-next.6"
     },
     {
       "channel": "source",
@@ -33,14 +33,14 @@
       "framework": "angular",
       "package": "@sentropic/design-system-angular",
       "path": "packages/components-angular/src/Highlight.ts",
-      "version": "0.38.0"
+      "version": "0.40.0"
     }
   ],
   "description": {
     "en": "Editorial highlight / callout box, with accent tone.",
     "fr": "Mise en avant / encart éditorial, avec tonalité d'accent."
   },
-  "digest": "sha256:4fee3e3b47d11b31b75a7ee2f5e2c90284a6cc248584d8c4d3c0ef6abfbd606e",
+  "digest": "sha256:c79709031de972dbd700d3ae53e1d663f0731960f484cebb15d80d07b2c65640",
   "displayName": "Highlight",
   "format": "component-entry/v1",
   "frameworks": [

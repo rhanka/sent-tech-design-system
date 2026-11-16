@@ -1,8 +1,8 @@
 {
   "componentId": "scatter-plot",
   "contractSource": "derived",
-  "digest": "sha256:f84c8984f1677440e62038a7f1c2a7a1215dfee00e257447709b5154da935417",
-  "entryDigest": "sha256:c96dc6d3fc82c2deea5fcc87d3a639345a6bedb219687c3d82abe6e50cf6d11e",
+  "digest": "sha256:2e6405fef235fb8e4e1e7787c4ab7d9a9cacdfc39db6f5791c8c5dcbb5ad3225",
+  "entryDigest": "sha256:9de9371266158196b77e5beb03928d5c16be8f02a95f8410c864a434686a74c3",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -360,7 +360,7 @@
         "declarationPath": "packages/components-angular/dist/ScatterPlot.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ScatterPlotProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -743,7 +743,7 @@
         "declarationPath": "packages/components-react/dist/ScatterPlot.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ScatterPlotProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -1120,7 +1120,7 @@
         "declarationPath": "packages/components-svelte/dist/ScatterPlot.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ScatterPlotProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -1212,7 +1212,6 @@
                 "type": "string"
               },
               "r": {
-                "description": "Per-datum radius, clamped to a sane maximum (32). Non-finite or\nnegative ⇒ falls back to the global `radius`.",
                 "type": "number"
               },
               "tone": {
@@ -1244,7 +1243,6 @@
         "additionalProperties": false,
         "properties": {
           "annotations": {
-            "description": "Annotation overlay in DATA space (points, labels, axis lines, regions,\npolygons). Both axes are continuous (linear). Additive: absent ⇒ unchanged.",
             "items": {
               "anyOf": [
                 {
@@ -1425,7 +1423,6 @@
             "type": "array"
           },
           "centroids": {
-            "description": "Cluster centroid markers (ring + cross), drawn above the points. Their\ncoordinates are folded into the axis domain. Non-finite x/y are skipped.",
             "items": {
               "$ref": "#/$defs/ScatterPlotCentroid"
             },
@@ -1464,21 +1461,18 @@
                 },
                 "type": "object"
               }
-            ],
-            "description": "Per-point value labels. `false`/absent (default) → none. `true` → each\npoint's value (the datum `label` wins when present). Object → `format` /\n`position`. Default position is `top`. Labels are `aria-hidden`."
+            ]
           },
           "height": {
             "type": "number"
           },
           "hoverKey": {
-            "description": "CONTROLLED synchronised hover key (FR-3). A point's key is its `label` when\npresent, otherwise `\"x,y\"`. Absent (`undefined`) keeps the uncontrolled\nbehaviour.",
             "type": [
               "string",
               "null"
             ]
           },
           "keyboardNav": {
-            "description": "FR-5 — roving-tabindex keyboard navigation of the data points.",
             "type": "boolean"
           },
           "label": {
@@ -1506,11 +1500,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:f02c142e6aa0cf5ff6bc783c52b4d113863f96e397474b0dbbcdb77d9ce933d5",
-        "declarationPath": "packages/components-vue/dist/ScatterPlot.d.ts",
+        "declarationDigest": "sha256:4daa87cf0b809434eeda03efa69ab51c4c3820bed0a3b2798683a6944f5f9640",
+        "declarationPath": "packages/components-vue/dist/ScatterPlot.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ScatterPlotProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

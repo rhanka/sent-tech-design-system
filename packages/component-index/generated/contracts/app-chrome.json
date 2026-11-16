@@ -1,8 +1,8 @@
 {
   "componentId": "app-chrome",
   "contractSource": "derived",
-  "digest": "sha256:1abbc64ce7319a3f5343dd9efe769de7bff066c216a71c9057f6216dc3719d52",
-  "entryDigest": "sha256:9f9750f44b9f0a3567c595c52b6c705a91283c0ce7b979006e3248d7fa6b8fbe",
+  "digest": "sha256:4dfdf88497a28c8adc8d89a2e0a8aebb5b37d8f19d6e2bfac62585a5176b5706",
+  "entryDigest": "sha256:c91a2080e5d6c0250f1dc5e076dba40d15c6cebeb31f48de7a15e8eff03737b2",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -214,7 +214,7 @@
         "declarationPath": "packages/components-angular/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "AppChromeProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -463,7 +463,7 @@
         "declarationPath": "packages/components-react/dist/AppChrome.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "AppChromeProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -717,7 +717,7 @@
         "declarationPath": "packages/components-svelte/dist/AppChrome.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AppChromeProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -788,8 +788,7 @@
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
@@ -957,13 +956,23 @@
         "type": "object"
       },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "extra-selectors"
+        },
+        {
+          "name": "extraSelectors"
+        },
+        {
+          "name": "identity"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:a56bf7e96bd3b4e70049b87bf5b8dbd6d43a45f401f8c76ea99e0c65e19de513",
-        "declarationPath": "packages/components-vue/dist/AppChrome.d.ts",
+        "declarationDigest": "sha256:ab89e3dfa46de9035d153a844021864a0ff04001023909ed15c2da077fa7e70c",
+        "declarationPath": "packages/components-vue/dist/AppChrome.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AppChromeProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

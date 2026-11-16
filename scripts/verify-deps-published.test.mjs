@@ -1,7 +1,7 @@
 // Guards for scripts/verify-deps-published.mjs (lot DC-1, review item 7).
 //
-// The reviewer's case: packages/components-svelte/package.json pins
-// @sentropic/design-system-themes 0.12.0, which is not on the npm registry
+// The release case: packages/components-svelte/package.json pins
+// @sentropic/design-system-themes 0.14.0, which is not on the npm registry
 // yet, so publishing svelte before the core packages would ship a dependency
 // npm cannot resolve. The gate must fail closed on that exact pin, and pass
 // only when every exact @sentropic/* pin of the manifest resolves on the
@@ -13,23 +13,49 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { collectSentropicDeps, main, verifyDeps } from "./verify-deps-published.mjs";
+import { collectRuntimeDeps, collectSentropicDeps, main, verifyDeps, verifyRuntimeDeps } from "./verify-deps-published.mjs";
 
 const svelteManifest = JSON.parse(
   readFileSync(new URL("../packages/components-svelte/package.json", import.meta.url), "utf8"),
 );
+const themesManifest = JSON.parse(
+  readFileSync(new URL("../packages/themes/package.json", import.meta.url), "utf8"),
+);
 const npmWorkflow = readFileSync(new URL("../.github/workflows/npm-publish.yml", import.meta.url), "utf8");
 const svelteWorkflow = readFileSync(new URL("../.github/workflows/svelte-publish.yml", import.meta.url), "utf8");
+const canvasWorkflow = readFileSync(
+  new URL("../.github/workflows/diagram-canvas-publish.yml", import.meta.url),
+  "utf8",
+);
+const canvasManifest = JSON.parse(
+  readFileSync(new URL("../packages/diagram-canvas/package.json", import.meta.url), "utf8"),
+);
+
+// The `publish:` job body of a workflow, as lines.
+function publishJobLines(workflowText, label) {
+  const lines = workflowText.split("\n");
+  const publishAt = lines.findIndex((l) => /^ {2}publish:\s*$/.test(l));
+  assert.ok(publishAt >= 0, `${label} must have a publish job`);
+  const job = [];
+  for (let i = publishAt + 1; i < lines.length; i++) {
+    if (/^ {2}[A-Za-z0-9_-]+:\s*$/.test(lines[i])) break;
+    job.push(lines[i]);
+  }
+  return job;
+}
 
 const PINNED_SHA = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*@[0-9a-f]{40}$/;
 
 test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte manifest", () => {
   const deps = collectSentropicDeps(svelteManifest);
   const byName = new Map(deps.map((d) => [d.name, d.version]));
-  assert.equal(byName.get("@sentropic/design-system-themes"), "0.12.0");
-  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.0");
-  assert.equal(byName.get("@sentropic/graph"), "0.3.0");
+  assert.equal(byName.get("@sentropic/design-system-themes"), themesManifest.version);
+  assert.equal(byName.get("@sentropic/design-system-rich-text"), "0.1.1");
+  assert.equal(byName.get("@sentropic/graph"), "0.3.1");
   assert.equal(byName.get("@sentropic/design-system-theme-dsfr"), "0.2.2");
+  // DC-2a L4: the scene host makes diagram-canvas a runtime dependency. It
+  // must stay an exact pin — a range would drop out of the gate in silence.
+  assert.equal(byName.get("@sentropic/diagram-canvas"), canvasManifest.version);
   // sorted, and ranges/tags are ignored (only exact versions are gated)
   const names = deps.map((d) => d.name);
   assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b)));
@@ -39,33 +65,58 @@ test("collectSentropicDeps reads every exact @sentropic/* pin of the svelte mani
 
 test("verifyDeps reports pins the registry does not resolve to the exact version", () => {
   const deps = [
-    { name: "@sentropic/design-system-themes", version: "0.12.0" },
+    { name: "@sentropic/design-system-themes", version: "0.14.0" },
     { name: "@sentropic/graph", version: "0.3.0" },
   ];
   const allPresent = (name, version) => version;
   assert.deepEqual(verifyDeps(deps, allPresent), []);
   const missing = verifyDeps(deps, (name) => (name === "@sentropic/design-system-themes" ? null : "0.3.0"));
-  assert.deepEqual(missing, [{ name: "@sentropic/design-system-themes", version: "0.12.0", seen: null }]);
+  assert.deepEqual(missing, [{ name: "@sentropic/design-system-themes", version: "0.14.0", seen: null }]);
   const drifted = verifyDeps(deps, (name, version) => (name === "@sentropic/graph" ? "0.2.0" : version));
   assert.deepEqual(drifted, [{ name: "@sentropic/graph", version: "0.3.0", seen: "0.2.0" }]);
 });
 
-test("main fails closed on the reviewer's case: themes 0.12.0 not yet on npm", () => {
-  // Registry state measured for the review: rich-text 0.1.0, graph 0.3.0 and
-  // theme-dsfr 0.2.2 exist; tokens 0.12.0 and themes 0.12.0 do not (E404).
+test("main fails closed on the release case: themes 0.14.0 not yet on npm", () => {
+  // Simulated registry state before the core release: rich-text 0.1.1, graph 0.3.0 and
+  // theme-dsfr 0.2.2 exist; tokens 0.14.0 and themes 0.14.0 do not (E404).
   const registry = new Map([
-    ["@sentropic/design-system-rich-text@0.1.0", "0.1.0"],
+    ["@sentropic/design-system-rich-text@0.1.1", "0.1.1"],
     ["@sentropic/graph@0.3.0", "0.3.0"],
     ["@sentropic/design-system-theme-dsfr@0.2.2", "0.2.2"],
   ]);
   const view = (name, version) => registry.get(`${name}@${version}`) ?? null;
   const code = main(["--workspace", "packages/components-svelte"], view);
-  assert.equal(code, 1, "the gate must refuse to publish while themes@0.12.0 is missing");
+  assert.equal(code, 1, "the gate must refuse to publish while themes@0.14.0 is missing");
+});
+
+// DC-2a L4 release order: diagram-canvas → tokens (if changed) → svelte. With
+// every other pin present, the svelte gate still refuses while the exact
+// diagram-canvas version the manifest names is absent from the registry.
+test("main fails closed while @sentropic/diagram-canvas is not yet on npm", () => {
+  const view = (name, version) => (name === "@sentropic/diagram-canvas" ? null : version);
+  const code = main(["--workspace", "packages/components-svelte"], view);
+  assert.equal(code, 1, "the gate must refuse to publish svelte while diagram-canvas is missing");
+});
+
+// Same gate one step up the chain: diagram-canvas pins diagram-core exactly.
+test("the diagram-canvas gate fails closed while @sentropic/diagram-core is not yet on npm, and is never vacuous", () => {
+  const deps = collectSentropicDeps(canvasManifest);
+  assert.deepEqual(
+    deps.map((d) => d.name),
+    ["@sentropic/diagram-core"],
+    "diagram-canvas must pin @sentropic/diagram-core exactly — an empty set makes the gate exit 1 on every tag",
+  );
+  assert.equal(main(["--workspace", "packages/diagram-canvas"], () => null), 1);
+  assert.equal(main(["--workspace", "packages/diagram-canvas"], (name, version) => version), 0);
 });
 
 test("main passes when every pinned @sentropic/* version is on npm", () => {
   const view = (name, version) => version;
   assert.equal(main(["--workspace", "packages/components-svelte"], view), 0);
+});
+
+test('Vue publication requires the new rich-text release before Vue, even when 0.1.0 exists', () => {
+  assert.equal(main(['--workspace', 'packages/components-vue', '--runtime'], (name, version) => name === '@sentropic/design-system-rich-text' ? '0.1.0' : version), 1);
 });
 
 test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v lockstep), OIDC only, pinned SHAs", () => {
@@ -97,19 +148,43 @@ test("npm-publish.yml publishes tokens then themes on the core-v tag (and the v 
 });
 
 test("svelte-publish.yml runs the fail-closed dep gate after checkout and before npm publish", () => {
-  const lines = svelteWorkflow.split("\n");
-  const publishAt = lines.findIndex((l) => /^ {2}publish:\s*$/.test(l));
-  assert.ok(publishAt >= 0, "svelte-publish.yml must have a publish job");
-  const job = [];
-  for (let i = publishAt + 1; i < lines.length; i++) {
-    if (/^ {2}[A-Za-z0-9_-]+:\s*$/.test(lines[i])) break;
-    job.push(lines[i]);
-  }
-  const jobText = job.join("\n");
+  const job = publishJobLines(svelteWorkflow, "svelte-publish.yml");
   const checkoutAt = job.findIndex((l) => /actions\/checkout@/.test(l));
   const gateAt = job.findIndex((l) => /node scripts\/verify-deps-published\.mjs/.test(l));
   const publishStepAt = job.findIndex((l) => /npm publish --workspace/.test(l));
   assert.ok(checkoutAt >= 0, "publish job must check out the repository (the gate reads scripts/)");
   assert.ok(gateAt > checkoutAt, "dep gate must run after checkout");
   assert.ok(publishStepAt > gateAt, "dep gate must run before npm publish — fail closed");
+});
+
+test("diagram-canvas-publish.yml runs the fail-closed dep gate on its own manifest after checkout and before npm publish", () => {
+  const job = publishJobLines(canvasWorkflow, "diagram-canvas-publish.yml");
+  const checkoutAt = job.findIndex((l) => /actions\/checkout@/.test(l));
+  const gateAt = job.findIndex((l) =>
+    /node scripts\/verify-deps-published\.mjs --workspace packages\/diagram-canvas\s*$/.test(l),
+  );
+  const publishStepAt = job.findIndex((l) => /npm publish --workspace @sentropic\/diagram-canvas/.test(l));
+  assert.ok(checkoutAt >= 0, "publish job must check out the repository (the gate reads scripts/)");
+  assert.ok(gateAt > checkoutAt, "dep gate must run after checkout, on packages/diagram-canvas");
+  assert.ok(publishStepAt > gateAt, "dep gate must run before npm publish — fail closed");
+});
+
+for (const [workflow, workspace] of [['vue-publish.yml', 'components-vue'], ['dataviz-publish.yml', 'dataviz-core']]) {
+  test(`${workflow} gates every publish on registry dependency availability`, () => {
+    const text = readFileSync(new URL(`../.github/workflows/${workflow}`, import.meta.url), 'utf8');
+    const job = publishJobLines(text, workflow).join('\n');
+    const gate = `node scripts/verify-deps-published.mjs --workspace packages/${workspace}`;
+    assert.ok(job.indexOf(gate) > job.indexOf('actions/checkout@'), 'gate runs after checkout');
+    assert.ok(job.indexOf(gate) < job.indexOf('npm publish --workspace'), 'gate runs before first publication');
+    if (workflow === 'dataviz-publish.yml') assert.match(job, /verify-deps-published\.mjs --workspace "packages\/\$\{package#@sentropic\/\}" --runtime/,
+      'each adapter is checked after core exists and before publishing that adapter');
+  });
+}
+
+test('runtime gate checks all dependencies and peers, including optional external exact pins and ranges', () => {
+  const deps = collectRuntimeDeps({ dependencies: { external: '1.2.3', '@sentropic/core': '2.0.0' }, peerDependencies: { vue: '^3.5', optional: '4.5.6' }, peerDependenciesMeta: { optional: { optional: true } }, devDependencies: { test: '1.0.0' } });
+  assert.equal(deps.length, 4);
+  assert.equal(verifyRuntimeDeps(deps, (_, version) => version === '^3.5' ? '3.5.45' : version).length, 0);
+  for (const missing of deps) assert.equal(verifyRuntimeDeps(deps, (name, version) => name === missing.name ? null : version === '^3.5' ? '3.5.45' : version).length, 1);
+  assert.equal(verifyRuntimeDeps([{ name: 'external', version: '1.2.3' }], () => '1.2.4').length, 1);
 });

@@ -1,8 +1,8 @@
 {
   "componentId": "toast",
   "contractSource": "derived",
-  "digest": "sha256:8929daed6ddac7b2ed63ddf38e1ae25db527d82a8a7d073fe09925628a3e30d9",
-  "entryDigest": "sha256:8d0c84ae8c0724b688a6799b19876d62c6f8256b17f6e4687e8dee8c1cbec82e",
+  "digest": "sha256:cc29f5aa71805c34aff0076abeb18084c276c3c2fed0e168a4e3a3f8d075d3d4",
+  "entryDigest": "sha256:92f5d9375f09fcaa07689b07a88bc3b7d940bb479aaff9bf2ae6a1efb4075d30",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -62,7 +62,7 @@
         "declarationPath": "packages/components-angular/dist/Toast.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "ToastProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -192,11 +192,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ToastProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -252,7 +252,7 @@
         "declarationPath": "packages/components-svelte/dist/Toast.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ToastProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -266,6 +266,30 @@
           "name": "dismissLabel",
           "reason": "function surface has no JSON Schema form",
           "sourceType": "(title: unknown) => string"
+        },
+        {
+          "kind": "function",
+          "name": "onClose",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onCloseOnce",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "onDismiss",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onDismissOnce",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(id: string) => void"
         }
       ],
       "events": [
@@ -273,38 +297,53 @@
           "name": "close"
         },
         {
-          "name": "dismiss"
-        },
-        {
-          "name": "onClose",
+          "name": "dismiss",
           "payload": {
-            "items": {},
-            "type": "array"
-          }
-        },
-        {
-          "name": "onDismiss",
-          "payload": {
-            "items": {},
-            "type": "array"
+            "type": "string"
           }
         }
       ],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "$defs": {
           "ToastItem": {
             "additionalProperties": false,
             "properties": {
-              "actions": {},
+              "actions": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "id": {
                 "type": "string"
               },
-              "message": {},
-              "title": {},
+              "message": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
+              "title": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "number"
+                  }
+                ]
+              },
               "tone": {
                 "enum": [
                   "info",
@@ -315,8 +354,7 @@
               }
             },
             "required": [
-              "id",
-              "title"
+              "id"
             ],
             "type": "object"
           }
@@ -344,8 +382,26 @@
           "locale": {
             "type": "string"
           },
-          "message": {},
-          "title": {},
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
           "tone": {
             "enum": [
               "info",
@@ -357,66 +413,67 @@
         },
         "type": "object"
       },
-      "replaced": [
+      "replaced": [],
+      "slots": [
         {
-          "name": "ToastItem.actions",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "actions",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
         },
         {
-          "name": "ToastItem.message",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "ToastItem.title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "name": "default"
         },
         {
           "name": "message",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
-        },
-        {
-          "name": "onClose.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
-        },
-        {
-          "name": "onDismiss.args[]",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "any"
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
         },
         {
           "name": "title",
-          "reason": "any JSON value, stated in the row",
-          "replacement": "{}",
-          "sourceType": "unknown"
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "index": {
+                "type": "number"
+              },
+              "item": {
+                "$ref": "#/$defs/ToastItem"
+              }
+            },
+            "type": "object"
+          }
         }
       ],
-      "slots": [],
       "source": {
-        "declarationDigest": "sha256:d48f8ec669ef909272eaab41056c1e62e4b8f12ef2105af8675fbed6fb7d8ce4",
-        "declarationPath": "packages/components-vue/dist/Toast.d.ts",
+        "declarationDigest": "sha256:31105b9f4a850f48e909b250abdbe6f12195b6dcc7da4f13427fe1bbdd4dcd39",
+        "declarationPath": "packages/components-vue/dist/Toast.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ToastProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],
-      "warnings": [
-        "emit \"close\": payload not in declaration",
-        "emit \"dismiss\": payload not in declaration",
-        "event pair: emits \"close\" and prop \"onClose\" both listed verbatim",
-        "event pair: emits \"dismiss\" and prop \"onDismiss\" both listed verbatim"
-      ]
+      "warnings": []
     }
   },
   "producerId": "sentropic-ds"

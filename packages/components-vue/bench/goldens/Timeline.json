@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "component": "Timeline",
+  "sourceRevision": "d693e61755f56097827f5a1a61cf2323d3320525",
+  "source": "src/Timeline.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<ol class=\"st-timeline st-timeline--vertical\"><li class=\"st-timeline__item st-timeline__item--success\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Deploy</span></div></li><li class=\"st-timeline__item st-timeline__item--danger\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__meta\">12:04</span><span class=\"st-timeline__title\">Rollback</span><span class=\"st-timeline__description\">Reverted release</span></div></li></ol>"
+    },
+    {
+      "id": "horizontal",
+      "html": "<ol class=\"st-timeline st-timeline--horizontal\"><li class=\"st-timeline__item st-timeline__item--neutral\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Start</span></div></li><li class=\"st-timeline__item st-timeline__item--neutral\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__meta\">Q3</span><span class=\"st-timeline__title\">Milestone</span></div></li></ol>"
+    },
+    {
+      "id": "tones",
+      "html": "<ol class=\"st-timeline st-timeline--vertical\"><li class=\"st-timeline__item st-timeline__item--neutral\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Neutral</span></div></li><li class=\"st-timeline__item st-timeline__item--info\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Info</span></div></li><li class=\"st-timeline__item st-timeline__item--warning\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Warning</span></div></li><li class=\"st-timeline__item st-timeline__item--danger\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Danger</span></div></li><li class=\"st-timeline__item st-timeline__item--success\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Success</span></div></li></ol>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<ol class=\"st-timeline st-timeline--vertical consumer\" data-bench=\"timeline\" style=\"color:red;\"><li class=\"st-timeline__item st-timeline__item--neutral\"><span aria-hidden=\"true\" class=\"st-timeline__rail\"><span class=\"st-timeline__dot\"></span><span class=\"st-timeline__line\"></span></span><div class=\"st-timeline__content\"><span class=\"st-timeline__title\">Event</span></div></li></ol>"
+    },
+    {
+      "id": "empty",
+      "html": "<ol class=\"st-timeline st-timeline--vertical\"></ol>"
+    }
+  ],
+  "sourceSha256": "f336c9bf517fc74019e4d4a72a290bc262f3203e8f512ad5e558640a5c62e205",
+  "fixtureSha256": "ee4e2fad6f0b134a69b89271d1f161054f86918cb2d1d5f6cd6375263264d009",
+  "publicExports": [
+    {
+      "name": "Timeline",
+      "typeOnly": false
+    },
+    {
+      "name": "TimelineProps",
+      "typeOnly": true
+    },
+    {
+      "name": "TimelineItem",
+      "typeOnly": true
+    },
+    {
+      "name": "TimelineTone",
+      "typeOnly": true
+    },
+    {
+      "name": "TimelineOrientation",
+      "typeOnly": true
+    }
+  ]
+}

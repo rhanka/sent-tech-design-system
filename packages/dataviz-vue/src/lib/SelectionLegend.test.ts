@@ -2,7 +2,7 @@ import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { describe, it, expect } from 'vitest';
 import { createDashboardStore, type DataModel } from '@sentropic/dataviz-core';
-import { SelectionLegend } from './SelectionLegend.js';
+import SelectionLegend from './SelectionLegend.vue';
 
 const model: DataModel = {
   dimensions: [{ id: 'country', label: 'Pays', type: 'discrete' }],

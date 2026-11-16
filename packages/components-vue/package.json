@@ -1,11 +1,12 @@
 {
   "name": "@sentropic/design-system-vue",
-  "version": "0.38.0",
+  "version": "0.41.0-next.6",
   "license": "MIT",
   "description": "Vue 3 components for the Sentropic design system.",
   "type": "module",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   },
   "repository": {
     "type": "git",
@@ -13,7 +14,7 @@
     "directory": "packages/components-vue"
   },
   "sideEffects": [
-    "./dist/styles.css"
+    "**/*.css"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,31 +23,198 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./diagram-icons": {
+      "types": "./dist/diagram-icons/index.d.ts",
+      "import": "./dist/diagram-icons/index.js"
+    },
+    "./diagram-render": {
+      "types": "./dist/diagram-render/index.d.ts",
+      "import": "./dist/diagram-render/index.js"
+    },
+    "./vapor": {
+      "types": "./dist/vapor/index.d.ts",
+      "import": "./dist/vapor/index.js"
+    },
+    "./vapor/diagram-icons": {
+      "types": "./dist/vapor/diagram-icons/index.d.ts",
+      "import": "./dist/vapor/diagram-icons/index.js"
+    },
+    "./bpmn": {
+      "types": "./dist/bpmn/index.d.ts",
+      "import": "./dist/bpmn/index.js"
+    },
+    "./vapor/bpmn": {
+      "types": "./dist/vapor/bpmn/index.d.ts",
+      "import": "./dist/vapor/bpmn/index.js"
+    },
+    "./rich-text-editor": {
+      "types": "./dist/rich-text-editor/index.d.ts",
+      "import": "./dist/rich-text-editor/index.js"
+    },
+    "./vapor/rich-text-editor": {
+      "types": "./dist/vapor/rich-text-editor/index.d.ts",
+      "import": "./dist/vapor/rich-text-editor/index.js"
+    },
+    "./presence-badge": {
+      "types": "./dist/presence-badge/index.d.ts",
+      "import": "./dist/presence-badge/index.js"
+    },
+    "./vapor/presence-badge": {
+      "types": "./dist/vapor/presence-badge/index.d.ts",
+      "import": "./dist/vapor/presence-badge/index.js"
+    },
+    "./rich-text-editor.css": "./dist/rich-text-editor/rich-text-editor.css",
+    "./rich-text-editor/styles.css": "./dist/rich-text-editor/rich-text-editor.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "!dist/.srchash"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json && node scripts/copy-styles.mjs",
-    "check": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run src"
+    "build": "npm run lint:vapor && vue-tsc -p tsconfig.json && node scripts/build-sfc.mjs && node scripts/copy-styles.mjs && node scripts/check-published-types.mjs",
+    "check": "npm run check:types",
+    "test": "vitest run src",
+    "lint:vapor": "node ../../scripts/vue-vapor-lint.mjs",
+    "check:types": "vue-tsc -p tsconfig.json --noEmit",
+    "build:declarations": "vue-tsc -p tsconfig.json --declaration --emitDeclarationOnly",
+    "build:classic-3.5": "node ../../scripts/vue-sfc-build.mjs --stable"
   },
   "dependencies": {
-    "@sentropic/design-system-themes": "0.12.0",
-    "lucide-vue-next": "^0.562.0"
+    "@sentropic/design-system-themes": "0.14.0",
+    "@sentropic/diagram-canvas": "0.2.4",
+    "@sentropic/graph": "0.3.1",
+    "@sentropic/design-system-rich-text": "0.1.1"
   },
   "peerDependencies": {
-    "vue": "^3"
+    "vue": "^3.5 || ^3.6.0-0",
+    "@sentropic/design-system-elements": "0.2.0",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extension-blockquote": "^3.0.0",
+    "@tiptap/extension-bold": "^3.0.0",
+    "@tiptap/extension-code": "^3.0.0",
+    "@tiptap/extension-code-block": "^3.0.0",
+    "@tiptap/extension-document": "^3.0.0",
+    "@tiptap/extension-hard-break": "^3.0.0",
+    "@tiptap/extension-heading": "^3.0.0",
+    "@tiptap/extension-horizontal-rule": "^3.0.0",
+    "@tiptap/extension-italic": "^3.0.0",
+    "@tiptap/extension-link": "^3.0.0",
+    "@tiptap/extension-list": "^3.0.0",
+    "@tiptap/extension-paragraph": "^3.0.0",
+    "@tiptap/extension-placeholder": "^3.0.0",
+    "@tiptap/extension-strike": "^3.0.0",
+    "@tiptap/extension-text": "^3.0.0",
+    "@tiptap/extension-underline": "^3.0.0",
+    "@tiptap/extensions": "^3.0.0",
+    "@tiptap/pm": "^3.0.0",
+    "@tiptap/markdown": "^3.32.0",
+    "yjs": "^13.6.33",
+    "y-protocols": "^1.0.7"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.7",
+    "@vitejs/plugin-vue": "6.0.11",
+    "@vue/compiler-sfc": "3.6.0-rc.15",
+    "@vue/server-renderer": "3.6.0-rc.15",
     "@vue/test-utils": "^2.4.6",
     "jsdom": "^27.2.0",
     "typescript": "^5.9.3",
     "vite": "^8.0.16",
     "vitest": "^4.1.11",
-    "vue": "^3.5.17",
-    "vue-tsc": "^2.2.12"
+    "vue": "3.6.0-rc.15",
+    "vue-tsc": "3.3.14",
+    "@tiptap/core": "3.32.0",
+    "@tiptap/extension-blockquote": "3.32.0",
+    "@tiptap/extension-bold": "3.32.0",
+    "@tiptap/extension-code": "3.32.0",
+    "@tiptap/extension-code-block": "3.32.0",
+    "@tiptap/extension-document": "3.32.0",
+    "@tiptap/extension-hard-break": "3.32.0",
+    "@tiptap/extension-heading": "3.32.0",
+    "@tiptap/extension-horizontal-rule": "3.32.0",
+    "@tiptap/extension-italic": "3.32.0",
+    "@tiptap/extension-link": "3.32.0",
+    "@tiptap/extension-list": "3.32.0",
+    "@tiptap/extension-paragraph": "3.32.0",
+    "@tiptap/extension-placeholder": "3.32.0",
+    "@tiptap/extension-strike": "3.32.0",
+    "@tiptap/extension-text": "3.32.0",
+    "@tiptap/extension-underline": "3.32.0",
+    "@tiptap/extensions": "3.32.0",
+    "@tiptap/pm": "3.32.0",
+    "@tiptap/markdown": "3.32.0",
+    "yjs": "13.6.33",
+    "y-protocols": "1.0.7"
+  },
+  "peerDependenciesMeta": {
+    "@sentropic/design-system-elements": {
+      "optional": true
+    },
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extension-blockquote": {
+      "optional": true
+    },
+    "@tiptap/extension-bold": {
+      "optional": true
+    },
+    "@tiptap/extension-code": {
+      "optional": true
+    },
+    "@tiptap/extension-code-block": {
+      "optional": true
+    },
+    "@tiptap/extension-document": {
+      "optional": true
+    },
+    "@tiptap/extension-hard-break": {
+      "optional": true
+    },
+    "@tiptap/extension-heading": {
+      "optional": true
+    },
+    "@tiptap/extension-horizontal-rule": {
+      "optional": true
+    },
+    "@tiptap/extension-italic": {
+      "optional": true
+    },
+    "@tiptap/extension-link": {
+      "optional": true
+    },
+    "@tiptap/extension-list": {
+      "optional": true
+    },
+    "@tiptap/extension-paragraph": {
+      "optional": true
+    },
+    "@tiptap/extension-placeholder": {
+      "optional": true
+    },
+    "@tiptap/extension-strike": {
+      "optional": true
+    },
+    "@tiptap/extension-text": {
+      "optional": true
+    },
+    "@tiptap/extension-underline": {
+      "optional": true
+    },
+    "@tiptap/extensions": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/markdown": {
+      "optional": true
+    },
+    "yjs": {
+      "optional": true
+    },
+    "y-protocols": {
+      "optional": true
+    }
   }
 }

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "SlideIndicator",
+  "sourceRevision": "ef3b5f227e8cffca3e916ae0a6e4e3d944b4dd86",
+  "source": "src/SlideIndicator.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div aria-label=\"Diapositive\" class=\"st-slideIndicator st-slideIndicator--md st-slideIndicator--dots\" role=\"group\"><button aria-label=\"Diapositive 1\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-current=\"true\" aria-label=\"Diapositive 2\" class=\"st-slideIndicator__dot st-slideIndicator__dot--current\" tabindex=\"0\" type=\"button\"></button><button aria-label=\"Diapositive 3\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button></div>"
+    },
+    {
+      "id": "bars-lg",
+      "html": "<div aria-label=\"Slide\" class=\"st-slideIndicator st-slideIndicator--lg st-slideIndicator--bars\" role=\"group\"><button aria-current=\"true\" aria-label=\"Slide 1\" class=\"st-slideIndicator__dot st-slideIndicator__dot--current\" tabindex=\"0\" type=\"button\"></button><button aria-label=\"Slide 2\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-label=\"Slide 3\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-label=\"Slide 4\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-label=\"Slide 5\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button></div>"
+    },
+    {
+      "id": "sm-last",
+      "html": "<div aria-label=\"Diapositive\" class=\"st-slideIndicator st-slideIndicator--sm st-slideIndicator--dots\" role=\"group\"><button aria-label=\"Diapositive 1\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-label=\"Diapositive 2\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-label=\"Diapositive 3\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button><button aria-current=\"true\" aria-label=\"Diapositive 4\" class=\"st-slideIndicator__dot st-slideIndicator__dot--current\" tabindex=\"0\" type=\"button\"></button></div>"
+    },
+    {
+      "id": "empty",
+      "html": "<div aria-label=\"Diapositive\" class=\"st-slideIndicator st-slideIndicator--md st-slideIndicator--dots\" role=\"group\"></div>"
+    },
+    {
+      "id": "custom",
+      "html": "<div aria-label=\"Diapositive\" class=\"st-slideIndicator st-slideIndicator--md st-slideIndicator--dots consumer\" data-bench=\"slide\" role=\"group\" style=\"color:red;\"><button aria-current=\"true\" aria-label=\"Diapositive 1\" class=\"st-slideIndicator__dot st-slideIndicator__dot--current\" tabindex=\"0\" type=\"button\"></button><button aria-label=\"Diapositive 2\" class=\"st-slideIndicator__dot\" tabindex=\"-1\" type=\"button\"></button></div>"
+    }
+  ],
+  "sourceSha256": "a7d72a035a5fae12f619eeaf61ea4a86b4dd9b46449371dd4990b5171eeab2ba",
+  "fixtureSha256": "0c2310c1d21f34114dd63f89baf0d9b6ae8691a1cd94a5a462569161bc9c29f6",
+  "publicExports": [
+    {
+      "name": "SlideIndicator",
+      "typeOnly": false
+    },
+    {
+      "name": "SlideIndicatorProps",
+      "typeOnly": true
+    },
+    {
+      "name": "SlideIndicatorVariant",
+      "typeOnly": true
+    },
+    {
+      "name": "SlideIndicatorSize",
+      "typeOnly": true
+    }
+  ]
+}

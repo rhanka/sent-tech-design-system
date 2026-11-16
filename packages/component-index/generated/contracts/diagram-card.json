@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:0910f73235ae35ef194e965000afcaa2a52cd2e75d00404041a3fbdf697e2001",
-  "entryDigest": "sha256:d2c8867f836fc59865315c7e96754c5317f99ca3e1040dee1cca5384414723e6",
+  "digest": "sha256:b712bf5440d1893370f888c8c1e46a2bb382e5281ff15a87b8945493b85cc3c8",
+  "entryDigest": "sha256:77c5e7b419acc389dd1240a965b33187c2b950c4434db836dace62580df4a4ef",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramCardProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/DiagramCard.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramCardProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -104,20 +104,31 @@
               "code": {
                 "enum": [
                   "card-overflow",
-                  "card-icon-unknown"
+                  "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text. Overflow is refused, never shortened\n(owner criterion: overflow = refusal, never a truncation), so the\ndiagnostic carries the source string the host must shorten.",
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
                 "type": "string"
               }
             },
@@ -155,8 +166,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -176,6 +196,10 @@
               "center",
               "left"
             ]
+          },
+          "autoSize": {
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
+            "type": "boolean"
           },
           "body": {
             "description": "Body lines in order; trailing `detailCount` lines render secondary.",
@@ -199,6 +223,9 @@
           },
           "footer": {
             "type": "string"
+          },
+          "height": {
+            "type": "number"
           },
           "icon": {
             "type": "string"
@@ -233,11 +260,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:7b0232a1f80f278c6081fa2290a95a8f0933112589aa1e65ee53ff6560a969d9",
+        "declarationDigest": "sha256:0e119fd0505517e8e681584a1f604511ab6372880dca599408e1fc9bbd85bea6",
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -245,25 +272,258 @@
     },
     "vue": {
       "bindable": [],
-      "dropped": [],
-      "events": [],
-      "limitations": [
-        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "DiagramCardToggle.onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "() => void"
+        },
+        {
+          "kind": "function",
+          "name": "measure",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CardLineMeasure"
+        },
+        {
+          "kind": "function",
+          "name": "onDiagnostic",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(diagnostic: CardDiagnostic) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: { entityId: string; }) => void"
+        }
       ],
-      "reason": "absent: \"DiagramCard\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "events": [
+        {
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/CardDiagnostic"
+          }
+        },
+        {
+          "name": "onDiagnostic",
+          "payload": {
+            "$ref": "#/$defs/CardDiagnostic"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
+        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+      ],
+      "props": {
+        "$defs": {
+          "CardDiagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "allocatedPx": {
+                "type": "number"
+              },
+              "code": {
+                "enum": [
+                  "card-overflow",
+                  "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown"
+                ]
+              },
+              "entityId": {
+                "type": "string"
+              },
+              "hiddenLength": {
+                "type": "number"
+              },
+              "neededPx": {
+                "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
+              },
+              "slot": {
+                "type": "string"
+              },
+              "text": {
+                "description": "Original, unwrapped slot text, retained alongside hard-cap diagnostics.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "allocatedPx",
+              "code",
+              "entityId",
+              "neededPx",
+              "slot"
+            ],
+            "type": "object"
+          },
+          "DiagramCardToggle": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "label": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "label"
+            ],
+            "type": "object"
+          },
+          "DiagramGlyphPaths": {
+            "additionalProperties": false,
+            "properties": {
+              "darkLine": {
+                "const": true
+              },
+              "face": {
+                "type": "string"
+              },
+              "hiddenLength": {
+                "type": "number"
+              },
+              "line": {
+                "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "face"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "description": "Owner variant: `\"center\"` centres every text slot horizontally inside its\nfrozen allocation (same 460 × 200 box). Default `\"left\"`.",
+            "enum": [
+              "center",
+              "left"
+            ]
+          },
+          "autoSize": {
+            "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
+            "type": "boolean"
+          },
+          "body": {
+            "description": "Body lines in order; trailing `detailCount` lines render secondary.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "bodyMode": {
+            "description": "Body rendering mode. `\"leaf\"` (default): left/top-aligned function/detail\nlines at the body inset. `\"subtitle\"`: the collapsed-zone subtitle —\nwrapped at the frozen 396 px measure and centred horizontally and\nvertically inside the card body area (§6.2.1).",
+            "enum": [
+              "leaf",
+              "subtitle"
+            ]
+          },
+          "detailCount": {
+            "type": "number"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "footer": {
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "iconGlyph": {
+            "$ref": "#/$defs/DiagramGlyphPaths"
+          },
+          "kicker": {
+            "type": "string"
+          },
+          "proposed": {
+            "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
+            "type": "boolean"
+          },
+          "title": {
+            "type": "string"
+          },
+          "toggle": {
+            "$ref": "#/$defs/DiagramCardToggle"
+          },
+          "tone": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "body",
+          "entityId",
+          "title"
+        ],
+        "type": "object"
+      },
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
-        "declarationPath": "packages/components-vue/dist/DiagramCard.d.ts",
+        "declarationDigest": "sha256:2e95867d54e0162b687106b66be44b6291130772e99c8f19d8709efc72d2b1c7",
+        "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
-      "status": "none",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
-        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+        "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim"
       ]
     }
   },

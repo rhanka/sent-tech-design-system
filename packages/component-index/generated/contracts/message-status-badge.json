@@ -1,8 +1,8 @@
 {
   "componentId": "message-status-badge",
   "contractSource": "derived",
-  "digest": "sha256:5603b431030956eaf8958572ff7059eb0b6cbe5a86dec3013d62f63c582586a9",
-  "entryDigest": "sha256:9bb005ce618941c1710c0c88c639a3b5d96da073469c3ef04727524b37db8ed3",
+  "digest": "sha256:e95b4b4cb25e2b4716c1d81601d1e49ec95f9a6ac41c0440c7a2351badb60c90",
+  "entryDigest": "sha256:305e6552408cdf076eb2a9d2df578b90b8a3d380f4e5820fe83b59ec09dfa4be",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -60,7 +60,7 @@
         "declarationPath": "packages/components-angular/dist/MessageStatusBadge.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -118,11 +118,11 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:b2515750944f88e402860af3f9c05ade753b84b5bda202cb36b6d640f3420eb9",
+        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -187,7 +187,7 @@
         "declarationPath": "packages/components-svelte/dist/MessageStatusBadge.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -198,8 +198,7 @@
       "dropped": [],
       "events": [],
       "limitations": [
-        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile).",
-        "Slot surface is not represented in Vue declaration types; slots list is declaration-derived only."
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
       ],
       "props": {
         "additionalProperties": false,
@@ -240,16 +239,49 @@
           "name": "labels",
           "reason": "library type not expanded",
           "replacement": "{}",
-          "sourceType": "Partial<Record<ChatMessageStatus, unknown>>"
+          "sourceType": "Partial<Record<ChatMessageStatus, string | number>>"
+        },
+        {
+          "name": "scope.label",
+          "reason": "any JSON value, stated in the row",
+          "replacement": "{}",
+          "sourceType": "unknown"
         }
       ],
-      "slots": [],
+      "slots": [
+        {
+          "name": "label",
+          "params": {
+            "additionalProperties": false,
+            "properties": {
+              "label": {},
+              "status": {
+                "enum": [
+                  "error",
+                  "idle",
+                  "pending",
+                  "processing",
+                  "completed",
+                  "failed",
+                  "streaming",
+                  "sent"
+                ]
+              }
+            },
+            "required": [
+              "label",
+              "status"
+            ],
+            "type": "object"
+          }
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:57e2f08af3801fb75a8ff3d447cc48fc741f7a5bf68456f3815a7024515113f3",
-        "declarationPath": "packages/components-vue/dist/MessageStatusBadge.d.ts",
+        "declarationDigest": "sha256:78957996ec20cd6470342e91bc8f6834090ee6363008272dd22cf9f10013fd63",
+        "declarationPath": "packages/components-vue/dist/MessageStatusBadge.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "MessageStatusBadgeProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "partial",
       "unresolved": [],

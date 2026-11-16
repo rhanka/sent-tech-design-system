@@ -1,0 +1,2273 @@
+{
+  "documentId": "document:case-trackfocus-r9",
+  "schemaVersion": {
+    "major": 1,
+    "minor": 1
+  },
+  "revision": 0,
+  "profileRefs": [
+    "archi@1",
+    "generic@2"
+  ],
+  "typeDefinitions": {},
+  "entities": {
+    "entity:act-sentropic": {
+      "id": "entity:act-sentropic",
+      "profile": "archi@1",
+      "type": "actor",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Sentropic"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "org"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Équipe propriétaire du monorepo h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "entity:repo-h2a": {
+      "id": "entity:repo-h2a",
+      "profile": "archi@1",
+      "type": "repo",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "url": {
+          "kind": "text",
+          "value": "https://github.com/rhanka/h2a"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Monorepo livrant Track et Focus comme systèmes distincts"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-12"
+            },
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "entity:host-poste": {
+      "id": "entity:host-poste",
+      "profile": "archi@1",
+      "type": "host",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Poste de travail"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "workstation"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Poste local exécutant les opérations Track et Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "entity:rt-h2a": {
+      "id": "entity:rt-h2a",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "CLI h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Charge les compétences Track et Focus en session"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/h2a/package.json:44-46"
+            }
+          ]
+        }
+      }
+    },
+    "entity:s2-h2a": {
+      "id": "entity:s2-h2a",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "h2a"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Suivi et dossiers"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:528-546"
+            }
+          ]
+        }
+      }
+    },
+    "entity:track-skills": {
+      "id": "entity:track-skills",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Track"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Piloter le suivi"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:548-567"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-skill": {
+      "id": "entity:focus-skill",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Skill Focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Guider les dossiers"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:569-587"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-components": {
+      "id": "entity:focus-components",
+      "profile": "archi@1",
+      "type": "system",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Document / rendu"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Produire les dossiers"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:589-607"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-track": {
+      "id": "entity:pkg-track",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/track"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant les compétences et le CLI Track"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/track/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:pkg-focus": {
+      "id": "entity:pkg-focus",
+      "profile": "archi@1",
+      "type": "package",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "@sentropic/focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "library"
+        },
+        "version": {
+          "kind": "text",
+          "value": "0.98.9"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Paquet npm livrant la compétence et les composants Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:packages/focus/package.json:2-4"
+            }
+          ]
+        }
+      }
+    },
+    "entity:track-branch-lifecycle": {
+      "id": "entity:track-branch-lifecycle",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "branch-lifecycle"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Cycle de branche"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Clore une branche"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:610-629"
+            }
+          ]
+        }
+      }
+    },
+    "entity:track-present-decision": {
+      "id": "entity:track-present-decision",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "present-decision"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Dossier décision"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Présenter les choix"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:630-649"
+            }
+          ]
+        }
+      }
+    },
+    "entity:track-propose-workpackages": {
+      "id": "entity:track-propose-workpackages",
+      "profile": "archi@1",
+      "type": "artifact",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "propose-workpackages"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Workpackages"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "skill"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Structurer le suivi"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:650-669"
+            }
+          ]
+        }
+      }
+    },
+    "entity:track-track-operation": {
+      "id": "entity:track-track-operation",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "track-operation"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Opérations Track"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Opérer le suivi"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:670-689"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-skill-leaf": {
+      "id": "entity:focus-skill-leaf",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Produire les dossiers"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:690-709"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-model": {
+      "id": "entity:focus-model",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Modèle du dossier"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Modèle dossier"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Structurer le document"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:710-729"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-validation": {
+      "id": "entity:focus-validation",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Validation et lisibilité"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Validation"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Contrôler le dossier"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:730-750"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-editing": {
+      "id": "entity:focus-editing",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Édition et réconciliation"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Édition"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Réconcilier les retours"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:751-770"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-render": {
+      "id": "entity:focus-render",
+      "profile": "archi@1",
+      "type": "runtime",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Rendus HTML / Markdown / terminal"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Rendus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "form": {
+          "kind": "enum",
+          "value": "cli"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Présenter le dossier"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:771-792"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-track": {
+      "id": "entity:focus-track",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Raccord Track"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Relier les décisions"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:793-812"
+            }
+          ]
+        }
+      }
+    },
+    "entity:focus-registry": {
+      "id": "entity:focus-registry",
+      "profile": "archi@1",
+      "type": "component",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Définitions de registre"
+        },
+        "shortName": {
+          "kind": "text",
+          "value": "Registre Focus"
+        },
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "role": {
+          "kind": "text",
+          "value": "Déclarer les ressources"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:813-832"
+            }
+          ]
+        }
+      }
+    },
+    "entity:legend-trackfocus-r9": {
+      "id": "entity:legend-trackfocus-r9",
+      "profile": "generic@2",
+      "type": "legend",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Teintes Track / Focus (r9)"
+        }
+      }
+    },
+    "entity:key-brand": {
+      "id": "entity:key-brand",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Suivi gouverné (Track)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "brand"
+        }
+      }
+    },
+    "entity:key-accent": {
+      "id": "entity:key-accent",
+      "profile": "generic@2",
+      "type": "legend-key",
+      "attributes": {
+        "name": {
+          "kind": "text",
+          "value": "Dossiers de décision et rendu (Focus / h2a)"
+        },
+        "category": {
+          "kind": "text",
+          "value": "accent"
+        }
+      }
+    }
+  },
+  "relations": {
+    "relation:ob-repo-h2a": {
+      "id": "relation:ob-repo-h2a",
+      "profile": "archi@1",
+      "type": "ownedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:repo-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:package.json:1-5"
+            }
+          ]
+        }
+      }
+    },
+    "relation:op-poste": {
+      "id": "relation:op-poste",
+      "profile": "archi@1",
+      "type": "operatedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:host-poste"
+        },
+        {
+          "role": "target",
+          "target": "entity:act-sentropic"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-s2-h2a": {
+      "id": "relation:mi-s2-h2a",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:s2-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-track-skills": {
+      "id": "relation:mi-track-skills",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-focus-skill": {
+      "id": "relation:mi-focus-skill",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-focus-components": {
+      "id": "relation:mi-focus-components",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-components"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-track": {
+      "id": "relation:mi-pkg-track",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:mi-pkg-focus": {
+      "id": "relation:mi-pkg-focus",
+      "profile": "archi@1",
+      "type": "managedIn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:repo-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-track-skills": {
+      "id": "relation:po-track-skills",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-skills"
+        },
+        {
+          "role": "target",
+          "target": "entity:s2-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-skill": {
+      "id": "relation:po-focus-skill",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill"
+        },
+        {
+          "role": "target",
+          "target": "entity:s2-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-components": {
+      "id": "relation:po-focus-components",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-components"
+        },
+        {
+          "role": "target",
+          "target": "entity:s2-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-track": {
+      "id": "relation:po-pkg-track",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:track-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-pkg-focus": {
+      "id": "relation:po-pkg-focus",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-rt-h2a": {
+      "id": "relation:po-rt-h2a",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:s2-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-rt-h2a": {
+      "id": "relation:ro-rt-h2a",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:rt-h2a"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:README.md:62"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-rt-h2a": {
+      "id": "relation:da-rt-h2a",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · session h2a"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-track-branch-lifecycle": {
+      "id": "relation:po-track-branch-lifecycle",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-branch-lifecycle"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-track"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-track-branch-lifecycle": {
+      "id": "relation:lb-track-branch-lifecycle",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-branch-lifecycle"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-track-present-decision": {
+      "id": "relation:po-track-present-decision",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-present-decision"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-track"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-track-present-decision": {
+      "id": "relation:lb-track-present-decision",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-present-decision"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-track-propose-workpackages": {
+      "id": "relation:po-track-propose-workpackages",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-propose-workpackages"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-track"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:lb-track-propose-workpackages": {
+      "id": "relation:lb-track-propose-workpackages",
+      "profile": "archi@1",
+      "type": "loadedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-propose-workpackages"
+        },
+        {
+          "role": "target",
+          "target": "entity:rt-h2a"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-track-track-operation": {
+      "id": "relation:po-track-track-operation",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-track-operation"
+        },
+        {
+          "role": "target",
+          "target": "entity:track-skills"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-track-track-operation": {
+      "id": "relation:ro-track-track-operation",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-track-operation"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-track-track-operation": {
+      "id": "relation:da-track-track-operation",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:track-track-operation"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · opérations Track"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-skill-leaf": {
+      "id": "relation:po-focus-skill-leaf",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill-leaf"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-focus-skill-leaf": {
+      "id": "relation:ro-focus-skill-leaf",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill-leaf"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-focus-skill-leaf": {
+      "id": "relation:da-focus-skill-leaf",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · CLI focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-model": {
+      "id": "relation:po-focus-model",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-model"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-focus-model": {
+      "id": "relation:eb-focus-model",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-model"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-validation": {
+      "id": "relation:po-focus-validation",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-validation"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-focus-validation": {
+      "id": "relation:ro-focus-validation",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-validation"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-focus-validation": {
+      "id": "relation:da-focus-validation",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-validation"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · validation Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-editing": {
+      "id": "relation:po-focus-editing",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-editing"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-focus-editing": {
+      "id": "relation:eb-focus-editing",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-editing"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-render": {
+      "id": "relation:po-focus-render",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-render"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-components"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ro-focus-render": {
+      "id": "relation:ro-focus-render",
+      "profile": "archi@1",
+      "type": "runsOn",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-render"
+        },
+        {
+          "role": "target",
+          "target": "entity:host-poste"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:da-focus-render": {
+      "id": "relation:da-focus-render",
+      "profile": "archi@1",
+      "type": "deployedAs",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:pkg-focus"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-render"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "déployé comme · rendus Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-track": {
+      "id": "relation:po-focus-track",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-focus-track": {
+      "id": "relation:eb-focus-track",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-track"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:po-focus-registry": {
+      "id": "relation:po-focus-registry",
+      "profile": "archi@1",
+      "type": "partOf",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-registry"
+        },
+        {
+          "role": "target",
+          "target": "entity:pkg-focus"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:eb-focus-registry": {
+      "id": "relation:eb-focus-registry",
+      "profile": "archi@1",
+      "type": "executedBy",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-registry"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:517-967"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-present-focus": {
+      "id": "relation:dc-present-focus",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-present-decision"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-skill-leaf"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · présente via Focus"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:836-847"
+            }
+          ]
+        }
+      }
+    },
+    "relation:in-focus-val": {
+      "id": "relation:in-focus-val",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill-leaf"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-validation"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · valide le dossier"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:849-860"
+            }
+          ]
+        }
+      }
+    },
+    "relation:in-focus-ren": {
+      "id": "relation:in-focus-ren",
+      "profile": "archi@1",
+      "type": "invokes",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:focus-skill-leaf"
+        },
+        {
+          "role": "target",
+          "target": "entity:focus-render"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "trigger": {
+          "kind": "enum",
+          "value": "command"
+        },
+        "label": {
+          "kind": "text",
+          "value": "lance · rend le dossier"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:862-873"
+            }
+          ]
+        }
+      }
+    },
+    "relation:dc-branch-op": {
+      "id": "relation:dc-branch-op",
+      "profile": "archi@1",
+      "type": "documents",
+      "endpoints": [
+        {
+          "role": "source",
+          "target": "entity:track-branch-lifecycle"
+        },
+        {
+          "role": "target",
+          "target": "entity:track-track-operation"
+        }
+      ],
+      "attributes": {
+        "lifecycle": {
+          "kind": "enum",
+          "value": "current"
+        },
+        "label": {
+          "kind": "text",
+          "value": "documente · suit les événements"
+        },
+        "evidence": {
+          "kind": "collection",
+          "items": [
+            {
+              "kind": "text",
+              "value": "h2a:tmp/h-cond/skills-dossier/kit-r9/src/scenes.json:875-888"
+            }
+          ]
+        }
+      }
+    },
+    "relation:ct-key-brand": {
+      "id": "relation:ct-key-brand",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-trackfocus-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-brand"
+        }
+      ],
+      "attributes": {}
+    },
+    "relation:ct-key-accent": {
+      "id": "relation:ct-key-accent",
+      "profile": "generic@2",
+      "type": "contains",
+      "endpoints": [
+        {
+          "role": "parent",
+          "target": "entity:legend-trackfocus-r9"
+        },
+        {
+          "role": "child",
+          "target": "entity:key-accent"
+        }
+      ],
+      "attributes": {}
+    }
+  },
+  "ports": {},
+  "resources": {},
+  "extensions": []
+}

@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "component": "DataImage",
+  "sourceRevision": "6725546b6faa73b2927c1cd37eda6b4ba1c2369d",
+  "source": "src/DataImage.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<img alt=\"Chart\" class=\"st-dataImage st-dataImage--cover\" decoding=\"async\" loading=\"lazy\" src=\"/img.png\" style=\"\">"
+    },
+    {
+      "id": "sized",
+      "html": "<img alt=\"Chart\" class=\"st-dataImage st-dataImage--cover\" decoding=\"async\" loading=\"lazy\" src=\"/img.png\" style=\"width:200px;height:120px;border-radius:8px;\">"
+    },
+    {
+      "id": "contain-string-size",
+      "html": "<img alt=\"Chart\" class=\"st-dataImage st-dataImage--contain\" decoding=\"sync\" loading=\"eager\" src=\"/img.png\" style=\"width:50%;height:auto;\">"
+    },
+    {
+      "id": "custom-class",
+      "html": "<img alt=\"Chart\" class=\"st-dataImage st-dataImage--cover consumer\" data-bench=\"image\" decoding=\"async\" loading=\"lazy\" src=\"/img.png\" style=\"width:100px;border-radius:4px;color:red;\">"
+    },
+    {
+      "id": "decorative",
+      "html": "<img alt=\"\" class=\"st-dataImage st-dataImage--cover\" decoding=\"auto\" loading=\"lazy\" src=\"/deco.png\" style=\"\">"
+    },
+    {
+      "id": "radius-only",
+      "html": "<img alt=\"Chart\" class=\"st-dataImage st-dataImage--cover\" decoding=\"async\" loading=\"lazy\" src=\"/img.png\" style=\"border-radius:16px;\">"
+    }
+  ],
+  "sourceSha256": "612d028854c2bbd59472fb385fafdf2b639593635d6f8f30ceff9732e41730a4",
+  "fixtureSha256": "30766fc40f1567e533134c1a4dfb54895f773a315823dc651aeb9170ed9f0407",
+  "publicExports": [
+    {
+      "name": "DataImage",
+      "typeOnly": false
+    },
+    {
+      "name": "DataImageProps",
+      "typeOnly": true
+    },
+    {
+      "name": "DataImageFit",
+      "typeOnly": true
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "schema": 1,
+  "component": "KanbanBoard",
+  "sourceRevision": "e40a14c633fe9f32d20b80c1eb6e06b50b502f61",
+  "source": "src/KanbanBoard.ts",
+  "fixtures": [
+    {
+      "id": "default",
+      "html": "<div class=\"st-kb\"><div class=\"st-kb__board\"><div class=\"st-kb__column\"><div class=\"st-kb__column-head\"><span class=\"st-kb__column-label\">To do</span><span class=\"st-kb__column-count\">1</span></div><div class=\"st-kb__column-body\"><div class=\"st-kb__card\"><div class=\"st-kb__card-header\"><span class=\"st-kb__card-title\">First</span></div></div></div></div></div></div>"
+    },
+    {
+      "id": "badges-rich",
+      "html": "<div class=\"st-kb\"><div class=\"st-kb__board\"><div class=\"st-kb__column\"><div class=\"st-kb__column-head\"><span class=\"st-kb__column-label\">Doing</span><span class=\"st-kb__column-count\">2</span></div><div class=\"st-kb__column-body\"><div class=\"st-kb__card\"><div class=\"st-kb__card-header\"><span class=\"st-kb__card-title\">Task A</span><span class=\"st-badge st-badge--error\">P1</span></div><p class=\"st-kb__card-subtitle\">Sub</p><span class=\"st-kb__card-owner\">Jean</span></div><div class=\"st-kb__card\"><div class=\"st-kb__card-header\"><span class=\"st-kb__card-title\">Task B</span><span class=\"st-badge\">P2</span></div></div></div></div><div class=\"st-kb__column\"><div class=\"st-kb__column-head\"><span class=\"st-kb__column-label\">Done</span><span class=\"st-kb__column-count\">0</span></div><div class=\"st-kb__column-body\"></div></div></div></div>"
+    },
+    {
+      "id": "empty-board",
+      "html": "<div class=\"st-kb\"><div class=\"st-kb__board\"></div></div>"
+    },
+    {
+      "id": "custom-attrs",
+      "html": "<div class=\"st-kb consumer\" data-bench=\"kanban\" style=\"color:red;\"><div class=\"st-kb__board\"><div class=\"st-kb__column\"><div class=\"st-kb__column-head\"><span class=\"st-kb__column-label\">Col</span><span class=\"st-kb__column-count\">1</span></div><div class=\"st-kb__column-body\"><div class=\"st-kb__card\"><div class=\"st-kb__card-header\"><span class=\"st-kb__card-title\">T</span></div></div></div></div></div></div>"
+    }
+  ],
+  "sourceSha256": "9584cb7754dc708adb5104dd3f4b1ffbeb71aabd3e838040c455f6c0f17c4a28",
+  "fixtureSha256": "790822751cdb6013e696ae49da9df748d9aac6b7f93411a4ffbf54c15e97f2d9",
+  "publicExports": [
+    {
+      "name": "KanbanBoard",
+      "typeOnly": false
+    },
+    {
+      "name": "KanbanBoardProps",
+      "typeOnly": true
+    },
+    {
+      "name": "KanbanBoardCard",
+      "typeOnly": true
+    },
+    {
+      "name": "KanbanBoardColumn",
+      "typeOnly": true
+    }
+  ]
+}

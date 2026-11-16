@@ -1,8 +1,8 @@
 {
   "componentId": "priority-matrix",
   "contractSource": "derived",
-  "digest": "sha256:6dc18b90d3ad699e87fb30fe45108f314ad793b0159b00d67d329408e2b8a457",
-  "entryDigest": "sha256:c4efe7d2fb4a7d641b8af639f9da385f91a9f03bbbcaaa2ab4d3c0d4eca4fe4c",
+  "digest": "sha256:2713094636e6b7fee34947343497d6175c2079efbf0ebd5b304ac61249905237",
+  "entryDigest": "sha256:d952c4d81b5dcaeefe0a940d300669ff033f770dfa92953c03eedd34b746dc90",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -98,7 +98,7 @@
         "declarationPath": "packages/components-angular/dist/PriorityMatrix.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "PriorityMatrixProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -209,7 +209,7 @@
         "declarationPath": "packages/components-react/dist/PriorityMatrix.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "PriorityMatrixProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-svelte/dist/PriorityMatrix.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "PriorityMatrixProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -416,11 +416,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:588749d1dce928dae6debf350feb7970f8e7a37d83823cb2da63e6435a6ed43d",
-        "declarationPath": "packages/components-vue/dist/PriorityMatrix.d.ts",
+        "declarationDigest": "sha256:6685be3d73782dfe756d99ca90ecfe7a593c6c76518582803f7de69a053b3274",
+        "declarationPath": "packages/components-vue/dist/PriorityMatrix.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "PriorityMatrixProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

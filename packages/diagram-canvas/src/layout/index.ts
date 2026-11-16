@@ -1,3 +1,5 @@
+export { measureBundleLabel, type BundleLabelGroup } from "./bundleLabel.js";
+export { channelMetrics, channelGap, type LayoutChannel, type ChannelMetrics } from "./channels.js";
 /**
  * The layout engine (SPEC §10.5, rules L-R1–L-R11): a `generic@1`
  * `SemanticDocument` in, a `diagram-core` `ViewDocument` out. Pure computation,
@@ -16,17 +18,43 @@ export {
   type SegmentResidual,
 } from "./engine.js";
 export { layoutFolded, layoutMeasured } from "./measured.js";
+export { createLayoutCache, type LayoutCache, type LayoutCacheConfig, type LayoutCacheOptions, type LayoutCacheStats } from "./cache.js";
+export {
+  digestOf,
+  LAYOUT_ENGINE_VERSION,
+  layoutFingerprint,
+  layoutFingerprintInputs,
+  type LayoutFingerprintInput,
+} from "./fingerprint.js";
+export {
+  chooseOrientation,
+  packColumns,
+  packRows,
+  packScore,
+  seatShelves,
+  PACK_FILL_TOLERANCE,
+  PACK_SCORE_EPSILON,
+  type OrientationChoice,
+  type PackBox,
+  type PackOptions,
+  type PackOrientation,
+  type PackPosition,
+  type PackResult,
+  type SeatedShelves,
+} from "./pack.js";
 export {
   effectiveStretch,
   groupLeaves,
   isLayoutGroup,
   resolveGaps,
   resolveOrder,
+  resolveRowGaps,
   validateHints,
   type HintScope,
   type LayoutGroup,
   type LayoutHints,
   type ResolvedGaps,
+  type ResolvedRowGaps,
 } from "./hints.js";
 export {
   CONTENT_INSET,
@@ -61,9 +89,14 @@ export {
   edgeLabelPlacement,
   labelBoxOnSegment,
   placeEdgeLabels,
+  placeEdgeLabelsPacked,
+  placePackedLabel,
   relationRoute,
   type LabelEntry,
   type LabelPlacement,
+  type PackedLabelEntry,
 } from "./labels.js";
 export { bendCount, routeEdges, simplifyRoute, type RouteOutcome, type RouteRequest } from "./route.js";
 export * from "./types.js";
+
+export { FLOW_BADGE_FONT_SIZE, FLOW_BADGE_LINE_HEIGHT, DEFAULT_FLOW_TOKENS, type FlowTokens, type FlowArrow, type FlowBundle, type FlowVisibleTarget } from "./flows.js";

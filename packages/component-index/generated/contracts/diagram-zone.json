@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-zone",
   "contractSource": "derived",
-  "digest": "sha256:d2b8466df543d20adbd68e0cab7252edde57f8d373ceb1d4ab6d9047d6b74e08",
-  "entryDigest": "sha256:c9d44c22d518c12cc03986d3c3437335a2c2a57c88072ffca4d3366f281c0de3",
+  "digest": "sha256:0c8972796bd62d76f7bf65666f76f21b2262c0b5213ff4926368e74ad51d192e",
+  "entryDigest": "sha256:32a2f39ee89e6b5f467c7da3ea0da6d19d5380b8260635fde5f4413daf364a3f",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -16,11 +16,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:56191d16d22e19ffde48d34ca44603ea63fff1c1aaa97959e5450693e6d80944",
+        "declarationDigest": "sha256:a37c4f1dca8e10f4d68e903cc402fd17605be2452f587e9c86ae72d3f2c238e3",
         "declarationPath": "packages/components-angular/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -39,11 +39,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:a662acb271701fde56555ce0410512b9853139655e57114a652cf3e3cfa61a64",
+        "declarationDigest": "sha256:35452d7c80aa5f5753636078c66fe91a02a6d7042c92ec2c13c3d024b1d3a406",
         "declarationPath": "packages/components-react/dist/DiagramZone.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "none",
       "unresolved": [],
@@ -117,8 +117,17 @@
               "face": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "line": {
                 "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "text": {
                 "type": "string"
@@ -140,21 +149,33 @@
                 "enum": [
                   "card-overflow",
                   "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown",
                   "zone-overflow",
-                  "zone-icon-unknown"
+                  "zone-icon-unknown",
+                  "zone-grown"
                 ]
               },
               "entityId": {
                 "type": "string"
               },
+              "hiddenLength": {
+                "type": "number"
+              },
               "neededPx": {
                 "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
               },
               "slot": {
                 "type": "string"
               },
               "text": {
-                "description": "Original, unwrapped slot text (overflow = refusal keeps the source).",
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
                 "type": "string"
               }
             },
@@ -177,8 +198,14 @@
               "left"
             ]
           },
+          "autoSize": {
+            "type": "boolean"
+          },
           "collapsed": {
             "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
           },
           "entityId": {
             "type": "string"
@@ -240,11 +267,11 @@
         }
       ],
       "source": {
-        "declarationDigest": "sha256:0214d1605488f469a357bc82e145c21a605c01e2184c67214779a2154e2114aa",
+        "declarationDigest": "sha256:e180567301fd050476422baacc68bad21a5a3967d4acce3575f018c4ca6a66f2",
         "declarationPath": "packages/components-svelte/dist/DiagramZone.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramZoneProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "partial",
       "unresolved": [],
@@ -252,25 +279,290 @@
     },
     "vue": {
       "bindable": [],
-      "dropped": [],
-      "events": [],
-      "limitations": [
-        "No component declaration is exported for this framework; the none cell carries no extractable surface."
+      "dropped": [
+        {
+          "kind": "function",
+          "name": "measure",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "CardLineMeasure"
+        },
+        {
+          "kind": "function",
+          "name": "onDiagnostic",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(diagnostic: ZoneDiagnostic) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onSelect",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: { entityId: string; }) => void"
+        },
+        {
+          "kind": "function",
+          "name": "onToggle",
+          "reason": "function surface has no JSON Schema form",
+          "sourceType": "(event: { entityId: string; collapsed: boolean; }) => void"
+        }
       ],
-      "reason": "absent: \"DiagramZone\" is not exported from @sentropic/design-system-vue (packages/components-vue/src/index.ts)",
+      "events": [
+        {
+          "name": "diagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
+        },
+        {
+          "name": "onDiagnostic",
+          "payload": {
+            "$ref": "#/$defs/ZoneDiagnostic"
+          }
+        },
+        {
+          "name": "onSelect",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "onToggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "select",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "entityId"
+            ],
+            "type": "object"
+          }
+        },
+        {
+          "name": "toggle",
+          "payload": {
+            "additionalProperties": false,
+            "properties": {
+              "collapsed": {
+                "type": "boolean"
+              },
+              "entityId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "collapsed",
+              "entityId"
+            ],
+            "type": "object"
+          }
+        }
+      ],
+      "limitations": [
+        "Defaults are not represented in declaration types and are not extracted (K1b-Q5 profile)."
+      ],
+      "props": {
+        "$defs": {
+          "DiagramGlyphPaths": {
+            "additionalProperties": false,
+            "properties": {
+              "darkLine": {
+                "const": true
+              },
+              "face": {
+                "type": "string"
+              },
+              "hiddenLength": {
+                "type": "number"
+              },
+              "line": {
+                "type": "string"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "face"
+            ],
+            "type": "object"
+          },
+          "ZoneDiagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "allocatedPx": {
+                "type": "number"
+              },
+              "code": {
+                "description": "`zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant\ncard or nested zone keeps its own `card-overflow` / `card-icon-unknown`\ncode with its own `entityId` when `renderZoneSvg` aggregates them.",
+                "enum": [
+                  "card-overflow",
+                  "card-icon-unknown",
+                  "card-icon-missing",
+                  "card-grown",
+                  "zone-overflow",
+                  "zone-icon-unknown",
+                  "zone-grown"
+                ]
+              },
+              "entityId": {
+                "type": "string"
+              },
+              "hiddenLength": {
+                "type": "number"
+              },
+              "neededPx": {
+                "type": "number"
+              },
+              "reason": {
+                "const": "truncated"
+              },
+              "severity": {
+                "const": "info"
+              },
+              "slot": {
+                "type": "string"
+              },
+              "text": {
+                "description": "Original, unwrapped slot text retained with the diagnostic.",
+                "type": "string"
+              }
+            },
+            "required": [
+              "allocatedPx",
+              "code",
+              "entityId",
+              "neededPx",
+              "slot"
+            ],
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "align": {
+            "description": "Owner variant: `\"center\"` centres every text slot, both states.",
+            "enum": [
+              "center",
+              "left"
+            ]
+          },
+          "autoSize": {
+            "type": "boolean"
+          },
+          "collapsed": {
+            "type": "boolean"
+          },
+          "containerPadding": {
+            "type": "number"
+          },
+          "entityId": {
+            "type": "string"
+          },
+          "footer": {
+            "description": "Zone footer, both states (§6.1): folding never changes the footer —\ncollapsed it pins the card rule, expanded it pins at the frame bottom.",
+            "type": "string"
+          },
+          "height": {
+            "type": "number"
+          },
+          "icon": {
+            "type": "string"
+          },
+          "iconGlyph": {
+            "$ref": "#/$defs/DiagramGlyphPaths"
+          },
+          "kicker": {
+            "type": "string"
+          },
+          "proposed": {
+            "description": "Neutral status prop: dashed border in both states, independent of tint.",
+            "type": "boolean"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "toggleLabel": {
+            "type": "string"
+          },
+          "tone": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "x": {
+            "description": "Occurrence box supplied by the host layout (§6.1: the component paints\naround the box it is given). Collapsed, the box is the frozen\n460 × 200 card; expanded, `width`/`height` size the frame.",
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "collapsed",
+          "entityId",
+          "title"
+        ],
+        "type": "object"
+      },
       "replaced": [],
-      "slots": [],
+      "slots": [
+        {
+          "name": "default"
+        }
+      ],
       "source": {
-        "declarationDigest": "sha256:811e2fa0746e2c327b06278620d56b20a8970a8d7fa9c549b4bbc46a4720365e",
-        "declarationPath": "packages/components-vue/dist/DiagramZone.d.ts",
+        "declarationDigest": "sha256:1492d83246357d08b84ec8865425ab6e559f8f0ac089322d5b072cde3630b94a",
+        "declarationPath": "packages/components-vue/dist/DiagramZone.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramZoneProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
-      "status": "none",
+      "status": "partial",
       "unresolved": [],
       "warnings": [
-        "absent: declarationDigest pins the searched barrel (packages/components-vue/src/index.ts), not a declaration"
+        "event pair: emits \"diagnostic\" and prop \"onDiagnostic\" both listed verbatim",
+        "event pair: emits \"select\" and prop \"onSelect\" both listed verbatim",
+        "event pair: emits \"toggle\" and prop \"onToggle\" both listed verbatim"
       ]
     }
   },

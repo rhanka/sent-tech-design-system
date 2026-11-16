@@ -60,10 +60,18 @@ function sourceHash(pkgDir) {
     }
   };
   walk(pkgDir);
+  // Vue builds share their compiler/lint implementation at repository level.
+  // Include it in the content hash so a restored dist cannot bypass a gate
+  // after only a shared script, compiler pin or base TS config changes.
+  if (["components-vue", "dataviz-vue"].some((name) => pkgDir === join(root, "packages", name))) {
+    for (const file of ["scripts/vue-sfc-build.mjs", "scripts/vue-vapor-source.mjs",
+      "scripts/vue-vapor-lint.mjs", "scripts/vue-vapor-legacy.json", "package-lock.json",
+      "tsconfig.base.json", "packages/components-vue/scripts/vapor-sfc.d.ts"]) files.push(join(root, file));
+  }
   files.sort();
   const h = createHash("sha256");
   for (const f of files) {
-    h.update(f.slice(pkgDir.length));
+    h.update(f.startsWith(pkgDir + sep) ? f.slice(pkgDir.length) : "@shared" + f.slice(root.length));
     h.update("\0");
     h.update(readFileSync(f));
     h.update("\0");
@@ -78,6 +86,19 @@ function storedHash(pkgDir) {
   } catch {
     return null;
   }
+}
+
+// A matching source hash cannot make an incomplete restored dist reusable.
+// Check concrete public entry points, including nested export conditions.
+function hasPublishedEntries(workspace) {
+  const targets = [];
+  const collect = (value) => {
+    if (typeof value === "string") targets.push(value);
+    else if (value && typeof value === "object") Object.values(value).forEach(collect);
+  };
+  for (const field of ["main", "module", "types", "svelte", "exports"]) collect(workspace.manifest[field]);
+  return targets.filter((target) => /^(?:\.\/)?dist\//.test(target) && !target.includes("*"))
+    .every((target) => existsSync(join(workspace.dir, target)));
 }
 
 function run(cmd, args, cwd) {
@@ -141,7 +162,7 @@ for (const w of targets) {
   const hash = sourceHash(w.dir);
   const distDir = join(w.dir, "dist");
   const marker = join(distDir, ".srchash");
-  if (!noHash && existsSync(distDir) && storedHash(w.dir) === hash) {
+  if (!noHash && existsSync(distDir) && storedHash(w.dir) === hash && hasPublishedEntries(w)) {
     skipped += 1;
     continue;
   }

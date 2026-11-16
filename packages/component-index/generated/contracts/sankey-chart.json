@@ -1,8 +1,8 @@
 {
   "componentId": "sankey-chart",
   "contractSource": "derived",
-  "digest": "sha256:fccdba9c0e82d141c1770bc71a51c8d5b103d3ab829d10ab52cd39a4df673b46",
-  "entryDigest": "sha256:579d6f7eae03bae20caf0068653dfdd0fe33387a0b4314581c8dd4add6ea5681",
+  "digest": "sha256:78aa240bf6df8732eb2086a47facac577221bf60aad8b69d5954640548f613fa",
+  "entryDigest": "sha256:2414f9fc7eb53f2271158bd2720f1c8c5bb955a308c3087daa56028aaa452212",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -111,7 +111,7 @@
         "declarationPath": "packages/components-angular/dist/SankeyChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "SankeyChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -234,7 +234,7 @@
         "declarationPath": "packages/components-react/dist/SankeyChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SankeyChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -351,7 +351,7 @@
         "declarationPath": "packages/components-svelte/dist/SankeyChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "SankeyChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -465,11 +465,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:da155f44064b7cc57c5da1c19ce5f7228ea29e2dade80ffa0781bebac9fb96c5",
-        "declarationPath": "packages/components-vue/dist/SankeyChart.d.ts",
+        "declarationDigest": "sha256:6cdd7fe7bc972b7de5d67cacf8fbbac5a5a42306eb4e09f394f2912f52c060be",
+        "declarationPath": "packages/components-vue/dist/SankeyChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "SankeyChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],

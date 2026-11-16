@@ -1,3 +1,5 @@
+import { DIAGRAM_SCENE_SPACING as spacing } from './diagramSpacing.js';
+import { flowInk } from "./flow-colors.js";
 import { foundation } from "./foundation.js";
 import { semantic } from "./semantic.js";
 import type { ComponentAnatomy, DensityAnatomy, FieldAnatomy, TypographyAnatomy } from "./anatomy.js";
@@ -1752,6 +1754,27 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // text (DC-D4 zero-ellipsis). Colours alias the semantic layer only;
     // per-tone accent/fill resolution arrives with the L-R17 tone tokens
     // (DC-2); `tone` is carried as a `data-tone` attribute until then.
+    diagramErd: {
+      fontFamily: "var(--st-font-mono)",
+      "width": "460px",
+      "headerHeight": "64px",
+      "rowHeight": "32px",
+      "lineHeight": "24px",
+      "padding": "12px",
+      "keyWidth": "56px",
+      "nameWidth": "170px",
+      "typeWidth": "170px",
+      "fontSize": "18px",
+      "titleFontSize": "24px",
+      "markerLength": "24px",
+      "markerHalfWidth": "8px",
+      "markerRadius": "4px",
+      "markerGap": "4px",
+      "strokeWidth": "1.5px",
+      "gapInline": "160px",
+      "gapBlock": "120px",
+      "labelWidth": "240px"
+    },
     diagramCard: {
       width: "460px",
       height: "200px",
@@ -1785,11 +1808,16 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       footerBottomInset: "9.25px",
       toggleAllocation: "66px",
       toggleBoxSize: "32px",
+      toggleInset: "8px",
       foldedHeaderTextWidth: "290px",
+      // DC-2a — root-level sibling gaps of a packed scene (spec
+      // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5): aliases of the zone gaps.
+      rootGapInline: "var(--st-component-diagramZone-childGapInline)",
+      rootGapBlock: "var(--st-component-diagramZone-childGapBlock)",
       proposedDashArray: "4 5",
       fontFamily: "var(--st-font-sans)",
       border: semantic.border.strong,
-      accent: semantic.data.category1,
+      accent: semantic.border.strong,
       surface: semantic.surface.raised,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
@@ -1800,6 +1828,7 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
     // requirement holds by construction. Collapsed zones reuse the atomic
     // card box (DC-D13: 460 × 200, no second size).
     diagramZone: {
+      toggleInset: "8px",
       radius: "0",
       borderWidth: "1.5px",
       headerInset: "16px",
@@ -1818,9 +1847,9 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       subtitleLineHeight: "1.3",
       subtitleGap: "var(--st-component-diagramCard-gap)",
       headerRuleGap: "4px",
-      contentInsetTop: "16px",
-      contentInsetBottom: "16px",
-      contentInsetInline: "16px",
+      contentInsetTop: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetBottom: "var(--st-component-diagramScene-containerPadding)",
+      contentInsetInline: "var(--st-component-diagramScene-containerPadding)",
       collapsedWidth: "460px",
       collapsedHeight: "200px",
       collapsedInset: "16px",
@@ -1828,15 +1857,87 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       toggleAllocation: "var(--st-component-diagramCard-toggleAllocation)",
       toggleBoxSize: "var(--st-component-diagramCard-toggleBoxSize)",
       headerTextInset: "178px",
-      toggleTopInset: "10px",
+      toggleTopInset: "var(--st-component-diagramZone-toggleInset)",
       footerBottomInset: "var(--st-component-diagramCard-footerBottomInset)",
       proposedDashArray: "4 5",
+      // DC-2a — row-pack autolayout spacing (spec
+      // SPEC_EVOL_DC2A_ROWPACK_AUTOLAYOUT §3.5). Base sibling gaps on both
+      // axes, their hard caps (a gutter widens only for a crossing edge
+      // label, never past the cap) and the 16:9 target aspect of every
+      // packed level. The layout engine receives these as numbers.
+      childGapInline: "var(--st-component-diagramScene-gapMin)",
+      childGapBlock: "var(--st-component-diagramScene-gapMinBlock)",
+      gapInlineMax: "var(--st-component-diagramScene-gapMax)",
+      gapBlockMax: "var(--st-component-diagramScene-gapMax)",
+      rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
       rule: semantic.border.subtle
     },
+    // DC-2a — scene camera and transition (spec §5, §4.3). Readout 100 % is
+    // `maxDisplayScale` (a 460 × 200 card renders at ≈ 285 × 124 CSS px);
+    // `minReadableScale` is the floor a fit holds before the host pans.
+    // The edge label is the smallest text of a scene: 18 px on a 22 px line
+    // box; its two 4 px margins are included in channel sizing, and it still renders at 18 × 0.45 = 8.1 CSS px at the floor
+    // (§5.3: at least 8 CSS px). 0.42 would render it at 7.56 CSS px.
+    iconButton: {
+      smSize: "2rem", mdSize: "2.25rem", lgSize: "2.5rem",
+      radius: "0.375rem", text: semantic.text.primary, focusRing: semantic.border.interactive,
+    },
+    diagramScene: {
+      containerPadding: `${spacing.containerPadding}px`,
+      gapMin: `${spacing.gapMin}px`,
+      gapMinBlock: `${spacing.gapMinBlock}px`,
+      gapBase: `${spacing.gapBase}px`,
+      gapBaseBlock: `${spacing.gapBaseBlock}px`,
+      trackSpacing: `${spacing.trackSpacing}px`,
+      trackSpacingBlock: `${spacing.trackSpacingBlock}px`,
+      labelBand: `${spacing.labelBand}px`,
+      gapMax: `${spacing.gapMax}px`,
+      bundleLabelMaxWidth: "320px",
+      labelPadding: "4px",
+      labelBorderWidth: "1px",
+      bundleMarkerGap: "6px",
+      edgeStroke: "#64748b",
+      labelSurface: "#ffffff",
+      labelBorder: "#cbd5e1",
+      labelText: "#172033",
+      maxDisplayScale: "0.62",
+      minReadableScale: "0.45",
+      transitionDuration: "240ms",
+      edgeLabelFontSize: "18px",
+      edgeLabelLineHeight: "22px",
+      flowStroke: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
+      flowStrokeWidth: "1.5px",
+      flowPrimaryStroke: flowInk(semantic.border.interactive, semantic.surface.raised, semantic.surface.default),
+      flowPrimaryStrokeWidth: "2.5px",
+      flowRelatedStrokeWidth: "2px",
+      flowOutlineWidth: "2px",
+      flowFocusOutline: flowInk(semantic.border.interactive, semantic.surface.raised, semantic.surface.default),
+      flowDimOpacity: "0.6",
+      flowFullOpacity: "1",
+      flowHiddenOpacity: "0",
+      flowHitStroke: "transparent",
+      flowHitWidth: "16px",
+      flowTargetMinSize: "24",
+      flowArrowPath: "M0 0L10 5L0 10Z",
+      flowArrowLength: "10",
+      flowArrowWidth: "10",
+      flowBadgeSize: "28",
+      flowBadgePaddingX: "6",
+      flowBadgeRadius: "999px",
+      flowBadgeFontSize: "16px",
+      flowBadgeLineHeight: "20px",
+      flowBadgeBackground: semantic.surface.raised,
+      flowBadgeBorder: flowInk(semantic.border.strong, semantic.surface.raised, semantic.surface.default),
+      flowBadgeText: flowInk(semantic.text.primary, semantic.surface.raised, semantic.surface.default),
+      flowFanOutMax: "4",
+      readoutMinWidth: "4ch"
+    },
+    // Existing BPMN element host footprint, shared by framework bindings.
+    bpmnCanvas: { minHeight: "120px" },
     // DC-1 — blue duotone pictogram family (spec §9.1, Appendix A). Layers
     // resolve through the semantic feedback-info and surface tokens; no
     // per-glyph colour, no raw hex in the asset. Stroke weights are in

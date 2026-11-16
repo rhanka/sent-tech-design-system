@@ -1,8 +1,8 @@
 {
   "componentId": "bell-curve-chart",
   "contractSource": "derived",
-  "digest": "sha256:2d3568fdce3429fabe969c10dba7e00eb9f98862a87c62ec94f894219ee84934",
-  "entryDigest": "sha256:4b0a7360beb1627303be2c124c8bd56cf481f910f8a218a572eced5c969c320e",
+  "digest": "sha256:ed072cb7a7d80dc4bb7c75032c64049846348ea32e9f9a7fc53758e6ff1cc666",
+  "entryDigest": "sha256:911f31157a46f1d92999fcabab72e71f602d6ff1265cffc9e2bb4dcf0748bf59",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -61,7 +61,7 @@
         "declarationPath": "packages/components-angular/dist/BellCurveChart.d.ts",
         "package": "@sentropic/design-system-angular",
         "propsType": "BellCurveChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -133,7 +133,7 @@
         "declarationPath": "packages/components-react/dist/BellCurveChart.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "BellCurveChartProps",
-        "version": "0.38.0"
+        "version": "0.40.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -199,7 +199,7 @@
         "declarationPath": "packages/components-svelte/dist/BellCurveChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "BellCurveChartProps",
-        "version": "0.37.0"
+        "version": "0.41.4"
       },
       "status": "complete",
       "unresolved": [],
@@ -262,11 +262,11 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:be60c5d356373bc591d9557961ef5e051eb8b558eaa80ea0dd830f52ff3dda13",
-        "declarationPath": "packages/components-vue/dist/BellCurveChart.d.ts",
+        "declarationDigest": "sha256:1ebfd0fbd4afb6d5e3119893ad40fb4fded56acec5a64dc0be59078aa4886e57",
+        "declarationPath": "packages/components-vue/dist/BellCurveChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "BellCurveChartProps",
-        "version": "0.38.0"
+        "version": "0.41.0-next.6"
       },
       "status": "complete",
       "unresolved": [],
