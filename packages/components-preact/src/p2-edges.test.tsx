@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
+import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Calendar } from "./Calendar.js";
 import { Checkbox } from "./Checkbox.js";
@@ -286,6 +286,60 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
     expect(container.querySelector(".st-field__help")?.textContent).toBe("H");
   });
 
+  it("Input fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<Input label="L" defaultValue="a" onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-control") as HTMLInputElement, { target: { value: "b" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
+  it("Textarea fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<Textarea label="T" defaultValue="a" onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-textarea") as HTMLTextAreaElement, { target: { value: "b" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
+  it("Search fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<Search defaultValue="a" onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-search__input") as HTMLInputElement, { target: { value: "b" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
+  it("PasswordInput fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<PasswordInput label="P" defaultValue="a" onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-passwordInput__control") as HTMLInputElement, { target: { value: "b" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
+  it("NumberInput fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<NumberInput label="N" defaultValue={1} onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-numberInput__control") as HTMLInputElement, { target: { value: "2" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
+  it("Slider fires both onChange and onInput once per input event", () => {
+    const onChange = vi.fn();
+    const onInput = vi.fn();
+    const { container } = render(<Slider label="S" defaultValue={20} onChange={onChange} onInput={onInput} />);
+    fireEvent.input(container.querySelector(".st-slider__input") as HTMLInputElement, { target: { value: "42" } });
+    expect(onChange).toHaveBeenLastCalledWith(42);
+    expect(onInput).toHaveBeenCalledTimes(1);
+  });
+
   it("Slider follows a value signal mutated after mount", async () => {
     const value = signal(20);
     const onChange = vi.fn();
@@ -515,6 +569,261 @@ describe("P2 form edges (signals at the edges, post-mount mutation)", () => {
     );
     fireEvent.click(radios[0]);
     expect(onChange).toHaveBeenLastCalledWith("a");
+  });
+
+  it("ContentSwitcher follows a value signal mutated after mount", async () => {
+    const value = signal("a");
+    const onChange = vi.fn();
+    render(
+      <ContentSwitcher
+        items={[
+          { value: "a", label: "A" },
+          { value: "b", label: "B" },
+        ]}
+        value={value}
+        onChange={onChange}
+      />,
+    );
+    const buttons = screen.getAllByRole("button");
+    expect(buttons[0].getAttribute("aria-pressed")).toBe("true");
+    expect(buttons[1].getAttribute("aria-pressed")).toBe("false");
+    value.value = "b";
+    await waitFor(() => expect(screen.getAllByRole("button")[1].getAttribute("aria-pressed")).toBe("true"));
+    fireEvent.click(screen.getAllByRole("button")[0]);
+    expect(onChange).toHaveBeenLastCalledWith("a");
+  });
+
+  it("Combobox follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<Combobox label="C" options={[{ value: "a", label: "Alpha" }]} disabled={disabled} />);
+    expect((container.querySelector(".st-combobox__toggle") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-combobox__toggle") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("Combobox treats allowCustomValue as enabled for free text", () => {
+    const onChange = vi.fn();
+    const { container } = render(
+      <Combobox label="C" options={[{ value: "a", label: "Alpha" }]} allowCustomValue={signal(true)} onChange={onChange} />,
+    );
+    fireEvent.input(container.querySelector(".st-combobox__control") as HTMLInputElement, { target: { value: "zzz" } });
+    expect(onChange).toHaveBeenLastCalledWith("zzz");
+  });
+
+  it("DatePicker follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<DatePicker label="D" disabled={disabled} />);
+    expect((container.querySelector(".st-datepicker__trigger") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-datepicker__trigger") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("TimePicker follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<TimePicker label="T" disabled={disabled} />);
+    expect((container.querySelector(".st-timepicker__trigger") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-timepicker__trigger") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("TimeRangePicker follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<TimeRangePicker label="P" disabled={disabled} />);
+    expect((container.querySelector(".st-timeRangePicker__trigger") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-timeRangePicker__trigger") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("RangeSlider follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<RangeSlider value={[20, 80]} disabled={disabled} />);
+    expect(container.querySelectorAll('[role="slider"]')[0].getAttribute("tabindex")).toBe("-1");
+    disabled.value = false;
+    await waitFor(() =>
+      expect(container.querySelectorAll('[role="slider"]')[0].getAttribute("tabindex")).toBe("0"),
+    );
+  });
+
+  it("FileUploader follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(<FileUploader label="F" disabled={disabled} />);
+    expect((container.querySelector(".st-fileUploader__trigger") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-fileUploader__trigger") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("TileGroup follows disabled and legendHidden signals mutated after mount", async () => {
+    const disabled = signal(true);
+    const legendHidden = signal(false);
+    const items = [
+      { value: "a", label: "A" },
+      { value: "b", label: "B" },
+    ];
+    const { container } = render(<TileGroup legend="G" items={items} disabled={disabled} legendHidden={legendHidden} />);
+    expect((container.querySelector(".st-tileGroup__input") as HTMLInputElement).disabled).toBe(true);
+    expect(container.querySelector(".st-tileGroup__legend")?.className).not.toContain("hidden");
+    disabled.value = false;
+    legendHidden.value = true;
+    await waitFor(() =>
+      expect((container.querySelector(".st-tileGroup__input") as HTMLInputElement).disabled).toBe(false),
+    );
+    await waitFor(() =>
+      expect(container.querySelector(".st-tileGroup__legend")?.className).toContain("hidden"),
+    );
+  });
+
+  it("SelectableList follows a multiple signal mutated after mount", async () => {
+    const multiple = signal(false);
+    const onChange = vi.fn();
+    const { container } = render(
+      <SelectableList label="L" multiple={multiple} onChange={onChange}>
+        <SelectableRow value="a">A</SelectableRow>
+        <SelectableRow value="b">B</SelectableRow>
+      </SelectableList>,
+    );
+    expect(container.querySelector('[role="listbox"]')?.getAttribute("aria-multiselectable")).toBeNull();
+    multiple.value = true;
+    await waitFor(() =>
+      expect(container.querySelector('[role="listbox"]')?.getAttribute("aria-multiselectable")).toBe("true"),
+    );
+    fireEvent.click(screen.getByRole("option", { name: "A" }));
+    expect(onChange).toHaveBeenLastCalledWith(["a"]);
+  });
+
+  it("NumberInput keeps step buttons usable with disabled={signal(false)} at min", async () => {
+    const disabled = signal(false);
+    const { container } = render(<NumberInput label="N" value={0} min={0} disabled={disabled} />);
+    const buttons = container.querySelectorAll(".st-numberInput__button");
+    // At min the decrement stays disabled by the min guard, the increment by
+    // the signal (false) stays enabled: the Signal object itself must never
+    // win the `disabled || isAtMin` guard.
+    expect((buttons[0] as HTMLButtonElement).disabled).toBe(true);
+    expect((buttons[1] as HTMLButtonElement).disabled).toBe(false);
+    disabled.value = true;
+    await waitFor(() => expect((buttons[1] as HTMLButtonElement).disabled).toBe(true));
+  });
+
+  it("MenuPopover follows closeOnEscape and closeOnOutside signals mutated after mount", async () => {
+    const closeOnEscape = signal(false);
+    const closeOnOutside = signal(false);
+    render(
+      <MenuPopover defaultOpen label="M" closeOnOutside={closeOnOutside} closeOnEscape={closeOnEscape}>
+        <span>body</span>
+      </MenuPopover>,
+    );
+    expect(screen.getByRole("dialog")).toBeTruthy();
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeTruthy();
+    act(() => {
+      closeOnEscape.value = true;
+      closeOnOutside.value = true;
+    });
+    fireEvent.keyDown(screen.getByRole("dialog"), { key: "Escape" });
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+
+  it("Calendar follows a range signal mutated after mount", async () => {
+    const range = signal(false);
+    const { container } = render(<Calendar value="2026-03-10" range={range} />);
+    expect(container.querySelector(".st-calendar__day--selected")).toBeTruthy();
+    range.value = true;
+    await waitFor(() => expect(container.querySelector(".st-calendar__day--selected")).toBeNull());
+  });
+
+  it("CheckboxGroup and RadioGroup follow a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(
+      <>
+        <CheckboxGroup legend="G" options={[{ label: "A", value: "a" }]} disabled={disabled} />
+        <RadioGroup legend="H" name="h" options={[{ label: "A", value: "a" }]} disabled={disabled} />
+      </>,
+    );
+    for (const fieldset of Array.from(container.querySelectorAll("fieldset"))) {
+      expect(fieldset.disabled).toBe(true);
+    }
+    disabled.value = false;
+    await waitFor(() => {
+      for (const fieldset of Array.from(container.querySelectorAll("fieldset"))) {
+        expect(fieldset.disabled).toBe(false);
+      }
+    });
+  });
+
+  it("MultiSelect follows a disabled signal mutated after mount", async () => {
+    const disabled = signal(true);
+    const { container } = render(
+      <MultiSelect label="M" options={[{ value: "a", label: "Alpha" }]} disabled={disabled} />,
+    );
+    expect((container.querySelector(".st-multiSelect__trigger") as HTMLButtonElement).disabled).toBe(true);
+    disabled.value = false;
+    await waitFor(() =>
+      expect((container.querySelector(".st-multiSelect__trigger") as HTMLButtonElement).disabled).toBe(false),
+    );
+  });
+
+  it("Switch and Toggle follow defaultChecked signals", () => {
+    const switchDefault = signal(true);
+    const toggleDefault = signal(true);
+    const { container } = render(
+      <>
+        <Switch label="S" defaultChecked={switchDefault} />
+        <Toggle label="T" defaultChecked={toggleDefault} />
+      </>,
+    );
+    expect(container.querySelector(".st-switch__input")?.getAttribute("aria-checked")).toBe("true");
+    expect(container.querySelector(".st-toggle__state")?.textContent).toBe("On");
+  });
+
+  it("a signal holding undefined counts as absent for id and controlled value", async () => {
+    const empty = signal(undefined as unknown as string);
+    const { container } = render(<Input label="L" id={empty as unknown as string} />);
+    const input = container.querySelector(".st-control") as HTMLInputElement;
+    expect(input.id).toMatch(/^st-input-/);
+    expect(container.querySelector("label")?.getAttribute("for")).toBe(input.id);
+
+    const searchEmpty = signal(undefined as unknown as string);
+    const { container: searchContainer } = render(<Search id={searchEmpty as unknown as string} />);
+    const searchInput = searchContainer.querySelector(".st-search__input") as HTMLInputElement;
+    expect(searchInput.id).toMatch(/^st-search-/);
+
+    const listValue = signal(undefined as unknown as string | null);
+    const onChange = vi.fn();
+    const { container: listContainer } = render(
+      <SelectableList label="L" value={listValue as unknown as string | null} onChange={onChange}>
+        <SelectableRow value="a">A</SelectableRow>
+      </SelectableList>,
+    );
+    fireEvent.click(listContainer.querySelector('[role="option"]') as HTMLElement);
+    expect(onChange).toHaveBeenLastCalledWith("a");
+    expect((listContainer.querySelector('[role="option"]') as HTMLElement).getAttribute("aria-selected")).toBe("true");
+  });
+
+  it("Checkbox merges a signal holding undefined without an undefined token", () => {
+    const empty = signal(undefined as unknown as string);
+    const { container } = render(
+      <Checkbox label="C" description="D" aria-describedby={empty as unknown as string} />,
+    );
+    const describedBy = (container.querySelector(".st-choice__input") as HTMLInputElement).getAttribute("aria-describedby");
+    expect(describedBy).not.toContain("undefined");
+    expect(describedBy).toContain("-description");
+  });
+
+  it("RangeSlider treats a null value as uncontrolled", () => {
+    const { container } = render(<RangeSlider min={0} max={100} value={null as unknown as [number, number]} />);
+    const thumbs = container.querySelectorAll('[role="slider"]');
+    expect(thumbs).toHaveLength(2);
+    expect(thumbs[0].getAttribute("aria-valuenow")).toBe("0");
+    expect(thumbs[1].getAttribute("aria-valuenow")).toBe("100");
   });
 
   it("Menu selects a flat leaf and opens a cascade parent", () => {

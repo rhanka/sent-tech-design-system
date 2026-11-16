@@ -10,7 +10,8 @@ export type SwitchProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & 
 
 export function Switch({ label, helperText, className, ...rest }: SwitchProps) {
   const checked = useValue(rest.checked);
-  const raw = checked ?? rest.defaultChecked;
+  const defaultChecked = useValue(rest.defaultChecked);
+  const raw = checked ?? defaultChecked;
   return (
     <label className={classNames("st-switch", className)}>
       <input {...rest} className="st-switch__input" type="checkbox" role="switch" aria-checked={raw == null ? undefined : raw ? "true" : "false"} />

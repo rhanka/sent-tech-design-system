@@ -27,7 +27,7 @@ export type CheckboxGroupProps = Omit<
   /** Optional description shown under the legend. */
   helperText?: string;
   /** Disables the whole group. */
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
 }
@@ -42,7 +42,7 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>
       name,
       options = [],
       helperText,
-      disabled = false,
+      disabled: disabledInput = false,
       className,
       children,
       ...rest
@@ -50,6 +50,7 @@ export const CheckboxGroup = forwardRef<HTMLFieldSetElement, CheckboxGroupProps>
     ref,
   ) => {
     const value = useValue(valueInput);
+    const disabled = useValue(disabledInput) ?? false;
     const classes = classNames("st-checkboxGroup", `st-checkboxGroup--${orientation}`, className);
 
     function toggle(optionValue: string, checked: boolean) {

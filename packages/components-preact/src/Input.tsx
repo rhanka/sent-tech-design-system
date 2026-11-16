@@ -28,13 +28,15 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
       id,
       "aria-invalid": ariaInvalid,
       onChange: onChangeProp,
+      onInput: onInputProp,
       ...rest
     },
     ref,
   ) => {
     const generatedId = useId();
     const invalid = useValue(invalidInput);
-    const inputId = id ?? `st-input-${generatedId}`;
+    const resolvedId = useValue(id as MaybeSignal<string | undefined>);
+    const inputId = resolvedId ?? `st-input-${generatedId}`;
     const isInvalid = invalid || Boolean(errorText);
 
     return (
@@ -43,7 +45,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           {label ? <span className="st-field__label">{label}</span> : null}
           <input
             {...rest}
-            {...(onChangeProp ? textChange<HTMLInputElement>(onChangeProp) : {})}
+            {...(onChangeProp
+              ? textChange<HTMLInputElement>(onChangeProp, onInputProp)
+              : onInputProp
+                ? { onInput: onInputProp }
+                : {})}
             ref={ref}
             id={inputId}
             className={classNames("st-control", `st-control--${size}`)}

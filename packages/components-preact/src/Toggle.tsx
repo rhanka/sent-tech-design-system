@@ -13,7 +13,8 @@ export type ToggleProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "
 
 export function Toggle({ label, labelOn = "On", labelOff = "Off", helperText, size = "md", className, ...rest }: ToggleProps) {
   const checked = useValue(rest.checked);
-  const isChecked = (checked ?? rest.defaultChecked ?? false) ? true : false;
+  const defaultChecked = useValue(rest.defaultChecked);
+  const isChecked = (checked ?? defaultChecked ?? false) ? true : false;
   return (
     <label className={classNames("st-toggle", `st-toggle--${size}`, className)}>
       <span className="st-toggle__label">{label}</span>

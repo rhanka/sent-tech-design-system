@@ -14,7 +14,7 @@ export type DatePickerProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange" | 
   helperText?: ComponentChildren;
   errorText?: ComponentChildren;
   invalid?: MaybeSignal<boolean>;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   mode?: "single" | "range";
   /** Controlled value (`Date | {start,end} | null`). */
   value?: MaybeSignal<DatePickerValue>;
@@ -67,7 +67,7 @@ export function DatePicker({
   helperText,
   errorText,
   invalid: invalidInput = false,
-  disabled = false,
+  disabled: disabledInput = false,
   mode = "single",
   value: valueInput,
   defaultValue,
@@ -88,6 +88,7 @@ export function DatePicker({
   const reactId = useId();
   const fieldId = id ?? `st-datepicker-${reactId}`;
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput) ?? false;
   const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");
 
   const resolvedOpenLabel = openLabel ?? (isFr ? "Ouvrir le calendrier" : "Open calendar");

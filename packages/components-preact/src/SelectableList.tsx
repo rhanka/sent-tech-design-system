@@ -22,7 +22,7 @@ export type SelectableListProps = Omit<
    * Allow more than one selected row. Adds aria-multiselectable and toggles
    * each row independently. Defaults to false (single-select).
    */
-  multiple?: boolean;
+  multiple?: MaybeSignal<boolean>;
   /**
    * Selected value(s). Controlled when provided. For single-select pass a
    * string (or null); for multiple pass a string[]. When omitted the list is
@@ -69,7 +69,7 @@ function sortByDom(list: Entry[]): Entry[] {
 export function SelectableList({
   label,
   labelledby,
-  multiple = false,
+  multiple: multipleInput = false,
   value: valueInput,
   onChange,
   children,
@@ -77,8 +77,10 @@ export function SelectableList({
   ...rest
 }: SelectableListProps) {
   const value = useValue(valueInput);
-  // Controlled when the consumer passes `value` (including null).
-  const controlled = valueInput !== undefined;
+  const multiple = useValue(multipleInput) ?? false;
+  // Controlled when the consumer passes `value` (including null; a signal
+  // holding `undefined` counts as absent).
+  const controlled = value !== undefined;
 
   // --- Mutable state lives in refs (read by the STABLE context methods); a
   //     `version` counter drives re-renders so rows recompute their derived
