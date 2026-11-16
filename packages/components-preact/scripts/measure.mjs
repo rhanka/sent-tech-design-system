@@ -64,6 +64,7 @@ function compatRuntimeVariant() {
     [
       `export { forwardRef, useInsertionEffect, useSyncExternalStore } from "preact/compat";`,
       `export function textInput(handler) { return { onInput: (event) => handler(event.currentTarget.value) }; }`,
+      `export function textChange(handler) { return { onInput: handler }; }`,
       `export function focusWithin(handler) { return { onFocusIn: handler }; }`,
       "",
     ].join("\n"),
@@ -78,7 +79,7 @@ function compatRuntimeVariant() {
   };
 }
 
-async function bundle(name, source, { external = false, plugins = [] } = {}) {
+async function bundle(name, source, { external = false, plugins = [], includeCode = false } = {}) {
   const input = join(workDir, `${name}.js`);
   writeFileSync(input, source);
   const result = await build({
@@ -104,7 +105,23 @@ async function bundle(name, source, { external = false, plugins = [] } = {}) {
     .filter((chunk) => chunk.type === "chunk")
     .map((chunk) => chunk.code)
     .join("\n");
-  return { name, bytes: Buffer.byteLength(code), gzip: gzipSync(code, { level: 9 }).length };
+  const row = { name, bytes: Buffer.byteLength(code), gzip: gzipSync(code, { level: 9 }).length };
+  if (includeCode) row.code = code;
+  return row;
+}
+
+/**
+ * Barrel entry: imports from the single public entrypoint instead of a deep
+ * module, so the `sideEffects` barrel optimisation applies. Used by the
+ * barrel contract check below (a non-signal component must not pull signals,
+ * an intrinsic-SVG component must retain the runtime normaliser).
+ */
+function barrelEntry(components) {
+  const specs = components
+    .map((name) => `import { ${name} } from ${JSON.stringify(join(preactDist, "index.js"))};`)
+    .join("\n");
+  const tree = components.map((name) => `h(${name}, null)`).join(", ");
+  return [`import { createElement as h, render } from "preact";`, specs, `render(h("div", null, ${tree}), document.body);`].join("\n") + "\n";
 }
 
 function lines(file) {
@@ -130,6 +147,26 @@ rows.push(await bundle("button.react.island", entry("react", ["Button"])));
 for (const name of [...SIX, "Portal"]) {
   rows.push(await bundle(`${name}.preact.components`, entry("preact", [name]), { external: true }));
   rows.push(await bundle(`${name}.react.components`, entry("react", [name]), { external: true }));
+}
+// Barrel contract (package.json sideEffects breadth): a non-signal component
+// imported from the public entrypoint must not pull `@preact/signals` (or an
+// unrelated signal component), while an intrinsic-SVG component must retain
+// the runtime `options.vnode` normaliser through its own side-effect import.
+const barrelFlex = await bundle("barrel.flex.components", barrelEntry(["Flex"]), { external: true, includeCode: true });
+const barrelFieldCard = await bundle("barrel.fieldcard.components", barrelEntry(["FieldCard"]), { external: true, includeCode: true });
+rows.push(
+  { name: barrelFlex.name, bytes: barrelFlex.bytes, gzip: barrelFlex.gzip },
+  { name: barrelFieldCard.name, bytes: barrelFieldCard.bytes, gzip: barrelFieldCard.gzip },
+);
+const barrelFailures = [];
+if (/@preact\/signals/.test(barrelFlex.code)) barrelFailures.push("barrel { Flex } pulls @preact/signals");
+if (/st-rating/.test(barrelFlex.code)) barrelFailures.push("barrel { Flex } retains Rating");
+if (/st-fieldCard/.test(barrelFlex.code)) barrelFailures.push("barrel { Flex } retains FieldCard");
+if (!/st-fieldCard/.test(barrelFieldCard.code)) barrelFailures.push("barrel { FieldCard } drops FieldCard");
+if (!/vnode/.test(barrelFieldCard.code)) barrelFailures.push("barrel { FieldCard } drops the runtime vnode normaliser");
+if (barrelFailures.length > 0) {
+  for (const failure of barrelFailures) console.error(`[measure] ${failure}`);
+  process.exit(1);
 }
 
 const emitReport = JSON.parse(readFileSync(join(packageDir, ".react-emit", "emit-report.json"), "utf8"));

@@ -1,7 +1,7 @@
 {
   "componentId": "date-picker",
   "contractSource": "derived",
-  "digest": "sha256:a28ea734468189c8b477b74d0e16984c11834c21771c4542ae21a16d1296c930",
+  "digest": "sha256:d8ffd13d6db0a458c3dd46ed624d14f4b3be2c1556b6c926df960ca2e4715eaf",
   "entryDigest": "sha256:6ed97c20519e68a123d89bec59aa27500a0f3564c28da26a08e4f8517c674335",
   "format": "component-contract/v1",
   "frameworks": {
@@ -393,7 +393,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "DatePickerProps",
