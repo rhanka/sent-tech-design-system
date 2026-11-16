@@ -280,6 +280,53 @@ describe("DiagramCard — folded subtitle centring and shared rule/footer geomet
   });
 });
 
+describe("DiagramCard — body block centring (owner card-body-centring)", () => {
+  const HERE = dirname(fileURLToPath(import.meta.url));
+
+  function cssBlock(source: string, selector: string): string {
+    const start = source.indexOf(selector);
+    expect(start, selector).toBeGreaterThan(-1);
+    const end = source.indexOf("}", start);
+    return source.slice(start, end).replaceAll(/\/\*[\s\S]*?\*\//g, "");
+  }
+
+  it("centres the body block horizontally and vertically in the remaining body box", () => {
+    const source = readFileSync(resolve(HERE, "DiagramCard.svelte"), "utf8");
+    const body = cssBlock(source, ".st-diagramCard-body {");
+    // The block grows into the spare space and centres its lines within it.
+    expect(body).toContain("flex: 1 1 auto");
+    expect(body).toContain("justify-content: center");
+    expect(body).toContain("text-align: center");
+    expect(body).toContain("flex-direction: column");
+  });
+
+  it("renders the llm-gateway body centred with the complete accessible text", () => {
+    const props = {
+      entityId: "entity:llm-gateway",
+      title: "llm-gateway",
+      body: ["Achemine les demandes de modèles"],
+    };
+    const { container } = render(DiagramCard, { props: { ...props, measure: defaultCardMeasure } });
+    const layout = layoutCard(props, defaultCardMeasure);
+    // The frozen body box is unchanged: −2 px / 436 px.
+    expect(layout.bodyX).toBe(14);
+    expect(layout.bodyWidth).toBe(436);
+    const view = container.querySelector(".st-diagramCard-body") as HTMLElement;
+    const style = view?.getAttribute("style") ?? "";
+    expect(Number(/margin-left:\s*([\d.-]+)px/.exec(style)?.[1])).toBe(-2);
+    expect(Number(/width:\s*([\d.]+)px/.exec(style)?.[1])).toBe(436);
+    // Every line paints the full text, centred per the shared geometry.
+    expect(view?.textContent).toBe("Achemine les demandes de modèles");
+    for (const line of layout.body) {
+      expect(line.anchor).toBe("middle");
+      expect(line.x).toBe(232);
+    }
+    // Accessible text still carries the complete description.
+    const root = container.querySelector(".st-diagramCard") as HTMLElement;
+    expect(root?.getAttribute("aria-label")).toBe("llm-gateway\nAchemine les demandes de modèles");
+  });
+});
+
 describe("DiagramCard — proposed status (finding 1)", () => {
   it("dashed border independent of tone; absent when not proposed", () => {
     for (const tone of [undefined, "identity", "proposal", "neutral"] as const) {
