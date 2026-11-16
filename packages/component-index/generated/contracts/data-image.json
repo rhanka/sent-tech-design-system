@@ -1,8 +1,8 @@
 {
   "componentId": "data-image",
   "contractSource": "derived",
-  "digest": "sha256:1cf0641056ae8f582df548df1a2f0d7bc637d2b215eb9d8f27703c24e3377403",
-  "entryDigest": "sha256:e61842c825f5b5a107bde447871835e3ad95c8759b773064847e68cfbd23f30d",
+  "digest": "sha256:fb729d6e07dc2cdec64111c81544985e92bb1154ca1747c0b48ae2cdb678f392",
+  "entryDigest": "sha256:c12da6873e4d5ff236d8e64076f562e4e4eb48fad418dbd68b7872dcda72e006",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -265,7 +265,7 @@
         "declarationPath": "packages/components-svelte/dist/DataImage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DataImageProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -362,7 +362,7 @@
         "declarationPath": "packages/components-vue/dist/DataImage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DataImageProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "complete",
       "unresolved": [],

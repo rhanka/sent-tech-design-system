@@ -3593,8 +3593,8 @@
       "gitBlob": "f32a53f263658fb563ecc81febd33693dfe3bc43",
       "sha256": "4de2b350a549668ad67d5972bdc237539dcbcc03e133e835eea3d47657bb0da8",
       "status": "adapted-packaging-only",
-      "destinationSha256": "5e7fa0c5d22ae09a12c9e885f118b378b2e724c61e737a08f48e9b79edf3b1b4",
-      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin"
+      "destinationSha256": "d1918157458299d34dc9d9b42131f5c552b0e50203fa8a97ca03ecaf707a831d",
+      "note": "svelte devDep pinned to exact 5.55.7 (single runtime; ^ resolved a nested 5.57.1 breaking 60 tests); vitest devDep range moved to ^4.1.11 by the security bump in #42; @sentropic/design-system-themes dependency bumped to 0.12.0 by the diagram geometry tokens release (pin only); DC-2c.1: align local tokens/themes and Svelte dependency pins with the new minor versions; diagram-core 0.2.0 release repair: align the framework dependency pin with the repaired canvas/core closure.; diagram initial fit: host patch dependency pin; card body centring: align the design-system-svelte pin with 0.41.5"
     },
     {
       "repository": "dataviz",
@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "6e71aec941a42e4781d3da029200aeb1b4e3f119f5baad54aa882d66b05e50f8",
-      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.6, whose diagram-canvas 0.2.4 -> diagram-core 0.3.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Upstream identity retained."
+      "destinationSha256": "ea4d3668911c2e5e04b09d26afefc9a02b60d67e9f0abe2160553a555dd1d738",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.7, whose diagram-canvas 0.2.5 -> diagram-core 0.3.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. Upstream identity retained."
     },
     {
       "repository": "dataviz",

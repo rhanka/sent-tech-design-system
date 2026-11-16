@@ -1,8 +1,8 @@
 {
   "componentId": "alert",
   "contractSource": "derived",
-  "digest": "sha256:7e3e5cebc45b9a8103e741ebe969435d26bc9d88e302458c24a7ffe96f42572a",
-  "entryDigest": "sha256:24cf06ac9107592a031c00458313a8f9662a6ac59fe18b6ba98a178bcc9ff0cf",
+  "digest": "sha256:a2214f0f333138de0e3745be56901a9c409e7c9c5a2c766352fb418e2025c6e5",
+  "entryDigest": "sha256:a528f85602b08fe30190225c8a39dcd40ff4dfe79f1fd16ca194c87ca3a481e8",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -181,7 +181,7 @@
         "declarationPath": "packages/components-svelte/dist/Alert.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "AlertProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -261,7 +261,7 @@
         "declarationPath": "packages/components-vue/dist/Alert.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "AlertProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "complete",
       "unresolved": [],
