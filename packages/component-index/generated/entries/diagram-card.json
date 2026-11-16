@@ -1,7 +1,7 @@
 {
   "anatomy": {
     "contractId": "diagram-anatomy/v1",
-    "digest": "sha256:226a13ff842a2b5be4e32f3a0bda883d0af5b348e7387a6fed4d52606c8d462f",
+    "digest": "sha256:fb5623c909f229de804ae482ced2072d28d83777fde68256cd698d2dbc5a10b4",
     "path": "packages/diagram-canvas/contracts/diagram-anatomy.v1.json"
   },
   "category": "layout",
@@ -29,7 +29,7 @@
     "en": "Atomic 460×200 diagram card: accent bar, 70 px icon, kicker, title, body lines, rule and footer, faithful to the hrpn kit.",
     "fr": "Carte atomique de diagramme 460×200 : barre d’accent, icône 70 px, kicker, titre, lignes de corps, filet et pied, fidèle au kit hrpn."
   },
-  "digest": "sha256:b00ca0c6f0241cc363958bdd1ac1632faa533754e3a225cf29d01a1f0d251fa8",
+  "digest": "sha256:8f24648695043d26ec1465529a7cb2f7131bea5f58b55cb6923ed80318d21a2e",
   "displayName": "DiagramCard",
   "format": "component-entry/v1",
   "frameworks": [

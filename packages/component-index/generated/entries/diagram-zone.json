@@ -1,7 +1,7 @@
 {
   "anatomy": {
     "contractId": "diagram-anatomy/v1",
-    "digest": "sha256:226a13ff842a2b5be4e32f3a0bda883d0af5b348e7387a6fed4d52606c8d462f",
+    "digest": "sha256:fb5623c909f229de804ae482ced2072d28d83777fde68256cd698d2dbc5a10b4",
     "path": "packages/diagram-canvas/contracts/diagram-anatomy.v1.json"
   },
   "category": "layout",
@@ -29,7 +29,7 @@
     "en": "Foldable diagram wrapper card: collapsed, the 460×200 atomic card with a “+” button; expanded, frame with header, rule and child cards.",
     "fr": "Carte enveloppante pliable de diagramme : repliée, la carte atomique 460×200 avec bouton « + » ; dépliée, cadre avec en-tête, filet et cartes enfants."
   },
-  "digest": "sha256:d73cafe7bd9cc462b32947698538b674afacde68cdd887eedabd46fb0a1dfe61",
+  "digest": "sha256:effe6ba1fa0b419216575def6a743c169fd8d8812b4734f922d60e56b14f7eb9",
   "displayName": "DiagramZone",
   "format": "component-entry/v1",
   "frameworks": [

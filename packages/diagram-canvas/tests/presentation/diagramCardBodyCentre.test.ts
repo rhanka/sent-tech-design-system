@@ -85,6 +85,12 @@ describe("diagram card body centring (owner card-body-centring)", () => {
       expect(line.anchor).toBe("middle");
       expect(line.x).toBe(232);
     }
+    // Vertical centring with spare space: the wrapped block sits strictly
+    // inside bodyArea with symmetric gutters.
+    const wrapTop = (wrapped.body[0]?.baseline ?? 0) - 22;
+    const wrapBottom = wrapTop + wrapped.body.length * BODY_H;
+    expect(wrapTop).toBeGreaterThan(wrapped.bodyArea.top);
+    expect(wrapTop - wrapped.bodyArea.top).toBe(wrapped.bodyArea.bottom - wrapBottom);
 
     const long = layoutCard(
       { entityId: "entity:long", title: "Title", body: ["W".repeat(500)] },

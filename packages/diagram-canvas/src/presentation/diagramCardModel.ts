@@ -799,9 +799,10 @@ export interface CardLayout {
   readonly headerBlockHeight: number;
   readonly bodyX: number;
   readonly bodyWidth: number;
-  /** Body allocation: vertical centring reference in `subtitle` body mode (§6.2.1). */
+  /** Body allocation: vertical centring reference for every card body (leaf and `subtitle` alike). */
   readonly bodyArea: { readonly top: number; readonly bottom: number };
   readonly body: readonly LaidOutLine[];
+  /** Bottom of the centred body block (`bodyBlockTop + lines * lineBoxHeight`). */
   readonly bodyBottom: number;
   /** Present only when `footer` is set: exactly one rule (§5.4, DH-04). */
   readonly ruleY?: number;
@@ -959,7 +960,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     secondary: !subtitleMode && index >= detailStart && (props.detailCount ?? 0) > 0,
     anchor: bodyAnchor,
   }));
-  const bodyBottom = bodyY + bodyTexts.length * bodyHeight;
+  const bodyBottom = bodyBlockTop + bodyTexts.length * bodyHeight;
 
   const kicker: LaidOutLine[] = kickerTexts.map((text, index) => ({
     text,
