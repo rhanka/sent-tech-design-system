@@ -2,13 +2,16 @@ import { CircleAlert, CircleCheck, LoaderCircle } from "lucide-preact";
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type InlineLoadingProps = HTMLAttributes<HTMLDivElement> & {
   label?: ComponentChildren;
-  status?: "active" | "inactive" | "success" | "error";
+  status?: MaybeSignal<"active" | "inactive" | "success" | "error">;
   locale?: string;
 };
-export function InlineLoading({ label, status = "active", locale = "fr-FR", className, "aria-label": ariaLabel, ...rest }: InlineLoadingProps) {
+export function InlineLoading({ label, status: statusInput = "active", locale = "fr-FR", className, "aria-label": ariaLabel, ...rest }: InlineLoadingProps) {
+  const status = useValue(statusInput);
   // Canon Svelte : le libellé visible n'est rendu que s'il est fourni ; sinon
   // seul un aria-label de repli assure l'accessibilité (pas de texte visible).
   const isFr = (locale ?? "fr-FR").toLowerCase().startsWith("fr");

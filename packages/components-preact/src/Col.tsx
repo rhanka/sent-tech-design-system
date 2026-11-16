@@ -1,6 +1,8 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type ColSpan = number | "auto";
 
@@ -14,7 +16,7 @@ export type ColProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   md?: ColSpan;
   lg?: ColSpan;
   as?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /** Width expression for a given span. Accounts for the shared row gutter so a
@@ -41,16 +43,18 @@ export const Col = forwardRef<HTMLElement, ColProps>(
     const Tag: any = as;
     const isAuto = span === "auto";
     const basis = spanBasis(span);
-    const mergedStyle = {
-      flexBasis: basis,
-      maxInlineSize: isAuto ? undefined : basis,
-      flexGrow: isAuto ? 1 : 0,
-      marginInlineStart: offsetMargin(offset),
-      "--st-col-sm": spanBasis(sm),
-      "--st-col-md": spanBasis(md),
-      "--st-col-lg": spanBasis(lg),
-      ...(style as CSSProperties | undefined),
-    } as unknown as CSSProperties;
+    const mergedStyle = mergeStyle(
+      {
+        flexBasis: basis,
+        maxInlineSize: isAuto ? undefined : basis,
+        flexGrow: isAuto ? 1 : 0,
+        marginInlineStart: offsetMargin(offset),
+        "--st-col-sm": spanBasis(sm),
+        "--st-col-md": spanBasis(md),
+        "--st-col-lg": spanBasis(lg),
+      } as unknown as CSSProperties,
+      style,
+    );
     return (
       <Tag
         {...rest}
@@ -63,7 +67,7 @@ export const Col = forwardRef<HTMLElement, ColProps>(
           lg != null && "st-col--has-lg",
           className,
         )}
-        style={mergedStyle}
+        style={mergedStyle as CSSProperties | undefined}
       >
         {children}
       </Tag>

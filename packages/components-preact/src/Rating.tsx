@@ -3,12 +3,14 @@ import { useRef } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { useControlled } from "./internal.js";
 import type { TargetedKeyboardEvent, TargetedMouseEvent } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type RatingSize = "sm" | "md" | "lg";
 
 export type RatingProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
   /** Note courante (0..max). Pas de 1, ou 0.5 si `allowHalf`. */
-  value?: number;
+  value?: MaybeSignal<number>;
   /** Nombre d'étoiles. */
   max?: number;
   /** Appelé avec la nouvelle note au clic ou au clavier. */
@@ -22,7 +24,7 @@ export type RatingProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "on
   name?: string;
   /** Étiquette accessible du groupe. */
   label?: string;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 function StarIcon({ size, fill }: { size: number; fill: "currentColor" | "none" }) {
   return (
@@ -60,7 +62,7 @@ function StarHalfIcon({ size }: { size: number }) {
   );
 }
 export function Rating({
-  value,
+  value: valueInput,
   max = 5,
   onChange,
   readonly = false,
@@ -71,6 +73,7 @@ export function Rating({
   className,
   ...rest
 }: RatingProps) {
+  const value = useValue(valueInput);
   const [current, setCurrent] = useControlled(value, value ?? 0, onChange);
   const iconSize = size === "sm" ? 16 : size === "lg" ? 28 : 22;
   const stars = Array.from({ length: max }, (_, i) => i + 1);

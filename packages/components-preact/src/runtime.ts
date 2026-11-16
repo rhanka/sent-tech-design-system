@@ -44,7 +44,7 @@ type DiffHook = (vnode: VNode<{ ref?: unknown }>) => void;
 // on the vnode. `preact/compat` restores it through the `options._diff` hook
 // (mangled `__b`, the hook `@preact/signals` also relies on). This is the same
 // mechanism in ten lines, without the other 10 kB of compat.
-const hooks = options as unknown as { __b?: DiffHook };
+const hooks = options as unknown as { __b?: DiffHook; vnode?: VnodeHook };
 const previousDiff = hooks.__b;
 hooks.__b = (vnode) => {
   const type = vnode.type as unknown as ForwardedComponent | string | null;
@@ -53,6 +53,31 @@ hooks.__b = (vnode) => {
     vnode.ref = null;
   }
   previousDiff?.(vnode);
+};
+
+type VnodeHook = (vnode: VNode<Record<string, unknown>>) => void;
+
+// Core-only SVG presentation-attribute normalisation for intrinsic elements.
+// Preact core writes camelCase props verbatim via setAttribute onto `<svg>`,
+// `<path>`, etc., where attribute names are case-sensitive, so `strokeWidth`
+// would revert to the default width. `preact/compat` translates the same
+// families; this is the same mapping without compat. Genuine camelCase SVG
+// attributes (`viewBox`, `clipPathUnits`, `textLength`, …) are preserved by
+// the negative lookaheads, as is `clipPath` element state.
+const presentation =
+  /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/;
+const previousVnode = hooks.vnode;
+hooks.vnode = (vnode) => {
+  if (typeof vnode.type === "string") {
+    const props = vnode.props as Record<string, unknown>;
+    for (const name in props) {
+      if (presentation.test(name)) {
+        props[name.replace(/[A-Z0-9]/g, "-$&").toLowerCase()] = props[name];
+        delete props[name];
+      }
+    }
+  }
+  previousVnode?.(vnode);
 };
 
 export function forwardRef<T, P = {}>(

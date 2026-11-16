@@ -4,13 +4,15 @@ import { useId, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type CollapsibleProps = Omit<
   HTMLAttributes<HTMLDivElement>,
   "className" | "title" | "onToggle"
 > & {
   /** État ouvert (contrôlable). */
-  open?: boolean;
+  open?: MaybeSignal<boolean>;
   title: string;
   disabled?: boolean;
   /**
@@ -23,16 +25,17 @@ export type CollapsibleProps = Omit<
    */
   trailing?: ComponentChildren;
   onToggle?: (open: boolean) => void;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
-  ({ open: openProp, title, disabled = false, trailing, onToggle, className, children, ...rest }, ref) => {
+  ({ open: openInput, title, disabled = false, trailing, onToggle, className, children, ...rest }, ref) => {
     const reactId = useId();
     const uid = `st-collapsible-${reactId}`;
-    const isControlled = openProp !== undefined;
-    const [internalOpen, setInternalOpen] = useState(openProp ?? false);
-    const open = isControlled ? openProp : internalOpen;
+    const openValue = useValue(openInput);
+    const isControlled = openInput !== undefined;
+    const [internalOpen, setInternalOpen] = useState(openValue ?? false);
+    const open = isControlled ? openValue : internalOpen;
 
     const classes = classNames("st-collapsible", open && "st-collapsible--open", className);
 

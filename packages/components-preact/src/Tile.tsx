@@ -2,6 +2,8 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { TargetedMouseEvent } from "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type TileVariant = "static" | "clickable" | "selectable";
 
@@ -12,12 +14,13 @@ export type TileProps = Omit<HTMLAttributes<HTMLElement>, "onSelect" | "ref"> & 
   /** Pour `clickable` : si fourni, rend un `<a>`, sinon un `<button>`. */
   href?: string;
   /** Pour `selectable` : état coché. */
-  selected?: boolean;
+  selected?: MaybeSignal<boolean>;
   disabled?: boolean;
   /** Pour `selectable` : notifié au changement d'état. */
   onSelect?: (selected: boolean) => void;
 };
-export function Tile({ title, description, variant = "static", href, selected = false, disabled = false, onSelect, onClick, children, className, ...rest }: TileProps) {
+export function Tile({ title, description, variant = "static", href, selected: selectedInput = false, disabled = false, onSelect, onClick, children, className, ...rest }: TileProps) {
+  const selected = useValue(selectedInput);
   const tileClass = classNames(
     "st-tile",
     `st-tile--${variant}`,

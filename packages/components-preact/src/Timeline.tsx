@@ -1,5 +1,6 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type TimelineTone = "neutral" | "info" | "success" | "warning" | "danger";
 
@@ -19,7 +20,7 @@ export type TimelineItem = {
 export type TimelineProps = Omit<HTMLAttributes<HTMLOListElement>, "className"> & {
   items: TimelineItem[];
   orientation?: TimelineOrientation;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 /**

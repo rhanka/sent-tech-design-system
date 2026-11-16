@@ -2,6 +2,7 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type NotificationProps = Omit<HTMLAttributes<HTMLElement>, "className" | "title"> & {
   tone?: "info" | "success" | "warning" | "error";
@@ -11,7 +12,7 @@ export type NotificationProps = Omit<HTMLAttributes<HTMLElement>, "className" | 
   dismissLabel?: string;
   locale?: string;
   onDismiss?: () => void;
-  className?: string;
+  className?: MaybeSignal<string>;
   actions?: ComponentChildren;
   children?: ComponentChildren;
 };

@@ -1,7 +1,9 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { spacingToken } from "./Flex.js";
+import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
 
 export type DividerOrientation = "horizontal" | "vertical";
 export type DividerVariant = "solid" | "dashed";
@@ -13,7 +15,7 @@ export type DividerProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & {
   /** Optional label centered on a horizontal divider line. */
   label?: string;
   variant?: DividerVariant;
-  className?: string;
+  className?: MaybeSignal<string>;
 };
 
 export const Divider = forwardRef<HTMLDivElement, DividerProps>(
@@ -38,7 +40,7 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
           className={classes}
           role="separator"
           aria-orientation="horizontal"
-          style={{ marginBlock: margin, ...(style as CSSProperties | undefined) }}
+          style={mergeStyle({ marginBlock: margin } as CSSProperties, style) as CSSProperties | undefined}
         >
           <span className="st-divider__line" aria-hidden="true" />
           <span className="st-divider__label">{label}</span>
@@ -55,11 +57,13 @@ export const Divider = forwardRef<HTMLDivElement, DividerProps>(
         role="separator"
         aria-orientation={orientation}
         style={
-          {
-            marginBlock: isVertical ? undefined : margin,
-            marginInline: isVertical ? margin : undefined,
-            ...(style as CSSProperties | undefined),
-          } as CSSProperties
+          mergeStyle(
+            {
+              marginBlock: isVertical ? undefined : margin,
+              marginInline: isVertical ? margin : undefined,
+            } as CSSProperties,
+            style,
+          ) as CSSProperties | undefined
         }
       />
     );
