@@ -4,11 +4,13 @@ Preact + Signals components for the Sentropic design system, and the **JSX
 source of truth** for two builds: the Preact package and the React tree emitted
 from it by a build-time specifier rewrite.
 
-Status: **spike S1**. Eight modules are ported. The manifest is
-`"private": true`: the package is not published and npm refuses to publish it;
-the licensing and notices gates of the repository, which follow publishable
-packages, skip it until lot P0 removes the flag. Findings, measurements and
-the revised estimate are in
+Status: **lot P0 scaffold** (built on spike S1). Eight modules are ported
+and the lot ports no more. The manifest stays `"private": true` until lot P8
+ships the release candidate: the package is not published and npm refuses to
+publish it; the licensing and notices gates of the repository, which follow
+publishable packages, skip it until then. `scripts/package-guard.mjs --check`
+pins this state (privacy, licence, single export, adapter side effects).
+Findings, measurements and the revised estimate are in
 [`docs/preact-s1-spike.md`](../../docs/preact-s1-spike.md).
 
 ## Layout
@@ -25,7 +27,12 @@ src/                    Preact tree, the only authored source
   *.test.tsx            Preact leg (@testing-library/preact, jsdom)
 react/                  React twins of the three adapters + React-leg checks
                         (props parity, provenance, adapter paths)
+coverage-manifest.json  P0 hook for the programme coverage manifest (PLAN 2.9):
+                        one row per module with its owning W3 lot, the three
+                        P5 adapters, the semantic-mapping rows of the port
 scripts/emit-react.mjs  the React emission (specifier rewrite + adapter swap)
+scripts/coverage-manifest.mjs  check of the manifest hook against the tree
+scripts/package-guard.mjs      check of the private packaging state
 scripts/measure.mjs     bundle-size report
 scripts/port-metrics.mjs        port table, port rate, lines per W3 lot,
                                 projection and reach counts of the spike
@@ -65,7 +72,8 @@ bound to the DOM without a re-render. In the React emission `MaybeSignal<T>` is
 ```bash
 npm run build        # dist/ (Preact) + .react-emit/ (React source and build)
 npm run check        # type-check both trees and every test file + React API parity
-npm test             # emitter cases, port-metrics staleness gate, Preact leg, then the React leg
+npm test             # emitter cases, port-metrics staleness gate, scaffold checks, Preact leg, then the React leg
+npm run test:scaffold  # manifest hook + packaging guard (also run by npm test, hence by CI)
 npm run test:react   # existing components-react tests on the emitted modules
 npm run measure      # bundle sizes (after build)
 npm run measure:port        # port metrics -> measurements/port-metrics.{txt,json}
