@@ -69,6 +69,10 @@ export function moveIndex(index: number, max: number, delta: number): number {
   return (index + delta + max) % max;
 }
 
+export function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
 export function useControlled<T>(
   value: T | undefined,
   defaultValue: T,
@@ -121,6 +125,26 @@ export function useEscape(active: boolean, onClose?: () => void): void {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [active, onClose]);
+}
+
+/**
+ * Runs `onOutside` on a `mousedown` outside `ref` while `active`. Used by the
+ * floating form controls (DatePicker, TimePicker) and the menu host.
+ */
+export function useOutsideMouseDown(
+  active: boolean,
+  ref: { current: HTMLElement | null },
+  onOutside: () => void,
+): void {
+  useEffect(() => {
+    if (!active) return;
+    const onMouseDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (target && ref.current && !ref.current.contains(target)) onOutside();
+    };
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [active, onOutside, ref]);
 }
 
 /** Keeps Tab / Shift+Tab inside `root`. Takes a native or a synthetic keyboard event. */

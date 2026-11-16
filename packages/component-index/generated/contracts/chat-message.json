@@ -1,7 +1,7 @@
 {
   "componentId": "chat-message",
   "contractSource": "derived",
-  "digest": "sha256:117906cf5eaf79bf0157c32b3830bb0df0cf9bb21044f79e96cfbf16dfb23665",
+  "digest": "sha256:97feb35b55aecefeb3f828876f77d02886ea943e6d5e19ad67ad8102bf931ea5",
   "entryDigest": "sha256:44a84075a9aef7979fb76d889217671e9f1437a2efe5ca364021e402ad966694",
   "format": "component-contract/v1",
   "frameworks": {
@@ -164,7 +164,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "ChatMessageProps",

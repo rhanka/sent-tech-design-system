@@ -2915,10 +2915,9 @@ export function GraphLegend({ entries, title, className, ...rest }: GraphLegendP
   );
 }
 
-export type FormProps = Omit<React.FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
+export type FormProps = React.FormHTMLAttributes<HTMLFormElement> & {
   status?: "idle" | "submitting" | "submitted" | "error";
   message?: React.ReactNode;
-  onSubmit?: React.FormEventHandler<HTMLFormElement>;
 };
 export function Form({ status = "idle", message, children, className, ...rest }: FormProps) {
   return (

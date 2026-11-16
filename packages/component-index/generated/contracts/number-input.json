@@ -1,7 +1,7 @@
 {
   "componentId": "number-input",
   "contractSource": "derived",
-  "digest": "sha256:0da56c497c978f76a3513075bc5e29423dc985527406af06dce6df4573946d82",
+  "digest": "sha256:0599cb94e3fae6c4647e662bb8982bb9caf559c486d3643f7442567e5fe7fa8d",
   "entryDigest": "sha256:b3533fb03abd5ba549945dd90c04c3f2bdfbca809fbc180877f7195b5e804392",
   "format": "component-contract/v1",
   "frameworks": {
@@ -226,7 +226,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "NumberInputProps",

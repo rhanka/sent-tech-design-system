@@ -15,8 +15,10 @@ import type {
   Ref,
   TargetedEvent,
   TargetedFocusEvent,
+  TargetedInputEvent,
   TargetedKeyboardEvent,
   TargetedMouseEvent,
+  TargetedPointerEvent,
   VNode,
 } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
@@ -28,7 +30,14 @@ export type { ComponentChildren };
 export type ComponentElement = VNode;
 
 /** Event types handed to DOM handlers (React twin: the synthetic event types). */
-export type { TargetedFocusEvent, TargetedKeyboardEvent, TargetedMouseEvent };
+export type {
+  TargetedEvent,
+  TargetedFocusEvent,
+  TargetedInputEvent,
+  TargetedKeyboardEvent,
+  TargetedMouseEvent,
+  TargetedPointerEvent,
+};
 
 // ---------------------------------------------------------------------------
 // forwardRef
@@ -161,6 +170,31 @@ export function textInput<T extends HTMLInputElement | HTMLTextAreaElement>(
   handler: (value: string) => void,
 ): { onInput: (event: TargetedEvent<T>) => void } {
   return { onInput: (event) => handler(event.currentTarget.value) };
+}
+
+/**
+ * Controlled change handler of a pass-through text control, spread onto
+ * `<input>` or `<textarea>` with the consumer's own `onChange` and `onInput`
+ * destructured out of the rest props. Preact core attaches `onChange` to the
+ * native `change` event (blur for text fields), so a consumer `onChange`
+ * would only run on blur; mapping it here runs it per keystroke, like React
+ * and Vue. The consumer `onInput`, when present, runs first on the same
+ * native `input` event, so both handlers fire once per keystroke, exactly as
+ * in `components-react` (which keeps both via the rest spread).
+ * React twin: the same handler spread as `onChange` plus the consumer
+ * `onInput` untouched, which already fires per keystroke on both runtimes.
+ */
+export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
+  handler: (event: TargetedEvent<T>) => void,
+  onInput?: (event: TargetedInputEvent<T>) => void,
+): { onInput: (event: TargetedInputEvent<T>) => void } {
+  if (!onInput) return { onInput: handler as (event: TargetedInputEvent<T>) => void };
+  return {
+    onInput: (event) => {
+      onInput(event);
+      handler(event);
+    },
+  };
 }
 
 // ---------------------------------------------------------------------------

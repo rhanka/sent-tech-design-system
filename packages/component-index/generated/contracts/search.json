@@ -1,7 +1,7 @@
 {
   "componentId": "search",
   "contractSource": "derived",
-  "digest": "sha256:ab0f282c0fcb8750e75e922625ead25156f6e9395d64effcc818896cfb209556",
+  "digest": "sha256:4de2ed44197f4d783aeaf43f2bd56ae6dd1e72da9009e213c55ff38be2ed50b7",
   "entryDigest": "sha256:4b41eb7e5655e7c9d0c93010cb8f4e22f423887634f595a8ee4ad5cc59b6ce33",
   "format": "component-contract/v1",
   "frameworks": {
@@ -193,7 +193,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SearchProps",
