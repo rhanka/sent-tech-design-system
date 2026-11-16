@@ -56,7 +56,7 @@ export type TimeRangePickerProps = Omit<HTMLAttributes<HTMLDivElement>, "onChang
   timeFormat?: TimePickerFormat;
   timeStep?: number;
   calendarMonths?: 1 | 2;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   label?: string;
   placement?: "bottom-start" | "bottom-end" | "top-start" | "top-end";
   align?: "start" | "end" | "center";
@@ -154,7 +154,7 @@ export function TimeRangePicker({
   timeFormat = "24",
   timeStep = 15,
   calendarMonths = 2,
-  disabled = false,
+  disabled: disabledInput = false,
   label,
   placement = "bottom-start",
   align,
@@ -175,10 +175,11 @@ export function TimeRangePicker({
   // source of truth when the consumer supplies it; otherwise an internal
   // state variable (seeded once, lazily) takes over.
   const value = useValue(valueInput);
+  const disabled = useValue(disabledInput) ?? false;
   const [internalValue, setInternalValue] = useState<TimeRange>(() =>
     computeDefaultValue(defaultValue, min, max)
   );
-  const isControlled = valueInput !== undefined;
+  const isControlled = value !== undefined;
   const current = isControlled ? (value as TimeRange) : internalValue;
 
   function commit(next: TimeRange) {

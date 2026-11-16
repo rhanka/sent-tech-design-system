@@ -35,7 +35,7 @@ export type MultiSelectProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> 
   toggleLabel?: string;
   removeLabel?: string;
   listLabel?: string;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   onChange?: (values: string[]) => void;
 };
 
@@ -57,7 +57,7 @@ export function MultiSelect({
   toggleLabel,
   removeLabel,
   listLabel,
-  disabled = false,
+  disabled: disabledInput = false,
   onChange,
   className,
   ...rest
@@ -70,6 +70,7 @@ export function MultiSelect({
   const resolvedRemoveLabel = removeLabel ?? (isFr ? "Supprimer" : "Remove");
   const [open, setOpen] = useControlled(useValue(openInput), false);
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput) ?? false;
   const initialSelected = useValue(valueInput) ?? useValue(valuesInput) ?? useValue(selectedAliasInput);
   const [selectedValues, setSelectedValues] = useControlled(initialSelected, initialSelected ?? [], onChange);
   const [query, setQuery] = useState("");

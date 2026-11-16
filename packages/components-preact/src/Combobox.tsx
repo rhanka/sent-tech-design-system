@@ -24,10 +24,10 @@ export type ComboboxProps = Omit<HTMLAttributes<HTMLDivElement>, "onChange"> & {
   value?: MaybeSignal<string>;
   size?: "sm" | "md" | "lg";
   placeholder?: string;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /** Plain value, or a signal in the Preact build (read at the edge). */
   open?: MaybeSignal<boolean>;
-  allowCustomValue?: boolean;
+  allowCustomValue?: MaybeSignal<boolean>;
   noResultsLabel?: ComponentChildren;
   /** Accessible name for the options listbox. Defaults to `label`. */
   listLabel?: string;
@@ -46,9 +46,9 @@ export function Combobox({
   value: valueInput,
   size = "md",
   placeholder = "Select or type",
-  disabled = false,
+  disabled: disabledInput = false,
   open: openInput,
-  allowCustomValue = true,
+  allowCustomValue: allowCustomValueInput = true,
   noResultsLabel = "No results",
   listLabel,
   clearLabel = "Clear selection",
@@ -63,6 +63,8 @@ export function Combobox({
   const listId = `st-combobox-list-${reactId}`;
   const value = useValue(valueInput);
   const invalid = useValue(invalidInput);
+  const disabled = useValue(disabledInput) ?? false;
+  const allowCustomValue = useValue(allowCustomValueInput) ?? true;
   const initial = text(options.find((option) => option.value === value)?.label ?? value ?? "");
   const [inputValue, setInputValue] = useState<string>(initial);
   const [open, setOpen] = useControlled(useValue(openInput), false);

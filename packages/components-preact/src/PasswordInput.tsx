@@ -14,7 +14,7 @@ export type PasswordInputProps = Omit<InputHTMLAttributes<HTMLInputElement>, "si
   hideLabel?: string;
 };
 
-export function PasswordInput({ label, helperText, errorText, size = "md", showLabel = "Show password", hideLabel = "Hide password", className, onChange: onChangeProp, ...rest }: PasswordInputProps) {
+export function PasswordInput({ label, helperText, errorText, size = "md", showLabel = "Show password", hideLabel = "Hide password", className, onChange: onChangeProp, onInput: onInputProp, ...rest }: PasswordInputProps) {
   const [shown, setShown] = useState(false);
   const reactId = useId();
   const inputId = `st-field-${reactId}`;
@@ -24,7 +24,7 @@ export function PasswordInput({ label, helperText, errorText, size = "md", showL
       <label className="st-field__control" htmlFor={inputId}>
         {label ? <span className="st-field__label">{label}</span> : null}
         <span className={classNames("st-passwordInput", `st-passwordInput--${size}`)}>
-          <input {...rest} {...(onChangeProp ? textChange<HTMLInputElement>(onChangeProp) : {})} id={inputId} className="st-passwordInput__control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
+          <input {...rest} {...(onChangeProp ? textChange<HTMLInputElement>(onChangeProp, onInputProp) : onInputProp ? { onInput: onInputProp } : {})} id={inputId} className="st-passwordInput__control" type={shown ? "text" : "password"} aria-invalid={isInvalid ? "true" : undefined} />
           <button type="button" className="st-passwordInput__toggle" aria-label={shown ? hideLabel : showLabel} aria-pressed={shown ? "true" : "false"} onClick={() => setShown((next) => !next)}>
             {shown ? <EyeOff size={16} strokeWidth={2} aria-hidden="true" /> : <Eye size={16} strokeWidth={2} aria-hidden="true" />}
           </button>

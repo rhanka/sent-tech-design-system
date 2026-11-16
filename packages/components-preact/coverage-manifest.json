@@ -682,7 +682,7 @@
       "file": "src/runtime.ts",
       "twin": "react/runtime.ts",
       "lot": "P5",
-      "note": "Core-only adapter: forwardRef, SVG presentation-attribute normalisation (options.vnode), insertion and external-store effects, textInput, focusWithin, type aliases"
+      "note": "Core-only adapter: forwardRef, SVG presentation-attribute normalisation (options.vnode), insertion and external-store effects, textInput, textChange, focusWithin, type aliases"
     },
     {
       "module": "signals.ts",
@@ -762,8 +762,14 @@
     },
     {
       "key": "controlled-text-change",
-      "preact": "textChange(handler) spreads onInput (native input event, per keystroke) for a consumer onChange destructured out of the rest props (Input, Textarea, Search, NumberInput, PasswordInput, TimeRangePicker custom fields)",
-      "react": "textChange(handler) spreads onChange (per-keystroke, required on a controlled field); the emitted module keeps the consumer handler reference",
+      "preact": "textChange(handler, onInput?) spreads onInput (native input event, per keystroke) for a consumer onChange destructured out of the rest props (Input, Textarea, Search, Slider, NumberInput, PasswordInput, TimeRangePicker custom fields); a consumer onInput runs first on the same event, so both handlers fire once per keystroke",
+      "react": "textChange(handler, onInput?) spreads onChange (per-keystroke, required on a controlled field) plus the consumer onInput untouched; the emitted module keeps both consumer handler references",
+      "decision": "recorded"
+    },
+    {
+      "key": "controlled-reimpose",
+      "preact": "Preact core (no preact/compat) does not re-impose a controlled checked/value after a rejected change: when the consumer onChange keeps value unchanged, the native control keeps its user-edited state (CheckboxGroup, RadioGroup, TileGroup, Slider, NumberInput)",
+      "react": "React restores the controlled DOM state on re-render",
       "decision": "recorded"
     }
   ]

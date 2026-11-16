@@ -17,7 +17,6 @@ import {
   type SubMenuSide,
 } from "./menu-cascade.js";
 import type { ComponentChildren, TargetedKeyboardEvent, TargetedPointerEvent } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 type ActionItem = { id?: string; value?: string; label: ComponentChildren; disabled?: boolean; variant?: "default" | "danger"; danger?: boolean; icon?: ComponentChildren; onClick?: () => void }
 

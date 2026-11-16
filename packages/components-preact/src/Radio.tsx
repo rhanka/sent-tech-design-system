@@ -21,10 +21,12 @@ function Choice({ type, label, helperText, description, trailing, invalid: inval
   const invalid = useValue(invalidInput);
   const descriptionId = `${reactId}-description`;
   // Merge our description id with any consumer-provided aria-describedby so we
-  // never clobber an existing one.
+  // never clobber an existing one. A signal holding `undefined` counts as
+  // absent, so it is unwrapped before the merge.
+  const describedByProp = useValue(rest["aria-describedby"] as MaybeSignal<string | undefined>);
   const describedBy = description
-    ? [rest["aria-describedby"], descriptionId].filter(Boolean).join(" ")
-    : rest["aria-describedby"];
+    ? [describedByProp, descriptionId].filter(Boolean).join(" ")
+    : describedByProp;
   return (
     <label
       className={classNames(

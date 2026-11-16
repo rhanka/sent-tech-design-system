@@ -2,7 +2,7 @@
  * React twin of `src/runtime.ts`. The React emission copies this file over the
  * Preact adapter, so component modules keep importing `./runtime.js` unchanged.
  */
-import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode } from "react";
+import type { ChangeEvent, FocusEvent, InputEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode } from "react";
 
 export { forwardRef, useInsertionEffect, useSyncExternalStore } from "react";
 export type { ForwardedRef } from "react";
@@ -33,13 +33,17 @@ export function textInput<T extends HTMLInputElement | HTMLTextAreaElement>(
 
 /**
  * Controlled change handler of a pass-through text control (twin of the
- * Preact `textChange`, which spreads it as `onInput`). React's `onChange`
- * already fires per keystroke, so the consumer handler is spread unchanged.
+ * Preact `textChange`, which spreads the handler as `onInput`). React's
+ * `onChange` already fires per keystroke, so the consumer handler is spread
+ * as `onChange` and the consumer `onInput`, when present, is preserved
+ * untouched, exactly as in `components-react` (both handlers via the rest
+ * spread).
  */
 export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
   handler: (event: ChangeEvent<T>) => void,
-): { onChange: (event: ChangeEvent<T>) => void } {
-  return { onChange: handler };
+  onInput?: (event: InputEvent<T>) => void,
+): { onChange: (event: ChangeEvent<T>) => void; onInput?: (event: InputEvent<T>) => void } {
+  return onInput ? { onChange: handler, onInput } : { onChange: handler };
 }
 
 /**
