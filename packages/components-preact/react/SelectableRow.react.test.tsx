@@ -1,11 +1,11 @@
 // React leg only. Counterpart of the Preact test "becomes the roving tab stop
 // when a focusable child of `trailing` takes focus": the emitted row, driven
-// by the hand-written `SelectableList`, must keep React's behaviour, where the
+// by the emitted `SelectableList`, must keep React's behaviour, where the
 // focus of a descendant bubbles to the row. No `components-react` test covers
 // that case.
 import { act, cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { SelectableList } from "../../components-react/src/SelectableList.js";
+import { SelectableList } from "../.react-emit/src/SelectableList.js";
 import * as barrel from "../../components-react/src/index.js";
 import { SelectableRow } from "../.react-emit/src/SelectableRow.js";
 

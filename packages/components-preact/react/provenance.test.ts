@@ -9,7 +9,12 @@ import * as handWrittenButton from "../../components-react/src/Button.js";
 import * as handWrittenButtonGroup from "../../components-react/src/ButtonGroup.js";
 import * as handWrittenCard from "../../components-react/src/Card.js";
 import * as handWrittenCatalog from "../../components-react/src/catalog.js";
+import * as handWrittenCheckboxGroup from "../../components-react/src/CheckboxGroup.js";
 import * as handWrittenCol from "../../components-react/src/Col.js";
+import * as handWrittenRadioGroup from "../../components-react/src/RadioGroup.js";
+import * as handWrittenRangeSlider from "../../components-react/src/RangeSlider.js";
+import * as handWrittenSelectableList from "../../components-react/src/SelectableList.js";
+import * as handWrittenTimeRangePicker from "../../components-react/src/TimeRangePicker.js";
 import * as handWrittenCollapsible from "../../components-react/src/Collapsible.js";
 import * as handWrittenContainer from "../../components-react/src/Container.js";
 import * as handWrittenDivider from "../../components-react/src/Divider.js";
@@ -77,6 +82,34 @@ const switched = [
   "Tile",
   "Timeline",
   "Toast",
+  "Calendar",
+  "Checkbox",
+  "CheckboxGroup",
+  "Combobox",
+  "ContentSwitcher",
+  "DatePicker",
+  "Dropdown",
+  "FileUploader",
+  "Form",
+  "FormGroup",
+  "Menu",
+  "MenuPopover",
+  "MultiSelect",
+  "NumberInput",
+  "PasswordInput",
+  "Radio",
+  "RadioGroup",
+  "RangeSlider",
+  "Search",
+  "Select",
+  "SelectableList",
+  "Slider",
+  "Switch",
+  "Textarea",
+  "TileGroup",
+  "TimePicker",
+  "TimeRangePicker",
+  "Toggle",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -125,6 +158,34 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Tile: handWrittenCatalog.Tile,
   Timeline: handWrittenTimeline.Timeline,
   Toast: handWrittenCatalog.Toast,
+  Calendar: handWrittenCatalog.Calendar,
+  Checkbox: handWrittenCatalog.Checkbox,
+  CheckboxGroup: handWrittenCheckboxGroup.CheckboxGroup,
+  Combobox: handWrittenCatalog.Combobox,
+  ContentSwitcher: handWrittenCatalog.ContentSwitcher,
+  DatePicker: handWrittenCatalog.DatePicker,
+  Dropdown: handWrittenCatalog.Dropdown,
+  FileUploader: handWrittenCatalog.FileUploader,
+  Form: handWrittenCatalog.Form,
+  FormGroup: handWrittenCatalog.FormGroup,
+  Menu: handWrittenCatalog.Menu,
+  MenuPopover: handWrittenCatalog.MenuPopover,
+  MultiSelect: handWrittenCatalog.MultiSelect,
+  NumberInput: handWrittenCatalog.NumberInput,
+  PasswordInput: handWrittenCatalog.PasswordInput,
+  Radio: handWrittenCatalog.Radio,
+  RadioGroup: handWrittenRadioGroup.RadioGroup,
+  RangeSlider: handWrittenRangeSlider.RangeSlider,
+  Search: handWrittenCatalog.Search,
+  Select: handWrittenCatalog.Select,
+  SelectableList: handWrittenSelectableList.SelectableList,
+  Slider: handWrittenCatalog.Slider,
+  Switch: handWrittenCatalog.Switch,
+  Textarea: handWrittenCatalog.Textarea,
+  TileGroup: handWrittenCatalog.TileGroup,
+  TimePicker: handWrittenCatalog.TimePicker,
+  TimeRangePicker: handWrittenTimeRangePicker.TimeRangePicker,
+  Toggle: handWrittenCatalog.Toggle,
 };
 
 describe("React leg provenance", () => {

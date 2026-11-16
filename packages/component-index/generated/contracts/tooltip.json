@@ -1,7 +1,7 @@
 {
   "componentId": "tooltip",
   "contractSource": "derived",
-  "digest": "sha256:c1fa6c30f0cd83b8b47b365c0cc271cae815e26f977ecc2ef9e2f5c1697826d9",
+  "digest": "sha256:4c280867398cf0f93ef22e81e5f03e243182d907cec993057fc065c08714f9cc",
   "entryDigest": "sha256:52ce6abd33034a9fb97709e483c0469149ef9711ea762e63892d8ed51a39f453",
   "format": "component-contract/v1",
   "frameworks": {
@@ -90,7 +90,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TooltipProps",

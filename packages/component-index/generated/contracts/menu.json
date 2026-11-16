@@ -1,7 +1,7 @@
 {
   "componentId": "menu",
   "contractSource": "derived",
-  "digest": "sha256:ffea4297a7210d6e10990387de6be3b026e9869ca55c0aa590ceaeb04535df1f",
+  "digest": "sha256:c59f4698c692b1cfcd19db248ab8a8199e43fea52a42141345a9b198239a727c",
   "entryDigest": "sha256:03235faa85a7613e71428b3b7e2f4d76ffe9fb5c5b4ec7d988c326b407d4eecd",
   "format": "component-contract/v1",
   "frameworks": {
@@ -390,7 +390,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuProps",

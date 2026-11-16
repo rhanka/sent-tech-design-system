@@ -1,7 +1,7 @@
 {
   "componentId": "tree-view",
   "contractSource": "derived",
-  "digest": "sha256:e9ebecf6a5b96ec94184465942271998ccd8ea75311446e476c6b6bc9d3122b3",
+  "digest": "sha256:3cafaaac878fa2ac913bbb290f16a33304bca48ff3e2b8cdd13877c8201513fe",
   "entryDigest": "sha256:69a22570fae0896eb83df625ec1f305951df0b3c3620d16d8f351e584ea5406b",
   "format": "component-contract/v1",
   "frameworks": {
@@ -216,7 +216,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TreeViewProps",

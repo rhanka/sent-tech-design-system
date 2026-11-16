@@ -1,7 +1,7 @@
 {
   "componentId": "table",
   "contractSource": "derived",
-  "digest": "sha256:98cc000d7b512e76b0431a648129a9f3bad5bff5c76245be00af96368e61c35a",
+  "digest": "sha256:688f79650889208cf8f48d232f9f18904c00b093d87628aa766c643538d0e9a9",
   "entryDigest": "sha256:7311214453f62f2f886413d5caf1ad8558de2c926f15e1d9bb074e4455c75626",
   "format": "component-contract/v1",
   "frameworks": {
@@ -178,7 +178,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "TableProps",
