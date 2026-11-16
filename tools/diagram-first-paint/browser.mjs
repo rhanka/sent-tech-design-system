@@ -207,9 +207,10 @@ function check(state, scene) {
     // Owner card-body-centring: every card centres its single-line
     // `First paint` body ink horizontally in the frozen body box
     // (centre-x 232 card px) and drops the block by half the spare space
-    // (ink top at or below 104 card px — never top-aligned).
+    // (ink inside [104, 172] card px vertically — never top- or
+    // bottom-aligned; bodyArea [86, 190] midpoint 138).
     assert.deepEqual(centredBodyFindings({ nodes: state.nodes, labels: state.labels,
-      text: 'First paint', bodyCx: 232, minTop: 104, scale: state.scale, tolerance: 2 }), [], 'body centring');
+      text: 'First paint', bodyCx: 232, minTop: 104, maxBottom: 172, scale: state.scale, tolerance: 2 }), [], 'body centring');
   }
   const worldWidth = (state.content.width - 2) / state.scale;
   const worldHeight = (state.content.height - 2) / state.scale;
