@@ -1,7 +1,7 @@
 {
   "componentId": "menu-popover",
   "contractSource": "derived",
-  "digest": "sha256:377273b29d739a3020f8e6c7b88a2797c06347f73357c694c2676e8ea1a98a6e",
+  "digest": "sha256:3c23aa976d322796eccf4398a9b11a1aa4f456d01d448bcfcdc3575e3077ab5f",
   "entryDigest": "sha256:0cd833ef4a5a12fa6863db5b34694bcd150aaeac642b8dbb5323e8b7b406ec86",
   "format": "component-contract/v1",
   "frameworks": {
@@ -501,7 +501,7 @@
       ],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MenuPopoverProps",
