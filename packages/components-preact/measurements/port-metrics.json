@@ -77,9 +77,9 @@
         "lot": "P2",
         "reactSource": "SelectableRow.tsx",
         "reactLines": 252,
-        "preactLines": 249,
+        "preactLines": 258,
         "total": 1035,
-        "touched": 57,
+        "touched": 59,
         "emissionRewrites": 3,
         "tests": 9,
         "testLines": 251
@@ -126,9 +126,9 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 694,
+      "preactLines": 703,
       "total": 3521,
-      "touched": 171,
+      "touched": 173,
       "emissionRewrites": 16,
       "tests": 44,
       "testLines": 852
@@ -138,7 +138,7 @@
       "src/classNames.ts": 22,
       "src/index.ts": 174,
       "preactAdapters": 263,
-      "reactTwins": 82,
+      "reactTwins": 83,
       "scripts/emit-react.mjs": 174,
       "vitest.react.config.ts": 90
     }
