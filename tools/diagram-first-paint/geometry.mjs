@@ -44,6 +44,38 @@ export function exposedSegments(a, b, occluders, stroke) {
 }
 
 
+/**
+ * Owner card-body-centring: every card centres its body ink horizontally in
+ * the frozen body box and drops a short block by half the spare space. The
+ * three-cards scene carries the same single-line `First paint` body on
+ * every card, so the gate pins both axes from DOM ink: the ink centre-x
+ * must sit at the body-box centre and the ink top must sit at or below the
+ * centred single-line top (never top-aligned). `bodyCx`/`minTop` are card
+ * px scaled by `scale`; `tolerance` is screen px. Returns the defects,
+ * empty when the scene is sound.
+ */
+export function centredBodyFindings({ nodes, labels, text, bodyCx, minTop, scale, tolerance }) {
+  const findings = [];
+  for (const node of nodes) {
+    const ink = labels.filter(label => label.id === text
+      && label.left >= node.left - tolerance && label.right <= node.right + tolerance
+      && label.top >= node.top - tolerance && label.bottom <= node.bottom + tolerance);
+    if (ink.length === 0) { findings.push(`card ${node.id} has no \"${text}\" body ink`); continue; }
+    for (const label of ink) {
+      const centre = (label.left + label.right) / 2;
+      const expected = node.left + bodyCx * scale;
+      if (Math.abs(centre - expected) > tolerance) {
+        findings.push(`card ${node.id} body ink off-centre: ${centre} != ${expected}`);
+      }
+      const floor = node.top + minTop * scale;
+      if (label.top < floor - tolerance) {
+        findings.push(`card ${node.id} body ink above the centred block top: ${label.top} < ${floor}`);
+      }
+    }
+  }
+  return findings;
+}
+
 /** Distance from a point to the border of a box: 0 on the border, positive inside and outside alike. */
 export function borderDistance(point, box) {
   const dx = Math.max(box.left - point.x, 0, point.x - box.right);

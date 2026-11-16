@@ -1,8 +1,8 @@
 {
   "componentId": "streaming-message",
   "contractSource": "derived",
-  "digest": "sha256:cd54a6f8154c18df419caf02e2f2441d7b3abc59e4c29a95e39682c67b022d34",
-  "entryDigest": "sha256:d574c07896e3064ab228d8803ea65c4542fd0728246ee085cc79a60632a71722",
+  "digest": "sha256:50789bc40dc0d11c1f651997bd07edae2b582c9585aa880c852a16d8c47d4af7",
+  "entryDigest": "sha256:15579123c577c395a6c12df870188f649c0b516f64f54eff376acee982df4e09",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -668,7 +668,7 @@
         "declarationPath": "packages/components-svelte/dist/StreamingMessage.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StreamingMessageProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -795,7 +795,7 @@
         "declarationPath": "packages/components-vue/dist/StreamingMessage.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamingMessageProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],

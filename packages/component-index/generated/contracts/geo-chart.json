@@ -1,8 +1,8 @@
 {
   "componentId": "geo-chart",
   "contractSource": "derived",
-  "digest": "sha256:313d13d2f6cd7b3ebf3a70f90f59b839bd147255fc00a370d073bdb4d5e655f4",
-  "entryDigest": "sha256:db23065c479052bc7d786d98245825820361c7fbb840f7575b58fa4af0fdca69",
+  "digest": "sha256:77afc2e60f94307bfab9819300598a895998ee660d47ec4efd77146c777a8e84",
+  "entryDigest": "sha256:8f04e78ced4fb843056473d228158365579f01e929236d3576b5cc5d8258fae5",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -1869,7 +1869,7 @@
         "declarationPath": "packages/components-svelte/dist/GeoChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "GeoChartProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "partial",
       "unresolved": [],
@@ -2493,7 +2493,7 @@
         "declarationPath": "packages/components-vue/dist/GeoChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "GeoChartProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],
