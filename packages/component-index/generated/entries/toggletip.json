@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Toggletip.svelte",
-      "version": "0.41.4"
+      "version": "0.41.5"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Toggletip.vue",
-      "version": "0.41.0-next.6"
+      "version": "0.41.0-next.7"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Click-activated, persistent tooltip.",
     "fr": "Tooltip activable au clic, persistant."
   },
-  "digest": "sha256:e6e6cc5e9034b01b81cc38043d7f7533383aa32fc2e333e3356cd6d3590a3424",
+  "digest": "sha256:b5e3d1c93d91cc25fd7c75d3353dad92aca98ff58be92ff15025e137d805495a",
   "displayName": "Toggletip",
   "format": "component-entry/v1",
   "frameworks": [

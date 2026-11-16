@@ -1,8 +1,8 @@
 {
   "componentId": "timeline-chart",
   "contractSource": "derived",
-  "digest": "sha256:5779031baf78be48cddd1d84a3435c4394beb325183178be1bc35abfab356eb3",
-  "entryDigest": "sha256:66ae2fc2d8873916575a7292d775988ee32c7f609f6da335d59c07f6d54ece5d",
+  "digest": "sha256:568cbe193e336342a27e6071114bd259752e766af463f6588998676790d44d74",
+  "entryDigest": "sha256:4120a2cf35035ef7a738ecde770804a112388aed522dae12e42330d287cef9ef",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/TimelineChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "TimelineChartProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -342,7 +342,7 @@
         "declarationPath": "packages/components-vue/dist/TimelineChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "TimelineChartProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "complete",
       "unresolved": [],

@@ -204,7 +204,7 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
     }
   });
 
-  it("layoutCard applies it: header block, centred text band, body start", () => {
+  it("layoutCard applies it: header block, centred text band, centred body", () => {
     for (const combo of COMBOS) {
       const layout = layoutCard(cardProps(combo), defaultCardMeasure);
       expect(layout.headerBlockHeight, combo.name).toBe(Math.max(70, combo.block));
@@ -213,6 +213,13 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
       expect(layout.title[0]?.baseline, combo.name).toBe(textTop + (combo.kicker ? KICKER_H : 0) + 32);
       // No icon: no 70 px floor — the body starts right after the text block.
       expect(layout.bodyArea.top, combo.name).toBe(10 + Math.max(70, combo.block) + 6);
+      // Owner card-body-centring: the single body line is centred in the
+      // remaining body box — middle-anchored at the box centre, dropped by
+      // half the spare space (not top-aligned at bodyArea.top + 22).
+      expect(layout.body[0]?.anchor, combo.name).toBe("middle");
+      expect(layout.body[0]?.x, combo.name).toBe(232);
+      const spare = layout.bodyArea.bottom - layout.bodyArea.top - 31.1875;
+      expect(layout.body[0]?.baseline, combo.name).toBe(layout.bodyArea.top + spare / 2 + 22);
       // Pass 3, item 11: the icon is centred in the block (iconTopOffset),
       // exactly where the Svelte header's align-items:center paints it.
       expect(layout.iconBox, combo.name).toEqual(
@@ -221,14 +228,26 @@ describe("item 10 — optional-slot header geometry derived once, applied by eve
     }
   });
 
-  it("renderCardSvg paints the same geometry (icon presence, body line y)", () => {
+  it("renderCardSvg paints the same geometry (icon presence, centred body line)", () => {
+    // Owner card-body-centring: one 24 px line in the remaining body box —
+    // middle-anchored at x = 232, dropped by half the spare space.
+    const centredBaseline: Record<(typeof COMBOS)[number]["name"], number> = {
+      "icon+kicker": 123.78125,
+      "icon only": 123.6875,
+      "kicker only": 123.78125,
+      neither: 123.6875,
+    };
     for (const combo of COMBOS) {
       const rendered = renderCardSvg(cardProps(combo), defaultCardMeasure);
       expect(rendered.kind, combo.name).toBe("rendered");
       if (rendered.kind !== "rendered") continue;
       expect(rendered.svg.includes('data-diagram-icon="people"'), combo.name).toBe(combo.icon);
-      const bodyY = 10 + Math.max(70, combo.block) + 6;
-      expect(rendered.svg.includes(`y="${bodyY + 22}"`), combo.name).toBe(true);
+      expect(
+        rendered.svg.includes(
+          `<text class="st-diagramCard-body" x="232" y="${centredBaseline[combo.name]}" text-anchor="middle"`,
+        ),
+        combo.name,
+      ).toBe(true);
     }
   });
 
@@ -411,8 +430,11 @@ describe("pass 3 item 10 — blank kickers reserve no line; title placement foll
     expect(layout.kicker).toEqual([]);
     expect(layout.headerBlockHeight).toBe(70);
     expect(layout.title[0]?.baseline).toBe(56.203125);
-    // No overlap: the body starts below the title block.
-    expect(layout.body[0]?.baseline).toBe(108);
+    // No overlap: the centred body sits below the title block — the single
+    // line drops by half the spare space (86 + (62.5625 − 31.1875) / 2 + 22).
+    expect(layout.body[0]?.baseline).toBe(123.6875);
+    expect(layout.body[0]?.anchor).toBe("middle");
+    expect(layout.body[0]?.x).toBe(232);
     expect(layout.body[0]!.baseline).toBeGreaterThan(layout.title[0]!.baseline);
     const rendered = renderCardSvg(props, defaultCardMeasure);
     expect(rendered.kind).toBe("rendered");

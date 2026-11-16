@@ -1,8 +1,8 @@
 {
   "componentId": "content-switcher",
   "contractSource": "derived",
-  "digest": "sha256:6b7eb17bcca4c73894d74659ee09bc53162a919b3f597347dbdfdf4e277cecda",
-  "entryDigest": "sha256:c5cb25be990ebb4a10c17367ef45721a6e1bf76c91a3135ddb2e258b22bc2e45",
+  "digest": "sha256:5d77e6f6f9b21388976ea30c96759b69a7117c1422df69e6be876c18f6b8e4c2",
+  "entryDigest": "sha256:a6c930c1828f438521c66ca04f424d8a38cb018efc214c04528a5b6cfc743941",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -256,7 +256,7 @@
         "declarationPath": "packages/components-svelte/dist/ContentSwitcher.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ContentSwitcherProps",
-        "version": "0.41.4"
+        "version": "0.41.5"
       },
       "status": "complete",
       "unresolved": [],
@@ -370,7 +370,7 @@
         "declarationPath": "packages/components-vue/dist/ContentSwitcher.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ContentSwitcherProps",
-        "version": "0.41.0-next.6"
+        "version": "0.41.0-next.7"
       },
       "status": "partial",
       "unresolved": [],

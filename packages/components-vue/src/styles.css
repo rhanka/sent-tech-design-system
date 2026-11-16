@@ -18699,21 +18699,21 @@
        is exactly layout.bodyWidth wide at layout.bodyX — −2 px / 436 px for
        leaf bodies (bodyInsetFromBar 14 vs headerInset 16), 16 px / 396 px
        for the centred collapsed-subtitle measure (§6.2.1: the subtitle is
-       centred at 32 + 396/2 = 230, not over the wider content box). */
+       centred at 32 + 396/2 = 230, not over the wider content box).
+       Owner card-body-centring: the body block is centred horizontally
+       and vertically inside the remaining body box on every card — the
+       block grows into the spare space (flex: 1) and its lines centre
+       within it, mirroring the layoutCard bodyBlockTop/bodyLineX
+       geometry the SVG renderer paints. */
     min-width: 0;
-    flex: 0 0 auto;
-    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
-    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);
-    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
-  }
-  .st-diagramCard--subtitle .st-diagramCard-body {
-    /* §6.2.1: the collapsed-zone subtitle block is centred horizontally
-       and vertically inside the card body area. */
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
+    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);
+    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);
+    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);
   }
   .st-diagramCard-line,
   .st-diagramCard-detail {
