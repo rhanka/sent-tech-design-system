@@ -17,6 +17,7 @@ import type {
   TargetedFocusEvent,
   TargetedKeyboardEvent,
   TargetedMouseEvent,
+  TargetedPointerEvent,
   VNode,
 } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
@@ -28,7 +29,13 @@ export type { ComponentChildren };
 export type ComponentElement = VNode;
 
 /** Event types handed to DOM handlers (React twin: the synthetic event types). */
-export type { TargetedFocusEvent, TargetedKeyboardEvent, TargetedMouseEvent };
+export type {
+  TargetedEvent,
+  TargetedFocusEvent,
+  TargetedKeyboardEvent,
+  TargetedMouseEvent,
+  TargetedPointerEvent,
+};
 
 // ---------------------------------------------------------------------------
 // forwardRef
@@ -161,6 +168,23 @@ export function textInput<T extends HTMLInputElement | HTMLTextAreaElement>(
   handler: (value: string) => void,
 ): { onInput: (event: TargetedEvent<T>) => void } {
   return { onInput: (event) => handler(event.currentTarget.value) };
+}
+
+/**
+ * Controlled change handler of a pass-through text control, spread onto
+ * `<input>` or `<textarea>` with the consumer's own `onChange` destructured
+ * out of the rest props. Preact core attaches `onChange` to the native
+ * `change` event (blur for text fields), so a consumer `onChange` would only
+ * run on blur; mapping it here runs it per keystroke, like React and Vue.
+ * React twin: the same handler spread as `onChange`, which already fires per
+ * keystroke and which a controlled field must carry (no warning, no frozen
+ * field). A consumer `onInput` keeps flowing through the rest props on both
+ * runtimes, exactly as in `components-react`.
+ */
+export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
+  handler: (event: TargetedEvent<T>) => void,
+): { onInput: (event: TargetedEvent<T>) => void } {
+  return { onInput: handler };
 }
 
 // ---------------------------------------------------------------------------

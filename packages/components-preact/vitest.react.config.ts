@@ -38,6 +38,7 @@ function emittedReactModules(): Plugin {
 
 /** Existing `components-react` test files that exercise an emitted module. */
 const reactTests = [
+  "ChoiceSearchExtensions", // emitted Checkbox (description/trailing) + Search (fluid)
   "behavior", // Tabs keyboard, Modal focus trap / scroll lock / Escape
   "catalog", // Tabs, Modal, ChatComposer, Button in the catalogue render
   "index", // DS class contract of every component, the six included
@@ -60,6 +61,13 @@ const reactTests = [
   "Specialized", // emitted Rating + Autosave (sole components-react suite for both)
   "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
   "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
+  "RangeSlider", // emitted P2 form module
+  "MenuPopover", // emitted P3 host (children mode) of the emitted TimeRangePicker
+];
+
+/** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
+const reactTestTs = [
+  "menu-cascade", // pure solver of the emitted menu-cascade helper (Svelte parity)
 ];
 
 export default defineConfig({
@@ -72,6 +80,7 @@ export default defineConfig({
     testTimeout: 20000,
     include: [
       ...reactTests.map((name) => `components-react/src/${name}.test.tsx`),
+      ...reactTestTs.map((name) => `components-react/src/${name}.test.ts`),
       // React-leg checks of this package: provenance, and the adapter paths that
       // no `components-react` test reaches (text input, focus inside a row).
       "components-preact/react/*.test.{ts,tsx}",

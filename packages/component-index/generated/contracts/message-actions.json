@@ -1,7 +1,7 @@
 {
   "componentId": "message-actions",
   "contractSource": "derived",
-  "digest": "sha256:0e609fd6f7992c9a37a3deb208cebe5a3ab1061efcaa1a31d17d7033e30f4c37",
+  "digest": "sha256:0e7bb1471c50e8c4f750ab549af7f880f12a7b9cdc8ba431d8fa9c91dbeb12d5",
   "entryDigest": "sha256:1824bf84480a6d5524d094c4789f41db8b08ddcab14f0626288769405c65b437",
   "format": "component-contract/v1",
   "frameworks": {
@@ -165,7 +165,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
+        "declarationDigest": "sha256:11bc3fba838b499c1d2d8007346627a4490605bd202b47a583c4c18fdb2aa90e",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "MessageActionsProps",
