@@ -1,7 +1,7 @@
 {
   "componentId": "switch",
   "contractSource": "derived",
-  "digest": "sha256:2eab8a7b1fd55152fe98c0cfa792afb535c3061dc8b6b64700768c7e971e6e8a",
+  "digest": "sha256:55f9e5839e2147349d539670d09e5d49b5614592723a9251a83698b6adaf2f38",
   "entryDigest": "sha256:16796864f82095dd10725853b884de95dcc472f5a32d896f34b16a622d8338e1",
   "format": "component-contract/v1",
   "frameworks": {
@@ -98,7 +98,7 @@
       "replaced": [],
       "slots": [],
       "source": {
-        "declarationDigest": "sha256:3395b78e7416da4937fe62a6ae89de4775dc1ff8da3b17b6f1fb7263adef12b7",
+        "declarationDigest": "sha256:9fb5e3e6beae17304efb3227e312f5261aacf08d836bfb4a9c76db195bc2ab96",
         "declarationPath": "packages/components-react/dist/catalog.d.ts",
         "package": "@sentropic/design-system-react",
         "propsType": "SwitchProps",
