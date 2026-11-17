@@ -3,13 +3,10 @@ import { useEffect, useId, useRef, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { focusWithin } from "./runtime.js";
 import type { ComponentChildren, TargetedFocusEvent, TargetedMouseEvent } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
-export type TooltipProps = Omit<HTMLAttributes<HTMLSpanElement>, "content" | "className"> & {
+export type TooltipProps = Omit<HTMLAttributes<HTMLSpanElement>, "content"> & {
   content: ComponentChildren;
   placement?: "top" | "bottom";
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Tooltip({

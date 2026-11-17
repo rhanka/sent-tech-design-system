@@ -1,7 +1,6 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 export interface BreadcrumbItem {
   label: ComponentChildren;
@@ -9,11 +8,9 @@ export interface BreadcrumbItem {
   current?: boolean;
 }
 
-export type BreadcrumbProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type BreadcrumbProps = HTMLAttributes<HTMLElement> & {
   items: BreadcrumbItem[];
   label?: string;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Breadcrumb({ items, label = "Breadcrumb", className, ...rest }: BreadcrumbProps) {

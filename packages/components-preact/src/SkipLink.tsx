@@ -1,11 +1,8 @@
 import type { AnchorHTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
-import type { MaybeSignal } from "./signals.js";
 
-export type SkipLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "className"> & {
+export type SkipLinkProps = AnchorHTMLAttributes<HTMLAnchorElement> & {
   href?: string;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function SkipLink({ href = "#main", className, children = "Skip to content", ...rest }: SkipLinkProps) {
