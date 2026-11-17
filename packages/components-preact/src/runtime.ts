@@ -213,3 +213,17 @@ export function focusWithin<T extends EventTarget>(
 ): { onFocusIn: (event: TargetedFocusEvent<T>) => void } {
   return { onFocusIn: handler };
 }
+
+/**
+ * Focus-leave handler of a container, spread onto the element: it runs when
+ * focus leaves the element or any of its descendants, wherever focus goes —
+ * including `body`, which fires no `focusin` for a document listener to hear.
+ * Preact core attaches `onBlur` to the native `blur` event, which does not
+ * bubble, so a container never hears a child; the bubbling native event is
+ * `focusout` (`onFocusOut`). React: its `onBlur`, which already bubbles.
+ */
+export function focusOut<T extends EventTarget>(
+  handler: (event: TargetedFocusEvent<T>) => void,
+): { onFocusOut: (event: TargetedFocusEvent<T>) => void } {
+  return { onFocusOut: handler };
+}

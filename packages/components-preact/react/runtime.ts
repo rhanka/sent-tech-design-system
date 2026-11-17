@@ -57,3 +57,14 @@ export function focusWithin<T extends EventTarget>(
 ): { onFocus: (event: FocusEvent<T>) => void } {
   return { onFocus: handler };
 }
+
+/**
+ * Focus-leave handler of a container, spread onto the element: it runs when
+ * focus leaves the element or any of its descendants, wherever focus goes.
+ * React's `onBlur` already bubbles (it listens to the native `focusout`).
+ */
+export function focusOut<T extends EventTarget>(
+  handler: (event: FocusEvent<T>) => void,
+): { onBlur: (event: FocusEvent<T>) => void } {
+  return { onBlur: handler };
+}
