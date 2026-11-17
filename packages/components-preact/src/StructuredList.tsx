@@ -11,12 +11,10 @@ export interface StructuredListItem {
   value?: ComponentChildren;
 }
 
-export type StructuredListProps = Omit<HTMLAttributes<HTMLDListElement>, "className"> & {
+export type StructuredListProps = HTMLAttributes<HTMLDListElement> & {
   items: StructuredListItem[];
   /** Plain value, or a signal in the Preact build (read at the edge). */
   bordered?: MaybeSignal<boolean>;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function StructuredList({ items, bordered: borderedInput = false, className, ...rest }: StructuredListProps) {
