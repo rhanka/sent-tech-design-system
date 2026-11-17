@@ -2,7 +2,6 @@ import type { TableHTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { text } from "./internal.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 export interface TableColumn {
   key: string;

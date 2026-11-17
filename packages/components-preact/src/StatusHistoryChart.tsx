@@ -52,7 +52,7 @@ export type StatusHistoryChartProps = Omit<HTMLAttributes<HTMLDivElement>, "clas
 
 const MARGIN = { top: 16, right: 16, bottom: 32, left: 132 };
 
-function formatTickLocal(v: number): string {
+function formatTick(v: number): string {
   if (Math.abs(v) >= 1000) return `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k`;
   if (Number.isInteger(v)) return String(v);
   return v.toFixed(1);
@@ -225,7 +225,7 @@ export function StatusHistoryChart({
               y={height - MARGIN.bottom + 16}
               textAnchor="middle"
             >
-              {formatTickLocal(column.at)}
+              {formatTick(column.at)}
             </text>
           ))}
 
