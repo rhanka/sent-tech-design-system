@@ -990,13 +990,13 @@
     },
     {
       "key": "consumer-handler-preserved",
-      "preact": "Popover composes the consumer onClick after opening, Drawer composes the consumer onKeyDown behind the focus trap, Tooltip composes the consumer onFocus/onFocusIn/onBlur/onFocusOut/onMouseEnter/onMouseLeave around visibility, and BackToTop composes the consumer onClick before scrolling: the internal behavior runs and the consumer handler still fires once per event",
+      "preact": "Popover composes the consumer onClick after opening, Drawer composes the consumer onKeyDown behind the focus trap, Tooltip composes the consumer onFocus/onFocusIn/onBlur/onFocusOut/onMouseEnter/onMouseLeave around visibility, and BackToTop composes the consumer onClick before scrolling (order intentional in each case): the internal behavior runs and the consumer handler still fires once per event",
       "react": "The emitted handlers are the same compositions; the hand-written twins drop the consumer onClick (Popover, BackToTop), onKeyDown (Drawer) and onFocus (Tooltip) behind the internal prop placed after the rest spread",
       "decision": "recorded"
     },
     {
       "key": "focus-out",
-      "preact": "focusOut(handler) spreads onFocusOut (native focusout bubbles; onBlur does not), so Tooltip closes wherever focus goes, including body, with no document listener",
+      "preact": "focusOut(handler) spreads onFocusOut (native focusout bubbles; onBlur does not), so Tooltip closes wherever focus goes, including body, with no document listener; the composed consumer onFocus/onBlur now fire on bubbling focusin/focusout from any descendant like React, not on the host's own non-bubbling focus/blur",
       "react": "focusOut(handler) spreads onBlur (already bubbles)",
       "decision": "recorded"
     }
