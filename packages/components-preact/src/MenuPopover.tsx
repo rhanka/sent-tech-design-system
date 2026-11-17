@@ -1,7 +1,7 @@
 import type { CSSProperties, HTMLAttributes } from "preact";
 import { useCallback, useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
-import { useControlled } from "./internal.js";
+import { mergeStyle, useControlled } from "./internal.js";
 import { Menu, treeHasCascade, type MenuActionItem, type MenuItem, type MenuSubmenuSide } from "./Menu.js";
 import { MenuHostContext, type MenuHostCloseOptions, type MenuHostContextValue } from "./menu-cascade.js";
 import type { ComponentChildren } from "./runtime.js";
@@ -19,7 +19,7 @@ const MENU_POPOVER_VIEWPORT_MARGIN = 8;
 // rather than a crushed menu (rare case of a trigger glued to the edge).
 const MENU_POPOVER_MIN_HEIGHT = 160;
 
-function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
+export function menuPopoverIsWithin(event: Event, node: Element | null | undefined): boolean {
   if (!node) return false;
   const path =
     typeof (event as Event & { composedPath?: () => EventTarget[] }).composedPath === "function"
@@ -82,6 +82,7 @@ export function MenuPopover({
   onSelect,
   submenuSide,
   children,
+  style,
   ...rest
 }: MenuPopoverProps) {
   const defaultOpen = unwrap(defaultOpenInput) ?? false;
@@ -298,8 +299,8 @@ export function MenuPopover({
 
   if (!open) return null;
 
-  const style: CSSProperties = { top: `${pos.top}px`, left: `${pos.left}px` }
-  if (pos.maxHeight) style.maxHeight = `${pos.maxHeight}px`;
+  const baseStyle: CSSProperties = { top: `${pos.top}px`, left: `${pos.left}px` }
+  if (pos.maxHeight) baseStyle.maxHeight = `${pos.maxHeight}px`;
 
   return (
     <div
@@ -317,7 +318,7 @@ export function MenuPopover({
       aria-label={label}
       // No static popover attribute: set imperatively by showTopLayer() only
       // where the Popover API exists.
-      style={style}
+      style={mergeStyle(baseStyle, style) as CSSProperties | undefined}
     >
       <MenuHostContext.Provider value={hostContext}>
         {items.length ? (
