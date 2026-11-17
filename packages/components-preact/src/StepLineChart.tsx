@@ -2,7 +2,7 @@ import type { HTMLAttributes } from "preact";
 import { Fragment } from "preact";
 import { useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
-import { ChartDataList, formatTick, isNumeric, niceTicks, scaleLinear } from "./chartScale.js";
+import { CHART_MARGIN, ChartDataList, formatTick, isNumeric, niceTicks, scaleLinear } from "./chartScale.js";
 // Side-effect: installs the options.vnode SVG presentation-attribute
 // normalisation in runtime.ts. This module renders intrinsic camelCase SVG
 // attributes but otherwise references runtime only via `import type`, which
@@ -39,7 +39,7 @@ export type StepLineChartProps = Omit<HTMLAttributes<HTMLDivElement>, "className
   className?: MaybeSignal<string>;
 };
 
-const MARGIN = { top: 14, right: 16, bottom: 34, left: 44 } as const;
+const MARGIN = CHART_MARGIN;
 
 function isValidDatum(datum: StepLineChartDatum): boolean {
   return Number.isFinite(datum.y) && (typeof datum.x === "string" || isNumeric(datum.x));
