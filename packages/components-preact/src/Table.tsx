@@ -12,12 +12,10 @@ export interface TableColumn {
 
 export type TableRow = Record<string, unknown>;
 
-export type TableProps = Omit<TableHTMLAttributes<HTMLTableElement>, "className"> & {
+export type TableProps = TableHTMLAttributes<HTMLTableElement> & {
   columns: TableColumn[];
   rows: TableRow[];
   caption?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Table({ columns, rows, caption = "Table", className, ...rest }: TableProps) {
