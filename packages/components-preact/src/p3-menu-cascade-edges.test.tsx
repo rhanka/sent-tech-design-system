@@ -150,7 +150,9 @@ describe("P3 group 1 edges (menu cascade: signals at the edges, post-mount mutat
     fireEvent.mouseLeave(host);
     expect(host.querySelector('[role="tooltip"]')?.getAttribute("aria-hidden")).toBe("true");
     expect(onMouseLeave).toHaveBeenCalledTimes(1);
-    fireEvent.blur(host);
+    // Leave semantics are `focusout` on both runtimes (React's `onBlur`
+    // bubbles; Preact's does not), not the host's own non-bubbling `blur`.
+    fireEvent.focusOut(host);
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
 
