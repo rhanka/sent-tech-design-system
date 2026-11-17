@@ -507,7 +507,7 @@ const FORCE_GRAPH_CURVE_FACTOR = 0.5;
 const FORCE_GRAPH_MERGE_DURATION_MS = 450;
 // ease-in-out (cubic) for a smooth glide.
 function forceGraphEaseInOut(t: number): number {
-  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 3, 3) / 2;
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 }
 // Fit-to-content margin (per side, fraction of the content box).
 const FORCE_GRAPH_CONTENT_MARGIN = 0.08;
