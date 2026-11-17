@@ -8,25 +8,40 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a group 1, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
     "Alert",
+    "AnomalySwimLaneChart",
+    "ArcDiagramChart",
+    "AreaChart",
+    "AreaRangeChart",
+    "AreaSplineRangeChart",
     "AspectRatio",
     "Autosave",
     "BackToTop",
     "Badge",
+    "BarChart",
+    "BellCurveChart",
+    "BoxPlotChart",
     "Breadcrumb",
+    "BulletChart",
+    "BumpChart",
     "Button",
     "ButtonGroup",
     "Calendar",
+    "CalendarHeatmapChart",
+    "CandlestickChart",
     "Card",
     "ChatComposer",
     "Checkbox",
     "CheckboxGroup",
+    "ChordDiagram",
+    "CodeSnippet",
     "Col",
     "Collapsible",
+    "ColorScaleBar",
     "ColorSwatch",
     "Combobox",
     "Container",
@@ -42,6 +57,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "FileUploader",
     "Flex",
     "Footer",
+    "ForceGraph",
     "Form",
     "FormGroup",
     "Grid",
@@ -151,6 +167,26 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   }
   assert.deepEqual(lots.get("Badge"), "P4a");
   assert.deepEqual(lots.get("ColorSwatch"), "P4a");
+  for (const name of [
+    "AnomalySwimLaneChart",
+    "ArcDiagramChart",
+    "AreaChart",
+    "AreaRangeChart",
+    "AreaSplineRangeChart",
+    "BarChart",
+    "BellCurveChart",
+    "BoxPlotChart",
+    "BulletChart",
+    "BumpChart",
+    "CalendarHeatmapChart",
+    "CandlestickChart",
+    "ChordDiagram",
+    "CodeSnippet",
+    "ColorScaleBar",
+    "ForceGraph",
+  ]) {
+    assert.deepEqual(lots.get(name), "P4a");
+  }
   for (const name of [
     "Calendar",
     "Checkbox",
