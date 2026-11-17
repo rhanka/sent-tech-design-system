@@ -8,7 +8,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "React sources ported by spike S1 and lot P1 and measured in docs/preact-s1-spike.md. Same commit as scripts/port-metrics.mjs BASE_REF; verified no P1 source drift to origin/main."
   },
-  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row.",
+  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row. Lot P3 group 1 ports the 5 menu-cascade modules (MenuTriggerButton, OverflowMenu, Popover, Toggletip, Tooltip) with the MenuPopover consumer-style merge. Lot P3 group 2 ports the 12 navigation modules (BackToTop, Breadcrumb, Footer, Header, LanguageToggle, NavActionStack, NavItem, Pagination, PaginationNav, SideNav, Stepper, TableOfContents) plus 2 data dependencies of NavItem (Badge, ColorSwatch); the data lot is jointly P4a+P4b in the programme (spike section 8.3) while the manifest enum carries P4a and P4b separately, so the two dependency rows are labeled P4a. Lot P3 group 3 ports the 5 remaining P3 modules (Drawer, LanguageSelector, SkipLink, SlideIndicator, TreeView): Drawer is overlay, the other four are navigation.",
   "modules": [
     {
       "module": "Button",
@@ -524,6 +524,177 @@
       "renderable": true
     },
     {
+      "module": "MenuTriggerButton",
+      "file": "src/MenuTriggerButton.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "OverflowMenu",
+      "file": "src/OverflowMenu.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Popover",
+      "file": "src/Popover.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Toggletip",
+      "file": "src/Toggletip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Tooltip",
+      "file": "src/Tooltip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "BackToTop",
+      "file": "src/BackToTop.tsx",
+      "reactSource": "components-react/src/BackToTop.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Breadcrumb",
+      "file": "src/Breadcrumb.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Footer",
+      "file": "src/Footer.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Header",
+      "file": "src/Header.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "LanguageToggle",
+      "file": "src/LanguageToggle.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "NavActionStack",
+      "file": "src/NavActionStack.tsx",
+      "reactSource": "components-react/src/NavActionStack.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "NavItem",
+      "file": "src/NavItem.tsx",
+      "reactSource": "components-react/src/NavItem.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Pagination",
+      "file": "src/Pagination.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PaginationNav",
+      "file": "src/PaginationNav.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SideNav",
+      "file": "src/SideNav.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Stepper",
+      "file": "src/Stepper.tsx",
+      "reactSource": "components-react/src/Stepper.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TableOfContents",
+      "file": "src/TableOfContents.tsx",
+      "reactSource": "components-react/src/TableOfContents.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Badge",
+      "file": "src/Badge.tsx",
+      "reactSource": "components-react/src/Badge.tsx",
+      "category": "data",
+      "lot": "P4a",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ColorSwatch",
+      "file": "src/ColorSwatch.tsx",
+      "reactSource": "components-react/src/ColorSwatch.tsx",
+      "category": "data",
+      "lot": "P4a",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "MultiSelect",
       "file": "src/MultiSelect.tsx",
       "reactSource": "components-react/src/catalog.tsx",
@@ -666,6 +837,51 @@
       "lot": "P2",
       "hardSet": false,
       "renderable": true
+    },
+    {
+      "module": "Drawer",
+      "file": "src/Drawer.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "LanguageSelector",
+      "file": "src/LanguageSelector.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SkipLink",
+      "file": "src/SkipLink.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SlideIndicator",
+      "file": "src/SlideIndicator.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreeView",
+      "file": "src/TreeView.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
     }
   ],
   "adaptersNote": "The three adapters are owned by lot P5 (hard set) and reused by every conversion lot. Their file set must stay identical to the ADAPTERS map of scripts/emit-react.mjs: the emission is the lint of the single-source rule.",
@@ -770,6 +986,18 @@
       "key": "controlled-reimpose",
       "preact": "Preact core (no preact/compat) does not re-impose a controlled checked/value after a rejected change: when the consumer onChange keeps value unchanged, the native control keeps its user-edited state (CheckboxGroup, RadioGroup, TileGroup, Slider, NumberInput)",
       "react": "React restores the controlled DOM state on re-render",
+      "decision": "recorded"
+    },
+    {
+      "key": "consumer-handler-preserved",
+      "preact": "Popover composes the consumer onClick after opening, Drawer composes the consumer onKeyDown behind the focus trap, Tooltip composes the consumer onFocus/onFocusIn/onBlur/onFocusOut/onMouseEnter/onMouseLeave around visibility, and BackToTop composes the consumer onClick before scrolling (order intentional in each case): the internal behavior runs and the consumer handler still fires once per event",
+      "react": "The emitted handlers are the same compositions; the hand-written twins drop the consumer onClick (Popover, BackToTop), onKeyDown (Drawer) and onFocus (Tooltip) behind the internal prop placed after the rest spread",
+      "decision": "recorded"
+    },
+    {
+      "key": "focus-out",
+      "preact": "focusOut(handler) spreads onFocusOut (native focusout bubbles; onBlur does not), so Tooltip closes wherever focus goes, including body, with no document listener; the composed consumer onFocus/onBlur now fire on bubbling focusin/focusout from any descendant like React, not on the host's own non-bubbling focus/blur",
+      "react": "focusOut(handler) spreads onBlur (already bubbles)",
       "decision": "recorded"
     }
   ]
