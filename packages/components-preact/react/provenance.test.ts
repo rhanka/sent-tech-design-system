@@ -71,6 +71,17 @@ import * as handWrittenDonutChart from "../../components-react/src/DonutChart.js
 import * as handWrittenDumbbellChart from "../../components-react/src/DumbbellChart.js";
 import * as handWrittenErrorBarChart from "../../components-react/src/ErrorBarChart.js";
 import * as handWrittenEventFeedPanel from "../../components-react/src/EventFeedPanel.js";
+import * as handWrittenFlamegraphChart from "../../components-react/src/FlamegraphChart.js";
+import * as handWrittenFunnelChart from "../../components-react/src/FunnelChart.js";
+import * as handWrittenGanttChart from "../../components-react/src/GanttChart.js";
+import * as handWrittenGaugeChart from "../../components-react/src/GaugeChart.js";
+import * as handWrittenGeoChart from "../../components-react/src/GeoChart.js";
+import * as handWrittenHLCChart from "../../components-react/src/HLCChart.js";
+import * as handWrittenHeatmapChart from "../../components-react/src/HeatmapChart.js";
+import * as handWrittenHeikinAshiChart from "../../components-react/src/HeikinAshiChart.js";
+import * as handWrittenHistogramChart from "../../components-react/src/HistogramChart.js";
+import * as handWrittenHollowCandlestickChart from "../../components-react/src/HollowCandlestickChart.js";
+import * as handWrittenItemChart from "../../components-react/src/ItemChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -204,6 +215,19 @@ const switched = [
   "DumbbellChart",
   "ErrorBarChart",
   "EventFeedPanel",
+  "FilterBar",
+  "FilterPill",
+  "FlamegraphChart",
+  "FunnelChart",
+  "GanttChart",
+  "GaugeChart",
+  "GeoChart",
+  "HLCChart",
+  "HeatmapChart",
+  "HeikinAshiChart",
+  "HistogramChart",
+  "HollowCandlestickChart",
+  "ItemChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -337,6 +361,19 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   DumbbellChart: handWrittenDumbbellChart.DumbbellChart,
   ErrorBarChart: handWrittenErrorBarChart.ErrorBarChart,
   EventFeedPanel: handWrittenEventFeedPanel.EventFeedPanel,
+  FilterBar: handWrittenCatalog.FilterBar,
+  FilterPill: handWrittenCatalog.FilterPill,
+  FlamegraphChart: handWrittenFlamegraphChart.FlamegraphChart,
+  FunnelChart: handWrittenFunnelChart.FunnelChart,
+  GanttChart: handWrittenGanttChart.GanttChart,
+  GaugeChart: handWrittenGaugeChart.GaugeChart,
+  GeoChart: handWrittenGeoChart.GeoChart,
+  HLCChart: handWrittenHLCChart.HLCChart,
+  HeatmapChart: handWrittenHeatmapChart.HeatmapChart,
+  HeikinAshiChart: handWrittenHeikinAshiChart.HeikinAshiChart,
+  HistogramChart: handWrittenHistogramChart.HistogramChart,
+  HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
+  ItemChart: handWrittenItemChart.ItemChart,
 };
 
 describe("React leg provenance", () => {
