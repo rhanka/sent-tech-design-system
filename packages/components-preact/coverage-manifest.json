@@ -1359,7 +1359,7 @@
     },
     {
       "key": "svg-presentation-attributes",
-      "preact": "Intrinsic SVG presentation attributes are normalised to kebab-case by the options.vnode hook in runtime.ts (strokeWidth to stroke-width; viewBox, clipPathUnits and textLength preserved)",
+      "preact": "Intrinsic SVG presentation attributes are normalised to kebab-case by the options.vnode hook in runtime.ts (strokeWidth to stroke-width; viewBox, clipPathUnits and textLength preserved); tabIndex is normalised to tabindex on every intrinsic element so SVG nodes stay focusable",
       "react": "React camelCase SVG props",
       "decision": "recorded"
     },
