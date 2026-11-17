@@ -217,4 +217,28 @@ describe("P3 group 3 edges (overlay: signals at the edges, post-mount mutation)"
     expect(onSelect).toHaveBeenCalledWith("leaf2");
     expect(onChange).toHaveBeenCalledWith("leaf2");
   });
+
+  it("TreeView honors the selected alias and ArrowDown/End keyboard", async () => {
+    const onSelect = vi.fn();
+    const nodes = [
+      {
+        id: "root",
+        label: "Root",
+        children: [
+          { id: "leaf1", label: "Leaf 1" },
+          { id: "leaf2", label: "Leaf 2" },
+          { id: "leaf3", label: "Leaf 3" },
+        ],
+      },
+    ];
+    render(<TreeView nodes={nodes} selected="leaf1" expandedIds={["root"]} onSelect={onSelect} />);
+    const rowOf = (label: string) => screen.getByText(label).closest('[role="treeitem"]') as HTMLElement;
+    expect(rowOf("Leaf 1").getAttribute("aria-selected")).toBe("true");
+    fireEvent.keyDown(rowOf("Leaf 1"), { key: "ArrowDown" });
+    await waitFor(() => expect(document.activeElement?.getAttribute("data-tree-id")).toBe("leaf2"));
+    fireEvent.keyDown(document.activeElement as HTMLElement, { key: "End" });
+    await waitFor(() => expect(document.activeElement?.getAttribute("data-tree-id")).toBe("leaf3"));
+    fireEvent.keyDown(document.activeElement as HTMLElement, { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledWith("leaf3");
+  });
 });
