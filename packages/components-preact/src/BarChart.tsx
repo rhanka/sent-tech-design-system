@@ -189,6 +189,8 @@ export function BarChart({
   className,
   ...rest
 }: BarChartProps) {
+  // Inert by design (matches components-react): the bar filter chips double as
+  // the legend, so this prop has no surface and no post-mount flip test applies.
   void _showLegend;
   const selectedKeys = useValue(selectedKeysInput);
   const invertAxis = useValue(invertAxisInput);

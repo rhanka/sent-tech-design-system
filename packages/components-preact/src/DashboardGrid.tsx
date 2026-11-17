@@ -104,7 +104,7 @@ export function DashboardGrid({
   let resolvedStyle: unknown = style;
   if (typeof resolvedStyle === "object" && resolvedStyle !== null && "peek" in resolvedStyle) {
     try {
-      resolvedStyle = (resolvedStyle as { value: unknown }).value;
+      resolvedStyle = (resolvedStyle as unknown as { value: unknown }).value;
     } catch {
       resolvedStyle = undefined;
     }
