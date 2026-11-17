@@ -27,7 +27,7 @@ export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(
       threshold = 240,
       autoHide: autoHideInput = true,
       smooth: smoothInput = true,
-      disabled = false,
+      disabled: disabledInput = false,
       className,
       onClick,
       ...rest
@@ -36,6 +36,7 @@ export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(
   ) => {
     const autoHide = useValue(autoHideInput);
     const smooth = useValue(smoothInput);
+    const disabled = useValue(disabledInput) ?? false;
     const normalizedTarget = targetId ? `#${targetId.replace(/^#/, "")}` : "#top";
 
     const [visible, setVisible] = useState(!autoHide);
