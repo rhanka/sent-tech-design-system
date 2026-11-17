@@ -52,12 +52,12 @@ export type StateTimelineChartProps = Omit<HTMLAttributes<HTMLDivElement>, "clas
 
 const MARGIN = { top: 16, right: 16, bottom: 32, left: 132 };
 
-function scaleLinearLocal(v: number, d0: number, d1: number, r0: number, r1: number): number {
+function scaleLinear(v: number, d0: number, d1: number, r0: number, r1: number): number {
   if (d1 === d0) return r0;
   return r0 + ((v - d0) * (r1 - r0)) / (d1 - d0);
 }
 
-function niceTicksLocal(min: number, max: number, target = 5): number[] {
+function niceTicks(min: number, max: number, target = 5): number[] {
   if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) {
     const base = Number.isFinite(max) ? max : 0;
     return [base];
@@ -80,7 +80,7 @@ function niceTicksLocal(min: number, max: number, target = 5): number[] {
   return ticks;
 }
 
-function formatTickLocal(v: number): string {
+function formatTick(v: number): string {
   if (Math.abs(v) >= 1000) return `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k`;
   if (Number.isInteger(v)) return String(v);
   return v.toFixed(1);
@@ -151,11 +151,11 @@ export function StateTimelineChart({
   const rawMaxBase = vals.length === 0 ? 1 : Math.max(...vals);
   const rawMax = rawMaxBase === rawMin ? rawMin + 1 : rawMaxBase;
 
-  const ticks = niceTicksLocal(rawMin, rawMax, 5);
+  const ticks = niceTicks(rawMin, rawMax, 5);
   const domainMin = ticks[0] ?? rawMin;
   const domainMax = ticks[ticks.length - 1] ?? rawMax;
 
-  const xOf = (v: number) => MARGIN.left + scaleLinearLocal(v, domainMin, domainMax, 0, plotWidth);
+  const xOf = (v: number) => MARGIN.left + scaleLinear(v, domainMin, domainMax, 0, plotWidth);
 
   type LaneSegment = {
     key: string;
@@ -262,7 +262,7 @@ export function StateTimelineChart({
                   y={height - MARGIN.bottom + 16}
                   textAnchor="middle"
                 >
-                  {formatTickLocal(tick)}
+                  {formatTick(tick)}
                 </text>
               </Fragment>
             );
