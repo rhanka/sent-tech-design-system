@@ -331,3 +331,48 @@ export { ErrorBarChart } from "./ErrorBarChart.js";
 export type { ErrorBarChartProps, ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.js";
 export { EventFeedPanel } from "./EventFeedPanel.js";
 export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
+export { FilterBar } from "./FilterBar.js";
+export type { FilterBarProps } from "./FilterBar.js";
+export { FilterPill } from "./FilterPill.js";
+export type { FilterPillProps, FilterPillTone } from "./FilterPill.js";
+export { FlamegraphChart } from "./FlamegraphChart.js";
+export type { FlamegraphChartProps, FlamegraphNode } from "./FlamegraphChart.js";
+export { FunnelChart } from "./FunnelChart.js";
+export type { FunnelChartProps, FunnelChartDatum, FunnelChartTone } from "./FunnelChart.js";
+export { GanttChart } from "./GanttChart.js";
+export type { GanttChartProps, GanttChartTask } from "./GanttChart.js";
+export { GaugeChart } from "./GaugeChart.js";
+export type { GaugeChartProps, GaugeChartThreshold, GaugeChartTone, GaugeChartFormat } from "./GaugeChart.js";
+export { GeoChart } from "./GeoChart.js";
+export type {
+  GeoChartProps,
+  GeoChartTone,
+  GeoChartCoordinate,
+  GeoChartBounds,
+  GeoChartProjection,
+  GeoChartGeometryType,
+  GeoChartGeometry,
+  GeoChartFeature,
+  GeoChartPoint,
+  GeoChartFlow,
+  GeoChartGeojsonLayer,
+  GeoChartChoroplethLayer,
+  GeoChartPointsLayer,
+  GeoChartDensityLayer,
+  GeoChartFlowLayer,
+  GeoChartHexbinLayer,
+  GeoChartClusterLayer,
+  GeoChartLayer,
+} from "./GeoChart.js";
+export { HLCChart } from "./HLCChart.js";
+export type { HLCChartProps, HLCChartDatum } from "./HLCChart.js";
+export { HeatmapChart } from "./HeatmapChart.js";
+export type { HeatmapChartProps, HeatmapChartDatum, HeatmapChartScale, HeatmapChartTone } from "./HeatmapChart.js";
+export { HeikinAshiChart } from "./HeikinAshiChart.js";
+export type { HeikinAshiChartProps, HeikinAshiChartDatum } from "./HeikinAshiChart.js";
+export { HistogramChart } from "./HistogramChart.js";
+export type { HistogramChartProps, HistogramChartDatum, HistogramChartTone } from "./HistogramChart.js";
+export { HollowCandlestickChart } from "./HollowCandlestickChart.js";
+export type { HollowCandlestickChartProps, HollowCandlestickChartDatum } from "./HollowCandlestickChart.js";
+export { ItemChart } from "./ItemChart.js";
+export type { ItemChartProps, ItemChartDatum, ItemChartTone } from "./ItemChart.js";

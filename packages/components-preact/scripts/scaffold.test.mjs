@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1 and 2, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -71,19 +71,32 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "EventFeedPanel",
     "FieldCard",
     "FileUploader",
+    "FilterBar",
+    "FilterPill",
+    "FlamegraphChart",
     "Flex",
     "Footer",
     "ForceGraph",
     "Form",
     "FormGroup",
+    "FunnelChart",
+    "GanttChart",
+    "GaugeChart",
+    "GeoChart",
     "Grid",
+    "HLCChart",
     "Header",
+    "HeatmapChart",
+    "HeikinAshiChart",
     "Hidden",
     "Highlight",
+    "HistogramChart",
+    "HollowCandlestickChart",
     "IconButton",
     "Inline",
     "InlineLoading",
     "Input",
+    "ItemChart",
     "LanguageSelector",
     "LanguageToggle",
     "Link",
@@ -216,6 +229,19 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
     "DumbbellChart",
     "ErrorBarChart",
     "EventFeedPanel",
+    "FilterBar",
+    "FilterPill",
+    "FlamegraphChart",
+    "FunnelChart",
+    "GanttChart",
+    "GaugeChart",
+    "GeoChart",
+    "HLCChart",
+    "HeatmapChart",
+    "HeikinAshiChart",
+    "HistogramChart",
+    "HollowCandlestickChart",
+    "ItemChart",
   ]) {
     assert.deepEqual(lots.get(name), "P4a");
   }
