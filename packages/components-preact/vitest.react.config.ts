@@ -64,6 +64,9 @@ const reactTests = [
   "RangeSlider", // emitted P2 form module
   "MenuCascade", // emitted Menu cascade, hover-intent and safe-triangle behaviour
   "Shell", // emitted Menu exercised through the Shell suite
+  "ColorSwatch", // emitted P3 data module (chip sizing / aria-label derivation)
+  "TreeViewSelect", // emitted P3 TreeView selection payloads
+  "TreeViewAccessibleName", // emitted P3 TreeView accessible-name precedence
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
