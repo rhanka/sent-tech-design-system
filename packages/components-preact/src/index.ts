@@ -284,3 +284,50 @@ export type {
 export type { ChartOverlayTone, ChartReferenceLine, ChartBand, ChartGoalLine, ChartScale } from "./chartScale.js";
 export type { ChartAnnotation, ChartAnnotationMarker } from "./chartAnnotations.js";
 export type { DataLabelsProp, DataLabelsOptions, DataLabelPosition } from "./chartDataLabels.js";
+export { ColumnPyramidChart } from "./ColumnPyramidChart.js";
+export type { ColumnPyramidChartProps, ColumnPyramidChartDatum, ColumnPyramidChartTone } from "./ColumnPyramidChart.js";
+export { ColumnRangeChart } from "./ColumnRangeChart.js";
+export type { ColumnRangeChartProps, ColumnRangeChartDatum, ColumnRangeChartTone } from "./ColumnRangeChart.js";
+export { ComboChart } from "./ComboChart.js";
+export type {
+  ComboChartProps,
+  ComboChartBarSeries,
+  ComboChartLineSeries,
+  ComboChartTone,
+} from "./ComboChart.js";
+export { ConfigItemCard } from "./ConfigItemCard.js";
+export type {
+  ConfigItemCardProps,
+  ConfigItem,
+  ConfigItemSourceLevel,
+} from "./ConfigItemCard.js";
+export { ContourChart } from "./ContourChart.js";
+export type { ContourChartProps, ContourChartDatum, ContourChartTone, ContourChartScale } from "./ContourChart.js";
+export { DashboardGrid } from "./DashboardGrid.js";
+export type { DashboardGridProps, DashboardGridTile } from "./DashboardGrid.js";
+export { DataImage } from "./DataImage.js";
+export type { DataImageProps, DataImageFit } from "./DataImage.js";
+export { DataTable } from "./DataTable.js";
+export type { DataTableProps, DataTableColumn, DataTableRow, DataTableSelectMode, DataTableSort } from "./DataTable.js";
+export type { CellDecoration, CellDecorationIntent } from "./cellDecoration.js";
+export { DecompositionTreeChart } from "./DecompositionTreeChart.js";
+export type {
+  DecompositionTreeChartProps,
+  DecompositionTreeNode,
+  DecompositionTreeLevel,
+  DecompositionTreeData,
+} from "./DecompositionTreeChart.js";
+export { Density2DChart } from "./Density2DChart.js";
+export type { Density2DChartProps, Density2DTone, Density2DPoint, Density2DChartScale } from "./Density2DChart.js";
+export { DependencyWheelChart } from "./DependencyWheelChart.js";
+export type { DependencyWheelChartProps, DependencyWheelChartLink, DependencyWheelChartTone } from "./DependencyWheelChart.js";
+export { DivergentBarChart } from "./DivergentBarChart.js";
+export type { DivergentBarChartProps, DivergentBarChartDatum, DivergentBarChartTone } from "./DivergentBarChart.js";
+export { DonutChart } from "./DonutChart.js";
+export type { DonutChartProps, DonutChartDatum, DonutChartTone } from "./DonutChart.js";
+export { DumbbellChart } from "./DumbbellChart.js";
+export type { DumbbellChartProps, DumbbellChartDatum, DumbbellChartTone } from "./DumbbellChart.js";
+export { ErrorBarChart } from "./ErrorBarChart.js";
+export type { ErrorBarChartProps, ErrorBarChartDatum, ErrorBarChartTone } from "./ErrorBarChart.js";
+export { EventFeedPanel } from "./EventFeedPanel.js";
+export type { EventFeedPanelProps, EventFeedPanelEvent, EventFeedPanelSeverity } from "./EventFeedPanel.js";
