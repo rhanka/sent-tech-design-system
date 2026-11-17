@@ -35,6 +35,20 @@ import * as handWrittenStatusDot from "../../components-react/src/StatusDot.js";
 import * as handWrittenTheme from "../../components-react/src/ThemeProvider.js";
 import * as handWrittenTimeline from "../../components-react/src/Timeline.js";
 import * as handWrittenBackToTop from "../../components-react/src/BackToTop.js";
+import * as handWrittenAnomalySwimLaneChart from "../../components-react/src/AnomalySwimLaneChart.js";
+import * as handWrittenArcDiagramChart from "../../components-react/src/ArcDiagramChart.js";
+import * as handWrittenAreaChart from "../../components-react/src/AreaChart.js";
+import * as handWrittenAreaRangeChart from "../../components-react/src/AreaRangeChart.js";
+import * as handWrittenAreaSplineRangeChart from "../../components-react/src/AreaSplineRangeChart.js";
+import * as handWrittenBarChart from "../../components-react/src/BarChart.js";
+import * as handWrittenBellCurveChart from "../../components-react/src/BellCurveChart.js";
+import * as handWrittenBoxPlotChart from "../../components-react/src/BoxPlotChart.js";
+import * as handWrittenBulletChart from "../../components-react/src/BulletChart.js";
+import * as handWrittenBumpChart from "../../components-react/src/BumpChart.js";
+import * as handWrittenCalendarHeatmapChart from "../../components-react/src/CalendarHeatmapChart.js";
+import * as handWrittenCandlestickChart from "../../components-react/src/CandlestickChart.js";
+import * as handWrittenChordDiagram from "../../components-react/src/ChordDiagram.js";
+import * as handWrittenColorScaleBar from "../../components-react/src/ColorScaleBar.js";
 import * as handWrittenBadge from "../../components-react/src/Badge.js";
 import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
 import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
@@ -141,6 +155,23 @@ const switched = [
   "SkipLink",
   "SlideIndicator",
   "TreeView",
+  "AnomalySwimLaneChart",
+  "ArcDiagramChart",
+  "AreaChart",
+  "AreaRangeChart",
+  "AreaSplineRangeChart",
+  "BarChart",
+  "BellCurveChart",
+  "BoxPlotChart",
+  "BulletChart",
+  "BumpChart",
+  "CalendarHeatmapChart",
+  "CandlestickChart",
+  "ChordDiagram",
+  "CodeSnippet",
+  "ColorScaleBar",
+  "ForceGraph",
+  "GraphLegend",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -241,6 +272,23 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   SkipLink: handWrittenCatalog.SkipLink,
   SlideIndicator: handWrittenCatalog.SlideIndicator,
   TreeView: handWrittenCatalog.TreeView,
+  AnomalySwimLaneChart: handWrittenAnomalySwimLaneChart.AnomalySwimLaneChart,
+  ArcDiagramChart: handWrittenArcDiagramChart.ArcDiagramChart,
+  AreaChart: handWrittenAreaChart.AreaChart,
+  AreaRangeChart: handWrittenAreaRangeChart.AreaRangeChart,
+  AreaSplineRangeChart: handWrittenAreaSplineRangeChart.AreaSplineRangeChart,
+  BarChart: handWrittenBarChart.BarChart,
+  BellCurveChart: handWrittenBellCurveChart.BellCurveChart,
+  BoxPlotChart: handWrittenBoxPlotChart.BoxPlotChart,
+  BulletChart: handWrittenBulletChart.BulletChart,
+  BumpChart: handWrittenBumpChart.BumpChart,
+  CalendarHeatmapChart: handWrittenCalendarHeatmapChart.CalendarHeatmapChart,
+  CandlestickChart: handWrittenCandlestickChart.CandlestickChart,
+  ChordDiagram: handWrittenChordDiagram.ChordDiagram,
+  CodeSnippet: handWrittenCatalog.CodeSnippet,
+  ColorScaleBar: handWrittenColorScaleBar.ColorScaleBar,
+  ForceGraph: handWrittenCatalog.ForceGraph,
+  GraphLegend: handWrittenCatalog.GraphLegend,
 };
 
 describe("React leg provenance", () => {

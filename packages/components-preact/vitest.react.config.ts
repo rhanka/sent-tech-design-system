@@ -67,6 +67,14 @@ const reactTests = [
   "ColorSwatch", // emitted P3 data module (chip sizing / aria-label derivation)
   "TreeViewSelect", // emitted P3 TreeView selection payloads
   "TreeViewAccessibleName", // emitted P3 TreeView accessible-name precedence
+  "AnomalySwimLaneChart", // emitted P4a chart (cells, legend, tooltip)
+  "ArcDiagramChart", // emitted P4a chart (arcs, nodes, legend)
+  "AreaRangeChart", // emitted P4a chart (band geometry, tooltip)
+  "AreaSplineRangeChart", // emitted P4a chart (smoothed band, tooltip)
+  "BarChart", // emitted P4a chart (bars, overlays, filter chips)
+  "BellCurveChart", // emitted P4a chart (curve, stats list, tooltip)
+  "CandlestickChart", // emitted P4a chart (candles, keyboard nav, tooltip)
+  "ColorScaleBar", // emitted P4a module (gradient style, end labels)
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
