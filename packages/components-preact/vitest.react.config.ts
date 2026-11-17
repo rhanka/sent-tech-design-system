@@ -88,6 +88,13 @@ const reactTests = [
   "EmbedDataImage", // emitted P4a group-2 image (object-fit, radius)
   "ErrorBarChart", // emitted P4a group-2 chart (error bars, grid, tooltip)
   "EventFeedPanel", // emitted P4a group-2 feed (severity tones, ordering)
+  "FlamegraphChart", // emitted P4a group-3 chart (icicle cells, tooltip)
+  "GanttChart", // emitted P4a group-3 chart (task bars, marker, legend)
+  "GeoChart", // emitted P4a group-3 map (layers, projection)
+  "HLCChart", // emitted P4a group-3 chart (ranges, close ticks, tooltip)
+  "HeikinAshiChart", // emitted P4a group-3 chart (HA candles, tooltip)
+  "HollowCandlestickChart", // emitted P4a group-3 chart (hollow bodies, tooltip)
+  "ItemChart", // emitted P4a group-3 chart (hemicycle seats, legend)
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
