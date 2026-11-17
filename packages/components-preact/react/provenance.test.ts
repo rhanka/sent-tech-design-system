@@ -122,7 +122,9 @@ import * as handWrittenWaffleChart from "../../components-react/src/WaffleChart.
 import * as handWrittenWaterfallChart from "../../components-react/src/WaterfallChart.js";
 import * as handWrittenWindBarbChart from "../../components-react/src/WindBarbChart.js";
 import * as handWrittenWordCloudChart from "../../components-react/src/WordCloudChart.js";
+import * as handWrittenPriorityLabels from "../../components-react/src/priorityLabels.js";
 import * as emitted from "../.react-emit/src/index.js";
+import * as emittedPriorityLabels from "../.react-emit/src/priorityLabels.js";
 
 const switched = [
   "Button",
@@ -524,5 +526,17 @@ describe("React leg provenance", () => {
   it("hand-written dependents share the contexts of the emitted SelectableRow", () => {
     expect(barrel.SelectableListContext).toBe(emitted.SelectableListContext);
     expect(barrel.SelectableListContext).not.toBe(handWrittenSelectableRow.SelectableListContext);
+  });
+
+  it("the React leg serves the emitted priorityLabels helper (not the hand-written twin)", () => {
+    // priorityLabels is internal to PriorityMatrix (no barrel export on either
+    // side): the React-leg module switch redirects `./priorityLabels.js`
+    // importers inside components-react/src to the emission, so the golden
+    // vector in `priorityLabels.test.ts` runs against the emitted helper.
+    for (const name of ["priorityQuadrant", "estimatePriorityLabelBox", "placePriorityLabels"] as const) {
+      expect(typeof emittedPriorityLabels[name]).toBe("function");
+      expect(typeof handWrittenPriorityLabels[name]).toBe("function");
+      expect(emittedPriorityLabels[name]).not.toBe(handWrittenPriorityLabels[name]);
+    }
   });
 });
