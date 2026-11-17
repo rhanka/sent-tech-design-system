@@ -162,13 +162,13 @@ describe("P3 group 2 edges (navigation: signals at the edges, post-mount mutatio
       expect(button().disabled).toBe(false);
       fireEvent.click(screen.getByRole("button", { name: "Retour en haut" }));
       expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
-      disabled.value = true;
-      await waitFor(() => expect(button().disabled).toBe(true));
       smooth.value = false;
       await waitFor(() => {
         fireEvent.click(screen.getByRole("button", { name: "Retour en haut" }));
         expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "auto" });
       });
+      disabled.value = true;
+      await waitFor(() => expect(button().disabled).toBe(true));
     } finally {
       scrollTo.mockRestore();
     }
