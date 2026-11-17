@@ -5,14 +5,12 @@ import type { ComponentChildren } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type ToggletipProps = Omit<HTMLAttributes<HTMLSpanElement>, "content" | "className"> & {
+export type ToggletipProps = Omit<HTMLAttributes<HTMLSpanElement>, "content"> & {
   label: ComponentChildren;
   content?: ComponentChildren;
   /** Plain value, or a signal in the Preact build (read at the edge). */
   open?: MaybeSignal<boolean>;
   placement?: "top" | "bottom" | "start" | "end";
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Toggletip({

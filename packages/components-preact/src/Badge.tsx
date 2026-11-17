@@ -1,7 +1,6 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 export type BadgeTone = "neutral" | "success" | "warning" | "error" | "info";
 
@@ -18,12 +17,10 @@ export type BadgeShape = "pill" | "circle";
  * renders byte-identically to before. */
 export type BadgeSize = "sm" | "md";
 
-export type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "className"> & {
+export type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
   tone?: BadgeTone;
   shape?: BadgeShape;
   size?: BadgeSize;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(

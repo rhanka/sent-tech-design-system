@@ -12,7 +12,7 @@ import type { MaybeSignal } from "./signals.js";
 
 export type OverflowMenuItem = MenuItem;
 
-export type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "className"> & {
+export type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect"> & {
   items: OverflowMenuItem[];
   label?: ComponentChildren;
   /** Plain value, or a signal in the Preact build (read at the edge). */
@@ -25,8 +25,6 @@ export type OverflowMenuProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect" 
   /** Forwarded to the inner `Menu`. */
   submenuSide?: MenuSubmenuSide;
   onOpenChange?: (open: boolean) => void;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 let overflowMenuInstanceCounter = 0;
