@@ -428,5 +428,55 @@ export type {
   RibbonChartDatum,
   RibbonChartTone,
 } from "./RibbonChart.js";
+export { RoseChart } from "./RoseChart.js";
+export type { RoseChartProps, RoseChartDatum, RoseChartTone } from "./RoseChart.js";
+export { SankeyChart } from "./SankeyChart.js";
+export type { SankeyChartProps, SankeyChartNode, SankeyChartLink, SankeyChartTone } from "./SankeyChart.js";
+export { ScatterPlot } from "./ScatterPlot.js";
+export type { ScatterPlotProps, ScatterPlotDatum, ScatterPlotCentroid, ScatterPlotTone } from "./ScatterPlot.js";
+export { ScoreCard } from "./ScoreCard.js";
+export type { ScoreCardProps, ScoreCardType, ScoreCardSize } from "./ScoreCard.js";
+export { SelectionChip } from "./SelectionChip.js";
+export type { SelectionChipProps, SelectionChipTone } from "./SelectionChip.js";
+export { SolidGaugeChart } from "./SolidGaugeChart.js";
+export type {
+  SolidGaugeChartProps,
+  SolidGaugeThreshold,
+  SolidGaugeFormat,
+  SolidGaugeTone,
+} from "./SolidGaugeChart.js";
 export { Sparkline } from "./Sparkline.js";
 export type { SparklineProps, SparklineTone } from "./Sparkline.js";
+export { StackedBarChart } from "./StackedBarChart.js";
+export type { StackedBarChartProps, StackedBarDatum, StackedBarSegment, StackedBarTone } from "./StackedBarChart.js";
+export { StateTimelineChart } from "./StateTimelineChart.js";
+export type {
+  StateTimelineChartProps,
+  StateTimelineSeries,
+  StateTimelineSegment,
+  StateTimelineTone,
+} from "./StateTimelineChart.js";
+export { StatusHistoryChart } from "./StatusHistoryChart.js";
+export type {
+  StatusHistoryChartProps,
+  StatusHistorySeries,
+  StatusHistoryBucket,
+  StatusHistoryTone,
+} from "./StatusHistoryChart.js";
+export { StepLineChart } from "./StepLineChart.js";
+export type { StepLineChartProps, StepLineChartDatum, StepLineChartTone } from "./StepLineChart.js";
+export { StreamgraphChart } from "./StreamgraphChart.js";
+export type {
+  StreamgraphChartProps,
+  StreamgraphChartDatum,
+  StreamgraphChartSeriesValue,
+  StreamgraphChartTone,
+} from "./StreamgraphChart.js";
+export { StructuredList } from "./StructuredList.js";
+export type { StructuredListProps, StructuredListItem } from "./StructuredList.js";
+export { SunburstChart } from "./SunburstChart.js";
+export type { SunburstChartProps, SunburstChartDatum, SunburstChartTone } from "./SunburstChart.js";
+export { Table } from "./Table.js";
+export type { TableProps, TableColumn, TableRow } from "./Table.js";
+export { Tag } from "./Tag.js";
+export type { TagProps } from "./Tag.js";
