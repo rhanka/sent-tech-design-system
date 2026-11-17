@@ -109,6 +109,19 @@ import * as handWrittenStatusHistoryChart from "../../components-react/src/Statu
 import * as handWrittenStepLineChart from "../../components-react/src/StepLineChart.js";
 import * as handWrittenStreamgraphChart from "../../components-react/src/StreamgraphChart.js";
 import * as handWrittenSunburstChart from "../../components-react/src/SunburstChart.js";
+import * as handWrittenTileMapChart from "../../components-react/src/TileMapChart.js";
+import * as handWrittenTimelineChart from "../../components-react/src/TimelineChart.js";
+import * as handWrittenTraceWaterfallChart from "../../components-react/src/TraceWaterfallChart.js";
+import * as handWrittenTreegraphChart from "../../components-react/src/TreegraphChart.js";
+import * as handWrittenTreemapChart from "../../components-react/src/TreemapChart.js";
+import * as handWrittenVariablePieChart from "../../components-react/src/VariablePieChart.js";
+import * as handWrittenVectorFieldChart from "../../components-react/src/VectorFieldChart.js";
+import * as handWrittenVennChart from "../../components-react/src/VennChart.js";
+import * as handWrittenViolinChart from "../../components-react/src/ViolinChart.js";
+import * as handWrittenWaffleChart from "../../components-react/src/WaffleChart.js";
+import * as handWrittenWaterfallChart from "../../components-react/src/WaterfallChart.js";
+import * as handWrittenWindBarbChart from "../../components-react/src/WindBarbChart.js";
+import * as handWrittenWordCloudChart from "../../components-react/src/WordCloudChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -289,6 +302,20 @@ const switched = [
   "SunburstChart",
   "Table",
   "Tag",
+  "TileMapChart",
+  "TimelineChart",
+  "TraceWaterfallChart",
+  "TreegraphChart",
+  "TreemapChart",
+  "UnorderedList",
+  "VariablePieChart",
+  "VectorFieldChart",
+  "VennChart",
+  "ViolinChart",
+  "WaffleChart",
+  "WaterfallChart",
+  "WindBarbChart",
+  "WordCloudChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -469,6 +496,20 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   SunburstChart: handWrittenSunburstChart.SunburstChart,
   Table: handWrittenCatalog.Table,
   Tag: handWrittenCatalog.Tag,
+  TileMapChart: handWrittenTileMapChart.TileMapChart,
+  TimelineChart: handWrittenTimelineChart.TimelineChart,
+  TraceWaterfallChart: handWrittenTraceWaterfallChart.TraceWaterfallChart,
+  TreegraphChart: handWrittenTreegraphChart.TreegraphChart,
+  TreemapChart: handWrittenTreemapChart.TreemapChart,
+  UnorderedList: handWrittenCatalog.UnorderedList,
+  VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
+  VectorFieldChart: handWrittenVectorFieldChart.VectorFieldChart,
+  VennChart: handWrittenVennChart.VennChart,
+  ViolinChart: handWrittenViolinChart.ViolinChart,
+  WaffleChart: handWrittenWaffleChart.WaffleChart,
+  WaterfallChart: handWrittenWaterfallChart.WaterfallChart,
+  WindBarbChart: handWrittenWindBarbChart.WindBarbChart,
+  WordCloudChart: handWrittenWordCloudChart.WordCloudChart,
 };
 
 describe("React leg provenance", () => {
