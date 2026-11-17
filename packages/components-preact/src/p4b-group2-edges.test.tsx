@@ -421,4 +421,14 @@ describe("P4b group 2 edges (data: signals at the edges, post-mount mutation)", 
     // consumer onClick from the rest props: neither handler overwrote the other.
     expect(onClick).toHaveBeenCalledTimes(1);
   });
+
+  it("StepLineChart uses CHART_MARGIN geometry (axis at top 12 and bottom 208)", () => {
+    const { container } = render(<StepLineChart data={[{ x: "A", y: 1 }]} label="L" />);
+    const axes = container.querySelectorAll(".st-stepLineChart__axis");
+    expect(axes).toHaveLength(2);
+    expect(axes[0].getAttribute("y1")).toBe("12");
+    expect(axes[0].getAttribute("y2")).toBe("208");
+    expect(axes[1].getAttribute("y1")).toBe("208");
+    expect(axes[1].getAttribute("y2")).toBe("208");
+  });
 });
