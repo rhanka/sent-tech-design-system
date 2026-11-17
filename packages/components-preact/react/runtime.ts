@@ -2,7 +2,7 @@
  * React twin of `src/runtime.ts`. The React emission copies this file over the
  * Preact adapter, so component modules keep importing `./runtime.js` unchanged.
  */
-import type { ChangeEvent, FocusEvent, InputEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode } from "react";
+import type { ChangeEvent, FocusEvent, InputEvent, KeyboardEvent, MouseEvent, PointerEvent, ReactElement, ReactNode, WheelEvent } from "react";
 
 export { forwardRef, useInsertionEffect, useSyncExternalStore } from "react";
 export type { ForwardedRef } from "react";
@@ -20,6 +20,7 @@ export type TargetedInputEvent<T extends EventTarget> = InputEvent<T>;
 export type TargetedKeyboardEvent<T extends EventTarget> = KeyboardEvent<T>;
 export type TargetedMouseEvent<T extends EventTarget> = MouseEvent<T>;
 export type TargetedPointerEvent<T extends EventTarget> = PointerEvent<T>;
+export type TargetedWheelEvent<T extends EventTarget> = WheelEvent<T>;
 
 /**
  * Per-keystroke handler of a text control, spread onto `<input>` or
@@ -45,6 +46,17 @@ export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
   onInput?: (event: InputEvent<T>) => void,
 ): { onChange: (event: ChangeEvent<T>) => void; onInput?: (event: InputEvent<T>) => void } {
   return onInput ? { onChange: handler, onInput } : { onChange: handler };
+}
+
+/**
+ * Double-click handler spread onto an element (twin of the Preact `dblClick`,
+ * which spreads the handler as `onDblClick`). React names the same native
+ * `dblclick` event `onDoubleClick`.
+ */
+export function dblClick<T extends EventTarget>(
+  handler: (event: MouseEvent<T>) => void,
+): { onDoubleClick: (event: MouseEvent<T>) => void } {
+  return { onDoubleClick: handler };
 }
 
 /**

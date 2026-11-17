@@ -19,6 +19,7 @@ import type {
   TargetedKeyboardEvent,
   TargetedMouseEvent,
   TargetedPointerEvent,
+  TargetedWheelEvent,
   VNode,
 } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
@@ -37,6 +38,7 @@ export type {
   TargetedKeyboardEvent,
   TargetedMouseEvent,
   TargetedPointerEvent,
+  TargetedWheelEvent,
 };
 
 // ---------------------------------------------------------------------------
@@ -73,12 +75,22 @@ type VnodeHook = (vnode: VNode<Record<string, unknown>>) => void;
 // families; this is the same mapping without compat. Genuine camelCase SVG
 // attributes (`viewBox`, `clipPathUnits`, `textLength`, …) are preserved by
 // the negative lookaheads, as is `clipPath` element state.
+// `tabIndex` is normalised to `tabindex` on the same path: Preact core keeps
+// the prop casing through setAttribute, and on SVG-namespace elements the
+// literal `tabIndex` attribute never matches, leaving `.tabIndex` at -1 and
+// the node unfocusable (roving-tabindex keyboard navigation dead). React
+// lowercases it; the lowercase spelling focuses identically on HTML elements,
+// so the mapping applies to every intrinsic element.
 const presentation =
   /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/;
 const previousVnode = hooks.vnode;
 hooks.vnode = (vnode) => {
   if (typeof vnode.type === "string") {
     const props = vnode.props as Record<string, unknown>;
+    if ("tabIndex" in props && !("tabindex" in props)) {
+      props["tabindex"] = props["tabIndex"];
+      delete props["tabIndex"];
+    }
     for (const name in props) {
       if (presentation.test(name)) {
         props[name.replace(/[A-Z0-9]/g, "-$&").toLowerCase()] = props[name];
@@ -195,6 +207,21 @@ export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
       handler(event);
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Double click
+// ---------------------------------------------------------------------------
+
+/**
+ * Double-click handler spread onto an element. Preact core listens for the
+ * native `dblclick` event (`onDblClick`); React names the same event
+ * `onDoubleClick`. The twin maps it accordingly, so both legs fire.
+ */
+export function dblClick<T extends EventTarget>(
+  handler: (event: TargetedMouseEvent<T>) => void,
+): { onDblClick: (event: TargetedMouseEvent<T>) => void } {
+  return { onDblClick: handler };
 }
 
 // ---------------------------------------------------------------------------
