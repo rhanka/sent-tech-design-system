@@ -32,7 +32,8 @@ export function SlideIndicator({
   className,
   ...rest
 }: SlideIndicatorProps) {
-  const current = useValue(currentInput);
+  // A signal holding `undefined` counts as absent, like the missing prop.
+  const current = useValue(currentInput) ?? 0;
   const items = Array.from({ length: Math.max(0, count) }, (_, i) => i);
   // Refs des boutons pour déplacer le focus programmatiquement lors de la navigation clavier.
   const buttonRefs = useRef<Record<number, HTMLButtonElement | null>>({});
