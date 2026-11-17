@@ -1,5 +1,6 @@
 import { signal } from "@preact/signals";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
+import type { CSSProperties } from "preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ColumnPyramidChart } from "./ColumnPyramidChart.js";
 import { ColumnRangeChart } from "./ColumnRangeChart.js";
@@ -246,6 +247,29 @@ describe("P4a group 2 edges (data: signals at the edges, post-mount mutation)", 
     );
     const copyBtn = container.querySelector('[aria-label="Copier"]') as HTMLButtonElement;
     expect(copyBtn.disabled).toBe(true);
+  });
+
+  it("DashboardGrid grid variables win over a conflicting consumer style", () => {
+    render(
+      <>
+        <DashboardGrid
+          data-testid="m-grid-obj"
+          tiles={[{ id: "t", x: 0, y: 0, w: 1, h: 1 }]}
+          columns={4}
+          style={{ "--st-dashboardGrid-columns": "2" } as CSSProperties}
+        />
+        <DashboardGrid
+          data-testid="m-grid-str"
+          tiles={[{ id: "t", x: 0, y: 0, w: 1, h: 1 }]}
+          columns={4}
+          style={"--st-dashboardGrid-columns: 2;" as unknown as CSSProperties}
+        />
+      </>,
+    );
+    // components-react spreads the consumer style first: the computed grid
+    // variables always win, for object and string styles alike.
+    expect(screen.getByTestId("m-grid-obj").style.getPropertyValue("--st-dashboardGrid-columns")).toBe("4");
+    expect(screen.getByTestId("m-grid-str").style.getPropertyValue("--st-dashboardGrid-columns")).toBe("4");
   });
 
   it("DataImage merges the consumer style over the base box style", () => {

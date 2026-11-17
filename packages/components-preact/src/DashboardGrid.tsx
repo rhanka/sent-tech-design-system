@@ -97,14 +97,27 @@ export function DashboardGrid({
     changeTile(id, { w: tile.w + dw, h: tile.h + dh });
   }
 
-  const gridStyle = mergeStyle(
-    {
-      "--st-dashboardGrid-columns": String(colCount),
-      "--st-dashboardGrid-row-height": `${Math.max(32, Math.floor(rowHeight || 88))}px`,
-      "--st-dashboardGrid-gap": `${Math.max(0, Math.floor(gap || 0))}px`,
-    } as unknown as CSSProperties,
-    style,
-  );
+  // components-react spreads the consumer style first and applies the computed
+  // grid variables on top, so a consumer `--st-dashboardGrid-*` never overrides
+  // the computed layout. A string consumer style leads the serialised text for
+  // the same reason: later declarations win in the cascade.
+  let resolvedStyle: unknown = style;
+  if (typeof resolvedStyle === "object" && resolvedStyle !== null && "peek" in resolvedStyle) {
+    try {
+      resolvedStyle = (resolvedStyle as { value: unknown }).value;
+    } catch {
+      resolvedStyle = undefined;
+    }
+  }
+  const gridVars = {
+    "--st-dashboardGrid-columns": String(colCount),
+    "--st-dashboardGrid-row-height": `${Math.max(32, Math.floor(rowHeight || 88))}px`,
+    "--st-dashboardGrid-gap": `${Math.max(0, Math.floor(gap || 0))}px`,
+  } as unknown as CSSProperties;
+  const gridStyle =
+    typeof resolvedStyle === "string"
+      ? `${resolvedStyle === "" || resolvedStyle.endsWith(";") ? resolvedStyle : `${resolvedStyle};`}--st-dashboardGrid-columns:${String(colCount)};--st-dashboardGrid-row-height:${Math.max(32, Math.floor(rowHeight || 88))}px;--st-dashboardGrid-gap:${Math.max(0, Math.floor(gap || 0))}px;`
+      : mergeStyle(resolvedStyle as CSSProperties | undefined, gridVars);
 
   return (
     <section {...rest} className={classNames("st-dashboardGrid", editable ? "st-dashboardGrid--editable" : undefined, className)} style={gridStyle as CSSProperties | undefined} aria-label={label}>
