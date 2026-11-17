@@ -7,12 +7,14 @@ import type { ComponentChildren } from "./runtime.js";
 import { unwrap } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type ChatComposerProps = Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit"> & {
+export type ChatComposerProps = Omit<FormHTMLAttributes<HTMLFormElement>, "onSubmit" | "className"> & {
   /** Seeds the draft. Plain value, or a signal in the Preact build (read once, untracked). */
   value?: MaybeSignal<string>;
   placeholder?: string;
   submitLabel?: ComponentChildren;
   onSubmit?: (payload: { value: string }) => void;
+  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
+  className?: MaybeSignal<string>;
 };
 
 export function ChatComposer({
