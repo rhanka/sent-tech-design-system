@@ -35,12 +35,53 @@ import * as handWrittenStatusDot from "../../components-react/src/StatusDot.js";
 import * as handWrittenTheme from "../../components-react/src/ThemeProvider.js";
 import * as handWrittenTimeline from "../../components-react/src/Timeline.js";
 import * as handWrittenBackToTop from "../../components-react/src/BackToTop.js";
+import * as handWrittenAnomalySwimLaneChart from "../../components-react/src/AnomalySwimLaneChart.js";
+import * as handWrittenArcDiagramChart from "../../components-react/src/ArcDiagramChart.js";
+import * as handWrittenAreaChart from "../../components-react/src/AreaChart.js";
+import * as handWrittenAreaRangeChart from "../../components-react/src/AreaRangeChart.js";
+import * as handWrittenAreaSplineRangeChart from "../../components-react/src/AreaSplineRangeChart.js";
+import * as handWrittenBarChart from "../../components-react/src/BarChart.js";
+import * as handWrittenBellCurveChart from "../../components-react/src/BellCurveChart.js";
+import * as handWrittenBoxPlotChart from "../../components-react/src/BoxPlotChart.js";
+import * as handWrittenBulletChart from "../../components-react/src/BulletChart.js";
+import * as handWrittenBumpChart from "../../components-react/src/BumpChart.js";
+import * as handWrittenCalendarHeatmapChart from "../../components-react/src/CalendarHeatmapChart.js";
+import * as handWrittenCandlestickChart from "../../components-react/src/CandlestickChart.js";
+import * as handWrittenChordDiagram from "../../components-react/src/ChordDiagram.js";
+import * as handWrittenColorScaleBar from "../../components-react/src/ColorScaleBar.js";
 import * as handWrittenBadge from "../../components-react/src/Badge.js";
 import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
 import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
 import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
 import * as handWrittenStepper from "../../components-react/src/Stepper.js";
 import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
+import * as handWrittenColumnPyramidChart from "../../components-react/src/ColumnPyramidChart.js";
+import * as handWrittenColumnRangeChart from "../../components-react/src/ColumnRangeChart.js";
+import * as handWrittenComboChart from "../../components-react/src/ComboChart.js";
+import * as handWrittenConfigItemCard from "../../components-react/src/ConfigItemCard.js";
+import * as handWrittenContourChart from "../../components-react/src/ContourChart.js";
+import * as handWrittenDashboardGrid from "../../components-react/src/DashboardGrid.js";
+import * as handWrittenDataImage from "../../components-react/src/DataImage.js";
+import * as handWrittenDataTable from "../../components-react/src/DataTable.js";
+import * as handWrittenDecompositionTreeChart from "../../components-react/src/DecompositionTreeChart.js";
+import * as handWrittenDensity2DChart from "../../components-react/src/Density2DChart.js";
+import * as handWrittenDependencyWheelChart from "../../components-react/src/DependencyWheelChart.js";
+import * as handWrittenDivergentBarChart from "../../components-react/src/DivergentBarChart.js";
+import * as handWrittenDonutChart from "../../components-react/src/DonutChart.js";
+import * as handWrittenDumbbellChart from "../../components-react/src/DumbbellChart.js";
+import * as handWrittenErrorBarChart from "../../components-react/src/ErrorBarChart.js";
+import * as handWrittenEventFeedPanel from "../../components-react/src/EventFeedPanel.js";
+import * as handWrittenFlamegraphChart from "../../components-react/src/FlamegraphChart.js";
+import * as handWrittenFunnelChart from "../../components-react/src/FunnelChart.js";
+import * as handWrittenGanttChart from "../../components-react/src/GanttChart.js";
+import * as handWrittenGaugeChart from "../../components-react/src/GaugeChart.js";
+import * as handWrittenGeoChart from "../../components-react/src/GeoChart.js";
+import * as handWrittenHLCChart from "../../components-react/src/HLCChart.js";
+import * as handWrittenHeatmapChart from "../../components-react/src/HeatmapChart.js";
+import * as handWrittenHeikinAshiChart from "../../components-react/src/HeikinAshiChart.js";
+import * as handWrittenHistogramChart from "../../components-react/src/HistogramChart.js";
+import * as handWrittenHollowCandlestickChart from "../../components-react/src/HollowCandlestickChart.js";
+import * as handWrittenItemChart from "../../components-react/src/ItemChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -141,6 +182,54 @@ const switched = [
   "SkipLink",
   "SlideIndicator",
   "TreeView",
+  "AnomalySwimLaneChart",
+  "ArcDiagramChart",
+  "AreaChart",
+  "AreaRangeChart",
+  "AreaSplineRangeChart",
+  "BarChart",
+  "BellCurveChart",
+  "BoxPlotChart",
+  "BulletChart",
+  "BumpChart",
+  "CalendarHeatmapChart",
+  "CandlestickChart",
+  "ChordDiagram",
+  "CodeSnippet",
+  "ColorScaleBar",
+  "ForceGraph",
+  "GraphLegend",
+  "nodeShapePath",
+  "edgeDashArray",
+  "ColumnPyramidChart",
+  "ColumnRangeChart",
+  "ComboChart",
+  "ConfigItemCard",
+  "ContourChart",
+  "DashboardGrid",
+  "DataImage",
+  "DataTable",
+  "DecompositionTreeChart",
+  "Density2DChart",
+  "DependencyWheelChart",
+  "DivergentBarChart",
+  "DonutChart",
+  "DumbbellChart",
+  "ErrorBarChart",
+  "EventFeedPanel",
+  "FilterBar",
+  "FilterPill",
+  "FlamegraphChart",
+  "FunnelChart",
+  "GanttChart",
+  "GaugeChart",
+  "GeoChart",
+  "HLCChart",
+  "HeatmapChart",
+  "HeikinAshiChart",
+  "HistogramChart",
+  "HollowCandlestickChart",
+  "ItemChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -241,6 +330,54 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   SkipLink: handWrittenCatalog.SkipLink,
   SlideIndicator: handWrittenCatalog.SlideIndicator,
   TreeView: handWrittenCatalog.TreeView,
+  AnomalySwimLaneChart: handWrittenAnomalySwimLaneChart.AnomalySwimLaneChart,
+  ArcDiagramChart: handWrittenArcDiagramChart.ArcDiagramChart,
+  AreaChart: handWrittenAreaChart.AreaChart,
+  AreaRangeChart: handWrittenAreaRangeChart.AreaRangeChart,
+  AreaSplineRangeChart: handWrittenAreaSplineRangeChart.AreaSplineRangeChart,
+  BarChart: handWrittenBarChart.BarChart,
+  BellCurveChart: handWrittenBellCurveChart.BellCurveChart,
+  BoxPlotChart: handWrittenBoxPlotChart.BoxPlotChart,
+  BulletChart: handWrittenBulletChart.BulletChart,
+  BumpChart: handWrittenBumpChart.BumpChart,
+  CalendarHeatmapChart: handWrittenCalendarHeatmapChart.CalendarHeatmapChart,
+  CandlestickChart: handWrittenCandlestickChart.CandlestickChart,
+  ChordDiagram: handWrittenChordDiagram.ChordDiagram,
+  CodeSnippet: handWrittenCatalog.CodeSnippet,
+  ColorScaleBar: handWrittenColorScaleBar.ColorScaleBar,
+  ForceGraph: handWrittenCatalog.ForceGraph,
+  GraphLegend: handWrittenCatalog.GraphLegend,
+  nodeShapePath: handWrittenCatalog.nodeShapePath,
+  edgeDashArray: handWrittenCatalog.edgeDashArray,
+  ColumnPyramidChart: handWrittenColumnPyramidChart.ColumnPyramidChart,
+  ColumnRangeChart: handWrittenColumnRangeChart.ColumnRangeChart,
+  ComboChart: handWrittenComboChart.ComboChart,
+  ConfigItemCard: handWrittenConfigItemCard.ConfigItemCard,
+  ContourChart: handWrittenContourChart.ContourChart,
+  DashboardGrid: handWrittenDashboardGrid.DashboardGrid,
+  DataImage: handWrittenDataImage.DataImage,
+  DataTable: handWrittenDataTable.DataTable,
+  DecompositionTreeChart: handWrittenDecompositionTreeChart.DecompositionTreeChart,
+  Density2DChart: handWrittenDensity2DChart.Density2DChart,
+  DependencyWheelChart: handWrittenDependencyWheelChart.DependencyWheelChart,
+  DivergentBarChart: handWrittenDivergentBarChart.DivergentBarChart,
+  DonutChart: handWrittenDonutChart.DonutChart,
+  DumbbellChart: handWrittenDumbbellChart.DumbbellChart,
+  ErrorBarChart: handWrittenErrorBarChart.ErrorBarChart,
+  EventFeedPanel: handWrittenEventFeedPanel.EventFeedPanel,
+  FilterBar: handWrittenCatalog.FilterBar,
+  FilterPill: handWrittenCatalog.FilterPill,
+  FlamegraphChart: handWrittenFlamegraphChart.FlamegraphChart,
+  FunnelChart: handWrittenFunnelChart.FunnelChart,
+  GanttChart: handWrittenGanttChart.GanttChart,
+  GaugeChart: handWrittenGaugeChart.GaugeChart,
+  GeoChart: handWrittenGeoChart.GeoChart,
+  HLCChart: handWrittenHLCChart.HLCChart,
+  HeatmapChart: handWrittenHeatmapChart.HeatmapChart,
+  HeikinAshiChart: handWrittenHeikinAshiChart.HeikinAshiChart,
+  HistogramChart: handWrittenHistogramChart.HistogramChart,
+  HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
+  ItemChart: handWrittenItemChart.ItemChart,
 };
 
 describe("React leg provenance", () => {
