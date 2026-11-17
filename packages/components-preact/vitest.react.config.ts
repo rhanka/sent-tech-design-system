@@ -95,6 +95,23 @@ const reactTests = [
   "HeikinAshiChart", // emitted P4a group-3 chart (HA candles, tooltip)
   "HollowCandlestickChart", // emitted P4a group-3 chart (hollow bodies, tooltip)
   "ItemChart", // emitted P4a group-3 chart (hemicycle seats, legend)
+  "charts", // shared P4a chart domains (AreaChart, DataTable, DonutChart, BarChart)
+  "charts2", // shared P4a chart domains (FunnelChart, GaugeChart)
+  "charts3", // shared P4a chart domains (HistogramChart, BoxPlotChart, HeatmapChart)
+  "BiCharts3", // shared P4a chart domains (Candlestick, CalendarHeatmap, Bullet, Bump)
+  "ChartAnnotations", // shared annotations over AreaChart/BarChart (P4a)
+  "ChartAxisConfig", // shared axis config over BarChart (P4a)
+  "chartCrosshair", // shared crosshair over AreaChart/BarChart (P4a)
+  "ChartDataLabels", // shared data labels over AreaChart/BarChart/DonutChart (P4a)
+  "DatapointNav", // shared datapoint nav over AreaChart/BarChart (P4a)
+  "LegendToggle", // shared legend toggle over ComboChart (P4a)
+  "Filters", // shared FilterBar/FilterPill suite (P4a group-3)
+  "ConditionalFormatting", // shared DataTable/cellDecoration suite (P4a)
+  "ChordPackedBubbles", // shared ChordDiagram suite (P4a group-1)
+  "OHLCChart", // shared OHLC chartAnnotations suite (P4a helpers)
+  "ScatterPlot", // shared ScatterPlot chartAnnotations suite (P4a helpers)
+  "index", // DS class contract over every component incl. P4a
+  "catalog", // catalogue render incl. P4a modules
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
