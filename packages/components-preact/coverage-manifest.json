@@ -524,6 +524,51 @@
       "renderable": true
     },
     {
+      "module": "MenuTriggerButton",
+      "file": "src/MenuTriggerButton.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "OverflowMenu",
+      "file": "src/OverflowMenu.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Popover",
+      "file": "src/Popover.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Toggletip",
+      "file": "src/Toggletip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Tooltip",
+      "file": "src/Tooltip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "overlay",
+      "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "MultiSelect",
       "file": "src/MultiSelect.tsx",
       "reactSource": "components-react/src/catalog.tsx",
