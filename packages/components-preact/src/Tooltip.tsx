@@ -22,11 +22,12 @@ export function Tooltip({
 }: TooltipProps) {
   const [open, setOpen] = useState(false);
   const tooltipId = useId();
-  // Preact-only `onFocusIn` arrives in the rest props (it is not part of the
-  // React types, so it stays out of `TooltipProps` to keep parity): pull it
-  // out so the `focusWithin` spread below does not drop it.
-  const { onFocusIn: onFocusInProp, ...hostRest } = rest as typeof rest & {
+  // `onFocusIn` / `onFocusOut` arrive in the rest props (Preact-only, via
+  // `HTMLAttributes`; React has no such props): pull them out so the
+  // `focusWithin` / `focusOut` spreads below do not drop them.
+  const { onFocusIn: onFocusInProp, onFocusOut: onFocusOutProp, ...hostRest } = rest as typeof rest & {
     onFocusIn?: (event: TargetedFocusEvent<HTMLSpanElement>) => void;
+    onFocusOut?: (event: TargetedFocusEvent<HTMLSpanElement>) => void;
   };
   // Internal visibility runs first; the consumer handler still fires once per
   // event (CopyButton precedent). `onFocus` (and Preact's `onFocusIn`) are
@@ -43,6 +44,7 @@ export function Tooltip({
   const hideFocus = (event: TargetedFocusEvent<HTMLSpanElement>) => {
     setOpen(false);
     onBlur?.(event);
+    onFocusOutProp?.(event);
   };
   const hideMouse = (event: TargetedMouseEvent<HTMLSpanElement>) => {
     setOpen(false);
