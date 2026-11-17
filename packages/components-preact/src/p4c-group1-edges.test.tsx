@@ -1,11 +1,15 @@
 import { signal } from "@preact/signals";
-import { cleanup, render, screen, waitFor } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { EyeOff } from "lucide-preact";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { AvatarGroup } from "./AvatarGroup.js";
+import { ChatMessage } from "./ChatMessage.js";
+import { ChatThread } from "./ChatThread.js";
 import { Embed } from "./Embed.js";
 import { Icon } from "./Icon.js";
+import { MessageActions } from "./MessageActions.js";
+import { MessageStatusBadge } from "./MessageStatusBadge.js";
 import { Overline } from "./Overline.js";
 import { Typography } from "./Typography.js";
 
@@ -171,5 +175,96 @@ describe("P4c group 1 edges (Avatar, AvatarGroup, Typography, Embed: signals at 
     expect(frame.getAttribute("title")).toBe("Doc");
     expect(frame.getAttribute("sandbox")).toBe("");
     expect(frame.getAttribute("loading")).toBe("lazy");
+  });
+});
+
+describe("P4c group 1 edges (ChatMessage, ChatThread, MessageActions, MessageStatusBadge)", () => {
+  it("accepts a Signal for className on every batch-C module", () => {
+    render(
+      <>
+        <ChatMessage data-testid="e-chat" content="Hi" className={signal("x-chat")} />
+        <ChatThread data-testid="e-thread" className={signal("x-thread")} />
+        <MessageActions data-testid="e-actions" actions={[{ label: "Copy" }]} className={signal("x-actions")} />
+        <MessageStatusBadge data-testid="e-badge" status="sent" className={signal("x-badge")} />
+      </>,
+    );
+    expect(screen.getByTestId("e-chat").className).toContain("x-chat");
+    expect(screen.getByTestId("e-thread").className).toContain("x-thread");
+    expect(screen.getByTestId("e-actions").className).toContain("x-actions");
+    expect(screen.getByTestId("e-badge").className).toContain("x-badge");
+  });
+
+  it("follows className signals mutated after mount (DOM changes)", async () => {
+    const chatClass = signal("x-chat");
+    const threadClass = signal("x-thread");
+    render(
+      <>
+        <ChatMessage data-testid="m-chat" content="Hi" className={chatClass} />
+        <ChatThread data-testid="m-thread" className={threadClass} />
+      </>,
+    );
+    chatClass.value = "y-chat";
+    threadClass.value = "y-thread";
+    await screen.findByTestId("m-chat");
+    expect(screen.getByTestId("m-chat").className).toContain("y-chat");
+    expect(screen.getByTestId("m-chat").className).not.toContain("x-chat");
+    expect(screen.getByTestId("m-thread").className).toContain("y-thread");
+  });
+
+  it("ChatMessage normalizes streaming/error statuses and aligns user roles", () => {
+    const { container, unmount } = render(<ChatMessage role="user" status="streaming" content="Hi" />);
+    const article = container.querySelector("article.st-chatMessage") as HTMLElement;
+    expect(article.dataset.role).toBe("user");
+    expect(article.dataset.align).toBe("end");
+    expect(article.dataset.status).toBe("processing");
+    expect(article.getAttribute("aria-live")).toBe("polite");
+    expect(container.querySelector(".st-chatMessage__pulse")).not.toBeNull();
+    unmount();
+    const failed = render(<ChatMessage status="error" content="Oops" />);
+    expect(failed.container.querySelector("article")?.dataset.status).toBe("failed");
+    failed.unmount();
+  });
+
+  it("ChatThread renders messages and the empty state", () => {
+    const { container, unmount } = render(
+      <ChatThread messages={[{ id: "1", role: "assistant", content: "Hello" }]} />,
+    );
+    expect(container.querySelector(".st-chatThread__list .st-chatMessage__content")?.textContent).toBe("Hello");
+    expect(container.querySelector('[role="log"]')).not.toBeNull();
+    unmount();
+    const empty = render(<ChatThread emptyLabel="No messages yet" />);
+    expect(empty.container.querySelector(".st-chatThread__empty")?.textContent).toBe("No messages yet");
+    empty.unmount();
+  });
+
+  it("MessageActions fires the action handler and the consumer group handler (composed)", () => {
+    const onAction = vi.fn();
+    const onGroupClick = vi.fn();
+    render(
+      <MessageActions
+        actions={[{ id: "copy", label: "Copy", onClick: onAction }]}
+        onClick={onGroupClick}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Copy" }));
+    expect(onAction).toHaveBeenCalledTimes(1);
+    // No local onClick on the group: the consumer handler from rest props
+    // still fires through the bubbled click (compose, never overwrite).
+    expect(onGroupClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("MessageStatusBadge normalizes statuses, resolves tones and honours labels", () => {
+    const { container, unmount } = render(<MessageStatusBadge status="sent" />);
+    const badge = container.querySelector(".st-messageStatusBadge") as HTMLElement;
+    expect(badge.className).toContain("st-badge--success");
+    expect(badge.textContent).toBe("Completed");
+    unmount();
+    const custom = render(
+      <MessageStatusBadge status="processing" tone="warning" labels={{ processing: "Working…" }} />,
+    );
+    const customBadge = custom.container.querySelector(".st-messageStatusBadge") as HTMLElement;
+    expect(customBadge.className).toContain("st-badge--warning");
+    expect(customBadge.textContent).toBe("Working…");
+    custom.unmount();
   });
 });
