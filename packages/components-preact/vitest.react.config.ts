@@ -75,6 +75,19 @@ const reactTests = [
   "BellCurveChart", // emitted P4a chart (curve, stats list, tooltip)
   "CandlestickChart", // emitted P4a chart (candles, keyboard nav, tooltip)
   "ColorScaleBar", // emitted P4a module (gradient style, end labels)
+  "ColumnPyramidChart", // emitted P4a group-2 chart (pyramids, grid, tooltip)
+  "ColumnRangeChart", // emitted P4a group-2 chart (ranges, grid, tooltip)
+  "ComboCharts", // emitted P4a group-2 chart (bars + lines, legend, crosshair)
+  "ConfigItemCard", // emitted P4a group-2 card (system badge, actions)
+  "ContourChart", // emitted P4a group-2 chart (contours, legend, tooltip)
+  "DecompositionTreeChart", // emitted P4a group-2 chart (tree, nodes, tooltip)
+  "Density2DChart", // emitted P4a group-2 chart (density, legend, tooltip)
+  "DependencyWheelChart", // emitted P4a group-2 chart (wheel, arcs, tooltip)
+  "DivergentBarChart", // emitted P4a group-2 chart (diverging bars, legend, tooltip)
+  "DumbbellChart", // emitted P4a group-2 chart (dumbbells, grid, tooltip)
+  "EmbedDataImage", // emitted P4a group-2 image (object-fit, radius)
+  "ErrorBarChart", // emitted P4a group-2 chart (error bars, grid, tooltip)
+  "EventFeedPanel", // emitted P4a group-2 feed (severity tones, ordering)
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
