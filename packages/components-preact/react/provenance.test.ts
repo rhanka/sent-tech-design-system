@@ -82,6 +82,22 @@ import * as handWrittenHeikinAshiChart from "../../components-react/src/HeikinAs
 import * as handWrittenHistogramChart from "../../components-react/src/HistogramChart.js";
 import * as handWrittenHollowCandlestickChart from "../../components-react/src/HollowCandlestickChart.js";
 import * as handWrittenItemChart from "../../components-react/src/ItemChart.js";
+import * as handWrittenKpiCard from "../../components-react/src/KpiCard.js";
+import * as handWrittenLineChart from "../../components-react/src/LineChart.js";
+import * as handWrittenLollipopChart from "../../components-react/src/LollipopChart.js";
+import * as handWrittenMarimekkoChart from "../../components-react/src/MarimekkoChart.js";
+import * as handWrittenOHLCChart from "../../components-react/src/OHLCChart.js";
+import * as handWrittenOrganizationChart from "../../components-react/src/OrganizationChart.js";
+import * as handWrittenPackedBubblesChart from "../../components-react/src/PackedBubblesChart.js";
+import * as handWrittenParallelCoordinatesChart from "../../components-react/src/ParallelCoordinatesChart.js";
+import * as handWrittenParetoChart from "../../components-react/src/ParetoChart.js";
+import * as handWrittenPointAndFigureChart from "../../components-react/src/PointAndFigureChart.js";
+import * as handWrittenPolygonChart from "../../components-react/src/PolygonChart.js";
+import * as handWrittenPriorityMatrix from "../../components-react/src/PriorityMatrix.js";
+import * as handWrittenRadarChart from "../../components-react/src/RadarChart.js";
+import * as handWrittenRenkoChart from "../../components-react/src/RenkoChart.js";
+import * as handWrittenRibbonChart from "../../components-react/src/RibbonChart.js";
+import * as handWrittenSparkline from "../../components-react/src/Sparkline.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -230,6 +246,23 @@ const switched = [
   "HistogramChart",
   "HollowCandlestickChart",
   "ItemChart",
+  "KpiCard",
+  "LineChart",
+  "LollipopChart",
+  "MarimekkoChart",
+  "OHLCChart",
+  "OrderedList",
+  "OrganizationChart",
+  "PackedBubblesChart",
+  "ParallelCoordinatesChart",
+  "ParetoChart",
+  "PointAndFigureChart",
+  "PolygonChart",
+  "PriorityMatrix",
+  "RadarChart",
+  "RenkoChart",
+  "RibbonChart",
+  "Sparkline",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -378,6 +411,23 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   HistogramChart: handWrittenHistogramChart.HistogramChart,
   HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
   ItemChart: handWrittenItemChart.ItemChart,
+  KpiCard: handWrittenKpiCard.KpiCard,
+  LineChart: handWrittenLineChart.LineChart,
+  LollipopChart: handWrittenLollipopChart.LollipopChart,
+  MarimekkoChart: handWrittenMarimekkoChart.MarimekkoChart,
+  OHLCChart: handWrittenOHLCChart.OHLCChart,
+  OrderedList: handWrittenCatalog.OrderedList,
+  OrganizationChart: handWrittenOrganizationChart.OrganizationChart,
+  PackedBubblesChart: handWrittenPackedBubblesChart.PackedBubblesChart,
+  ParallelCoordinatesChart: handWrittenParallelCoordinatesChart.ParallelCoordinatesChart,
+  ParetoChart: handWrittenParetoChart.ParetoChart,
+  PointAndFigureChart: handWrittenPointAndFigureChart.PointAndFigureChart,
+  PolygonChart: handWrittenPolygonChart.PolygonChart,
+  PriorityMatrix: handWrittenPriorityMatrix.PriorityMatrix,
+  RadarChart: handWrittenRadarChart.RadarChart,
+  RenkoChart: handWrittenRenkoChart.RenkoChart,
+  RibbonChart: handWrittenRibbonChart.RibbonChart,
+  Sparkline: handWrittenSparkline.Sparkline,
 };
 
 describe("React leg provenance", () => {
