@@ -290,6 +290,50 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
     );
   });
 
+  it("ForceGraph merge easing glides the from node onto into", async () => {
+    // Pinned positions make the merge delta exact: a at (10, 20), b at
+    // (110, 20), so dx = 100, dy = 0. Frames are driven manually with the
+    // rAF timestamps the effect anchors its clock to.
+    const frames: FrameRequestCallback[] = [];
+    const rafSpy = vi
+      .spyOn(window, "requestAnimationFrame")
+      .mockImplementation((cb) => {
+        frames.push(cb);
+        return frames.length;
+      });
+    try {
+      const onMergeComplete = vi.fn();
+      const { container } = render(
+        <ForceGraph
+          nodes={[
+            { id: "a", fx: 10, fy: 20 },
+            { id: "b", fx: 110, fy: 20 },
+          ]}
+          edges={[{ source: "a", target: "b" }]}
+          label="L"
+          mergePair={{ id: "m1", from: "a", into: "b" }}
+          onMergeComplete={onMergeComplete}
+        />,
+      );
+      await waitFor(() => expect(frames.length).toBeGreaterThan(0));
+      const fromNode = () => container.querySelectorAll(".st-forceGraph__node")[0];
+      expect(fromNode().getAttribute("transform")).toBe("translate(10 20)");
+      // First frame anchors the clock; the node has not moved yet.
+      frames.shift()!(0);
+      await waitFor(() => expect(fromNode().getAttribute("transform")).toBe("translate(10 20)"));
+      // Halfway through the 450ms glide the eased progress is exactly 0.5.
+      frames.shift()!(225);
+      await waitFor(() => expect(fromNode().getAttribute("transform")).toBe("translate(60 20)"));
+      // At the end of the glide the node lands on `into` before masking.
+      frames.shift()!(450);
+      await waitFor(() => expect(onMergeComplete).toHaveBeenCalledTimes(1));
+      expect(onMergeComplete).toHaveBeenCalledWith({ id: "m1", from: "a", into: "b" });
+      expect(fromNode().getAttribute("opacity")).toBe("0");
+    } finally {
+      rafSpy.mockRestore();
+    }
+  });
+
   it("ForceGraph renders its legend overlay when entries are provided", () => {
     render(
       <ForceGraph
