@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from "preact";
-import { useEffect, useId, useRef, useState } from "preact/hooks";
+import { useId, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
-import { focusWithin } from "./runtime.js";
+import { focusOut, focusWithin } from "./runtime.js";
 import type { ComponentChildren, TargetedFocusEvent, TargetedMouseEvent } from "./runtime.js";
 
 export type TooltipProps = Omit<HTMLAttributes<HTMLSpanElement>, "content"> & {
@@ -22,7 +22,6 @@ export function Tooltip({
 }: TooltipProps) {
   const [open, setOpen] = useState(false);
   const tooltipId = useId();
-  const hostRef = useRef<HTMLSpanElement>(null);
   // Preact-only `onFocusIn` arrives in the rest props (it is not part of the
   // React types, so it stays out of `TooltipProps` to keep parity): pull it
   // out so the `focusWithin` spread below does not drop it.
@@ -37,7 +36,11 @@ export function Tooltip({
     setOpen(true);
     onMouseEnter?.(event);
   };
-  const hideBlur = (event: TargetedFocusEvent<HTMLSpanElement>) => {
+  // The host's own `blur` (Preact's `onBlur` does not bubble) plus the
+  // bubbling leave below: wherever focus goes — a sibling, another region or
+  // `body`, which fires no `focusin` for a document listener to hear — the
+  // bubble closes, exactly like a bubbling `onBlur` would in React.
+  const hideFocus = (event: TargetedFocusEvent<HTMLSpanElement>) => {
     setOpen(false);
     onBlur?.(event);
   };
@@ -50,27 +53,13 @@ export function Tooltip({
     onFocus?.(event);
     onFocusInProp?.(event);
   };
-  const hide = () => setOpen(false);
-  // `focusWithin` hears a descendant receiving focus on both runtimes (Preact
-  // `onFocus` does not bubble); the matching hide runs on a document `focusin`
-  // listener while open, so keyboard focus leaving the host closes the bubble
-  // exactly like a bubbling `onBlur` would in React.
-  useEffect(() => {
-    if (!open) return;
-    const onFocusIn = (event: FocusEvent) => {
-      const target = event.target as Node | null;
-      if (target && hostRef.current && !hostRef.current.contains(target)) hide();
-    };
-    document.addEventListener("focusin", onFocusIn);
-    return () => document.removeEventListener("focusin", onFocusIn);
-  }, [open]);
   return (
     <span
       {...hostRest}
-      ref={hostRef}
       className={classNames("st-tooltip", `st-tooltip--${placement}`, className)}
       {...focusWithin(showFocus)}
-      onBlur={hideBlur}
+      onBlur={hideFocus}
+      {...focusOut(hideFocus)}
       onMouseEnter={showMouse}
       onMouseLeave={hideMouse}
     >
