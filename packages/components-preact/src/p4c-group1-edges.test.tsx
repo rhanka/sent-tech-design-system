@@ -8,9 +8,13 @@ import { ChatMessage } from "./ChatMessage.js";
 import { ChatThread } from "./ChatThread.js";
 import { Embed } from "./Embed.js";
 import { Icon } from "./Icon.js";
+import { DisplaySettings } from "./DisplaySettings.js";
+import { MediaContent } from "./MediaContent.js";
 import { MessageActions } from "./MessageActions.js";
 import { MessageStatusBadge } from "./MessageStatusBadge.js";
 import { Overline } from "./Overline.js";
+import { StreamingMessage } from "./StreamingMessage.js";
+import { Transcription } from "./Transcription.js";
 import { Typography } from "./Typography.js";
 
 afterEach(cleanup);
@@ -266,5 +270,112 @@ describe("P4c group 1 edges (ChatMessage, ChatThread, MessageActions, MessageSta
     expect(customBadge.className).toContain("st-badge--warning");
     expect(customBadge.textContent).toBe("Working…");
     custom.unmount();
+  });
+});
+
+describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, MediaContent)", () => {
+  it("accepts a Signal for className on every batch-D module", () => {
+    render(
+      <>
+        <StreamingMessage data-testid="e-stream" text="Live" className={signal("x-stream")} />
+        <Transcription data-testid="e-transcript" text="Hello" className={signal("x-transcript")} />
+        <DisplaySettings data-testid="e-display" className={signal("x-display")} />
+        <MediaContent data-testid="e-media" title="T" className={signal("x-media")} />
+      </>,
+    );
+    expect(screen.getByTestId("e-stream").className).toContain("x-stream");
+    expect(screen.getByTestId("e-transcript").className).toContain("x-transcript");
+    expect(screen.getByTestId("e-display").className).toContain("x-display");
+    expect(screen.getByTestId("e-media").className).toContain("x-media");
+  });
+
+  it("follows className signals mutated after mount (DOM changes)", async () => {
+    const streamClass = signal("x-stream");
+    const transcriptClass = signal("x-transcript");
+    render(
+      <>
+        <StreamingMessage data-testid="m-stream" text="Live" className={streamClass} />
+        <Transcription data-testid="m-transcript" text="Hello" className={transcriptClass} />
+      </>,
+    );
+    streamClass.value = "y-stream";
+    transcriptClass.value = "y-transcript";
+    await screen.findByTestId("m-stream");
+    expect(screen.getByTestId("m-stream").className).toContain("y-stream");
+    expect(screen.getByTestId("m-stream").className).not.toContain("x-stream");
+    expect(screen.getByTestId("m-transcript").className).toContain("y-transcript");
+  });
+
+  it("StreamingMessage shows the placeholder when empty and lists events", () => {
+    const { container, unmount } = render(<StreamingMessage />);
+    expect(container.querySelector(".st-streamingMessage__text--muted")).not.toBeNull();
+    expect(container.querySelector(".st-streamingMessage--live")).not.toBeNull();
+    unmount();
+    const withEvents = render(
+      <StreamingMessage
+        text="Partial"
+        mode="passive"
+        events={[{ id: "e1", label: "Tool call" }]}
+      />,
+    );
+    expect(withEvents.container.querySelector(".st-streamingMessage--passive")).not.toBeNull();
+    expect(withEvents.container.querySelector(".st-streamingMessage__trailList")?.textContent).toBe(
+      "Tool call",
+    );
+    withEvents.unmount();
+  });
+
+  it("Transcription renders segments with intervals and follows the open signal", async () => {
+    const open = signal(false);
+    const { container } = render(
+      <Transcription
+        open={open}
+        segments={[{ speaker: "Ada", startTime: "00:01", endTime: "00:05", text: "Hello" }]}
+      />,
+    );
+    expect(container.querySelector(".st-transcription__speaker")?.textContent).toBe("Ada");
+    expect(container.querySelector("time")?.textContent).toContain("00:01 - 00:05");
+    expect(container.querySelector("details")?.hasAttribute("open")).toBe(false);
+    open.value = true;
+    await waitFor(() =>
+      expect(container.querySelector("details")?.hasAttribute("open")).toBe(true),
+    );
+  });
+
+  it("DisplaySettings calls onChange with merged settings and follows show toggles", () => {
+    const onChange = vi.fn();
+    const showReducedMotion = signal(false);
+    const { container } = render(
+      <DisplaySettings onChange={onChange} showReducedMotion={showReducedMotion} />,
+    );
+    expect(container.querySelector(".st-displaySettings__field--switch")).toBeNull();
+    const select = container.querySelector("select") as HTMLSelectElement;
+    fireEvent.change(select, { target: { value: "large" } });
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(onChange.mock.calls[0][0]).toMatchObject({ fontScale: "large", contrast: "default" });
+  });
+
+  it("DisplaySettings follows showReducedMotion signals mutated after mount", async () => {
+    const showReducedMotion = signal(false);
+    const { container } = render(<DisplaySettings showReducedMotion={showReducedMotion} />);
+    expect(container.querySelector(".st-displaySettings__field--switch")).toBeNull();
+    showReducedMotion.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-displaySettings__field--switch")).not.toBeNull(),
+    );
+  });
+
+  it("MediaContent renders video with captions and falls back to children", () => {
+    const { container, unmount } = render(
+      <MediaContent title="Clip" media="https://example.com/c.mp4" mediaKind="video" caption="Cap" />,
+    );
+    const video = container.querySelector("video") as HTMLVideoElement;
+    expect(video.getAttribute("aria-label")).toBe("Clip");
+    expect(video.querySelector("track")?.getAttribute("kind")).toBe("captions");
+    expect(container.querySelector("figcaption")?.textContent).toContain("Cap");
+    unmount();
+    const fallback = render(<MediaContent title="T" media=" "><p>Child</p></MediaContent>);
+    expect(fallback.container.querySelector(".st-mediaContent__media")?.textContent).toBe("Child");
+    fallback.unmount();
   });
 });
