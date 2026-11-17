@@ -136,11 +136,11 @@
     "shared": {
       "src/internal.ts": 171,
       "src/classNames.ts": 22,
-      "src/index.ts": 228,
-      "preactAdapters": 277,
-      "reactTwins": 94,
+      "src/index.ts": 378,
+      "preactAdapters": 304,
+      "reactTwins": 106,
       "scripts/emit-react.mjs": 174,
-      "vitest.react.config.ts": 93
+      "vitest.react.config.ts": 138
     }
   },
   "rate": {
