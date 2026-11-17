@@ -88,6 +88,7 @@ describe("P4a group 2 edges (data: signals at the edges, post-mount mutation)", 
     const grid = signal("x-grid");
     const image = signal("x-image");
     const decomp = signal("x-decomp");
+    const table = signal("x-table");
     const density = signal("x-density");
     const wheel = signal("x-wheel");
     const div = signal("x-div");
@@ -109,6 +110,7 @@ describe("P4a group 2 edges (data: signals at the edges, post-mount mutation)", 
           data={{ measure: "m", levels: [{ dimension: "d", nodes: [{ label: "n", value: 1 }] }] }}
           className={decomp}
         />
+        <DataTable data-testid="m-table" columns={[{ key: "id", label: "ID" }]} rows={[{ id: "r1" }]} className={table} />
         <Density2DChart data-testid="m-density" data={[{ x: 0, y: 0 }]} className={density} />
         <DependencyWheelChart data-testid="m-wheel" data={[{ from: "a", to: "b", weight: 1 }]} label="L" className={wheel} />
         <DivergentBarChart data-testid="m-div" data={[{ label: "A", value: 1 }]} label="L" className={div} />
@@ -127,6 +129,7 @@ describe("P4a group 2 edges (data: signals at the edges, post-mount mutation)", 
       ["m-grid", grid],
       ["m-image", image],
       ["m-decomp", decomp],
+      ["m-table", table],
       ["m-density", density],
       ["m-wheel", wheel],
       ["m-div", div],
@@ -304,5 +307,65 @@ describe("P4a group 2 edges (data: signals at the edges, post-mount mutation)", 
     const items = Array.from(document.querySelectorAll(".st-eventFeedPanel__message")).map((n) => n.textContent);
     expect(items).toEqual(["last", "middle", "first"]);
     expect(document.querySelector(".st-eventFeedPanel__item--error")).not.toBeNull();
+  });
+
+  it("ComboChart follows legend and keyboardNav signals mutated after mount", async () => {
+    const legend = signal(true);
+    const keyboardNav = signal(false);
+    const { container } = render(
+      <ComboChart
+        categories={["c1", "c2"]}
+        bars={[{ label: "b1", data: [1, 2] }]}
+        label="L"
+        legend={legend}
+        keyboardNav={keyboardNav}
+      />,
+    );
+    expect(container.querySelector(".st-comboChart__legend")).not.toBeNull();
+    expect(container.querySelector(".st-comboChart__navDatum")).toBeNull();
+    legend.value = false;
+    await waitFor(() => expect(container.querySelector(".st-comboChart__legend")).toBeNull());
+    keyboardNav.value = true;
+    await waitFor(() => expect(container.querySelector(".st-comboChart__navDatum")).not.toBeNull());
+  });
+
+  it("DataTable follows sortable, sortBy and page signals mutated after mount", async () => {
+    const sortable = signal(true);
+    const sortBy = signal<{ key: string; direction: "asc" | "desc" } | null>({
+      key: "name",
+      direction: "asc",
+    });
+    const page = signal(1);
+    const { container } = render(
+      <DataTable
+        columns={[{ key: "name", label: "Name" }]}
+        rows={[
+          { id: "r1", name: "Bravo" },
+          { id: "r2", name: "Alpha" },
+          { id: "r3", name: "Charlie" },
+        ]}
+        sortable={sortable}
+        sortBy={sortBy}
+        pageSize={2}
+        page={page}
+      />,
+    );
+    const header = () => container.querySelector("th");
+    const firstCell = () => container.querySelector("tbody tr td")?.textContent;
+    // Ascending sort: Alpha first, aria-sort reflects the direction.
+    expect(header()?.getAttribute("aria-sort")).toBe("ascending");
+    expect(firstCell()).toBe("Alpha");
+    // Flipping the direction reorders the rows.
+    sortBy.value = { key: "name", direction: "desc" };
+    await waitFor(() => expect(firstCell()).toBe("Charlie"));
+    expect(header()?.getAttribute("aria-sort")).toBe("descending");
+    // Paging to the second page shows the remaining row (descending: Charlie,
+    // Bravo, Alpha with a page size of 2).
+    page.value = 2;
+    await waitFor(() => expect(container.querySelectorAll("tbody tr")).toHaveLength(1));
+    expect(firstCell()).toBe("Alpha");
+    // A non-sortable table carries no aria-sort.
+    sortable.value = false;
+    await waitFor(() => expect(header()?.getAttribute("aria-sort")).toBeNull());
   });
 });
