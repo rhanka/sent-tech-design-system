@@ -19,6 +19,7 @@ import type {
   TargetedKeyboardEvent,
   TargetedMouseEvent,
   TargetedPointerEvent,
+  TargetedWheelEvent,
   VNode,
 } from "preact";
 import { useEffect, useLayoutEffect, useRef, useState } from "preact/hooks";
@@ -37,6 +38,7 @@ export type {
   TargetedKeyboardEvent,
   TargetedMouseEvent,
   TargetedPointerEvent,
+  TargetedWheelEvent,
 };
 
 // ---------------------------------------------------------------------------
@@ -195,6 +197,21 @@ export function textChange<T extends HTMLInputElement | HTMLTextAreaElement>(
       handler(event);
     },
   };
+}
+
+// ---------------------------------------------------------------------------
+// Double click
+// ---------------------------------------------------------------------------
+
+/**
+ * Double-click handler spread onto an element. Preact core listens for the
+ * native `dblclick` event (`onDblClick`); React names the same event
+ * `onDoubleClick`. The twin maps it accordingly, so both legs fire.
+ */
+export function dblClick<T extends EventTarget>(
+  handler: (event: TargetedMouseEvent<T>) => void,
+): { onDblClick: (event: TargetedMouseEvent<T>) => void } {
+  return { onDblClick: handler };
 }
 
 // ---------------------------------------------------------------------------
