@@ -170,6 +170,21 @@ describe("P3 group 1 edges (menu cascade: signals at the edges, post-mount mutat
     expect(onFocus).toHaveBeenCalledTimes(1);
   });
 
+  it("Tooltip keeps a consumer onFocusOut and closes on focus-out", () => {
+    const onFocusOut = vi.fn();
+    const { container } = render(
+      <Tooltip content="C" onFocusOut={onFocusOut}>
+        T
+      </Tooltip>,
+    );
+    const host = container.querySelector(".st-tooltip") as HTMLElement;
+    fireEvent.focusIn(host);
+    expect(host.querySelector('[role="tooltip"]')?.getAttribute("aria-hidden")).toBe("false");
+    fireEvent.focusOut(host);
+    expect(host.querySelector('[role="tooltip"]')?.getAttribute("aria-hidden")).toBe("true");
+    expect(onFocusOut).toHaveBeenCalledTimes(1);
+  });
+
   it("Tooltip closes when focus leaves to body", () => {
     const onBlur = vi.fn();
     const { container } = render(
