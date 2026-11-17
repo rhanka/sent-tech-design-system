@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a group 1, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1 and 2, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -43,16 +43,32 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "Collapsible",
     "ColorScaleBar",
     "ColorSwatch",
+    "ColumnPyramidChart",
+    "ColumnRangeChart",
+    "ComboChart",
     "Combobox",
+    "ConfigItemCard",
     "Container",
     "ContentSwitcher",
+    "ContourChart",
     "CopyButton",
+    "DashboardGrid",
+    "DataImage",
+    "DataTable",
     "DatePicker",
+    "DecompositionTreeChart",
+    "Density2DChart",
+    "DependencyWheelChart",
+    "DivergentBarChart",
     "Divider",
+    "DonutChart",
     "Drawer",
     "Dropdown",
+    "DumbbellChart",
     "EmptyState",
+    "ErrorBarChart",
     "ErrorSummary",
+    "EventFeedPanel",
     "FieldCard",
     "FileUploader",
     "Flex",
@@ -184,6 +200,22 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
     "CodeSnippet",
     "ColorScaleBar",
     "ForceGraph",
+    "ColumnPyramidChart",
+    "ColumnRangeChart",
+    "ComboChart",
+    "ConfigItemCard",
+    "ContourChart",
+    "DashboardGrid",
+    "DataImage",
+    "DataTable",
+    "DecompositionTreeChart",
+    "Density2DChart",
+    "DependencyWheelChart",
+    "DivergentBarChart",
+    "DonutChart",
+    "DumbbellChart",
+    "ErrorBarChart",
+    "EventFeedPanel",
   ]) {
     assert.deepEqual(lots.get(name), "P4a");
   }

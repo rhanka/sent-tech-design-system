@@ -55,6 +55,22 @@ import * as handWrittenNavActionStack from "../../components-react/src/NavAction
 import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
 import * as handWrittenStepper from "../../components-react/src/Stepper.js";
 import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
+import * as handWrittenColumnPyramidChart from "../../components-react/src/ColumnPyramidChart.js";
+import * as handWrittenColumnRangeChart from "../../components-react/src/ColumnRangeChart.js";
+import * as handWrittenComboChart from "../../components-react/src/ComboChart.js";
+import * as handWrittenConfigItemCard from "../../components-react/src/ConfigItemCard.js";
+import * as handWrittenContourChart from "../../components-react/src/ContourChart.js";
+import * as handWrittenDashboardGrid from "../../components-react/src/DashboardGrid.js";
+import * as handWrittenDataImage from "../../components-react/src/DataImage.js";
+import * as handWrittenDataTable from "../../components-react/src/DataTable.js";
+import * as handWrittenDecompositionTreeChart from "../../components-react/src/DecompositionTreeChart.js";
+import * as handWrittenDensity2DChart from "../../components-react/src/Density2DChart.js";
+import * as handWrittenDependencyWheelChart from "../../components-react/src/DependencyWheelChart.js";
+import * as handWrittenDivergentBarChart from "../../components-react/src/DivergentBarChart.js";
+import * as handWrittenDonutChart from "../../components-react/src/DonutChart.js";
+import * as handWrittenDumbbellChart from "../../components-react/src/DumbbellChart.js";
+import * as handWrittenErrorBarChart from "../../components-react/src/ErrorBarChart.js";
+import * as handWrittenEventFeedPanel from "../../components-react/src/EventFeedPanel.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -172,6 +188,22 @@ const switched = [
   "ColorScaleBar",
   "ForceGraph",
   "GraphLegend",
+  "ColumnPyramidChart",
+  "ColumnRangeChart",
+  "ComboChart",
+  "ConfigItemCard",
+  "ContourChart",
+  "DashboardGrid",
+  "DataImage",
+  "DataTable",
+  "DecompositionTreeChart",
+  "Density2DChart",
+  "DependencyWheelChart",
+  "DivergentBarChart",
+  "DonutChart",
+  "DumbbellChart",
+  "ErrorBarChart",
+  "EventFeedPanel",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -289,6 +321,22 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   ColorScaleBar: handWrittenColorScaleBar.ColorScaleBar,
   ForceGraph: handWrittenCatalog.ForceGraph,
   GraphLegend: handWrittenCatalog.GraphLegend,
+  ColumnPyramidChart: handWrittenColumnPyramidChart.ColumnPyramidChart,
+  ColumnRangeChart: handWrittenColumnRangeChart.ColumnRangeChart,
+  ComboChart: handWrittenComboChart.ComboChart,
+  ConfigItemCard: handWrittenConfigItemCard.ConfigItemCard,
+  ContourChart: handWrittenContourChart.ContourChart,
+  DashboardGrid: handWrittenDashboardGrid.DashboardGrid,
+  DataImage: handWrittenDataImage.DataImage,
+  DataTable: handWrittenDataTable.DataTable,
+  DecompositionTreeChart: handWrittenDecompositionTreeChart.DecompositionTreeChart,
+  Density2DChart: handWrittenDensity2DChart.Density2DChart,
+  DependencyWheelChart: handWrittenDependencyWheelChart.DependencyWheelChart,
+  DivergentBarChart: handWrittenDivergentBarChart.DivergentBarChart,
+  DonutChart: handWrittenDonutChart.DonutChart,
+  DumbbellChart: handWrittenDumbbellChart.DumbbellChart,
+  ErrorBarChart: handWrittenErrorBarChart.ErrorBarChart,
+  EventFeedPanel: handWrittenEventFeedPanel.EventFeedPanel,
 };
 
 describe("React leg provenance", () => {
