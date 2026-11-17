@@ -1,0 +1,47 @@
+import type { HTMLAttributes } from "preact";
+import { classNames } from "./classNames.js";
+import { forwardRef } from "./runtime.js";
+import type { MaybeSignal } from "./signals.js";
+
+export type BadgeTone = "neutral" | "success" | "warning" | "error" | "info";
+
+/** Badge shape — `"pill"` (default) is the current render (radius 999px, width
+ * grows with content). `"circle"` renders an equal-sided round bubble
+ * (`min-width === min-height`, equal inline/block padding, tabular-nums) — best
+ * for ≤2-digit counts. 3+ digit content degrades GRACEFULLY to a rounded-rect
+ * (never clipped). Additive: with `shape` unset the badge renders
+ * byte-identically to before. */
+export type BadgeShape = "pill" | "circle";
+
+/** Density — `"md"` (default) is the current render. `"sm"` shrinks the
+ * font-size (the rail-bubble scale). Additive: with `size` unset the badge
+ * renders byte-identically to before. */
+export type BadgeSize = "sm" | "md";
+
+export type BadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "className"> & {
+  tone?: BadgeTone;
+  shape?: BadgeShape;
+  size?: BadgeSize;
+  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
+  className?: MaybeSignal<string>;
+};
+
+export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
+  ({ tone = "neutral", shape = "pill", size = "md", className, children, ...rest }, ref) => (
+    <span
+      {...rest}
+      ref={ref}
+      className={classNames(
+        "st-badge",
+        `st-badge--${tone}`,
+        `st-badge--${shape}`,
+        `st-badge--${size}`,
+        className,
+      )}
+    >
+      {children}
+    </span>
+  ),
+);
+
+Badge.displayName = "Badge";

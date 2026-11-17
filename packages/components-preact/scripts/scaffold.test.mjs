@@ -8,13 +8,16 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 1, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1 and 2, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
     "Alert",
     "AspectRatio",
     "Autosave",
+    "BackToTop",
+    "Badge",
+    "Breadcrumb",
     "Button",
     "ButtonGroup",
     "Calendar",
@@ -24,6 +27,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 
     "CheckboxGroup",
     "Col",
     "Collapsible",
+    "ColorSwatch",
     "Combobox",
     "Container",
     "ContentSwitcher",
@@ -36,15 +40,18 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 
     "FieldCard",
     "FileUploader",
     "Flex",
+    "Footer",
     "Form",
     "FormGroup",
     "Grid",
+    "Header",
     "Hidden",
     "Highlight",
     "IconButton",
     "Inline",
     "InlineLoading",
     "Input",
+    "LanguageToggle",
     "Link",
     "LoadingState",
     "Menu",
@@ -52,9 +59,13 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 
     "MenuTriggerButton",
     "Modal",
     "MultiSelect",
+    "NavActionStack",
+    "NavItem",
     "Notification",
     "NumberInput",
     "OverflowMenu",
+    "Pagination",
+    "PaginationNav",
     "PanelSection",
     "PanelStack",
     "PasswordInput",
@@ -72,11 +83,14 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 
     "Select",
     "SelectableList",
     "SelectableRow",
+    "SideNav",
     "SkeletonText",
     "Slider",
     "Stack",
     "StatusDot",
+    "Stepper",
     "Switch",
+    "TableOfContents",
     "Tabs",
     "Textarea",
     "ThemeProvider",
@@ -109,6 +123,24 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("Popover"), "P3");
   assert.deepEqual(lots.get("Toggletip"), "P3");
   assert.deepEqual(lots.get("Tooltip"), "P3");
+  for (const name of [
+    "BackToTop",
+    "Breadcrumb",
+    "Footer",
+    "Header",
+    "LanguageToggle",
+    "NavActionStack",
+    "NavItem",
+    "Pagination",
+    "PaginationNav",
+    "SideNav",
+    "Stepper",
+    "TableOfContents",
+  ]) {
+    assert.deepEqual(lots.get(name), "P3");
+  }
+  assert.deepEqual(lots.get("Badge"), "P4a");
+  assert.deepEqual(lots.get("ColorSwatch"), "P4a");
   for (const name of [
     "Calendar",
     "Checkbox",
