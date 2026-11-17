@@ -3,6 +3,7 @@ import type { ButtonHTMLAttributes } from "preact";
 import { useEffect, useState } from "preact/hooks";
 import { classNames } from "./classNames.js";
 import { forwardRef } from "./runtime.js";
+import type { TargetedMouseEvent } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
@@ -28,6 +29,7 @@ export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(
       smooth: smoothInput = true,
       disabled = false,
       className,
+      onClick,
       ...rest
     },
     ref,
@@ -77,13 +79,22 @@ export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(
 
     const hidden = autoHide && !visible;
 
+    // The consumer `onClick` runs first and `goTop` still scrolls, so both
+    // fire once per click (Popover/Drawer precedent) instead of the consumer
+    // handler being dropped behind the internal prop placed after the rest
+    // spread.
+    const handleClick = (event: TargetedMouseEvent<HTMLButtonElement>) => {
+      onClick?.(event);
+      goTop();
+    };
+
     return (
       <button
         {...rest}
         ref={ref}
         type="button"
         className={classNames("st-backToTop", className)}
-        onClick={goTop}
+        onClick={handleClick}
         aria-label={label}
         aria-hidden={hidden || undefined}
         aria-live={hidden ? "polite" : undefined}
