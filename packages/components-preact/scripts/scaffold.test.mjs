@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c group 1, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -20,6 +20,8 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "AreaSplineRangeChart",
     "AspectRatio",
     "Autosave",
+    "Avatar",
+    "AvatarGroup",
     "BackToTop",
     "Badge",
     "BarChart",
@@ -35,6 +37,8 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "CandlestickChart",
     "Card",
     "ChatComposer",
+    "ChatMessage",
+    "ChatThread",
     "Checkbox",
     "CheckboxGroup",
     "ChordDiagram",
@@ -59,12 +63,14 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "DecompositionTreeChart",
     "Density2DChart",
     "DependencyWheelChart",
+    "DisplaySettings",
     "DivergentBarChart",
     "Divider",
     "DonutChart",
     "Drawer",
     "Dropdown",
     "DumbbellChart",
+    "Embed",
     "EmptyState",
     "ErrorBarChart",
     "ErrorSummary",
@@ -92,6 +98,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "Highlight",
     "HistogramChart",
     "HollowCandlestickChart",
+    "Icon",
     "IconButton",
     "Inline",
     "InlineLoading",
@@ -105,9 +112,12 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "LoadingState",
     "LollipopChart",
     "MarimekkoChart",
+    "MediaContent",
     "Menu",
     "MenuPopover",
     "MenuTriggerButton",
+    "MessageActions",
+    "MessageStatusBadge",
     "Modal",
     "MultiSelect",
     "NavActionStack",
@@ -118,6 +128,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "OrderedList",
     "OrganizationChart",
     "OverflowMenu",
+    "Overline",
     "PackedBubblesChart",
     "Pagination",
     "PaginationNav",
@@ -166,6 +177,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "StepLineChart",
     "Stepper",
     "StreamgraphChart",
+    "StreamingMessage",
     "StructuredList",
     "SunburstChart",
     "Switch",
@@ -187,9 +199,11 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "Toggletip",
     "Tooltip",
     "TraceWaterfallChart",
+    "Transcription",
     "TreeView",
     "TreegraphChart",
     "TreemapChart",
+    "Typography",
     "UnorderedList",
     "VariablePieChart",
     "VectorFieldChart",
@@ -371,6 +385,24 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
     assert.deepEqual(lots.get(name), "P2");
   }
   assert.deepEqual(lots.get("ChatComposer"), "P4c");
+  for (const name of [
+    "Avatar",
+    "AvatarGroup",
+    "ChatMessage",
+    "ChatThread",
+    "DisplaySettings",
+    "Embed",
+    "Icon",
+    "MediaContent",
+    "MessageActions",
+    "MessageStatusBadge",
+    "Overline",
+    "StreamingMessage",
+    "Transcription",
+    "Typography",
+  ]) {
+    assert.deepEqual(lots.get(name), "P4c");
+  }
   assert.deepEqual(lots.get("Portal"), "P4c");
   assert.deepEqual(lots.get("ThemeProvider"), "P4c");
   assert.deepEqual(lots.get("PanelStack"), "P4c");
