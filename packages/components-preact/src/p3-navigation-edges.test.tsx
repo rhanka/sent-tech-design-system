@@ -61,6 +61,19 @@ describe("P3 group 2 edges (navigation: signals at the edges, post-mount mutatio
     expect(container.querySelector(".st-navItem")?.className).toContain("x-navitem");
   });
 
+  it("BackToTop keeps a consumer onClick and still scrolls to top", () => {
+    const onClick = vi.fn();
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    try {
+      render(<BackToTop onClick={onClick} autoHide={false} />);
+      fireEvent.click(screen.getByRole("button", { name: "Retour en haut" }));
+      expect(onClick).toHaveBeenCalledTimes(1);
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+    } finally {
+      scrollTo.mockRestore();
+    }
+  });
+
   it("BackToTop follows an autoHide signal mutated after mount", async () => {
     const autoHide = signal(true);
     const { container } = render(<BackToTop autoHide={autoHide} />);
