@@ -136,7 +136,7 @@
     "shared": {
       "src/internal.ts": 171,
       "src/classNames.ts": 22,
-      "src/index.ts": 218,
+      "src/index.ts": 228,
       "preactAdapters": 263,
       "reactTwins": 83,
       "scripts/emit-react.mjs": 174,

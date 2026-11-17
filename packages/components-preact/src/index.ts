@@ -188,6 +188,16 @@ export { Toggletip } from "./Toggletip.js";
 export type { ToggletipProps } from "./Toggletip.js";
 export { Tooltip } from "./Tooltip.js";
 export type { TooltipProps } from "./Tooltip.js";
+export { Drawer } from "./Drawer.js";
+export type { DrawerProps } from "./Drawer.js";
+export { LanguageSelector } from "./LanguageSelector.js";
+export type { LanguageSelectorProps, LanguageOption } from "./LanguageSelector.js";
+export { SkipLink } from "./SkipLink.js";
+export type { SkipLinkProps } from "./SkipLink.js";
+export { SlideIndicator } from "./SlideIndicator.js";
+export type { SlideIndicatorProps, SlideIndicatorVariant } from "./SlideIndicator.js";
+export { TreeView } from "./TreeView.js";
+export type { TreeViewProps, TreeNode } from "./TreeView.js";
 export {
   computeSubMenuPosition,
   pointInSafeTriangle,
