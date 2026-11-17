@@ -80,10 +80,11 @@ export const BackToTop = forwardRef<HTMLButtonElement, BackToTopProps>(
 
     const hidden = autoHide && !visible;
 
-    // The consumer `onClick` runs first and `goTop` still scrolls, so both
-    // fire once per click (Popover/Drawer precedent) instead of the consumer
-    // handler being dropped behind the internal prop placed after the rest
-    // spread.
+    // The consumer `onClick` runs first, then `goTop` scrolls (intentionally
+    // reversed vs Popover, which opens first; neither handler reads
+    // `defaultPrevented`, so the order is observable only via call sequence),
+    // so both fire once per click instead of the consumer handler being
+    // dropped behind the internal prop placed after the rest spread.
     const handleClick = (event: TargetedMouseEvent<HTMLButtonElement>) => {
       onClick?.(event);
       goTop();
