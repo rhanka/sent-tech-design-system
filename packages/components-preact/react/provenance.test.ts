@@ -82,7 +82,49 @@ import * as handWrittenHeikinAshiChart from "../../components-react/src/HeikinAs
 import * as handWrittenHistogramChart from "../../components-react/src/HistogramChart.js";
 import * as handWrittenHollowCandlestickChart from "../../components-react/src/HollowCandlestickChart.js";
 import * as handWrittenItemChart from "../../components-react/src/ItemChart.js";
+import * as handWrittenKpiCard from "../../components-react/src/KpiCard.js";
+import * as handWrittenLineChart from "../../components-react/src/LineChart.js";
+import * as handWrittenLollipopChart from "../../components-react/src/LollipopChart.js";
+import * as handWrittenMarimekkoChart from "../../components-react/src/MarimekkoChart.js";
+import * as handWrittenOHLCChart from "../../components-react/src/OHLCChart.js";
+import * as handWrittenOrganizationChart from "../../components-react/src/OrganizationChart.js";
+import * as handWrittenPackedBubblesChart from "../../components-react/src/PackedBubblesChart.js";
+import * as handWrittenParallelCoordinatesChart from "../../components-react/src/ParallelCoordinatesChart.js";
+import * as handWrittenParetoChart from "../../components-react/src/ParetoChart.js";
+import * as handWrittenPointAndFigureChart from "../../components-react/src/PointAndFigureChart.js";
+import * as handWrittenPolygonChart from "../../components-react/src/PolygonChart.js";
+import * as handWrittenPriorityMatrix from "../../components-react/src/PriorityMatrix.js";
+import * as handWrittenRadarChart from "../../components-react/src/RadarChart.js";
+import * as handWrittenRenkoChart from "../../components-react/src/RenkoChart.js";
+import * as handWrittenRibbonChart from "../../components-react/src/RibbonChart.js";
+import * as handWrittenRoseChart from "../../components-react/src/RoseChart.js";
+import * as handWrittenSankeyChart from "../../components-react/src/SankeyChart.js";
+import * as handWrittenScatterPlot from "../../components-react/src/ScatterPlot.js";
+import * as handWrittenScoreCard from "../../components-react/src/ScoreCard.js";
+import * as handWrittenSolidGaugeChart from "../../components-react/src/SolidGaugeChart.js";
+import * as handWrittenSparkline from "../../components-react/src/Sparkline.js";
+import * as handWrittenStackedBarChart from "../../components-react/src/StackedBarChart.js";
+import * as handWrittenStateTimelineChart from "../../components-react/src/StateTimelineChart.js";
+import * as handWrittenStatusHistoryChart from "../../components-react/src/StatusHistoryChart.js";
+import * as handWrittenStepLineChart from "../../components-react/src/StepLineChart.js";
+import * as handWrittenStreamgraphChart from "../../components-react/src/StreamgraphChart.js";
+import * as handWrittenSunburstChart from "../../components-react/src/SunburstChart.js";
+import * as handWrittenTileMapChart from "../../components-react/src/TileMapChart.js";
+import * as handWrittenTimelineChart from "../../components-react/src/TimelineChart.js";
+import * as handWrittenTraceWaterfallChart from "../../components-react/src/TraceWaterfallChart.js";
+import * as handWrittenTreegraphChart from "../../components-react/src/TreegraphChart.js";
+import * as handWrittenTreemapChart from "../../components-react/src/TreemapChart.js";
+import * as handWrittenVariablePieChart from "../../components-react/src/VariablePieChart.js";
+import * as handWrittenVectorFieldChart from "../../components-react/src/VectorFieldChart.js";
+import * as handWrittenVennChart from "../../components-react/src/VennChart.js";
+import * as handWrittenViolinChart from "../../components-react/src/ViolinChart.js";
+import * as handWrittenWaffleChart from "../../components-react/src/WaffleChart.js";
+import * as handWrittenWaterfallChart from "../../components-react/src/WaterfallChart.js";
+import * as handWrittenWindBarbChart from "../../components-react/src/WindBarbChart.js";
+import * as handWrittenWordCloudChart from "../../components-react/src/WordCloudChart.js";
+import * as handWrittenPriorityLabels from "../../components-react/src/priorityLabels.js";
 import * as emitted from "../.react-emit/src/index.js";
+import * as emittedPriorityLabels from "../.react-emit/src/priorityLabels.js";
 
 const switched = [
   "Button",
@@ -230,6 +272,52 @@ const switched = [
   "HistogramChart",
   "HollowCandlestickChart",
   "ItemChart",
+  "KpiCard",
+  "LineChart",
+  "LollipopChart",
+  "MarimekkoChart",
+  "OHLCChart",
+  "OrderedList",
+  "OrganizationChart",
+  "PackedBubblesChart",
+  "ParallelCoordinatesChart",
+  "ParetoChart",
+  "PointAndFigureChart",
+  "PolygonChart",
+  "PriorityMatrix",
+  "RadarChart",
+  "RenkoChart",
+  "RibbonChart",
+  "RoseChart",
+  "SankeyChart",
+  "ScatterPlot",
+  "ScoreCard",
+  "SelectionChip",
+  "SolidGaugeChart",
+  "Sparkline",
+  "StackedBarChart",
+  "StateTimelineChart",
+  "StatusHistoryChart",
+  "StepLineChart",
+  "StreamgraphChart",
+  "StructuredList",
+  "SunburstChart",
+  "Table",
+  "Tag",
+  "TileMapChart",
+  "TimelineChart",
+  "TraceWaterfallChart",
+  "TreegraphChart",
+  "TreemapChart",
+  "UnorderedList",
+  "VariablePieChart",
+  "VectorFieldChart",
+  "VennChart",
+  "ViolinChart",
+  "WaffleChart",
+  "WaterfallChart",
+  "WindBarbChart",
+  "WordCloudChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -378,6 +466,52 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   HistogramChart: handWrittenHistogramChart.HistogramChart,
   HollowCandlestickChart: handWrittenHollowCandlestickChart.HollowCandlestickChart,
   ItemChart: handWrittenItemChart.ItemChart,
+  KpiCard: handWrittenKpiCard.KpiCard,
+  LineChart: handWrittenLineChart.LineChart,
+  LollipopChart: handWrittenLollipopChart.LollipopChart,
+  MarimekkoChart: handWrittenMarimekkoChart.MarimekkoChart,
+  OHLCChart: handWrittenOHLCChart.OHLCChart,
+  OrderedList: handWrittenCatalog.OrderedList,
+  OrganizationChart: handWrittenOrganizationChart.OrganizationChart,
+  PackedBubblesChart: handWrittenPackedBubblesChart.PackedBubblesChart,
+  ParallelCoordinatesChart: handWrittenParallelCoordinatesChart.ParallelCoordinatesChart,
+  ParetoChart: handWrittenParetoChart.ParetoChart,
+  PointAndFigureChart: handWrittenPointAndFigureChart.PointAndFigureChart,
+  PolygonChart: handWrittenPolygonChart.PolygonChart,
+  PriorityMatrix: handWrittenPriorityMatrix.PriorityMatrix,
+  RadarChart: handWrittenRadarChart.RadarChart,
+  RenkoChart: handWrittenRenkoChart.RenkoChart,
+  RibbonChart: handWrittenRibbonChart.RibbonChart,
+  RoseChart: handWrittenRoseChart.RoseChart,
+  SankeyChart: handWrittenSankeyChart.SankeyChart,
+  ScatterPlot: handWrittenScatterPlot.ScatterPlot,
+  ScoreCard: handWrittenScoreCard.ScoreCard,
+  SelectionChip: handWrittenCatalog.SelectionChip,
+  SolidGaugeChart: handWrittenSolidGaugeChart.SolidGaugeChart,
+  Sparkline: handWrittenSparkline.Sparkline,
+  StackedBarChart: handWrittenStackedBarChart.StackedBarChart,
+  StateTimelineChart: handWrittenStateTimelineChart.StateTimelineChart,
+  StatusHistoryChart: handWrittenStatusHistoryChart.StatusHistoryChart,
+  StepLineChart: handWrittenStepLineChart.StepLineChart,
+  StreamgraphChart: handWrittenStreamgraphChart.StreamgraphChart,
+  StructuredList: handWrittenCatalog.StructuredList,
+  SunburstChart: handWrittenSunburstChart.SunburstChart,
+  Table: handWrittenCatalog.Table,
+  Tag: handWrittenCatalog.Tag,
+  TileMapChart: handWrittenTileMapChart.TileMapChart,
+  TimelineChart: handWrittenTimelineChart.TimelineChart,
+  TraceWaterfallChart: handWrittenTraceWaterfallChart.TraceWaterfallChart,
+  TreegraphChart: handWrittenTreegraphChart.TreegraphChart,
+  TreemapChart: handWrittenTreemapChart.TreemapChart,
+  UnorderedList: handWrittenCatalog.UnorderedList,
+  VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
+  VectorFieldChart: handWrittenVectorFieldChart.VectorFieldChart,
+  VennChart: handWrittenVennChart.VennChart,
+  ViolinChart: handWrittenViolinChart.ViolinChart,
+  WaffleChart: handWrittenWaffleChart.WaffleChart,
+  WaterfallChart: handWrittenWaterfallChart.WaterfallChart,
+  WindBarbChart: handWrittenWindBarbChart.WindBarbChart,
+  WordCloudChart: handWrittenWordCloudChart.WordCloudChart,
 };
 
 describe("React leg provenance", () => {
@@ -392,5 +526,17 @@ describe("React leg provenance", () => {
   it("hand-written dependents share the contexts of the emitted SelectableRow", () => {
     expect(barrel.SelectableListContext).toBe(emitted.SelectableListContext);
     expect(barrel.SelectableListContext).not.toBe(handWrittenSelectableRow.SelectableListContext);
+  });
+
+  it("the React leg serves the emitted priorityLabels helper (not the hand-written twin)", () => {
+    // priorityLabels is internal to PriorityMatrix (no barrel export on either
+    // side): the React-leg module switch redirects `./priorityLabels.js`
+    // importers inside components-react/src to the emission, so the golden
+    // vector in `priorityLabels.test.ts` runs against the emitted helper.
+    for (const name of ["priorityQuadrant", "estimatePriorityLabelBox", "placePriorityLabels"] as const) {
+      expect(typeof emittedPriorityLabels[name]).toBe("function");
+      expect(typeof handWrittenPriorityLabels[name]).toBe("function");
+      expect(emittedPriorityLabels[name]).not.toBe(handWrittenPriorityLabels[name]);
+    }
   });
 });

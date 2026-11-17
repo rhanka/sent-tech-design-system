@@ -95,9 +95,34 @@ const reactTests = [
   "HeikinAshiChart", // emitted P4a group-3 chart (HA candles, tooltip)
   "HollowCandlestickChart", // emitted P4a group-3 chart (hollow bodies, tooltip)
   "ItemChart", // emitted P4a group-3 chart (hemicycle seats, legend)
+  "LineChart", // emitted P4b group-1 chart (line, overlays, keyboard nav)
+  "LollipopParetoChart", // emitted P4b group-1 charts (lollipops, pareto bars + line)
+  "OrganizationChart", // emitted P4b group-1 chart (tree nodes, links)
+  "PointAndFigureChart", // emitted P4b group-1 chart (X/O columns, tooltip)
+  "PolygonChart", // emitted P4b group-1 chart (radar polygon, vertices, tooltip)
+  "PriorityMatrix", // emitted P4b group-1 matrix (quadrants, labels, thresholds)
+  "RenkoChart", // emitted P4b group-1 chart (renko bricks, tooltip)
+  "RibbonChart", // emitted P4b group-1 chart (period ribbons, legend, tooltip)
+  "ScoreCard", // emitted P4b group-2 card (stars, complexity cross, aria-label)
+  "SolidGaugeChart", // emitted P4b group-2 gauge (meter, thresholds, clamp)
+  "StateTimelineChart", // emitted P4b group-2 timeline (lanes, tones, legend)
+  "StatusHistoryChart", // emitted P4b group-2 grid (cells, tones, legend)
+  "StepLineChart", // emitted P4b group-2 chart (steps, dots, tooltip)
+  "StreamgraphChart", // emitted P4b group-2 chart (stacked areas, legend, totals)
+  "TileMapChart", // emitted P4b group-3 chart (tiles, tones, tooltip)
+  "TimelineChart", // emitted P4b group-3 chart (markers, connectors, tooltip)
+  "TraceWaterfallChart", // emitted P4b group-3 chart (spans, hierarchy, legend)
+  "TreegraphChart", // emitted P4b group-3 chart (nodes, links)
+  "VariablePieChart", // emitted P4b group-3 chart (sectors, radii, tooltip)
+  "VectorFieldChart", // emitted P4b group-3 chart (arrows, tooltip)
+  "VennChart", // emitted P4b group-3 chart (circles, regions, tooltip)
+  "WaffleChart", // emitted P4b group-3 chart (cells, legend)
+  "WindBarbChart", // emitted P4b group-3 chart (barbs, feathers, tooltip)
+  "WordCloudChart", // emitted P4b group-3 chart (words, spiral layout, tooltip)
   "charts", // shared P4a chart domains (AreaChart, DataTable, DonutChart, BarChart)
   "charts2", // shared P4a chart domains (FunnelChart, GaugeChart)
   "charts3", // shared P4a chart domains (HistogramChart, BoxPlotChart, HeatmapChart)
+  "charts4", // shared P4a/Violin chart domains (RoseChart, ViolinChart)
   "BiCharts3", // shared P4a chart domains (Candlestick, CalendarHeatmap, Bullet, Bump)
   "ChartAnnotations", // shared annotations over AreaChart/BarChart (P4a)
   "ChartAxisConfig", // shared axis config over BarChart (P4a)
@@ -110,6 +135,7 @@ const reactTests = [
   "ChordPackedBubbles", // shared ChordDiagram suite (P4a group-1)
   "OHLCChart", // shared OHLC chartAnnotations suite (P4a helpers)
   "ScatterPlot", // shared ScatterPlot chartAnnotations suite (P4a helpers)
+  "ChartForecastCluster", // LineChart forecast mode + ScatterPlot size/tone/centroids (P4b)
   "index", // DS class contract over every component incl. P4a
   "catalog", // catalogue render incl. P4a modules
 ];
@@ -117,6 +143,7 @@ const reactTests = [
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
 const reactTestTs = [
   "menu-cascade", // pure solver of the emitted menu-cascade helper (Svelte parity)
+  "priorityLabels", // golden vector for the emitted priorityLabels helper (P4b)
 ];
 
 export default defineConfig({
