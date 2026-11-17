@@ -191,15 +191,57 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
         onSelectKey={onSelectKey}
       />,
     );
-    // Keyboard overlay renders exactly one tab stop. Preact keeps the JSX
-    // `tabIndex` casing on SVG attributes (React lowercases it); browsers
-    // match the attribute name ASCII case-insensitively, so both focus.
+    // Keyboard overlay renders exactly one tab stop. The runtime vnode hook
+    // normalises `tabIndex` to `tabindex` (SVG attribute names are
+    // case-sensitive), so the rect is focusable like in React.
     const navRects = container.querySelectorAll(".st-candlestickChart__navDatum");
     expect(navRects).toHaveLength(1);
-    expect(navRects[0].getAttribute("tabIndex")).toBe("0");
+    expect((navRects[0] as SVGRectElement).tabIndex).toBe(0);
     fireEvent.keyDown(navRects[0], { key: "Enter" });
     expect(onSelectKey).toHaveBeenCalledTimes(1);
     expect(onSelectKey).toHaveBeenCalledWith("D1");
+  });
+
+  it("CandlestickChart roving tabindex moves focus with ArrowRight", async () => {
+    const { container } = render(
+      <CandlestickChart
+        data={[
+          { label: "D1", open: 1, high: 2, low: 0.5, close: 1.5 },
+          { label: "D2", open: 1.5, high: 2.5, low: 1, close: 2 },
+        ]}
+        label="L"
+        keyboardNav
+      />,
+    );
+    const navRects = container.querySelectorAll(".st-candlestickChart__navDatum");
+    expect(navRects).toHaveLength(2);
+    // Roving tabindex: the first datum holds the single tab stop.
+    expect((navRects[0] as SVGRectElement).tabIndex).toBe(0);
+    expect((navRects[1] as SVGRectElement).tabIndex).toBe(-1);
+    (navRects[0] as SVGRectElement).focus();
+    expect(document.activeElement).toBe(navRects[0]);
+    fireEvent.keyDown(navRects[0], { key: "ArrowRight" });
+    await waitFor(() => expect(document.activeElement).toBe(navRects[1]));
+  });
+
+  it("ForceGraph nodes are keyboard-focusable and Enter selects", () => {
+    const onSelect = vi.fn();
+    const { container } = render(
+      <ForceGraph
+        nodes={[{ id: "a" }, { id: "b" }]}
+        edges={[{ source: "a", target: "b" }]}
+        label="L"
+        onSelect={onSelect}
+      />,
+    );
+    const shapes = container.querySelectorAll(".st-forceGraph__shape");
+    expect(shapes.length).toBe(2);
+    expect((shapes[0] as SVGCircleElement).tabIndex).toBe(0);
+    (shapes[0] as SVGCircleElement).focus();
+    expect(document.activeElement).toBe(shapes[0]);
+    fireEvent.keyDown(shapes[0], { key: "Enter" });
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onSelect).toHaveBeenCalledWith("a");
   });
 
   it("ArcDiagramChart renders the GraphLegend entries", () => {
