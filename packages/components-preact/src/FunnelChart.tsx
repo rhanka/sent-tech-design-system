@@ -35,7 +35,8 @@ export type FunnelChartDatum = {
 export type FunnelChartProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & {
   data: FunnelChartDatum[];
   orientation?: "vertical" | "horizontal";
-  showPercentages?: boolean;
+  /** A signal is accepted in the Preact build; the React emission keeps `boolean`. */
+  showPercentages?: MaybeSignal<boolean>;
   percentMode?: "ofFirst" | "ofPrevious";
   /** A signal is accepted in the Preact build; the React emission keeps `boolean`. */
   legend?: MaybeSignal<boolean>;
@@ -67,7 +68,7 @@ function formatPercent(p: number): string {
 export function FunnelChart({
   data,
   orientation = "vertical",
-  showPercentages = true,
+  showPercentages: showPercentagesInput = true,
   percentMode = "ofFirst",
   legend: legendInput = false,
   label,
@@ -76,6 +77,7 @@ export function FunnelChart({
   className,
   ...rest
 }: FunnelChartProps) {
+  const showPercentages = useValue(showPercentagesInput);
   const legend = useValue(legendInput);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
