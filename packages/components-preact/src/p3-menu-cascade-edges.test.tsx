@@ -52,9 +52,52 @@ describe("P3 group 1 edges (menu cascade: signals at the edges, post-mount mutat
     const expanded = signal(false);
     render(<MenuTriggerButton expanded={expanded} />);
     expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("false");
-    expect(container).toBeTruthy();
     expanded.value = true;
     await waitFor(() => expect(screen.getByRole("button").getAttribute("aria-expanded")).toBe("true"));
+  });
+
+  it("follows className signals mutated after mount on every group-1 module", async () => {
+    const menutrigger = signal("x-menutrigger");
+    const overflow = signal("x-overflow");
+    const popover = signal("x-popover");
+    const toggletip = signal("x-toggletip");
+    const tooltip = signal("x-tooltip");
+    const menupopover = signal("x-menupopover");
+    render(
+      <>
+        <MenuTriggerButton data-testid="m-menutrigger" className={menutrigger} />
+        <OverflowMenu data-testid="m-overflow" items={[]} label="M" className={overflow} />
+        <Popover data-testid="m-popover" content="C" className={popover}>
+          T
+        </Popover>
+        <Toggletip data-testid="m-toggletip" label="L" className={toggletip}>
+          B
+        </Toggletip>
+        <Tooltip data-testid="m-tooltip" content="C" className={tooltip}>
+          T
+        </Tooltip>
+        <MenuPopover data-testid="m-menupopover" open trigger={null} label="M" className={menupopover}>
+          body
+        </MenuPopover>
+      </>,
+    );
+    const cases = [
+      ["m-menutrigger", menutrigger],
+      ["m-overflow", overflow],
+      ["m-popover", popover],
+      ["m-toggletip", toggletip],
+      ["m-tooltip", tooltip],
+      ["m-menupopover", menupopover],
+    ] as const;
+    for (const [testId, sig] of cases) {
+      expect(screen.getByTestId(testId).className).toContain(sig.value);
+    }
+    for (const [, sig] of cases) {
+      sig.value = "x-after";
+    }
+    for (const [testId] of cases) {
+      await waitFor(() => expect(screen.getByTestId(testId).className).toContain("x-after"));
+    }
   });
 
   it("Popover follows an open signal mutated after mount and keeps the consumer onClick", async () => {
