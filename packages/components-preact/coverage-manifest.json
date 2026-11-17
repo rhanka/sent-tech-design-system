@@ -389,6 +389,132 @@
       "renderable": true
     },
     {
+      "module": "Avatar",
+      "file": "src/Avatar.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "AvatarGroup",
+      "file": "src/AvatarGroup.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ChatMessage",
+      "file": "src/ChatMessage.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ChatThread",
+      "file": "src/ChatThread.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "DisplaySettings",
+      "file": "src/DisplaySettings.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Embed",
+      "file": "src/Embed.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Icon",
+      "file": "src/Icon.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "MediaContent",
+      "file": "src/MediaContent.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "MessageActions",
+      "file": "src/MessageActions.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "MessageStatusBadge",
+      "file": "src/MessageStatusBadge.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Overline",
+      "file": "src/Overline.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StreamingMessage",
+      "file": "src/StreamingMessage.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Transcription",
+      "file": "src/Transcription.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "chat",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Typography",
+      "file": "src/Typography.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "other",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "Portal",
       "file": "src/Portal.tsx",
       "reactSource": "components-react/src/Portal.tsx",
