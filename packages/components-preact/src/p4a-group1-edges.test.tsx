@@ -68,6 +68,8 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
     const anomaly = signal("x-anomaly");
     const arc = signal("x-arc");
     const area = signal("x-area");
+    const arearange = signal("x-arearange");
+    const areaspline = signal("x-areaspline");
     const bar = signal("x-bar");
     const bell = signal("x-bell");
     const box = signal("x-box");
@@ -84,6 +86,8 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
         <AnomalySwimLaneChart data-testid="m-anomaly" data={[{ job: "j", buckets: [{ at: 1, score: 2 }] }]} label="L" className={anomaly} />
         <ArcDiagramChart data-testid="m-arc" data={[{ from: "a", to: "b", weight: 1 }]} label="L" className={arc} />
         <AreaChart data-testid="m-area" data={[{ x: "A", y: 1 }]} label="L" className={area} />
+        <AreaRangeChart data-testid="m-arearange" data={[{ x: "A", low: 1, high: 2 }]} label="L" className={arearange} />
+        <AreaSplineRangeChart data-testid="m-areaspline" data={[{ x: "A", low: 1, high: 2 }]} label="L" className={areaspline} />
         <BarChart data-testid="m-bar" data={[{ label: "A", value: 1 }]} label="L" className={bar} />
         <BellCurveChart data-testid="m-bell" data={[1, 2, 3]} label="L" className={bell} />
         <BoxPlotChart data-testid="m-box" data={[{ label: "A", min: 1, q1: 2, median: 3, q3: 4, max: 5 }]} label="L" className={box} />
@@ -101,6 +105,8 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
       ["m-anomaly", anomaly],
       ["m-arc", arc],
       ["m-area", area],
+      ["m-arearange", arearange],
+      ["m-areaspline", areaspline],
       ["m-bar", bar],
       ["m-bell", bell],
       ["m-box", box],
@@ -368,5 +374,153 @@ describe("P4a group 1 edges (data: signals at the edges, post-mount mutation)", 
     expect(bar?.style.background).toContain("linear-gradient");
     expect(document.querySelector(".st-colorScaleBar__end--max")?.textContent).toBe("high");
     expect(document.querySelector(".st-colorScaleBar__end--min")?.textContent).toBe("low");
+  });
+
+  it("AreaChart follows smooth and keyboardNav signals mutated after mount", async () => {
+    const smooth = signal(false);
+    const keyboardNav = signal(false);
+    const { container } = render(
+      <AreaChart
+        data={[
+          { x: "A", y: 1 },
+          { x: "B", y: 5 },
+          { x: "C", y: 2 },
+        ]}
+        label="L"
+        smooth={smooth}
+        keyboardNav={keyboardNav}
+      />,
+    );
+    const line = () => container.querySelector(".st-areaChart__line")?.getAttribute("d") ?? "";
+    const linearD = line();
+    expect(linearD).not.toBe("");
+    // No nav overlay until the keyboard channel is wired.
+    expect(container.querySelector(".st-areaChart__navDatum")).toBeNull();
+    smooth.value = true;
+    await waitFor(() => expect(line()).not.toBe(linearD));
+    keyboardNav.value = true;
+    await waitFor(() => expect(container.querySelector(".st-areaChart__navDatum")).not.toBeNull());
+  });
+
+  it("AreaRangeChart follows a smooth signal mutated after mount", async () => {
+    const smooth = signal(false);
+    const { container } = render(
+      <AreaRangeChart
+        data={[
+          { x: "A", low: 1, high: 2 },
+          { x: "B", low: 3, high: 6 },
+          { x: "C", low: 2, high: 3 },
+        ]}
+        label="L"
+        smooth={smooth}
+      />,
+    );
+    const high = () => container.querySelector(".st-areaRangeChart__line--high")?.getAttribute("d") ?? "";
+    const linearD = high();
+    expect(linearD).not.toBe("");
+    smooth.value = true;
+    await waitFor(() => expect(high()).not.toBe(linearD));
+  });
+
+  it("BellCurveChart follows a smooth signal mutated after mount", async () => {
+    const smooth = signal(false);
+    const { container } = render(<BellCurveChart data={[1, 2, 3, 4, 5]} label="L" smooth={smooth} />);
+    const curve = () => container.querySelector(".st-bellCurveChart__line")?.getAttribute("d") ?? "";
+    const linearD = curve();
+    expect(linearD).not.toBe("");
+    smooth.value = true;
+    await waitFor(() => expect(curve()).not.toBe(linearD));
+  });
+
+  it("BarChart follows invertAxis, hoverKey and keyboardNav signals mutated after mount", async () => {
+    const invertAxis = signal(false);
+    const hoverKey = signal<string | null>(null);
+    const keyboardNav = signal(false);
+    const { container } = render(
+      <BarChart
+        data={[
+          { label: "A", value: 1 },
+          { label: "B", value: 4 },
+        ]}
+        label="L"
+        invertAxis={invertAxis}
+        hoverKey={hoverKey}
+        keyboardNav={keyboardNav}
+      />,
+    );
+    const barY = () => container.querySelector(".st-barChart__bar")?.getAttribute("y") ?? "";
+    const uprightY = barY();
+    expect(container.querySelector(".st-barChart__tooltip")).toBeNull();
+    expect(container.querySelector(".st-barChart__navDatum")).toBeNull();
+    invertAxis.value = true;
+    await waitFor(() => expect(barY()).not.toBe(uprightY));
+    hoverKey.value = "B";
+    await waitFor(() => expect(container.querySelector(".st-barChart__tooltip")).not.toBeNull());
+    expect(container.querySelector(".st-barChart__tooltipLabel")?.textContent).toBe("B");
+    hoverKey.value = null;
+    await waitFor(() => expect(container.querySelector(".st-barChart__tooltip")).toBeNull());
+    keyboardNav.value = true;
+    await waitFor(() => expect(container.querySelector(".st-barChart__navDatum")).not.toBeNull());
+  });
+
+  it("CandlestickChart follows hoverKey and keyboardNav signals mutated after mount", async () => {
+    const hoverKey = signal<string | null>(null);
+    const keyboardNav = signal(false);
+    const { container } = render(
+      <CandlestickChart
+        data={[
+          { label: "D1", open: 1, high: 2, low: 0.5, close: 1.5 },
+          { label: "D2", open: 1.5, high: 2.5, low: 1, close: 2 },
+        ]}
+        label="L"
+        hoverKey={hoverKey}
+        keyboardNav={keyboardNav}
+      />,
+    );
+    expect(container.querySelector(".st-candlestickChart__tooltip")).toBeNull();
+    expect(container.querySelector(".st-candlestickChart__navDatum")).toBeNull();
+    hoverKey.value = "D2";
+    await waitFor(() =>
+      expect(container.querySelector(".st-candlestickChart__tooltip")).not.toBeNull(),
+    );
+    expect(container.querySelector(".st-candlestickChart__tooltipLabel")?.textContent).toBe("D2");
+    hoverKey.value = null;
+    await waitFor(() =>
+      expect(container.querySelector(".st-candlestickChart__tooltip")).toBeNull(),
+    );
+    keyboardNav.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-candlestickChart__navDatum")).not.toBeNull(),
+    );
+  });
+
+  it("CodeSnippet follows an inline signal mutated after mount", async () => {
+    const inline = signal(false);
+    render(<CodeSnippet code="x = 1" inline={inline} />);
+    expect(document.querySelector(".st-codeSnippet--inline")).toBeNull();
+    inline.value = true;
+    await waitFor(() => expect(document.querySelector(".st-codeSnippet--inline")).not.toBeNull());
+  });
+
+  it("ForceGraph follows showLabels and focusId signals mutated after mount", async () => {
+    const showLabels = signal(true);
+    const focusId = signal<string | null>(null);
+    const { container } = render(
+      <ForceGraph
+        nodes={[{ id: "a" }, { id: "b" }]}
+        edges={[{ source: "a", target: "b" }]}
+        label="L"
+        showLabels={showLabels}
+        focusId={focusId}
+      />,
+    );
+    expect(container.querySelector(".st-forceGraph__label")?.textContent).toBe("a");
+    expect(container.querySelector(".st-forceGraph__node--focus")).toBeNull();
+    showLabels.value = false;
+    await waitFor(() => expect(container.querySelector(".st-forceGraph__label")).toBeNull());
+    focusId.value = "a";
+    await waitFor(() =>
+      expect(container.querySelector(".st-forceGraph__node--focus")).not.toBeNull(),
+    );
   });
 });
