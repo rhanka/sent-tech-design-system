@@ -58,6 +58,8 @@ const reactTests = [
   "StatusDot", // emitted P1 feedback module
   "Timeline", // emitted P1 feedback module
   "PanelStack", // emitted PanelStack + PanelSection pair (P4c dependency of P1)
+  "Icon", // emitted P4c group-1 icon set (names, strokeWidth token, glyph)
+  "Overline", // emitted P4c group-1 overline (`as`, className, rest props)
   "Specialized", // emitted Rating + Autosave (sole components-react suite for both)
   "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
   "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
