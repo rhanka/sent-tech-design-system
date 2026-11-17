@@ -202,6 +202,18 @@ describe("P4a group 3 edges (data: signals at the edges, post-mount mutation)", 
     await waitFor(() => expect(document.querySelector(".st-heatmapChart__legend")).not.toBeNull());
   });
 
+  it("FunnelChart follows a showPercentages signal mutated after mount", async () => {
+    const showPercentages = signal(true);
+    const { container } = render(
+      <FunnelChart data={[{ label: "A", value: 2 }]} label="L" showPercentages={showPercentages} />,
+    );
+    expect(container.querySelector(".st-funnelChart__value")?.textContent).toContain("%");
+    showPercentages.value = false;
+    await waitFor(() =>
+      expect(container.querySelector(".st-funnelChart__value")?.textContent).not.toContain("%"),
+    );
+  });
+
   it("FunnelChart keeps a consumer onClick on the host while tooltips track hover", () => {
     const onClick = vi.fn();
     const { container } = render(
