@@ -8,7 +8,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "React sources ported by spike S1 and lot P1 and measured in docs/preact-s1-spike.md. Same commit as scripts/port-metrics.mjs BASE_REF; verified no P1 source drift to origin/main."
   },
-  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row. Lot P3 group 1 ports the 5 menu-cascade modules (MenuTriggerButton, OverflowMenu, Popover, Toggletip, Tooltip) with the MenuPopover consumer-style merge. Lot P3 group 2 ports the 12 navigation modules (BackToTop, Breadcrumb, Footer, Header, LanguageToggle, NavActionStack, NavItem, Pagination, PaginationNav, SideNav, Stepper, TableOfContents) plus 2 data dependencies of NavItem (Badge, ColorSwatch); the data lot is jointly P4a+P4b in the programme (spike section 8.3) while the manifest enum carries P4a and P4b separately, so the two dependency rows are labeled P4a. Lot P3 group 3 ports the 5 remaining P3 modules (Drawer, LanguageSelector, SkipLink, SlideIndicator, TreeView): Drawer is overlay, the other four are navigation. Lot P4a group 1 ports the first 16 data modules in manifest order (AnomalySwimLaneChart to ColorScaleBar; Badge was already ported as a P3 dependency) plus ForceGraph as a P4a dependency of ArcDiagramChart (its GraphLegend): 17 manifest rows, 16 new files and ForceGraph, whose interactive component lands in this group instead of group 3. Lot P4a group 2 ports the next 16 data modules in manifest order (ColumnPyramidChart to EventFeedPanel) with the cellDecoration helper for DataTable: 16 new files plus cellDecoration. Lot P4a group 3 ports the last 13 data modules in manifest order (FilterBar to ItemChart): 13 new files, closing P4a data batch 1 (groups 1-3).",
+  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row. Lot P3 group 1 ports the 5 menu-cascade modules (MenuTriggerButton, OverflowMenu, Popover, Toggletip, Tooltip) with the MenuPopover consumer-style merge. Lot P3 group 2 ports the 12 navigation modules (BackToTop, Breadcrumb, Footer, Header, LanguageToggle, NavActionStack, NavItem, Pagination, PaginationNav, SideNav, Stepper, TableOfContents) plus 2 data dependencies of NavItem (Badge, ColorSwatch); the data lot is jointly P4a+P4b in the programme (spike section 8.3) while the manifest enum carries P4a and P4b separately, so the two dependency rows are labeled P4a. Lot P3 group 3 ports the 5 remaining P3 modules (Drawer, LanguageSelector, SkipLink, SlideIndicator, TreeView): Drawer is overlay, the other four are navigation. Lot P4a group 1 ports the first 16 data modules in manifest order (AnomalySwimLaneChart to ColorScaleBar; Badge was already ported as a P3 dependency) plus ForceGraph as a P4a dependency of ArcDiagramChart (its GraphLegend): 17 manifest rows, 16 new files and ForceGraph, whose interactive component lands in this group instead of group 3. Lot P4a group 2 ports the next 16 data modules in manifest order (ColumnPyramidChart to EventFeedPanel) with the cellDecoration helper for DataTable: 16 new files plus cellDecoration. Lot P4a group 3 ports the last 13 data modules in manifest order (FilterBar to ItemChart): 13 new files, closing P4a data batch 1 (groups 1-3). Lot P4b group 1 ports the first 16 data modules of batch 2 in manifest order (KpiCard to RibbonChart; OrderedList lives in catalog.tsx on the React side like CodeSnippet) plus Sparkline as a P4b dependency of KpiCard (its trend sparkline) with the priorityLabels helper for PriorityMatrix: 17 manifest rows, 17 new files. Lot P4b group 2 ports the next 15 data modules in manifest order (RoseChart to Tag; SelectionChip, StructuredList, Table and Tag live in catalog.tsx on the React side): 15 manifest rows, 15 new files. Lot P4b group 3 ports the last 14 data modules in manifest order (TileMapChart to WordCloudChart; UnorderedList lives in catalog.tsx on the React side): 14 new files, closing P4b data batch 2 (groups 1-3). priorityLabels.ts is a runtime-neutral helper like cellDecoration.tsx and chartScale.tsx: emitted unchanged, owned by no manifest row.",
   "modules": [
     {
       "module": "Button",
@@ -1285,6 +1285,420 @@
       "reactSource": "components-react/src/catalog.tsx",
       "category": "navigation",
       "lot": "P3",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "KpiCard",
+      "file": "src/KpiCard.tsx",
+      "reactSource": "components-react/src/KpiCard.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "LineChart",
+      "file": "src/LineChart.tsx",
+      "reactSource": "components-react/src/LineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "LollipopChart",
+      "file": "src/LollipopChart.tsx",
+      "reactSource": "components-react/src/LollipopChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "MarimekkoChart",
+      "file": "src/MarimekkoChart.tsx",
+      "reactSource": "components-react/src/MarimekkoChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "OHLCChart",
+      "file": "src/OHLCChart.tsx",
+      "reactSource": "components-react/src/OHLCChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "OrderedList",
+      "file": "src/OrderedList.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "OrganizationChart",
+      "file": "src/OrganizationChart.tsx",
+      "reactSource": "components-react/src/OrganizationChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PackedBubblesChart",
+      "file": "src/PackedBubblesChart.tsx",
+      "reactSource": "components-react/src/PackedBubblesChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ParallelCoordinatesChart",
+      "file": "src/ParallelCoordinatesChart.tsx",
+      "reactSource": "components-react/src/ParallelCoordinatesChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ParetoChart",
+      "file": "src/ParetoChart.tsx",
+      "reactSource": "components-react/src/ParetoChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PointAndFigureChart",
+      "file": "src/PointAndFigureChart.tsx",
+      "reactSource": "components-react/src/PointAndFigureChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PolygonChart",
+      "file": "src/PolygonChart.tsx",
+      "reactSource": "components-react/src/PolygonChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "PriorityMatrix",
+      "file": "src/PriorityMatrix.tsx",
+      "reactSource": "components-react/src/PriorityMatrix.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "RadarChart",
+      "file": "src/RadarChart.tsx",
+      "reactSource": "components-react/src/RadarChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "RenkoChart",
+      "file": "src/RenkoChart.tsx",
+      "reactSource": "components-react/src/RenkoChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "RibbonChart",
+      "file": "src/RibbonChart.tsx",
+      "reactSource": "components-react/src/RibbonChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "RoseChart",
+      "file": "src/RoseChart.tsx",
+      "reactSource": "components-react/src/RoseChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SankeyChart",
+      "file": "src/SankeyChart.tsx",
+      "reactSource": "components-react/src/SankeyChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ScatterPlot",
+      "file": "src/ScatterPlot.tsx",
+      "reactSource": "components-react/src/ScatterPlot.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ScoreCard",
+      "file": "src/ScoreCard.tsx",
+      "reactSource": "components-react/src/ScoreCard.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SelectionChip",
+      "file": "src/SelectionChip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SolidGaugeChart",
+      "file": "src/SolidGaugeChart.tsx",
+      "reactSource": "components-react/src/SolidGaugeChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StackedBarChart",
+      "file": "src/StackedBarChart.tsx",
+      "reactSource": "components-react/src/StackedBarChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StateTimelineChart",
+      "file": "src/StateTimelineChart.tsx",
+      "reactSource": "components-react/src/StateTimelineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StatusHistoryChart",
+      "file": "src/StatusHistoryChart.tsx",
+      "reactSource": "components-react/src/StatusHistoryChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StepLineChart",
+      "file": "src/StepLineChart.tsx",
+      "reactSource": "components-react/src/StepLineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StreamgraphChart",
+      "file": "src/StreamgraphChart.tsx",
+      "reactSource": "components-react/src/StreamgraphChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StructuredList",
+      "file": "src/StructuredList.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SunburstChart",
+      "file": "src/SunburstChart.tsx",
+      "reactSource": "components-react/src/SunburstChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Table",
+      "file": "src/Table.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Tag",
+      "file": "src/Tag.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Sparkline",
+      "file": "src/Sparkline.tsx",
+      "reactSource": "components-react/src/Sparkline.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TileMapChart",
+      "file": "src/TileMapChart.tsx",
+      "reactSource": "components-react/src/TileMapChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TimelineChart",
+      "file": "src/TimelineChart.tsx",
+      "reactSource": "components-react/src/TimelineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TraceWaterfallChart",
+      "file": "src/TraceWaterfallChart.tsx",
+      "reactSource": "components-react/src/TraceWaterfallChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreegraphChart",
+      "file": "src/TreegraphChart.tsx",
+      "reactSource": "components-react/src/TreegraphChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreemapChart",
+      "file": "src/TreemapChart.tsx",
+      "reactSource": "components-react/src/TreemapChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "UnorderedList",
+      "file": "src/UnorderedList.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VariablePieChart",
+      "file": "src/VariablePieChart.tsx",
+      "reactSource": "components-react/src/VariablePieChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VectorFieldChart",
+      "file": "src/VectorFieldChart.tsx",
+      "reactSource": "components-react/src/VectorFieldChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VennChart",
+      "file": "src/VennChart.tsx",
+      "reactSource": "components-react/src/VennChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ViolinChart",
+      "file": "src/ViolinChart.tsx",
+      "reactSource": "components-react/src/ViolinChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WaffleChart",
+      "file": "src/WaffleChart.tsx",
+      "reactSource": "components-react/src/WaffleChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WaterfallChart",
+      "file": "src/WaterfallChart.tsx",
+      "reactSource": "components-react/src/WaterfallChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WindBarbChart",
+      "file": "src/WindBarbChart.tsx",
+      "reactSource": "components-react/src/WindBarbChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WordCloudChart",
+      "file": "src/WordCloudChart.tsx",
+      "reactSource": "components-react/src/WordCloudChart.tsx",
+      "category": "data",
+      "lot": "P4b",
       "hardSet": false,
       "renderable": true
     }
