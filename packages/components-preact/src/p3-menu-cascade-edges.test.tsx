@@ -111,6 +111,20 @@ describe("P3 group 1 edges (menu cascade: signals at the edges, post-mount mutat
     expect(onBlur).toHaveBeenCalledTimes(1);
   });
 
+  it("Tooltip keeps a consumer onFocus and opens on focus-in", () => {
+    const onFocus = vi.fn();
+    const { container } = render(
+      <Tooltip content="C" onFocus={onFocus}>
+        T
+      </Tooltip>,
+    );
+    const host = container.querySelector(".st-tooltip") as HTMLElement;
+    expect(host.querySelector('[role="tooltip"]')?.getAttribute("aria-hidden")).toBe("true");
+    fireEvent.focusIn(host);
+    expect(host.querySelector('[role="tooltip"]')?.getAttribute("aria-hidden")).toBe("false");
+    expect(onFocus).toHaveBeenCalledTimes(1);
+  });
+
   it("OverflowMenu follows open and dense signals mutated after mount", async () => {
     const open = signal(false);
     const dense = signal(false);
