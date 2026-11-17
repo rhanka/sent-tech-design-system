@@ -23,9 +23,13 @@ export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
     const total = useValue(totalInput);
     const overflow = max != null && total != null && total > max ? total - max : 0;
     const classes = classNames("st-avatarGroup", `st-avatarGroup--${size}`, className);
-    const mergedStyle = mergeStyle({ "--st-avatar-group-max": max ?? "" } as CSSProperties, style) as
-      | CSSProperties
-      | undefined;
+    // React parity: the `--st-avatar-group-max` token wins over the consumer
+    // style (`{...style, ...vars}` in components-react).
+    const normalized = mergeStyle(undefined, style);
+    const mergedStyle =
+      typeof normalized === "string"
+        ? (`--st-avatar-group-max:${max ?? ""};${normalized}` as unknown as CSSProperties)
+        : ({ ...(normalized as CSSProperties | undefined), "--st-avatar-group-max": max ?? "" } as CSSProperties);
     return (
       <div {...rest} ref={ref} className={classes} style={mergedStyle}>
         {children}
