@@ -520,6 +520,8 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.resolveRelative, typeof HandWritten.resolveRelative>>,
   Expect<Equal<typeof Emitted.splitAbsolute, typeof HandWritten.splitAbsolute>>,
   Expect<Equal<typeof Emitted.deriveInitials, typeof HandWritten.deriveInitials>>,
+  Expect<Equal<typeof Emitted.nodeShapePath, typeof HandWritten.nodeShapePath>>,
+  Expect<Equal<typeof Emitted.edgeDashArray, typeof HandWritten.edgeDashArray>>,
 ];
 
 // The emitted barrel publishes no value the hand-written package keeps
