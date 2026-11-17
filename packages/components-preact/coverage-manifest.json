@@ -1433,6 +1433,141 @@
       "renderable": true
     },
     {
+      "module": "RoseChart",
+      "file": "src/RoseChart.tsx",
+      "reactSource": "components-react/src/RoseChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SankeyChart",
+      "file": "src/SankeyChart.tsx",
+      "reactSource": "components-react/src/SankeyChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ScatterPlot",
+      "file": "src/ScatterPlot.tsx",
+      "reactSource": "components-react/src/ScatterPlot.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ScoreCard",
+      "file": "src/ScoreCard.tsx",
+      "reactSource": "components-react/src/ScoreCard.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SelectionChip",
+      "file": "src/SelectionChip.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SolidGaugeChart",
+      "file": "src/SolidGaugeChart.tsx",
+      "reactSource": "components-react/src/SolidGaugeChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StackedBarChart",
+      "file": "src/StackedBarChart.tsx",
+      "reactSource": "components-react/src/StackedBarChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StateTimelineChart",
+      "file": "src/StateTimelineChart.tsx",
+      "reactSource": "components-react/src/StateTimelineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StatusHistoryChart",
+      "file": "src/StatusHistoryChart.tsx",
+      "reactSource": "components-react/src/StatusHistoryChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StepLineChart",
+      "file": "src/StepLineChart.tsx",
+      "reactSource": "components-react/src/StepLineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StreamgraphChart",
+      "file": "src/StreamgraphChart.tsx",
+      "reactSource": "components-react/src/StreamgraphChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "StructuredList",
+      "file": "src/StructuredList.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "SunburstChart",
+      "file": "src/SunburstChart.tsx",
+      "reactSource": "components-react/src/SunburstChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Table",
+      "file": "src/Table.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "Tag",
+      "file": "src/Tag.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "Sparkline",
       "file": "src/Sparkline.tsx",
       "reactSource": "components-react/src/Sparkline.tsx",

@@ -97,7 +97,18 @@ import * as handWrittenPriorityMatrix from "../../components-react/src/PriorityM
 import * as handWrittenRadarChart from "../../components-react/src/RadarChart.js";
 import * as handWrittenRenkoChart from "../../components-react/src/RenkoChart.js";
 import * as handWrittenRibbonChart from "../../components-react/src/RibbonChart.js";
+import * as handWrittenRoseChart from "../../components-react/src/RoseChart.js";
+import * as handWrittenSankeyChart from "../../components-react/src/SankeyChart.js";
+import * as handWrittenScatterPlot from "../../components-react/src/ScatterPlot.js";
+import * as handWrittenScoreCard from "../../components-react/src/ScoreCard.js";
+import * as handWrittenSolidGaugeChart from "../../components-react/src/SolidGaugeChart.js";
 import * as handWrittenSparkline from "../../components-react/src/Sparkline.js";
+import * as handWrittenStackedBarChart from "../../components-react/src/StackedBarChart.js";
+import * as handWrittenStateTimelineChart from "../../components-react/src/StateTimelineChart.js";
+import * as handWrittenStatusHistoryChart from "../../components-react/src/StatusHistoryChart.js";
+import * as handWrittenStepLineChart from "../../components-react/src/StepLineChart.js";
+import * as handWrittenStreamgraphChart from "../../components-react/src/StreamgraphChart.js";
+import * as handWrittenSunburstChart from "../../components-react/src/SunburstChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -262,7 +273,22 @@ const switched = [
   "RadarChart",
   "RenkoChart",
   "RibbonChart",
+  "RoseChart",
+  "SankeyChart",
+  "ScatterPlot",
+  "ScoreCard",
+  "SelectionChip",
+  "SolidGaugeChart",
   "Sparkline",
+  "StackedBarChart",
+  "StateTimelineChart",
+  "StatusHistoryChart",
+  "StepLineChart",
+  "StreamgraphChart",
+  "StructuredList",
+  "SunburstChart",
+  "Table",
+  "Tag",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -427,7 +453,22 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   RadarChart: handWrittenRadarChart.RadarChart,
   RenkoChart: handWrittenRenkoChart.RenkoChart,
   RibbonChart: handWrittenRibbonChart.RibbonChart,
+  RoseChart: handWrittenRoseChart.RoseChart,
+  SankeyChart: handWrittenSankeyChart.SankeyChart,
+  ScatterPlot: handWrittenScatterPlot.ScatterPlot,
+  ScoreCard: handWrittenScoreCard.ScoreCard,
+  SelectionChip: handWrittenCatalog.SelectionChip,
+  SolidGaugeChart: handWrittenSolidGaugeChart.SolidGaugeChart,
   Sparkline: handWrittenSparkline.Sparkline,
+  StackedBarChart: handWrittenStackedBarChart.StackedBarChart,
+  StateTimelineChart: handWrittenStateTimelineChart.StateTimelineChart,
+  StatusHistoryChart: handWrittenStatusHistoryChart.StatusHistoryChart,
+  StepLineChart: handWrittenStepLineChart.StepLineChart,
+  StreamgraphChart: handWrittenStreamgraphChart.StreamgraphChart,
+  StructuredList: handWrittenCatalog.StructuredList,
+  SunburstChart: handWrittenSunburstChart.SunburstChart,
+  Table: handWrittenCatalog.Table,
+  Tag: handWrittenCatalog.Tag,
 };
 
 describe("React leg provenance", () => {
