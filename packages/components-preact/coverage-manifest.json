@@ -1575,6 +1575,132 @@
       "lot": "P4b",
       "hardSet": false,
       "renderable": true
+    },
+    {
+      "module": "TileMapChart",
+      "file": "src/TileMapChart.tsx",
+      "reactSource": "components-react/src/TileMapChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TimelineChart",
+      "file": "src/TimelineChart.tsx",
+      "reactSource": "components-react/src/TimelineChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TraceWaterfallChart",
+      "file": "src/TraceWaterfallChart.tsx",
+      "reactSource": "components-react/src/TraceWaterfallChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreegraphChart",
+      "file": "src/TreegraphChart.tsx",
+      "reactSource": "components-react/src/TreegraphChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "TreemapChart",
+      "file": "src/TreemapChart.tsx",
+      "reactSource": "components-react/src/TreemapChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "UnorderedList",
+      "file": "src/UnorderedList.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VariablePieChart",
+      "file": "src/VariablePieChart.tsx",
+      "reactSource": "components-react/src/VariablePieChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VectorFieldChart",
+      "file": "src/VectorFieldChart.tsx",
+      "reactSource": "components-react/src/VectorFieldChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "VennChart",
+      "file": "src/VennChart.tsx",
+      "reactSource": "components-react/src/VennChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "ViolinChart",
+      "file": "src/ViolinChart.tsx",
+      "reactSource": "components-react/src/ViolinChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WaffleChart",
+      "file": "src/WaffleChart.tsx",
+      "reactSource": "components-react/src/WaffleChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WaterfallChart",
+      "file": "src/WaterfallChart.tsx",
+      "reactSource": "components-react/src/WaterfallChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WindBarbChart",
+      "file": "src/WindBarbChart.tsx",
+      "reactSource": "components-react/src/WindBarbChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "WordCloudChart",
+      "file": "src/WordCloudChart.tsx",
+      "reactSource": "components-react/src/WordCloudChart.tsx",
+      "category": "data",
+      "lot": "P4b",
+      "hardSet": false,
+      "renderable": true
     }
   ],
   "adaptersNote": "The three adapters are owned by lot P5 (hard set) and reused by every conversion lot. Their file set must stay identical to the ADAPTERS map of scripts/emit-react.mjs: the emission is the lint of the single-source rule.",
