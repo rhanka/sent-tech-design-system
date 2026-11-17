@@ -5,7 +5,7 @@ import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 // `pageCount` (Svelte-canonical) is accepted as an alias of `totalPages`.
-export type PaginationNavProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type PaginationNavProps = HTMLAttributes<HTMLElement> & {
   /** Plain value, or a signal in the Preact build (read at the edge). */
   page?: MaybeSignal<number>;
   /** Total page count (Svelte-canonical). `totalPages` is accepted as alias. */
@@ -19,8 +19,6 @@ export type PaginationNavProps = Omit<HTMLAttributes<HTMLElement>, "className"> 
   previousHref?: string;
   nextHref?: string;
   onPageChange?: (page: number) => void;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 // Mirrors the Svelte reference: first/last anchors, sibling window around the

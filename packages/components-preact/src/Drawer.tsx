@@ -6,7 +6,7 @@ import type { ComponentChildren, TargetedKeyboardEvent } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type DrawerProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type DrawerProps = HTMLAttributes<HTMLElement> & {
   /** Plain value, or a signal in the Preact build (read at the edge). */
   open?: MaybeSignal<boolean>;
   title?: ComponentChildren;
@@ -15,8 +15,6 @@ export type DrawerProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   placement?: "left" | "right" | "bottom";
   onClose?: () => void;
   closeLabel?: string;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Drawer({

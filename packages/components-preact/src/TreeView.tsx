@@ -12,7 +12,7 @@ export interface TreeNode {
   disabled?: boolean;
 }
 
-export type TreeViewProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "onChange" | "className"> & {
+export type TreeViewProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "onChange"> & {
   nodes: TreeNode[];
   /** Plain value, or a signal in the Preact build (read at the edge). */
   selectedId?: MaybeSignal<string>;
@@ -36,8 +36,6 @@ export type TreeViewProps = Omit<HTMLAttributes<HTMLDivElement>, "onSelect" | "o
   onSelect?: (id: string) => void;
   /** Alias of `onSelect`; same payload (the selected node `id`). */
   onChange?: (id: string) => void;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 type TreeFlatNode = {

@@ -16,15 +16,13 @@ export function deriveInitials(name?: string): string {
     .join("");
 }
 
-export type HeaderProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type HeaderProps = HTMLAttributes<HTMLElement> & {
   brand?: ComponentChildren;
   title?: ComponentChildren;
   navigation?: Array<{ label: ComponentChildren; href: string }>;
   navItems?: Array<{ label: ComponentChildren; href: string }>;
   account?: HeaderAccount;
   sticky?: MaybeSignal<boolean>;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Header({ brand, title, navigation, navItems, account, sticky: stickyInput = false, className, ...rest }: HeaderProps) {

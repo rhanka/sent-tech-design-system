@@ -1,17 +1,14 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
-export type FooterProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type FooterProps = HTMLAttributes<HTMLElement> & {
   brand?: ComponentChildren;
   columns?: Array<{ title?: ComponentChildren; links: Array<{ label: ComponentChildren; href: string }> }>;
   links?: Array<{ label: ComponentChildren; href: string }>;
   legalLinks?: Array<{ label: ComponentChildren; href: string }>;
   copyright?: ComponentChildren;
   legalNavLabel?: string;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Footer({ brand, columns, links, legalLinks, copyright, legalNavLabel = "Legal links", className, ...rest }: FooterProps) {

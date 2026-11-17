@@ -6,13 +6,11 @@ import type { MaybeSignal } from "./signals.js";
 
 type Size = "sm" | "md" | "lg";
 
-export type MenuTriggerButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, "className"> & {
+export type MenuTriggerButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   open?: MaybeSignal<boolean>;
   expanded?: MaybeSignal<boolean>;
   size?: Size;
   variant?: "ghost" | "secondary";
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function MenuTriggerButton({
