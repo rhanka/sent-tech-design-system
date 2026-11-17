@@ -238,8 +238,9 @@ describe("P4b group 1 edges (data: signals at the edges, post-mount mutation)", 
     expect(container.querySelector(".st-lineChart__navDatum")).toBeNull();
     smooth.value = true;
     await waitFor(() => expect(line()).not.toBe(linearD));
+    const smoothD = line();
     invertAxis.value = true;
-    await waitFor(() => expect(line()).not.toBe(linearD));
+    await waitFor(() => expect(line()).not.toBe(smoothD));
     area.value = true;
     await waitFor(() => expect(container.querySelector(".st-lineChart__area")).not.toBeNull());
     trend.value = true;
