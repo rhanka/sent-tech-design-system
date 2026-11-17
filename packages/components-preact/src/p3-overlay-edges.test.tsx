@@ -44,6 +44,52 @@ describe("P3 group 3 edges (overlay: signals at the edges, post-mount mutation)"
     }
   });
 
+  it("follows className signals mutated after mount on every group-3 module", async () => {
+    const drawer = signal("x-drawer");
+    const languageselector = signal("x-languageselector");
+    const skiplink = signal("x-skiplink");
+    const slideindicator = signal("x-slideindicator");
+    const treeview = signal("x-treeview");
+    render(
+      <>
+        <Drawer open data-testid="m-drawer" title="T" className={drawer}>
+          Body
+        </Drawer>
+        <LanguageSelector
+          data-testid="m-languageselector"
+          options={[{ value: "fr", label: "FR" }]}
+          className={languageselector}
+        />
+        <SkipLink data-testid="m-skiplink" href="#main" className={skiplink}>
+          Skip
+        </SkipLink>
+        <SlideIndicator data-testid="m-slideindicator" count={3} className={slideindicator} />
+        <TreeView
+          data-testid="m-treeview"
+          nodes={[{ id: "r", label: "R" }]}
+          onSelect={() => {}}
+          className={treeview}
+        />
+      </>,
+    );
+    const cases = [
+      ["m-drawer", drawer],
+      ["m-languageselector", languageselector],
+      ["m-skiplink", skiplink],
+      ["m-slideindicator", slideindicator],
+      ["m-treeview", treeview],
+    ] as const;
+    for (const [testId, sig] of cases) {
+      expect(screen.getByTestId(testId).className).toContain(sig.value);
+    }
+    for (const [, sig] of cases) {
+      sig.value = "x-after";
+    }
+    for (const [testId] of cases) {
+      await waitFor(() => expect(screen.getByTestId(testId).className).toContain("x-after"));
+    }
+  });
+
   it("Drawer follows an open signal mutated after mount and keeps onClose and onKeyDown", async () => {
     const open = signal(false);
     const onClose = vi.fn();
@@ -120,8 +166,10 @@ describe("P3 group 3 edges (overlay: signals at the edges, post-mount mutation)"
     );
     fireEvent.click(dots()[1]);
     expect(onChange).toHaveBeenCalledWith(1);
+    onChange.mockClear();
     fireEvent.keyDown(dots()[0], { key: "ArrowRight" });
     expect(onChange).toHaveBeenCalledWith(1);
+    expect(document.activeElement).toBe(dots()[1]);
   });
 
   it("TreeView follows selected and expanded signals mutated after mount and keeps onSelect", async () => {

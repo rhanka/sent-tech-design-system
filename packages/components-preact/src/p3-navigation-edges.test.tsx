@@ -61,6 +61,76 @@ describe("P3 group 2 edges (navigation: signals at the edges, post-mount mutatio
     expect(container.querySelector(".st-navItem")?.className).toContain("x-navitem");
   });
 
+  it("follows className signals mutated after mount on every group-2 module", async () => {
+    const backtotop = signal("x-backtotop");
+    const breadcrumb = signal("x-breadcrumb");
+    const footer = signal("x-footer");
+    const header = signal("x-header");
+    const languagetoggle = signal("x-languagetoggle");
+    const navactionstack = signal("x-navactionstack");
+    const navitem = signal("x-navitem");
+    const pagination = signal("x-pagination");
+    const paginationnav = signal("x-paginationnav");
+    const sidenav = signal("x-sidenav");
+    const stepper = signal("x-stepper");
+    const tableofcontents = signal("x-tableofcontents");
+    const badge = signal("x-badge");
+    const colorswatch = signal("x-colorswatch");
+    const { container } = render(
+      <>
+        <BackToTop data-testid="m-backtotop" className={backtotop} />
+        <Breadcrumb data-testid="m-breadcrumb" items={[{ label: "A", href: "/" }]} className={breadcrumb} />
+        <Footer data-testid="m-footer" copyright="c" className={footer} />
+        <Header data-testid="m-header" className={header} />
+        <LanguageToggle locale="fr" className={languagetoggle} />
+        <NavActionStack actions={[{ label: "A" }]} className={navactionstack} />
+        <NavItem title="T" className={navitem} />
+        <Pagination data-testid="m-pagination" page={1} totalPages={3} className={pagination} />
+        <PaginationNav data-testid="m-paginationnav" page={1} pageCount={5} className={paginationnav} />
+        <SideNav data-testid="m-sidenav" items={[{ label: "A", href: "/" }]} className={sidenav} />
+        <Stepper data-testid="m-stepper" steps={[{ label: "A" }]} className={stepper} />
+        <TableOfContents data-testid="m-tableofcontents" items={[{ id: "a", label: "A" }]} className={tableofcontents} />
+        <Badge data-testid="m-badge" className={badge}>3</Badge>
+        <ColorSwatch data-testid="m-colorswatch" color="#336699" className={colorswatch} />
+      </>,
+    );
+    const cases = [
+      ["m-backtotop", backtotop],
+      ["m-breadcrumb", breadcrumb],
+      ["m-footer", footer],
+      ["m-header", header],
+      ["m-pagination", pagination],
+      ["m-paginationnav", paginationnav],
+      ["m-sidenav", sidenav],
+      ["m-stepper", stepper],
+      ["m-tableofcontents", tableofcontents],
+      ["m-badge", badge],
+      ["m-colorswatch", colorswatch],
+    ] as const;
+    for (const [testId, sig] of cases) {
+      expect(screen.getByTestId(testId).className).toContain(sig.value);
+    }
+    expect(container.querySelector(".st-languageToggle__select")?.className).toContain(languagetoggle.value);
+    expect(container.querySelector(".st-navActionStack")?.className).toContain(navactionstack.value);
+    expect(container.querySelector(".st-navItem")?.className).toContain(navitem.value);
+    for (const [, sig] of cases) {
+      sig.value = "x-after";
+    }
+    languagetoggle.value = "x-after";
+    navactionstack.value = "x-after";
+    navitem.value = "x-after";
+    for (const [testId] of cases) {
+      await waitFor(() => expect(screen.getByTestId(testId).className).toContain("x-after"));
+    }
+    await waitFor(() =>
+      expect(container.querySelector(".st-languageToggle__select")?.className).toContain("x-after"),
+    );
+    await waitFor(() =>
+      expect(container.querySelector(".st-navActionStack")?.className).toContain("x-after"),
+    );
+    await waitFor(() => expect(container.querySelector(".st-navItem")?.className).toContain("x-after"));
+  });
+
   it("BackToTop keeps a consumer onClick and still scrolls to top", () => {
     const onClick = vi.fn();
     const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
@@ -80,6 +150,45 @@ describe("P3 group 2 edges (navigation: signals at the edges, post-mount mutatio
     expect(container.querySelector("button")?.getAttribute("aria-hidden")).toBe("true");
     autoHide.value = false;
     await waitFor(() => expect(container.querySelector("button")?.getAttribute("aria-hidden")).toBeNull());
+  });
+
+  it("BackToTop follows disabled and smooth signals mutated after mount", async () => {
+    const disabled = signal(false);
+    const smooth = signal(true);
+    const scrollTo = vi.spyOn(window, "scrollTo").mockImplementation(() => {});
+    try {
+      const { container } = render(<BackToTop disabled={disabled} smooth={smooth} autoHide={false} />);
+      const button = () => container.querySelector("button") as HTMLButtonElement;
+      expect(button().disabled).toBe(false);
+      fireEvent.click(screen.getByRole("button", { name: "Retour en haut" }));
+      expect(scrollTo).toHaveBeenCalledWith({ top: 0, behavior: "smooth" });
+      disabled.value = true;
+      await waitFor(() => expect(button().disabled).toBe(true));
+      smooth.value = false;
+      await waitFor(() => {
+        fireEvent.click(screen.getByRole("button", { name: "Retour en haut" }));
+        expect(scrollTo).toHaveBeenLastCalledWith({ top: 0, behavior: "auto" });
+      });
+    } finally {
+      scrollTo.mockRestore();
+    }
+  });
+
+  it("NavItem follows disabled and depth signals mutated after mount", async () => {
+    const disabled = signal(false);
+    const depth = signal<0 | 1 | 2 | 3>(0);
+    const { container } = render(<NavItem title="T" disabled={disabled} depth={depth} />);
+    const row = () => container.querySelector('[role="button"]') as HTMLElement;
+    expect(row().getAttribute("aria-disabled")).toBeNull();
+    expect(row().tabIndex).toBe(0);
+    expect(container.querySelector(".st-navItem")?.className).toContain("st-navItem--depth0");
+    disabled.value = true;
+    await waitFor(() => expect(row().getAttribute("aria-disabled")).toBe("true"));
+    await waitFor(() => expect(row().tabIndex).toBe(-1));
+    depth.value = 2;
+    await waitFor(() =>
+      expect(container.querySelector(".st-navItem")?.className).toContain("st-navItem--depth2"),
+    );
   });
 
   it("Header follows a sticky signal mutated after mount", async () => {
