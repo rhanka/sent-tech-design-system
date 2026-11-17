@@ -135,6 +135,7 @@ const reactTests = [
   "ChordPackedBubbles", // shared ChordDiagram suite (P4a group-1)
   "OHLCChart", // shared OHLC chartAnnotations suite (P4a helpers)
   "ScatterPlot", // shared ScatterPlot chartAnnotations suite (P4a helpers)
+  "ChartForecastCluster", // LineChart forecast mode + ScatterPlot size/tone/centroids (P4b)
   "index", // DS class contract over every component incl. P4a
   "catalog", // catalogue render incl. P4a modules
 ];
@@ -142,6 +143,7 @@ const reactTests = [
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
 const reactTestTs = [
   "menu-cascade", // pure solver of the emitted menu-cascade helper (Svelte parity)
+  "priorityLabels", // golden vector for the emitted priorityLabels helper (P4b)
 ];
 
 export default defineConfig({

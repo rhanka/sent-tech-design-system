@@ -7,6 +7,8 @@
 // let a return-type divergence through.
 import type * as HandWritten from "@sentropic/design-system-react";
 import type * as Emitted from "../.react-emit/src/index.js";
+import type * as EmittedPriorityLabels from "../.react-emit/src/priorityLabels.js";
+import type * as HandWrittenPriorityLabels from "../../components-react/src/priorityLabels.js";
 
 type Equal<A, B> = (<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
 type Expect<T extends true> = T;
@@ -710,6 +712,15 @@ export type ValueParity = [
   Expect<Equal<typeof Emitted.deriveInitials, typeof HandWritten.deriveInitials>>,
   Expect<Equal<typeof Emitted.nodeShapePath, typeof HandWritten.nodeShapePath>>,
   Expect<Equal<typeof Emitted.edgeDashArray, typeof HandWritten.edgeDashArray>>,
+];
+
+// priorityLabels is runtime-neutral and not exported from either barrel
+// (internal PriorityMatrix use only): gate it direct-module, like the
+// menu-cascade React-leg guard, so a drift between the twins fails `npm run check`.
+export type PriorityLabelsParity = [
+  Expect<Equal<typeof EmittedPriorityLabels.priorityQuadrant, typeof HandWrittenPriorityLabels.priorityQuadrant>>,
+  Expect<Equal<typeof EmittedPriorityLabels.estimatePriorityLabelBox, typeof HandWrittenPriorityLabels.estimatePriorityLabelBox>>,
+  Expect<Equal<typeof EmittedPriorityLabels.placePriorityLabels, typeof HandWrittenPriorityLabels.placePriorityLabels>>,
 ];
 
 // The emitted barrel publishes no value the hand-written package keeps
