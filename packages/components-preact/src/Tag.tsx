@@ -7,11 +7,11 @@ import { classNames } from "./classNames.js";
 // erases — without this import a bundler applying `sideEffects` barrel
 // optimisation (or a direct deep import) would never evaluate runtime.js.
 import "./runtime.js";
-import type { ComponentChildren, TargetedMouseEvent } from "./runtime.js";
+import type { TargetedMouseEvent } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type TagProps = Omit<HTMLAttributes<HTMLSpanElement>, "className"> & {
+export type TagProps = HTMLAttributes<HTMLSpanElement> & {
   tone?: "neutral" | "info" | "success" | "warning" | "error";
   size?: "sm" | "md";
   /** Plain value, or a signal in the Preact build (read at the edge). */
@@ -20,9 +20,6 @@ export type TagProps = Omit<HTMLAttributes<HTMLSpanElement>, "className"> & {
   dismissible?: MaybeSignal<boolean>;
   dismissLabel?: string;
   onDismiss?: (event: TargetedMouseEvent<Element>) => void;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
-  children?: ComponentChildren;
 };
 
 export function Tag({
