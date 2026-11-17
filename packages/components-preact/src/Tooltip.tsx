@@ -36,10 +36,10 @@ export function Tooltip({
     setOpen(true);
     onMouseEnter?.(event);
   };
-  // The host's own `blur` (Preact's `onBlur` does not bubble) plus the
-  // bubbling leave below: wherever focus goes — a sibling, another region or
-  // `body`, which fires no `focusin` for a document listener to hear — the
-  // bubble closes, exactly like a bubbling `onBlur` would in React.
+  // `focusOut` hears focus leaving the host or any descendant on both
+  // runtimes (Preact's `onBlur` does not bubble; React's does), so the bubble
+  // closes wherever focus goes — a sibling, another region or `body`, which
+  // fires no `focusin` for a document listener to hear.
   const hideFocus = (event: TargetedFocusEvent<HTMLSpanElement>) => {
     setOpen(false);
     onBlur?.(event);
@@ -58,7 +58,6 @@ export function Tooltip({
       {...hostRest}
       className={classNames("st-tooltip", `st-tooltip--${placement}`, className)}
       {...focusWithin(showFocus)}
-      onBlur={hideFocus}
       {...focusOut(hideFocus)}
       onMouseEnter={showMouse}
       onMouseLeave={hideMouse}
