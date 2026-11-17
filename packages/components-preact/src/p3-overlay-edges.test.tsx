@@ -170,6 +170,14 @@ describe("P3 group 3 edges (overlay: signals at the edges, post-mount mutation)"
     fireEvent.keyDown(dots()[0], { key: "ArrowRight" });
     expect(onChange).toHaveBeenCalledWith(1);
     expect(document.activeElement).toBe(dots()[1]);
+    // A signal holding `undefined` counts as absent: back to the first dot.
+    current.value = undefined as unknown as number;
+    await waitFor(() =>
+      expect(container.querySelector('[aria-current="true"]')?.getAttribute("aria-label")).toBe(
+        "Diapositive 1",
+      ),
+    );
+    await waitFor(() => expect(dots()[0].tabIndex).toBe(0));
   });
 
   it("TreeView follows selected and expanded signals mutated after mount and keeps onSelect", async () => {

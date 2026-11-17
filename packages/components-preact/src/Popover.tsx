@@ -41,7 +41,9 @@ export function Popover({
   useEscape(open, () => setOpen(false));
 
   // The consumer `onClick` runs after the host opens, so both fire once per
-  // click exactly as in `components-react` (CopyButton precedent).
+  // click (CopyButton precedent). The hand-written twin drops the consumer
+  // handler here; preserving it is a recorded behaviour change
+  // (`consumer-handler-preserved` in coverage-manifest.json).
   const handleClick = (event: TargetedMouseEvent<HTMLElement>) => {
     setOpen(true);
     onClick?.(event);
