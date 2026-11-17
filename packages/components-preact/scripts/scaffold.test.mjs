@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 group 1, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -49,13 +49,16 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "LoadingState",
     "Menu",
     "MenuPopover",
+    "MenuTriggerButton",
     "Modal",
     "MultiSelect",
     "Notification",
     "NumberInput",
+    "OverflowMenu",
     "PanelSection",
     "PanelStack",
     "PasswordInput",
+    "Popover",
     "Portal",
     "ProgressBar",
     "ProgressIndicator",
@@ -84,6 +87,8 @@ test("coverage manifest owns the spike modules plus lots P1 and P2, no more", ()
     "Timeline",
     "Toast",
     "Toggle",
+    "Toggletip",
+    "Tooltip",
   ]);
   assert.deepEqual(sourceModules().map((file) => file.replace(/\.tsx$/, "")).sort(), manifest.modules.map((row) => row.module).sort());
 });
@@ -99,6 +104,11 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
   assert.deepEqual(lots.get("Menu"), "P3");
   assert.deepEqual(lots.get("MenuPopover"), "P3");
   assert.deepEqual(lots.get("ContentSwitcher"), "P3");
+  assert.deepEqual(lots.get("MenuTriggerButton"), "P3");
+  assert.deepEqual(lots.get("OverflowMenu"), "P3");
+  assert.deepEqual(lots.get("Popover"), "P3");
+  assert.deepEqual(lots.get("Toggletip"), "P3");
+  assert.deepEqual(lots.get("Tooltip"), "P3");
   for (const name of [
     "Calendar",
     "Checkbox",
