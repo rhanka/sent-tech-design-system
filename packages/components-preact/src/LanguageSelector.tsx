@@ -6,15 +6,13 @@ import type { MaybeSignal } from "./signals.js";
 
 export type LanguageOption = { value: string; label: ComponentChildren };
 
-export type LanguageSelectorProps = Omit<HTMLAttributes<HTMLDivElement>, "className" | "onChange"> & {
+export type LanguageSelectorProps = HTMLAttributes<HTMLDivElement> & {
   options: LanguageOption[];
   /** Plain value, or a signal in the Preact build (read at the edge). */
   value?: MaybeSignal<string>;
   onChange?: (value: string) => void;
   /** Plain value, or a signal in the Preact build (read at the edge). */
   open?: MaybeSignal<boolean>;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function LanguageSelector({

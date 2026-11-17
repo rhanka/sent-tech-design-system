@@ -34,6 +34,13 @@ import * as handWrittenStack from "../../components-react/src/Stack.js";
 import * as handWrittenStatusDot from "../../components-react/src/StatusDot.js";
 import * as handWrittenTheme from "../../components-react/src/ThemeProvider.js";
 import * as handWrittenTimeline from "../../components-react/src/Timeline.js";
+import * as handWrittenBackToTop from "../../components-react/src/BackToTop.js";
+import * as handWrittenBadge from "../../components-react/src/Badge.js";
+import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
+import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
+import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
+import * as handWrittenStepper from "../../components-react/src/Stepper.js";
+import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
 import * as emitted from "../.react-emit/src/index.js";
 
 const switched = [
@@ -110,6 +117,30 @@ const switched = [
   "TimePicker",
   "TimeRangePicker",
   "Toggle",
+  "MenuTriggerButton",
+  "OverflowMenu",
+  "Popover",
+  "Toggletip",
+  "Tooltip",
+  "BackToTop",
+  "Badge",
+  "Breadcrumb",
+  "ColorSwatch",
+  "Footer",
+  "Header",
+  "LanguageToggle",
+  "NavActionStack",
+  "NavItem",
+  "Pagination",
+  "PaginationNav",
+  "SideNav",
+  "Stepper",
+  "TableOfContents",
+  "Drawer",
+  "LanguageSelector",
+  "SkipLink",
+  "SlideIndicator",
+  "TreeView",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -186,6 +217,30 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TimePicker: handWrittenCatalog.TimePicker,
   TimeRangePicker: handWrittenTimeRangePicker.TimeRangePicker,
   Toggle: handWrittenCatalog.Toggle,
+  MenuTriggerButton: handWrittenCatalog.MenuTriggerButton,
+  OverflowMenu: handWrittenCatalog.OverflowMenu,
+  Popover: handWrittenCatalog.Popover,
+  Toggletip: handWrittenCatalog.Toggletip,
+  Tooltip: handWrittenCatalog.Tooltip,
+  BackToTop: handWrittenBackToTop.BackToTop,
+  Badge: handWrittenBadge.Badge,
+  Breadcrumb: handWrittenCatalog.Breadcrumb,
+  ColorSwatch: handWrittenColorSwatch.ColorSwatch,
+  Footer: handWrittenCatalog.Footer,
+  Header: handWrittenCatalog.Header,
+  LanguageToggle: handWrittenCatalog.LanguageToggle,
+  NavActionStack: handWrittenNavActionStack.NavActionStack,
+  NavItem: handWrittenNavItem.NavItem,
+  Pagination: handWrittenCatalog.Pagination,
+  PaginationNav: handWrittenCatalog.PaginationNav,
+  SideNav: handWrittenCatalog.SideNav,
+  Stepper: handWrittenStepper.Stepper,
+  TableOfContents: handWrittenTableOfContents.TableOfContents,
+  Drawer: handWrittenCatalog.Drawer,
+  LanguageSelector: handWrittenCatalog.LanguageSelector,
+  SkipLink: handWrittenCatalog.SkipLink,
+  SlideIndicator: handWrittenCatalog.SlideIndicator,
+  TreeView: handWrittenCatalog.TreeView,
 };
 
 describe("React leg provenance", () => {

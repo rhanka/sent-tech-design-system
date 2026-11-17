@@ -3,7 +3,7 @@ import { classNames } from "./classNames.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type PaginationProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type PaginationProps = HTMLAttributes<HTMLElement> & {
   /** Plain value, or a signal in the Preact build (read at the edge). */
   page: MaybeSignal<number>;
   pageSize?: number;
@@ -13,8 +13,6 @@ export type PaginationProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   previousLabel?: string;
   nextLabel?: string;
   onPageChange?: (page: number) => void;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Pagination({
