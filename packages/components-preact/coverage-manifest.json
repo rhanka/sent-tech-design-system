@@ -542,6 +542,42 @@
       "renderable": true
     },
     {
+      "module": "ContextPanel",
+      "file": "src/ContextPanel.tsx",
+      "reactSource": "components-react/src/ContextPanel.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "UtilityPanel",
+      "file": "src/UtilityPanel.tsx",
+      "reactSource": "components-react/src/UtilityPanel.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "NavRail",
+      "file": "src/NavRail.tsx",
+      "reactSource": "components-react/src/NavRail.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "NavShell",
+      "file": "src/NavShell.tsx",
+      "reactSource": "components-react/src/NavShell.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "Calendar",
       "file": "src/Calendar.tsx",
       "reactSource": "components-react/src/catalog.tsx",

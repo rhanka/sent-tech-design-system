@@ -8,7 +8,7 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c group 1, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c groups 1 and 2 batch A, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
@@ -54,6 +54,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "ConfigItemCard",
     "Container",
     "ContentSwitcher",
+    "ContextPanel",
     "ContourChart",
     "CopyButton",
     "DashboardGrid",
@@ -122,6 +123,8 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "MultiSelect",
     "NavActionStack",
     "NavItem",
+    "NavRail",
+    "NavShell",
     "Notification",
     "NumberInput",
     "OHLCChart",
@@ -205,6 +208,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "TreemapChart",
     "Typography",
     "UnorderedList",
+    "UtilityPanel",
     "VariablePieChart",
     "VectorFieldChart",
     "VennChart",
@@ -400,6 +404,10 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
     "StreamingMessage",
     "Transcription",
     "Typography",
+    "ContextPanel",
+    "UtilityPanel",
+    "NavRail",
+    "NavShell",
   ]) {
     assert.deepEqual(lots.get(name), "P4c");
   }
