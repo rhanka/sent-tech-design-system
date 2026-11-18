@@ -8,12 +8,13 @@ import { BASE_REF } from "./port-metrics.mjs";
 import { checkManifest, readManifest, sourceModules } from "./coverage-manifest.mjs";
 import { checkPackaging } from "./package-guard.mjs";
 
-test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c groups 1 and 2 batch A, no more", () => {
+test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups 1, 2 and 3 and P4a groups 1, 2 and 3 and P4b groups 1, 2 and 3 and P4c groups 1 and 2 batch B, no more", () => {
   const { manifest } = readManifest();
   assert.deepEqual(manifest.modules.map((row) => row.module).sort(), [
     "Accordion",
     "Alert",
     "AnomalySwimLaneChart",
+    "AppHeader",
     "ArcDiagramChart",
     "AreaChart",
     "AreaRangeChart",
@@ -101,6 +102,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "HollowCandlestickChart",
     "Icon",
     "IconButton",
+    "IdentityMenu",
     "Inline",
     "InlineLoading",
     "Input",
@@ -122,6 +124,7 @@ test("coverage manifest owns the spike modules plus lots P1 and P2 and P3 groups
     "Modal",
     "MultiSelect",
     "NavActionStack",
+    "NavDrawer",
     "NavItem",
     "NavRail",
     "NavShell",
@@ -408,9 +411,14 @@ test("coverage manifest lots are W3 conversion lots; hard set overlaps P5", () =
     "UtilityPanel",
     "NavRail",
     "NavShell",
+    "NavDrawer",
+    "IdentityMenu",
   ]) {
     assert.deepEqual(lots.get(name), "P4c");
   }
+  // AppHeader is index-categorised navigation but converted here (P3 is
+  // closed), so its row records lot P4c with the index category kept.
+  assert.deepEqual(lots.get("AppHeader"), "P4c");
   assert.deepEqual(lots.get("Portal"), "P4c");
   assert.deepEqual(lots.get("ThemeProvider"), "P4c");
   assert.deepEqual(lots.get("PanelStack"), "P4c");
