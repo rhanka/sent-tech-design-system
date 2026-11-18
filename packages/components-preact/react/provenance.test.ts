@@ -17,6 +17,7 @@ import * as handWrittenSelectableList from "../../components-react/src/Selectabl
 import * as handWrittenTimeRangePicker from "../../components-react/src/TimeRangePicker.js";
 import * as handWrittenCollapsible from "../../components-react/src/Collapsible.js";
 import * as handWrittenContainer from "../../components-react/src/Container.js";
+import * as handWrittenContextPanel from "../../components-react/src/ContextPanel.js";
 import * as handWrittenDivider from "../../components-react/src/Divider.js";
 import * as handWrittenFieldCard from "../../components-react/src/FieldCard.js";
 import * as handWrittenFlex from "../../components-react/src/Flex.js";
@@ -53,6 +54,8 @@ import * as handWrittenBadge from "../../components-react/src/Badge.js";
 import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
 import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
 import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
+import * as handWrittenNavRail from "../../components-react/src/NavRail.js";
+import * as handWrittenNavShell from "../../components-react/src/NavShell.js";
 import * as handWrittenStepper from "../../components-react/src/Stepper.js";
 import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
 import * as handWrittenColumnPyramidChart from "../../components-react/src/ColumnPyramidChart.js";
@@ -122,6 +125,7 @@ import * as handWrittenWaffleChart from "../../components-react/src/WaffleChart.
 import * as handWrittenWaterfallChart from "../../components-react/src/WaterfallChart.js";
 import * as handWrittenWindBarbChart from "../../components-react/src/WindBarbChart.js";
 import * as handWrittenWordCloudChart from "../../components-react/src/WordCloudChart.js";
+import * as handWrittenUtilityPanel from "../../components-react/src/UtilityPanel.js";
 import * as handWrittenPriorityLabels from "../../components-react/src/priorityLabels.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedPriorityLabels from "../.react-emit/src/priorityLabels.js";
@@ -177,6 +181,7 @@ const switched = [
   "CheckboxGroup",
   "Combobox",
   "ContentSwitcher",
+  "ContextPanel",
   "DatePicker",
   "Dropdown",
   "FileUploader",
@@ -214,6 +219,8 @@ const switched = [
   "LanguageToggle",
   "NavActionStack",
   "NavItem",
+  "NavRail",
+  "NavShell",
   "Pagination",
   "PaginationNav",
   "SideNav",
@@ -310,6 +317,7 @@ const switched = [
   "TreegraphChart",
   "TreemapChart",
   "UnorderedList",
+  "UtilityPanel",
   "VariablePieChart",
   "VectorFieldChart",
   "VennChart",
@@ -338,6 +346,7 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Col: handWrittenCol.Col,
   Collapsible: handWrittenCollapsible.Collapsible,
   Container: handWrittenContainer.Container,
+  ContextPanel: handWrittenContextPanel.ContextPanel,
   CopyButton: handWrittenCatalog.CopyButton,
   Divider: handWrittenDivider.Divider,
   EmptyState: handWrittenCatalog.EmptyState,
@@ -408,6 +417,8 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   LanguageToggle: handWrittenCatalog.LanguageToggle,
   NavActionStack: handWrittenNavActionStack.NavActionStack,
   NavItem: handWrittenNavItem.NavItem,
+  NavRail: handWrittenNavRail.NavRail,
+  NavShell: handWrittenNavShell.NavShell,
   Pagination: handWrittenCatalog.Pagination,
   PaginationNav: handWrittenCatalog.PaginationNav,
   SideNav: handWrittenCatalog.SideNav,
@@ -504,6 +515,7 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TreegraphChart: handWrittenTreegraphChart.TreegraphChart,
   TreemapChart: handWrittenTreemapChart.TreemapChart,
   UnorderedList: handWrittenCatalog.UnorderedList,
+  UtilityPanel: handWrittenUtilityPanel.UtilityPanel,
   VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
   VectorFieldChart: handWrittenVectorFieldChart.VectorFieldChart,
   VennChart: handWrittenVennChart.VennChart,
