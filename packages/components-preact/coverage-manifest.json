@@ -605,6 +605,24 @@
       "renderable": true
     },
     {
+      "module": "AppChrome",
+      "file": "src/AppChrome.tsx",
+      "reactSource": "components-react/src/AppChrome.tsx",
+      "category": "navigation",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "AppShell",
+      "file": "src/AppShell.tsx",
+      "reactSource": "components-react/src/AppShell.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "Calendar",
       "file": "src/Calendar.tsx",
       "reactSource": "components-react/src/catalog.tsx",
