@@ -19,6 +19,8 @@ import * as handWrittenCollapsible from "../../components-react/src/Collapsible.
 import * as handWrittenContainer from "../../components-react/src/Container.js";
 import * as handWrittenContextPanel from "../../components-react/src/ContextPanel.js";
 import * as handWrittenAppHeader from "../../components-react/src/AppHeader.js";
+import * as handWrittenAppChrome from "../../components-react/src/AppChrome.js";
+import * as handWrittenAppShell from "../../components-react/src/AppShell.js";
 import * as handWrittenIdentityMenu from "../../components-react/src/IdentityMenu.js";
 import * as handWrittenDivider from "../../components-react/src/Divider.js";
 import * as handWrittenFieldCard from "../../components-react/src/FieldCard.js";
@@ -183,7 +185,9 @@ const switched = [
   "Checkbox",
   "CheckboxGroup",
   "Combobox",
+  "AppChrome",
   "AppHeader",
+  "AppShell",
   "ContentSwitcher",
   "ContextPanel",
   "DatePicker",
@@ -351,7 +355,9 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Card: handWrittenCard.Card,
   Col: handWrittenCol.Col,
   Collapsible: handWrittenCollapsible.Collapsible,
+  AppChrome: handWrittenAppChrome.AppChrome,
   AppHeader: handWrittenAppHeader.AppHeader,
+  AppShell: handWrittenAppShell.AppShell,
   Container: handWrittenContainer.Container,
   ContextPanel: handWrittenContextPanel.ContextPanel,
   IdentityMenu: handWrittenIdentityMenu.IdentityMenu,
