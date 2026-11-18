@@ -578,6 +578,33 @@
       "renderable": true
     },
     {
+      "module": "NavDrawer",
+      "file": "src/NavDrawer.tsx",
+      "reactSource": "components-react/src/NavDrawer.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "IdentityMenu",
+      "file": "src/IdentityMenu.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "uncatalogued",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
+      "module": "AppHeader",
+      "file": "src/AppHeader.tsx",
+      "reactSource": "components-react/src/catalog.tsx",
+      "category": "navigation",
+      "lot": "P4c",
+      "hardSet": false,
+      "renderable": true
+    },
+    {
       "module": "Calendar",
       "file": "src/Calendar.tsx",
       "reactSource": "components-react/src/catalog.tsx",

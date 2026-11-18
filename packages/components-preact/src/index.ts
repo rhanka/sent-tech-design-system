@@ -58,6 +58,8 @@ export { Accordion } from "./Accordion.js";
 export type { AccordionProps, AccordionItem } from "./Accordion.js";
 export { Alert } from "./Alert.js";
 export type { AlertProps } from "./Alert.js";
+export { AppHeader } from "./AppHeader.js";
+export type { AppHeaderProps } from "./AppHeader.js";
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
 export { Autosave } from "./Autosave.js";
@@ -104,6 +106,8 @@ export { Highlight } from "./Highlight.js";
 export type { HighlightProps, HighlightTone } from "./Highlight.js";
 export { IconButton } from "./IconButton.js";
 export type { IconButtonProps } from "./IconButton.js";
+export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
+export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
 export { Inline } from "./Inline.js";
 export type { InlineProps } from "./Inline.js";
 export { InlineLoading } from "./InlineLoading.js";
@@ -182,6 +186,8 @@ export type {
   NavActionKind,
   NavActionDangerZone,
 } from "./NavActionStack.js";
+export { NavDrawer } from "./NavDrawer.js";
+export type { NavDrawerProps } from "./NavDrawer.js";
 export { NavItem } from "./NavItem.js";
 export type { NavItemProps, NavItemDepth, NavItemStatus, NavItemSwatch } from "./NavItem.js";
 export { NavRail } from "./NavRail.js";
