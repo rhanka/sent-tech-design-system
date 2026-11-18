@@ -2,9 +2,12 @@
 // hand-written twins: accessible names, collapse, item selection and the
 // drawer variant (the Preact leg covers the signal edges in
 // p4c-group2-edges).
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AppHeader } from "../.react-emit/src/AppHeader.js";
 import { ContextPanel } from "../.react-emit/src/ContextPanel.js";
+import { IdentityMenu } from "../.react-emit/src/IdentityMenu.js";
+import { NavDrawer } from "../.react-emit/src/NavDrawer.js";
 import { NavRail } from "../.react-emit/src/NavRail.js";
 import { NavShell } from "../.react-emit/src/NavShell.js";
 import { UtilityPanel } from "../.react-emit/src/UtilityPanel.js";
@@ -78,5 +81,47 @@ describe("P4c group 2 batch A (emitted shells)", () => {
     );
     expect(drawer.querySelector('[role="dialog"]')).toBeTruthy();
     expect(drawer.querySelector(".st-navShell--drawer")).toBeTruthy();
+  });
+});
+
+describe("P4c group 2 batch B (emitted shells)", () => {
+  it("composes the AppHeader burger with the consumer onMenuToggle and links the drawer", () => {
+    const onMenuToggle = vi.fn();
+    const { container } = render(
+      <AppHeader compact onMenuToggle={onMenuToggle} menuLabel="Menu" drawerId="drawer-1" drawer={<nav>Content</nav>} />,
+    );
+    const button = container.querySelector("button.st-appHeader__burgerButton") as HTMLButtonElement;
+    expect(button.getAttribute("aria-controls")).toBe("drawer-1");
+    fireEvent.click(button);
+    expect(onMenuToggle).toHaveBeenCalledTimes(1);
+    const svg = container.querySelector("svg") as SVGElement;
+    expect(svg.getAttribute("stroke-width")).toBe("2");
+    expect(svg.hasAttribute("strokeWidth")).toBe(false);
+  });
+
+  it("composes the IdentityMenu trigger with open state and onOpenChange", async () => {
+    const onOpenChange = vi.fn();
+    const { container } = render(
+      <IdentityMenu
+        user={{ displayName: "Ada Lovelace", email: "ada@example.com" }}
+        isAuthenticated
+        onOpenChange={onOpenChange}
+      />,
+    );
+    fireEvent.click(container.querySelector(".st-identityMenu__trigger") as HTMLButtonElement);
+    expect(onOpenChange).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+    await screen.findByRole("menu");
+    expect(container.querySelector(".st-identityMenu__name")?.textContent).toBe("Ada Lovelace");
+  });
+
+  it("forces the NavDrawer through the drawer variant", () => {
+    const { container } = render(
+      <NavDrawer title="Nav" open>
+        Body
+      </NavDrawer>,
+    );
+    expect(container.querySelector('[role="dialog"]')).toBeTruthy();
+    expect(container.querySelector(".st-navShell--drawer")).toBeTruthy();
   });
 });
