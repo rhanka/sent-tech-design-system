@@ -4,7 +4,9 @@
 // p4c-group2-edges).
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AppChrome } from "../.react-emit/src/AppChrome.js";
 import { AppHeader } from "../.react-emit/src/AppHeader.js";
+import { AppShell } from "../.react-emit/src/AppShell.js";
 import { ContextPanel } from "../.react-emit/src/ContextPanel.js";
 import { IdentityMenu } from "../.react-emit/src/IdentityMenu.js";
 import { NavDrawer } from "../.react-emit/src/NavDrawer.js";
@@ -123,5 +125,40 @@ describe("P4c group 2 batch B (emitted shells)", () => {
     );
     expect(container.querySelector('[role="dialog"]')).toBeTruthy();
     expect(container.querySelector(".st-navShell--drawer")).toBeTruthy();
+  });
+});
+
+describe("P4c group 2 batch C (emitted shells)", () => {
+  it("commits AppShell resize keys through onPanelResize", () => {
+    const onPanelResize = vi.fn();
+    const { container } = render(
+      <AppShell variant="workspace" navigationPanel={<p>Nav</p>} main={<p>Main</p>} panelResize onPanelResize={onPanelResize} />,
+    );
+    const handle = container.querySelector(".st-appShell__resizeHandle") as HTMLElement;
+    expect(handle.getAttribute("aria-valuenow")).toBe("320");
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    expect(onPanelResize).toHaveBeenCalledTimes(1);
+    expect(onPanelResize).toHaveBeenCalledWith("navigationPanel", 336);
+  });
+
+  it("filters AppChrome nav by role and notifies the theme change", () => {
+    const onThemeChange = vi.fn();
+    const { container } = render(
+      <AppChrome
+        userRoles={["editor"]}
+        nav={[
+          { label: "Public", href: "/public" },
+          { label: "Admin", href: "/admin", roles: ["admin"] },
+        ]}
+        themes={[{ id: "a", label: "Alpha" }, { id: "b", label: "Beta" }]}
+        theme="a"
+        onThemeChange={onThemeChange}
+      />,
+    );
+    expect(container.querySelectorAll(".st-appChrome__navLink").length).toBe(1);
+    fireEvent.click(container.querySelector(".st-appChrome__themeWrap > button") as HTMLButtonElement);
+    fireEvent.click(container.querySelectorAll(".st-appChrome__menuItem")[1]);
+    expect(onThemeChange).toHaveBeenCalledTimes(1);
+    expect(onThemeChange).toHaveBeenCalledWith("b");
   });
 });

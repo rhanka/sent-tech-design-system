@@ -66,6 +66,9 @@ const reactTests = [
   "RangeSlider", // emitted P2 form module
   "MenuCascade", // emitted Menu cascade, hover-intent and safe-triangle behaviour
   "Shell", // emitted Menu exercised through the Shell suite
+  "AppChrome", // emitted P4c group-2 chrome (role filter, theme/color/locale, drawer)
+  "AppShell.panelCollapse", // emitted P4c group-2 shell (accordion disclosures)
+  "AppShell.panelResize", // emitted P4c group-2 shell (handles, keyboard, clamps)
   "ColorSwatch", // emitted P3 data module (chip sizing / aria-label derivation)
   "TreeViewSelect", // emitted P3 TreeView selection payloads
   "TreeViewAccessibleName", // emitted P3 TreeView accessible-name precedence
