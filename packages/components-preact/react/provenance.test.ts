@@ -18,6 +18,8 @@ import * as handWrittenTimeRangePicker from "../../components-react/src/TimeRang
 import * as handWrittenCollapsible from "../../components-react/src/Collapsible.js";
 import * as handWrittenContainer from "../../components-react/src/Container.js";
 import * as handWrittenContextPanel from "../../components-react/src/ContextPanel.js";
+import * as handWrittenAppHeader from "../../components-react/src/AppHeader.js";
+import * as handWrittenIdentityMenu from "../../components-react/src/IdentityMenu.js";
 import * as handWrittenDivider from "../../components-react/src/Divider.js";
 import * as handWrittenFieldCard from "../../components-react/src/FieldCard.js";
 import * as handWrittenFlex from "../../components-react/src/Flex.js";
@@ -54,6 +56,7 @@ import * as handWrittenBadge from "../../components-react/src/Badge.js";
 import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
 import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
 import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
+import * as handWrittenNavDrawer from "../../components-react/src/NavDrawer.js";
 import * as handWrittenNavRail from "../../components-react/src/NavRail.js";
 import * as handWrittenNavShell from "../../components-react/src/NavShell.js";
 import * as handWrittenStepper from "../../components-react/src/Stepper.js";
@@ -180,6 +183,7 @@ const switched = [
   "Checkbox",
   "CheckboxGroup",
   "Combobox",
+  "AppHeader",
   "ContentSwitcher",
   "ContextPanel",
   "DatePicker",
@@ -218,6 +222,8 @@ const switched = [
   "Header",
   "LanguageToggle",
   "NavActionStack",
+  "IdentityMenu",
+  "NavDrawer",
   "NavItem",
   "NavRail",
   "NavShell",
@@ -345,8 +351,10 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Card: handWrittenCard.Card,
   Col: handWrittenCol.Col,
   Collapsible: handWrittenCollapsible.Collapsible,
+  AppHeader: handWrittenAppHeader.AppHeader,
   Container: handWrittenContainer.Container,
   ContextPanel: handWrittenContextPanel.ContextPanel,
+  IdentityMenu: handWrittenIdentityMenu.IdentityMenu,
   CopyButton: handWrittenCatalog.CopyButton,
   Divider: handWrittenDivider.Divider,
   EmptyState: handWrittenCatalog.EmptyState,
@@ -416,6 +424,7 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Header: handWrittenCatalog.Header,
   LanguageToggle: handWrittenCatalog.LanguageToggle,
   NavActionStack: handWrittenNavActionStack.NavActionStack,
+  NavDrawer: handWrittenNavDrawer.NavDrawer,
   NavItem: handWrittenNavItem.NavItem,
   NavRail: handWrittenNavRail.NavRail,
   NavShell: handWrittenNavShell.NavShell,
