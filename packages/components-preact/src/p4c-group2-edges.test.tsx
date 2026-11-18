@@ -1,7 +1,9 @@
 import { signal } from "@preact/signals";
 import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { AppChrome } from "./AppChrome.js";
 import { AppHeader } from "./AppHeader.js";
+import { AppShell } from "./AppShell.js";
 import { ContextPanel } from "./ContextPanel.js";
 import { IdentityMenu, identityInitial } from "./IdentityMenu.js";
 import { NavDrawer } from "./NavDrawer.js";
@@ -283,5 +285,176 @@ describe("P4c group 2 batch B (shells: signals at the edges, post-mount mutation
     );
     expect(container.querySelector('[role="dialog"]')).toBeTruthy();
     expect(container.querySelector(".st-navShell--drawer")).toBeTruthy();
+  });
+});
+
+describe("P4c group 2 batch C (shells: signals at the edges, post-mount mutation)", () => {
+  it("accepts a Signal for className on AppShell and AppChrome", () => {
+    const { container } = render(
+      <>
+        <AppShell main={<p>Main</p>} className={signal("x-shell")} />
+        <AppChrome className={signal("x-chrome")} />
+      </>,
+    );
+    expect(container.querySelector(".st-appShell--workspace")?.className).toContain("x-shell");
+    expect(container.querySelector(".st-appChrome")?.className).toContain("x-chrome");
+  });
+
+  it("follows className signals mutated after mount (DOM changes)", async () => {
+    const shellClass = signal("x-shell");
+    const chromeClass = signal("x-chrome");
+    const { container } = render(
+      <>
+        <AppShell main={<p>Main</p>} className={shellClass} />
+        <AppChrome className={chromeClass} />
+      </>,
+    );
+    shellClass.value = "y-shell";
+    chromeClass.value = "y-chrome";
+    await screen.findByText("Main");
+    expect(container.querySelector(".st-appShell--workspace")?.className).toContain("y-shell");
+    expect(container.querySelector(".st-appShell--workspace")?.className).not.toContain("x-shell");
+    expect(container.querySelector(".st-appChrome")?.className).toContain("y-chrome");
+    expect(container.querySelector(".st-appChrome")?.className).not.toContain("x-chrome");
+  });
+
+  it("renders the AppShell site variant with topChrome and no workspace body", () => {
+    const { container } = render(<AppShell variant="site" topChrome={<p>Top</p>} />);
+    expect(container.querySelector(".st-appShell--site")).toBeTruthy();
+    expect(container.querySelector(".st-appShell__body")).toBeNull();
+    expect(container.querySelector(".st-appChrome, .st-appShell--site")?.textContent).toContain("Top");
+  });
+
+  it("keeps the AppShell accordion disclosure labelling and controlled widths", () => {
+    const { container } = render(
+      <AppShell
+        variant="workspace"
+        panelCollapse="accordion"
+        navigationPanel={<p>Nav</p>}
+        main={<p>Main</p>}
+        panelResize
+        panelWidths={{ navigationPanel: 400 }}
+      />,
+    );
+    const trigger = container.querySelector(".st-appShell__panelDisclosure") as HTMLButtonElement;
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    expect(trigger.textContent).toContain("Workspace navigation");
+    const handle = container.querySelector(".st-appShell__resizeHandle") as HTMLElement;
+    expect(handle.getAttribute("aria-valuenow")).toBe("400");
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("commits AppShell resize keys through onPanelResize with clamping", () => {
+    const onPanelResize = vi.fn();
+    const { container } = render(
+      <AppShell
+        variant="workspace"
+        navigationPanel={<p>Nav</p>}
+        main={<p>Main</p>}
+        panelResize
+        onPanelResize={onPanelResize}
+      />,
+    );
+    const handle = container.querySelector(".st-appShell__resizeHandle") as HTMLElement;
+    expect(handle.getAttribute("aria-valuenow")).toBe("320");
+    fireEvent.keyDown(handle, { key: "ArrowRight" });
+    expect(onPanelResize).toHaveBeenCalledTimes(1);
+    expect(onPanelResize).toHaveBeenCalledWith("navigationPanel", 336);
+    fireEvent.keyDown(handle, { key: "Home" });
+    expect(onPanelResize).toHaveBeenCalledTimes(2);
+    expect(onPanelResize).toHaveBeenCalledWith("navigationPanel", 180);
+    fireEvent.keyDown(handle, { key: "Escape" });
+    expect(onPanelResize).toHaveBeenCalledTimes(2);
+  });
+
+  it("merges the AppShell consumer style under the computed panel vars", () => {
+    const { container } = render(
+      <AppShell
+        variant="workspace"
+        navigationPanel={<p>Nav</p>}
+        main={<p>Main</p>}
+        panelResize
+        panelWidths={{ navigationPanel: 400 }}
+        style="color: red;"
+      />,
+    );
+    const style = container.querySelector(".st-appShell--workspace")?.getAttribute("style") ?? "";
+    expect(style).toContain("--st-appShell-navigation-width");
+    expect(style).toContain("400px");
+    expect(style).toContain("color");
+  });
+
+  it("filters AppChrome nav by role and composes item clicks", () => {
+    const onItemSelect = vi.fn();
+    const { container } = render(
+      <AppChrome
+        userRoles={["editor"]}
+        nav={[
+          { label: "Public", href: "/public" },
+          { label: "Admin", href: "/admin", roles: ["admin"] },
+          { label: "Edit", href: "/edit", role: "editor", onClick: onItemSelect },
+        ]}
+      />,
+    );
+    const links = container.querySelectorAll(".st-appChrome__navLink");
+    expect(links.length).toBe(2);
+    expect(links[1].textContent).toBe("Edit");
+    fireEvent.click(links[1]);
+    expect(onItemSelect).toHaveBeenCalledTimes(1);
+  });
+
+  it("drives the AppChrome theme menu and notifies the theme change", () => {
+    const onThemeChange = vi.fn();
+    const { container } = render(
+      <AppChrome themes={[{ id: "a", label: "Alpha" }, { id: "b", label: "Beta" }]} theme="a" onThemeChange={onThemeChange} />,
+    );
+    const trigger = container.querySelector(".st-appChrome__themeWrap > button") as HTMLButtonElement;
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(trigger);
+    expect(trigger.getAttribute("aria-expanded")).toBe("true");
+    const items = container.querySelectorAll(".st-appChrome__menuItem");
+    expect(items.length).toBe(2);
+    fireEvent.click(items[1]);
+    expect(onThemeChange).toHaveBeenCalledTimes(1);
+    expect(onThemeChange).toHaveBeenCalledWith("b");
+    expect(container.querySelector(".st-appChrome__menu")).toBeNull();
+  });
+
+  it("cycles the AppChrome color mode through the consumer handler", () => {
+    const onColorModeChange = vi.fn();
+    const { container } = render(<AppChrome colorMode="light" onColorModeChange={onColorModeChange} />);
+    const button = container.querySelector(".st-appChrome__iconControl") as HTMLButtonElement;
+    expect(button.getAttribute("aria-label")).toBe("Dark mode");
+    fireEvent.click(button);
+    expect(onColorModeChange).toHaveBeenCalledTimes(1);
+    expect(onColorModeChange).toHaveBeenCalledWith("dark");
+  });
+
+  it("opens the AppChrome mobile drawer and closes it through the toggle", () => {
+    const onMobileMenuToggle = vi.fn();
+    const { container } = render(
+      <AppChrome
+        mobileMenuOpen
+        onMobileMenuToggle={onMobileMenuToggle}
+        nav={[{ label: "Edit", href: "/edit", disabled: true }]}
+      />,
+    );
+    const drawer = container.querySelector(".st-appChrome__drawer") as HTMLElement;
+    expect(drawer.getAttribute("aria-label")).toBe("Primary");
+    fireEvent.click(drawer.querySelector(".st-appChrome__drawerLink") as HTMLAnchorElement);
+    expect(onMobileMenuToggle).not.toHaveBeenCalled();
+    fireEvent.click(container.querySelector(".st-appChrome__burgerTrigger") as HTMLButtonElement);
+    expect(onMobileMenuToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders AppChrome inline icons through the SVG normaliser", () => {
+    const { container } = render(<AppChrome colorMode="light" githubHref="https://example.com" />);
+    const svgs = container.querySelectorAll("svg");
+    expect(svgs.length).toBeGreaterThan(0);
+    for (const svg of Array.from(svgs)) {
+      expect(svg.getAttribute("stroke-width")).not.toBeNull();
+      expect(svg.hasAttribute("strokeWidth")).toBe(false);
+    }
   });
 });

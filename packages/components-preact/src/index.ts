@@ -58,8 +58,25 @@ export { Accordion } from "./Accordion.js";
 export type { AccordionProps, AccordionItem } from "./Accordion.js";
 export { Alert } from "./Alert.js";
 export type { AlertProps } from "./Alert.js";
+export { AppChrome } from "./AppChrome.js";
+export type {
+  AppChromeProps,
+  AppChromeNavItem,
+  AppChromeThemeOption,
+  AppChromeColorMode,
+  AppChromeLocale,
+} from "./AppChrome.js";
 export { AppHeader } from "./AppHeader.js";
 export type { AppHeaderProps } from "./AppHeader.js";
+export { AppShell } from "./AppShell.js";
+export type {
+  AppShellProps,
+  AppShellVariant,
+  AppShellUtilityMode,
+  AppShellUtilitySide,
+  AppShellPanelCollapse,
+  AppShellPanelKey,
+} from "./AppShell.js";
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
 export { Autosave } from "./Autosave.js";
