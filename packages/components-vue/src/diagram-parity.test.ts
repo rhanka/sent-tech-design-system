@@ -127,6 +127,17 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       vue.unmount(); svelte.unmount();
     });
   }
+  for (const collapsed of [true, false]) {
+    it(`should paint the depth surface on both hosts with collapsed=${collapsed} (addendum 1)`, async () => {
+      const props = { entityId: 'depth-zone', title: 'Depth', collapsed, toggleLabel: 'Toggle', depth: 1, ...(collapsed ? {} : { width: 492 }) };
+      const vue = mount(DiagramZone, { props }); const svelte = render(SvelteZone, { props });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      const frame = vue.element.querySelector('.st-diagramZone') ?? vue.element.querySelector('.st-diagramCard');
+      expect(frame?.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
+      vue.unmount(); svelte.unmount();
+    });
+  }
   for (const props of [
     { entityId: 'overflow', title: 'X'.repeat(200), body: ['body'] },
     { entityId: 'unknown', title: 'Unknown', body: ['body'], icon: 'unmapped' },

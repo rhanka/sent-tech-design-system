@@ -60,12 +60,23 @@
     align,
     bodyMode,
     anatomy,
+    surface,
     measure = defaultCardMeasure,
     onSelect,
     onDiagnostic,
   }: DiagramCardProps = $props();
 
   const cardGeometry = $derived(anatomyCardGeometry(anatomy));
+
+  /**
+   * Owner addendum 1: a folded zone keeps its depth background. Only
+   * zone-collapsed cards carry `surface`, so leaf cards never change.
+   */
+  const surfaceStyle = $derived(
+    surface === undefined
+      ? ""
+      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`,
+  );
 
   const layout = $derived(
     layoutCard(
@@ -117,8 +128,8 @@
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
   style={anatomy === "v2"
-    ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)`
-    : `height:${layout.box.height}px`}
+    ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
+    : `height:${layout.box.height}px${surfaceStyle}`}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
