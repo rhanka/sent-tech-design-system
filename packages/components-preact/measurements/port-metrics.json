@@ -77,12 +77,12 @@
         "lot": "P2",
         "reactSource": "SelectableRow.tsx",
         "reactLines": 252,
-        "preactLines": 258,
+        "preactLines": 290,
         "total": 1035,
-        "touched": 59,
+        "touched": 63,
         "emissionRewrites": 3,
-        "tests": 9,
-        "testLines": 251
+        "tests": 11,
+        "testLines": 341
       },
       {
         "module": "ChatComposer",
@@ -126,12 +126,12 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 710,
+      "preactLines": 742,
       "total": 3521,
-      "touched": 183,
+      "touched": 187,
       "emissionRewrites": 16,
-      "tests": 53,
-      "testLines": 1070
+      "tests": 55,
+      "testLines": 1160
     },
     "shared": {
       "src/internal.ts": 171,

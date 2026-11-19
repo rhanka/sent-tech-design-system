@@ -2034,8 +2034,8 @@
     },
     {
       "key": "consumer-handler-preserved",
-      "preact": "Popover composes the consumer onClick after opening, Drawer composes the consumer onKeyDown behind the focus trap, Tooltip composes the consumer onFocus/onFocusIn/onBlur/onFocusOut/onMouseEnter/onMouseLeave around visibility, and BackToTop composes the consumer onClick before scrolling (order intentional in each case): the internal behavior runs and the consumer handler still fires once per event",
-      "react": "The emitted handlers are the same compositions; the hand-written twins drop the consumer onClick (Popover, BackToTop), onKeyDown (Drawer) and onFocus (Tooltip) behind the internal prop placed after the rest spread",
+      "preact": "Popover composes the consumer onClick after opening, Drawer composes the consumer onKeyDown behind the focus trap, Tooltip composes the consumer onFocus/onFocusIn/onBlur/onFocusOut/onMouseEnter/onMouseLeave around visibility, BackToTop composes the consumer onClick before scrolling, and SelectableRow composes the consumer onClick/onKeyDown/onFocus/onFocusIn after its internal activation/navigation/roving-focus logic (keeping disabled rows inert for click/keyDown; order intentional in each case): the internal behavior runs and the consumer handler still fires once per event",
+      "react": "The emitted handlers are the same compositions; the hand-written twins drop the consumer onClick (Popover, BackToTop, SelectableRow), onKeyDown (Drawer, SelectableRow) and onFocus (Tooltip, SelectableRow) behind the internal prop placed after the rest spread",
       "decision": "recorded"
     },
     {
