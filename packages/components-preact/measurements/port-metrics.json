@@ -29,8 +29,8 @@
         "total": 163,
         "touched": 6,
         "emissionRewrites": 1,
-        "tests": 5,
-        "testLines": 69
+        "tests": 6,
+        "testLines": 101
       },
       {
         "module": "Input",
@@ -130,8 +130,8 @@
       "total": 3521,
       "touched": 183,
       "emissionRewrites": 16,
-      "tests": 51,
-      "testLines": 994
+      "tests": 52,
+      "testLines": 1026
     },
     "shared": {
       "src/internal.ts": 171,
