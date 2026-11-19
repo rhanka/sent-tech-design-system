@@ -24,11 +24,12 @@ export const AvatarGroup = forwardRef<HTMLDivElement, AvatarGroupProps>(
     const overflow = max != null && total != null && total > max ? total - max : 0;
     const classes = classNames("st-avatarGroup", `st-avatarGroup--${size}`, className);
     // React parity: the `--st-avatar-group-max` token wins over the consumer
-    // style (`{...style, ...vars}` in components-react).
+    // style (`{...style, ...vars}` in components-react). A string consumer
+    // style leads the serialised text for the same reason.
     const normalized = mergeStyle(undefined, style);
     const mergedStyle =
       typeof normalized === "string"
-        ? (`--st-avatar-group-max:${max ?? ""};${normalized}` as unknown as CSSProperties)
+        ? (`${normalized.endsWith(";") ? normalized : `${normalized};`}--st-avatar-group-max:${max ?? ""};` as unknown as CSSProperties)
         : ({ ...(normalized as CSSProperties | undefined), "--st-avatar-group-max": max ?? "" } as CSSProperties);
     return (
       <div {...rest} ref={ref} className={classes} style={mergedStyle}>
