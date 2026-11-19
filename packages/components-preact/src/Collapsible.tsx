@@ -14,7 +14,7 @@ export type CollapsibleProps = Omit<
   /** État ouvert (contrôlable). */
   open?: MaybeSignal<boolean>;
   title: string;
-  disabled?: boolean;
+  disabled?: MaybeSignal<boolean>;
   /**
    * Trailing content rendered inside the trigger, BETWEEN the title and the
    * chevron (e.g. a count Badge, a status Tag, a glyph). The chevron stays the
@@ -33,6 +33,7 @@ export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
     const reactId = useId();
     const uid = `st-collapsible-${reactId}`;
     const openValue = useValue(openInput);
+    const isDisabled = useValue(disabled);
     const isControlled = openInput !== undefined;
     const [internalOpen, setInternalOpen] = useState(openValue ?? false);
     const open = isControlled ? openValue : internalOpen;
@@ -40,7 +41,7 @@ export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
     const classes = classNames("st-collapsible", open && "st-collapsible--open", className);
 
     function toggle() {
-      if (disabled) return;
+      if (isDisabled) return;
       const next = !open;
       if (!isControlled) setInternalOpen(next);
       onToggle?.(next);
@@ -54,7 +55,7 @@ export const Collapsible = forwardRef<HTMLDivElement, CollapsibleProps>(
           aria-expanded={open ? "true" : "false"}
           aria-controls={`${uid}-region`}
           id={`${uid}-trigger`}
-          disabled={disabled}
+          disabled={isDisabled}
           onClick={toggle}
         >
           <span className="st-collapsible__title">{title}</span>
