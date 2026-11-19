@@ -17,7 +17,7 @@ import type {
   ViewDocument,
   ViewRef,
 } from "@sentropic/diagram-core";
-import type { AlignPinned, AnatomyPinned } from "../presentation/diagramCardModel.js";
+import type { AlignPinned, AnatomyPinned, DepthPinned } from "../presentation/diagramCardModel.js";
 
 import type { LayoutHints } from "./hints.js";
 import type { LineMeasurer } from "./measure.js";
@@ -190,11 +190,11 @@ export interface LayoutOptions {
    * compatibility path: the pinned existing behaviour, byte-identical (§4.8).
    * Present selects the card/container/legend/legend-key synthesis forms and
    * the fixed-footprint measurement rules of §4.6. Entities may carry the
-   * additive DE-1 pins (`AnatomyPinned`, `AlignPinned`); absent pins keep
-   * the frozen behaviour.
+   * additive DE-1 pins (`AnatomyPinned`, `AlignPinned`, `DepthPinned`);
+   * absent pins keep the frozen behaviour.
    */
   readonly presentation?: DiagramPresentation & {
-    readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned>>;
+    readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned>>;
   };
   /** Injected shared line measurer for measured views (M3 §4.6.2/§5.6). */
   readonly measureLines?: LineMeasurer;

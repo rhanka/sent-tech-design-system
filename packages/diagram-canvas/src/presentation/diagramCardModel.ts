@@ -248,6 +248,12 @@ export interface DiagramCardProps {
    * `"v2"` selects the compact `352 × 154` box.
    */
   readonly anatomy?: DiagramAnatomy;
+  /**
+   * Zone depth surface, set only for zone-collapsed cards (a folded zone
+   * keeps its depth background). Leaf cards never set it: their semantic
+   * tints are unchanged. Hosts paint the matching zone surface token.
+   */
+  readonly surface?: ZoneDepthSurface;
 }
 
 export type CardResolveResult =
@@ -1197,6 +1203,26 @@ export function anatomyZoneGeometry(anatomy: DiagramAnatomy | undefined): typeof
   return anatomy === "v2" ? ZONE_GEOMETRY_V2 : ZONE_GEOMETRY;
 }
 
+/**
+ * Owner addendum 1 — one engine rule for alternating zone backgrounds by
+ * nesting depth. Even depths (top level first) paint `surface1`, odd depths
+ * paint `surface2`; `startParity` is selectable per scene and flips which
+ * parity the top level takes. Depth normalises to a non-negative integer;
+ * card semantic tints are untouched (leaf cards never read this rule).
+ */
+export type ZoneDepthSurface = "surface1" | "surface2";
+
+/** Nesting depth of a zone: `0` is the top level. */
+export function normalizeZoneDepth(depth: number | undefined): number {
+  if (depth === undefined || !Number.isFinite(depth)) return 0;
+  return Math.max(0, Math.floor(depth));
+}
+
+/** Resolve the depth surface for a zone (default start parity `0`). */
+export function zoneDepthSurface(depth: number | undefined, startParity: 0 | 1 = 0): ZoneDepthSurface {
+  return (normalizeZoneDepth(depth) + startParity) % 2 === 0 ? "surface1" : "surface2";
+}
+
 /** Centred collapsed-subtitle measure (§6.2.1): 460 − 2 × (16 + 16). */
 export const COLLAPSED_SUBTITLE_MEASURE =
   ZONE_GEOMETRY.collapsedWidth -
@@ -1235,6 +1261,17 @@ export interface DiagramZoneProps {
   /** Owner variant: `"center"` centres every text slot, both states. */
   readonly align?: "left" | "center";
   /**
+   * Nesting depth of the zone (owner addendum 1): `0` is the top level.
+   * The frame — and the folded card — paint the depth surface from the
+   * engine rule. Absent means `0`.
+   */
+  readonly depth?: number;
+  /**
+   * Selectable start parity for the depth rule: `1` flips which parity the
+   * top level takes. Scene-global; absent means `0`.
+   */
+  readonly depthParityStart?: 0 | 1;
+  /**
    * Occurrence box supplied by the host layout (§6.1: the component paints
    * around the box it is given). Collapsed, the box is the frozen
    * 460 × 200 card; expanded, `width`/`height` size the frame.
@@ -1270,6 +1307,11 @@ export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProp
       ? {}
       : { toggle: { collapsed: true, label: props.toggleLabel } }),
     ...(props.align === undefined ? {} : { align: props.align }),
+    // A folded zone keeps its depth background (owner addendum 1); no pin
+    // means no surface key, so unthreaded cards render byte-identical.
+    ...((props.depth === undefined && props.depthParityStart === undefined
+      ? {}
+      : { surface: zoneDepthSurface(props.depth, props.depthParityStart) })),
     bodyMode: "subtitle",
   };
 }
@@ -1279,8 +1321,10 @@ export interface ZoneDiagnostic {
    * `zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant
    * card or nested zone keeps its own `card-overflow` / `card-icon-unknown`
    * code with its own `entityId` when `renderZoneSvg` aggregates them.
+   * `zone-surface-same` is informational (owner addendum 1): a leaf card
+   * on a same-colour zone, reported only for explicitly composed children.
    */
-  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown";
+  readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown" | "zone-surface-same";
   readonly slot: string;
   readonly entityId: string;
   readonly neededPx: number;
@@ -1305,6 +1349,14 @@ export interface ZoneLayout {
   readonly icon: { readonly name: string; readonly glyph: DiagramGlyphPaths };
   readonly box: { readonly x: number; readonly y: number; readonly width: number; readonly height: number };
   readonly collapsed: boolean;
+  /**
+   * Owner addendum 1: resolved depth surface (`surface1` at even depths,
+   * top level first) and normalised depth. Present only when depth pins
+   * are threaded (absent means `surface1` / `0`); hosts paint the matching
+   * zone surface token on the frame and on the folded card.
+   */
+  readonly surface?: ZoneDepthSurface;
+  readonly depth?: number;
   /** Collapsed: the card layout of the folded card (same geometry source). */
   readonly card?: CardLayout;
   /** Expanded: header + rule + footer geometry inside the frame. */
@@ -1369,6 +1421,18 @@ export function layoutZone(
   const x = props.x ?? 0;
   const y = props.y ?? 0;
   const diagnostics: ZoneDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
+  // Owner addendum 1: resolve the depth surface once; both states and the
+  // folded card share it, so fold/unfold never repaints the layer. Without
+  // depth pins the layout keeps its exact v1 shape (anatomy golden).
+  const hasDepthPins = props.depth !== undefined || props.depthParityStart !== undefined;
+  const depth = normalizeZoneDepth(props.depth);
+  const surface = zoneDepthSurface(props.depth, props.depthParityStart);
+  // Informational: a leaf card (default card surface) on a same-colour
+  // zone surface. Only explicit children compositions report it — hosts
+  // lay children out flat, so host rendering never changes.
+  if (surface === "surface1" && children.some((child) => child.kind === "card" && child.zone === undefined)) {
+    diagnostics.push({ code: "zone-surface-same", slot: "surface", entityId: props.entityId, neededPx: 1, allocatedPx: 0 });
+  }
 
   if (missing) {
     diagnostics.push({
@@ -1397,6 +1461,7 @@ export function layoutZone(
       icon: { name: props.icon!, glyph: props.iconGlyph! },
       box: { x, y, width: g.collapsedWidth, height: card.box.height },
       collapsed: true,
+      ...(hasDepthPins ? { surface, depth } : {}),
       card,
       diagnostics,
     };
@@ -1578,6 +1643,7 @@ export function layoutZone(
     icon: { name: props.icon!, glyph: props.iconGlyph! },
     box: { x, y, width, height },
     collapsed: false,
+    ...(hasDepthPins ? { surface, depth } : {}),
     header: {
       ...(iconBox === undefined ? {} : { iconBox }),
       headerTextX,
@@ -1621,6 +1687,24 @@ export interface ZonePresentationInput {
    * `"center"` centres title and body on both axes. Absent means `"left"`.
    */
   readonly align?: "left" | "center";
+  /**
+   * Additive depth pins (owner addendum 1, `AnatomyPinned` pattern):
+   * nesting depth (`0` top) and selectable start parity. Absent means
+   * `0` / `0`; the scene stamps depth from the view groups.
+   */
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
+}
+
+/**
+ * Additive depth pins (owner addendum 1), same carrying pattern as
+ * `AnatomyPinned`: structural, never persisted in the governed fragment.
+ * The scene stamps `depth` from the view groups; `depthParityStart`
+ * selects which parity the top level takes.
+ */
+export interface DepthPinned {
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
 }
 
 export type ZoneResolveResult =
@@ -1638,6 +1722,12 @@ export interface ProjectZoneOptions {
   readonly collapsed: boolean;
   readonly toggleLabel?: string;
   readonly align?: "left" | "center";
+  /**
+   * Fallback depth pins when the presentation pins none. Absent means
+   * `0` / `0`; the scene stamps them from the view groups.
+   */
+  readonly depth?: number;
+  readonly depthParityStart?: 0 | 1;
   readonly x?: number;
   readonly y?: number;
   readonly width?: number;
@@ -1696,6 +1786,14 @@ export function projectZoneProps(
       ...(() => {
         const align = presentation.align ?? opts.align;
         return align === undefined ? {} : { align };
+      })(),
+      ...(() => {
+        const depth = presentation.depth ?? opts.depth;
+        return depth === undefined ? {} : { depth };
+      })(),
+      ...(() => {
+        const start = presentation.depthParityStart ?? opts.depthParityStart;
+        return start === undefined ? {} : { depthParityStart: start };
       })(),
       ...(opts.x === undefined ? {} : { x: opts.x }),
       ...(opts.y === undefined ? {} : { y: opts.y }),

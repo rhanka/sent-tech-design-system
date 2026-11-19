@@ -3,12 +3,12 @@ import type { EntityPresentation, OccurrenceRef } from "@sentropic/diagram-core"
 import {
   anatomyCardGeometry,
   layoutCard, layoutZone, projectCardProps, projectZoneProps, lineBoxHeight,
-  CARD_GEOMETRY, ZONE_GEOMETRY, type AlignPinned, type AnatomyPinned, type CardLineMeasure,
+  CARD_GEOMETRY, ZONE_GEOMETRY, type AlignPinned, type AnatomyPinned, type CardLineMeasure, type DepthPinned,
 } from "../presentation/diagramCardModel.js";
 import { DEFAULT_ALLOCATED_LINES, type HeaderMeasurement, type LineMeasurer, type LineLayout } from "./measure.js";
 
 export function measureSceneBox(
-  presentation: (EntityPresentation & AnatomyPinned & AlignPinned) | undefined, occurrence: OccurrenceRef,
+  presentation: (EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned) | undefined, occurrence: OccurrenceRef,
   width: number, collapsed: boolean, measure: LineMeasurer, containerPadding?: number,
 ) {
   const cardGeometry = anatomyCardGeometry(presentation?.anatomy);

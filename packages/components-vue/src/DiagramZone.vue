@@ -40,8 +40,10 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, depth, depthParityStart, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
 const zoneGeometry = computed(() => anatomyZoneGeometry(anatomy));
+/** Owner addendum 1: an explicitly threaded depth paints the resolved depth surface. */
+const surfaceStyle = computed(() => zoneProps.value.depth === undefined && zoneProps.value.depthParityStart === undefined ? "" : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.value.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.value.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`);
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -82,6 +84,8 @@ const zoneProps = computed(() => ({
     ...(toggleLabel === undefined ? {} : { toggleLabel }),
     ...(align === undefined ? {} : { align }),
     ...(anatomy === undefined ? {} : { anatomy }),
+    ...(depth === undefined ? {} : { depth }),
+    ...(depthParityStart === undefined ? {} : { depthParityStart }),
     x,
     y,
     ...(width === undefined ? {} : { width }),
@@ -157,7 +161,7 @@ defineSlots<{ "default"?: () => unknown }>();
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)` : `width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}` : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
       <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
     <template v-if="header !== undefined">
 
