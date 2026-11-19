@@ -637,4 +637,14 @@ describe("React leg provenance", () => {
       expect(emittedPriorityLabels[name]).not.toBe(handWrittenPriorityLabels[name]);
     }
   });
+
+  it("the emitted barrel serves the emitted deriveInitials helper (not the hand-written catalog twin)", () => {
+    // components-react/src/index.ts re-exports deriveInitials from catalog.tsx
+    // rather than Header.tsx, so the module switch does not intercept the barrel
+    // line, while emitted Header/Avatar and the emitted barrel serve the emitted
+    // helper.
+    expect(typeof emitted.deriveInitials).toBe("function");
+    expect(emitted.deriveInitials).not.toBe(handWrittenCatalog.deriveInitials);
+    expect(emitted.deriveInitials("Ada Lovelace")).toBe("AL");
+  });
 });
