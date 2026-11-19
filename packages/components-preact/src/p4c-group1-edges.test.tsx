@@ -396,9 +396,13 @@ describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, M
   });
 
   it("ChatThread follows messages and autoScroll signals mutated after mount", async () => {
-    const messages = signal<Array<{ id: string; role: ChatMessageRole; content: string }>>([{ id: "1", role: "assistant", content: "Hello" }]);
-    const autoScroll = signal(true);
+    const messages = signal<Array<{ id: string; role?: ChatMessageRole; content: string }>>([
+      { id: "1", role: "assistant", content: "Hello" },
+    ]);
+    const autoScroll = signal(false);
     const { container } = render(<ChatThread messages={messages} autoScroll={autoScroll} />);
+    const scroller = container.querySelector(".st-chatThread") as HTMLElement;
+    Object.defineProperty(scroller, "scrollHeight", { configurable: true, value: 500 });
     expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(1);
     expect(container.querySelector(".st-chatMessage__content")?.textContent).toBe("Hello");
     messages.value = [
@@ -409,14 +413,15 @@ describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, M
       expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(2),
     );
     expect(container.querySelectorAll(".st-chatMessage__content")[1].textContent).toBe("World");
-    autoScroll.value = false;
-    await waitFor(() =>
-      expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(2),
-    );
+    // autoScroll off: new messages render, but the scroller never moves.
+    expect(scroller.scrollTop).toBe(0);
+    autoScroll.value = true;
+    await waitFor(() => expect(scroller.scrollTop).toBe(500));
     messages.value = [{ id: "1", role: "assistant", content: "Solo" }];
     await waitFor(() =>
       expect(container.querySelector(".st-chatMessage__content")?.textContent).toBe("Solo"),
     );
+    expect(scroller.scrollTop).toBe(500);
   });
 
   it("DisplaySettings follows values and show toggles mutated after mount", async () => {
