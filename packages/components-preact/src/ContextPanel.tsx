@@ -1,16 +1,13 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
-export type ContextPanelProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type ContextPanelProps = HTMLAttributes<HTMLElement> & {
   title?: ComponentChildren;
   subtitle?: ComponentChildren;
   label?: string;
   actions?: ComponentChildren;
   footer?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function ContextPanel({ title, subtitle, label, actions, footer, className, children, ...rest }: ContextPanelProps) {

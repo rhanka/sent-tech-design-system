@@ -2,7 +2,6 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ChatMessageStatus } from "./ChatMessage.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 export type StreamingMessageEvent = {
   id: string;
@@ -11,13 +10,11 @@ export type StreamingMessageEvent = {
   status?: ChatMessageStatus;
 };
 export type StreamingMessageMode = "live" | "passive";
-export type StreamingMessageProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type StreamingMessageProps = HTMLAttributes<HTMLElement> & {
   text?: ComponentChildren;
   events?: StreamingMessageEvent[];
   mode?: StreamingMessageMode;
   placeholder?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function StreamingMessage({

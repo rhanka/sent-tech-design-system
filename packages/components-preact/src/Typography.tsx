@@ -1,6 +1,6 @@
-import type { HTMLAttributes, JSX } from "preact";
+import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
-import type { ComponentChildren } from "./runtime.js";
+import type { ComponentChildren, ElementType } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
@@ -39,7 +39,7 @@ const VARIANT_TAG: Record<TypographyVariant, string> = {
 export type TypographyProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   variant?: TypographyVariant;
   /** Surcharge la balise déduite de la variante. */
-  as?: JSX.ElementType;
+  as?: ElementType;
   weight?: TypographyWeight;
   tone?: TypographyTone;
   align?: TypographyAlign;
@@ -62,7 +62,7 @@ export function Typography({
   ...rest
 }: TypographyProps) {
   const truncate = useValue(truncateInput);
-  const Tag = (as ?? VARIANT_TAG[variant]) as JSX.ElementType;
+  const Tag = (as ?? VARIANT_TAG[variant]) as ElementType;
   const classes = classNames(
     "st-typography",
     `st-typography--${variant}`,

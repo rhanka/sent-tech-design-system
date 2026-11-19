@@ -43,7 +43,7 @@ const PANEL_NOMINAL_PX: Record<AppShellPanelKey, number> = {
   utilityPanel: 384,
 };
 
-export type AppShellProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & {
+export type AppShellProps = HTMLAttributes<HTMLDivElement> & {
   variant?: AppShellVariant;
   topChrome?: ComponentChildren;
   primaryRail?: ComponentChildren;
@@ -90,8 +90,6 @@ export type AppShellProps = Omit<HTMLAttributes<HTMLDivElement>, "className"> & 
   panelMinWidth?: number;
   /** Upper clamp in px. Default 640. */
   panelMaxWidth?: number;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 function PanelDisclosure({

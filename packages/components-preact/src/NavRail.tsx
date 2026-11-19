@@ -14,14 +14,12 @@ export interface NavRailItem {
   icon?: ComponentChildren;
 }
 
-export type NavRailProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type NavRailProps = HTMLAttributes<HTMLElement> & {
   items?: NavRailItem[];
   label?: string;
   activeItemId?: MaybeSignal<string>;
   onItemSelect?: (id: string) => void;
   footer?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function NavRail({ items = [], label = "Primary navigation", activeItemId: activeItemIdInput, onItemSelect, footer, className, children, ...rest }: NavRailProps) {
