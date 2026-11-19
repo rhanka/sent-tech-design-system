@@ -10,6 +10,10 @@ import { Collapsible } from "./Collapsible.js";
 import { Container } from "./Container.js";
 import { Divider } from "./Divider.js";
 import { Flex, alignValue, justifyValue, spacingToken } from "./Flex.js";
+import { Grid, gridTemplateColumns } from "./Grid.js";
+import { Hidden } from "./Hidden.js";
+import { Inline } from "./Inline.js";
+import { Notification } from "./Notification.js";
 
 afterEach(cleanup);
 
@@ -446,5 +450,204 @@ describe("P5 group 2 forwardRef modules — Batch 2 (Collapsible, Container, Div
 
     unmount();
     expect(sectionRef).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe("P5 group 2 forwardRef modules — Batch 3 (Grid, Hidden, Inline, Notification)", () => {
+  it("Grid forwards refs across default and polymorphic `as`, mutates className/style signals, and keeps helper parity", async () => {
+    const cls = signal("grid-before");
+    const style = signal({ color: "red" });
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const ulRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Grid ref={objRef} data-testid="grid" columns={3} gap={4} className={cls} style={style} onClick={onClick}>
+        <span>A</span>
+      </Grid>,
+    );
+    const el = screen.getByTestId("grid");
+    expect(objRef.current).toBe(el);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(el.className).toBe("st-grid grid-before");
+    expect(el.style.display).toBe("grid");
+    expect(el.style.gridTemplateColumns).toBe(gridTemplateColumns(3, undefined));
+    expect(el.style.gap).toBe(spacingToken(4));
+    expect(el.style.color).toBe("red");
+
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "grid-after";
+    style.value = { color: "teal" };
+    await waitFor(() => expect(el.className).toBe("st-grid grid-after"));
+    await waitFor(() => expect(el.style.color).toBe("teal"));
+    expect(el.style.display).toBe("grid");
+
+    rerender(
+      <Grid ref={ulRef} data-testid="grid" as="ul" minItemWidth="12rem" className={cls} style={style} onClick={onClick}>
+        <li>A</li>
+      </Grid>,
+    );
+    const ul = screen.getByTestId("grid");
+    expect(objRef.current).toBeNull();
+    expect(ul.tagName).toBe("UL");
+    expect(ulRef).toHaveBeenLastCalledWith(ul);
+    expect(ul.style.gridTemplateColumns).toBe(gridTemplateColumns(undefined, "12rem"));
+
+    unmount();
+    expect(ulRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Hidden forwards refs across default and polymorphic `as`, mutates className signal, and preserves consumer handlers", async () => {
+    const cls = signal("hid-before");
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const spanRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Hidden ref={objRef} data-testid="hidden" below="md" above="xl" className={cls} onClick={onClick}>
+        Responsive
+      </Hidden>,
+    );
+    const el = screen.getByTestId("hidden");
+    expect(objRef.current).toBe(el);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(el.className).toBe("st-hidden st-hidden--below-md st-hidden--above-xl hid-before");
+
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "hid-after";
+    await waitFor(() => expect(el.className).toBe("st-hidden st-hidden--below-md st-hidden--above-xl hid-after"));
+
+    rerender(
+      <Hidden ref={spanRef} data-testid="hidden" as="span" below="sm" className={cls} onClick={onClick}>
+        Responsive
+      </Hidden>,
+    );
+    const span = screen.getByTestId("hidden");
+    expect(objRef.current).toBeNull();
+    expect(span.tagName).toBe("SPAN");
+    expect(spanRef).toHaveBeenLastCalledWith(span);
+
+    unmount();
+    expect(spanRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Inline forwards nested refs through Flex across default and polymorphic `as`, mutates className/wrap/style signals, and preserves consumer handlers", async () => {
+    const cls = signal("inl-before");
+    const wrap = signal(true);
+    const style = signal({ color: "red" });
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const navRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Inline
+        ref={objRef}
+        data-testid="inline"
+        gap={2}
+        align="center"
+        wrap={wrap}
+        className={cls}
+        style={style}
+        onClick={onClick}
+      >
+        <span>Chip</span>
+      </Inline>,
+    );
+    const el = screen.getByTestId("inline");
+    expect(objRef.current).toBe(el);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(el.className).toBe("st-flex st-inline inl-before");
+    expect(el.style.flexDirection).toBe("row");
+    expect(el.style.flexWrap).toBe("wrap");
+    expect(el.style.color).toBe("red");
+
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "inl-after";
+    wrap.value = false;
+    style.value = { color: "purple" };
+    await waitFor(() => expect(el.className).toBe("st-flex st-inline inl-after"));
+    expect(el.style.flexWrap).toBe("nowrap");
+    expect(el.style.color).toBe("purple");
+
+    wrap.value = true;
+    await waitFor(() => expect(el.style.flexWrap).toBe("wrap"));
+
+    rerender(
+      <Inline ref={navRef} data-testid="inline" as="nav" wrap={wrap} className={cls} style={style} onClick={onClick}>
+        <span>Chip</span>
+      </Inline>,
+    );
+    const nav = screen.getByTestId("inline");
+    expect(objRef.current).toBeNull();
+    expect(nav.tagName).toBe("NAV");
+    expect(navRef).toHaveBeenLastCalledWith(nav);
+
+    unmount();
+    expect(navRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Notification forwards refs to <section>, mutates className/dismissible signals, and preserves consumer handlers alongside onDismiss", async () => {
+    const cls = signal("not-before");
+    const dismissible = signal(false);
+    const onDismiss = vi.fn();
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const cbRef = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Notification
+        ref={objRef}
+        tone="error"
+        title="Failure"
+        message="Retry later"
+        dismissible={dismissible}
+        onDismiss={onDismiss}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const section = screen.getByRole("alert");
+    expect(objRef.current).toBe(section);
+    expect(objRef.current?.tagName).toBe("SECTION");
+    expect(section.className).toBe("st-notification st-notification--error not-before");
+    expect(container.querySelector(".st-notification__close")).toBeNull();
+
+    cls.value = "not-after";
+    dismissible.value = true;
+    await waitFor(() => expect(section.className).toBe("st-notification st-notification--error not-after"));
+    const closeBtn = container.querySelector(".st-notification__close") as HTMLButtonElement;
+    expect(closeBtn).toBeTruthy();
+
+    // Clicking close triggers onDismiss AND bubbles to consumer onClick on <section>.
+    fireEvent.click(closeBtn);
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    dismissible.value = false;
+    await waitFor(() => expect(container.querySelector(".st-notification__close")).toBeNull());
+
+    rerender(
+      <Notification
+        ref={cbRef}
+        tone="info"
+        title="Info"
+        dismissible={dismissible}
+        onDismiss={onDismiss}
+        className={cls}
+        onClick={onClick}
+      />,
+    );
+    const status = screen.getByRole("status");
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(status);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
   });
 });
