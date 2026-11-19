@@ -1,8 +1,8 @@
 {
   "componentId": "item-chart",
   "contractSource": "derived",
-  "digest": "sha256:4878e96e216c6ccea21b1430b6435148cc4c60c29042cebb42a6a933aa06ca9f",
-  "entryDigest": "sha256:95110a76aa77e6f34a91493e4641a0c28070980bc23461c00e682846dd08c863",
+  "digest": "sha256:14d23f2cc2a0c07dff7aa30c728ae590d06f214ac64b219ac1ab7dcb66805fbb",
+  "entryDigest": "sha256:53298092b6fc69326351f2b966c8d5fffa018a483618c774f5ab2725659ed04d",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -235,7 +235,7 @@
         "declarationPath": "packages/components-svelte/dist/ItemChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "ItemChartProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -314,7 +314,7 @@
         "declarationPath": "packages/components-vue/dist/ItemChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "ItemChartProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "complete",
       "unresolved": [],
