@@ -1,8 +1,8 @@
 {
   "componentId": "diagram-card",
   "contractSource": "derived",
-  "digest": "sha256:ec4a742fc857259a55ddd18b26c7f61a885a31061cbd463bbfe484e5346e2b49",
-  "entryDigest": "sha256:8f24648695043d26ec1465529a7cb2f7131bea5f58b55cb6923ed80318d21a2e",
+  "digest": "sha256:c5975545cb8c48d2a0506aad4dd02ddf71dc1a011a54d162ed74efc39f07feb7",
+  "entryDigest": "sha256:25d06023908bcaf8cb483ffecc4579c0a484ec33553232290dbd650c61235a10",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -197,6 +197,13 @@
               "left"
             ]
           },
+          "anatomy": {
+            "description": "Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
+            ]
+          },
           "autoSize": {
             "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
             "type": "boolean"
@@ -240,6 +247,13 @@
             "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
             "type": "boolean"
           },
+          "surface": {
+            "description": "Zone depth surface, set only for zone-collapsed cards (a folded zone\nkeeps its depth background). Leaf cards never set it: their semantic\ntints are unchanged. Hosts paint the matching zone surface token.",
+            "enum": [
+              "surface1",
+              "surface2"
+            ]
+          },
           "title": {
             "type": "string"
           },
@@ -264,7 +278,7 @@
         "declarationPath": "packages/components-svelte/dist/DiagramCard.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "DiagramCardProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "partial",
       "unresolved": [],
@@ -450,6 +464,13 @@
               "left"
             ]
           },
+          "anatomy": {
+            "description": "Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `\"v1\"`;\n`\"v2\"` selects the compact `352 × 154` box.",
+            "enum": [
+              "v1",
+              "v2"
+            ]
+          },
           "autoSize": {
             "description": "Legacy sizing hints; component cards keep the fixed token geometry (A14).",
             "type": "boolean"
@@ -493,6 +514,13 @@
             "description": "Neutral status prop: `true` draws the border dashed (owner criterion:\na proposed state is always dashed), independently of `tone` — the tint\nstays host-supplied legend meaning.",
             "type": "boolean"
           },
+          "surface": {
+            "description": "Zone depth surface, set only for zone-collapsed cards (a folded zone\nkeeps its depth background). Leaf cards never set it: their semantic\ntints are unchanged. Hosts paint the matching zone surface token.",
+            "enum": [
+              "surface1",
+              "surface2"
+            ]
+          },
           "title": {
             "type": "string"
           },
@@ -517,7 +545,7 @@
         "declarationPath": "packages/components-vue/dist/DiagramCard.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "DiagramCardProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "partial",
       "unresolved": [],
