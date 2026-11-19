@@ -22,13 +22,93 @@ describe("Portal (Preact)", () => {
     expect(inline?.querySelector('[data-testid="portal-content"]')).toBeTruthy();
   });
 
-  it("accepts a signal for `className` and follows it once @preact/signals is loaded", async () => {
+  it("accepts a signal for `className` and follows it inline and when teleported", async () => {
     const extra = signal("first");
     const { container } = render(<Portal disabled className={extra} />);
     const inline = container.querySelector('[data-st-portal="inline"]');
     expect(inline?.className).toBe("st-portal first");
     extra.value = "second";
     await waitFor(() => expect(container.querySelector('[data-st-portal="inline"]')?.className).toBe("st-portal second"));
+
+    const teleportedClass = signal("tp-a");
+    render(
+      <Portal className={teleportedClass}>
+        <span>tp</span>
+      </Portal>,
+    );
+    await waitFor(() => expect(document.body.querySelector('[data-st-portal="teleported"]')?.className).toBe("st-portal tp-a"));
+    teleportedClass.value = "tp-b";
+    await waitFor(() => expect(document.body.querySelector('[data-st-portal="teleported"]')?.className).toBe("st-portal tp-b"));
+  });
+
+  it("accepts a signal for `disabled` and switches inline/teleported in both directions post-mount", async () => {
+    const disabled = signal(false);
+    const { container } = render(
+      <Portal disabled={disabled}>
+        <div data-testid="portal-signal-disabled">content</div>
+      </Portal>,
+    );
+    await waitFor(() => expect(document.body.querySelector('[data-st-portal="teleported"]')).toBeTruthy());
+    expect(container.querySelector('[data-st-portal="inline"]')).toBeNull();
+    disabled.value = true;
+    await waitFor(() => expect(container.querySelector('[data-st-portal="inline"]')).toBeTruthy());
+    expect(document.body.querySelector('[data-st-portal="teleported"]')).toBeNull();
+    disabled.value = false;
+    await waitFor(() => expect(document.body.querySelector('[data-st-portal="teleported"]')).toBeTruthy());
+    expect(container.querySelector('[data-st-portal="inline"]')).toBeNull();
+
+    cleanup();
+    document.body.innerHTML = "";
+
+    const startsDisabled = signal(true);
+    const second = render(
+      <Portal disabled={startsDisabled}>
+        <div data-testid="portal-starts-disabled">start</div>
+      </Portal>,
+    );
+    expect(second.container.querySelector('[data-st-portal="inline"]')).toBeTruthy();
+    expect(document.body.querySelector('[data-st-portal="teleported"]')).toBeNull();
+    startsDisabled.value = false;
+    await waitFor(() => expect(document.body.querySelector('[data-st-portal="teleported"]')).toBeTruthy());
+    expect(second.container.querySelector('[data-st-portal="inline"]')).toBeNull();
+  });
+
+  it("accepts a signal for `target` (element and CSS selector) and moves the portal post-mount", async () => {
+    const hostA = document.createElement("div");
+    hostA.id = "portal-signal-a";
+    const hostB = document.createElement("div");
+    hostB.id = "portal-signal-b";
+    document.body.appendChild(hostA);
+    document.body.appendChild(hostB);
+    const target = signal<string | HTMLElement>(hostA);
+    render(
+      <Portal target={target}>
+        <div data-testid="portal-signal-target">content</div>
+      </Portal>,
+    );
+    await waitFor(() => expect(hostA.querySelector('[data-testid="portal-signal-target"]')).toBeTruthy());
+    expect(hostB.querySelector('[data-testid="portal-signal-target"]')).toBeNull();
+    target.value = hostB;
+    await waitFor(() => expect(hostB.querySelector('[data-testid="portal-signal-target"]')).toBeTruthy());
+    expect(hostA.querySelector('[data-testid="portal-signal-target"]')).toBeNull();
+    target.value = "#portal-signal-a";
+    await waitFor(() => expect(hostA.querySelector('[data-testid="portal-signal-target"]')).toBeTruthy());
+    expect(hostB.querySelector('[data-testid="portal-signal-target"]')).toBeNull();
+  });
+
+  it("resolvePortalTarget handles SSR (no document), nullish default, selector fallback and elements", () => {
+    const host = document.createElement("section");
+    document.body.appendChild(host);
+    expect(resolvePortalTarget(undefined)).toBe(document.body);
+    expect(resolvePortalTarget("#does-not-exist")).toBe(document.body);
+    expect(resolvePortalTarget(host)).toBe(host);
+    vi.stubGlobal("document", undefined);
+    try {
+      expect(resolvePortalTarget(undefined)).toBeNull();
+      expect(resolvePortalTarget("body")).toBeNull();
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 
   it("teleports content under document.body after mount", () => {
