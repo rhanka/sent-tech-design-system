@@ -22,7 +22,7 @@ function ChevronDownIcon({ size = 16, className }: { size?: number; className?: 
 export type IdentityUser = { displayName: string; email?: string; id?: string };
 export type IdentityMenuProps = {
   user?: IdentityUser | null;
-  isAuthenticated?: boolean;
+  isAuthenticated?: MaybeSignal<boolean>;
   /**
    * État ouvert du dropdown (optionnellement contrôlé). Si fourni, le parent
    * contrôle ; sinon le composant gère un état interne. Aligné sur les 3 fw.
@@ -46,7 +46,8 @@ export function identityInitial(user: IdentityUser | null | undefined): string {
   const source = user?.displayName || user?.email || "U";
   return source.charAt(0).toUpperCase();
 }
-export function IdentityMenu({ user = null, isAuthenticated = false, open: openInput, onOpenChange, onLogin, onLogout, devicesHref = "#", settingsHref = "#", loginLabel = "Se connecter", devicesLabel = "Appareils", settingsLabel = "Paramètres", logoutLabel = "Se déconnecter", variant = "dropdown", className }: IdentityMenuProps) {
+export function IdentityMenu({ user = null, isAuthenticated: isAuthenticatedInput = false, open: openInput, onOpenChange, onLogin, onLogout, devicesHref = "#", settingsHref = "#", loginLabel = "Se connecter", devicesLabel = "Appareils", settingsLabel = "Paramètres", logoutLabel = "Se déconnecter", variant = "dropdown", className }: IdentityMenuProps) {
+  const isAuthenticated = useValue(isAuthenticatedInput);
   // Pattern contrôlé/non-contrôlé, IDENTIQUE aux 3 fw : si `open` est fourni en
   // prop, le parent contrôle ; sinon un état interne prend le relais. onOpenChange
   // est toujours notifié.

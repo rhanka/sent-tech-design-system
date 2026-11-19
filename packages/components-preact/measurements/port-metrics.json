@@ -90,12 +90,12 @@
         "lot": "P4c",
         "reactSource": "catalog.tsx (declarations re-exported by ChatComposer.tsx)",
         "reactLines": 34,
-        "preactLines": 58,
+        "preactLines": 60,
         "total": 279,
         "touched": 18,
         "emissionRewrites": 3,
-        "tests": 4,
-        "testLines": 76
+        "tests": 5,
+        "testLines": 87
       },
       {
         "module": "Portal",
@@ -126,12 +126,12 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 703,
+      "preactLines": 705,
       "total": 3521,
       "touched": 173,
       "emissionRewrites": 16,
-      "tests": 44,
-      "testLines": 852
+      "tests": 45,
+      "testLines": 863
     },
     "shared": {
       "src/internal.ts": 171,
