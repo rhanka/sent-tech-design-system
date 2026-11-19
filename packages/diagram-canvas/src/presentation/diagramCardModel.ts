@@ -1267,6 +1267,12 @@ export interface DiagramZoneProps {
    */
   readonly depth?: number;
   /**
+   * Opt-in informational diagnostic (owner addendum 1): when true, a leaf
+   * card on a same-colour zone surface reports `zone-surface-same`. Off by
+   * default — a fitting child renders with no diagnostics.
+   */
+  readonly reportSurfaceSame?: boolean;
+  /**
    * Selectable start parity for the depth rule: `1` flips which parity the
    * top level takes. Scene-global; absent means `0`.
    */
@@ -1321,8 +1327,9 @@ export interface ZoneDiagnostic {
    * `zone-overflow` / `zone-icon-unknown` are the zone's own; a descendant
    * card or nested zone keeps its own `card-overflow` / `card-icon-unknown`
    * code with its own `entityId` when `renderZoneSvg` aggregates them.
-   * `zone-surface-same` is informational (owner addendum 1): a leaf card
-   * on a same-colour zone, reported only for explicitly composed children.
+   * `zone-surface-same` is informational and opt-in (owner addendum 1):
+   * a leaf card on a same-colour zone, reported only for explicitly
+   * composed children when the zone sets `reportSurfaceSame`.
    */
   readonly code: "zone-overflow" | "zone-icon-unknown" | "card-icon-missing" | "zone-grown" | "card-overflow" | "card-icon-unknown" | "card-grown" | "zone-surface-same";
   readonly slot: string;
@@ -1427,10 +1434,11 @@ export function layoutZone(
   const hasDepthPins = props.depth !== undefined || props.depthParityStart !== undefined;
   const depth = normalizeZoneDepth(props.depth);
   const surface = zoneDepthSurface(props.depth, props.depthParityStart);
-  // Informational: a leaf card (default card surface) on a same-colour
-  // zone surface. Only explicit children compositions report it — hosts
-  // lay children out flat, so host rendering never changes.
-  if (surface === "surface1" && children.some((child) => child.kind === "card" && child.zone === undefined)) {
+  // Informational and opt-in: a leaf card (default card surface) on a
+  // same-colour zone surface. Only explicit children compositions report
+  // it — hosts lay children out flat, so host rendering never changes.
+  if (props.reportSurfaceSame === true && surface === "surface1"
+    && children.some((child) => child.kind === "card" && child.zone === undefined)) {
     diagnostics.push({ code: "zone-surface-same", slot: "surface", entityId: props.entityId, neededPx: 1, allocatedPx: 0 });
   }
 
