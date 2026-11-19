@@ -103,12 +103,12 @@
         "lot": "P4c",
         "reactSource": "Portal.tsx",
         "reactLines": 88,
-        "preactLines": 77,
+        "preactLines": 80,
         "total": 304,
-        "touched": 22,
+        "touched": 24,
         "emissionRewrites": 1,
-        "tests": 6,
-        "testLines": 109
+        "tests": 9,
+        "testLines": 189
       },
       {
         "module": "ThemeProvider",
@@ -116,22 +116,22 @@
         "lot": "P4c",
         "reactSource": "ThemeProvider.tsx",
         "reactLines": 35,
-        "preactLines": 37,
+        "preactLines": 41,
         "total": 229,
-        "touched": 12,
+        "touched": 20,
         "emissionRewrites": 1,
-        "tests": 3,
-        "testLines": 53
+        "tests": 6,
+        "testLines": 104
       }
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 703,
+      "preactLines": 710,
       "total": 3521,
-      "touched": 173,
+      "touched": 183,
       "emissionRewrites": 16,
-      "tests": 45,
-      "testLines": 863
+      "tests": 51,
+      "testLines": 994
     },
     "shared": {
       "src/internal.ts": 171,
