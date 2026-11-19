@@ -17,6 +17,11 @@ import * as handWrittenSelectableList from "../../components-react/src/Selectabl
 import * as handWrittenTimeRangePicker from "../../components-react/src/TimeRangePicker.js";
 import * as handWrittenCollapsible from "../../components-react/src/Collapsible.js";
 import * as handWrittenContainer from "../../components-react/src/Container.js";
+import * as handWrittenContextPanel from "../../components-react/src/ContextPanel.js";
+import * as handWrittenAppHeader from "../../components-react/src/AppHeader.js";
+import * as handWrittenAppChrome from "../../components-react/src/AppChrome.js";
+import * as handWrittenAppShell from "../../components-react/src/AppShell.js";
+import * as handWrittenIdentityMenu from "../../components-react/src/IdentityMenu.js";
 import * as handWrittenDivider from "../../components-react/src/Divider.js";
 import * as handWrittenFieldCard from "../../components-react/src/FieldCard.js";
 import * as handWrittenFlex from "../../components-react/src/Flex.js";
@@ -53,6 +58,9 @@ import * as handWrittenBadge from "../../components-react/src/Badge.js";
 import * as handWrittenColorSwatch from "../../components-react/src/ColorSwatch.js";
 import * as handWrittenNavActionStack from "../../components-react/src/NavActionStack.js";
 import * as handWrittenNavItem from "../../components-react/src/NavItem.js";
+import * as handWrittenNavDrawer from "../../components-react/src/NavDrawer.js";
+import * as handWrittenNavRail from "../../components-react/src/NavRail.js";
+import * as handWrittenNavShell from "../../components-react/src/NavShell.js";
 import * as handWrittenStepper from "../../components-react/src/Stepper.js";
 import * as handWrittenTableOfContents from "../../components-react/src/TableOfContents.js";
 import * as handWrittenColumnPyramidChart from "../../components-react/src/ColumnPyramidChart.js";
@@ -122,6 +130,15 @@ import * as handWrittenWaffleChart from "../../components-react/src/WaffleChart.
 import * as handWrittenWaterfallChart from "../../components-react/src/WaterfallChart.js";
 import * as handWrittenWindBarbChart from "../../components-react/src/WindBarbChart.js";
 import * as handWrittenWordCloudChart from "../../components-react/src/WordCloudChart.js";
+import * as handWrittenUtilityPanel from "../../components-react/src/UtilityPanel.js";
+import * as handWrittenAvatar from "../../components-react/src/Avatar.js";
+import * as handWrittenAvatarGroup from "../../components-react/src/AvatarGroup.js";
+import * as handWrittenDisplaySettings from "../../components-react/src/DisplaySettings.js";
+import * as handWrittenEmbed from "../../components-react/src/Embed.js";
+import * as handWrittenMediaContent from "../../components-react/src/MediaContent.js";
+import * as handWrittenOverline from "../../components-react/src/Overline.js";
+import * as handWrittenTranscription from "../../components-react/src/Transcription.js";
+import * as handWrittenTypography from "../../components-react/src/Typography.js";
 import * as handWrittenPriorityLabels from "../../components-react/src/priorityLabels.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedPriorityLabels from "../.react-emit/src/priorityLabels.js";
@@ -133,6 +150,23 @@ const switched = [
   "Tabs",
   "SelectableRow",
   "ChatComposer",
+  "Avatar",
+  "AvatarGroup",
+  "ChatMessage",
+  "ChatThread",
+  "DisplaySettings",
+  "Embed",
+  "Icon",
+  "ICONS",
+  "ICON_NAMES",
+  "MediaContent",
+  "MessageActions",
+  "MessageStatusBadge",
+  "Overline",
+  "StreamingMessage",
+  "Transcription",
+  "Typography",
+  "identityInitial",
   "Portal",
   "ThemeProvider",
   "Accordion",
@@ -176,7 +210,11 @@ const switched = [
   "Checkbox",
   "CheckboxGroup",
   "Combobox",
+  "AppChrome",
+  "AppHeader",
+  "AppShell",
   "ContentSwitcher",
+  "ContextPanel",
   "DatePicker",
   "Dropdown",
   "FileUploader",
@@ -213,7 +251,11 @@ const switched = [
   "Header",
   "LanguageToggle",
   "NavActionStack",
+  "IdentityMenu",
+  "NavDrawer",
   "NavItem",
+  "NavRail",
+  "NavShell",
   "Pagination",
   "PaginationNav",
   "SideNav",
@@ -310,6 +352,7 @@ const switched = [
   "TreegraphChart",
   "TreemapChart",
   "UnorderedList",
+  "UtilityPanel",
   "VariablePieChart",
   "VectorFieldChart",
   "VennChart",
@@ -327,6 +370,23 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Tabs: handWrittenCatalog.Tabs,
   SelectableRow: handWrittenSelectableRow.SelectableRow,
   ChatComposer: handWrittenCatalog.ChatComposer,
+  Avatar: handWrittenAvatar.Avatar,
+  AvatarGroup: handWrittenAvatarGroup.AvatarGroup,
+  ChatMessage: handWrittenCatalog.ChatMessage,
+  ChatThread: handWrittenCatalog.ChatThread,
+  DisplaySettings: handWrittenDisplaySettings.DisplaySettings,
+  Embed: handWrittenEmbed.Embed,
+  Icon: handWrittenCatalog.Icon,
+  ICONS: handWrittenCatalog.ICONS,
+  ICON_NAMES: handWrittenCatalog.ICON_NAMES,
+  MediaContent: handWrittenMediaContent.MediaContent,
+  MessageActions: handWrittenCatalog.MessageActions,
+  MessageStatusBadge: handWrittenCatalog.MessageStatusBadge,
+  Overline: handWrittenOverline.Overline,
+  StreamingMessage: handWrittenCatalog.StreamingMessage,
+  Transcription: handWrittenTranscription.Transcription,
+  Typography: handWrittenTypography.Typography,
+  identityInitial: handWrittenIdentityMenu.identityInitial,
   Portal: handWrittenPortal.Portal,
   ThemeProvider: handWrittenTheme.ThemeProvider,
   Accordion: handWrittenCatalog.Accordion,
@@ -337,7 +397,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Card: handWrittenCard.Card,
   Col: handWrittenCol.Col,
   Collapsible: handWrittenCollapsible.Collapsible,
+  AppChrome: handWrittenAppChrome.AppChrome,
+  AppHeader: handWrittenAppHeader.AppHeader,
+  AppShell: handWrittenAppShell.AppShell,
   Container: handWrittenContainer.Container,
+  ContextPanel: handWrittenContextPanel.ContextPanel,
+  IdentityMenu: handWrittenIdentityMenu.IdentityMenu,
   CopyButton: handWrittenCatalog.CopyButton,
   Divider: handWrittenDivider.Divider,
   EmptyState: handWrittenCatalog.EmptyState,
@@ -407,7 +472,10 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   Header: handWrittenCatalog.Header,
   LanguageToggle: handWrittenCatalog.LanguageToggle,
   NavActionStack: handWrittenNavActionStack.NavActionStack,
+  NavDrawer: handWrittenNavDrawer.NavDrawer,
   NavItem: handWrittenNavItem.NavItem,
+  NavRail: handWrittenNavRail.NavRail,
+  NavShell: handWrittenNavShell.NavShell,
   Pagination: handWrittenCatalog.Pagination,
   PaginationNav: handWrittenCatalog.PaginationNav,
   SideNav: handWrittenCatalog.SideNav,
@@ -504,6 +572,7 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   TreegraphChart: handWrittenTreegraphChart.TreegraphChart,
   TreemapChart: handWrittenTreemapChart.TreemapChart,
   UnorderedList: handWrittenCatalog.UnorderedList,
+  UtilityPanel: handWrittenUtilityPanel.UtilityPanel,
   VariablePieChart: handWrittenVariablePieChart.VariablePieChart,
   VectorFieldChart: handWrittenVectorFieldChart.VectorFieldChart,
   VennChart: handWrittenVennChart.VennChart,

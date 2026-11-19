@@ -12,6 +12,7 @@ import { options } from "preact";
 import type {
   ComponentChildren,
   FunctionComponent,
+  JSX,
   Ref,
   TargetedEvent,
   TargetedFocusEvent,
@@ -29,6 +30,9 @@ export type { ComponentChildren };
 
 /** What a component returns. `VNode` in Preact, `ReactElement` in React. */
 export type ComponentElement = VNode;
+
+/** Element type accepted by polymorphic `as`. `JSX.ElementType` in Preact, `React.ElementType` in React. */
+export type ElementType = JSX.ElementType;
 
 /** Event types handed to DOM handlers (React twin: the synthetic event types). */
 export type {
