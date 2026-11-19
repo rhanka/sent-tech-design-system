@@ -58,12 +58,17 @@ const reactTests = [
   "StatusDot", // emitted P1 feedback module
   "Timeline", // emitted P1 feedback module
   "PanelStack", // emitted PanelStack + PanelSection pair (P4c dependency of P1)
+  "Icon", // emitted P4c group-1 icon set (names, strokeWidth token, glyph)
+  "Overline", // emitted P4c group-1 overline (`as`, className, rest props)
   "Specialized", // emitted Rating + Autosave (sole components-react suite for both)
   "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
   "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
   "RangeSlider", // emitted P2 form module
   "MenuCascade", // emitted Menu cascade, hover-intent and safe-triangle behaviour
   "Shell", // emitted Menu exercised through the Shell suite
+  "AppChrome", // emitted P4c group-2 chrome (role filter, theme/color/locale, drawer)
+  "AppShell.panelCollapse", // emitted P4c group-2 shell (accordion disclosures)
+  "AppShell.panelResize", // emitted P4c group-2 shell (handles, keyboard, clamps)
   "ColorSwatch", // emitted P3 data module (chip sizing / aria-label derivation)
   "TreeViewSelect", // emitted P3 TreeView selection payloads
   "TreeViewAccessibleName", // emitted P3 TreeView accessible-name precedence
