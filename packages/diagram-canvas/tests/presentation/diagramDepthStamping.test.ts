@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { createView, viewRef } from "@sentropic/diagram-core";
-import { resolveScenePresentation } from "../../src/presentation/diagramSceneModel.js";
+import {
+  resolveScenePresentation,
+  type SceneDocument,
+  type ScenePresentation,
+  type SceneView,
+} from "../../src/presentation/diagramSceneModel.js";
 import { ownerInput } from "../layout/dc2a/owner-fixtures.js";
 
 /**
@@ -20,15 +25,15 @@ describe("diagram depth stamping (DE-1 addendum 1)", () => {
       "group:nested": { id: "group:nested", occurrence: "occurrence:top" },
       "group:leaf": { id: "group:leaf", occurrence: "occurrence:nested" },
     },
-  } as never;
-  const document = { entities: {} } as never;
+  } as unknown as SceneView;
+  const document = { entities: {} } as unknown as SceneDocument;
   const presentation = {
     entities: {
       "occurrence:top": { form: "container", text: { title: "Top" } },
       "occurrence:nested": { form: "container", text: { title: "Nested" } },
       "occurrence:leaf": { form: "card", text: { title: "Leaf" } },
     },
-  } as never;
+  } as unknown as ScenePresentation;
 
   it("should stamp group depth onto zone entries and leave cards alone", () => {
     const resolved = resolveScenePresentation(document, presentation, {}, true, view);
