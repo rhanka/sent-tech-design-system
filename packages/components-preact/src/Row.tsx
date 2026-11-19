@@ -4,6 +4,7 @@ import { alignValue, justifyValue, spacingToken } from "./Flex.js";
 import type { FlexAlign, FlexJustify } from "./Flex.js";
 import { mergeStyle } from "./internal.js";
 import { forwardRef } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 export type RowProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
@@ -11,7 +12,7 @@ export type RowProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   gutter?: number;
   align?: FlexAlign;
   justify?: FlexJustify;
-  wrap?: boolean;
+  wrap?: MaybeSignal<boolean>;
   as?: string;
   className?: MaybeSignal<string>;
 };
@@ -19,10 +20,11 @@ export type RowProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
 export const Row = forwardRef<HTMLElement, RowProps>(
   ({ gutter = 4, align, justify, wrap = true, as = "div", className, style, children, ...rest }, ref) => {
     const Tag: any = as;
+    const isWrap = useValue(wrap);
     const gap = spacingToken(gutter) ?? "0";
     const mergedStyle = mergeStyle(
       {
-        flexWrap: wrap ? "wrap" : "nowrap",
+        flexWrap: isWrap ? "wrap" : "nowrap",
         alignItems: alignValue(align),
         justifyContent: justifyValue(justify),
         gap,

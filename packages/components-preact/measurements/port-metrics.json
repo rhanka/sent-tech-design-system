@@ -42,8 +42,8 @@
         "total": 289,
         "touched": 20,
         "emissionRewrites": 2,
-        "tests": 6,
-        "testLines": 92
+        "tests": 7,
+        "testLines": 136
       },
       {
         "module": "Modal",
@@ -130,8 +130,8 @@
       "total": 3521,
       "touched": 183,
       "emissionRewrites": 16,
-      "tests": 52,
-      "testLines": 1026
+      "tests": 53,
+      "testLines": 1070
     },
     "shared": {
       "src/internal.ts": 171,
