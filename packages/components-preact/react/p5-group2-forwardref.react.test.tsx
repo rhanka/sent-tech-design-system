@@ -14,6 +14,10 @@ import * as HandWrittenCollapsible from "../../components-react/src/Collapsible.
 import * as HandWrittenContainer from "../../components-react/src/Container.js";
 import * as HandWrittenDivider from "../../components-react/src/Divider.js";
 import * as HandWrittenFlex from "../../components-react/src/Flex.js";
+import * as HandWrittenGrid from "../../components-react/src/Grid.js";
+import * as HandWrittenHidden from "../../components-react/src/Hidden.js";
+import * as HandWrittenInline from "../../components-react/src/Inline.js";
+import * as HandWrittenNotification from "../../components-react/src/Notification.js";
 
 afterEach(cleanup);
 
@@ -296,5 +300,144 @@ describe("P5 group 2 forwardRef React-leg parity — Batch 2 (Collapsible, Conta
     r2.unmount();
     expect(emittedObj.current).toBeNull();
     expect(emittedAs.last).toBeNull();
+  });
+});
+
+describe("P5 group 2 forwardRef React-leg parity — Batch 3 (Grid, Hidden, Inline, Notification)", () => {
+  it("emitted Grid ref matches hand-written Grid DOM node (default div and polymorphic as)", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Grid ref={emittedObj} columns={3}>
+          <span>A</span>
+        </Emitted.Grid>
+        <Emitted.Grid ref={emittedAs.ref} as="ul" minItemWidth="10rem">
+          <li>B</li>
+        </Emitted.Grid>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenGrid.Grid ref={handObj} columns={3}>
+          <span>A</span>
+        </HandWrittenGrid.Grid>
+        <HandWrittenGrid.Grid ref={handAs} as="ul" minItemWidth="10rem">
+          <li>B</li>
+        </HandWrittenGrid.Grid>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("UL");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Hidden ref matches hand-written Hidden DOM node (default div and polymorphic as)", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Hidden ref={emittedObj} below="md">
+          A
+        </Emitted.Hidden>
+        <Emitted.Hidden ref={emittedAs.ref} as="span" above="lg">
+          B
+        </Emitted.Hidden>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenHidden.Hidden ref={handObj} below="md">
+          A
+        </HandWrittenHidden.Hidden>
+        <HandWrittenHidden.Hidden ref={handAs} as="span" above="lg">
+          B
+        </HandWrittenHidden.Hidden>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("SPAN");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Inline ref matches hand-written Inline DOM node through nested Flex", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Inline ref={emittedObj} gap={2}>
+          <span>A</span>
+        </Emitted.Inline>
+        <Emitted.Inline ref={emittedAs.ref} as="nav" wrap={false}>
+          <span>B</span>
+        </Emitted.Inline>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenInline.Inline ref={handObj} gap={2}>
+          <span>A</span>
+        </HandWrittenInline.Inline>
+        <HandWrittenInline.Inline ref={handAs} as="nav" wrap={false}>
+          <span>B</span>
+        </HandWrittenInline.Inline>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("NAV");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Notification ref matches hand-written Notification DOM node", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedCb = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Notification ref={emittedObj} tone="error" title="Err" dismissible onDismiss={() => {}} />
+        <Emitted.Notification ref={emittedCb.ref} tone="info" title="Info" />
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenNotification.Notification ref={handObj} tone="error" title="Err" dismissible onDismiss={() => {}} />,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("SECTION");
+    expect(emittedObj.current?.getAttribute("role")).toBe("alert");
+    expect(emittedCb.last?.getAttribute("role")).toBe("status");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
   });
 });
