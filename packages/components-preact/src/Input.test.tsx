@@ -89,4 +89,48 @@ describe("Input (Preact)", () => {
     await waitFor(() => expect(input.value).toBe("reset"));
     expect(renders).toBe(1);
   });
+
+  it("follows className, invalid, disabled and id signals post-mount and detaches refs on swap and unmount", async () => {
+    const cls = signal("in-before");
+    const invalid = signal(false);
+    const disabled = signal(false);
+    const id = signal("field-a");
+    const refA = createRef<HTMLInputElement>();
+    const refB = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Input ref={refA} label="Code" id={id} className={cls} invalid={invalid} disabled={disabled} />,
+    );
+    const field = container.querySelector(".st-field") as HTMLElement;
+    const label = container.querySelector("label") as HTMLLabelElement;
+    const input = screen.getByLabelText("Code") as HTMLInputElement;
+    expect(refA.current).toBe(input);
+    expect(field.className).toBe("st-field in-before");
+    expect(label.getAttribute("for")).toBe("field-a");
+    expect(input.id).toBe("field-a");
+    expect(input.getAttribute("aria-invalid")).toBeNull();
+    expect(input.disabled).toBe(false);
+
+    cls.value = "in-after";
+    invalid.value = true;
+    disabled.value = true;
+    id.value = "field-b";
+    await waitFor(() => expect(field.className).toBe("st-field in-after"));
+    expect(label.getAttribute("for")).toBe("field-b");
+    expect(input.id).toBe("field-b");
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    await waitFor(() => expect(input.disabled).toBe(true));
+
+    invalid.value = false;
+    disabled.value = false;
+    await waitFor(() => expect(input.getAttribute("aria-invalid")).toBeNull());
+    await waitFor(() => expect(input.disabled).toBe(false));
+
+    rerender(<Input ref={refB} label="Code" id={id} className={cls} invalid={invalid} disabled={disabled} />);
+    expect(refA.current).toBeNull();
+    expect(refB).toHaveBeenLastCalledWith(input);
+
+    unmount();
+    expect(refB).toHaveBeenLastCalledWith(null);
+  });
 });

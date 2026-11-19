@@ -17,7 +17,10 @@ import * as HandWrittenFlex from "../../components-react/src/Flex.js";
 import * as HandWrittenGrid from "../../components-react/src/Grid.js";
 import * as HandWrittenHidden from "../../components-react/src/Hidden.js";
 import * as HandWrittenInline from "../../components-react/src/Inline.js";
+import * as HandWrittenInput from "../../components-react/src/Input.js";
 import * as HandWrittenNotification from "../../components-react/src/Notification.js";
+import * as HandWrittenRow from "../../components-react/src/Row.js";
+import * as HandWrittenStack from "../../components-react/src/Stack.js";
 
 afterEach(cleanup);
 
@@ -434,6 +437,106 @@ describe("P5 group 2 forwardRef React-leg parity — Batch 3 (Grid, Hidden, Inli
     expect(emittedObj.current?.tagName).toBe("SECTION");
     expect(emittedObj.current?.getAttribute("role")).toBe("alert");
     expect(emittedCb.last?.getAttribute("role")).toBe("status");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+});
+
+describe("P5 group 2 forwardRef React-leg parity — Batch 4 (Row, Stack, Input)", () => {
+  it("emitted Row ref matches hand-written Row DOM node (default div and polymorphic as)", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Row ref={emittedObj} gutter={4}>
+          <span>A</span>
+        </Emitted.Row>
+        <Emitted.Row ref={emittedAs.ref} as="section" wrap={false}>
+          <span>B</span>
+        </Emitted.Row>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenRow.Row ref={handObj} gutter={4}>
+          <span>A</span>
+        </HandWrittenRow.Row>
+        <HandWrittenRow.Row ref={handAs} as="section" wrap={false}>
+          <span>B</span>
+        </HandWrittenRow.Row>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("SECTION");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Stack ref matches hand-written Stack DOM node through nested Flex", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Stack ref={emittedObj} gap={3}>
+          <span>A</span>
+        </Emitted.Stack>
+        <Emitted.Stack ref={emittedAs.ref} as="aside">
+          <span>B</span>
+        </Emitted.Stack>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenStack.Stack ref={handObj} gap={3}>
+          <span>A</span>
+        </HandWrittenStack.Stack>
+        <HandWrittenStack.Stack ref={handAs} as="aside">
+          <span>B</span>
+        </HandWrittenStack.Stack>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("ASIDE");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Input ref reaches inner <input> matching hand-written Input DOM node", () => {
+    const emittedObj = createRef<HTMLInputElement>();
+    const emittedCb = makeCallbackRef<HTMLInputElement>();
+    const handObj = createRef<HTMLInputElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Input ref={emittedObj} label="Email" size="lg" invalid />
+        <Emitted.Input ref={emittedCb.ref} label="Other" />
+      </>,
+    );
+    const r2 = render(<HandWrittenInput.Input ref={handObj} label="Email" size="lg" invalid />);
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("INPUT");
+    expect(emittedObj.current?.getAttribute("aria-invalid")).toBe("true");
+    expect(emittedCb.last).toBeInstanceOf(HTMLInputElement);
 
     r1.unmount();
     r2.unmount();
