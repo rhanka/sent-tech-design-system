@@ -8,7 +8,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "React sources ported by spike S1 and lot P1 and measured in docs/preact-s1-spike.md. Same commit as scripts/port-metrics.mjs BASE_REF; verified no P1 source drift to origin/main."
   },
-  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row. Lot P3 group 1 ports the 5 menu-cascade modules (MenuTriggerButton, OverflowMenu, Popover, Toggletip, Tooltip) with the MenuPopover consumer-style merge. Lot P3 group 2 ports the 12 navigation modules (BackToTop, Breadcrumb, Footer, Header, LanguageToggle, NavActionStack, NavItem, Pagination, PaginationNav, SideNav, Stepper, TableOfContents) plus 2 data dependencies of NavItem (Badge, ColorSwatch); the data lot is jointly P4a+P4b in the programme (spike section 8.3) while the manifest enum carries P4a and P4b separately, so the two dependency rows are labeled P4a. Lot P3 group 3 ports the 5 remaining P3 modules (Drawer, LanguageSelector, SkipLink, SlideIndicator, TreeView): Drawer is overlay, the other four are navigation. Lot P4a group 1 ports the first 16 data modules in manifest order (AnomalySwimLaneChart to ColorScaleBar; Badge was already ported as a P3 dependency) plus ForceGraph as a P4a dependency of ArcDiagramChart (its GraphLegend): 17 manifest rows, 16 new files and ForceGraph, whose interactive component lands in this group instead of group 3. Lot P4a group 2 ports the next 16 data modules in manifest order (ColumnPyramidChart to EventFeedPanel) with the cellDecoration helper for DataTable: 16 new files plus cellDecoration. Lot P4a group 3 ports the last 13 data modules in manifest order (FilterBar to ItemChart): 13 new files, closing P4a data batch 1 (groups 1-3). Lot P4b group 1 ports the first 16 data modules of batch 2 in manifest order (KpiCard to RibbonChart; OrderedList lives in catalog.tsx on the React side like CodeSnippet) plus Sparkline as a P4b dependency of KpiCard (its trend sparkline) with the priorityLabels helper for PriorityMatrix: 17 manifest rows, 17 new files. Lot P4b group 2 ports the next 15 data modules in manifest order (RoseChart to Tag; SelectionChip, StructuredList, Table and Tag live in catalog.tsx on the React side): 15 manifest rows, 15 new files. Lot P4b group 3 ports the last 14 data modules in manifest order (TileMapChart to WordCloudChart; UnorderedList lives in catalog.tsx on the React side): 14 new files, closing P4b data batch 2 (groups 1-3). priorityLabels.ts is a runtime-neutral helper like cellDecoration.tsx and chartScale.tsx: emitted unchanged, owned by no manifest row.",
+  "ownershipNote": "Lot P2 ports the 27 form modules (25 new here; Input and SelectableRow came from the spike and are raised to the P1 signal/style conventions) plus 3 P3 dependencies of TimeRangePicker (Menu, MenuPopover, ContentSwitcher) with their helpers (menu-cascade.ts, timeRange.ts). P1 (layout, action, feedback), Modal/Tabs (P3) and the P4c shells came before. Rows flagged hardSet belong to the P5 hard set as well and are removed from their category batch by the L1.5 overlap rule (PLAN section 2.9); forwardRef modules stay hardSet false because runtime.ts provides forwardRef on Preact core, retiring forwardRef from the P5 overlap set, so L1.5 must not strip them. menu-cascade.ts and timeRange.ts are runtime-neutral helpers like classNames.ts and internal.ts: emitted unchanged, owned by no manifest row. Lot P3 group 1 ports the 5 menu-cascade modules (MenuTriggerButton, OverflowMenu, Popover, Toggletip, Tooltip) with the MenuPopover consumer-style merge. Lot P3 group 2 ports the 12 navigation modules (BackToTop, Breadcrumb, Footer, Header, LanguageToggle, NavActionStack, NavItem, Pagination, PaginationNav, SideNav, Stepper, TableOfContents) plus 2 data dependencies of NavItem (Badge, ColorSwatch); the data lot is jointly P4a+P4b in the programme (spike section 8.3) while the manifest enum carries P4a and P4b separately, so the two dependency rows are labeled P4a. Lot P3 group 3 ports the 5 remaining P3 modules (Drawer, LanguageSelector, SkipLink, SlideIndicator, TreeView): Drawer is overlay, the other four are navigation. Lot P4a group 1 ports the first 16 data modules in manifest order (AnomalySwimLaneChart to ColorScaleBar; Badge was already ported as a P3 dependency) plus ForceGraph as a P4a dependency of ArcDiagramChart (its GraphLegend): 17 manifest rows, 16 new files and ForceGraph, whose interactive component lands in this group instead of group 3. Lot P4a group 2 ports the next 16 data modules in manifest order (ColumnPyramidChart to EventFeedPanel) with the cellDecoration helper for DataTable: 16 new files plus cellDecoration. Lot P4a group 3 ports the last 13 data modules in manifest order (FilterBar to ItemChart): 13 new files, closing P4a data batch 1 (groups 1-3). Lot P4b group 1 ports the first 16 data modules of batch 2 in manifest order (KpiCard to RibbonChart; OrderedList lives in catalog.tsx on the React side like CodeSnippet) plus Sparkline as a P4b dependency of KpiCard (its trend sparkline) with the priorityLabels helper for PriorityMatrix: 17 manifest rows, 17 new files. Lot P4b group 2 ports the next 15 data modules in manifest order (RoseChart to Tag; SelectionChip, StructuredList, Table and Tag live in catalog.tsx on the React side): 15 manifest rows, 15 new files. Lot P4b group 3 ports the last 14 data modules in manifest order (TileMapChart to WordCloudChart; UnorderedList lives in catalog.tsx on the React side): 14 new files, closing P4b data batch 2 (groups 1-3). priorityLabels.ts is a runtime-neutral helper like cellDecoration.tsx and chartScale.tsx: emitted unchanged, owned by no manifest row. Lot P4c group 1 ports the 14 chat+other modules (Avatar, AvatarGroup, ChatMessage, ChatThread, DisplaySettings, Embed, Icon, MediaContent, MessageActions, MessageStatusBadge, Overline, StreamingMessage, Transcription, Typography) plus ChatComposer re-raised. Lot P4c group 2 ports the 9 shells (AppChrome, AppHeader, AppShell, ContextPanel, IdentityMenu, NavDrawer, NavRail, NavShell, UtilityPanel); catalog declarations are owned by AppHeader and IdentityMenu, helpers and barrel unchanged.",
   "modules": [
     {
       "module": "Button",
@@ -391,7 +391,7 @@
     {
       "module": "Avatar",
       "file": "src/Avatar.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/Avatar.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -400,7 +400,7 @@
     {
       "module": "AvatarGroup",
       "file": "src/AvatarGroup.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/AvatarGroup.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -427,7 +427,7 @@
     {
       "module": "DisplaySettings",
       "file": "src/DisplaySettings.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/DisplaySettings.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -436,7 +436,7 @@
     {
       "module": "Embed",
       "file": "src/Embed.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/Embed.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -454,7 +454,7 @@
     {
       "module": "MediaContent",
       "file": "src/MediaContent.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/MediaContent.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -481,7 +481,7 @@
     {
       "module": "Overline",
       "file": "src/Overline.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/Overline.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
@@ -499,7 +499,7 @@
     {
       "module": "Transcription",
       "file": "src/Transcription.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/Transcription.tsx",
       "category": "chat",
       "lot": "P4c",
       "hardSet": false,
@@ -508,7 +508,7 @@
     {
       "module": "Typography",
       "file": "src/Typography.tsx",
-      "reactSource": "components-react/src/catalog.tsx",
+      "reactSource": "components-react/src/Typography.tsx",
       "category": "other",
       "lot": "P4c",
       "hardSet": false,
