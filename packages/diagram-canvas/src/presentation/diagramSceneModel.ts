@@ -50,7 +50,7 @@ import { getDiagramGlyph } from "./registry.js";
 import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
-import type { AlignPinned, AnatomyPinned, DiagramAnatomy } from "./diagramCardModel.js";
+import type { AlignPinned, AnatomyPinned, DepthPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -104,7 +104,8 @@ export type SceneIconBindings = Readonly<Record<string, { readonly icon?: string
 export const ROLE_ICONS: Readonly<Record<string, string>> = { card: "base", zone: "cluster", store: "db", actor: "user", api: "api", runtime: "server" };
 
 export function resolveScenePresentation(document: SceneDocument, presentation: ScenePresentation,
-  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph) {
+  bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph,
+  options: { readonly depthParityStart?: 0 | 1 } = {}) {
   const missing: string[] = [];
   /**
    * View-level anatomy default (DE-1): a view pins `diagram-anatomy/v1 | v2`
@@ -129,12 +130,51 @@ export function resolveScenePresentation(document: SceneDocument, presentation: 
     }
     return [id, { ...entry, icon }];
   }));
-  return { presentation: { ...presentation, entities }, missing };
+  /**
+   * Owner addendum 1 — stamp nesting depth from the view groups onto zone
+   * entries (top level `0`), so frames alternate without page code. Entries
+   * pinning their own depth keep it; card entries are untouched (their
+   * semantic tints never change). Without a view there is no group
+   * structure to read, so nothing is stamped. The selectable `startParity`
+   * rides along the same way when the scene selects it.
+   */
+  // Without a view there is no group structure to read: entities pass
+  // through exactly as resolved above (existing no-view callers unaffected).
+  if (view === undefined) return { presentation: { ...presentation, entities }, missing };
+  const startParity = options.depthParityStart ?? 0;
+  const depthOf = (id: string): number => {
+    let depth = 0;
+    const seen = new Set<string>();
+    for (let parent = parentOccurrenceOf(view, id as SceneOccurrenceRef); parent !== undefined && !seen.has(parent); parent = parentOccurrenceOf(view, parent)) {
+      seen.add(parent);
+      depth += 1;
+    }
+    return depth;
+  };
+  const stamped = Object.fromEntries(Object.entries(entities).map(([id, entry]) => {
+    const zone = entry as { readonly form?: string; readonly depth?: number; readonly depthParityStart?: 0 | 1 };
+    if (zone.form !== "container" && zone.form !== "legend") return [id, entry];
+    if (zone.depth !== undefined) return [id, entry];
+    // Lean stamps: the top level and the default parity need no key
+    // (absent means `0` / `0` everywhere downstream).
+    const depth = depthOf(id);
+    return [id, {
+      ...entry,
+      ...(depth === 0 ? {} : { depth }),
+      ...(zone.depthParityStart !== undefined || startParity === 0 ? {} : { depthParityStart: startParity }),
+    }];
+  }));
+  return { presentation: { ...presentation, entities: stamped }, missing };
 }
 
 export interface SceneLayoutInput {
   readonly iconBindings?: SceneIconBindings;
   readonly strictIcons?: boolean;
+  /**
+   * Owner addendum 1 — selectable start parity for the depth rule: `1`
+   * flips which parity the top level takes. Absent means `0`.
+   */
+  readonly depthParityStart?: 0 | 1;
   readonly resolveGlyph?: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined;
   readonly cache?: SceneLayoutCache;
   readonly document: SceneDocument;
@@ -162,7 +202,8 @@ export interface SceneLayoutInput {
  * required field carries no second metric source.
  */
 export function layoutScene(input: SceneLayoutInput): LayoutResult {
-  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
+    input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
   const options: LayoutOptions = {
     registry: input.registry,
     ...(input.flows === undefined ? {} : { flows: input.flows }),
@@ -217,7 +258,7 @@ export interface SceneNodeModel {
   /** Zones only: drawn as the atomic card (collapsed) or as the frame. */
   readonly collapsed: boolean;
   readonly rect: Rect;
-  readonly presentation?: EntityPresentation & AnatomyPinned & AlignPinned;
+  readonly presentation?: EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
@@ -358,17 +399,18 @@ function edgeLabelOf(document: SceneDocument, relation: string): string | undefi
  */
 export function resolveScene(
   result: SceneLaidOut,
-  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows">,
+  input: Pick<SceneLayoutInput, "document" | "presentation" | "measureLines" | "metrics" | "iconBindings" | "strictIcons" | "view" | "resolveGlyph" | "flows" | "depthParityStart">,
 ): SceneModel {
   const view = result.view;
-  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph);
+  const resolved = resolveScenePresentation(input.document, input.presentation, input.iconBindings, input.strictIcons, input.view, input.resolveGlyph,
+    input.depthParityStart === undefined ? {} : { depthParityStart: input.depthParityStart });
   const frame = buildScene({ document: input.document, views: { [view.viewId]: view } }, view.viewId);
   const bundledMembers = new Set(Object.values(result.edgeBundles ?? {}).flatMap(bundle => bundle.members.slice(1)));
   const items = frame.items.filter(item => item.kind !== "edge" || !bundledMembers.has(item.occurrence));
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned) | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned & DepthPinned) | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";

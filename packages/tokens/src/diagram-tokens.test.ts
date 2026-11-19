@@ -170,6 +170,24 @@ describe("diagram tokens — frozen Appendix A values", () => {
     expect(component.diagramZone.rule).toBe(semantic.border.subtle);
   });
 
+  it("diagram depth surfaces alternate per nesting depth in both themes (DE-1 addendum 1)", () => {
+    // Even depths (top level first) paint surface1, odd depths surface2;
+    // both alias the semantic layer, card tints untouched.
+    expect(component.diagramZone.surface1).toBe(semantic.surface.raised);
+    expect(component.diagramZone.surface2).toBe(semantic.surface.subtle);
+    expect(componentDark.diagramZone.surface1).toBe(semanticDark.surface.raised);
+    expect(componentDark.diagramZone.surface2).toBe(semanticDark.surface.subtle);
+    // The two depths resolve to distinct fills in both themes.
+    expect(component.diagramZone.surface1).not.toBe(component.diagramZone.surface2);
+    expect(componentDark.diagramZone.surface1).not.toBe(componentDark.diagramZone.surface2);
+    const css = toCssVariables({ component });
+    expect(css).toContain(`--st-component-diagramZone-surface1: ${semantic.surface.raised};`);
+    expect(css).toContain(`--st-component-diagramZone-surface2: ${semantic.surface.subtle};`);
+    const darkCss = toCssVariables({ component: componentDark });
+    expect(darkCss).toContain(`--st-component-diagramZone-surface1: ${semanticDark.surface.raised};`);
+    expect(darkCss).toContain(`--st-component-diagramZone-surface2: ${semanticDark.surface.subtle};`);
+  });
+
   it("dark layer carries the same geometry over the dark semantic inputs", () => {
     for (const [group, leaves] of Object.entries(GEOMETRY)) {
       const actual = componentDark[group as keyof typeof componentDark] as Record<string, unknown>;

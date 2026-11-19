@@ -105,8 +105,14 @@ export function renderCardContent(
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
   // (owner criterion 5); the dash pattern is the kit's `4 5`.
+  // Owner addendum 1: a folded zone keeps its depth background; leaf cards
+  // keep the resting card surface.
+  const surfaceFill =
+    props.surface === undefined
+      ? "var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))"
+      : `var(--st-component-diagramZone-${props.surface}, var(--st-semantic-surface-${props.surface === "surface1" ? "raised" : "subtle"}))`;
   parts.push(
-    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
+    `<rect x="1" y="1" width="${g.width - 2}" height="${g.height - 2}" fill="${surfaceFill}" stroke="var(--st-component-diagramCard-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramCard-proposedDashArray, 4 5)"` : ""}/>`,
   );
   parts.push(
     `<rect x="0" y="0" width="${g.accentWidth}" height="${g.height}" fill="var(--st-component-diagramCard-accent, var(--st-semantic-data-category1))"/>`,

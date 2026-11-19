@@ -64,6 +64,8 @@
     toggleLabel,
     align,
     anatomy,
+    depth,
+    depthParityStart,
     x = 0,
     y = 0,
     width,
@@ -91,6 +93,8 @@
     ...(toggleLabel === undefined ? {} : { toggleLabel }),
     ...(align === undefined ? {} : { align }),
     ...(anatomy === undefined ? {} : { anatomy }),
+    ...(depth === undefined ? {} : { depth }),
+    ...(depthParityStart === undefined ? {} : { depthParityStart }),
     x,
     y,
     ...(width === undefined ? {} : { width }),
@@ -102,6 +106,17 @@
   const layout = $derived(layoutZone(zoneProps, measure, []));
   /** Expanded chrome geometry for the pinned anatomy (v1 values by default). */
   const zoneGeometry = $derived(anatomyZoneGeometry(anatomy));
+
+  /**
+   * Owner addendum 1: an explicitly threaded depth paints the resolved
+   * depth surface; without depth the frame keeps its resting surface,
+   * byte-identical.
+   */
+  const surfaceStyle = $derived(
+    zoneProps.depth === undefined && zoneProps.depthParityStart === undefined
+      ? ""
+      : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`,
+  );
 
   const cardProps = $derived(
     toggleLabel === undefined
@@ -206,8 +221,8 @@
     <div
       class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
       style={anatomy === "v2"
-        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)`
-        : `width:${layout.box.width}px;height:${layout.box.height}px`}
+        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)${surfaceStyle}`
+        : `width:${layout.box.width}px;height:${layout.box.height}px${surfaceStyle}`}
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"

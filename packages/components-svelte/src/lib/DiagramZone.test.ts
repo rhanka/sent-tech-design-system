@@ -400,6 +400,39 @@ describe("DiagramZone — expanded paints frame, header, rule, children", () => 
       expandedDom.querySelector(".st-diagramZone")?.classList.contains("st-diagramZone--center"),
     ).toBe(true);
   });
+
+  it("depth alternates the frame and folded-card surface (addendum 1)", () => {
+    const expanded = layoutZone(
+      baseProps({ collapsed: false, width: 492, depth: 1 }),
+      defaultCardMeasure,
+    );
+    expect(expanded.surface).toBe("surface2");
+    const folded = layoutZone(baseProps({ depth: 1 }), defaultCardMeasure);
+    expect(folded.surface).toBe("surface2");
+
+    const { container: expandedDom } = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492, depth: 1 }), measure: defaultCardMeasure },
+    });
+    expect(
+      expandedDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramZone-surface2");
+    const { container: foldedDom } = render(DiagramZone, {
+      props: { ...baseProps({ depth: 1 }), measure: defaultCardMeasure },
+    });
+    expect(
+      foldedDom.querySelector(".st-diagramCard")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramCard-surface:");
+    expect(
+      foldedDom.querySelector(".st-diagramCard")?.getAttribute("style") ?? "",
+    ).toContain("--st-component-diagramZone-surface2");
+    // No depth pins: no surface override, byte-identical rendering.
+    const { container: plainDom } = render(DiagramZone, {
+      props: { ...baseProps({ collapsed: false, width: 492 }), measure: defaultCardMeasure },
+    });
+    expect(
+      plainDom.querySelector(".st-diagramZone")?.getAttribute("style") ?? "",
+    ).not.toContain("--st-component-diagramZone-surface:");
+  });
 });
 
 describe("DiagramZone — projection (§4.2/§6.1)", () => {
