@@ -13,8 +13,8 @@
  * and informational diagnostics report the hidden length.
  */
 import {
+  anatomyCardGeometry,
   cardFullText,
-  CARD_GEOMETRY,
   defaultCardMeasure,
   layoutCard,
   projectCardProps,
@@ -100,7 +100,7 @@ export function renderCardContent(
   measure: CardLineMeasure = defaultCardMeasure,
 ): { readonly content: string; readonly layout: ReturnType<typeof layoutCard> } {
   const layout = layoutCard(props, measure);
-  const g = { ...CARD_GEOMETRY, height: layout.box.height };
+  const g = { ...anatomyCardGeometry(props.anatomy), width: layout.box.width, height: layout.box.height };
   const parts: string[] = [`<title>${escapeXml(cardFullText(props))}</title><desc>${escapeXml(cardFullText(props))}</desc>`];
   // Border, then the accent bar over the left stroke (border-left look).
   // A proposed card is always drawn dashed, independently of the tint
@@ -218,7 +218,7 @@ export function renderCardSvg(
   measure: CardLineMeasure = defaultCardMeasure,
 ): CardSvgResult {
   const { content, layout } = renderCardContent(props, measure);
-  const g = { ...CARD_GEOMETRY, height: layout.box.height };
+  const g = { ...anatomyCardGeometry(props.anatomy), width: layout.box.width, height: layout.box.height };
   const overflowSlots = layout.diagnostics
     .filter((diagnostic) => diagnostic.code === "card-overflow")
     .map((diagnostic) => diagnostic.slot);

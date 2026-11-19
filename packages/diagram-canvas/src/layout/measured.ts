@@ -72,7 +72,7 @@ import {
   type LayoutHints,
 } from "./hints.js";
 import { measureSceneBox } from "./sceneMeasure.js";
-import { ZONE_GEOMETRY } from "../presentation/diagramCardModel.js";
+import { anatomyCardGeometry, anatomyZoneGeometry, ZONE_GEOMETRY, type DiagramAnatomy } from "../presentation/diagramCardModel.js";
 import { placePackedLabel } from "./labels.js";
 import {
   DEFAULT_ALLOCATED_LINES,
@@ -298,6 +298,14 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       diagnostics: [],
     };
   }
+  /**
+   * Per-occurrence pinned anatomy (DE-1): the presentation entry selects
+   * `diagram-anatomy/v1 | v2`; absent means `"v1"` so existing views keep
+   * the frozen `460 × 200` footprint by construction.
+   */
+  const occurrenceAnatomy = (occurrence: OccurrenceRef): DiagramAnatomy =>
+    (presentation.entities as Record<string, { readonly anatomy?: DiagramAnatomy }>)[occurrence]?.anatomy ?? "v1";
+  const cardWidthOf = (occurrence: OccurrenceRef): number => anatomyCardGeometry(occurrenceAnatomy(occurrence)).width;
   if (options.measureLines === undefined) {
     return {
       status: "refused",
@@ -1008,10 +1016,10 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
     const sizeBox = (id: EntityRef): { width: number; height: number } => {
       const kind = kinds.get(id)!;
       if (kind === "leaf" || kind === "container-collapsed" || kind === "legend-collapsed") {
-        outerWidths.set(id, FIXED_CARD_WIDTH);
+        outerWidths.set(id, cardWidthOf(representativeOf(id)));
         const entry = presentation.entities[representativeOf(id)];
         const measured = entry === undefined ? { width: FIXED_CARD_WIDTH, height: FIXED_CARD_HEIGHT }
-          : sceneBoxAt(representativeOf(id), FIXED_CARD_WIDTH, kind !== "leaf");
+          : sceneBoxAt(representativeOf(id), cardWidthOf(representativeOf(id)), kind !== "leaf");
         const size = { width: measured.width, height: measured.height };
         packedSizes.set(id, size);
         return size;
@@ -1020,7 +1028,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       const hasIcon = presentation.entities[representativeOf(id)]?.icon !== "none";
       const headerReserve = ZONE_GEOMETRY.headerTextInset - (hasIcon ? 0 : ZONE_GEOMETRY.iconSize + ZONE_GEOMETRY.iconTextGap);
       const headerDriven = unwrappedHeaderWidth(id) + headerReserve;
-      const floor = Math.max(FIXED_CARD_WIDTH, headerDriven);
+      const floor = Math.max(anatomyZoneGeometry(occurrenceAnatomy(representativeOf(id))).collapsedWidth, headerDriven);
       const ordered = orderedChildrenOf(id);
       const headerHeight = headerHeightOf(id, floor);
       if (kind === "legend-expanded") {
@@ -1087,7 +1095,7 @@ function layoutMeasuredPass(document: SemanticDocument, options: LayoutOptions, 
       for (const id of headerIds) {
         const kind = kinds.get(id)!;
         const folded = kind === "container-collapsed" || kind === "legend-collapsed";
-        headerAt(id, folded ? innerWidthOf(FIXED_CARD_WIDTH) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
+        headerAt(id, folded ? innerWidthOf(cardWidthOf(representativeOf(id))) : innerWidthOf(outerWidths.get(id) ?? FIXED_CARD_WIDTH));
       }
     };
     sizeAll();
