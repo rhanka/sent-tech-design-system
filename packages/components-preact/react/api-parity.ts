@@ -555,7 +555,15 @@ export type PropsParity = [
   Expect<Equal<Emitted.AppShellProps, HandWritten.AppShellProps>>,
   Expect<Equal<Emitted.ContextPanelProps, HandWritten.ContextPanelProps>>,
   Expect<Equal<Emitted.NavRailProps, HandWritten.NavRailProps>>,
+  Expect<Equal<Emitted.NavSectionProps, HandWritten.NavSectionProps>>,
+  Expect<Equal<Emitted.NavSectionHeadingLevel, HandWritten.NavSectionHeadingLevel>>,
   Expect<Equal<Emitted.NavShellProps, HandWritten.NavShellProps>>,
+  Expect<Equal<Emitted.PopperProps, HandWritten.PopperProps>>,
+  Expect<Equal<Emitted.PopperPlacement, HandWritten.PopperPlacement>>,
+  Expect<Equal<Emitted.PopperStrategy, HandWritten.PopperStrategy>>,
+  Expect<Equal<Emitted.PopperSide, HandWritten.PopperSide>>,
+  Expect<Equal<Emitted.PopperAlign, HandWritten.PopperAlign>>,
+  Expect<Equal<Emitted.Rect, HandWritten.Rect>>,
   Expect<Equal<Emitted.UtilityPanelProps, HandWritten.UtilityPanelProps>>,
 ];
 
@@ -770,13 +778,19 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.IdentityMenu, typeof HandWritten.IdentityMenu>>,
   Expect<Equal<typeof Emitted.NavDrawer, typeof HandWritten.NavDrawer>>,
   Expect<Equal<typeof Emitted.NavRail, typeof HandWritten.NavRail>>,
+  Expect<Equal<typeof Emitted.NavSection, typeof HandWritten.NavSection>>,
   Expect<Equal<typeof Emitted.NavShell, typeof HandWritten.NavShell>>,
+  Expect<Equal<typeof Emitted.Popper, typeof HandWritten.Popper>>,
   Expect<Equal<typeof Emitted.UtilityPanel, typeof HandWritten.UtilityPanel>>,
 ];
 
 export type ValueParity = [
   Expect<Equal<typeof Emitted.SelectableListContext, typeof HandWritten.SelectableListContext>>,
   Expect<Equal<typeof Emitted.resolvePortalTarget, typeof HandWritten.resolvePortalTarget>>,
+  Expect<Equal<typeof Emitted.computePosition, typeof HandWritten.computePosition>>,
+  Expect<Equal<typeof Emitted.splitPlacement, typeof HandWritten.splitPlacement>>,
+  Expect<Equal<typeof Emitted.joinPlacement, typeof HandWritten.joinPlacement>>,
+  Expect<Equal<typeof Emitted.DEFAULT_TIME_RANGE_PRESETS, typeof HandWritten.DEFAULT_TIME_RANGE_PRESETS>>,
   Expect<Equal<typeof Emitted.spacingToken, typeof HandWritten.spacingToken>>,
   Expect<Equal<typeof Emitted.alignValue, typeof HandWritten.alignValue>>,
   Expect<Equal<typeof Emitted.justifyValue, typeof HandWritten.justifyValue>>,

@@ -33,6 +33,9 @@ import * as handWrittenNotification from "../../components-react/src/Notificatio
 import * as handWrittenPanelSection from "../../components-react/src/PanelSection.js";
 import * as handWrittenPanelStack from "../../components-react/src/PanelStack.js";
 import * as handWrittenPortal from "../../components-react/src/Portal.js";
+import * as handWrittenPopper from "../../components-react/src/Popper.js";
+import * as handWrittenNavSection from "../../components-react/src/NavSection.js";
+import * as handWrittenTimeRange from "../../components-react/src/timeRange.js";
 import * as handWrittenRow from "../../components-react/src/Row.js";
 import * as handWrittenSelectableRow from "../../components-react/src/SelectableRow.js";
 import * as handWrittenStack from "../../components-react/src/Stack.js";
@@ -169,6 +172,12 @@ const switched = [
   "identityInitial",
   "Portal",
   "resolvePortalTarget",
+  "Popper",
+  "computePosition",
+  "splitPlacement",
+  "joinPlacement",
+  "NavSection",
+  "DEFAULT_TIME_RANGE_PRESETS",
   "ThemeProvider",
   "Accordion",
   "Alert",
@@ -390,6 +399,12 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   identityInitial: handWrittenIdentityMenu.identityInitial,
   Portal: handWrittenPortal.Portal,
   resolvePortalTarget: handWrittenPortal.resolvePortalTarget,
+  Popper: handWrittenPopper.Popper,
+  computePosition: handWrittenPopper.computePosition,
+  splitPlacement: handWrittenPopper.splitPlacement,
+  joinPlacement: handWrittenPopper.joinPlacement,
+  NavSection: handWrittenNavSection.NavSection,
+  DEFAULT_TIME_RANGE_PRESETS: handWrittenTimeRange.DEFAULT_TIME_RANGE_PRESETS,
   ThemeProvider: handWrittenTheme.ThemeProvider,
   Accordion: handWrittenCatalog.Accordion,
   Alert: handWrittenCatalog.Alert,
