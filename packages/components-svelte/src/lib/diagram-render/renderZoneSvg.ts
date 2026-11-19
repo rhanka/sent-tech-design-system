@@ -131,8 +131,14 @@ export function zoneContent(
   // Frame (expanded only; collapsed is the card border, §6.4).
   // A proposed zone is always drawn dashed, independently of the tint
   // (owner criterion 5); the dash pattern is the kit's `4 5`.
+  // Owner addendum 1: an explicitly threaded depth paints the resolved
+  // depth surface; without depth the frame keeps its resting surface.
+  const surfaceFill =
+    props.depth === undefined && props.depthParityStart === undefined
+      ? "var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised))"
+      : `var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`;
   parts.push(
-    `<rect class="st-diagramZone-frame" x="0" y="0" width="${width}" height="${height}" rx="${g.radius}" fill="var(--st-component-diagramZone-surface, var(--st-semantic-surface-raised))" stroke="var(--st-component-diagramZone-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramZone-proposedDashArray, 4 5)"` : ""}/>`,
+    `<rect class="st-diagramZone-frame" x="0" y="0" width="${width}" height="${height}" rx="${g.radius}" fill="${surfaceFill}" stroke="var(--st-component-diagramZone-border, var(--st-semantic-border-strong))" stroke-width="${g.borderWidth}"${props.proposed === true ? ` stroke-dasharray="var(--st-component-diagramZone-proposedDashArray, 4 5)"` : ""}/>`,
   );
   if (header.iconBox !== undefined && props.icon !== undefined) {
     parts.push(

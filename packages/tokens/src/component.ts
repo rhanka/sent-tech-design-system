@@ -1920,6 +1920,13 @@ export function createComponent(semantic: SemanticInput, foundation: FoundationI
       rowPackTargetAspect: "1.78",
       border: semantic.border.strong,
       surface: semantic.surface.raised,
+      // DE-1 owner addendum 1 — alternating backgrounds by nesting depth:
+      // even depths (top level first) paint `surface1`, odd depths paint
+      // `surface2`. Both alias the semantic layer so light and dark themes
+      // resolve them (dark derives from the same builder over the dark
+      // inputs); card semantic tints are untouched.
+      surface1: semantic.surface.raised,
+      surface2: semantic.surface.subtle,
       text: semantic.text.primary,
       secondaryText: semantic.text.secondary,
       rule: semantic.border.subtle
