@@ -124,6 +124,16 @@ export interface AnatomyPinned {
 }
 
 /**
+ * Additive alignment pin (DE-1 step 2), same carrying pattern as
+ * `AnatomyPinned`: structural, never persisted in the governed fragment.
+ * `"left"` keeps the frozen behaviour; `"center"` centres title and body
+ * on both axes. Absent means `"left"`.
+ */
+export interface AlignPinned {
+  readonly align?: "left" | "center";
+}
+
+/**
  * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
  * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
@@ -167,6 +177,11 @@ export interface CardPresentationInput {
    * a view pins `"v2"` for the compact box.
    */
   readonly anatomy?: DiagramAnatomy;
+  /**
+   * Additive alignment pin (DE-1 step 2, `AnatomyPinned` pattern):
+   * `"center"` centres title and body on both axes. Absent means `"left"`.
+   */
+  readonly align?: "left" | "center";
 }
 
 /** Resolved glyph path data (structural twin of the `diagram-icons`
@@ -248,6 +263,11 @@ export interface ProjectCardOptions {
    * scene entry points for new views pass `"v2"`.
    */
   readonly anatomy?: DiagramAnatomy;
+  /**
+   * Fallback alignment when the presentation pins none. Absent means
+   * `"left"`; centred scenes pass `"center"`.
+   */
+  readonly align?: "left" | "center";
 }
 
 /**
@@ -301,6 +321,10 @@ export function projectCardProps(
       ...(() => {
         const anatomy = presentation.anatomy ?? opts.anatomy;
         return anatomy === undefined ? {} : { anatomy };
+      })(),
+      ...(() => {
+        const align = presentation.align ?? opts.align;
+        return align === undefined ? {} : { align };
       })(),
     },
   };
@@ -1592,6 +1616,11 @@ export interface ZonePresentationInput {
    * Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`.
    */
   readonly anatomy?: DiagramAnatomy;
+  /**
+   * Additive alignment pin (DE-1 step 2, `AnatomyPinned` pattern):
+   * `"center"` centres title and body on both axes. Absent means `"left"`.
+   */
+  readonly align?: "left" | "center";
 }
 
 export type ZoneResolveResult =
@@ -1664,7 +1693,10 @@ export function projectZoneProps(
       })(),
       collapsed: opts.collapsed,
       ...(opts.toggleLabel === undefined ? {} : { toggleLabel: opts.toggleLabel }),
-      ...(opts.align === undefined ? {} : { align: opts.align }),
+      ...(() => {
+        const align = presentation.align ?? opts.align;
+        return align === undefined ? {} : { align };
+      })(),
       ...(opts.x === undefined ? {} : { x: opts.x }),
       ...(opts.y === undefined ? {} : { y: opts.y }),
       ...(opts.width === undefined ? {} : { width: opts.width }),
