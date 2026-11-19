@@ -7,6 +7,7 @@ import { classNames } from "./classNames.js";
 // runtime.js and camelCase attributes would revert to broken literals.
 import "./runtime.js";
 import type { ComponentChildren } from "./runtime.js";
+import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
 function MenuIcon({ size = 20 }: { size?: number }) {
@@ -28,8 +29,8 @@ function XIcon({ size = 20 }: { size?: number }) {
 }
 
 export type AppHeaderProps = {
-  compact?: boolean;
-  menuOpen?: boolean;
+  compact?: MaybeSignal<boolean>;
+  menuOpen?: MaybeSignal<boolean>;
   onMenuToggle?: () => void;
   menuLabel?: string;
   /** aria-label for the primary nav element. */
@@ -62,7 +63,9 @@ export type AppHeaderProps = {
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
 };
-export function AppHeader({ compact = false, menuOpen = false, onMenuToggle, menuLabel = "Menu", navLabel = "Primary", drawerId, brandName, productName, logoSrc, logoAlt = "", brandHref = "/", brandLabel, logo, nav, actions, drawer, className }: AppHeaderProps) {
+export function AppHeader({ compact: compactInput = false, menuOpen: menuOpenInput = false, onMenuToggle, menuLabel = "Menu", navLabel = "Primary", drawerId, brandName, productName, logoSrc, logoAlt = "", brandHref = "/", brandLabel, logo, nav, actions, drawer, className }: AppHeaderProps) {
+  const compact = useValue(compactInput);
+  const menuOpen = useValue(menuOpenInput);
   // Id stable du tiroir : prop fournie sinon useId (SSR-safe, sans crypto).
   const reactId = useId();
   const resolvedDrawerId = drawerId ?? `st-appHeader-drawer-${reactId}`;

@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppChrome } from "./AppChrome.js";
 import { AppHeader } from "./AppHeader.js";
@@ -456,5 +456,130 @@ describe("P4c group 2 batch C (shells: signals at the edges, post-mount mutation
       expect(svg.getAttribute("stroke-width")).not.toBeNull();
       expect(svg.hasAttribute("strokeWidth")).toBe(false);
     }
+  });
+});
+
+describe("P4c group 2 controlled signals (post-mount mutation)", () => {
+  it("NavShell follows back and open signals mutated after mount", async () => {
+    const back = signal(false);
+    const rail = render(<NavShell title="Nav" back={back} variant="rail">Body</NavShell>);
+    expect(rail.container.querySelector(".st-navShell__back")).toBeNull();
+    back.value = true;
+    await waitFor(() =>
+      expect(rail.container.querySelector(".st-navShell__back")).not.toBeNull(),
+    );
+    rail.unmount();
+    const open = signal(false);
+    const drawer = render(
+      <NavShell title="Nav" back open={open} variant="drawer">
+        Body
+      </NavShell>,
+    );
+    expect(drawer.container.querySelector('[role="dialog"]')).toBeNull();
+    open.value = true;
+    await waitFor(() => expect(drawer.container.querySelector('[role="dialog"]')).not.toBeNull());
+    expect(drawer.container.querySelector(".st-navShell--drawer")).not.toBeNull();
+    drawer.unmount();
+  });
+
+  it("IdentityMenu follows open and isAuthenticated signals mutated after mount", async () => {
+    const open = signal(false);
+    const isAuthenticated = signal(false);
+    const { container } = render(
+      <IdentityMenu
+        user={{ displayName: "Ada Lovelace" }}
+        isAuthenticated={isAuthenticated}
+        open={open}
+      />,
+    );
+    expect(container.querySelector(".st-identityMenu__login")).not.toBeNull();
+    isAuthenticated.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-identityMenu__trigger")).not.toBeNull(),
+    );
+    expect(container.querySelector('[role="menu"]')).toBeNull();
+    open.value = true;
+    await waitFor(() => expect(container.querySelector('[role="menu"]')).not.toBeNull());
+  });
+
+  it("AppHeader follows compact and menuOpen signals mutated after mount", async () => {
+    const compact = signal(false);
+    const menuOpen = signal(false);
+    const { container } = render(
+      <AppHeader compact={compact} menuOpen={menuOpen} brandName="SENT" drawer={<nav>Content</nav>} />,
+    );
+    expect(container.querySelector(".st-appHeader__nav")).not.toBeNull();
+    expect(container.querySelector(".st-appHeader__burgerButton")).toBeNull();
+    compact.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-appHeader__burgerButton")).not.toBeNull(),
+    );
+    expect(container.querySelector(".st-appHeader__nav")).toBeNull();
+    expect(container.querySelector(".st-appHeader__drawer")).toBeNull();
+    menuOpen.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-appHeader__drawer")).not.toBeNull(),
+    );
+    const button = container.querySelector("button.st-appHeader__burgerButton") as HTMLButtonElement;
+    expect(button.getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("AppChrome follows theme, colorMode, locale and mobileMenuOpen signals mutated after mount", async () => {
+    const theme = signal("a");
+    const colorMode = signal<"light" | "dark" | "auto">("light");
+    const locale = signal<"fr" | "en">("fr");
+    const mobileMenuOpen = signal(false);
+    const { container } = render(
+      <AppChrome
+        themes={[{ id: "a", label: "Alpha" }, { id: "b", label: "Beta" }]}
+        theme={theme}
+        colorMode={colorMode}
+        locale={locale}
+        mobileMenuOpen={mobileMenuOpen}
+        nav={[{ label: "Edit", href: "/edit" }]}
+      />,
+    );
+    expect(container.querySelector(".st-appChrome__themeWrap > button")?.textContent).toContain("Alpha");
+    theme.value = "b";
+    await waitFor(() =>
+      expect(container.querySelector(".st-appChrome__themeWrap > button")?.textContent).toContain("Beta"),
+    );
+    expect(container.querySelector(".st-appChrome__iconControl")?.getAttribute("aria-label")).toBe("Dark mode");
+    colorMode.value = "dark";
+    await waitFor(() =>
+      expect(container.querySelector(".st-appChrome__iconControl")?.getAttribute("aria-label")).toBe("Auto mode"),
+    );
+    expect(container.querySelector(".st-appChrome__localeWrap > button")?.textContent).toContain("FR");
+    locale.value = "en";
+    await waitFor(() =>
+      expect(container.querySelector(".st-appChrome__localeWrap > button")?.textContent).toContain("EN"),
+    );
+    expect(container.querySelector(".st-appChrome__drawer")).toBeNull();
+    mobileMenuOpen.value = true;
+    await waitFor(() => expect(container.querySelector(".st-appChrome__drawer")).not.toBeNull());
+  });
+
+  it("AppShell follows panelResize and panelWidths signals mutated after mount", async () => {
+    const panelResize = signal(false);
+    const panelWidths = signal<Partial<Record<"navigationPanel" | "contextPanel" | "utilityPanel", number>>>({ navigationPanel: 400 });
+    const { container } = render(
+      <AppShell
+        variant="workspace"
+        navigationPanel={<p>Nav</p>}
+        main={<p>Main</p>}
+        panelResize={panelResize}
+        panelWidths={panelWidths}
+      />,
+    );
+    expect(container.querySelector(".st-appShell__resizeHandle")).toBeNull();
+    panelResize.value = true;
+    await waitFor(() =>
+      expect(container.querySelector(".st-appShell__resizeHandle")).not.toBeNull(),
+    );
+    expect(container.querySelector(".st-appShell__resizeHandle")?.getAttribute("aria-valuenow")).toBe("400");
+    panelWidths.value = { navigationPanel: 500 };
+    await waitFor(() =>
+      expect(container.querySelector(".st-appShell__resizeHandle")?.getAttribute("aria-valuenow")).toBe("500"),
+    );
   });
 });

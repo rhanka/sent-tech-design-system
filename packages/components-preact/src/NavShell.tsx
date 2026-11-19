@@ -12,7 +12,7 @@ export type NavShellProps = HTMLAttributes<HTMLElement> & {
   variant?: NavShellVariant;
   title?: ComponentChildren;
   subtitle?: ComponentChildren;
-  back?: boolean;
+  back?: MaybeSignal<boolean>;
   backLabel?: string;
   onBack?: () => void;
   label?: string;
@@ -22,7 +22,8 @@ export type NavShellProps = HTMLAttributes<HTMLElement> & {
   side?: NavShellSide;
 };
 
-export function NavShell({ variant = "rail", title, subtitle, back = false, backLabel = "Back", onBack, label, search, footer, open: openInput = false, side = "left", className, children, ...rest }: NavShellProps) {
+export function NavShell({ variant = "rail", title, subtitle, back: backInput = false, backLabel = "Back", onBack, label, search, footer, open: openInput = false, side = "left", className, children, ...rest }: NavShellProps) {
+  const back = useValue(backInput);
   const open = useValue(openInput);
   const content = (
     <>
