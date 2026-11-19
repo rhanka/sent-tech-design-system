@@ -90,7 +90,7 @@
         "lot": "P4c",
         "reactSource": "catalog.tsx (declarations re-exported by ChatComposer.tsx)",
         "reactLines": 34,
-        "preactLines": 60,
+        "preactLines": 58,
         "total": 279,
         "touched": 18,
         "emissionRewrites": 3,
@@ -126,7 +126,7 @@
     ],
     "totals": {
       "reactLines": 631,
-      "preactLines": 705,
+      "preactLines": 703,
       "total": 3521,
       "touched": 173,
       "emissionRewrites": 16,

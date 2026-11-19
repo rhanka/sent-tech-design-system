@@ -1,5 +1,6 @@
 import { signal } from "@preact/signals";
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
+import type { CSSProperties } from "preact";
 import { EyeOff } from "lucide-preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
@@ -146,6 +147,28 @@ describe("P4c group 1 edges (Avatar, AvatarGroup, Typography, Embed: signals at 
     const img = withSrc.container.querySelector("img.st-avatar__image") as HTMLImageElement;
     expect(img.getAttribute("src")).toBe("https://example.com/a.png");
     withSrc.unmount();
+  });
+
+  it("AvatarGroup max token wins over a conflicting consumer style, object and string alike", () => {
+    render(
+      <>
+        <AvatarGroup data-testid="m-agroup-obj" max={2} total={5} style={{ "--st-avatar-group-max": "9" } as CSSProperties}>
+          <span>x</span>
+        </AvatarGroup>
+        <AvatarGroup
+          data-testid="m-agroup-str"
+          max={2}
+          total={5}
+          style={"--st-avatar-group-max: 9;" as unknown as CSSProperties}
+        >
+          <span>x</span>
+        </AvatarGroup>
+      </>,
+    );
+    // components-react spreads the consumer style first: the computed token
+    // wins, for object and string styles alike.
+    expect(screen.getByTestId("m-agroup-obj").style.getPropertyValue("--st-avatar-group-max")).toBe("2");
+    expect(screen.getByTestId("m-agroup-str").style.getPropertyValue("--st-avatar-group-max")).toBe("2");
   });
 
   it("AvatarGroup renders the overflow token and follows max/total signals", async () => {

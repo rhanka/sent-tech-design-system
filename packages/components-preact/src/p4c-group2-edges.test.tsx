@@ -385,6 +385,22 @@ describe("P4c group 2 batch C (shells: signals at the edges, post-mount mutation
     expect(style).toContain("color");
   });
 
+  it("AppShell panel vars win over a conflicting consumer string style", () => {
+    const { container } = render(
+      <AppShell
+        variant="workspace"
+        navigationPanel={<p>Nav</p>}
+        main={<p>Main</p>}
+        panelResize
+        panelWidths={{ navigationPanel: 400 }}
+        style="--st-appShell-navigation-width: 100px; color: red;"
+      />,
+    );
+    const el = container.querySelector(".st-appShell--workspace") as HTMLElement;
+    expect(el.style.getPropertyValue("--st-appShell-navigation-width")).toBe("400px");
+    expect(el.style.color).toBe("red");
+  });
+
   it("filters AppChrome nav by role and composes item clicks", () => {
     const onItemSelect = vi.fn();
     const { container } = render(
