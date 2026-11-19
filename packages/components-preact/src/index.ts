@@ -10,6 +10,46 @@ export { SelectableRow, SelectableListContext } from "./SelectableRow.js";
 export type { SelectableRowProps, SelectableListContextValue } from "./SelectableRow.js";
 export { ChatComposer } from "./ChatComposer.js";
 export type { ChatComposerProps } from "./ChatComposer.js";
+export { Avatar } from "./Avatar.js";
+export type { AvatarProps, AvatarSize, AvatarShape, AvatarTone } from "./Avatar.js";
+export { AvatarGroup } from "./AvatarGroup.js";
+export type { AvatarGroupProps } from "./AvatarGroup.js";
+export { ChatMessage } from "./ChatMessage.js";
+export type { ChatMessageProps, ChatMessageRole, ChatMessageStatus } from "./ChatMessage.js";
+export { ChatThread } from "./ChatThread.js";
+export type { ChatThreadProps } from "./ChatThread.js";
+export { DisplaySettings } from "./DisplaySettings.js";
+export type {
+  DisplaySettingsProps,
+  DisplaySettingsState,
+  DisplayFontScale,
+  DisplayContrast,
+  DisplayLineSpacing,
+} from "./DisplaySettings.js";
+export { Embed } from "./Embed.js";
+export type { EmbedProps } from "./Embed.js";
+export { Icon, ICONS, ICON_NAMES } from "./Icon.js";
+export type { IconProps, IconName, IconGlyph } from "./Icon.js";
+export { MediaContent } from "./MediaContent.js";
+export type { MediaContentProps, MediaKind } from "./MediaContent.js";
+export { MessageActions } from "./MessageActions.js";
+export type { MessageActionsProps, MessageAction, MessageActionVariant } from "./MessageActions.js";
+export { MessageStatusBadge } from "./MessageStatusBadge.js";
+export type { MessageStatusBadgeProps } from "./MessageStatusBadge.js";
+export { Overline } from "./Overline.js";
+export type { OverlineProps, OverlineAs } from "./Overline.js";
+export { StreamingMessage } from "./StreamingMessage.js";
+export type { StreamingMessageProps, StreamingMessageEvent, StreamingMessageMode } from "./StreamingMessage.js";
+export { Transcription } from "./Transcription.js";
+export type { TranscriptionProps, TranscriptionSegment } from "./Transcription.js";
+export { Typography } from "./Typography.js";
+export type {
+  TypographyProps,
+  TypographyVariant,
+  TypographyWeight,
+  TypographyTone,
+  TypographyAlign,
+} from "./Typography.js";
 export { Portal, resolvePortalTarget } from "./Portal.js";
 export type { PortalProps } from "./Portal.js";
 export { ThemeProvider } from "./ThemeProvider.js";
@@ -18,6 +58,25 @@ export { Accordion } from "./Accordion.js";
 export type { AccordionProps, AccordionItem } from "./Accordion.js";
 export { Alert } from "./Alert.js";
 export type { AlertProps } from "./Alert.js";
+export { AppChrome } from "./AppChrome.js";
+export type {
+  AppChromeProps,
+  AppChromeNavItem,
+  AppChromeThemeOption,
+  AppChromeColorMode,
+  AppChromeLocale,
+} from "./AppChrome.js";
+export { AppHeader } from "./AppHeader.js";
+export type { AppHeaderProps } from "./AppHeader.js";
+export { AppShell } from "./AppShell.js";
+export type {
+  AppShellProps,
+  AppShellVariant,
+  AppShellUtilityMode,
+  AppShellUtilitySide,
+  AppShellPanelCollapse,
+  AppShellPanelKey,
+} from "./AppShell.js";
 export { AspectRatio } from "./AspectRatio.js";
 export type { AspectRatioProps } from "./AspectRatio.js";
 export { Autosave } from "./Autosave.js";
@@ -64,6 +123,8 @@ export { Highlight } from "./Highlight.js";
 export type { HighlightProps, HighlightTone } from "./Highlight.js";
 export { IconButton } from "./IconButton.js";
 export type { IconButtonProps } from "./IconButton.js";
+export { IdentityMenu, identityInitial } from "./IdentityMenu.js";
+export type { IdentityMenuProps, IdentityUser } from "./IdentityMenu.js";
 export { Inline } from "./Inline.js";
 export type { InlineProps } from "./Inline.js";
 export { InlineLoading } from "./InlineLoading.js";
@@ -114,6 +175,8 @@ export { Combobox } from "./Combobox.js";
 export type { ComboboxProps, ComboboxOption } from "./Combobox.js";
 export { ContentSwitcher } from "./ContentSwitcher.js";
 export type { ContentSwitcherProps } from "./ContentSwitcher.js";
+export { ContextPanel } from "./ContextPanel.js";
+export type { ContextPanelProps } from "./ContextPanel.js";
 export { DatePicker } from "./DatePicker.js";
 export type { DatePickerProps, DatePickerRange, DatePickerValue } from "./DatePicker.js";
 export { Dropdown } from "./Dropdown.js";
@@ -140,8 +203,14 @@ export type {
   NavActionKind,
   NavActionDangerZone,
 } from "./NavActionStack.js";
+export { NavDrawer } from "./NavDrawer.js";
+export type { NavDrawerProps } from "./NavDrawer.js";
 export { NavItem } from "./NavItem.js";
 export type { NavItemProps, NavItemDepth, NavItemStatus, NavItemSwatch } from "./NavItem.js";
+export { NavRail } from "./NavRail.js";
+export type { NavRailProps, NavRailItem } from "./NavRail.js";
+export { NavShell } from "./NavShell.js";
+export type { NavShellProps, NavShellVariant, NavShellSide } from "./NavShell.js";
 export { NumberInput } from "./NumberInput.js";
 export type { NumberInputProps } from "./NumberInput.js";
 export { OverflowMenu } from "./OverflowMenu.js";
@@ -492,6 +561,8 @@ export { TreemapChart } from "./TreemapChart.js";
 export type { TreemapChartProps, TreemapChartDatum, TreemapChartTone, TreemapTiling } from "./TreemapChart.js";
 export { UnorderedList } from "./UnorderedList.js";
 export type { UnorderedListProps, UnorderedListInput, UnorderedListItem } from "./UnorderedList.js";
+export { UtilityPanel } from "./UtilityPanel.js";
+export type { UtilityPanelProps, UtilityPanelMode, UtilityPanelSide } from "./UtilityPanel.js";
 export { VariablePieChart } from "./VariablePieChart.js";
 export type { VariablePieChartProps, VariablePieChartDatum, VariablePieChartTone } from "./VariablePieChart.js";
 export { VectorFieldChart } from "./VectorFieldChart.js";
