@@ -5,6 +5,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { Avatar } from "./Avatar.js";
 import { AvatarGroup } from "./AvatarGroup.js";
 import { ChatMessage } from "./ChatMessage.js";
+import type { ChatMessageRole } from "./ChatMessage.js";
 import { ChatThread } from "./ChatThread.js";
 import { Embed } from "./Embed.js";
 import { Icon } from "./Icon.js";
@@ -147,7 +148,7 @@ describe("P4c group 1 edges (Avatar, AvatarGroup, Typography, Embed: signals at 
     withSrc.unmount();
   });
 
-  it("AvatarGroup renders the overflow token and follows max/total signals", () => {
+  it("AvatarGroup renders the overflow token and follows max/total signals", async () => {
     const max = signal(2);
     const total = signal(5);
     const { container } = render(
@@ -156,6 +157,14 @@ describe("P4c group 1 edges (Avatar, AvatarGroup, Typography, Embed: signals at 
       </AvatarGroup>,
     );
     expect(container.querySelector(".st-avatarGroup__overflow")?.textContent).toBe("+3");
+    total.value = 6;
+    await waitFor(() =>
+      expect(container.querySelector(".st-avatarGroup__overflow")?.textContent).toBe("+4"),
+    );
+    max.value = 1;
+    await waitFor(() =>
+      expect(container.querySelector(".st-avatarGroup__overflow")?.textContent).toBe("+5"),
+    );
     expect(container.querySelector(".st-avatarGroup")).not.toBeNull();
   });
 
@@ -201,18 +210,29 @@ describe("P4c group 1 edges (ChatMessage, ChatThread, MessageActions, MessageSta
   it("follows className signals mutated after mount (DOM changes)", async () => {
     const chatClass = signal("x-chat");
     const threadClass = signal("x-thread");
+    const actionsClass = signal("x-actions");
+    const badgeClass = signal("x-badge");
     render(
       <>
         <ChatMessage data-testid="m-chat" content="Hi" className={chatClass} />
         <ChatThread data-testid="m-thread" className={threadClass} />
+        <MessageActions data-testid="m-actions" actions={[{ label: "Copy" }]} className={actionsClass} />
+        <MessageStatusBadge data-testid="m-badge" status="sent" className={badgeClass} />
       </>,
     );
     chatClass.value = "y-chat";
     threadClass.value = "y-thread";
+    actionsClass.value = "y-actions";
+    badgeClass.value = "y-badge";
     await screen.findByTestId("m-chat");
     expect(screen.getByTestId("m-chat").className).toContain("y-chat");
     expect(screen.getByTestId("m-chat").className).not.toContain("x-chat");
     expect(screen.getByTestId("m-thread").className).toContain("y-thread");
+    expect(screen.getByTestId("m-thread").className).not.toContain("x-thread");
+    expect(screen.getByTestId("m-actions").className).toContain("y-actions");
+    expect(screen.getByTestId("m-actions").className).not.toContain("x-actions");
+    expect(screen.getByTestId("m-badge").className).toContain("y-badge");
+    expect(screen.getByTestId("m-badge").className).not.toContain("x-badge");
   });
 
   it("ChatMessage normalizes streaming/error statuses and aligns user roles", () => {
@@ -292,18 +312,29 @@ describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, M
   it("follows className signals mutated after mount (DOM changes)", async () => {
     const streamClass = signal("x-stream");
     const transcriptClass = signal("x-transcript");
+    const displayClass = signal("x-display");
+    const mediaClass = signal("x-media");
     render(
       <>
         <StreamingMessage data-testid="m-stream" text="Live" className={streamClass} />
         <Transcription data-testid="m-transcript" text="Hello" className={transcriptClass} />
+        <DisplaySettings data-testid="m-display" className={displayClass} />
+        <MediaContent data-testid="m-media" title="T" className={mediaClass} />
       </>,
     );
     streamClass.value = "y-stream";
     transcriptClass.value = "y-transcript";
+    displayClass.value = "y-display";
+    mediaClass.value = "y-media";
     await screen.findByTestId("m-stream");
     expect(screen.getByTestId("m-stream").className).toContain("y-stream");
     expect(screen.getByTestId("m-stream").className).not.toContain("x-stream");
     expect(screen.getByTestId("m-transcript").className).toContain("y-transcript");
+    expect(screen.getByTestId("m-transcript").className).not.toContain("x-transcript");
+    expect(screen.getByTestId("m-display").className).toContain("y-display");
+    expect(screen.getByTestId("m-display").className).not.toContain("x-display");
+    expect(screen.getByTestId("m-media").className).toContain("y-media");
+    expect(screen.getByTestId("m-media").className).not.toContain("x-media");
   });
 
   it("StreamingMessage shows the placeholder when empty and lists events", () => {
@@ -342,11 +373,10 @@ describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, M
     );
   });
 
-  it("DisplaySettings calls onChange with merged settings and follows show toggles", () => {
+  it("DisplaySettings calls onChange with merged settings", () => {
     const onChange = vi.fn();
-    const showReducedMotion = signal(false);
     const { container } = render(
-      <DisplaySettings onChange={onChange} showReducedMotion={showReducedMotion} />,
+      <DisplaySettings onChange={onChange} showReducedMotion={false} />,
     );
     expect(container.querySelector(".st-displaySettings__field--switch")).toBeNull();
     const select = container.querySelector("select") as HTMLSelectElement;
@@ -363,6 +393,85 @@ describe("P4c group 1 edges (StreamingMessage, Transcription, DisplaySettings, M
     await waitFor(() =>
       expect(container.querySelector(".st-displaySettings__field--switch")).not.toBeNull(),
     );
+  });
+
+  it("ChatThread follows messages and autoScroll signals mutated after mount", async () => {
+    const messages = signal<Array<{ id: string; role: ChatMessageRole; content: string }>>([{ id: "1", role: "assistant", content: "Hello" }]);
+    const autoScroll = signal(true);
+    const { container } = render(<ChatThread messages={messages} autoScroll={autoScroll} />);
+    expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(1);
+    expect(container.querySelector(".st-chatMessage__content")?.textContent).toBe("Hello");
+    messages.value = [
+      { id: "1", role: "assistant", content: "Hello" },
+      { id: "2", role: "user", content: "World" },
+    ];
+    await waitFor(() =>
+      expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(2),
+    );
+    expect(container.querySelectorAll(".st-chatMessage__content")[1].textContent).toBe("World");
+    autoScroll.value = false;
+    await waitFor(() =>
+      expect(container.querySelectorAll(".st-chatMessage__content").length).toBe(2),
+    );
+    messages.value = [{ id: "1", role: "assistant", content: "Solo" }];
+    await waitFor(() =>
+      expect(container.querySelector(".st-chatMessage__content")?.textContent).toBe("Solo"),
+    );
+  });
+
+  it("DisplaySettings follows values and show toggles mutated after mount", async () => {
+    const values = signal<Partial<{ fontScale: "normal" | "large" | "extra-large"; contrast: "default" | "high"; lineSpacing: "normal" | "comfortable"; reducedMotion: boolean }>>({ fontScale: "normal" });
+    const showFontScale = signal(true);
+    const showContrast = signal(true);
+    const showLineSpacing = signal(true);
+    const { container } = render(
+      <DisplaySettings values={values} showFontScale={showFontScale} showContrast={showContrast} showLineSpacing={showLineSpacing} />,
+    );
+    const select = container.querySelector("select") as HTMLSelectElement;
+    expect(select.value).toBe("normal");
+    values.value = { fontScale: "large" };
+    await waitFor(() =>
+      expect((container.querySelector("select") as HTMLSelectElement).value).toBe("large"),
+    );
+    showFontScale.value = false;
+    await waitFor(() =>
+      expect(container.querySelector(".st-displaySettings__label")?.textContent).not.toBe("Taille de texte"),
+    );
+    expect(container.querySelectorAll(".st-displaySettings__field").length).toBe(3);
+    showContrast.value = false;
+    await waitFor(() =>
+      expect(container.querySelectorAll(".st-displaySettings__field").length).toBe(2),
+    );
+    showLineSpacing.value = false;
+    await waitFor(() =>
+      expect(container.querySelectorAll(".st-displaySettings__field").length).toBe(1),
+    );
+  });
+
+  it("MediaContent follows mediaControls signals mutated after mount", async () => {
+    const mediaControls = signal(true);
+    const { container } = render(
+      <MediaContent title="Clip" media="https://example.com/c.mp4" mediaKind="video" mediaControls={mediaControls} />,
+    );
+    const video = container.querySelector("video") as HTMLVideoElement;
+    expect(video.controls).toBe(true);
+    mediaControls.value = false;
+    await waitFor(() =>
+      expect((container.querySelector("video") as HTMLVideoElement).controls).toBe(false),
+    );
+  });
+
+  it("Transcription follows showTimestamps signals mutated after mount", async () => {
+    const showTimestamps = signal(true);
+    const { container } = render(
+      <Transcription
+        showTimestamps={showTimestamps}
+        segments={[{ speaker: "Ada", startTime: "00:01", endTime: "00:05", text: "Hello" }]}
+      />,
+    );
+    expect(container.querySelector("time")).not.toBeNull();
+    showTimestamps.value = false;
+    await waitFor(() => expect(container.querySelector("time")).toBeNull());
   });
 
   it("MediaContent renders video with captions and falls back to children", () => {

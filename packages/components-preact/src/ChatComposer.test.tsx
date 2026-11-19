@@ -1,5 +1,5 @@
 import { signal } from "@preact/signals";
-import { cleanup, fireEvent, render, screen } from "@testing-library/preact";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/preact";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { ChatComposer } from "./ChatComposer.js";
 
@@ -72,5 +72,16 @@ describe("ChatComposer (Preact)", () => {
     seed.value = "Changed later";
     expect(textarea.value).toBe("Edited");
     expect(renders).toBe(1);
+  });
+
+  it("follows a className signal mutated after mount", async () => {
+    const className = signal("x-composer");
+    render(<ChatComposer placeholder="Ask" aria-label="Composer" className={className} />);
+    expect(screen.getByRole("form", { name: "Composer" }).className).toContain("x-composer");
+    className.value = "y-composer";
+    await waitFor(() =>
+      expect(screen.getByRole("form", { name: "Composer" }).className).toContain("y-composer"),
+    );
+    expect(screen.getByRole("form", { name: "Composer" }).className).not.toContain("x-composer");
   });
 });
