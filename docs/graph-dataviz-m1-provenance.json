@@ -5160,8 +5160,8 @@
       "gitBlob": "37ccd602549793c12fd19e42346463b87a7c2871",
       "sha256": "e8e244536e6a0eb76d4639356d298e83c891f647a08f80baece3bc067d820ae8",
       "status": "adapted-vue-vapor",
-      "destinationSha256": "ea4d3668911c2e5e04b09d26afefc9a02b60d67e9f0abe2160553a555dd1d738",
-      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.7, whose diagram-canvas 0.2.5 -> diagram-core 0.3.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. Upstream identity retained."
+      "destinationSha256": "91a34a037ea0ef3c4856ec7eefac9512f47b94a6c8bf89b69630a27cc484cf33",
+      "note": "Vue Vapor SFC port: dual Classic/Vapor builds, exports, published declaration parity and exact Vue toolchain 3.6.0-rc.15; consumer peer ^3.5 || ^3.6.0-0. Current runtime pins: design-system-themes 0.14.0 and design-system-vue 0.41.0-next.8, whose diagram-canvas 0.3.0 -> diagram-core 0.3.0 closure awaits public npm. PR 282 final review: exclude cache markers/maps and enforce source/dist control-byte safety during build. Card body centring: align the design-system-vue pin with 0.41.0-next.7. DE-1: align the design-system-vue pin with 0.41.0-next.8. Upstream identity retained."
     },
     {
       "repository": "dataviz",
