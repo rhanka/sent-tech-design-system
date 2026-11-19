@@ -45,7 +45,7 @@ const reactTests = [
   "svelte-api-parity", // Tabs `onchange` alias
   "SelectableRow", // forwardRef + context witness
   "SelectableList", // hand-written list driving the emitted row through context
-  "Positioning", // Portal (emitted) and Popper (hand-written, on the emitted Portal)
+  "Positioning", // Portal and Popper (both emitted, P5 group 1)
   "GroupsIdentity", // ButtonGroup around the emitted Button
   "NavActionStack", // hand-written dependent of Button
   "NavItem", // hand-written dependent of SelectableRow
@@ -61,7 +61,7 @@ const reactTests = [
   "Icon", // emitted P4c group-1 icon set (names, strokeWidth token, glyph)
   "Overline", // emitted P4c group-1 overline (`as`, className, rest props)
   "Specialized", // emitted Rating + Autosave (sole components-react suite for both)
-  "NavSection", // hand-written dependent of the emitted Collapsible (trailing, open, aria-label)
+  "NavSection", // emitted P5 group-1 NavSection on emitted Collapsible (trailing, open, aria-label)
   "parity-0.3.0", // emitted Notification via the parity suite (onDismiss)
   "RangeSlider", // emitted P2 form module
   "MenuCascade", // emitted Menu cascade, hover-intent and safe-triangle behaviour
@@ -141,8 +141,8 @@ const reactTests = [
   "OHLCChart", // shared OHLC chartAnnotations suite (P4a helpers)
   "ScatterPlot", // shared ScatterPlot chartAnnotations suite (P4a helpers)
   "ChartForecastCluster", // LineChart forecast mode + ScatterPlot size/tone/centroids (P4b)
-  "index", // DS class contract over every component incl. P4a
-  "catalog", // catalogue render incl. P4a modules
+  "CheckboxCentring", // CSS contract for Checkbox vertical centring (0 skipped React suites)
+  "PaginationActiveHover", // CSS contract for Pagination hovered active page (0 skipped React suites)
 ];
 
 /** `components-react` suites whose test file is `.test.ts` (not `.test.tsx`). */
