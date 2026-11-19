@@ -8,7 +8,7 @@ import type { MaybeSignal } from "./signals.js";
 export type NavShellVariant = "rail" | "drawer";
 export type NavShellSide = "left" | "right" | "bottom";
 
-export type NavShellProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type NavShellProps = HTMLAttributes<HTMLElement> & {
   variant?: NavShellVariant;
   title?: ComponentChildren;
   subtitle?: ComponentChildren;
@@ -20,8 +20,6 @@ export type NavShellProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   footer?: ComponentChildren;
   open?: MaybeSignal<boolean>;
   side?: NavShellSide;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function NavShell({ variant = "rail", title, subtitle, back = false, backLabel = "Back", onBack, label, search, footer, open: openInput = false, side = "left", className, children, ...rest }: NavShellProps) {

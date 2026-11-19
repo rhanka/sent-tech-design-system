@@ -19,7 +19,6 @@ import { classNames } from "./classNames.js";
 // evaluate runtime.js and `tabIndex` would revert to the broken camelCase
 // attribute, leaving the node unfocusable.
 import "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 // ── Icon — canonical DS icon set ──────────────────────────────────────────
 // The DS prescribes ONE icon set, addressed by DS-owned names via <Icon>. The
@@ -45,7 +44,7 @@ export const ICON_NAMES = Object.keys(ICONS) as IconName[];
 /** An arbitrary lucide glyph component accepted by {@link Icon} via `glyph`. */
 export type IconGlyph = LucideIcon;
 
-export type IconProps = Omit<SVGAttributes<SVGSVGElement>, "name" | "className"> & {
+export type IconProps = Omit<SVGAttributes<SVGSVGElement>, "name"> & {
   /** Square size in px. Default 18 — the DS-standard inline glyph size. */
   size?: number;
   /**
@@ -70,8 +69,6 @@ export type IconProps = Omit<SVGAttributes<SVGSVGElement>, "name" | "className">
    * are set, and neither renders nothing (returns null).
    */
   glyph?: IconGlyph;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function Icon({ name, glyph, size = 18, strokeWidth, title, className, ...rest }: IconProps) {

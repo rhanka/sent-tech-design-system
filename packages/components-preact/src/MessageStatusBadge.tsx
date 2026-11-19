@@ -2,14 +2,11 @@ import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
 import type { ChatMessageStatus } from "./ChatMessage.js";
-import type { MaybeSignal } from "./signals.js";
 
-export type MessageStatusBadgeProps = Omit<HTMLAttributes<HTMLSpanElement>, "className"> & {
+export type MessageStatusBadgeProps = HTMLAttributes<HTMLSpanElement> & {
   status: ChatMessageStatus;
   tone?: "neutral" | "info" | "success" | "warning" | "error";
   labels?: Partial<Record<ChatMessageStatus, ComponentChildren>>;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function MessageStatusBadge({ status, tone, labels, className, ...rest }: MessageStatusBadgeProps) {

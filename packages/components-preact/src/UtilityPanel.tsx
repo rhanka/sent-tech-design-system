@@ -7,7 +7,7 @@ import type { MaybeSignal } from "./signals.js";
 export type UtilityPanelMode = "reserve" | "overlay" | "floating";
 export type UtilityPanelSide = "left" | "right" | "bottom";
 
-export type UtilityPanelProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type UtilityPanelProps = HTMLAttributes<HTMLElement> & {
   mode?: UtilityPanelMode;
   side?: UtilityPanelSide;
   title?: ComponentChildren;
@@ -15,8 +15,6 @@ export type UtilityPanelProps = Omit<HTMLAttributes<HTMLElement>, "className"> &
   collapsed?: MaybeSignal<boolean>;
   header?: ComponentChildren;
   footer?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function UtilityPanel({ mode = "reserve", side = "right", title, label, collapsed: collapsedInput = false, header, footer, className, children, ...rest }: UtilityPanelProps) {

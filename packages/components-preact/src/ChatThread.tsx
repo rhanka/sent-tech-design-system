@@ -7,14 +7,12 @@ import type { ComponentChildren } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
-export type ChatThreadProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
+export type ChatThreadProps = HTMLAttributes<HTMLElement> & {
   label?: string;
   autoScroll?: MaybeSignal<boolean>;
   messages?: MaybeSignal<Array<{ id: string; role?: ChatMessageRole; content: ComponentChildren; status?: ChatMessageStatus }>>;
   emptyLabel?: ComponentChildren;
   emptyState?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function ChatThread({

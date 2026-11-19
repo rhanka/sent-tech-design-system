@@ -1,12 +1,11 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
 import type { ComponentChildren } from "./runtime.js";
-import type { MaybeSignal } from "./signals.js";
 
 export type ChatMessageRole = "user" | "assistant" | "system" | "tool";
 export type ChatMessageStatus = "pending" | "processing" | "completed" | "failed" | "idle" | "streaming" | "error" | "sent";
 
-export type ChatMessageProps = Omit<HTMLAttributes<HTMLElement>, "content" | "role" | "className"> & {
+export type ChatMessageProps = Omit<HTMLAttributes<HTMLElement>, "content" | "role"> & {
   role?: ChatMessageRole;
   status?: ChatMessageStatus;
   content?: ComponentChildren;
@@ -14,8 +13,6 @@ export type ChatMessageProps = Omit<HTMLAttributes<HTMLElement>, "content" | "ro
   footer?: ComponentChildren;
   actions?: ComponentChildren;
   avatar?: ComponentChildren;
-  /** A signal is accepted in the Preact build; the React emission keeps `string`. */
-  className?: MaybeSignal<string>;
 };
 
 export function ChatMessage({
