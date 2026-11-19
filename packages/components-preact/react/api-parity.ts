@@ -24,6 +24,7 @@ export type PropsParity = [
   Expect<Equal<Emitted.TabItem, HandWritten.TabItem>>,
   Expect<Equal<Emitted.SelectableRowProps, HandWritten.SelectableRowProps>>,
   Expect<Equal<Emitted.SelectableListContextValue, HandWritten.SelectableListContextValue>>,
+  Expect<Equal<Emitted.ChatComposerProps, HandWritten.ChatComposerProps>>,
   Expect<Equal<Emitted.PortalProps, HandWritten.PortalProps>>,
   Expect<Equal<Emitted.ThemeProviderProps, HandWritten.ThemeProviderProps>>,
   Expect<Equal<Emitted.AccordionProps, HandWritten.AccordionProps>>,
@@ -546,6 +547,7 @@ export type PropsParity = [
   Expect<Equal<Emitted.StreamingMessageMode, HandWritten.StreamingMessageMode>>,
   Expect<Equal<Emitted.TranscriptionProps, HandWritten.TranscriptionProps>>,
   Expect<Equal<Emitted.TranscriptionSegment, HandWritten.TranscriptionSegment>>,
+  Expect<Equal<Emitted.TypographyProps, HandWritten.TypographyProps>>,
   Expect<Equal<Emitted.TypographyVariant, HandWritten.TypographyVariant>>,
   Expect<Equal<Emitted.TypographyWeight, HandWritten.TypographyWeight>>,
   Expect<Equal<Emitted.TypographyTone, HandWritten.TypographyTone>>,
@@ -563,6 +565,7 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.SelectableRow, typeof HandWritten.SelectableRow>>,
   Expect<Equal<typeof Emitted.Modal, typeof HandWritten.Modal>>,
   Expect<Equal<typeof Emitted.Tabs, typeof HandWritten.Tabs>>,
+  Expect<Equal<typeof Emitted.ChatComposer, typeof HandWritten.ChatComposer>>,
   Expect<Equal<typeof Emitted.Portal, typeof HandWritten.Portal>>,
   Expect<Equal<typeof Emitted.ThemeProvider, typeof HandWritten.ThemeProvider>>,
   Expect<Equal<typeof Emitted.Accordion, typeof HandWritten.Accordion>>,
@@ -759,6 +762,7 @@ export type ComponentParity = [
   Expect<Equal<typeof Emitted.Overline, typeof HandWritten.Overline>>,
   Expect<Equal<typeof Emitted.StreamingMessage, typeof HandWritten.StreamingMessage>>,
   Expect<Equal<typeof Emitted.Transcription, typeof HandWritten.Transcription>>,
+  Expect<Equal<typeof Emitted.Typography, typeof HandWritten.Typography>>,
   Expect<Equal<typeof Emitted.AppChrome, typeof HandWritten.AppChrome>>,
   Expect<Equal<typeof Emitted.AppHeader, typeof HandWritten.AppHeader>>,
   Expect<Equal<typeof Emitted.AppShell, typeof HandWritten.AppShell>>,
@@ -803,41 +807,6 @@ export type PriorityLabelsParity = [
   Expect<Equal<typeof EmittedPriorityLabels.priorityQuadrant, typeof HandWrittenPriorityLabels.priorityQuadrant>>,
   Expect<Equal<typeof EmittedPriorityLabels.estimatePriorityLabelBox, typeof HandWrittenPriorityLabels.estimatePriorityLabelBox>>,
   Expect<Equal<typeof EmittedPriorityLabels.placePriorityLabels, typeof HandWrittenPriorityLabels.placePriorityLabels>>,
-];
-
-// ChatComposer carries a declared MaybeSignal className (`Omit<…, "onSubmit" |
-// "className">` + `MaybeSignal<string>`), so the full-Props `Equal` identity
-// cannot state it — the `Omit` divergence alone fails the identity trick, and
-// in full-file evaluation it also breaks the neighbouring Portal line
-// (identical comparisons pass in isolation; reordering only moves the failure).
-// Gate it in isolation, member-wise: the `Omit`-without-className halves are
-// `Equal`, the className members are `Equal` once the emission collapses
-// `MaybeSignal<string>` to `string`, and the two Props stay mutually
-// assignable. No `Equal` on the whole Props or on `typeof ChatComposer`, so the
-// fragile construction never enters the neighbouring `Equal` chains.
-export type ChatComposerParity = [
-  Expect<Equal<Omit<Emitted.ChatComposerProps, "className">, Omit<HandWritten.ChatComposerProps, "className">>>,
-  Expect<Equal<NonNullable<Emitted.ChatComposerProps["className"]>, NonNullable<HandWritten.ChatComposerProps["className"]>>>,
-  Expect<Emitted.ChatComposerProps extends HandWritten.ChatComposerProps ? true : false>,
-  Expect<HandWritten.ChatComposerProps extends Emitted.ChatComposerProps ? true : false>,
-];
-
-// Typography declares `children` explicitly (preact's `HTMLAttributes` carries
-// no `children`, so the port must name it) while the hand-written React type
-// inherits `children` from `DOMAttributes` — same `ReactNode` either way, but
-// the intersection constituents differ so whole-Props `Equal` cannot state it
-// (members pass in isolation, the whole fails at any scale). Gate it
-// member-wise like ChatComposerParity: the `Omit`-without-children halves are
-// `Equal`, `children` and `as` are `Equal` (the emission collapses
-// `MaybeSignal` and re-exports React's `ElementType`), both directions stay
-// assignable, and no whole-Props or `typeof` `Equal` enters the neighbouring
-// `Equal` chains.
-export type TypographyParity = [
-  Expect<Equal<Omit<Emitted.TypographyProps, "children">, Omit<HandWritten.TypographyProps, "children">>>,
-  Expect<Equal<NonNullable<Emitted.TypographyProps["children"]>, NonNullable<HandWritten.TypographyProps["children"]>>>,
-  Expect<Equal<Emitted.TypographyProps["as"], HandWritten.TypographyProps["as"]>>,
-  Expect<Emitted.TypographyProps extends HandWritten.TypographyProps ? true : false>,
-  Expect<HandWritten.TypographyProps extends Emitted.TypographyProps ? true : false>,
 ];
 
 // The emitted barrel publishes no value the hand-written package keeps
