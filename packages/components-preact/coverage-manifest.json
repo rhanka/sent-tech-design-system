@@ -1924,14 +1924,14 @@
       "file": "src/runtime.ts",
       "twin": "react/runtime.ts",
       "lot": "P5",
-      "note": "Core-only adapter: forwardRef, SVG presentation-attribute normalisation (options.vnode), insertion and external-store effects, textInput, textChange, focusWithin, dblClick, type aliases"
+      "note": "Core-only adapter: forwardRef, SVG presentation-attribute and tabIndex normalisation (options.vnode), insertion and external-store effects, textInput, textChange, focusWithin, focusOut, dblClick, type aliases"
     },
     {
       "module": "signals.ts",
       "file": "src/signals.ts",
       "twin": "react/signals.ts",
       "lot": "P5",
-      "note": "K4: the only module importing @preact/signals (MaybeSignal, useValue, unwrap)"
+      "note": "K4: the only module importing @preact/signals (MaybeSignal, isSignal, useValue, unwrap)"
     }
   ],
   "semanticMappingNote": "Framework-specific props, events and slots of the port (PLAN section 2.9). Every row is a recorded difference with a test on both legs, not a divergence to fix here. The Vue side of the spike divergences (docs/preact-s1-spike.md section 4) is not covered: it belongs to the L1.5 manifest rows.",
