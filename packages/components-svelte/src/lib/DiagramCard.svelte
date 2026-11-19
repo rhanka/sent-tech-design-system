@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { lineBoxHeight } from "./diagramCardModel.js";
+  import { anatomyCardGeometry, lineBoxHeight } from "./diagramCardModel.js";
   const descriptionId = $props.id();
   import DiagramCardHeader from "./DiagramCardHeader.svelte";
   import { cardFullText, defaultCardMeasure, layoutCard } from "./diagramCardModel.js";
@@ -59,10 +59,13 @@
     toggle,
     align,
     bodyMode,
+    anatomy,
     measure = defaultCardMeasure,
     onSelect,
     onDiagnostic,
   }: DiagramCardProps = $props();
+
+  const cardGeometry = $derived(anatomyCardGeometry(anatomy));
 
   const layout = $derived(
     layoutCard(
@@ -82,6 +85,7 @@
         ...(toggle === undefined ? {} : { toggle }),
         ...(align === undefined ? {} : { align }),
         ...(bodyMode === undefined ? {} : { bodyMode }),
+        ...(anatomy === undefined ? {} : { anatomy }),
       },
       measure,
     ),
@@ -108,11 +112,13 @@
 <!-- Click selects (the §4.6 select intent), like BarChart's point select:
      keyboard activation of a card is the host figure's concern (DC-2). -->
 <div
-  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}"
+  class="st-diagramCard{bodyMode === "subtitle" ? " st-diagramCard--subtitle" : ""}{align === "center" ? " st-diagramCard--center" : ""}{proposed === true ? " st-diagramCard--proposed" : ""}{anatomy === "v2" ? " st-diagramCard--v2" : ""}"
   data-entity={entityId}
   data-tone={tone}
   data-proposed={proposed === true ? "true" : undefined}
-  style={`height:${layout.box.height}px`}
+  style={anatomy === "v2"
+    ? `height:${layout.box.height}px;--st-component-diagramCard-width:var(--st-component-diagramCardCompact-width, 352px);--st-component-diagramCard-padding:var(--st-component-diagramCardCompact-padding, 6px);--st-component-diagramCard-accentWidth:var(--st-component-diagramCardCompact-accentWidth, 6px);--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)`
+    : `height:${layout.box.height}px`}
   data-card-overflow={overflowSlot}
   data-card-icon-unknown={unknownIcon ? "" : undefined}
   role="group"
@@ -127,6 +133,7 @@
     title={layout.title}
     iconName={layout.icon.name}
     iconGlyph={layout.icon.glyph}
+    iconSize={layout.iconBox?.size}
     headerTextWidth={layout.headerTextWidth}
     headerBlockHeight={layout.headerBlockHeight}
     toggle={toggle}
@@ -134,7 +141,7 @@
   <div class="st-diagramCard-gap" aria-hidden="true"></div>
   <div
     class="st-diagramCard-body"
-    style={`margin-left:${layout.bodyX - 16}px;width:${layout.bodyWidth}px`}
+    style={`margin-left:${layout.bodyX - cardGeometry.headerInset}px;width:${layout.bodyWidth}px`}
   >
     {#each layout.body as line, bodyIndex (bodyIndex)}
       <span class={line.secondary ? "st-diagramCard-detail" : "st-diagramCard-line"} style={`line-height:${lineBoxHeight(line.size)}px;height:${lineBoxHeight(line.size)}px`}>{line.text}</span>

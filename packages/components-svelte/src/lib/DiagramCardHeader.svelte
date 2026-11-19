@@ -16,6 +16,8 @@
     title: readonly LaidOutLine[];
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
+    /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
+    iconSize?: number;
     /** Width the title/kicker block may take (toggle-aware). */
     headerTextWidth: number;
     /**
@@ -39,6 +41,7 @@
     title,
     iconName,
     iconGlyph = iconName === undefined || iconName === "none" ? undefined : getDiagramGlyph(iconName) ?? getDiagramGlyph("unknown"),
+    iconSize = 70,
     headerTextWidth,
     headerBlockHeight,
     toggle,
@@ -52,8 +55,8 @@
       class="st-diagramCardHeader-icon"
       data-diagram-icon={iconName}
       viewBox="0 0 64 64"
-      width="70"
-      height="70"
+      width={iconSize}
+      height={iconSize}
       aria-hidden="true"
       focusable="false"
     >

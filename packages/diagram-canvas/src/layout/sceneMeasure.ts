@@ -1,15 +1,17 @@
 /** The scene engine and both renderers share the same card/zone chrome. */
 import type { EntityPresentation, OccurrenceRef } from "@sentropic/diagram-core";
 import {
+  anatomyCardGeometry,
   layoutCard, layoutZone, projectCardProps, projectZoneProps, lineBoxHeight,
-  CARD_GEOMETRY, ZONE_GEOMETRY, type CardLineMeasure,
+  CARD_GEOMETRY, ZONE_GEOMETRY, type CardLineMeasure, type DiagramAnatomy,
 } from "../presentation/diagramCardModel.js";
 import { DEFAULT_ALLOCATED_LINES, type HeaderMeasurement, type LineMeasurer, type LineLayout } from "./measure.js";
 
 export function measureSceneBox(
-  presentation: EntityPresentation | undefined, occurrence: OccurrenceRef,
+  presentation: (EntityPresentation & { readonly anatomy?: DiagramAnatomy }) | undefined, occurrence: OccurrenceRef,
   width: number, collapsed: boolean, measure: LineMeasurer, containerPadding?: number,
 ) {
+  const cardGeometry = anatomyCardGeometry(presentation?.anatomy);
   const zone = presentation?.form === "container" || presentation?.form === "legend";
   const measured = new Map<string, LineLayout>();
   const at = (text: string, role: Parameters<LineMeasurer>[0]["role"], availableWidth: number) => {
@@ -47,7 +49,7 @@ export function measureSceneBox(
   const kicker = bounded(rawKicker, card?.kicker ?? header?.kicker, CARD_GEOMETRY.kicker.size);
   const title = bounded(rawTitle, card?.title ?? header?.title, CARD_GEOMETRY.title.size)!;
   const subtitle = bounded(rawSubtitle, header?.subtitle, CARD_GEOMETRY.body.size);
-  const blockHeight = Math.max(projected.kind === "label" || presentation?.icon === "none" ? 0 : CARD_GEOMETRY.iconSize, (kicker?.height ?? 0) + title.height);
+  const blockHeight = Math.max(projected.kind === "label" || presentation?.icon === "none" ? 0 : cardGeometry.iconSize, (kicker?.height ?? 0) + title.height);
   const height = header === undefined ? blockHeight : blockHeight + ZONE_GEOMETRY.headerRuleGap
     + (subtitle === undefined || subtitle.lines.length === 0 ? 0 : ZONE_GEOMETRY.subtitleGap + subtitle.height);
   const measuredHeader: HeaderMeasurement = {
@@ -61,6 +63,6 @@ export function measureSceneBox(
       + ZONE_GEOMETRY.ruleHeight + 2 * ZONE_GEOMETRY.ruleMargin + ZONE_GEOMETRY.footerBottomInset;
   return { width: layout.box.width, height: layout.box.height, header: measuredHeader,
     bodyWidth: card?.bodyWidth ?? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline),
-    footerWidth: card === undefined ? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline) : CARD_GEOMETRY.width - CARD_GEOMETRY.borderWidth - CARD_GEOMETRY.padding - CARD_GEOMETRY.headerInset,
+    footerWidth: card === undefined ? width - 2 * (containerPadding ?? ZONE_GEOMETRY.contentInsetInline) : card.box.width - cardGeometry.borderWidth - cardGeometry.padding - cardGeometry.headerInset,
     footerReserve, diagnostics: layout.diagnostics };
 }

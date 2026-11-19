@@ -50,6 +50,7 @@ import { getDiagramGlyph } from "./registry.js";
 import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
+import type { AnatomyPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -105,11 +106,19 @@ export const ROLE_ICONS: Readonly<Record<string, string>> = { card: "base", zone
 export function resolveScenePresentation(document: SceneDocument, presentation: ScenePresentation,
   bindings: SceneIconBindings = {}, strict = true, view?: SceneView, resolveGlyph: (name: string) => import("./diagramCardModel.js").DiagramGlyphPaths | undefined = getDiagramGlyph) {
   const missing: string[] = [];
+  /**
+   * View-level anatomy default (DE-1): a view pins `diagram-anatomy/v1 | v2`
+   * and its boxes inherit the pin unless they carry their own. Absent
+   * everywhere means `"v1"` — existing views do not move.
+   */
+  const viewAnatomy = (view?.presentation as { readonly anatomy?: DiagramAnatomy } | undefined)?.anatomy;
+  const withViewAnatomy = <T extends { readonly anatomy?: DiagramAnatomy }>(entry: T): T =>
+    entry.anatomy === undefined && viewAnatomy !== undefined ? { ...entry, anatomy: viewAnatomy } : entry;
   const entities = Object.fromEntries(Object.entries(presentation.entities).map(([id, entry]) => {
-    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, entry];
+    if (entry.form !== "card" && entry.form !== "container" && entry.form !== "legend") return [id, withViewAnatomy(entry)];
     const entityId = view?.entityOccurrences[id]?.entity ?? id.replace(/^occurrence:e\./, "entity:");
     const entity = document.entities[entityId];
-    if (entity?.profile === "erd@1") return [id, entry];
+    if (entity?.profile === "erd@1") return [id, withViewAnatomy(entry)];
     const binding = bindings[entity === undefined ? "" : entity.profile + ":" + entity.type] ?? bindings[entity?.type ?? ""];
     if (binding?.shape !== undefined && binding.shape !== "component") return [id, { ...entry, icon: entry.icon ?? "none" }];
     const role = binding?.role ?? (entry.form === "card" ? "card" : "zone");
@@ -208,7 +217,7 @@ export interface SceneNodeModel {
   /** Zones only: drawn as the atomic card (collapsed) or as the frame. */
   readonly collapsed: boolean;
   readonly rect: Rect;
-  readonly presentation?: EntityPresentation;
+  readonly presentation?: EntityPresentation & AnatomyPinned;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
@@ -359,7 +368,7 @@ export function resolveScene(
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = resolved.presentation.entities[node.occurrence] as EntityPresentation | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned) | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";
