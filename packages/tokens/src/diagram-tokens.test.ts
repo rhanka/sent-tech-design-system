@@ -61,6 +61,18 @@ const GEOMETRY: Record<string, Record<string, string>> = {
     rootGapInline: "var(--st-component-diagramZone-childGapInline)",
     rootGapBlock: "var(--st-component-diagramZone-childGapBlock)",
   },
+  // DE-1 compact anatomy (352 × 154): the PLAN DE-1 insets as literals,
+  // every other leaf aliasing the v1 `diagramCard` tokens by construction.
+  diagramCardCompact: {
+    width: "352px",
+    height: "154px",
+    accentWidth: "6px",
+    padding: "6px",
+    headerInset: "12px",
+    iconSize: "52px",
+    iconTextGap: "4px",
+    foldedHeaderTextWidth: "210px",
+  },
   diagramZone: {
     radius: "0",
     borderWidth: "1.5px",

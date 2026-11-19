@@ -4,7 +4,7 @@ defineOptions({ name: 'DiagramZone' });
 import { computed, onMounted, watch, useId } from "vue";
 import DiagramCard from "./DiagramCard.vue";
 import DiagramZoneHeader from "./DiagramZoneHeader.vue";
-import { ZONE_GEOMETRY, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
+import { anatomyZoneGeometry, zoneFullText, defaultCardMeasure, layoutZone, zoneCollapsedCardProps, type CardLineMeasure, type DiagramZoneProps as DiagramZoneData, type ZoneDiagnostic, } from "./diagramCardModel.js";
 /**
  * `DiagramZone` — the wrapping diagram card (DC-2, spec §6).
  *
@@ -40,7 +40,8 @@ export interface DiagramZoneProps extends DiagramZoneData {
     /** One call per zone diagnostic the layout raises. */
     onDiagnostic?: (diagnostic: ZoneDiagnostic) => void;
 }
-const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const { autoSize = true, entityId, containerPadding, kicker, title, subtitle, footer, icon, iconGlyph, tone, proposed, collapsed, toggleLabel, align, anatomy, x = 0, y = 0, width, height, measure = defaultCardMeasure, } = defineProps<DiagramZoneProps>();
+const zoneGeometry = computed(() => anatomyZoneGeometry(anatomy));
 const emit = defineEmits<{
     toggle: [
         event: {
@@ -80,6 +81,7 @@ const zoneProps = computed(() => ({
     collapsed,
     ...(toggleLabel === undefined ? {} : { toggleLabel }),
     ...(align === undefined ? {} : { align }),
+    ...(anatomy === undefined ? {} : { anatomy }),
     x,
     y,
     ...(width === undefined ? {} : { width }),
@@ -126,19 +128,19 @@ const frameInset = (inset: number): string => `calc(${inset}px - ${borderToken})
 // inline insets, as tall as the layout's header block + subtitle.
 const headerStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.value.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`);
+    : `top:${frameTop(y + zoneGeometry.value.headerInset)};left:${frameInset(zoneGeometry.value.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};height:${header.value.ruleY - zoneGeometry.value.headerRuleGap - y - zoneGeometry.value.headerInset}px`);
 const ruleStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(header.value.ruleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
+    : `top:${frameTop(header.value.ruleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
 const contentStyle = computed(() => header.value === undefined
     ? undefined
-    : `top:${frameTop(header.value.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`);
+    : `top:${frameTop(header.value.contentTop)};left:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};right:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};bottom:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetBottom)}`);
 const footerRuleStyle = computed(() => header.value?.footerRuleY === undefined
     ? undefined
-    : `top:${frameTop(header.value.footerRuleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`);
+    : `top:${frameTop(header.value.footerRuleY)};left:${frameInset(zoneGeometry.value.ruleInsetStart)};right:${frameInset(zoneGeometry.value.ruleInsetEnd)}`);
 const footerStyle = computed(() => header.value === undefined
     ? undefined
-    : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
+    : `left:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};right:${frameInset(containerPadding ?? zoneGeometry.value.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`);
 onMounted(() => {
     watch(layout, value => {
         for (const diagnostic of value.diagnostics)
@@ -155,18 +157,18 @@ defineSlots<{ "default"?: () => unknown }>();
     <DiagramCard v-bind="cardProps" :measure="measure" @select="onSelect"></DiagramCard>
   </template><template v-else>
 
-    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}`" :style="`width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
+    <div :class="`st-diagramZone st-diagramZone--expanded${align === 'center' ? ' st-diagramZone--center' : ''}${proposed === true ? ' st-diagramZone--proposed' : ''}${anatomy === 'v2' ? ' st-diagramZone--v2' : ''}`" :style="anatomy === 'v2' ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)` : `width:${layout.box.width}px;height:${layout.box.height}px`" :data-tone="tone" :data-proposed="proposed === true ? 'true' : undefined" role="group" :title="zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed })" :aria-label="title" :aria-describedby="descriptionId" @click="() => onSelect?.({ entityId })">
       <span :id="descriptionId" hidden>{{ zoneFullText({ entityId, kicker, title, subtitle, footer, collapsed }) }}</span>
     <template v-if="header !== undefined">
 
         <div class="st-diagramZone-header" :style="headerStyle">
-          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
+          <DiagramZoneHeader :kicker="header.kicker" :title="header.title" :subtitle="header.subtitle" :iconName="layout.icon.name" :iconGlyph="layout.icon.glyph" :iconSize="header.iconBox?.size" :headerInset="zoneGeometry.headerInset" :headerTextWidth="header.headerTextWidth" :headerBlockHeight="header.headerBlockHeight" :subtitleWidth="subtitleWidth" :toggle="toggleLabel === undefined
               ? undefined
               : {
                   collapsed: false,
                   label: toggleLabel,
                   onToggle: () => onToggle?.({ entityId, collapsed: false }),
-                }" :toggleTopInset="ZONE_GEOMETRY.toggleTopInset"></DiagramZoneHeader>
+                }" :toggleTopInset="zoneGeometry.toggleTopInset"></DiagramZoneHeader>
         </div>
         <div class="st-diagramZone-rule" :style="ruleStyle" aria-hidden="true"></div>
         <div class="st-diagramZone-content" :style="contentStyle">

@@ -10,12 +10,14 @@ import { DIAGRAM_SCENE_SPACING as spacing } from './spacing.generated.js';
 import type {
   Diagnostic,
   DiagramPresentation,
+  EntityPresentation,
   ExecutorProfileBindings,
   OccurrenceRef,
   ProfileRegistry,
   ViewDocument,
   ViewRef,
 } from "@sentropic/diagram-core";
+import type { AnatomyPinned } from "../presentation/diagramCardModel.js";
 
 import type { LayoutHints } from "./hints.js";
 import type { LineMeasurer } from "./measure.js";
@@ -187,9 +189,13 @@ export interface LayoutOptions {
    * Typed synthesis presentation (M3 §3.2/§5.6). Absent means the
    * compatibility path: the pinned existing behaviour, byte-identical (§4.8).
    * Present selects the card/container/legend/legend-key synthesis forms and
-   * the fixed-footprint measurement rules of §4.6.
+   * the fixed-footprint measurement rules of §4.6. Entities may carry the
+   * additive DE-1 pins (`AnatomyPinned`); absent pins keep the frozen
+   * behaviour.
    */
-  readonly presentation?: DiagramPresentation;
+  readonly presentation?: DiagramPresentation & {
+    readonly entities: Readonly<Record<string, EntityPresentation & AnatomyPinned>>;
+  };
   /** Injected shared line measurer for measured views (M3 §4.6.2/§5.6). */
   readonly measureLines?: LineMeasurer;
   /** Verified executor bindings for @2 profiles (M3 §5.3.1); required for generic@2. */
