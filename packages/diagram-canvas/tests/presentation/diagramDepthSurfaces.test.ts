@@ -115,26 +115,34 @@ describe("diagram depth surfaces (DE-1 addendum 1)", () => {
     expect("surface" in card.props ? card.props.surface : undefined).toBeUndefined();
   });
 
-  it("should flag a white leaf card on a same-colour zone for explicit children only", () => {
+  it("should flag a white leaf card on a same-colour zone only when opted in", () => {
     const leaf: DiagramCardProps = { entityId: "card", title: "C", body: [] };
+    const children = [{ kind: "card", x: 0, y: 0, card: leaf }] as const;
     const whiteOnWhite = layoutZone(
-      { entityId: "zone", title: "Zone", collapsed: false, width: 600 },
+      { entityId: "zone", title: "Zone", collapsed: false, width: 600, reportSurfaceSame: true },
       defaultCardMeasure,
-      [{ kind: "card", x: 0, y: 0, card: leaf }],
+      [...children],
     );
     expect(whiteOnWhite.surface ?? "surface1").toBe("surface1");
     expect(whiteOnWhite.diagnostics.some((diagnostic) => diagnostic.code === "zone-surface-same")).toBe(true);
-    // A nested (grey) zone never flags its leaf cards.
-    const nested = layoutZone(
-      { entityId: "zone", title: "Zone", collapsed: false, width: 600, depth: 1 },
+    // Off by default: a fitting child renders with no diagnostics.
+    const quiet = layoutZone(
+      { entityId: "zone", title: "Zone", collapsed: false, width: 600 },
       defaultCardMeasure,
-      [{ kind: "card", x: 0, y: 0, card: leaf }],
+      [...children],
+    );
+    expect(quiet.diagnostics.some((diagnostic) => diagnostic.code === "zone-surface-same")).toBe(false);
+    // A nested (grey) zone never flags its leaf cards, even opted in.
+    const nested = layoutZone(
+      { entityId: "zone", title: "Zone", collapsed: false, width: 600, depth: 1, reportSurfaceSame: true },
+      defaultCardMeasure,
+      [...children],
     );
     expect(nested.surface).toBe("surface2");
     expect(nested.diagnostics.some((diagnostic) => diagnostic.code === "zone-surface-same")).toBe(false);
     // Flat host compositions (no explicit children) never flag.
     const flat = layoutZone(
-      { entityId: "zone", title: "Zone", collapsed: false, width: 600 },
+      { entityId: "zone", title: "Zone", collapsed: false, width: 600, reportSurfaceSame: true },
       defaultCardMeasure,
       [],
     );
