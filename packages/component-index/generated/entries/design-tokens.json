@@ -7,21 +7,21 @@
       "digest": "sha256:6528544449048222a8e3459271b20fb1787e86fccc276ad4e6b8bd7c534dceec",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/foundation.ts",
-      "version": "0.14.0"
+      "version": "0.15.0"
     },
     {
       "channel": "tokens",
       "digest": "sha256:0885b6e16c0ad293cf3bc6f18f264a50e5182fb6c9e0108f4ff5601c1ad679de",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/semantic.ts",
-      "version": "0.14.0"
+      "version": "0.15.0"
     },
     {
       "channel": "tokens",
-      "digest": "sha256:38fbbb4ef87cdb066d71bd10852c9668b588b3ab20bcf5425cc0e87111914389",
+      "digest": "sha256:653272a8684b69a7d24b8742905a514bb87f98f21b5d37d28e795598e6d9575c",
       "package": "@sentropic/design-system-tokens",
       "path": "packages/tokens/src/component.ts",
-      "version": "0.14.0"
+      "version": "0.15.0"
     },
     {
       "channel": "tokens",
@@ -49,7 +49,7 @@
     "en": "The design system publishes foundation, semantic, and component tokens. Components never consume raw colors: they read semantic variables and component tokens.",
     "fr": "Le design system publie des tokens foundation, semantic et component. Les composants ne consomment pas les couleurs brutes : ils lisent les variables sémantiques et les component tokens."
   },
-  "digest": "sha256:714c43e795b35fcf90c8d2fedd3345eddaa76959aad51a5f74a744a2a4f9895d",
+  "digest": "sha256:7bf359ea7a384adc187cbff292af4402934fe954c0627dc696a55bd1b10de590",
   "displayName": "DesignTokens",
   "format": "component-entry/v1",
   "frameworks": [],

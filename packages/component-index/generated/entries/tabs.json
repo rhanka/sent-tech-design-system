@@ -9,7 +9,7 @@
       "framework": "svelte",
       "package": "@sentropic/design-system-svelte",
       "path": "packages/components-svelte/src/lib/Tabs.svelte",
-      "version": "0.41.5"
+      "version": "0.42.0"
     },
     {
       "channel": "source",
@@ -25,7 +25,7 @@
       "framework": "vue",
       "package": "@sentropic/design-system-vue",
       "path": "packages/components-vue/src/Tabs.vue",
-      "version": "0.41.0-next.7"
+      "version": "0.41.0-next.8"
     },
     {
       "channel": "source",
@@ -40,7 +40,7 @@
     "en": "Tabs with tablist/tab/tabpanel.",
     "fr": "Onglets tablist/tab/tabpanel."
   },
-  "digest": "sha256:202129883aaeb751b690c4554d1d2486ab297b29165fadf6a9027d28232e062d",
+  "digest": "sha256:c0c3126c54c7872e8e6241741f75cb1cce6ce7caa95d6297d084b9613df1ba35",
   "displayName": "Tabs",
   "format": "component-entry/v1",
   "frameworks": [

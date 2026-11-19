@@ -1,8 +1,8 @@
 {
   "componentId": "streamgraph-chart",
   "contractSource": "derived",
-  "digest": "sha256:adb2f81d63af0ce1351253f8aecf722877f5296e2279608b5ee2a84b8db560ce",
-  "entryDigest": "sha256:58eef52e30e8565a96cdca6619f301ee6ca0015aac8de0f185679bb7e5c5fd5b",
+  "digest": "sha256:f409d7daa66a4f4e30a347bcf8bebaf70f3f59e1488bf7526e91454af3051187",
+  "entryDigest": "sha256:ce2f240777560335be81056a2d0be7d2faf780f2e819f72fd371898c274bf7fb",
   "format": "component-contract/v1",
   "frameworks": {
     "angular": {
@@ -310,7 +310,7 @@
         "declarationPath": "packages/components-svelte/dist/StreamgraphChart.svelte.d.ts",
         "package": "@sentropic/design-system-svelte",
         "propsType": "StreamgraphChartProps",
-        "version": "0.41.5"
+        "version": "0.42.0"
       },
       "status": "complete",
       "unresolved": [],
@@ -414,7 +414,7 @@
         "declarationPath": "packages/components-vue/dist/StreamgraphChart.vue.d.ts",
         "package": "@sentropic/design-system-vue",
         "propsType": "StreamgraphChartProps",
-        "version": "0.41.0-next.7"
+        "version": "0.41.0-next.8"
       },
       "status": "complete",
       "unresolved": [],
