@@ -10,6 +10,10 @@ import * as HandWrittenButton from "../../components-react/src/Button.js";
 import * as HandWrittenButtonGroup from "../../components-react/src/ButtonGroup.js";
 import * as HandWrittenCard from "../../components-react/src/Card.js";
 import * as HandWrittenCol from "../../components-react/src/Col.js";
+import * as HandWrittenCollapsible from "../../components-react/src/Collapsible.js";
+import * as HandWrittenContainer from "../../components-react/src/Container.js";
+import * as HandWrittenDivider from "../../components-react/src/Divider.js";
+import * as HandWrittenFlex from "../../components-react/src/Flex.js";
 
 afterEach(cleanup);
 
@@ -150,6 +154,143 @@ describe("P5 group 2 forwardRef React-leg parity — Batch 1 (Button, ButtonGrou
     expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
     expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
     expect(emittedAs.last?.tagName).toBe("ARTICLE");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+});
+
+describe("P5 group 2 forwardRef React-leg parity — Batch 2 (Collapsible, Container, Divider, Flex)", () => {
+  it("emitted Collapsible ref matches hand-written Collapsible DOM node", () => {
+    const emittedObj = createRef<HTMLDivElement>();
+    const emittedCb = makeCallbackRef<HTMLDivElement>();
+    const handObj = createRef<HTMLDivElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Collapsible ref={emittedObj} title="Open me" open>
+          Content
+        </Emitted.Collapsible>
+        <Emitted.Collapsible ref={emittedCb.ref} title="Closed">
+          Hidden
+        </Emitted.Collapsible>
+      </>,
+    );
+    const r2 = render(
+      <HandWrittenCollapsible.Collapsible ref={handObj} title="Open me" open>
+        Content
+      </HandWrittenCollapsible.Collapsible>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(emittedObj.current?.tagName).toBe("DIV");
+    expect(emittedCb.last).toBeInstanceOf(HTMLDivElement);
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedCb.last).toBeNull();
+  });
+
+  it("emitted Container ref matches hand-written Container DOM node (default div and polymorphic as)", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Container ref={emittedObj} size="md">
+          A
+        </Emitted.Container>
+        <Emitted.Container ref={emittedAs.ref} as="main" padding={false}>
+          B
+        </Emitted.Container>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenContainer.Container ref={handObj} size="md">
+          A
+        </HandWrittenContainer.Container>
+        <HandWrittenContainer.Container ref={handAs} as="main" padding={false}>
+          B
+        </HandWrittenContainer.Container>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("MAIN");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedObj.current).toBeNull();
+    expect(emittedAs.last).toBeNull();
+  });
+
+  it("emitted Divider ref matches hand-written Divider DOM node (unlabeled and labeled)", () => {
+    const emittedPlain = createRef<HTMLDivElement>();
+    const emittedLabeled = makeCallbackRef<HTMLDivElement>();
+    const handPlain = createRef<HTMLDivElement>();
+    const handLabeled = createRef<HTMLDivElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Divider ref={emittedPlain} orientation="vertical" />
+        <Emitted.Divider ref={emittedLabeled.ref} label="OU" />
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenDivider.Divider ref={handPlain} orientation="vertical" />
+        <HandWrittenDivider.Divider ref={handLabeled} label="OU" />
+      </>,
+    );
+
+    expect(snapshotNode(emittedPlain.current)).toEqual(snapshotNode(handPlain.current));
+    expect(snapshotNode(emittedLabeled.last)).toEqual(snapshotNode(handLabeled.current));
+    expect(emittedPlain.current?.getAttribute("role")).toBe("separator");
+    expect(emittedLabeled.last?.getAttribute("role")).toBe("separator");
+
+    r1.unmount();
+    r2.unmount();
+    expect(emittedPlain.current).toBeNull();
+    expect(emittedLabeled.last).toBeNull();
+  });
+
+  it("emitted Flex ref matches hand-written Flex DOM node (default div and polymorphic as)", () => {
+    const emittedObj = createRef<HTMLElement>();
+    const emittedAs = makeCallbackRef<HTMLElement>();
+    const handObj = createRef<HTMLElement>();
+    const handAs = createRef<HTMLElement>();
+
+    const r1 = render(
+      <>
+        <Emitted.Flex ref={emittedObj} wrap inline>
+          A
+        </Emitted.Flex>
+        <Emitted.Flex ref={emittedAs.ref} as="section" direction="column">
+          B
+        </Emitted.Flex>
+      </>,
+    );
+    const r2 = render(
+      <>
+        <HandWrittenFlex.Flex ref={handObj} wrap inline>
+          A
+        </HandWrittenFlex.Flex>
+        <HandWrittenFlex.Flex ref={handAs} as="section" direction="column">
+          B
+        </HandWrittenFlex.Flex>
+      </>,
+    );
+
+    expect(snapshotNode(emittedObj.current)).toEqual(snapshotNode(handObj.current));
+    expect(snapshotNode(emittedAs.last)).toEqual(snapshotNode(handAs.current));
+    expect(emittedAs.last?.tagName).toBe("SECTION");
 
     r1.unmount();
     r2.unmount();
