@@ -2,7 +2,7 @@
   import { lineBoxHeight } from "./diagramCardModel.js";
 defineOptions({ name: 'DiagramZoneHeader' });
 import DiagramCardHeader from "./DiagramCardHeader.vue";
-import { ZONE_GEOMETRY, type DiagramGlyphPaths, type LaidOutLine } from "./diagramCardModel.js";
+import type { DiagramGlyphPaths, LaidOutLine } from "./diagramCardModel.js";
 /**
  * Internal zone header (DC-D1, spec §6.2): the shared `DiagramCardHeader`
  * row (icon 70 at the 16 px inset, kicker over title at the 92 px text
@@ -16,6 +16,10 @@ interface DiagramZoneHeaderProps {
     subtitle: readonly LaidOutLine[];
     iconName?: string;
     iconGlyph?: DiagramGlyphPaths;
+    /** Pictogram box edge; defaults to the v1 `70` (v2: `52`). */
+    iconSize?: number;
+    /** Frame header inset; defaults to the v1 `16` (v2: `12`). */
+    headerInset?: number;
     headerTextWidth: number;
     /**
      * Header row height from the shared model (`headerSlotGeometry`, review
@@ -38,14 +42,14 @@ interface DiagramZoneHeaderProps {
      */
     toggleTopInset?: number;
 }
-const { kicker, title, subtitle, iconName, iconGlyph, headerTextWidth, headerBlockHeight, subtitleWidth, toggle, toggleTopInset, } = defineProps<DiagramZoneHeaderProps>();
+const { kicker, title, subtitle, iconName, iconGlyph, iconSize, headerInset = 16, headerTextWidth, headerBlockHeight, subtitleWidth, toggle, toggleTopInset, } = defineProps<DiagramZoneHeaderProps>();
 </script>
 
 <template>
 <div class="st-diagramZoneHeader">
-  <DiagramCardHeader :kicker="kicker" :title="title" :iconName="iconName" :iconGlyph="iconGlyph" :headerTextWidth="headerTextWidth" :headerBlockHeight="headerBlockHeight" :toggle="toggle" :toggleTopOffset="toggleTopInset === undefined
+  <DiagramCardHeader :kicker="kicker" :title="title" :iconName="iconName" :iconGlyph="iconGlyph" :iconSize="iconSize" :headerTextWidth="headerTextWidth" :headerBlockHeight="headerBlockHeight" :toggle="toggle" :toggleTopOffset="toggleTopInset === undefined
       ? undefined
-      : toggleTopInset - ZONE_GEOMETRY.headerInset"></DiagramCardHeader>
+      : toggleTopInset - headerInset"></DiagramCardHeader>
   <template v-if="subtitle.length > 0">
     <div class="st-diagramZoneHeader-subtitle" :style="`width:${subtitleWidth}px`">
       <template v-for="(line, subtitleIndex) in subtitle" :key="subtitleIndex">

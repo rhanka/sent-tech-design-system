@@ -26,6 +26,15 @@ import { getDiagramGlyph } from "./registry.js";
  * kicker baseline `headerY + 16 + 22`, title `+ 32`, subtitle `+ 22`).
  */
 
+/**
+ * Versioned card anatomy (DE-1). `"v1"` is the frozen `460 × 200` box every
+ * existing view keeps; `"v2"` is the compact `352 × 154` default new views
+ * pin. A view pins one anatomy; geometry is selected per box, never patched
+ * in place. The engine default stays `"v1"` so unpinned views do not move;
+ * `createView` pins `"v2"` for genuinely new views.
+ */
+export type DiagramAnatomy = "v1" | "v2";
+
 /** Frozen card geometry, in card pixels (spec §5.3, Appendix A). */
 export const CARD_GEOMETRY = {
   width: 460,
@@ -79,6 +88,42 @@ export const CARD_GEOMETRY = {
 } as const;
 
 /**
+ * Compact card geometry (`diagram-anatomy/v2`): `352 × 154` with padding
+ * `6`, header inset `12`, accent `6`, icon `52` / gap `4`. Type scale is
+ * unchanged (`22 / 32 / 24`). Unlisted leaves keep their v1 values. Title is
+ * one line first (owner addendum 8): over-long titles report `card-overflow`
+ * instead of growing the box. The folded header width is derived, not
+ * pinned: `352 − border 2 − padding 6 − toggle 66 − headerText 68 = 210`.
+ */
+export const CARD_GEOMETRY_V2 = {
+  ...CARD_GEOMETRY,
+  width: 352,
+  height: 154,
+  padding: 6,
+  accentWidth: 6,
+  headerInset: 12,
+  iconSize: 52,
+  iconTextGap: 4,
+  foldedHeaderTextWidth: 210,
+  /** Title on one line first (addendum 8); v1 keeps two lines. */
+  allocatedLines: { kicker: 1, title: 1, body: 2, footer: 1 },
+} as const;
+
+/** Select the card geometry for a pinned anatomy (default `"v1"`). */
+export function anatomyCardGeometry(anatomy: DiagramAnatomy | undefined): typeof CARD_GEOMETRY | typeof CARD_GEOMETRY_V2 {
+  return anatomy === "v2" ? CARD_GEOMETRY_V2 : CARD_GEOMETRY;
+}
+
+/**
+ * Additive per-entity pin carried alongside a governed `EntityPresentation`
+ * (structural, never persisted in the governed fragment): the pinned
+ * `diagram-anatomy/v1 | v2` for this box. Absent means `"v1"`.
+ */
+export interface AnatomyPinned {
+  readonly anatomy?: DiagramAnatomy;
+}
+
+/**
  * Edge label typography (DC-2a, tokens `diagramScene.edgeLabelFontSize` /
  * `diagramScene.edgeLabelLineHeight`): 18 px on a 22 px line box. One line
  * plus the engine's two 4 px label margins is 30 px, inside the 32 px sibling
@@ -117,6 +162,11 @@ export interface CardPresentationInput {
   readonly categoryRef?: string;
   /** Neutral status prop: drawn as a dashed border, independent of tint. */
   readonly proposed?: boolean;
+  /**
+   * Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * a view pins `"v2"` for the compact box.
+   */
+  readonly anatomy?: DiagramAnatomy;
 }
 
 /** Resolved glyph path data (structural twin of the `diagram-icons`
@@ -178,6 +228,11 @@ export interface DiagramCardProps {
    * area (§6.2.1).
    */
   readonly bodyMode?: "leaf" | "subtitle";
+  /**
+   * Pinned card anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * `"v2"` selects the compact `352 × 154` box.
+   */
+  readonly anatomy?: DiagramAnatomy;
 }
 
 export type CardResolveResult =
@@ -188,6 +243,11 @@ export interface ProjectCardOptions {
   readonly entityId: string;
   readonly toggle?: DiagramCardToggle;
   readonly resolveGlyph?: (name: string) => DiagramGlyphPaths | undefined;
+  /**
+   * Fallback anatomy when the presentation pins none. Absent means `"v1"`;
+   * scene entry points for new views pass `"v2"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
 }
 
 /**
@@ -238,6 +298,10 @@ export function projectCardProps(
       ...(presentation.categoryRef === undefined ? {} : { tone: presentation.categoryRef }),
       ...(presentation.proposed === undefined ? {} : { proposed: presentation.proposed }),
       ...(opts.toggle === undefined ? {} : { toggle: opts.toggle }),
+      ...(() => {
+        const anatomy = presentation.anatomy ?? opts.anatomy;
+        return anatomy === undefined ? {} : { anatomy };
+      })(),
     },
   };
 }
@@ -737,19 +801,22 @@ export function headerSlotGeometry(opts: {
   readonly hasIcon: boolean;
   readonly kickerLines: number;
   readonly titleLines: number;
+  /** Icon floor for the block height; defaults to the v1 `70`. */
+  readonly iconSize?: number;
 }): HeaderSlotGeometry {
   const g = CARD_GEOMETRY;
   const kickerHeight = lineBoxHeight(g.kicker.size);
   const titleHeight = lineBoxHeight(g.title.size);
   const contentHeight = opts.kickerLines * kickerHeight + opts.titleLines * titleHeight;
-  const blockHeight = opts.hasIcon ? Math.max(g.iconSize, contentHeight) : contentHeight;
+  const iconSize = opts.iconSize ?? g.iconSize;
+  const blockHeight = opts.hasIcon ? Math.max(iconSize, contentHeight) : contentHeight;
   return {
     kickerHeight,
     titleHeight,
     contentHeight,
     blockHeight,
     textTopOffset: (blockHeight - contentHeight) / 2,
-    iconTopOffset: opts.hasIcon ? (blockHeight - g.iconSize) / 2 : 0,
+    iconTopOffset: opts.hasIcon ? (blockHeight - iconSize) / 2 : 0,
   };
 }
 
@@ -827,7 +894,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
     iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = CARD_GEOMETRY;
+  const g = anatomyCardGeometry(props.anatomy);
   const diagnostics: CardDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
   const align = props.align ?? "left";
   const bodyMode = props.bodyMode ?? "leaf";
@@ -879,6 +946,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
+    iconSize: g.iconSize,
   });
   const kickerHeight = headerGeo.kickerHeight;
   const titleHeight = headerGeo.titleHeight;
@@ -900,7 +968,7 @@ export function layoutCard(props: DiagramCardProps, measure: CardLineMeasure): C
   // frozen 396 px measure (width − 2 × (collapsedInset + marginInline)).
   const subtitleMode = bodyMode === "subtitle";
   const subtitleMeasure =
-    g.width - 2 * (ZONE_GEOMETRY.collapsedInset + ZONE_GEOMETRY.collapsedSubtitleMarginInline);
+    g.width - 2 * (anatomyZoneGeometry(props.anatomy).collapsedInset + anatomyZoneGeometry(props.anatomy).collapsedSubtitleMarginInline);
   const bodyTextX = subtitleMode ? (g.width - subtitleMeasure) / 2 : g.bodyInsetFromBar;
   const bodyWidth = subtitleMode ? subtitleMeasure : contentRight - bodyTextX;
   // The body block is centred horizontally inside its box on every card
@@ -1084,6 +1152,27 @@ export const ZONE_GEOMETRY = {
   allocatedLines: { kicker: 1, title: 2, subtitle: 2, footer: 1 },
 } as const;
 
+/**
+ * Compact zone geometry (`diagram-anatomy/v2`): the collapsed zone IS the
+ * compact card (`352 × 154`, collapsed subtitle measure `352 − 2 × 32`);
+ * expanded chrome follows the compact insets (header `12`, icon `52`,
+ * gap `4`). Unlisted leaves keep v1 values; type scale unchanged.
+ */
+export const ZONE_GEOMETRY_V2 = {
+  ...ZONE_GEOMETRY,
+  headerInset: CARD_GEOMETRY_V2.headerInset,
+  iconSize: CARD_GEOMETRY_V2.iconSize,
+  iconTextGap: CARD_GEOMETRY_V2.iconTextGap,
+  collapsedWidth: CARD_GEOMETRY_V2.width,
+  collapsedHeight: CARD_GEOMETRY_V2.height,
+  allocatedLines: { kicker: 1, title: 1, subtitle: 2, footer: 1 },
+} as const;
+
+/** Select the zone geometry for a pinned anatomy (default `"v1"`). */
+export function anatomyZoneGeometry(anatomy: DiagramAnatomy | undefined): typeof ZONE_GEOMETRY | typeof ZONE_GEOMETRY_V2 {
+  return anatomy === "v2" ? ZONE_GEOMETRY_V2 : ZONE_GEOMETRY;
+}
+
 /** Centred collapsed-subtitle measure (§6.2.1): 460 − 2 × (16 + 16). */
 export const COLLAPSED_SUBTITLE_MEASURE =
   ZONE_GEOMETRY.collapsedWidth -
@@ -1098,6 +1187,11 @@ export interface DiagramZoneToggle {
 export interface DiagramZoneProps {
   readonly containerPadding?: number;
   readonly autoSize?: boolean;
+  /**
+   * Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`;
+   * `"v2"` selects the compact collapsed `352 × 154` box.
+   */
+  readonly anatomy?: DiagramAnatomy;
   readonly entityId: string;
   readonly kicker?: string;
   readonly title: string;
@@ -1138,6 +1232,7 @@ export function zoneCollapsedCardProps(props: DiagramZoneProps): DiagramCardProp
   return {
     ...(props.autoSize === undefined ? {} : { autoSize: props.autoSize }),
     ...(props.height === undefined ? {} : { height: props.height }),
+    ...(props.anatomy === undefined ? {} : { anatomy: props.anatomy }),
     entityId: props.entityId,
     ...(props.kicker === undefined ? {} : { kicker: props.kicker }),
     title: props.title,
@@ -1246,7 +1341,7 @@ export function layoutZone(
   const missing = !suppressed && props.iconGlyph === undefined && getDiagramGlyph(icon) === undefined;
   props = { ...props, autoSize: props.autoSize ?? true, icon: missing ? "unknown" : icon,
     iconGlyph: suppressed ? { face: "" } : props.iconGlyph ?? getDiagramGlyph(icon) ?? getDiagramGlyph("unknown")! };
-  const g = { ...ZONE_GEOMETRY, ...(props.containerPadding === undefined ? {} : { contentInsetTop: props.containerPadding, contentInsetBottom: props.containerPadding, contentInsetInline: props.containerPadding }) };
+  const g = { ...anatomyZoneGeometry(props.anatomy), ...(props.containerPadding === undefined ? {} : { contentInsetTop: props.containerPadding, contentInsetBottom: props.containerPadding, contentInsetInline: props.containerPadding }) };
   const x = props.x ?? 0;
   const y = props.y ?? 0;
   const diagnostics: ZoneDiagnostic[] = missing ? [{code:"card-icon-missing",slot:"icon",entityId:props.entityId,neededPx:1,allocatedPx:0}] : [];
@@ -1318,6 +1413,7 @@ export function layoutZone(
     hasIcon,
     kickerLines: kickerTexts.length,
     titleLines: titleTexts.length,
+    iconSize: g.iconSize,
   });
   const kickerHeight = headerGeo.kickerHeight;
   const titleHeight = headerGeo.titleHeight;
@@ -1492,6 +1588,10 @@ export interface ZonePresentationInput {
   readonly categoryRef?: string;
   /** Neutral status prop: drawn as a dashed border, independent of tint. */
   readonly proposed?: boolean;
+  /**
+   * Pinned zone anatomy (`diagram-anatomy/v1 | v2`). Absent means `"v1"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
 }
 
 export type ZoneResolveResult =
@@ -1500,6 +1600,11 @@ export type ZoneResolveResult =
 
 export interface ProjectZoneOptions {
   readonly containerPadding?: number;
+  /**
+   * Fallback anatomy when the presentation pins none. Absent means `"v1"`;
+   * scene entry points for new views pass `"v2"`.
+   */
+  readonly anatomy?: DiagramAnatomy;
   readonly entityId: string;
   readonly collapsed: boolean;
   readonly toggleLabel?: string;
@@ -1553,6 +1658,10 @@ export function projectZoneProps(
           })()),
       ...(presentation.categoryRef === undefined ? {} : { tone: presentation.categoryRef }),
       ...(presentation.proposed === undefined ? {} : { proposed: presentation.proposed }),
+      ...(() => {
+        const anatomy = presentation.anatomy ?? opts.anatomy;
+        return anatomy === undefined ? {} : { anatomy };
+      })(),
       collapsed: opts.collapsed,
       ...(opts.toggleLabel === undefined ? {} : { toggleLabel: opts.toggleLabel }),
       ...(opts.align === undefined ? {} : { align: opts.align }),

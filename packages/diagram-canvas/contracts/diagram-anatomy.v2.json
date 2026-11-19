@@ -1,0 +1,556 @@
+{
+  "contractId": "diagram-anatomy/v2",
+  "source": "DE-1 compact card anatomy; padding 6, header inset 12, accent 6, icon 52 / gap 4, type scale unchanged",
+  "appliesTo": [
+    "svelte",
+    "vue",
+    "react",
+    "angular",
+    "preact"
+  ],
+  "cardGeometry": {
+    "width": 352,
+    "height": 154,
+    "borderWidth": 2,
+    "accentWidth": 6,
+    "padding": 6,
+    "headerInset": 12,
+    "iconSize": 52,
+    "iconTextGap": 4,
+    "kicker": {
+      "size": 22,
+      "weight": 400,
+      "lineHeight": 1.3,
+      "letterSpacingEm": 0.04
+    },
+    "title": {
+      "size": 32,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "gap": 6,
+    "body": {
+      "size": 24,
+      "weight": 400,
+      "lineHeight": 1.3
+    },
+    "edgeLabel": {
+      "size": 18,
+      "weight": 400,
+      "lineHeight": 1.2222222222222223
+    },
+    "bodyInsetFromBar": 14,
+    "ruleHeight": 1,
+    "ruleMargin": 4,
+    "ruleInsetStart": 16,
+    "ruleInsetEnd": 10,
+    "footer": {
+      "size": 24,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "footerBottomInset": 9.25,
+    "toggleAllocation": 66,
+    "toggleBoxSize": 32,
+    "toggleInset": 8,
+    "foldedHeaderTextWidth": 210,
+    "allocatedLines": {
+      "kicker": 1,
+      "title": 1,
+      "body": 2,
+      "footer": 1
+    }
+  },
+  "zoneGeometry": {
+    "radius": 0,
+    "borderWidth": 1.5,
+    "headerInset": 12,
+    "iconSize": 52,
+    "iconTextGap": 4,
+    "kicker": {
+      "size": 22,
+      "weight": 400,
+      "lineHeight": 1.3,
+      "letterSpacingEm": 0.04
+    },
+    "title": {
+      "size": 32,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "subtitle": {
+      "size": 24,
+      "weight": 400,
+      "lineHeight": 1.3
+    },
+    "subtitleGap": 6,
+    "headerRuleGap": 4,
+    "contentInsetTop": 16,
+    "contentInsetBottom": 16,
+    "contentInsetInline": 16,
+    "ruleHeight": 1,
+    "ruleMargin": 4,
+    "ruleInsetStart": 16,
+    "ruleInsetEnd": 10,
+    "footer": {
+      "size": 24,
+      "weight": 700,
+      "lineHeight": 1.3
+    },
+    "footerBottomInset": 9.25,
+    "toggleAllocation": 66,
+    "toggleBoxSize": 32,
+    "toggleTopInset": 8,
+    "toggleInset": 8,
+    "headerTextInset": 178,
+    "collapsedWidth": 352,
+    "collapsedHeight": 154,
+    "collapsedInset": 16,
+    "collapsedSubtitleMarginInline": 16,
+    "allocatedLines": {
+      "kicker": 1,
+      "title": 1,
+      "subtitle": 2,
+      "footer": 1
+    }
+  },
+  "card": {
+    "icon": {
+      "name": "base",
+      "glyph": {
+        "base": "M8 53L32 44L56 53L32 62Z",
+        "face": "M10 12H54V48H10Z",
+        "line": "M18 22H46M18 32H40"
+      }
+    },
+    "box": {
+      "width": 352,
+      "height": 154
+    },
+    "contentTop": 8,
+    "contentRight": 344,
+    "iconBox": {
+      "x": 12,
+      "y": 17.09375,
+      "size": 52
+    },
+    "headerTextX": 68,
+    "headerTextWidth": 210,
+    "kicker": [
+      {
+        "text": "KICKER",
+        "x": 68,
+        "baseline": 30,
+        "size": 22,
+        "weight": 400,
+        "secondary": true,
+        "anchor": "start"
+      }
+    ],
+    "title": [
+      {
+        "text": "Title",
+        "x": 68,
+        "baseline": 68.59375,
+        "size": 32,
+        "weight": 700,
+        "secondary": false,
+        "anchor": "start"
+      }
+    ],
+    "headerBlockHeight": 70.1875,
+    "bodyX": 14,
+    "bodyWidth": 330,
+    "bodyArea": {
+      "top": 84.1875,
+      "bottom": 102.5625
+    },
+    "body": [],
+    "bodyBottom": 93.375,
+    "ruleY": 106.5625,
+    "ruleX1": 16,
+    "ruleX2": 342,
+    "footerLines": [
+      {
+        "text": "Footer",
+        "x": 12,
+        "baseline": 133.5625,
+        "size": 24,
+        "weight": 700,
+        "secondary": false,
+        "anchor": "start"
+      }
+    ],
+    "footerBottom": 142.75,
+    "toggleBox": {
+      "x": 312,
+      "y": 8,
+      "size": 32
+    },
+    "diagnostics": [
+      {
+        "neededPx": 62.375,
+        "allocatedPx": 0,
+        "text": "Body\nDetail",
+        "severity": "info",
+        "reason": "truncated",
+        "hiddenLength": 11,
+        "code": "card-overflow",
+        "slot": "body",
+        "entityId": "contract"
+      }
+    ]
+  },
+  "zones": [
+    {
+      "icon": {
+        "name": "cluster",
+        "glyph": {
+          "base": "M8 53L32 44L56 53L32 62Z",
+          "face": "M32 7L54 20V44L32 57L10 44V20Z",
+          "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+        }
+      },
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 352,
+        "height": 154
+      },
+      "collapsed": true,
+      "card": {
+        "icon": {
+          "name": "cluster",
+          "glyph": {
+            "base": "M8 53L32 44L56 53L32 62Z",
+            "face": "M32 7L54 20V44L32 57L10 44V20Z",
+            "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+          }
+        },
+        "box": {
+          "width": 352,
+          "height": 154
+        },
+        "contentTop": 8,
+        "contentRight": 344,
+        "iconBox": {
+          "x": 12,
+          "y": 17.09375,
+          "size": 52
+        },
+        "headerTextX": 68,
+        "headerTextWidth": 210,
+        "kicker": [
+          {
+            "text": "KICKER",
+            "x": 68,
+            "baseline": 30,
+            "size": 22,
+            "weight": 400,
+            "secondary": true,
+            "anchor": "start"
+          }
+        ],
+        "title": [
+          {
+            "text": "Zone",
+            "x": 68,
+            "baseline": 68.59375,
+            "size": 32,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "headerBlockHeight": 70.1875,
+        "bodyX": 32,
+        "bodyWidth": 288,
+        "bodyArea": {
+          "top": 84.1875,
+          "bottom": 102.5625
+        },
+        "body": [],
+        "bodyBottom": 93.375,
+        "ruleY": 106.5625,
+        "ruleX1": 16,
+        "ruleX2": 342,
+        "footerLines": [
+          {
+            "text": "Footer",
+            "x": 12,
+            "baseline": 133.5625,
+            "size": 24,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "footerBottom": 142.75,
+        "toggleBox": {
+          "x": 312,
+          "y": 8,
+          "size": 32
+        },
+        "diagnostics": [
+          {
+            "neededPx": 31.1875,
+            "allocatedPx": 0,
+            "text": "Subtitle",
+            "severity": "info",
+            "reason": "truncated",
+            "hiddenLength": 8,
+            "code": "card-overflow",
+            "slot": "collapsed-subtitle",
+            "entityId": "contract-zone"
+          }
+        ]
+      },
+      "diagnostics": [
+        {
+          "code": "zone-overflow",
+          "slot": "collapsed-subtitle",
+          "entityId": "contract-zone",
+          "neededPx": 31.1875,
+          "allocatedPx": 0,
+          "text": "Subtitle",
+          "hiddenLength": 8,
+          "severity": "info",
+          "reason": "truncated"
+        }
+      ]
+    },
+    {
+      "icon": {
+        "name": "cluster",
+        "glyph": {
+          "base": "M8 53L32 44L56 53L32 62Z",
+          "face": "M32 7L54 20V44L32 57L10 44V20Z",
+          "line": "M32 19V32M21 26L32 32L43 26M32 32V46M32 32L20 40M32 32L44 40"
+        }
+      },
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 600,
+        "height": 204.8125
+      },
+      "collapsed": false,
+      "header": {
+        "iconBox": {
+          "x": 12,
+          "y": 21.09375,
+          "size": 52
+        },
+        "headerTextX": 68,
+        "headerTextWidth": 422,
+        "kicker": [
+          {
+            "text": "KICKER",
+            "x": 68,
+            "baseline": 34,
+            "size": 22,
+            "weight": 400,
+            "secondary": true,
+            "anchor": "start"
+          }
+        ],
+        "title": [
+          {
+            "text": "Zone",
+            "x": 68,
+            "baseline": 72.59375,
+            "size": 32,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "headerBlockHeight": 70.1875,
+        "subtitle": [
+          {
+            "text": "Subtitle",
+            "x": 12,
+            "baseline": 110.1875,
+            "size": 24,
+            "weight": 400,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "subtitleWidth": 326,
+        "subtitleBottom": 119.375,
+        "ruleY": 123.375,
+        "contentTop": 139.375,
+        "toggleBox": {
+          "x": 560,
+          "y": 8,
+          "size": 32
+        },
+        "footer": [
+          {
+            "text": "Footer",
+            "x": 16,
+            "baseline": 184.875,
+            "size": 24,
+            "weight": 700,
+            "secondary": false,
+            "anchor": "start"
+          }
+        ],
+        "footerRuleY": 157.875,
+        "footerBottom": 194.0625
+      },
+      "diagnostics": []
+    }
+  ],
+  "tokens": {
+    "card": {
+      "width": "352px",
+      "height": "154px",
+      "radius": "var(--st-component-diagramCard-radius)",
+      "borderWidth": "var(--st-component-diagramCard-borderWidth)",
+      "accentWidth": "6px",
+      "padding": "6px",
+      "headerInset": "12px",
+      "iconSize": "52px",
+      "iconTextGap": "4px",
+      "kickerFontSize": "var(--st-component-diagramCard-kickerFontSize)",
+      "kickerFontWeight": "var(--st-component-diagramCard-kickerFontWeight)",
+      "kickerLineHeight": "var(--st-component-diagramCard-kickerLineHeight)",
+      "kickerLetterSpacing": "var(--st-component-diagramCard-kickerLetterSpacing)",
+      "kickerTextTransform": "var(--st-component-diagramCard-kickerTextTransform)",
+      "titleFontSize": "var(--st-component-diagramCard-titleFontSize)",
+      "titleFontWeight": "var(--st-component-diagramCard-titleFontWeight)",
+      "titleLineHeight": "var(--st-component-diagramCard-titleLineHeight)",
+      "gap": "var(--st-component-diagramCard-gap)",
+      "bodyFontSize": "var(--st-component-diagramCard-bodyFontSize)",
+      "bodyFontWeight": "var(--st-component-diagramCard-bodyFontWeight)",
+      "bodyLineHeight": "var(--st-component-diagramCard-bodyLineHeight)",
+      "bodyInsetFromBar": "var(--st-component-diagramCard-bodyInsetFromBar)",
+      "ruleHeight": "var(--st-component-diagramCard-ruleHeight)",
+      "ruleMargin": "var(--st-component-diagramCard-ruleMargin)",
+      "ruleInsetStart": "var(--st-component-diagramCard-ruleInsetStart)",
+      "ruleInsetEnd": "var(--st-component-diagramCard-ruleInsetEnd)",
+      "footerFontSize": "var(--st-component-diagramCard-footerFontSize)",
+      "footerFontWeight": "var(--st-component-diagramCard-footerFontWeight)",
+      "footerLineHeight": "var(--st-component-diagramCard-footerLineHeight)",
+      "footerBottomInset": "var(--st-component-diagramCard-footerBottomInset)",
+      "toggleAllocation": "var(--st-component-diagramCard-toggleAllocation)",
+      "toggleBoxSize": "var(--st-component-diagramCard-toggleBoxSize)",
+      "toggleInset": "var(--st-component-diagramCard-toggleInset)",
+      "foldedHeaderTextWidth": "210px",
+      "proposedDashArray": "var(--st-component-diagramCard-proposedDashArray)",
+      "fontFamily": "var(--st-component-diagramCard-fontFamily)",
+      "border": "var(--st-component-diagramCard-border)",
+      "accent": "var(--st-component-diagramCard-accent)",
+      "surface": "var(--st-component-diagramCard-surface)",
+      "text": "var(--st-component-diagramCard-text)",
+      "secondaryText": "var(--st-component-diagramCard-secondaryText)",
+      "rule": "var(--st-component-diagramCard-rule)"
+    },
+    "zone": {
+      "toggleInset": "8px",
+      "radius": "0",
+      "borderWidth": "1.5px",
+      "headerInset": "16px",
+      "iconSize": "70px",
+      "iconTextGap": "6px",
+      "kickerFontSize": "var(--st-component-diagramCard-kickerFontSize)",
+      "kickerFontWeight": "var(--st-component-diagramCard-kickerFontWeight)",
+      "kickerLineHeight": "var(--st-component-diagramCard-kickerLineHeight)",
+      "kickerLetterSpacing": "var(--st-component-diagramCard-kickerLetterSpacing)",
+      "kickerTextTransform": "var(--st-component-diagramCard-kickerTextTransform)",
+      "titleFontSize": "var(--st-component-diagramCard-titleFontSize)",
+      "titleFontWeight": "var(--st-component-diagramCard-titleFontWeight)",
+      "titleLineHeight": "var(--st-component-diagramCard-titleLineHeight)",
+      "subtitleFontSize": "24px",
+      "subtitleFontWeight": "400",
+      "subtitleLineHeight": "1.3",
+      "subtitleGap": "var(--st-component-diagramCard-gap)",
+      "headerRuleGap": "4px",
+      "contentInsetTop": "var(--st-component-diagramScene-containerPadding)",
+      "contentInsetBottom": "var(--st-component-diagramScene-containerPadding)",
+      "contentInsetInline": "var(--st-component-diagramScene-containerPadding)",
+      "collapsedWidth": "460px",
+      "collapsedHeight": "200px",
+      "collapsedInset": "16px",
+      "collapsedSubtitleMarginInline": "16px",
+      "toggleAllocation": "var(--st-component-diagramCard-toggleAllocation)",
+      "toggleBoxSize": "var(--st-component-diagramCard-toggleBoxSize)",
+      "headerTextInset": "178px",
+      "toggleTopInset": "var(--st-component-diagramZone-toggleInset)",
+      "footerBottomInset": "var(--st-component-diagramCard-footerBottomInset)",
+      "proposedDashArray": "4 5",
+      "childGapInline": "var(--st-component-diagramScene-gapMin)",
+      "childGapBlock": "var(--st-component-diagramScene-gapMinBlock)",
+      "gapInlineMax": "var(--st-component-diagramScene-gapMax)",
+      "gapBlockMax": "var(--st-component-diagramScene-gapMax)",
+      "rowPackTargetAspect": "1.78",
+      "border": "#94a3b8",
+      "surface": "#ffffff",
+      "text": "#0f172a",
+      "secondaryText": "#475569",
+      "rule": "#e2e8f0"
+    },
+    "icon": {
+      "viewBox": "0 0 64 64",
+      "basePath": "M8 53L32 44L56 53L32 62Z",
+      "faceStrokeWidth": "1.5",
+      "lineStrokeWidth": "2.5",
+      "baseFill": "color-mix(in srgb, var(--st-semantic-feedback-info) 18%, var(--st-semantic-surface-raised))",
+      "faceFill": "color-mix(in srgb, var(--st-semantic-feedback-info) 75%, var(--st-semantic-surface-raised))",
+      "faceStroke": "var(--st-semantic-feedback-info)",
+      "lineStroke": "var(--st-semantic-surface-raised)",
+      "lineDarkStroke": "var(--st-semantic-feedback-info)"
+    }
+  },
+  "hostStyles": {
+    "packages/components-svelte/src/lib/DiagramCard.svelte": "9a5ba42f489d62df63f68050559e1bcf5297af92e30afd9df9e1cacd02abe0d1",
+    "packages/components-svelte/src/lib/DiagramZone.svelte": "73d2d2b2d04d00744447f760adec3209a083a44ca3ec37d0afdeca6b01d9a14d",
+    "packages/components-svelte/src/lib/DiagramCardHeader.svelte": "0495fec195f2ad5c44b154fb5de41b307eeccbfd594d21c17c8d257f5c2cf36e",
+    "packages/components-svelte/src/lib/DiagramZoneHeader.svelte": "a7b16b82699981e16191af4736d86d3f6a6ef341fad5e2f13306d2cebd687bd8",
+    "packages/components-vue/src/DiagramCard.vue": "3f98c68f5931a2b43d19943f3230875c390048557dd00631186258c4f163fe31",
+    "packages/components-vue/src/DiagramZone.vue": "abedd7be2f9a1d84b5451119fb536dd88215eb5a7541346301a0a7b0d7aea08b",
+    "packages/components-vue/src/DiagramCardHeader.vue": "6c78015c3d3f5dd458513ae0acff9cb8b079171f8e36ab32eacf4e9cf56ed9f4",
+    "packages/components-vue/src/DiagramZoneHeader.vue": "81c5fe3eab9ec65707303ecc7fa7892ce0adddbbc317947e1e3a11cdd0d117f7",
+    "packages/components-svelte/src/lib/IconButton.svelte": "51618e6040428586928c0a45563807442c3c2f18207b6f4052a296d05103133c"
+  },
+  "colors": {
+    "edge": "#64748b",
+    "labelSurface": "#ffffff",
+    "labelBorder": "#cbd5e1",
+    "labelText": "#172033"
+  },
+  "fontFamily": "Inter, system-ui, sans-serif",
+  "buttonCss": [
+    ".st-iconButton {\n    align-items: center;\n    background: transparent;\n    border: 1px solid transparent;\n    border-radius: var(--st-component-iconButton-radius, 0.375rem);\n    color: var(--st-component-iconButton-text, var(--st-semantic-text-primary));\n    cursor: pointer;\n    display: inline-flex;\n    flex: 0 0 auto;\n    font: inherit;\n    justify-content: center;\n    padding: 0;\n    transition:\n      background-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),\n      border-color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease),\n      color var(--st-motion-fast, 120ms) var(--st-motion-easing, ease);\n  }",
+    ".st-iconButton--sm {\n    height: var(--st-component-iconButton-smSize, 2rem);\n    width: var(--st-component-iconButton-smSize, 2rem);\n  }",
+    ".st-iconButton--md {\n    height: var(--st-component-iconButton-mdSize, 2.25rem);\n    width: var(--st-component-iconButton-mdSize, 2.25rem);\n  }",
+    ".st-iconButton--lg {\n    height: var(--st-component-iconButton-lgSize, 2.5rem);\n    width: var(--st-component-iconButton-lgSize, 2.5rem);\n  }",
+    ".st-iconButton--secondary {\n    background: var(--st-component-control-background, var(--st-semantic-surface-default));\n    border-color: var(--st-component-control-border, var(--st-semantic-border-subtle));\n  }",
+    ".st-iconButton--danger {\n    color: var(--st-semantic-feedback-error, #b91c1c);\n  }",
+    ".st-iconButton:hover:not(:disabled) {\n    background: var(--st-component-iconButton-hoverBackground, var(--st-semantic-surface-subtle));\n  }",
+    ".st-iconButton--secondary:hover:not(:disabled) {\n    border-color: var(--st-component-control-hoverBorder, var(--st-semantic-border-strong));\n  }",
+    ".st-iconButton:focus-visible {\n    border-color: var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));\n    box-shadow: 0 0 0 2px var(--st-component-iconButton-focusRing, var(--st-semantic-border-interactive));\n    outline: none;\n  }",
+    ".st-iconButton:disabled {\n    color: var(--st-component-control-disabledText, var(--st-semantic-text-muted));\n    cursor: not-allowed;\n  }"
+  ],
+  "diagramCardCss": [
+    ".st-diagramCard {\n    width: var(--st-component-diagramCard-width, 460px);\n    height: var(--st-component-diagramCard-height, 200px);\n    box-sizing: border-box;\n    border: var(--st-component-diagramCard-borderWidth, 2px) solid\n      var(--st-component-diagramCard-border, var(--st-semantic-border-strong));\n    border-left: var(--st-component-diagramCard-accentWidth, 8px) solid\n      var(--st-component-diagramCard-accent, var(--st-semantic-data-category1));\n    border-radius: var(--st-component-diagramCard-radius, 0);\n    background: var(--st-component-diagramCard-surface, var(--st-semantic-surface-raised));\n    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));\n    padding: var(--st-component-diagramCard-padding, 8px);\n    display: flex;\n    flex-direction: column;\n    text-align: left;\n    font-family: var(--st-component-diagramCard-fontFamily, var(--st-font-sans));\n  }",
+    ".st-diagramCard--center {\n    \n    text-align: center;\n  }",
+    ".st-diagramCard--proposed {\n    border-style: dashed;\n  }",
+    ".st-diagramCard-gap {\n    display: block;\n    height: var(--st-component-diagramCard-gap, 6px);\n    flex: 0 0 var(--st-component-diagramCard-gap, 6px);\n  }",
+    ".st-diagramCard-body {\n    \n    min-width: 0;\n    flex: 1 1 auto;\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    text-align: center;\n    font-size: var(--st-component-diagramCard-bodyFontSize, 24px);\n    font-weight: var(--st-component-diagramCard-bodyFontWeight, 400);\n    line-height: var(--st-component-diagramCard-bodyLineHeight, 1.3);\n  }",
+    ".st-diagramCard-line,\n  .st-diagramCard-detail {\n    display: block;\n    min-width: 0;\n    \n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-detail {\n    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));\n  }",
+    ".st-diagramCard-foot {\n    margin-top: auto;\n    flex: 0 0 auto;\n  }",
+    ".st-diagramCard-rule {\n    display: block;\n    flex: 0 0 auto;\n    \n    height: var(--st-component-diagramCard-ruleHeight, 1px);\n    margin: var(--st-component-diagramCard-ruleMargin, 4px) 0;\n    background: var(--st-component-diagramCard-rule, var(--st-semantic-border-subtle));\n    transform: scaleY(calc(1 / var(--st-diagram-zoom, 1)));\n    transform-origin: center;\n  }",
+    ".st-diagramCard-footer {\n    \n    margin-bottom: calc(\n      var(--st-component-diagramCard-footerBottomInset, 9.25px) -\n        var(--st-component-diagramCard-padding, 8px)\n    );\n    font-size: var(--st-component-diagramCard-footerFontSize, 24px);\n    font-weight: var(--st-component-diagramCard-footerFontWeight, 700);\n    line-height: var(--st-component-diagramCard-footerLineHeight, 1.3);\n  }",
+    ".st-diagramCard-footerLine {\n    display: block;\n    min-width: 0;\n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCardHeader {\n    display: flex;\n    align-items: center;\n    gap: var(--st-component-diagramCard-iconTextGap, 6px);\n    min-width: 0;\n    flex: 0 0 auto;\n  }",
+    ".st-diagramCardHeader-icon {\n    flex: 0 0 var(--st-component-diagramCard-iconSize, 70px);\n    width: var(--st-component-diagramCard-iconSize, 70px);\n    height: var(--st-component-diagramCard-iconSize, 70px);\n  }",
+    ".st-diagramCardHeader-text {\n    display: flex;\n    flex-direction: column;\n    justify-content: center;\n    min-width: 0;\n    flex: 0 1 auto;\n  }",
+    ".st-diagramCard-kicker {\n    display: block;\n    min-width: 0;\n    font-size: var(--st-component-diagramCard-kickerFontSize, 22px);\n    font-weight: var(--st-component-diagramCard-kickerFontWeight, 400);\n    line-height: var(--st-component-diagramCard-kickerLineHeight, 1.3);\n    letter-spacing: var(--st-component-diagramCard-kickerLetterSpacing, 0.04em);\n    text-transform: var(--st-component-diagramCard-kickerTextTransform, uppercase);\n    color: var(--st-component-diagramCard-secondaryText, var(--st-semantic-text-secondary));\n    \n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-title {\n    display: block;\n    min-width: 0;\n    font-size: var(--st-component-diagramCard-titleFontSize, 32px);\n    font-weight: var(--st-component-diagramCard-titleFontWeight, 700);\n    line-height: var(--st-component-diagramCard-titleLineHeight, 1.3);\n    color: var(--st-component-diagramCard-text, var(--st-semantic-text-primary));\n    overflow-wrap: normal;\n    word-break: normal;\n  }",
+    ".st-diagramCard-toggle {\n    flex: 0 0 auto;\n    margin-left: auto;\n    \n    align-self: flex-start;\n  }"
+  ]
+}

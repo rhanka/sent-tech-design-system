@@ -5,7 +5,7 @@
   import DiagramCard from "./DiagramCard.svelte";
   import DiagramZoneHeader from "./DiagramZoneHeader.svelte";
   import {
-    ZONE_GEOMETRY,
+    anatomyZoneGeometry,
     defaultCardMeasure,
     zoneFullText,
     layoutZone,
@@ -63,6 +63,7 @@
     collapsed,
     toggleLabel,
     align,
+    anatomy,
     x = 0,
     y = 0,
     width,
@@ -89,6 +90,7 @@
     collapsed,
     ...(toggleLabel === undefined ? {} : { toggleLabel }),
     ...(align === undefined ? {} : { align }),
+    ...(anatomy === undefined ? {} : { anatomy }),
     x,
     y,
     ...(width === undefined ? {} : { width }),
@@ -98,6 +100,8 @@
   // Children geometry is host layout data (§6.1): the Svelte zone paints
   // around the supplied box, so the layout pass sees no child specs.
   const layout = $derived(layoutZone(zoneProps, measure, []));
+  /** Expanded chrome geometry for the pinned anatomy (v1 values by default). */
+  const zoneGeometry = $derived(anatomyZoneGeometry(anatomy));
 
   const cardProps = $derived(
     toggleLabel === undefined
@@ -147,27 +151,27 @@
   const headerStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(y + ZONE_GEOMETRY.headerInset)};left:${frameInset(ZONE_GEOMETRY.headerInset)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};height:${header.ruleY - ZONE_GEOMETRY.headerRuleGap - y - ZONE_GEOMETRY.headerInset}px`,
+      : `top:${frameTop(y + zoneGeometry.headerInset)};left:${frameInset(zoneGeometry.headerInset)};right:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};height:${header.ruleY - zoneGeometry.headerRuleGap - y - zoneGeometry.headerInset}px`,
   );
   const ruleStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(header.ruleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`,
+      : `top:${frameTop(header.ruleY)};left:${frameInset(zoneGeometry.ruleInsetStart)};right:${frameInset(zoneGeometry.ruleInsetEnd)}`,
   );
   const contentStyle = $derived(
     header === undefined
       ? undefined
-      : `top:${frameTop(header.contentTop)};left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetBottom)}`,
+      : `top:${frameTop(header.contentTop)};left:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};right:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};bottom:${frameInset(containerPadding ?? zoneGeometry.contentInsetBottom)}`,
   );
   const footerRuleStyle = $derived(
     header?.footerRuleY === undefined
       ? undefined
-      : `top:${frameTop(header.footerRuleY)};left:${frameInset(ZONE_GEOMETRY.ruleInsetStart)};right:${frameInset(ZONE_GEOMETRY.ruleInsetEnd)}`,
+      : `top:${frameTop(header.footerRuleY)};left:${frameInset(zoneGeometry.ruleInsetStart)};right:${frameInset(zoneGeometry.ruleInsetEnd)}`,
   );
   const footerStyle = $derived(
     header === undefined
       ? undefined
-      : `left:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};right:${frameInset(containerPadding ?? ZONE_GEOMETRY.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
+      : `left:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};right:${frameInset(containerPadding ?? zoneGeometry.contentInsetInline)};bottom:var(--st-component-diagramZone-footerBottomInset, var(--st-component-diagramCard-footerBottomInset, 9.25px))`,
   );
 
   $effect(() => {
@@ -200,8 +204,10 @@
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
-      class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}"
-      style={`width:${layout.box.width}px;height:${layout.box.height}px`}
+      class="st-diagramZone st-diagramZone--expanded{align === "center" ? " st-diagramZone--center" : ""}{proposed === true ? " st-diagramZone--proposed" : ""}{anatomy === "v2" ? " st-diagramZone--v2" : ""}"
+      style={anatomy === "v2"
+        ? `width:${layout.box.width}px;height:${layout.box.height}px;--st-component-diagramCard-iconSize:var(--st-component-diagramCardCompact-iconSize, 52px)`
+        : `width:${layout.box.width}px;height:${layout.box.height}px`}
       data-tone={tone}
       data-proposed={proposed === true ? "true" : undefined}
       role="group"
@@ -222,6 +228,8 @@
             subtitle={header.subtitle}
             iconName={layout.icon.name}
             iconGlyph={layout.icon.glyph}
+            iconSize={header.iconBox?.size}
+            headerInset={zoneGeometry.headerInset}
             headerTextWidth={header.headerTextWidth}
             headerBlockHeight={header.headerBlockHeight}
             subtitleWidth={subtitleWidth}
@@ -232,7 +240,7 @@
                   label: toggleLabel,
                   onToggle: () => onToggle?.({ entityId, collapsed: false }),
                 }}
-            toggleTopInset={ZONE_GEOMETRY.toggleTopInset}
+            toggleTopInset={zoneGeometry.toggleTopInset}
           />
         </div>
         <div class="st-diagramZone-rule" style={ruleStyle} aria-hidden="true"></div>
