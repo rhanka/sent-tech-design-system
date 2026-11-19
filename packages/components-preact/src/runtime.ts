@@ -89,7 +89,7 @@ const presentation =
   /^(?:accent|alignment|arabic|baseline|cap|clip(?!PathU)|color|dominant|fill|flood|font|glyph(?!R)|horiz|image|letter|lighting|marker(?!H|W|U)|overline|paint|pointer|shape|stop|strikethrough|stroke|text(?!L)|transform|underline|unicode|units|v|vector|vert|word|writing|x(?!C))[A-Z]/;
 const previousVnode = hooks.vnode;
 hooks.vnode = (vnode) => {
-  if (typeof vnode.type === "string") {
+  if (typeof vnode.type === "string" && vnode.props) {
     const props = vnode.props as Record<string, unknown>;
     if ("tabIndex" in props && !("tabindex" in props)) {
       props["tabindex"] = props["tabIndex"];
