@@ -50,7 +50,7 @@ import { getDiagramGlyph } from "./registry.js";
 import { lineBoxHeight, ZONE_GEOMETRY } from "./diagramCardModel.js";
 import { clearSceneLabels } from "./sceneLabelClearance.js";
 import type { EntityPresentation } from "@sentropic/diagram-core";
-import type { AnatomyPinned, DiagramAnatomy } from "./diagramCardModel.js";
+import type { AlignPinned, AnatomyPinned, DiagramAnatomy } from "./diagramCardModel.js";
 
 /** The semantic document the layout engine reads. */
 export type SceneDocument = Parameters<typeof layoutMeasured>[0];
@@ -217,7 +217,7 @@ export interface SceneNodeModel {
   /** Zones only: drawn as the atomic card (collapsed) or as the frame. */
   readonly collapsed: boolean;
   readonly rect: Rect;
-  readonly presentation?: EntityPresentation & AnatomyPinned;
+  readonly presentation?: EntityPresentation & AnatomyPinned & AlignPinned;
   /** Text of a node with no card form (L-R12 label) or of a legend key. */
   readonly text: string;
   readonly erd?: ErdCard;
@@ -368,7 +368,7 @@ export function resolveScene(
   const visibleEdges = new Set(items.filter(item => item.kind === "edge").map(item => item.occurrence as string));
   const collapsed = new Set<string>(collapsedOccurrencesOf(view));
   const nodes: SceneNodeModel[] = sceneNodes(frame).map((node) => {
-    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned) | undefined;
+    const presentation = resolved.presentation.entities[node.occurrence] as (EntityPresentation & AnatomyPinned & AlignPinned) | undefined;
     const form = presentation?.form;
     const titled = presentation?.text.title !== undefined && presentation.text.title !== "";
     const erd = input.document.entities[node.entity]?.profile === "erd@1";
