@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "preact";
 import { classNames } from "./classNames.js";
-import type { ComponentChildren, ElementType } from "./runtime.js";
+import type { ElementType } from "./runtime.js";
 import { useValue } from "./signals.js";
 import type { MaybeSignal } from "./signals.js";
 
@@ -47,7 +47,6 @@ export type TypographyProps = Omit<HTMLAttributes<HTMLElement>, "className"> & {
   truncate?: MaybeSignal<boolean>;
   /** A signal is accepted in the Preact build; the React emission keeps `string`. */
   className?: MaybeSignal<string>;
-  children?: ComponentChildren;
 };
 
 export function Typography({
