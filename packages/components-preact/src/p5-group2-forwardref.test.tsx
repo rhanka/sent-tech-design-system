@@ -13,7 +13,10 @@ import { Flex, alignValue, justifyValue, spacingToken } from "./Flex.js";
 import { Grid, gridTemplateColumns } from "./Grid.js";
 import { Hidden } from "./Hidden.js";
 import { Inline } from "./Inline.js";
+import { Input } from "./Input.js";
 import { Notification } from "./Notification.js";
+import { Row } from "./Row.js";
+import { Stack } from "./Stack.js";
 
 afterEach(cleanup);
 
@@ -646,6 +649,170 @@ describe("P5 group 2 forwardRef modules — Batch 3 (Grid, Hidden, Inline, Notif
     const status = screen.getByRole("status");
     expect(objRef.current).toBeNull();
     expect(cbRef).toHaveBeenLastCalledWith(status);
+
+    unmount();
+    expect(cbRef).toHaveBeenLastCalledWith(null);
+  });
+});
+
+describe("P5 group 2 forwardRef modules — Batch 4 (Row, Stack, Input)", () => {
+  it("Row forwards refs across default and polymorphic `as`, mutates className/wrap/style signals, and preserves consumer handlers", async () => {
+    const cls = signal("row-before");
+    const wrap = signal(true);
+    const style = signal({ color: "red" });
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const sectionRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Row ref={objRef} data-testid="row" gutter={6} wrap={wrap} className={cls} style={style} onClick={onClick}>
+        <span>Col</span>
+      </Row>,
+    );
+    const el = screen.getByTestId("row");
+    expect(objRef.current).toBe(el);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(el.className).toBe("st-row row-before");
+    expect(el.style.flexWrap).toBe("wrap");
+    expect(el.style.gap).toBe(spacingToken(6));
+    expect(el.style.color).toBe("red");
+
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "row-after";
+    wrap.value = false;
+    style.value = { color: "maroon" };
+    await waitFor(() => expect(el.className).toBe("st-row row-after"));
+    expect(el.style.flexWrap).toBe("nowrap");
+    expect(el.style.color).toBe("maroon");
+
+    wrap.value = true;
+    await waitFor(() => expect(el.style.flexWrap).toBe("wrap"));
+
+    rerender(
+      <Row ref={sectionRef} data-testid="row" as="section" wrap={wrap} className={cls} style={style} onClick={onClick}>
+        <span>Col</span>
+      </Row>,
+    );
+    const section = screen.getByTestId("row");
+    expect(objRef.current).toBeNull();
+    expect(section.tagName).toBe("SECTION");
+    expect(sectionRef).toHaveBeenLastCalledWith(section);
+
+    unmount();
+    expect(sectionRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Stack forwards nested refs through Flex across default and polymorphic `as`, mutates className/style signals, and preserves consumer handlers", async () => {
+    const cls = signal("stk-before");
+    const style = signal({ color: "red" });
+    const onClick = vi.fn();
+    const objRef = createRef<HTMLElement>();
+    const asideRef = vi.fn();
+
+    const { rerender, unmount } = render(
+      <Stack ref={objRef} data-testid="stack" gap={4} className={cls} style={style} onClick={onClick}>
+        <span>Item</span>
+      </Stack>,
+    );
+    const el = screen.getByTestId("stack");
+    expect(objRef.current).toBe(el);
+    expect(objRef.current?.tagName).toBe("DIV");
+    expect(el.className).toBe("st-flex st-stack stk-before");
+    expect(el.style.flexDirection).toBe("column");
+    expect(el.style.gap).toBe(spacingToken(4));
+    expect(el.style.color).toBe("red");
+
+    fireEvent.click(el);
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+    cls.value = "stk-after";
+    style.value = { color: "olive" };
+    await waitFor(() => expect(el.className).toBe("st-flex st-stack stk-after"));
+    await waitFor(() => expect(el.style.color).toBe("olive"));
+
+    rerender(
+      <Stack ref={asideRef} data-testid="stack" as="aside" gap={4} className={cls} style={style} onClick={onClick}>
+        <span>Item</span>
+      </Stack>,
+    );
+    const aside = screen.getByTestId("stack");
+    expect(objRef.current).toBeNull();
+    expect(aside.tagName).toBe("ASIDE");
+    expect(asideRef).toHaveBeenLastCalledWith(aside);
+
+    unmount();
+    expect(asideRef).toHaveBeenLastCalledWith(null);
+  });
+
+  it("Input forwards refs to inner <input>, mutates className/value/invalid/disabled signals, and composes onInput + onChange", async () => {
+    const cls = signal("inp-before");
+    const val = signal("hello");
+    const invalid = signal(false);
+    const disabled = signal(false);
+    const order: string[] = [];
+    const onInput = vi.fn(() => order.push("input"));
+    const onChange = vi.fn(() => order.push("change"));
+    const objRef = createRef<HTMLInputElement>();
+    const cbRef = vi.fn();
+
+    const { container, rerender, unmount } = render(
+      <Input
+        ref={objRef}
+        label="Query"
+        className={cls}
+        value={val}
+        invalid={invalid}
+        disabled={disabled}
+        onInput={onInput}
+        onChange={onChange}
+      />,
+    );
+    const wrapper = container.querySelector(".st-field") as HTMLElement;
+    const input = screen.getByLabelText("Query") as HTMLInputElement;
+    expect(objRef.current).toBe(input);
+    expect(objRef.current?.tagName).toBe("INPUT");
+    expect(objRef.current).not.toBe(wrapper);
+    expect(wrapper.className).toBe("st-field inp-before");
+    expect(input.value).toBe("hello");
+    expect(input.getAttribute("aria-invalid")).toBeNull();
+    expect(input.disabled).toBe(false);
+
+    // Local textChange composes consumer onInput before onChange once per input event.
+    fireEvent.input(input, { target: { value: "world" } });
+    expect(onInput).toHaveBeenCalledTimes(1);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    expect(order).toEqual(["input", "change"]);
+
+    cls.value = "inp-after";
+    val.value = "updated";
+    invalid.value = true;
+    disabled.value = true;
+    await waitFor(() => expect(wrapper.className).toBe("st-field inp-after"));
+    await waitFor(() => expect(input.value).toBe("updated"));
+    expect(input.getAttribute("aria-invalid")).toBe("true");
+    await waitFor(() => expect(input.disabled).toBe(true));
+
+    invalid.value = false;
+    disabled.value = false;
+    await waitFor(() => expect(input.getAttribute("aria-invalid")).toBeNull());
+    await waitFor(() => expect(input.disabled).toBe(false));
+
+    rerender(
+      <Input
+        ref={cbRef}
+        label="Query"
+        className={cls}
+        value={val}
+        invalid={invalid}
+        disabled={disabled}
+        onInput={onInput}
+        onChange={onChange}
+      />,
+    );
+    expect(objRef.current).toBeNull();
+    expect(cbRef).toHaveBeenLastCalledWith(input);
 
     unmount();
     expect(cbRef).toHaveBeenLastCalledWith(null);
