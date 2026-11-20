@@ -111,13 +111,15 @@
 
   /**
    * Owner addendum 1: an explicitly threaded depth paints the resolved
-   * depth surface; without depth the frame keeps its resting surface,
-   * byte-identical.
+   * depth surface via non-inherited `background` (never mutating the
+   * inherited `--st-component-diagramZone-surface` custom property, so
+   * nested child zones keep their own surface); without depth the frame
+   * keeps its resting surface, byte-identical.
    */
   const surfaceStyle = $derived(
     zoneProps.depth === undefined && zoneProps.depthParityStart === undefined
       ? ""
-      : `;--st-component-diagramZone-surface:var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`,
+      : `;background:var(--st-component-diagramZone-${layout.surface ?? "surface1"}, var(--st-semantic-surface-${(layout.surface ?? "surface1") === "surface1" ? "raised" : "subtle"}))`,
   );
 
   const cardProps = $derived(
