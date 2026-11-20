@@ -97,11 +97,19 @@
   /**
    * Owner addendum 1: a folded zone keeps its depth background. Only
    * zone-collapsed cards carry `surface`, so leaf cards never change.
+   * W1-12: when `surface === "surface2"` (where 0.41.5's surface-subtle hover
+   * collides with the zone background), switch the toggle hover token to
+   * secondaryHoverBackground; v1 leaf cards and surface1 zones keep exact
+   * 0.41.5 hover styling.
    */
   const surfaceStyle = $derived(
     surface === undefined
       ? ""
-      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`,
+      : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))${
+          surface === "surface2"
+            ? ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))"
+            : ""
+        }`,
   );
 
   const overflowSlot = $derived(

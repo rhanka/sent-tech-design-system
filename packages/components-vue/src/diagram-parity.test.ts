@@ -262,28 +262,77 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     }
     vueFb.unmount(); svelteFb.unmount();
   });
-  it('should keep a visible +/- toggle hover background on surface1 and surface2 zones in light and dark themes on both hosts (W1-12)', () => {
+  it('should keep v1/surface1 +/- toggle hover byte-identical to 0.41.5 and apply W1-12 secondaryHoverBackground only on surface2 zones on both hosts', async () => {
     const vueHeader = readFileSync(resolve(import.meta.dirname, 'DiagramCardHeader.vue'), 'utf8');
     const svelteHeader = readFileSync(resolve(import.meta.dirname, '../../components-svelte/src/lib/DiagramCardHeader.svelte'), 'utf8');
-    expect(vueHeader).toMatch(
-      /\.st-diagramCard-toggle\s+\.st-iconButton:hover:not\(:disabled\)\s*\{[\s\S]*--st-component-button-secondaryHoverBackground[\s\S]*border-color:\s*var\(--st-component-control-border/,
-    );
-    expect(svelteHeader).toMatch(
-      /\.st-diagramCard-toggle\s+:global\(\.st-iconButton:hover:not\(:disabled\)\)\s*\{[\s\S]*--st-component-button-secondaryHoverBackground[\s\S]*border-color:\s*var\(--st-component-control-border/,
-    );
+    // Neither host's DiagramCardHeader <style> overrides :hover globally, preserving 0.41.5 / next.7 byte-for-byte.
+    expect(vueHeader).not.toContain('--st-component-button-secondaryHoverBackground');
+    expect(vueHeader).not.toMatch(/\.st-diagramCard-toggle[\s\S]*:hover/);
+    expect(svelteHeader).not.toContain('--st-component-button-secondaryHoverBackground');
+    expect(svelteHeader).not.toMatch(/\.st-diagramCard-toggle[\s\S]*:hover/);
+
+    // Unnested v1 and surface1 (depth 0) zones (expanded & collapsed) emit zero hover overrides on both hosts.
+    for (const variant of [
+      { entityId: 'v1-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', width: 492, height: 320 },
+      { entityId: 's1-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 0, width: 492, height: 320 },
+      { entityId: 'v1-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand' },
+      { entityId: 's1-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 0 },
+    ]) {
+      const vue = mount(DiagramZone, { props: variant });
+      const svelte = render(SvelteZone, { props: variant });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        const target = (root.querySelector('.st-diagramZone-header') ?? root.querySelector('.st-diagramCard')) as HTMLElement;
+        const style = target.getAttribute('style') ?? '';
+        expect(style).not.toContain('--st-component-control-hoverBackground');
+        expect(style).not.toContain('--st-component-iconButton-hoverBackground');
+      }
+      vue.unmount(); svelte.unmount();
+    }
+
+    // Surface2 zones (expanded & collapsed) apply W1-12 secondaryHoverBackground scoped to the zone header / folded card on both hosts.
+    for (const variant of [
+      { entityId: 's2-exp', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 1, width: 492, height: 320 },
+      { entityId: 's2-exp-flip', title: 'Zone', subtitle: 'Sub', collapsed: false, toggleLabel: 'Collapse', depth: 0, depthParityStart: 1 as const, width: 492, height: 320 },
+      { entityId: 's2-col', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 1 },
+      { entityId: 's2-col-flip', title: 'Zone', subtitle: 'Sub', collapsed: true, toggleLabel: 'Expand', depth: 0, depthParityStart: 1 as const },
+    ]) {
+      const vue = mount(DiagramZone, { props: variant });
+      const svelte = render(SvelteZone, { props: variant });
+      await nextTick(); await tick();
+      expect(dom(vue.element)).toEqual(dom(withControlIconTokens(svelte.container.firstElementChild!)));
+      for (const root of [vue.element, svelte.container]) {
+        if (!variant.collapsed) {
+          const frameStyle = root.querySelector('.st-diagramZone')?.getAttribute('style') ?? '';
+          expect(frameStyle).not.toContain('--st-component-control-hoverBackground');
+          expect(frameStyle).not.toContain('--st-component-iconButton-hoverBackground');
+        }
+        const target = (root.querySelector('.st-diagramZone-header') ?? root.querySelector('.st-diagramCard')) as HTMLElement;
+        const style = target.getAttribute('style') ?? '';
+        expect(style).toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+        expect(style).toMatch(/--st-component-iconButton-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
+      }
+      vue.unmount(); svelte.unmount();
+    }
+
     for (const theme of ['sent-tech', 'forge', 'entropic'] as const) {
       const css = readFileSync(resolve(import.meta.dirname, `../../themes/css/${theme}.css`), 'utf8');
       const tokenMatches = (name: string) =>
         [...css.matchAll(new RegExp(`${name}:\\s*([^;]+);`, 'g'))].map((m) => m[1]!.trim());
       const s1 = tokenMatches('--st-component-diagramZone-surface1');
       const s2 = tokenMatches('--st-component-diagramZone-surface2');
-      const hover = tokenMatches('--st-component-button-secondaryHoverBackground');
+      const v1Hover = tokenMatches('--st-component-control-hoverBackground');
+      const s2Hover = tokenMatches('--st-component-button-secondaryHoverBackground');
       expect(s1.length, theme).toBe(3);
       expect(s2.length, theme).toBe(3);
-      expect(hover.length, theme).toBe(3);
+      expect(v1Hover.length, theme).toBe(3);
+      expect(s2Hover.length, theme).toBe(3);
       for (let mode = 0; mode < 3; mode += 1) {
-        expect(hover[mode], `${theme} mode ${mode} hover vs surface1`).not.toBe(s1[mode]);
-        expect(hover[mode], `${theme} mode ${mode} hover vs surface2`).not.toBe(s2[mode]);
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover vs surface1`).not.toBe(s1[mode]);
+        expect(v1Hover[mode], `${theme} mode ${mode} v1 hover collision on surface2`).toBe(s2[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface1`).not.toBe(s1[mode]);
+        expect(s2Hover[mode], `${theme} mode ${mode} surface2 hover vs surface2`).not.toBe(s2[mode]);
       }
     }
   });
@@ -339,8 +388,10 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
       expect(frameStyle).not.toContain('--st-component-diagramZone-headerInset');
       expect(frameStyle).not.toContain('--st-component-diagramCard-iconSize');
       expect(frameStyle).not.toContain('--st-component-diagramCard-iconTextGap');
+      expect(frameStyle).not.toContain('--st-component-control-hoverBackground');
+      expect(frameStyle).not.toContain('--st-component-iconButton-hoverBackground');
     }
-    // Vue slot composition: a nested v1 child DiagramZone inside a depth-1 v2 parent receives zero inherited surface/v2 vars.
+    // Vue slot composition: a nested v1 child DiagramZone inside a depth-1 v2 parent receives zero inherited surface/v2/hover vars.
     const Wrapper = defineComponent({
       components: { DiagramZone, DiagramCard },
       template: `<DiagramZone entityId="p" title="Parent" :collapsed="false" anatomy="v2" :depth="1" toggleLabel="Collapse" :width="600" :height="500">
@@ -354,8 +405,13 @@ describe('Svelte/Vue corpus DOM and ARIA parity', () => {
     expect(zones).toHaveLength(2);
     expect(zones[0]!.getAttribute('style') ?? '').toContain('--st-component-diagramZone-surface2');
     expect(zones[0]!.getAttribute('style') ?? '').not.toContain('--st-component-diagramZone-surface:');
+    expect(zones[0]!.querySelector<HTMLElement>('.st-diagramZone-header')!.getAttribute('style') ?? '').toMatch(/--st-component-control-hoverBackground:\s*var\(--st-component-button-secondaryHoverBackground/);
     expect(zones[1]!.getAttribute('style') ?? '').not.toContain('surface2');
-    expect(zones[1]!.querySelector<HTMLElement>('.st-diagramZone-header')!.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    const childHeader = zones[1]!.querySelector<HTMLElement>('.st-diagramZone-header')!;
+    expect(childHeader.style.right).toBe('calc(24px - var(--st-component-diagramZone-borderWidth, 1.5px))');
+    expect(childHeader.getAttribute('style') ?? '').not.toContain('--st-component-control-hoverBackground');
+    expect(childHeader.getAttribute('style') ?? '').not.toContain('--st-component-iconButton-hoverBackground');
+    expect(nested.element.querySelector<HTMLElement>('.st-diagramCard')?.getAttribute('style') ?? '').not.toContain('--st-component-control-hoverBackground');
     expect(nested.element.querySelector<SVGSVGElement>('.st-diagramCard .st-diagramCardHeader-icon')?.getAttribute('width')).toBe('70');
     nested.unmount();
     vueOuter.unmount(); svelteOuter.unmount();
@@ -905,6 +961,23 @@ describe('scene host DOM and camera/fold behavior', () => {
     const sheet = document.createElement('style');
     sheet.textContent = '.st-diagramSceneFigure-edge { fill: none; stroke: rgb(100, 116, 139); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }';
     document.head.append(sheet);
+    const transitionTokens: Record<string, string> = {
+      '--st-component-diagramScene-transitionDuration': '240ms',
+      '--st-foundation-motion-easing': 'cubic-bezier(0.25, 0.25, 0.75, 0.75)',
+    };
+    const originalComputedStyle = window.getComputedStyle.bind(window);
+    const computedStyleSpy = vi.spyOn(window, 'getComputedStyle').mockImplementation((element, pseudo) => {
+      const style = originalComputedStyle(element, pseudo);
+      return new Proxy(style, {
+        get(target, key) {
+          if (key === 'getPropertyValue') {
+            return (name: string): string => transitionTokens[name] ?? target.getPropertyValue(name);
+          }
+          const value = Reflect.get(target, key) as unknown;
+          return typeof value === 'function' ? (value as (...args: unknown[]) => unknown).bind(target) : value;
+        },
+      });
+    });
     vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
       const world = this.closest<HTMLElement>('.st-diagramSceneFigure-world');
       if (world === null) return originalRect.call(this);
@@ -964,12 +1037,14 @@ describe('scene host DOM and camera/fold behavior', () => {
     };
 
     try {
-      for (const [sceneName, width, winH, largestZone, extra] of [
-        ['architecture', 1280, 720, 'occurrence:zone-engram', {}],
-        ['architecture', 1280, 720, 'occurrence:zone-engram', { flows: {} }],
-        ['ontology', 1440, 900, 'occurrence:zone-normative', {}],
+      for (const [sceneName, width, winH, largestZone, extra, animated] of [
+        ['architecture', 1280, 720, 'occurrence:zone-engram', {}, true],
+        ['architecture', 1280, 720, 'occurrence:zone-engram', { flows: {} }, false],
+        ['ontology', 1440, 900, 'occurrence:zone-normative', {}, false],
       ] as const) {
-        vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
+        if (animated) vi.useFakeTimers();
+        else vi.useRealTimers();
+        vi.stubGlobal('matchMedia', () => ({ matches: !animated, addEventListener() {}, removeEventListener() {} }));
         vi.stubGlobal('innerHeight', winH);
         vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(width);
         const maxFrameH = Math.min((width * 9) / 16, 0.85 * winH);
@@ -990,10 +1065,19 @@ describe('scene host DOM and camera/fold behavior', () => {
             .find(el => el.dataset['sceneOccurrence'] === largestZone)!
             .querySelector<HTMLButtonElement>('button[aria-expanded]')!;
 
-        // Unfold the largest zone on both Vue and Svelte: both refit with zero overflow.
+        // Unfold the largest zone on both Vue and Svelte: both refit with zero overflow (exercising Vue's 240 ms animated transition -> settle() -> readRenderedBounds() path when animated is true).
         toggleIn(vue.element).click();
         toggleIn(svelte.container).click();
-        await nextTick(); await tick(); await nextTick(); await tick();
+        await nextTick(); await tick();
+        if (animated) {
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          await vi.advanceTimersByTimeAsync(300);
+          await nextTick(); await tick();
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+        }
+        await nextTick(); await tick();
 
         const vueUnfolded = assertNoOverflow(vue.element, width, maxFrameH);
         const svelteUnfolded = assertNoOverflow(svelte.container, width, maxFrameH);
@@ -1018,7 +1102,16 @@ describe('scene host DOM and camera/fold behavior', () => {
         // Fold the largest zone back: drops user zoom/pan and refits back to the folded scene.
         toggleIn(vue.element).click();
         toggleIn(svelte.container).click();
-        await nextTick(); await tick(); await nextTick(); await tick();
+        await nextTick(); await tick();
+        if (animated) {
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('true');
+          await vi.advanceTimersByTimeAsync(300);
+          await nextTick(); await tick();
+          expect(vue.element.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+          expect(svelte.container.querySelector('.st-diagramSceneFigure-viewport')?.getAttribute('aria-busy')).toBe('false');
+        }
+        await nextTick(); await tick();
 
         const vueRefolded = assertNoOverflow(vue.element, width, maxFrameH);
         const svelteRefolded = assertNoOverflow(svelte.container, width, maxFrameH);
@@ -1035,6 +1128,7 @@ describe('scene host DOM and camera/fold behavior', () => {
       }
 
       // Controlled `collapsed` prop change on Vue also refits on unfold and fold.
+      vi.useRealTimers();
       vi.stubGlobal('matchMedia', () => ({ matches: true, addEventListener() {}, removeEventListener() {} }));
       vi.stubGlobal('innerHeight', 720);
       vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(1280);
@@ -1058,6 +1152,8 @@ describe('scene host DOM and camera/fold behavior', () => {
       expect(Math.abs(ctrlRefolded.height - ctrlFolded.height)).toBeLessThanOrEqual(0.5);
       vueCtrl.unmount();
     } finally {
+      computedStyleSpy.mockRestore();
+      vi.useRealTimers();
       sheet.remove();
       vi.unstubAllGlobals();
     }

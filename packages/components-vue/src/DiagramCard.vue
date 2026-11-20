@@ -41,8 +41,8 @@ export interface DiagramCardProps extends DiagramCardData {
     onDiagnostic?: (diagnostic: CardDiagnostic) => void;
 }
 const { autoSize = true, height, entityId, kicker, title, body, detailCount, footer, icon, iconGlyph, tone, proposed, toggle, align, bodyMode, anatomy, surface, measure = defaultCardMeasure, } = defineProps<DiagramCardProps>();
-/** Owner addendum 1: a folded zone keeps its depth background. Only zone-collapsed cards carry `surface`. */
-const surfaceStyle = computed(() => surface === undefined ? "" : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))`);
+/** Owner addendum 1: a folded zone keeps its depth background. Only zone-collapsed cards carry `surface`. W1-12: switch toggle hover token only on surface2. */
+const surfaceStyle = computed(() => surface === undefined ? "" : `;--st-component-diagramCard-surface:var(--st-component-diagramZone-${surface}, var(--st-semantic-surface-${surface === "surface1" ? "raised" : "subtle"}))${surface === "surface2" ? ";--st-component-control-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)));--st-component-iconButton-hoverBackground:var(--st-component-button-secondaryHoverBackground, var(--st-semantic-action-secondaryHover, var(--st-semantic-border-subtle)))" : ""}`);
 const emit = defineEmits<{
     select: [
         event: {
