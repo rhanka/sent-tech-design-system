@@ -9,7 +9,7 @@
     "commit": "81083403e58dd1810bd1bd4f639882d226375d97",
     "note": "Same pinned commit as packages/components-preact/scripts/port-metrics.mjs BASE_REF; verified zero drift on packages/dataviz-react to origin/main (128 non-test files: 116 .tsx + 12 .ts)."
   },
-  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 batch 1 (5 helpers: advancedPivotData, analyticsDsData, chart-export, geoMapLayers, url-sync).",
+  "ownershipNote": "Lot P6 scaffold + group 1 (15 files) + group 2 batches 1-2 (10 files: all remaining helpers including useUrlSync, plus AdvancedPivotDataTable, AnalyticsClusterPlot, AnimatedBubbleChart, AnomalySwimLaneChart).",
   "modules": [
     {
       "module": "adapter",
@@ -189,6 +189,51 @@
       "kind": "helper",
       "lot": "P6",
       "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "useUrlSync",
+      "file": "src/lib/useUrlSync.ts",
+      "reactSource": "dataviz-react/src/lib/useUrlSync.ts",
+      "kind": "helper",
+      "lot": "P6",
+      "renderable": false,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AdvancedPivotDataTable",
+      "file": "src/lib/AdvancedPivotDataTable.tsx",
+      "reactSource": "dataviz-react/src/lib/AdvancedPivotDataTable.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnalyticsClusterPlot",
+      "file": "src/lib/AnalyticsClusterPlot.tsx",
+      "reactSource": "dataviz-react/src/lib/AnalyticsClusterPlot.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnimatedBubbleChart",
+      "file": "src/lib/AnimatedBubbleChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AnimatedBubbleChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
+      "exportedFromBarrel": true
+    },
+    {
+      "module": "AnomalySwimLaneChart",
+      "file": "src/lib/AnomalySwimLaneChart.tsx",
+      "reactSource": "dataviz-react/src/lib/AnomalySwimLaneChart.tsx",
+      "kind": "component",
+      "lot": "P6",
+      "renderable": true,
       "exportedFromBarrel": true
     }
   ],

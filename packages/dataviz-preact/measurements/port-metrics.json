@@ -7,14 +7,10 @@
     "lines": 9562
   },
   "progress": {
-    "portedModules": 20,
+    "portedModules": 25,
     "barrelFile": "index.ts",
-    "remainingModules": 107,
+    "remainingModules": 102,
     "remainingFiles": [
-      "lib/AdvancedPivotDataTable.tsx",
-      "lib/AnalyticsClusterPlot.tsx",
-      "lib/AnimatedBubbleChart.tsx",
-      "lib/AnomalySwimLaneChart.tsx",
       "lib/ArcDiagramChart.tsx",
       "lib/AreaRangeChart.tsx",
       "lib/AreaSplineRangeChart.tsx",
@@ -116,8 +112,7 @@
       "lib/WaffleChart.tsx",
       "lib/WaterfallChart.tsx",
       "lib/WindBarbChart.tsx",
-      "lib/WordCloudChart.tsx",
-      "lib/useUrlSync.ts"
+      "lib/WordCloudChart.tsx"
     ]
   },
   "port": {
@@ -341,23 +336,78 @@
         "total": 842,
         "touched": 0,
         "emissionRewrites": 0
+      },
+      {
+        "module": "useUrlSync",
+        "kind": "helper",
+        "file": "src/lib/useUrlSync.ts",
+        "reactSource": "lib/useUrlSync.ts",
+        "reactLines": 80,
+        "preactLines": 80,
+        "total": 302,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AdvancedPivotDataTable",
+        "kind": "component",
+        "file": "src/lib/AdvancedPivotDataTable.tsx",
+        "reactSource": "lib/AdvancedPivotDataTable.tsx",
+        "reactLines": 67,
+        "preactLines": 74,
+        "total": 291,
+        "touched": 2,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AnalyticsClusterPlot",
+        "kind": "component",
+        "file": "src/lib/AnalyticsClusterPlot.tsx",
+        "reactSource": "lib/AnalyticsClusterPlot.tsx",
+        "reactLines": 49,
+        "preactLines": 57,
+        "total": 220,
+        "touched": 15,
+        "emissionRewrites": 1
+      },
+      {
+        "module": "AnimatedBubbleChart",
+        "kind": "component",
+        "file": "src/lib/AnimatedBubbleChart.tsx",
+        "reactSource": "lib/AnimatedBubbleChart.tsx",
+        "reactLines": 160,
+        "preactLines": 166,
+        "total": 758,
+        "touched": 39,
+        "emissionRewrites": 3
+      },
+      {
+        "module": "AnomalySwimLaneChart",
+        "kind": "component",
+        "file": "src/lib/AnomalySwimLaneChart.tsx",
+        "reactSource": "lib/AnomalySwimLaneChart.tsx",
+        "reactLines": 61,
+        "preactLines": 67,
+        "total": 214,
+        "touched": 2,
+        "emissionRewrites": 1
       }
     ],
     "totals": {
-      "modules": 20,
-      "reactLines": 2599,
-      "preactLines": 2703,
-      "total": 16377,
-      "touched": 145,
-      "emissionRewrites": 13
+      "modules": 25,
+      "reactLines": 3016,
+      "preactLines": 3147,
+      "total": 18162,
+      "touched": 205,
+      "emissionRewrites": 20
     },
     "shared": {
-      "src/index.ts": 60,
+      "src/index.ts": 71,
       "src/classNames.ts": 16,
       "preactAdapters": 247,
       "reactTwins": 81,
       "scripts/emit-react.mjs": 183,
-      "vitest.react.config.ts": 73
+      "vitest.react.config.ts": 75
     }
   },
   "reach": {
