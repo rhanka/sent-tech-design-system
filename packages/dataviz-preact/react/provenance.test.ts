@@ -100,6 +100,11 @@ import * as handWrittenQueryBar from "../../dataviz-react/src/lib/QueryBar.js";
 import * as handWrittenRadarChart from "../../dataviz-react/src/lib/RadarChart.js";
 import * as handWrittenRangeSliderFilter from "../../dataviz-react/src/lib/RangeSliderFilter.js";
 import * as handWrittenRecordsTable from "../../dataviz-react/src/lib/RecordsTable.js";
+import * as handWrittenReferenceLineChart from "../../dataviz-react/src/lib/ReferenceLineChart.js";
+import * as handWrittenRelativeDateFilter from "../../dataviz-react/src/lib/RelativeDateFilter.js";
+import * as handWrittenRenkoChart from "../../dataviz-react/src/lib/RenkoChart.js";
+import * as handWrittenRibbonChart from "../../dataviz-react/src/lib/RibbonChart.js";
+import * as handWrittenRoseChart from "../../dataviz-react/src/lib/RoseChart.js";
 import * as emitted from "../.react-emit/src/index.js";
 import * as emittedCategoricalData from "../.react-emit/src/lib/categoricalData.js";
 import * as emittedDistributionData from "../.react-emit/src/lib/distributionData.js";
@@ -219,6 +224,13 @@ const switched = [
   "numericDomain",
   "rangeBoundsToSpec",
   "RecordsTable",
+  "ReferenceLineChart",
+  "RelativeDateFilter",
+  "relativeRangeToSpec",
+  "DEFAULT_RELATIVE_PRESETS",
+  "RenkoChart",
+  "RibbonChart",
+  "RoseChart",
 ] as const;
 
 const handWritten: Record<(typeof switched)[number], unknown> = {
@@ -330,6 +342,13 @@ const handWritten: Record<(typeof switched)[number], unknown> = {
   numericDomain: handWrittenRangeSliderFilter.numericDomain,
   rangeBoundsToSpec: handWrittenRangeSliderFilter.rangeBoundsToSpec,
   RecordsTable: handWrittenRecordsTable.RecordsTable,
+  ReferenceLineChart: handWrittenReferenceLineChart.ReferenceLineChart,
+  RelativeDateFilter: handWrittenRelativeDateFilter.RelativeDateFilter,
+  relativeRangeToSpec: handWrittenRelativeDateFilter.relativeRangeToSpec,
+  DEFAULT_RELATIVE_PRESETS: handWrittenRelativeDateFilter.DEFAULT_RELATIVE_PRESETS,
+  RenkoChart: handWrittenRenkoChart.RenkoChart,
+  RibbonChart: handWrittenRibbonChart.RibbonChart,
+  RoseChart: handWrittenRoseChart.RoseChart,
 };
 
 describe("dataviz React leg provenance", () => {

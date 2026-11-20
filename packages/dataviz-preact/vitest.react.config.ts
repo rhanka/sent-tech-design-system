@@ -54,13 +54,13 @@ const reactTests: string[] = [
   "lib/chart-export.test.ts", // emitted lib/chart-export.ts
   "lib/url-sync.test.tsx", // emitted lib/url-sync.ts + lib/useUrlSync.ts
   "lib/AdvancedPivotDataTable.test.tsx", // emitted AdvancedPivotDataTable + advancedPivotData
-  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart + analyticsDsData
+  "lib/AnalyticsCharts.test.tsx", // emitted AnalyticsClusterPlot, ErrorBarsChart, ForecastLineChart, PercentileBandChart, ReferenceLineChart + analyticsDsData
   "lib/BookmarkNavigator.test.tsx", // emitted BookmarkNavigator
   "lib/DistributionCharts.test.tsx", // emitted BoxPlotChart, BulletChart, CalendarHeatmapChart, GaugeChart, HeatmapChart, HistogramChart + distributionData
   "lib/CalculationEditor.test.tsx", // emitted CalculationEditor
   "lib/ExportMenu.test.tsx", // emitted ExportMenu + rowsToCsv
   "lib/ChartExport.test.tsx", // emitted ChartExport + ExportMenu + chart-export
-  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart + partOfWholeData
+  "lib/PartOfWholeCharts.test.tsx", // emitted ChordChart, DonutChart, TreemapChart, FunnelChart, MekkoChart, PackedBubbleChart, RadarChart, RoseChart + partOfWholeData
   "lib/GeoCharts.test.tsx", // emitted ChoroplethMap, GeoClusterMap, GeoDensityMap, GeoFlowMap, GeoHexbinMap, GeoJsonMap, GeoPointMap + geoMapLayers
   "lib/DashboardActiveFilters.test.tsx", // emitted DashboardActiveFilters
   "lib/DashboardFilterBar.test.tsx", // emitted DashboardFilterBar
@@ -76,6 +76,7 @@ const reactTests: string[] = [
   "lib/QueryBar.test.tsx", // emitted QueryBar
   "lib/RangeSliderFilter.test.tsx", // emitted RangeSliderFilter + numericDomain + rangeBoundsToSpec
   "lib/RecordsTable.test.tsx", // emitted RecordsTable
+  "lib/RelativeDateFilter.test.tsx", // emitted RelativeDateFilter + relativeRangeToSpec + DEFAULT_RELATIVE_PRESETS
 ];
 
 export default defineConfig({
